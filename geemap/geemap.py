@@ -7,7 +7,7 @@ from ipyleaflet import *
 
 # Create an ipyleaflet map instance
 def Map(center=(40, -100), zoom=4, layers=None):
-    m = ipyleaflet.Map(center=center, zoom=zoom)
+    m = ipyleaflet.Map(center=center, zoom=zoom, scroll_wheel_zoom=True)
 
     m.add_control(LayersControl(position='topright'))
     m.add_control(ScaleControl(position='bottomleft'))
