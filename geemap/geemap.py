@@ -158,6 +158,29 @@ def addTileLayer(self, url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 ipyleaflet.Map.addTileLayer = addTileLayer
 
 
+def listening(self, event='click', add_marker=True):
+
+    coordinates = []
+    
+    def handle_interaction(**kwargs):
+        latlon = kwargs.get('coordinates')
+
+        if event == 'click' and kwargs.get('type') == 'click':
+            coordinates.append(latlon)
+            self.last_click = latlon
+            self.all_clicks = coordinates
+            if add_marker:
+                self.add_layer(Marker(location=latlon))
+        elif kwargs.get('type') == 'mousemove':
+            pass
+    
+    self.on_interaction(handle_interaction)
+
+ipyleaflet.Map.listening = listening
+ipyleaflet.Map.last_click = []
+ipyleaflet.Map.all_clicks = []
+
+    
 if __name__ == '__main__':
 
     map = Map()
