@@ -29,7 +29,7 @@ Authors: Dr. Qiusheng Wu (https://wetlands.io)
 A Python package for interactive mapping using Google Earth Engine, ipyleaflet, and ipywidgets
 
 * GitHub repo: https://github.com/giswqs/geemap
-* Documentation: https://geemap.readthedocs.io.
+* Documentation: https://geemap.readthedocs.io
 * PyPI: https://pypi.org/project/geemap/
 * Free software: MIT license
 
@@ -45,11 +45,13 @@ A Python package for interactive mapping using Google Earth Engine, ipyleaflet, 
 
 
 
-
 Features
 --------
 
-* TODO
+* Automatically convert Earth Engine JavaScripts to Python scripts and Jupyter Notebooks.
+* Add Earth Engine tile layers to ipyleaflet map for interactive mapping.
+* Capture user inputs and query Earth Engine objects.
+* Plot charts bases on Earth Engine data
 
 
 Installation
@@ -61,7 +63,7 @@ To install **geemap**  , run this command in your terminal:
   pip install geemap
 
 
-If you have Anaconda_ or Miniconda_ installed on your computer, you can use conda to install geemap:
+If you have Anaconda_ or Miniconda_ installed on your computer, you can use create conda Python environment to install geemap:
 
 .. code:: python
 
@@ -84,7 +86,13 @@ If you have installed **geemap** before and want to upgrade to the latest versio
 Examples
 --------
 
-Open a Jupyter notebook and paste the follow code to a notebook cell. 
+Open a Jupyter notebook and paste the follow code to a notebook cell. Alternatively, you can run the code interactively with **mybinder.org** or **binder.pangeo.io** now:
+
+.. image:: https://mybinder.org/badge_logo.svg
+        :target: https://mybinder.org/v2/gh/giswqs/geemap/master
+
+.. image:: https://binder.pangeo.io/badge_logo.svg
+        :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/master
 
 .. code:: python
 
@@ -92,10 +100,10 @@ Open a Jupyter notebook and paste the follow code to a notebook cell.
         import geemap
 
         try:
-        ee.Initialize()
+                ee.Initialize()
         except Exception as e:
-        ee.Authenticate()
-        ee.Initialize()
+                ee.Authenticate()
+                ee.Initialize()
 
         # Create an interactive map
         Map = geemap.Map(center=(40, -100), zoom=4)
@@ -106,9 +114,10 @@ Open a Jupyter notebook and paste the follow code to a notebook cell.
 
         # Set visualization parameters.
         vis_params = {
-        'min': 0,
-        'max': 4000,
-        'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5']}
+                'min': 0,
+                'max': 4000,
+                'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5']
+        }
 
         # Print the elevation of Mount Everest.
         xy = ee.Geometry.Point([86.9250, 27.9881])
@@ -137,7 +146,7 @@ Dependencies
 
 .. _earthengine-api: https://github.com/google/earthengine-api
 .. _ipyleaflet: https://github.com/jupyter-widgets/ipyleaflet
-.. _ipywidgest: https://github.com/jupyter-widgets/ipywidgets
+.. _ipywidgets: https://github.com/jupyter-widgets/ipywidgets
 .. _folium: https://github.com/python-visualization/folium
 .. _bqplot: https://github.com/bloomberg/bqplot
 .. _ipynb-py-convert: https://github.com/kiwi0fruit/ipynb-py-convert
