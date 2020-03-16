@@ -4,8 +4,8 @@ from geemap.conversion import *
 
 # The following four lines of code retrieve the file path of 'template.py', which is needed 
 # to convert Earth Engine Python scripts to Jupyter notebooks. Do not modify these lines.
-pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
-example_dir = os.path.join(pkg_dir, 'examples')
+example_dir = pkg_resources.resource_filename("geemap", "examples")
+print(example_dir)
 template_dir = os.path.join(example_dir, 'Template')
 template_file = os.path.join(template_dir, 'template.py')
 
