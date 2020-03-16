@@ -14,6 +14,9 @@ geemap
 .. image:: https://img.shields.io/pypi/v/geemap.svg
         :target: https://pypi.python.org/pypi/geemap
 
+.. image:: https://pepy.tech/badge/geemap
+        :target: https://pepy.tech/project/geemap
+
 .. image:: https://img.shields.io/travis/giswqs/geemap.svg
         :target: https://travis-ci.com/giswqs/geemap
 
