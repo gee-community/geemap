@@ -1,10 +1,12 @@
+import os
+import pkg_resources
 from geemap.conversion import *
 
-
 ## Convert an Earth Engine JavaScript to Python script.
-work_dir = os.path.dirname(os.path.abspath(__file__))
-js_dir = os.path.join(work_dir, 'JavaScripts')
-template_dir = os.path.join(work_dir, 'Template')
+pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+example_dir = os.path.join(os.path.dirname(pkg_dir), 'examples')
+js_dir = os.path.join(example_dir, 'JavaScripts')
+template_dir = os.path.join(example_dir, 'Template')
 in_file_path = os.path.join(js_dir, "NormalizedDifference.js")  # change this path to your JavaScript file
 out_file_path = os.path.splitext(in_file_path)[0] + ".py"
 js_to_python(in_file_path, out_file_path)
