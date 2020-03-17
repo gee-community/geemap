@@ -172,7 +172,6 @@ def setCenter(self, lon, lat, zoom=None):
 ipyleaflet.Map.setCenter = setCenter
 
 
-# Center the map based on an object
 def centerObject(self, ee_object, zoom=None):
     """Centers the map view on a given object.
     
@@ -207,7 +206,6 @@ def centerObject(self, ee_object, zoom=None):
 ipyleaflet.Map.centerObject = centerObject
 
 
-# Add custom WMS tile layer to map
 def add_wms_layer(self, url, layers, name=None, attribution='', format='image/jpeg', transparent=False, opacity=1.0, shown=True):
     """Add a WMS layer to the map.
     
