@@ -107,7 +107,7 @@ Lanch an interactive notebook with **Google Colab**, **mybinder.org**, or **bind
         :target: https://mybinder.org/v2/gh/giswqs/geemap/master?filepath=examples/earthengine_js_to_ipynb.ipynb
 
 .. image:: https://binder.pangeo.io/badge_logo.svg
-        :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/?filepath=examples/earthengine_js_to_ipynb.ipynb
+        :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/master?filepath=examples/earthengine_js_to_ipynb.ipynb
 
 .. code:: python
 
@@ -132,21 +132,24 @@ Lanch an interactive notebook with **Google Colab**, **mybinder.org**, or **bind
         execute_notebook_dir(in_dir=js_dir)
 
 
+.. image:: https://i.imgur.com/8bedWtl.gif
+
 
 Interactive mapping using GEE Python API and geemap
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Lanch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. Note that **Google Colab** currently does not support ipyleaflet. Therefore, geemap won't be able to display interactive maps on Google Colab.
 
 .. image:: https://mybinder.org/badge_logo.svg
-        :target: https://mybinder.org/v2/gh/giswqs/geemap/master
+        :target: https://mybinder.org/v2/gh/giswqs/geemap/master?filepath=examples/geemap_and_earthengine.ipynb
 
 .. image:: https://binder.pangeo.io/badge_logo.svg
-        :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/master
+        :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/master?filepath=examples/geemap_and_earthengine.ipynb
 
 .. code:: python
 
         import ee
         import geemap
+        import ipyleaflet
 
         try:
                 ee.Initialize()
@@ -155,7 +158,8 @@ Lanch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. Not
                 ee.Initialize()
 
         # Create an interactive map
-        Map = geemap.Map(center=(40, -100), zoom=4)
+        Map = ipyleaflet.Map(center=(40, -100), zoom=4, scroll_wheel_zoom=True)
+        Map.setOptions('HYBRID') # Add Google Satellite basemap
         Map
 
         # Add Earth Engine dataset
@@ -182,6 +186,7 @@ Lanch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. Not
         Map.setCenter(lon=-100, lat=40, zoom=4)
 
 
+.. image:: https://i.imgur.com/7NMQw6I.gif
 
 Dependencies
 ------------
