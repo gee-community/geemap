@@ -646,6 +646,7 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
     try:
         command = 'ipynb-py-convert ' + out_py_file + ' ' + out_file
         print(os.popen(command).read().rstrip())
+        # os.popen(command)
     except:
         print('Please install ipynb-py-convert using the following command:\n')
         print('pip install ipynb-py-convert')
@@ -681,6 +682,7 @@ def execute_notebook(in_file):
     """    
     command = 'jupyter nbconvert --to notebook --execute ' + in_file + ' --inplace'
     print(os.popen(command).read().rstrip())
+    # os.popen(command)
 
 
 def execute_notebook_dir(in_dir):
@@ -694,7 +696,7 @@ def execute_notebook_dir(in_dir):
     if files is not None:
         for index, file in enumerate(files):
             in_file = str(file)
-            print('Processing {}/{} ...'.format(index+1, count))
+            print('Processing {}/{}: {} ...'.format(index+1, count, file))
             execute_notebook(in_file)
 
 
@@ -712,8 +714,8 @@ if __name__ == '__main__':
     print("Python scripts saved at: {}".format(js_dir))
 
      # Convert all Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
-    nb_templates = get_nb_template()  # Get the notebook template from the package folder.
-    py_to_ipynb_dir(js_dir, nb_templates)
+    nb_template = get_nb_template()  # Get the notebook template from the package folder.
+    py_to_ipynb_dir(js_dir, nb_template)
 
     # Execute all Jupyter notebooks in a folder recursively and save the output cells.
     execute_notebook_dir(in_dir=js_dir)
