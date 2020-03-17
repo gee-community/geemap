@@ -29,7 +29,7 @@ geemap
 
 Authors: Dr. Qiusheng Wu (https://wetlands.io)
 
-A Python package for interactive mapping using Google Earth Engine, ipyleaflet, and ipywidgets
+A Python package for interactive mapping using Google Earth Engine, ipyleaflet, and ipywidgets.
 
 * GitHub repo: https://github.com/giswqs/geemap
 * Documentation: https://geemap.readthedocs.io
@@ -51,10 +51,11 @@ A Python package for interactive mapping using Google Earth Engine, ipyleaflet, 
 Features
 --------
 
-* Automatically convert Earth Engine JavaScripts to Python scripts and Jupyter Notebooks.
-* Add Earth Engine tile layers to ipyleaflet map for interactive mapping.
-* Capture user inputs and query Earth Engine objects.
-* Plot charts bases on Earth Engine data
+* Automatically converts Earth Engine JavaScripts to Python scripts and Jupyter Notebooks.
+* Adds Earth Engine tile layers to ipyleaflet map for interactive mapping.
+* Supports Earth Engine JavaScript API functions in Python, such as ``Map.AddLayer()``, ``Map.setCenter()``, ``Map.centerObject()``, ``Map.setOptions()``.
+* Captures user inputs and query Earth Engine objects.
+* Plots charts based on Earth Engine data.
 
 
 Installation
@@ -89,7 +90,52 @@ If you have installed **geemap** before and want to upgrade to the latest versio
 Examples
 --------
 
-Open a Jupyter notebook and paste the follow code to a notebook cell. Alternatively, you can run the code interactively with **mybinder.org** or **binder.pangeo.io** now:
+The following examples require the geemap package, which can be installed using ``pip install geemap``. Check the `Installation`_ section for more information.
+
+- `Converting GEE JavaScripts to Python scripts and Jupyter notebooks`_
+- `Interactive mapping using GEE Python API and geemap`_
+
+Converting GEE JavaScripts to Python scripts and Jupyter notebooks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Lanch an interactive notebook with **Google Colab**, **mybinder.org**, or **binder.pangeo.io**:
+
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+        :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/earthengine_js_to_ipynb.ipynb
+
+.. image:: https://mybinder.org/badge_logo.svg
+        :target: https://mybinder.org/v2/gh/giswqs/geemap/master?filepath=examples/earthengine_js_to_ipynb.ipynb
+
+.. image:: https://binder.pangeo.io/badge_logo.svg
+        :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/?filepath=examples/earthengine_js_to_ipynb.ipynb
+
+.. code:: python
+
+        import os
+        from geemap.conversion import *
+
+        # Create a temporary working directory
+        work_dir = os.path.join(os.path.expanduser('~'), 'geemap')
+        # Get Earth Engine JavaScript examples. There are five examples in the geemap package folder. 
+        # Change js_dir to your own folder containing your Earth Engine JavaScripts, such as js_dir = '/path/to/your/js/folder'
+        js_dir = get_js_examples(out_dir=work_dir) 
+
+        # Convert all Earth Engine JavaScripts in a folder recursively to Python scripts.
+        js_to_python_dir(in_dir=js_dir, out_dir=js_dir, use_qgis=True)
+        print("Python scripts saved at: {}".format(js_dir))
+
+        # Convert all Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
+        nb_template = get_nb_template()  # Get the notebook template from the package folder.
+        py_to_ipynb_dir(js_dir, nb_template)
+
+        # Execute all Jupyter notebooks in a folder recursively and save the output cells.
+        execute_notebook_dir(in_dir=js_dir)
+
+
+
+Interactive mapping using GEE Python API and geemap
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Lanch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. Note that **Google Colab** currently does not support ipyleaflet. Therefore, geemap won't be able to display interactive maps on Google Colab.
 
 .. image:: https://mybinder.org/badge_logo.svg
         :target: https://mybinder.org/v2/gh/giswqs/geemap/master
