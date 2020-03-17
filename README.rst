@@ -80,8 +80,15 @@ If you have installed **geemap** before and want to upgrade to the latest versio
 
 .. code:: python
 
-  pip install geemap -U
+  pip install geemap -
+  
 
+To install the development version from GitHub, run this command in your terminal:
+
+.. code:: python
+
+  pip install git+https://github.com/giswqs/geemap
+  
 
 .. _Anaconda: https://www.anaconda.com/distribution/#download-section
 .. _Miniconda: https://docs.conda.io/en/latest/miniconda.html
@@ -98,7 +105,8 @@ The following examples require the geemap package, which can be installed using 
 Converting GEE JavaScripts to Python scripts and Jupyter notebooks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Lanch an interactive notebook with **Google Colab**, **mybinder.org**, or **binder.pangeo.io**:
+Launch an interactive notebook with **Google Colab**, **mybinder.org**, or **binder.pangeo.io**. Keep in mind that the conversion might not always work perfectly. Additional manual changes might still be needed. ``ui`` and ``chart`` are not supported. 
+The source code for this automated conversion module can be found at `conversion.py`_.
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
         :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/earthengine_js_to_ipynb.ipynb
@@ -134,10 +142,12 @@ Lanch an interactive notebook with **Google Colab**, **mybinder.org**, or **bind
 
 .. image:: https://i.imgur.com/8bedWtl.gif
 
+.. _`conversion.py`: https://github.com/giswqs/geemap/blob/master/geemap/conversion.py
+
 
 Interactive mapping using GEE Python API and geemap
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Lanch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. Note that **Google Colab** currently does not support ipyleaflet. Therefore, geemap won't be able to display interactive maps on Google Colab.
+Launch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. Note that **Google Colab** currently does not support ipyleaflet. Therefore, geemap won't be able to display interactive maps on Google Colab.
 
 .. image:: https://mybinder.org/badge_logo.svg
         :target: https://mybinder.org/v2/gh/giswqs/geemap/master?filepath=examples/geemap_and_earthengine.ipynb
