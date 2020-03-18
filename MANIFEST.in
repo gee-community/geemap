@@ -5,10 +5,11 @@ include LICENSE
 include README.rst
 include requirements.txt
 
-recursive-include geemap *
+recursive-include geemap/examples *
 recursive-include tests *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 recursive-exclude * *.ipynb
+recursive-include examples *.js
 
 recursive-include docs *.rst conf.py Makefile make.bat *.jpg *.png *.gif

@@ -541,7 +541,7 @@ def get_nb_template(download_latest=False, out_file=None):
         os.makedirs(os.path.dirname(out_file))
 
     if download_latest:
-        template_url = 'https://raw.githubusercontent.com/giswqs/geemap/master/geemap/examples/Template/template.py'
+        template_url = 'https://raw.githubusercontent.com/giswqs/geemap/master/examples/Template/template.py'
         print("Downloading the latest notebook template from {}".format(template_url))
         urllib.request.urlretrieve(template_url, out_file)   
     elif out_file is not None:

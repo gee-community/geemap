@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 *.md
+geemap/geemap_v*.py
 .Python
 env/
 build/
