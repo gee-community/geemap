@@ -12,17 +12,17 @@ To execute all Jupyter notebooks in a folder recursively:                       
 # Authors: Dr. Qiusheng Wu (https://wetlands.io)
 # License: MIT
 
-import os
-import glob
-import shutil
-import random
-import string
 import argparse
-import subprocess
+import glob
+import os
 import pkg_resources
+import random
+import shutil
+import string
+import subprocess
 import urllib.request
-from pathlib import Path
 from collections import deque
+from pathlib import Path
 
 
 def random_string(string_length=3):
@@ -660,7 +660,7 @@ def py_to_ipynb_dir(in_dir, template_file, out_dir=None, github_username=None, g
     Args:
         in_dir (str): Input folder containing Earth Engine Python scripts.
         template_file (str): Input jupyter notebook template file.
-        out_dir str, optional): Ouput folder. Defaults to None.
+        out_dir str, optional): Output folder. Defaults to None.
         github_username (str, optional): GitHub username. Defaults to None.
         github_repo (str, optional): GitHub repo name. Defaults to None.
     """    

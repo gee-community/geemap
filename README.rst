@@ -159,7 +159,6 @@ Launch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. No
 
         import ee
         import geemap
-        import ipyleaflet
 
         try:
                 ee.Initialize()
@@ -168,8 +167,7 @@ Launch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. No
                 ee.Initialize()
 
         # Create an interactive map
-        Map = ipyleaflet.Map(center=(40, -100), zoom=4, scroll_wheel_zoom=True)
-        Map.setOptions('HYBRID') # Add Google Satellite basemap
+        Map = geemap.Map(center=(40, -100), zoom=4)
         Map
 
         # Add Earth Engine dataset
@@ -188,7 +186,7 @@ Launch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. No
         print('Mount Everest elevation (m):', elev)
 
         # Add Earth Engine layers to Map
-        Map.addLayer(image, vis_params, 'STRM DEM', True, 0.5)
+        Map.addLayer(image, vis_params, 'SRTM DEM', True, 0.5)
         Map.addLayer(xy, {'color': 'red'}, 'Mount Everest')
 
         # Set center of the map
