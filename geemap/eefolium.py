@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ This module extends the folium Map class. It is designed to be used in Google Colab, as Google Colab currently does not support ipyleaflet.
 """
 
@@ -161,11 +160,30 @@ class Map(folium.Map):
     """    
     def __init__(self, **kwargs):
 
+        # Default map center location and zoom level
+        latlon = [40, -100]
+        zoom = 4
+
+        # Interchangeable parameters between ipyleaflet and folium
+        if 'center' in kwargs.keys():
+            kwargs['location'] = kwargs['center']
+            kwargs.pop('center')
+        if 'location' in kwargs.keys():
+            latlon = kwargs['location']
+
+        if 'zoom' in kwargs.keys():
+            kwargs['zoom_start'] = kwargs['zoom']
+            kwargs.pop('zoom')
+        if 'zoom_start' in kwargs.keys():
+            zoom = kwargs['zoom_start']        
+
         super().__init__(**kwargs)
         ee_basemaps['HYBRID'].add_to(self)
         folium.LatLngPopup().add_to(self)
         plugins.Fullscreen().add_to(self)
 
+        self.fit_bounds([latlon, latlon], max_zoom=zoom)
+ 
 
     def setOptions(self, mapTypeId='HYBRID', styles={}, types=[]):
         """Adds Google basemap to the map.
@@ -322,7 +340,7 @@ class Map(folium.Map):
     addLayerControl = add_layer_control
 
 
-    def add_wms_layer(self, url, layers, name=None, attribution='', overlay=True, control=True, show=True, format='image/png'):
+    def add_wms_layer(self, url, layers, name=None, attribution='', overlay=True, control=True, shown=True, format='image/png'):
         """Add a WMS layer to the map.
         
         Args:
@@ -332,7 +350,7 @@ class Map(folium.Map):
             attribution (str, optional): The attribution of the data layer. Defaults to ''.
             overlay (str, optional): Allows overlay. Defaults to True.
             control (str, optional): Adds the layer to the layer control. Defaults to True.
-            show (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             format (str, optional): WMS image format (use ‘image/png’ for layers with transparency). Defaults to 'image/jpeg'.
         """
         try:
@@ -343,13 +361,13 @@ class Map(folium.Map):
                 name=name,
                 overlay=overlay,
                 control=control,
-                show=show
+                show=shown
             ).add_to(self)
         except:
             print("Failed to add the specified WMS TileLayer.")
 
 
-    def add_tile_layer(self, tiles='OpenStreetMap', name=None, attribution='', overlay=True, control=True, show=True, opacity=1.0, API_key=None):
+    def add_tile_layer(self, tiles='OpenStreetMap', name=None, attribution='', overlay=True, control=True, shown=True, opacity=1.0, API_key=None):
         """Add a XYZ tile layer to the map.
         
         Args:
@@ -358,7 +376,7 @@ class Map(folium.Map):
             attribution (str, optional): The attribution of the data layer. Defaults to ''.
             overlay (str, optional): Allows overlay. Defaults to True.
             control (str, optional): Adds the layer to the layer control. Defaults to True.
-            show (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             opacity (float, optional): Sets the opacity for the layer.
             API_key (str, optional) – API key for Cloudmade or Mapbox tiles. Defaults to True.
         """        
@@ -370,20 +388,9 @@ class Map(folium.Map):
                 attr=attribution,
                 overlay=overlay,
                 control=control,
-                show=show,
+                show=shown,
                 opacity=opacity,
                 API_key=API_key
             ).add_to(self)
         except:
             print("Failed to add the specified TileLayer.")
-
-
-
-
-
-
-
-
-
-
-

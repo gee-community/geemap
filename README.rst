@@ -29,7 +29,7 @@ geemap
 
 Authors: Dr. Qiusheng Wu (https://wetlands.io)
 
-A Python package for interactive mapping using Google Earth Engine, ipyleaflet, and ipywidgets.
+A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.
 
 * GitHub repo: https://github.com/giswqs/geemap
 * Documentation: https://geemap.readthedocs.io

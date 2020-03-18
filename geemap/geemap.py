@@ -8,27 +8,120 @@ import ipyleaflet
 import os
 from ipyleaflet import *
 
-# Google basemaps
+# # Google basemaps
+# ee_basemaps = {
+#     'ROADMAP': TileLayer(
+#         url='https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+#         name='Google Map',
+#         attribution='Google'
+#     ),
+#     'SATELLITE': TileLayer(
+#         url='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+#         name='Google Satellite',
+#         attribution='Google'
+#     ),
+#     'HYBRID': TileLayer(
+#         url='https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+#         name='Google Satellite',
+#         attribution='Google'
+#     ),
+#     'TERRAIN': TileLayer(
+#         url='https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
+#         name='Google Terrain',
+#         attribution='Google'
+#     )
+# }
+
+# More WMS basemaps can be found at https://viewer.nationalmap.gov/services/
 ee_basemaps = {
     'ROADMAP': TileLayer(
         url='https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-        name='Google Map',
-        attribution='Google'
+        attribution='Google',
+        name='Google Maps'   
     ),
+
     'SATELLITE': TileLayer(
         url='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+        attribution='Google',
         name='Google Satellite',
-        attribution='Google'
     ),
-    'HYBRID': TileLayer(
-        url='https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
-        name='Google Satellite',
-        attribution='Google'
-    ),
+
     'TERRAIN': TileLayer(
         url='https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
+        attribution='Google',
         name='Google Terrain',
-        attribution='Google'
+    ),
+
+    'HYBRID': TileLayer(
+        url='https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+        attribution='Google',
+        name='Google Satellite',
+    ),
+
+    'ESRI': TileLayer(
+        url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        attribution='Esri',
+        name='Esri Satellite',       
+    ),
+
+    'Esri Ocean': TileLayer(
+        url='https://services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',
+        attribution='Esri',
+        name='Esri Ocean', 
+    ),
+
+    'Esri Satellite': TileLayer(
+        url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        attribution='Esri',
+        name='Esri Satellite',  
+    ),
+
+    'Esri Standard': TileLayer(
+        url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+        attribution='Esri',
+        name='Esri Standard',
+    ),
+
+    'Esri Terrain': TileLayer(
+        url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}',
+        attribution='Esri',
+        name='Esri Terrain',
+    ),
+
+    'Esri Transportation': TileLayer(
+        url='https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',
+        attribution='Esri',
+        name='Esri Transportation',
+    ),
+
+    'Esri Topo World': TileLayer(
+        url='https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+        attribution='Esri',
+        name='Esri Topo World',
+    ),
+
+    'Esri National Geographic': TileLayer(
+        url='http://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}',
+        attribution='Esri',
+        name='Esri National Geographic',
+    ),     
+
+    'Esri Shaded Relief': TileLayer(
+        url='https://services.arcgisonline.com/arcgis/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
+        attribution='Esri',
+        name='Esri Shaded Relief',      
+    ),   
+
+    'Esri Physical Map': TileLayer(
+        url='https://services.arcgisonline.com/arcgis/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}',
+        attribution='Esri',
+        name='Esri Physical Map',
+    ),   
+
+    'Bing VirtualEarth': TileLayer(
+        url='http://ecn.t3.tiles.virtualearth.net/tiles/a{q}.jpeg?g=1',
+        attribution='Microsoft',
+        name='Bing VirtualEarth',
     )
 }
 
@@ -43,6 +136,23 @@ class Map(ipyleaflet.Map):
         object: ipyleaflet map object.
     """    
     def __init__(self, **kwargs):
+
+        # Default map center location and zoom level
+        latlon = [40, -100]
+        zoom = 4
+
+        # Interchangeable parameters between ipyleaflet and folium
+        if 'location' in kwargs.keys():
+            kwargs['center'] = kwargs['location']
+            kwargs.pop('location')
+        if 'center' in kwargs.keys():
+            latlon = kwargs['center']
+
+        if 'zoom_start' in kwargs.keys():
+            kwargs['zoom'] = kwargs['zoom_start']
+            kwargs.pop('zoom_start')
+        if 'zoom' in kwargs.keys():
+            zoom = kwargs['zoom']   
 
         super().__init__(**kwargs)
         self.scroll_wheel_zoom= True
@@ -198,6 +308,18 @@ class Map(ipyleaflet.Map):
     centerObject = center_object
 
 
+    def add_basemap(self, basemap='HYBRID'):
+        """Adds a basemap to the map.
+        
+        Args:
+            basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'HYBRID'.
+        """        
+        try:
+            self.add_layer(ee_basemaps[basemap])
+        except:
+            print('Basemap can only be one of the following: {}'.format(', '.join(ee_basemaps.keys())))
+
+
     def add_wms_layer(self, url, layers, name=None, attribution='', format='image/jpeg', transparent=False, opacity=1.0, shown=True):
         """Add a WMS layer to the map.
         
@@ -309,6 +431,25 @@ class Map(ipyleaflet.Map):
         self.default_style = {'cursor': 'crosshair'}
         self.on_interaction(handle_interaction)
         
+    def set_control_visibility(self, layerControl=True, fullscreenControl=True, latLngPopup=True):
+            """Sets the visibility of the controls on the map.
+            
+            Args:
+                layerControl (bool, optional): Whether to show the control that allows the user to toggle layers on/off. Defaults to True.
+                fullscreenControl (bool, optional): Whether to show the control that allows the user to make the map full-screen. Defaults to True.
+                latLngPopup (bool, optional): Whether to show the control that pops up the Lat/lon when the user clicks on the map. Defaults to True.
+            """        
+            pass
+
+    setControlVisibility = set_control_visibility
+
+
+    def add_layer_control(self):
+        """Adds layer basemap to the map.
+        """        
+        pass
+
+    addLayerControl = add_layer_control
 
 
 def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, opacity=1.0):
