@@ -341,7 +341,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
         with open(in_file) as f:
             lines = f.readlines()
 
-            print('Processing {}'.format(in_file))
+            # print('Processing {}'.format(in_file))
             lines = check_map_functions(lines)
 
             for index, line in enumerate(lines):
@@ -440,10 +440,14 @@ def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
         github_repo (str, optional): GitHub repo url. Defaults to None.
 
     """
+    print('Converting Earth Engine JavaScripts to Python scripts...\n')
     if out_dir is None:
         out_dir = in_dir
 
-    for in_file in Path(in_dir).rglob('*.js'):
+    files = list(Path(in_dir).rglob('*.js'))
+
+    for index, in_file in enumerate(files):
+        print('Processing {}/{}: {}'.format(index+1, len(files), in_file))
         out_file = os.path.splitext(in_file)[0] + "_qgis.py"
         out_file = out_file.replace(in_dir, out_dir)
         js_to_python(in_file, out_file, use_qgis, github_repo)
@@ -609,8 +613,15 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
         github_repo (str, optional): GitHub repo name. Defaults to None.
     """    
     if out_file is None:
-        out_file = in_file.replace('_qgis', '').replace('.py', '.ipynb')
-    out_py_file = in_file.replace('_qgis', '').replace(".py", "_nb.py")
+        out_file =  os.path.splitext(in_file)[0].replace('_qgis', '') + '.ipynb'
+
+    out_py_file = os.path.splitext(out_file)[0] + '.py'
+
+    out_dir = os.path.dirname(out_file)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+    if out_dir == os.path.dirname(in_file):
+        out_py_file = os.path.splitext(out_file)[0] + '.py'
 
     content = remove_qgis_import(in_file)
     header = template_header(template_file)
@@ -618,17 +629,17 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
 
     if (github_username is not None) and (github_repo is not None):
 
-        out_py_path = str(in_file).split('/')
+        out_py_path = str(out_file).split('/')
         index = out_py_path.index(github_repo)
         out_py_relative_path = '/'.join(out_py_path[index+1:])
         out_ipynb_relative_path = out_py_relative_path.replace('.py', '.ipynb')
 
         new_header = []
-        for line in header:
-            line = line.replace('giswqs', github_username)
-            line = line.replace('earthengine-py-notebooks', github_repo)
-            line = line.replace('template/template.ipynb', out_ipynb_relative_path)
-
+        for index, line in enumerate(header): 
+            if index < 10:  # Change Google Colab and binder URLs
+                line = line.replace('giswqs', github_username)
+                line = line.replace('geemap', github_repo)
+                line = line.replace('examples/template/template.ipynb', out_ipynb_relative_path)
             new_header.append(line)
         header = new_header
 
@@ -664,17 +675,26 @@ def py_to_ipynb_dir(in_dir, template_file, out_dir=None, github_username=None, g
         github_username (str, optional): GitHub username. Defaults to None.
         github_repo (str, optional): GitHub repo name. Defaults to None.
     """    
-    files = list(Path(in_dir).rglob('*_qgis.py'))
+    print('Converting Earth Engine Python scripts to Jupyter notebooks ...\n')
 
-    if len(files) == 0:
-        files = list(Path(in_dir).rglob('*.py'))
+    files = []
+    qgis_files = list(Path(in_dir).rglob('*_qgis.py'))
+    py_files = list(Path(in_dir).rglob('*.py'))
+
+    if len(qgis_files) == len(py_files) / 2:
+        files = qgis_files
+    else:
+        files = py_files
 
     if out_dir is None:
         out_dir = in_dir
+    elif not os.path.exists(out_dir):
+        os.makedirs(out_dir)
 
-    for file in files:
+    for index, file in enumerate(files):
         in_file = str(file)
         out_file = in_file.replace(in_dir, out_dir).replace('_qgis', '').replace('.py', '.ipynb')
+        print('Processing {}/{}: {}'.format(index+1, len(files), in_file))
         py_to_ipynb(in_file, template_file, out_file, github_username, github_repo)
 
 
@@ -695,6 +715,8 @@ def execute_notebook_dir(in_dir):
     Args:
         in_dir (str): Input folder containing notebooks.
     """
+    print('Executing Earth Engine Jupyter notebooks ...\n')
+
     files = list(Path(in_dir).rglob('*.ipynb'))
     count = len(files)
     if files is not None:
