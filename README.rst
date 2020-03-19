@@ -267,7 +267,10 @@ The source code for this automated conversion module can be found at `conversion
 
 Interactive mapping using GEE Python API and geemap
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Launch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. Note that **Google Colab** currently does not support ipyleaflet. Therefore, geemap won't be able to display interactive maps on Google Colab.
+Launch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. Note that **Google Colab** currently does not support ipyleaflet. Therefore, you should use ``import geemap.eefolium`` instead of ``import geemap``.
+
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+        :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/geemap_and_folium.ipynb
 
 .. image:: https://mybinder.org/badge_logo.svg
         :target: https://mybinder.org/v2/gh/giswqs/geemap/master?filepath=examples/geemap_and_earthengine.ipynb
@@ -277,8 +280,24 @@ Launch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. No
 
 .. code:: python
 
+        # Installs geemap package
+        import subprocess
+
+        try:
+                import geemap
+        except ImportError:
+                print('geemap package not installed. Installing ...')
+                subprocess.check_call(["python", '-m', 'pip', 'install', 'geemap'])
+
+        # Checks whether this notebook is running on Google Colab
+        try:
+                import google.colab
+                import geemap.eefolium as eemap
+        except:
+                import geemap as eemap
+
+        # Authenticates and initializes Earth Engine
         import ee
-        import geemap
 
         try:
                 ee.Initialize()
@@ -286,32 +305,32 @@ Launch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. No
                 ee.Authenticate()
                 ee.Initialize()
 
-        # Create an interactive map
-        Map = geemap.Map(center=(40, -100), zoom=4)
-        Map
+        # Creates an interactive map
+        Map = eemap.Map(center=[40,-100], zoom=4)
 
-        # Add Earth Engine dataset
+        # Adds Earth Engine dataset
         image = ee.Image('USGS/SRTMGL1_003')
 
-        # Set visualization parameters.
+        # Sets visualization parameters.
         vis_params = {
                 'min': 0,
                 'max': 4000,
-                'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5']
-        }
+                'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5']}
 
-        # Print the elevation of Mount Everest.
+        # Prints the elevation of Mount Everest.
         xy = ee.Geometry.Point([86.9250, 27.9881])
         elev = image.sample(xy, 30).first().get('elevation').getInfo()
         print('Mount Everest elevation (m):', elev)
 
-        # Add Earth Engine layers to Map
+        # Adds Earth Engine layers to Map
         Map.addLayer(image, vis_params, 'SRTM DEM', True, 0.5)
         Map.addLayer(xy, {'color': 'red'}, 'Mount Everest')
+        Map.setCenter(100, 40, 4)
+        # Map.centerObject(xy, 13)
 
-        # Set center of the map
-        Map.centerObject(ee_object=xy, zoom=13)
-        Map.setCenter(lon=-100, lat=40, zoom=4)
+        # Display the Map
+        Map.addLayerControl()
+        Map
 
 
 .. image:: https://i.imgur.com/7NMQw6I.gif
