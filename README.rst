@@ -66,14 +66,7 @@ Installation
 The **geemap** Python package is built upon the `ipyleaflet <https://github.com/jupyter-widgets/ipyleaflet>`__ and `folium <https://github.com/python-visualization/folium>`__ packages and
 implements several methods for displaying Earth Engine data layers, such as ``Map.addLayer()``, ``Map.setCenter()``, and ``Map.centerObject()``.
 
-A key difference between folium and ipyleaflet is that ipyleaflet is built upon ipywidgets and allows bidirectional
-communication between the front-end and the backend enabling the use of the map to capture user input, while folium is meant for displaying
-static data only (`source <https://blog.jupyter.org/interactive-gis-in-jupyter-with-ipyleaflet-52f9657fa7a>`__).
-Note that `Google Colab <https://colab.research.google.com/>`__ currently does not support ipyleaflet
-(`source <https://github.com/googlecolab/colabtools/issues/60#issuecomment-596225619>`__). Therefore, if you are using geemap with Google Colab, you should use
-`import geemap.eefolium <https://github.com/giswqs/geemap/blob/master/geemap/eefolium.py>`__. If you are using geemap with binder or a local Jupyter notebook server,
-you can use `import geemap <https://github.com/giswqs/geemap/blob/master/geemap/geemap.py>`__, which provides more functionalities for capturing user input (e.g.,
-mouse-clicking and moving).
+
 
 To install **geemap**, run this command in your terminal:
 
@@ -111,6 +104,16 @@ To install the development version from GitHub, run the following command in you
 
 Usage
 -----
+
+**Important note:** A key difference between `ipyleaflet <https://github.com/jupyter-widgets/ipyleaflet>`__ and `folium <https://github.com/python-visualization/folium>`__ is that ipyleaflet is built upon ipywidgets and allows bidirectional
+communication between the front-end and the backend enabling the use of the map to capture user input, while folium is meant for displaying
+static data only (`source <https://blog.jupyter.org/interactive-gis-in-jupyter-with-ipyleaflet-52f9657fa7a>`__).
+Note that `Google Colab <https://colab.research.google.com/>`__ currently does not support ipyleaflet
+(`source <https://github.com/googlecolab/colabtools/issues/60#issuecomment-596225619>`__). Therefore, if you are using geemap with Google Colab, you should use
+`import geemap.eefolium <https://github.com/giswqs/geemap/blob/master/geemap/eefolium.py>`__. If you are using geemap with `binder <https://mybinder.org/>`__ or a local Jupyter notebook server,
+you can use `import geemap <https://github.com/giswqs/geemap/blob/master/geemap/geemap.py>`__, which provides more functionalities for capturing user input (e.g.,
+mouse-clicking and moving).
+
 To create an ipyleaflet-based interactive map:
 
 .. code:: python
@@ -124,8 +127,8 @@ To create a folium-based interactive map:
 
 .. code:: python
 
-  import geemap.eefolium as eemap
-  Map = eemap.Map(center=[40,-100], zoom=4)
+  import geemap.eefolium as emap
+  Map = emap.Map(center=[40,-100], zoom=4)
   Map
 
 
@@ -229,13 +232,13 @@ Launch an interactive notebook with **Google Colab**, **mybinder.org**, or **bin
 The source code for this automated conversion module can be found at `conversion.py`_.
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
-        :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/earthengine_js_to_ipynb.ipynb
+        :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/notebooks/earthengine_js_to_ipynb.ipynb
 
 .. image:: https://mybinder.org/badge_logo.svg
-        :target: https://mybinder.org/v2/gh/giswqs/geemap/master?filepath=examples/earthengine_js_to_ipynb.ipynb
+        :target: https://mybinder.org/v2/gh/giswqs/geemap/master?filepath=examples/notebooks/earthengine_js_to_ipynb.ipynb
 
 .. image:: https://binder.pangeo.io/badge_logo.svg
-        :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/master?filepath=examples/earthengine_js_to_ipynb.ipynb
+        :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/master?filepath=examples/notebooks/earthengine_js_to_ipynb.ipynb
 
 .. code:: python
 
@@ -270,13 +273,13 @@ Interactive mapping using GEE Python API and geemap
 Launch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. Note that **Google Colab** currently does not support ipyleaflet. Therefore, you should use ``import geemap.eefolium`` instead of ``import geemap``.
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
-        :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/geemap_and_folium.ipynb
+        :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/notebooks/geemap_and_folium.ipynb
 
 .. image:: https://mybinder.org/badge_logo.svg
-        :target: https://mybinder.org/v2/gh/giswqs/geemap/master?filepath=examples/geemap_and_earthengine.ipynb
+        :target: https://mybinder.org/v2/gh/giswqs/geemap/master?filepath=examples/notebooks/geemap_and_earthengine.ipynb
 
 .. image:: https://binder.pangeo.io/badge_logo.svg
-        :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/master?filepath=examples/geemap_and_earthengine.ipynb
+        :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/master?filepath=examples/notebooks/geemap_and_earthengine.ipynb
 
 .. code:: python
 
@@ -292,9 +295,9 @@ Launch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. No
         # Checks whether this notebook is running on Google Colab
         try:
                 import google.colab
-                import geemap.eefolium as eemap
+                import geemap.eefolium as emap
         except:
-                import geemap as eemap
+                import geemap as emap
 
         # Authenticates and initializes Earth Engine
         import ee
@@ -306,7 +309,7 @@ Launch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. No
                 ee.Initialize()
 
         # Creates an interactive map
-        Map = eemap.Map(center=[40,-100], zoom=4)
+        Map = emap.Map(center=[40,-100], zoom=4)
 
         # Adds Earth Engine dataset
         image = ee.Image('USGS/SRTMGL1_003')

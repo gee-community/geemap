@@ -444,7 +444,7 @@ def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
         out_dir = in_dir
 
     for in_file in Path(in_dir).rglob('*.js'):
-        out_file = os.path.splitext(in_file)[0] + ".py"
+        out_file = os.path.splitext(in_file)[0] + "_qgis.py"
         out_file = out_file.replace(in_dir, out_dir)
         js_to_python(in_file, out_file, use_qgis, github_repo)
     # print("Output Python script folder: {}".format(out_dir))
@@ -497,8 +497,8 @@ def get_js_examples(out_dir=None):
         str: The folder containing the JavaScript examples.
     """
     pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
-    example_dir = os.path.join(pkg_dir, 'examples')
-    js_dir = os.path.join(example_dir, 'JavaScripts')
+    example_dir = os.path.join(pkg_dir, 'data')
+    js_dir = os.path.join(example_dir, 'javascripts')
 
     files = list(Path(js_dir).rglob('*.js'))
     if out_dir is None:
@@ -526,8 +526,8 @@ def get_nb_template(download_latest=False, out_file=None):
         str: The file path of the template.
     """
     pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
-    example_dir = os.path.join(pkg_dir, 'examples')
-    template_dir = os.path.join(example_dir, 'Template')
+    example_dir = os.path.join(pkg_dir, 'data')
+    template_dir = os.path.join(example_dir, 'template')
     template_file = os.path.join(template_dir, 'template.py')
 
     if out_file is None:
@@ -541,7 +541,7 @@ def get_nb_template(download_latest=False, out_file=None):
         os.makedirs(os.path.dirname(out_file))
 
     if download_latest:
-        template_url = 'https://raw.githubusercontent.com/giswqs/geemap/master/examples/Template/template.py'
+        template_url = 'https://raw.githubusercontent.com/giswqs/geemap/master/examples/template/template.py'
         print("Downloading the latest notebook template from {}".format(template_url))
         urllib.request.urlretrieve(template_url, out_file)   
     elif out_file is not None:
@@ -609,8 +609,8 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
         github_repo (str, optional): GitHub repo name. Defaults to None.
     """    
     if out_file is None:
-        out_file = in_file.replace('.py', '.ipynb')
-    out_py_file = in_file.replace(".py", "_nb.py")
+        out_file = in_file.replace('_qgis', '').replace('.py', '.ipynb')
+    out_py_file = in_file.replace('_qgis', '').replace(".py", "_nb.py")
 
     content = remove_qgis_import(in_file)
     header = template_header(template_file)
@@ -627,7 +627,7 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
         for line in header:
             line = line.replace('giswqs', github_username)
             line = line.replace('earthengine-py-notebooks', github_repo)
-            line = line.replace('Template/template.ipynb', out_ipynb_relative_path)
+            line = line.replace('template/template.ipynb', out_ipynb_relative_path)
 
             new_header.append(line)
         header = new_header
@@ -651,7 +651,7 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
         print('Please install ipynb-py-convert using the following command:\n')
         print('pip install ipynb-py-convert')
 
-    os.remove(out_py_file)
+    # os.remove(out_py_file)
 
 
 def py_to_ipynb_dir(in_dir, template_file, out_dir=None, github_username=None, github_repo=None):
@@ -664,13 +664,17 @@ def py_to_ipynb_dir(in_dir, template_file, out_dir=None, github_username=None, g
         github_username (str, optional): GitHub username. Defaults to None.
         github_repo (str, optional): GitHub repo name. Defaults to None.
     """    
-    files = list(Path(in_dir).rglob('*.py'))
+    files = list(Path(in_dir).rglob('*_qgis.py'))
+
+    if len(files) == 0:
+        files = list(Path(in_dir).rglob('*.py'))
+
     if out_dir is None:
         out_dir = in_dir
 
     for file in files:
         in_file = str(file)
-        out_file = in_file.replace(in_dir, out_dir).replace('.py', '.ipynb')
+        out_file = in_file.replace(in_dir, out_dir).replace('_qgis', '').replace('.py', '.ipynb')
         py_to_ipynb(in_file, template_file, out_file, github_username, github_repo)
 
 
@@ -705,7 +709,7 @@ if __name__ == '__main__':
 
     # Create a temporary working directory
     work_dir = os.path.join(os.path.expanduser('~'), 'geemap')
-    # Get Earth Engine JavaScript examples. There are five examples in the geemap package folder. 
+    # Get Earth Engine JavaScript examples. There are five examples in the geemap package data folder. 
     # Change js_dir to your own folder containing your Earth Engine JavaScripts, such as js_dir = '/path/to/your/js/folder'
     js_dir = get_js_examples(out_dir=work_dir) 
 
