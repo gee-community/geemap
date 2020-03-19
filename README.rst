@@ -34,6 +34,7 @@ A Python package for interactive mapping with Google Earth Engine, ipyleaflet, a
 * GitHub repo: https://github.com/giswqs/geemap
 * Documentation: https://geemap.readthedocs.io
 * PyPI: https://pypi.org/project/geemap/
+* 300+ GEE notebook examples: https://github.com/giswqs/earthengine-py-notebooks
 * Free software: MIT license
 
 
@@ -41,6 +42,7 @@ A Python package for interactive mapping with Google Earth Engine, ipyleaflet, a
 
 - `Features`_
 - `Installation`_
+- `Usage`_
 - `Examples`_
 - `Dependencies`_
 - `Reporting Bugs`_
@@ -53,21 +55,34 @@ Features
 
 * Automatically converts Earth Engine JavaScripts to Python scripts and Jupyter Notebooks.
 * Adds Earth Engine tile layers to ipyleaflet map for interactive mapping.
-* Supports Earth Engine JavaScript API functions in Python, such as ``Map.AddLayer()``, ``Map.setCenter()``, ``Map.centerObject()``, ``Map.setOptions()``.
-* Captures user inputs and query Earth Engine objects.
+* Supports Earth Engine JavaScript API functions in Python, such as ``Map.addLayer()``, ``Map.setCenter()``, ``Map.centerObject()``, ``Map.setOptions()``.
+* Captures user input and query Earth Engine objects.
 * Plots charts based on Earth Engine data.
 
 
 Installation
 ------------
-To install **geemap**  , run this command in your terminal:
+
+The **geemap** Python package is built upon the `ipyleaflet <https://github.com/jupyter-widgets/ipyleaflet>`__ and `folium <https://github.com/python-visualization/folium>`__ packages and
+implements several methods for displaying Earth Engine data layers, such as ``Map.addLayer()``, ``Map.setCenter()``, and ``Map.centerObject()``.
+
+A key difference between folium and ipyleaflet is that ipyleaflet is built upon ipywidgets and allows bidirectional
+communication between the front-end and the backend enabling the use of the map to capture user input, while folium is meant for displaying
+static data only (`source <https://blog.jupyter.org/interactive-gis-in-jupyter-with-ipyleaflet-52f9657fa7a>`__).
+Note that `Google Colab <https://colab.research.google.com/>`__ currently does not support ipyleaflet
+(`source <https://github.com/googlecolab/colabtools/issues/60#issuecomment-596225619>`__). Therefore, if you are using geemap with Google Colab, you should use
+`import geemap.eefolium <https://github.com/giswqs/geemap/blob/master/geemap/eefolium.py>`__. If you are using geemap with binder or a local Jupyter notebook server,
+you can use `import geemap <https://github.com/giswqs/geemap/blob/master/geemap/geemap.py>`__, which provides more functionalities for capturing user input (e.g.,
+mouse-clicking and moving).
+
+To install **geemap**, run this command in your terminal:
 
 .. code:: python
 
   pip install geemap
 
 
-If you have Anaconda_ or Miniconda_ installed on your computer, you can use create conda Python environment to install geemap:
+If you have Anaconda_ or Miniconda_ installed on your computer, you can create a conda Python environment to install geemap:
 
 .. code:: python
 
@@ -76,14 +91,14 @@ If you have Anaconda_ or Miniconda_ installed on your computer, you can use crea
   pip install geemap
 
 
-If you have installed **geemap** before and want to upgrade to the latest version, you can use the following command:
+If you have installed **geemap** before and want to upgrade to the latest version, you can run the following command in your terminal:
 
 .. code:: python
 
-  pip install geemap -
+  pip install -U geemap
   
 
-To install the development version from GitHub, run this command in your terminal:
+To install the development version from GitHub, run the following command in your terminal:
 
 .. code:: python
 
@@ -94,10 +109,115 @@ To install the development version from GitHub, run this command in your termina
 .. _Miniconda: https://docs.conda.io/en/latest/miniconda.html
 
 
+Usage
+-----
+To create an ipyleaflet-based interactive map:
+
+.. code:: python
+
+  import geemap
+  Map = geemap.Map(center=[40,-100], zoom=4)
+  Map
+
+
+To create a folium-based interactive map:
+
+.. code:: python
+
+  import geemap.eefolium as eemap
+  Map = eemap.Map(center=[40,-100], zoom=4)
+  Map
+
+
+To add an Earth Engine data layer to the Map:
+
+.. code:: python
+
+  Map.addLayer(ee_object, vis_params, name, shown, opacity)
+
+
+To center the map view at a given coordinates with the given zoom level:
+
+.. code:: python
+
+  Map.setCenter(lon, lat, zoom)
+
+
+To center the map view around an Earth Engine object:
+
+.. code:: python
+
+  Map.centerObject(ee_object, zoom)
+
+
+To add LayerControl to a folium-based Map:
+
+.. code:: python
+
+  Map.addLayerControl()
+
+
+To add a minimap (overview) to an ipyleaflet-based Map:
+
+.. code:: python
+
+  Map.add_minimap()
+
+
+To add additional basemaps to the Map:
+
+.. code:: python
+
+  Map.add_basemap('Esri Ocean')
+  Map.add_basemap('Esri National Geographic')
+
+
+To add an XYZ tile layer to the Map:
+
+.. code:: python
+
+  url = 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
+  Map.add_tile_layer(url, name='Google Map', attribution='Google')
+
+
+To add a WMS layer to the Map:
+
+.. code:: python
+
+  naip_url = 'https://services.nationalmap.gov/arcgis/services/USGSNAIPImagery/ImageServer/WMSServer?'
+  Map.add_wms_layer(url=naip_url, layers='0', name='NAIP Imagery', format='image/png', shown=True)
+
+
+To convert all GEE JavaScripts in a folder recursively to Python scripts:
+
+.. code:: python
+
+  from geemap.conversion import *
+  js_to_python_dir(in_dir, out_dir)
+
+
+To convert all GEE Python scripts in a folder recursively to Jupyter notebooks:  
+
+.. code:: python
+
+  from geemap.conversion import *
+  template_file = get_nb_template()
+  py_to_ipynb_dir(in_dir, template_file, out_dir)
+
+
+To execute all Jupyter notebooks in a folder recursively and save output cells:  
+
+.. code:: python
+
+  from geemap.conversion import *
+  execute_notebook_dir(in_dir) 
+
+
 Examples
 --------
 
-The following examples require the geemap package, which can be installed using ``pip install geemap``. Check the `Installation`_ section for more information.
+The following examples require the geemap package, which can be installed using ``pip install geemap``. Check the `Installation`_ section for more information. More examples can be found at 
+another repo: `A collection of 300+ Jupyter Python notebook examples for using Google Earth Engine with interactive mapping <https://github.com/giswqs/earthengine-py-notebooks>`__.
 
 - `Converting GEE JavaScripts to Python scripts and Jupyter notebooks`_
 - `Interactive mapping using GEE Python API and geemap`_

@@ -8,29 +8,6 @@ import ipyleaflet
 import os
 from ipyleaflet import *
 
-# # Google basemaps
-# ee_basemaps = {
-#     'ROADMAP': TileLayer(
-#         url='https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-#         name='Google Map',
-#         attribution='Google'
-#     ),
-#     'SATELLITE': TileLayer(
-#         url='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-#         name='Google Satellite',
-#         attribution='Google'
-#     ),
-#     'HYBRID': TileLayer(
-#         url='https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
-#         name='Google Satellite',
-#         attribution='Google'
-#     ),
-#     'TERRAIN': TileLayer(
-#         url='https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
-#         name='Google Terrain',
-#         attribution='Google'
-#     )
-# }
 
 # More WMS basemaps can be found at https://viewer.nationalmap.gov/services/
 ee_basemaps = {
