@@ -20,7 +20,9 @@ import random
 import shutil
 import string
 import subprocess
+import tarfile
 import urllib.request
+import zipfile
 from collections import deque
 from pathlib import Path
 
@@ -726,10 +728,78 @@ def execute_notebook_dir(in_dir):
             execute_notebook(in_file)
 
 
+def download_from_url(url, out_file_name=None, out_dir='.', unzip = True):
+    """Download a file from a URL (e.g., https://github.com/giswqs/whitebox/raw/master/examples/testdata.zip)
+    
+    Args:
+        url (str): The HTTP URL to download.
+        out_file_name (str, optional): The output file name to use. Defaults to None.
+        out_dir (str, optional): The output directory to use. Defaults to '.'.
+        unzip (bool, optional): Whether to unzip the downloaded file if it is a zip file. Defaults to True.
+    """    
+    in_file_name = os.path.basename(url)
+
+    if out_file_name is None:
+       out_file_name = in_file_name
+    out_file_path = os.path.join(os.path.abspath(out_dir), out_file_name)
+
+    print('Downloading {} ...'.format(in_file_name))
+
+    try:
+        urllib.request.urlretrieve(url, out_file_path)           
+    except:
+        print("The URL is invalid. Please double check the URL.")
+        return 
+
+    final_path = out_file_path
+
+    if unzip:
+        # if it is a zip file
+        if '.zip' in out_file_name:       
+            print("Unzipping {} ...".format(out_file_name))
+            with zipfile.ZipFile(out_file_path, "r") as zip_ref:
+                zip_ref.extractall(out_dir)
+            final_path = os.path.join(os.path.abspath(out_dir), out_file_name.replace('.zip', ''))
+
+        # if it is a tar file
+        if '.tar' in out_file_name:                  
+            print("Unzipping {} ...".format(out_file_name))
+            with tarfile.open(out_file_path, "r") as tar_ref:
+                tar_ref.extractall(out_dir)
+            final_path = os.path.join(os.path.abspath(out_dir), out_file_name.replace('.tart', ''))
+            
+    print('Data downloaded to: {}'.format(final_path))
+
+
+# Download file shared via Google Drive
+def download_from_gdrive(gfile_url, file_name, out_dir='.', unzip=True):
+    """Download a file shared via Google Drive 
+       (e.g., https://drive.google.com/file/d/18SUo_HcDGltuWYZs1s7PpOmOq_FvFn04/view?usp=sharing)
+    
+    Args:
+        gfile_url (str): The Google Drive shared file URL
+        file_name (str): The output file name to use.
+        out_dir (str, optional): The output directory. Defaults to '.'.
+        unzip (bool, optional): Whether to unzip the output file if it is a zip file. Defaults to True.
+    """
+    try:
+        from google_drive_downloader import GoogleDriveDownloader as gdd
+    except ImportError:
+        print('GoogleDriveDownloader package not installed. Installing ...')
+        subprocess.check_call(["python", '-m', 'pip', 'install', 'googledrivedownloader'])
+        from google_drive_downloader import GoogleDriveDownloader as gdd
+
+    file_id = gfile_url.split('/')[5]  
+    print('Google Drive file id: {}'.format(file_id))
+
+    dest_path = os.path.join(out_dir, file_name) 
+    gdd.download_file_from_google_drive(file_id, dest_path, True, unzip)
+
+
 
 if __name__ == '__main__':
 
-    # Create a temporary working directory
+     # Create a temporary working directory
     work_dir = os.path.join(os.path.expanduser('~'), 'geemap')
     # Get Earth Engine JavaScript examples. There are five examples in the geemap package data folder. 
     # Change js_dir to your own folder containing your Earth Engine JavaScripts, such as js_dir = '/path/to/your/js/folder'
@@ -746,12 +816,19 @@ if __name__ == '__main__':
     # Execute all Jupyter notebooks in a folder recursively and save the output cells.
     execute_notebook_dir(in_dir=js_dir)
 
+    # # Download a file from a URL.
+    # url = 'https://github.com/giswqs/whitebox/raw/master/examples/testdata1.zip'
+    # download_from_url(url)
 
-    # # parser = argparse.ArgumentParser()
-    # # parser.add_argument('--input', type=str,
-    # #                     help="Path to the input JavaScript file")
-    # # parser.add_argument('--output', type=str,
-    # #                     help="Path to the output Python file")
-    # # args = parser.parse_args()
-    # # js_to_python(args.input, args.output)
+    # # Download a file shared via Google Drive.
+    # g_url = 'https://drive.google.com/file/d/18SUo_HcDGltuWYZs1s7PpOmOq_FvFn04/view?usp=sharing'
+    # download_from_gdrive(g_url, 'testdata.zip')
 
+
+    # # # parser = argparse.ArgumentParser()
+    # # # parser.add_argument('--input', type=str,
+    # # #                     help="Path to the input JavaScript file")
+    # # # parser.add_argument('--output', type=str,
+    # # #                     help="Path to the output Python file")
+    # # # args = parser.parse_args()
+    # # # js_to_python(args.input, args.output)
