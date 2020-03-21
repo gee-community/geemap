@@ -908,22 +908,22 @@ def download_from_gdrive(gfile_url, file_name, out_dir='.', unzip=True):
 
 if __name__ == '__main__':
 
-    #  # Create a temporary working directory
-    # work_dir = os.path.join(os.path.expanduser('~'), 'geemap')
-    # # Get Earth Engine JavaScript examples. There are five examples in the geemap package data folder. 
-    # # Change js_dir to your own folder containing your Earth Engine JavaScripts, such as js_dir = '/path/to/your/js/folder'
-    # js_dir = get_js_examples(out_dir=work_dir) 
+     # Create a temporary working directory
+    work_dir = os.path.join(os.path.expanduser('~'), 'geemap')
+    # Get Earth Engine JavaScript examples. There are five examples in the geemap package data folder. 
+    # Change js_dir to your own folder containing your Earth Engine JavaScripts, such as js_dir = '/path/to/your/js/folder'
+    js_dir = get_js_examples(out_dir=work_dir) 
 
-    # # Convert all Earth Engine JavaScripts in a folder recursively to Python scripts.
-    # js_to_python_dir(in_dir=js_dir, out_dir=js_dir, use_qgis=True)
-    # print("Python scripts saved at: {}".format(js_dir))
+    # Convert all Earth Engine JavaScripts in a folder recursively to Python scripts.
+    js_to_python_dir(in_dir=js_dir, out_dir=js_dir, use_qgis=True)
+    print("Python scripts saved at: {}".format(js_dir))
 
-    #  # Convert all Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
-    # nb_template = get_nb_template()  # Get the notebook template from the package folder.
-    # py_to_ipynb_dir(js_dir, nb_template)
+     # Convert all Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
+    nb_template = get_nb_template()  # Get the notebook template from the package folder.
+    py_to_ipynb_dir(js_dir, nb_template)
 
-    # # Execute all Jupyter notebooks in a folder recursively and save the output cells.
-    # execute_notebook_dir(in_dir=js_dir)
+    # Execute all Jupyter notebooks in a folder recursively and save the output cells.
+    execute_notebook_dir(in_dir=js_dir)
 
     # # # Download a file from a URL.
     # # url = 'https://github.com/giswqs/whitebox/raw/master/examples/testdata.zip'
@@ -932,10 +932,6 @@ if __name__ == '__main__':
     # # # Download a file shared via Google Drive.
     # # g_url = 'https://drive.google.com/file/d/18SUo_HcDGltuWYZs1s7PpOmOq_FvFn04/view?usp=sharing'
     # # download_from_gdrive(g_url, 'testdata.zip')
-
-    # download_gee_app('https://gena.users.earthengine.app/view/basin-selector')
-    update_nb_header('/media/hdd/Dropbox/git/geemap/examples/template/templatexx.ipynb', 'google')
-
 
     # # # parser = argparse.ArgumentParser()
     # # # parser.add_argument('--input', type=str,
