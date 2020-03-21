@@ -14,6 +14,9 @@ geemap
 .. image:: https://img.shields.io/pypi/v/geemap.svg
         :target: https://pypi.python.org/pypi/geemap
 
+.. image:: https://img.shields.io/conda/vn/conda-forge/geemap.svg
+        :target: https://anaconda.org/conda-forge/geemap
+
 .. image:: https://pepy.tech/badge/geemap
         :target: https://pepy.tech/project/geemap
 
@@ -34,7 +37,7 @@ A Python package for interactive mapping with Google Earth Engine, ipyleaflet, a
 * GitHub repo: https://github.com/giswqs/geemap
 * Documentation: https://geemap.readthedocs.io
 * PyPI: https://pypi.org/project/geemap/
-* 300+ GEE notebook examples: https://github.com/giswqs/earthengine-py-notebooks
+* 360+ GEE notebook examples: https://github.com/giswqs/earthengine-py-notebooks
 * Free software: MIT license
 
 
@@ -64,7 +67,7 @@ Installation
 ------------
 
 The **geemap** Python package is built upon the `ipyleaflet <https://github.com/jupyter-widgets/ipyleaflet>`__ and `folium <https://github.com/python-visualization/folium>`__ packages and
-implements several methods for displaying Earth Engine data layers, such as ``Map.addLayer()``, ``Map.setCenter()``, and ``Map.centerObject()``.
+implements several methods for interacting with Earth Engine data layers, such as ``Map.addLayer()``, ``Map.setCenter()``, and ``Map.centerObject()``.
 
 
 
@@ -75,13 +78,13 @@ To install **geemap**, run this command in your terminal:
   pip install geemap
 
 
-If you have Anaconda_ or Miniconda_ installed on your computer, you can create a conda Python environment to install geemap:
+**geemap** is also available on `conda-forge <https://anaconda.org/conda-forge/geemap>`__. If you have Anaconda_ or Miniconda_ installed on your computer, you can create a conda Python environment to install geemap:
 
 .. code:: python
 
   conda create -n gee python
   conda activate gee
-  pip install geemap
+  conda install -c conda-forge geemap
 
 
 If you have installed **geemap** before and want to upgrade to the latest version, you can run the following command in your terminal:

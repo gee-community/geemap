@@ -638,7 +638,7 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
 
         new_header = []
         for index, line in enumerate(header): 
-            if index < 10:  # Change Google Colab and binder URLs
+            if index < 11:  # Change Google Colab and binder URLs
                 line = line.replace('giswqs', github_username)
                 line = line.replace('geemap', github_repo)
                 line = line.replace('examples/template/template.ipynb', out_ipynb_relative_path)
@@ -728,6 +728,65 @@ def execute_notebook_dir(in_dir):
             execute_notebook(in_file)
 
 
+def update_nb_header(in_file, github_username=None, github_repo=None):
+    """Updates notebook header (binder and Google Colab URLs).
+    
+    Args:
+        in_file (str): The input Jupyter notebook.
+        github_username (str, optional): GitHub username. Defaults to None.
+        github_repo (str, optional): GitHub repo name. Defaults to None.
+    """
+    if github_username is None:
+        github_username = 'giswqs'
+    if github_repo is None:
+        github_repo = 'geemap'
+
+    index = in_file.index(github_repo)
+    file_relative_path = in_file[index+len(github_repo)+1:]
+
+    output_lines = []
+
+    with open(in_file) as f:
+        lines = f.readlines()
+        start_line_index = 2
+        start_char_index = lines[start_line_index].index('{')
+        print(start_line_index)
+        matching_line_index, matching_char_index = find_matching_bracket(lines, start_line_index, start_char_index)
+        print(matching_line_index, matching_char_index)
+
+        header = lines[:matching_line_index]
+        content = lines[matching_line_index:]
+
+        new_header = []
+        search_string = ''
+        for line in header:
+            line = line.replace('giswqs', github_username)
+            line = line.replace('geemap', github_repo)
+            if 'master?filepath=' in line:
+                search_string = 'master?filepath='
+                start_index = line.index(search_string) + len(search_string) 
+                end_index = line.index('.ipynb') + 6
+                relative_path = line[start_index:end_index]
+                print(relative_path)
+                line = line.replace(relative_path, file_relative_path)
+            elif '/master/' in line:
+                search_string = '/master/'
+                start_index = line.index(search_string) + len(search_string) 
+                end_index = line.index('.ipynb') + 6
+                relative_path = line[start_index:end_index]
+                print(relative_path)
+                line = line.replace(relative_path, file_relative_path)
+            new_header.append(line)
+
+        output_lines = new_header + content
+
+        with open(in_file, 'w') as f:
+            f.writelines(output_lines)
+
+
+
+
+
 def download_from_url(url, out_file_name=None, out_dir='.', unzip = True):
     """Download a file from a URL (e.g., https://github.com/giswqs/whitebox/raw/master/examples/testdata.zip)
     
@@ -771,6 +830,56 @@ def download_from_url(url, out_file_name=None, out_dir='.', unzip = True):
     print('Data downloaded to: {}'.format(final_path))
 
 
+def download_gee_app(url, out_file=None):
+    """Downloads JavaScript source code from a GEE App
+    
+    Args:
+        url (str): The URL of the GEE App.
+        out_file (str, optional): The output file path for the downloaded JavaScript. Defaults to None.
+    """
+    cwd = os.getcwd()
+    out_file_name = os.path.basename(url) + '.js'
+    out_file_path = os.path.join(cwd, out_file_name)
+    items = url.split('/')
+    items[3] = 'javascript'
+    items[4] = items[4] + '-modules.json'
+    json_url = '/'.join(items)
+    print('The json url: {}'.format(json_url))
+
+    if out_file is not None:
+        out_file_path = out_file
+        if not out_file_path.endswith('js'):
+            out_file_path += '.js'
+
+    out_dir = os.path.dirname(out_file_path)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    json_path = out_file_path + 'on'
+
+    try:
+        urllib.request.urlretrieve(json_url, json_path)           
+    except:
+        print("The URL is invalid. Please double check the URL.")
+        return 
+
+    with open(out_file_path, 'w') as f1:
+
+        with open(json_path) as f2:
+            lines = f2.readlines()
+            for line in lines:
+                # print(line)
+                items = line.split('\\n')
+                for index, item in enumerate(items):
+                    if (index > 0) and (index < (len(items)-1)):
+                        item = item.replace('\\"', '"')
+                        item = item.replace(r'\\', '\n')
+                        item = item.replace('\\r', '')
+                        f1.write(item + '\n')
+    os.remove(json_path)
+    print('The JavaScript is saved at: {}'.format(out_file_path))  
+
+
 # Download file shared via Google Drive
 def download_from_gdrive(gfile_url, file_name, out_dir='.', unzip=True):
     """Download a file shared via Google Drive 
@@ -799,30 +908,33 @@ def download_from_gdrive(gfile_url, file_name, out_dir='.', unzip=True):
 
 if __name__ == '__main__':
 
-     # Create a temporary working directory
-    work_dir = os.path.join(os.path.expanduser('~'), 'geemap')
-    # Get Earth Engine JavaScript examples. There are five examples in the geemap package data folder. 
-    # Change js_dir to your own folder containing your Earth Engine JavaScripts, such as js_dir = '/path/to/your/js/folder'
-    js_dir = get_js_examples(out_dir=work_dir) 
+    #  # Create a temporary working directory
+    # work_dir = os.path.join(os.path.expanduser('~'), 'geemap')
+    # # Get Earth Engine JavaScript examples. There are five examples in the geemap package data folder. 
+    # # Change js_dir to your own folder containing your Earth Engine JavaScripts, such as js_dir = '/path/to/your/js/folder'
+    # js_dir = get_js_examples(out_dir=work_dir) 
 
-    # Convert all Earth Engine JavaScripts in a folder recursively to Python scripts.
-    js_to_python_dir(in_dir=js_dir, out_dir=js_dir, use_qgis=True)
-    print("Python scripts saved at: {}".format(js_dir))
+    # # Convert all Earth Engine JavaScripts in a folder recursively to Python scripts.
+    # js_to_python_dir(in_dir=js_dir, out_dir=js_dir, use_qgis=True)
+    # print("Python scripts saved at: {}".format(js_dir))
 
-     # Convert all Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
-    nb_template = get_nb_template()  # Get the notebook template from the package folder.
-    py_to_ipynb_dir(js_dir, nb_template)
+    #  # Convert all Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
+    # nb_template = get_nb_template()  # Get the notebook template from the package folder.
+    # py_to_ipynb_dir(js_dir, nb_template)
 
-    # Execute all Jupyter notebooks in a folder recursively and save the output cells.
-    execute_notebook_dir(in_dir=js_dir)
+    # # Execute all Jupyter notebooks in a folder recursively and save the output cells.
+    # execute_notebook_dir(in_dir=js_dir)
 
-    # # Download a file from a URL.
-    # url = 'https://github.com/giswqs/whitebox/raw/master/examples/testdata1.zip'
-    # download_from_url(url)
+    # # # Download a file from a URL.
+    # # url = 'https://github.com/giswqs/whitebox/raw/master/examples/testdata.zip'
+    # # download_from_url(url)
 
-    # # Download a file shared via Google Drive.
-    # g_url = 'https://drive.google.com/file/d/18SUo_HcDGltuWYZs1s7PpOmOq_FvFn04/view?usp=sharing'
-    # download_from_gdrive(g_url, 'testdata.zip')
+    # # # Download a file shared via Google Drive.
+    # # g_url = 'https://drive.google.com/file/d/18SUo_HcDGltuWYZs1s7PpOmOq_FvFn04/view?usp=sharing'
+    # # download_from_gdrive(g_url, 'testdata.zip')
+
+    # download_gee_app('https://gena.users.earthengine.app/view/basin-selector')
+    update_nb_header('/media/hdd/Dropbox/git/geemap/examples/template/templatexx.ipynb', 'google')
 
 
     # # # parser = argparse.ArgumentParser()
