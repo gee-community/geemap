@@ -279,6 +279,9 @@ class Map(ipyleaflet.Map):
             bounds = [coordinates[0][::-1], coordinates[2][::-1]]
         else:
             bounds = [[0, 0], [0, 0]]
+        
+        lat = bounds[0][0]
+        lon = bounds[0][1]
 
         self.setCenter(lon, lat, zoom)
 

@@ -750,9 +750,7 @@ def update_nb_header(in_file, github_username=None, github_repo=None):
         lines = f.readlines()
         start_line_index = 2
         start_char_index = lines[start_line_index].index('{')
-        print(start_line_index)
         matching_line_index, matching_char_index = find_matching_bracket(lines, start_line_index, start_char_index)
-        print(matching_line_index, matching_char_index)
 
         header = lines[:matching_line_index]
         content = lines[matching_line_index:]
@@ -767,14 +765,12 @@ def update_nb_header(in_file, github_username=None, github_repo=None):
                 start_index = line.index(search_string) + len(search_string) 
                 end_index = line.index('.ipynb') + 6
                 relative_path = line[start_index:end_index]
-                print(relative_path)
                 line = line.replace(relative_path, file_relative_path)
             elif '/master/' in line:
                 search_string = '/master/'
                 start_index = line.index(search_string) + len(search_string) 
                 end_index = line.index('.ipynb') + 6
                 relative_path = line[start_index:end_index]
-                print(relative_path)
                 line = line.replace(relative_path, file_relative_path)
             new_header.append(line)
 
@@ -784,7 +780,25 @@ def update_nb_header(in_file, github_username=None, github_repo=None):
             f.writelines(output_lines)
 
 
-
+def update_nb_header_dir(in_dir, github_username=None, github_repo=None):
+    """Updates header (binder and Google Colab URLs) of all notebooks in a folder .
+    
+    Args:
+        in_dir (str): The input directory containing Jupyter notebooks.
+        github_username (str, optional): GitHub username. Defaults to None.
+        github_repo (str, optional): GitHub repo name. Defaults to None.
+    """
+    files = list(Path(in_dir).rglob('*.ipynb'))
+    for index, file in enumerate(files):
+        file = str(file)
+        if '.ipynb_checkpoints' in file:
+            del files[index]
+    count = len(files)
+    if files is not None:
+        for index, file in enumerate(files):
+            in_file = str(file)
+            print('Processing {}/{}: {} ...'.format(index+1, count, file))
+            update_nb_header(in_file, github_username, github_repo)
 
 
 def download_from_url(url, out_file_name=None, out_dir='.', unzip = True):
