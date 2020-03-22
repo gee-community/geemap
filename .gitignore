@@ -9,6 +9,7 @@ __pycache__/
 # Distribution / packaging
 md2rst.md
 md2rst.rst
+testing/
 geemap/geemap_v*.py
 .Python
 env/
