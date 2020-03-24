@@ -133,10 +133,27 @@ class Map(ipyleaflet.Map):
 
         super().__init__(**kwargs)
         self.scroll_wheel_zoom= True
-        self.add_control(LayersControl(position='topright'))
-        self.add_control(ScaleControl(position='bottomleft'))
-        self.add_control(FullScreenControl())
-        self.add_control(DrawControl())
+
+        layers = LayersControl(position='topright')       
+        self.add_control(layers)
+        self.layer_control = layers
+
+        scale =ScaleControl(position='bottomleft')
+        self.add_control(scale)
+        self.scale_control = scale
+
+        fullscreen = FullScreenControl()
+        self.add_control(fullscreen)
+        self.fullscreen_control = fullscreen
+
+        draw = DrawControl(marker={'shapeOptions': {'color': '#0000FF'}},
+                 rectangle={'shapeOptions': {'color': '#0000FF'}},
+                 circle={'shapeOptions': {'color': '#0000FF'}},
+                 circlemarker={},
+                 )
+
+        self.add_control(draw)
+        self.draw_control = draw
 
         measure = MeasureControl(
             position='bottomleft',
@@ -144,6 +161,7 @@ class Map(ipyleaflet.Map):
             primary_length_unit='kilometers'
         )
         self.add_control(measure)
+        self.measure_control = measure
 
         self.add_layer(ee_basemaps['HYBRID']) 
 
@@ -482,4 +500,30 @@ def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, o
         visible=shown
     )
     return tile_layer
+
+
+def geojson_to_eegeometry(geo_json, geodesic=True):
+    """Converts a geojson to ee.Geometry()
+    
+    Args:
+        geo_json (dict): A geojson geometry dictionary.
+    
+    Returns:
+        ee_object: An ee.Geometry object
+    """    
+    try:
+        
+        keys = geo_json['properties']['style'].keys()
+        if 'radius' in keys:
+            geom = ee.Geometry(geo_json['geometry'])
+            radius = geo_json['properties']['style']['radius']
+            geom = geom.buffer(radius)  
+            # return geom
+        else:  
+            geom = ee.Geometry(geo_json['geometry'], "", geodesic)
+        # if 'radius' in keys:  # Checks whether it is a circle
+        return geom
+
+    except:
+        print("Could not convert the geojson to ee.Geometry()")
 
