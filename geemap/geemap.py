@@ -5,8 +5,10 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 
 import ee
 import ipyleaflet
+import math
 import os
 from ipyleaflet import *
+import ipywidgets as widgets
 
 
 # More WMS basemaps can be found at https://viewer.nationalmap.gov/services/
@@ -124,15 +126,20 @@ class Map(ipyleaflet.Map):
             kwargs.pop('location')
         if 'center' in kwargs.keys():
             latlon = kwargs['center']
+        else:
+            kwargs['center'] = latlon
 
         if 'zoom_start' in kwargs.keys():
             kwargs['zoom'] = kwargs['zoom_start']
             kwargs.pop('zoom_start')
         if 'zoom' in kwargs.keys():
             zoom = kwargs['zoom']   
+        else:
+            kwargs['zoom'] = zoom
 
         super().__init__(**kwargs)
         self.scroll_wheel_zoom= True
+        self.layout.height = '550px'
 
         layers = LayersControl(position='topright')       
         self.add_control(layers)
@@ -163,7 +170,84 @@ class Map(ipyleaflet.Map):
         self.add_control(measure)
         self.measure_control = measure
 
+        # Adds Inspector widget
+        checkbox = widgets.Checkbox(
+            value=False,
+            description='Use Inspector',
+            indent=False
+        )
+        checkbox.layout.width='18ex'
+        chk_control = WidgetControl(widget=checkbox, position='topright')
+        self.add_control(chk_control)
+
+        self.inspector_checked = checkbox.value
+
+        def checkbox_changed(b):
+            self.inspector_checked = checkbox.value
+            if not self.inspector_checked:
+                output.clear_output()
+        checkbox.observe(checkbox_changed)
+
+        output = widgets.Output(layout={'border': '1px solid black'})
+        output_control = WidgetControl(widget=output, position='topright')
+        self.add_control(output_control)
+
+        self.ee_layers = []
+        self.ee_layer_names = []        
         self.add_layer(ee_basemaps['HYBRID']) 
+
+        def handle_interaction(**kwargs):
+
+            latlon = kwargs.get('coordinates')
+            if kwargs.get('type') == 'click' and self.inspector_checked:
+                self.default_style = {'cursor': 'wait'}
+
+                scale = self.getScale()
+                layers = self.ee_layers
+                
+                with output:
+                
+                    output.clear_output(wait=True)
+                    for index, ee_object in enumerate(layers):
+                        xy = ee.Geometry.Point(latlon[::-1])
+                        layer_names = self.ee_layer_names
+                        layer_name = layer_names[index]
+                        object_type = ee_object.__class__.__name__
+
+                        try:
+                            if isinstance(ee_object, ee.ImageCollection):
+                                ee_object = ee_object.mosaic()
+                            elif isinstance(ee_object, ee.geometry.Geometry) or isinstance(ee_object, ee.feature.Feature) \
+                                or isinstance(ee_object, ee.featurecollection.FeatureCollection):
+                                ee_object = ee.FeatureCollection(ee_object)
+
+                            if isinstance(ee_object, ee.Image):
+                                item = ee_object.reduceRegion(ee.Reducer.first(), xy, scale).getInfo()
+                                b_name = 'band'
+                                if len(item) > 1:
+                                    b_name = 'bands'
+                                print("{}: {} ({} {})".format(layer_name, object_type, len(item), b_name))
+                                keys = item.keys()
+                                for key in keys:
+                                    print("  {}: {}".format(key, item[key]))
+                            elif isinstance(ee_object, ee.FeatureCollection):
+                                filtered = ee_object.filterBounds(xy)
+                                size = filtered.size().getInfo()
+                                if size > 0:
+                                    first = filtered.first()
+                                    props = first.toDictionary().getInfo()
+                                    b_name = 'property'
+                                    if len(props) > 1:
+                                        b_name = 'properties'
+                                    print("{}: Feature ({} {})".format(layer_name, len(props), b_name))
+                                    keys = props.keys()
+                                    for key in keys:
+                                        print("  {}: {}".format(key, props[key]))     
+                        except:
+                            pass                       
+
+                self.default_style = {'cursor': 'crosshair'}    
+        self.on_interaction(handle_interaction)
 
 
     def set_options(self, mapTypeId='HYBRID', styles=None, types=None):
@@ -239,7 +323,7 @@ class Map(ipyleaflet.Map):
         elif isinstance(ee_object, ee.image.Image):
             image = ee_object
         elif isinstance(ee_object, ee.imagecollection.ImageCollection):
-            image = ee_object.median()
+            image = ee_object.mosaic()
 
         map_id_dict = ee.Image(image).getMapId(vis_params)
         tile_layer = ipyleaflet.TileLayer(
@@ -249,6 +333,8 @@ class Map(ipyleaflet.Map):
             opacity=opacity,
             visible=shown
         )
+        self.ee_layers.append(ee_object)
+        self.ee_layer_names.append(name)
         self.add_layer(tile_layer)
 
     addLayer = add_ee_layer
@@ -304,6 +390,20 @@ class Map(ipyleaflet.Map):
         self.setCenter(lon, lat, zoom)
 
     centerObject = center_object
+
+
+    def get_scale(self):
+        """Returns the approximate pixel scale of the current map view, in meters.
+        
+        Returns:
+            float: Map resolution in meters.
+        """
+        zoom_level = self.zoom
+        # Reference: https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
+        resolution = 156543.04 * math.cos(0) / math.pow(2, zoom_level)
+        return resolution
+    
+    getScale = get_scale
 
 
     def add_basemap(self, basemap='HYBRID'):

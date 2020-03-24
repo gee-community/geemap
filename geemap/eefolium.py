@@ -170,12 +170,16 @@ class Map(folium.Map):
             kwargs.pop('center')
         if 'location' in kwargs.keys():
             latlon = kwargs['location']
+        else:
+            kwargs['location'] = latlon
 
         if 'zoom' in kwargs.keys():
             kwargs['zoom_start'] = kwargs['zoom']
             kwargs.pop('zoom')
         if 'zoom_start' in kwargs.keys():
-            zoom = kwargs['zoom_start']        
+            zoom = kwargs['zoom_start']
+        else:
+            kwargs['zoom_start'] = zoom       
 
         super().__init__(**kwargs)
         ee_basemaps['HYBRID'].add_to(self)
