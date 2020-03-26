@@ -116,6 +116,13 @@ class Map(ipyleaflet.Map):
     """    
     def __init__(self, **kwargs):
 
+        # Authenticates Earth Engine and initialize an Earth Engine session 
+        try:
+            ee.Initialize()
+        except Exception as e:
+            ee.Authenticate()
+            ee.Initialize()
+
         # Default map center location and zoom level
         latlon = [40, -100]
         zoom = 4
@@ -137,13 +144,14 @@ class Map(ipyleaflet.Map):
         else:
             kwargs['zoom'] = zoom
 
+        # Inherit the ipyleaflet Map class
         super().__init__(**kwargs)
         self.scroll_wheel_zoom= True
         self.layout.height = '550px'
 
-        layers = LayersControl(position='topright')       
-        self.add_control(layers)
-        self.layer_control = layers
+        layer_control = LayersControl(position='topright')       
+        self.add_control(layer_control)
+        self.layer_control = layer_control
 
         scale =ScaleControl(position='bottomleft')
         self.add_control(scale)
@@ -153,15 +161,6 @@ class Map(ipyleaflet.Map):
         self.add_control(fullscreen)
         self.fullscreen_control = fullscreen
 
-        draw = DrawControl(marker={'shapeOptions': {'color': '#0000FF'}},
-                 rectangle={'shapeOptions': {'color': '#0000FF'}},
-                 circle={'shapeOptions': {'color': '#0000FF'}},
-                 circlemarker={},
-                 )
-
-        self.add_control(draw)
-        self.draw_control = draw
-
         measure = MeasureControl(
             position='bottomleft',
             active_color='orange',
@@ -169,6 +168,41 @@ class Map(ipyleaflet.Map):
         )
         self.add_control(measure)
         self.measure_control = measure
+
+        draw_control = DrawControl(marker={'shapeOptions': {'color': '#0000FF'}},
+                 rectangle={'shapeOptions': {'color': '#0000FF'}},
+                 circle={'shapeOptions': {'color': '#0000FF'}},
+                 circlemarker={},
+                 )
+
+        self.draw_count = 0  # The number of shapes drawn by the user using the DrawControl
+        self.draw_features = [] # The list of Earth Engine Geometry objects converted from geojson
+        self.draw_last_feature = None # The Earth Engine Geometry object converted from the last drawn feature
+
+        # Handles draw events
+        def handle_draw(target, action, geo_json):
+            try:
+                self.draw_count += 1
+                geom = geojson_to_ee(geo_json, False)
+                feature = ee.Feature(geom)
+                self.draw_last_feature = feature
+                self.draw_features.append(feature)
+                collection = ee.FeatureCollection(self.draw_features)
+                
+                if self.draw_count > 1:
+                    self.layers = self.layers[:-1]
+
+                self.addLayer(collection, {'color': 'blue'}, 'Drawing Features', True, 0.5)
+                draw_control.clear()
+            except:
+                print("There was an error creating Earth Engine Feature.")
+                self.draw_count = 0
+                self.draw_features = []
+                self.draw_last_feature = None
+
+        draw_control.on_draw(handle_draw)
+        self.add_control(draw_control)
+        self.draw_control = draw_control
 
         # Adds Inspector widget
         checkbox = widgets.Checkbox(
@@ -602,7 +636,7 @@ def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, o
     return tile_layer
 
 
-def geojson_to_eegeometry(geo_json, geodesic=True):
+def geojson_to_ee(geo_json, geodesic=True):
     """Converts a geojson to ee.Geometry()
     
     Args:
@@ -612,16 +646,19 @@ def geojson_to_eegeometry(geo_json, geodesic=True):
         ee_object: An ee.Geometry object
     """    
     try:
-        
+        geom = None
         keys = geo_json['properties']['style'].keys()
-        if 'radius' in keys:
+        if 'radius' in keys: # Checks whether it is a circle
             geom = ee.Geometry(geo_json['geometry'])
             radius = geo_json['properties']['style']['radius']
             geom = geom.buffer(radius)  
-            # return geom
+        elif geo_json['geometry']['type'] == 'Point':  # Checks whether it is a point
+            coordinates = geo_json['geometry']['coordinates']
+            longitude = coordinates[0]
+            latitude = coordinates[1]
+            geom = ee.Geometry.Point(longitude, latitude)
         else:  
             geom = ee.Geometry(geo_json['geometry'], "", geodesic)
-        # if 'radius' in keys:  # Checks whether it is a circle
         return geom
 
     except:

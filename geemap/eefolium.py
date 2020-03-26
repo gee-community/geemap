@@ -255,7 +255,7 @@ class Map(folium.Map):
         elif isinstance(ee_object, ee.image.Image):
             image = ee_object
         elif isinstance(ee_object, ee.imagecollection.ImageCollection):
-            image = ee_object.median()
+            image = ee_object.mosaic()
 
         map_id_dict = ee.Image(image).getMapId(vis_params)
         folium.raster_layers.TileLayer(
