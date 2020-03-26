@@ -213,6 +213,7 @@ class Map(ipyleaflet.Map):
         checkbox.layout.width='18ex'
         chk_control = WidgetControl(widget=checkbox, position='topright')
         self.add_control(chk_control)
+        self.inspector_control = chk_control
 
         self.inspector_checked = checkbox.value
 
@@ -583,6 +584,29 @@ class Map(ipyleaflet.Map):
 
     addLayerControl = add_layer_control
 
+
+    def split_map(self, left_layer='HYBRID', right_layer='ESRI'):
+        """Adds split map.
+        
+        Args:
+            left_layer (str, optional): The layer tile layer. Defaults to 'HYBRID'.
+            right_layer (str, optional): The right tile layer. Defaults to 'ESRI'.
+        """
+        try:
+            self.remove_control(self.layer_control)
+            self.remove_control(self.inspector_control)
+            if left_layer in ee_basemaps.keys():
+                left_layer = ee_basemaps[left_layer]
+
+            if right_layer in ee_basemaps.keys():
+                right_layer = ee_basemaps[right_layer]
+
+            control = ipyleaflet.SplitMapControl(left_layer=left_layer, right_layer=right_layer)
+            self.add_control(control)
+
+        except:
+            print('The provided layers are invalid!')
+            
 
 def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, opacity=1.0):
     """Converts and Earth Engine layer to ipyleaflet TileLayer.
