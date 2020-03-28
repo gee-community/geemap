@@ -3,8 +3,6 @@
 <table class="ee-notebook-buttons" align="left">
     <td><a target="_blank"  href="https://github.com/giswqs/geemap/tree/master/examples/template/template.ipynb"><img width=32px src="https://www.tensorflow.org/images/GitHub-Mark-32px.png" /> View source on GitHub</a></td>
     <td><a target="_blank"  href="https://nbviewer.jupyter.org/github/giswqs/geemap/blob/master/examples/template/template.ipynb"><img width=26px src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Jupyter_logo.svg/883px-Jupyter_logo.svg.png" />Notebook Viewer</a></td>
-    <td><a target="_blank"  href="https://mybinder.org/v2/gh/giswqs/geemap/master?filepath=examples/template/template.ipynb"><img width=56px src="https://mybinder.org/static/images/logo_social.png" />Run in mybinder.org</a></td>
-    <td><a target="_blank"  href="https://binder.pangeo.io/v2/gh/giswqs/geemap/master?filepath=examples/template/template.ipynb"><img width=60px src="https://i.imgur.com/NiV7heh.png" />Run in binder.pangeo.io</a></td>
     <td><a target="_blank"  href="https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/template/template.ipynb"><img width=26px src="https://www.tensorflow.org/images/colab_logo_32px.png" /> Run in Google Colab</a></td>
 </table>
 """

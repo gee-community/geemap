@@ -7,6 +7,7 @@ import ee
 import ipyleaflet
 import math
 import os
+import webbrowser
 from ipyleaflet import *
 import ipywidgets as widgets
 
@@ -687,4 +688,23 @@ def geojson_to_ee(geo_json, geodesic=True):
 
     except:
         print("Could not convert the geojson to ee.Geometry()")
+
+
+def open_github(subdir=None):
+    """Opens the GitHub repository for this package.
+    
+    Args:
+        subdir (str, optional): Sub-directory of the repository. Defaults to None.
+    """    
+    url = 'https://github.com/giswqs/geemap'
+
+    if subdir == 'source':
+        url += '/tree/master/geemap/'
+    elif subdir == 'examples':
+        url += '/tree/master/examples'
+    elif subdir == 'tutorials':
+        url += '/tree/master/tutorials'
+
+    webbrowser.open_new_tab(url)
+
 

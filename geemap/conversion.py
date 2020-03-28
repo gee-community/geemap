@@ -638,7 +638,7 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
 
         new_header = []
         for index, line in enumerate(header): 
-            if index < 11:  # Change Google Colab and binder URLs
+            if index < 9:  # Change Google Colab and binder URLs
                 line = line.replace('giswqs', github_username)
                 line = line.replace('geemap', github_repo)
                 line = line.replace('examples/template/template.ipynb', out_ipynb_relative_path)

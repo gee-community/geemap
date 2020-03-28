@@ -197,6 +197,13 @@ To add a WMS layer to the Map:
   Map.add_wms_layer(url=naip_url, layers='0', name='NAIP Imagery', format='image/png', shown=True)
 
 
+To create a split Map:
+
+.. code:: python
+
+  Map.split_map(left_layer='HYBRID', right_layer='ESRI')
+
+
 To convert all GEE JavaScripts in a folder recursively to Python scripts:
 
 .. code:: python
@@ -234,17 +241,12 @@ another repo: `A collection of 300+ Jupyter Python notebook examples for using G
 Converting GEE JavaScripts to Python scripts and Jupyter notebooks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Launch an interactive notebook with **Google Colab**, **mybinder.org**, or **binder.pangeo.io**. Keep in mind that the conversion might not always work perfectly. Additional manual changes might still be needed. ``ui`` and ``chart`` are not supported. 
+Launch an interactive notebook with **Google Colab**. Keep in mind that the conversion might not always work perfectly. Additional manual changes might still be needed. ``ui`` and ``chart`` are not supported. 
 The source code for this automated conversion module can be found at `conversion.py`_.
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
         :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/notebooks/earthengine_js_to_ipynb.ipynb
 
-.. image:: https://mybinder.org/badge_logo.svg
-        :target: https://mybinder.org/v2/gh/giswqs/geemap/master?filepath=examples/notebooks/earthengine_js_to_ipynb.ipynb
-
-.. image:: https://binder.pangeo.io/badge_logo.svg
-        :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/master?filepath=examples/notebooks/earthengine_js_to_ipynb.ipynb
 
 .. code:: python
 
@@ -276,16 +278,10 @@ The source code for this automated conversion module can be found at `conversion
 
 Interactive mapping using GEE Python API and geemap
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Launch an interactive notebook with **mybinder.org** or **binder.pangeo.io**. Note that **Google Colab** currently does not support ipyleaflet. Therefore, you should use ``import geemap.eefolium`` instead of ``import geemap``.
+Launch an interactive notebook with **Google Colab**. Note that **Google Colab** currently does not support ipyleaflet. Therefore, you should use ``import geemap.eefolium`` instead of ``import geemap``.
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
         :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/notebooks/geemap_and_folium.ipynb
-
-.. image:: https://mybinder.org/badge_logo.svg
-        :target: https://mybinder.org/v2/gh/giswqs/geemap/master?filepath=examples/notebooks/geemap_and_earthengine.ipynb
-
-.. image:: https://binder.pangeo.io/badge_logo.svg
-        :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/master?filepath=examples/notebooks/geemap_and_earthengine.ipynb
 
 .. code:: python
 
