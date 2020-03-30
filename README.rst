@@ -204,6 +204,14 @@ To create a split Map:
   Map.split_map(left_layer='HYBRID', right_layer='ESRI')
 
 
+To add a marker cluster to the Map:
+
+.. code:: python
+
+  Map.marker_cluster()
+  feature_collection = ee.FeatureCollection(Map.ee_markers)
+
+
 To convert all GEE JavaScripts in a folder recursively to Python scripts:
 
 .. code:: python

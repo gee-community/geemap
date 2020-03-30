@@ -528,6 +528,38 @@ class Map(ipyleaflet.Map):
         self.add_control(minimap_control)
 
 
+    def marker_cluster(self):
+        """Adds a marker cluster to the map and returns a list of ee.Feature, which can be accessed using Map.ee_marker_cluster.
+               
+        Returns:
+            object: a list of ee.Feature
+        """
+        coordinates = []
+        markers = []
+        marker_cluster = MarkerCluster(name="Marker Cluster")
+        self.last_click = []
+        self.all_clicks = []
+        self.ee_markers = []
+        self.add_layer(marker_cluster)
+
+        def handle_interaction(**kwargs):
+            latlon = kwargs.get('coordinates')
+            if kwargs.get('type') == 'click':
+                coordinates.append(latlon)
+                geom = ee.Geometry.Point(latlon[1], latlon[0])
+                feature = ee.Feature(geom)
+                self.ee_markers.append(feature)
+                self.last_click = latlon
+                self.all_clicks = coordinates
+                markers.append(Marker(location=latlon))
+                marker_cluster.markers = markers                
+            elif kwargs.get('type') == 'mousemove':
+                pass
+        # cursor style: https://www.w3schools.com/cssref/pr_class_cursor.asp
+        self.default_style = {'cursor': 'crosshair'}
+        self.on_interaction(handle_interaction)
+
+
     def listening(self, event='click', add_marker=True):
         """Captures user inputs and add markers to the map.
         
