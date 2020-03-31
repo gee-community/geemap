@@ -5,3 +5,4 @@ __email__ = 'giswqs@gmail.com'
 __version__ = '0.5.4'
 
 from .geemap import *
+from .basemaps import ee_basemaps
