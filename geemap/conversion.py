@@ -294,6 +294,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
         list : Python script
 
     """
+    in_file = os.path.abspath(in_file)
     if out_file is None:
         out_file = in_file.replace(".js", ".py")
 
@@ -443,8 +444,14 @@ def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
 
     """
     print('Converting Earth Engine JavaScripts to Python scripts...\n')
+    in_dir = os.path.abspath(in_dir)
     if out_dir is None:
         out_dir = in_dir
+    elif not os.path.exists(out_dir):
+        out_dir = os.path.abspath(out_dir)
+        os.makedirs(out_dir)
+    else:
+        out_dir = os.path.abspath(out_dir)
 
     files = list(Path(in_dir).rglob('*.js'))
 
@@ -477,7 +484,8 @@ def remove_qgis_import(in_file):
     
     Returns:
         list: List of lines  'from ee_plugin import Map' removed.
-    """    
+    """
+    in_file = os.path.abspath(in_file)    
     start_index = 0
     with open(in_file) as f:
         lines = f.readlines()
@@ -614,6 +622,7 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
         github_username (str, optional): GitHub username. Defaults to None.
         github_repo (str, optional): GitHub repo name. Defaults to None.
     """    
+    in_file = os.path.abspath(in_file)
     if out_file is None:
         out_file =  os.path.splitext(in_file)[0].replace('_qgis', '') + '.ipynb'
 
@@ -679,6 +688,7 @@ def py_to_ipynb_dir(in_dir, template_file, out_dir=None, github_username=None, g
     """    
     print('Converting Earth Engine Python scripts to Jupyter notebooks ...\n')
 
+    in_dir = os.path.abspath(in_dir)
     files = []
     qgis_files = list(Path(in_dir).rglob('*_qgis.py'))
     py_files = list(Path(in_dir).rglob('*.py'))
@@ -691,7 +701,11 @@ def py_to_ipynb_dir(in_dir, template_file, out_dir=None, github_username=None, g
     if out_dir is None:
         out_dir = in_dir
     elif not os.path.exists(out_dir):
+        out_dir = os.path.abspath(out_dir)
         os.makedirs(out_dir)
+    else:
+        out_dir = os.path.abspath(out_dir)
+
 
     for index, file in enumerate(files):
         in_file = str(file)
@@ -719,6 +733,7 @@ def execute_notebook_dir(in_dir):
     """
     print('Executing Earth Engine Jupyter notebooks ...\n')
 
+    in_dir = os.path.abspath(in_dir)
     files = list(Path(in_dir).rglob('*.ipynb'))
     count = len(files)
     if files is not None:
