@@ -179,6 +179,7 @@ class Map(ipyleaflet.Map):
         self.draw_count = 0  # The number of shapes drawn by the user using the DrawControl
         self.draw_features = [] # The list of Earth Engine Geometry objects converted from geojson
         self.draw_last_feature = None # The Earth Engine Geometry object converted from the last drawn feature
+        self.draw_layer = None
 
         # Handles draw events
         def handle_draw(target, action, geo_json):
@@ -189,17 +190,22 @@ class Map(ipyleaflet.Map):
                 self.draw_last_feature = feature
                 self.draw_features.append(feature)
                 collection = ee.FeatureCollection(self.draw_features)
+                ee_draw_layer = ee_tile_layer(collection, {'color': 'blue'}, 'Drawing Features', True, 0.5)
                 
-                if self.draw_count > 1:
-                    self.layers = self.layers[:-1]
+                if self.draw_count == 1:
+                    self.add_layer(ee_draw_layer)
+                    self.draw_layer = ee_draw_layer
+                else:
+                    self.substitute_layer(self.draw_layer, ee_draw_layer)
+                    self.draw_layer = ee_draw_layer
 
-                self.addLayer(collection, {'color': 'blue'}, 'Drawing Features', True, 0.5)
                 draw_control.clear()
             except:
                 print("There was an error creating Earth Engine Feature.")
                 self.draw_count = 0
                 self.draw_features = []
                 self.draw_last_feature = None
+                self.draw_layer = None
 
         draw_control.on_draw(handle_draw)
         self.add_control(draw_control)
@@ -703,24 +709,47 @@ def geojson_to_ee(geo_json, geodesic=True):
         ee_object: An ee.Geometry object
     """    
     try:
-        geom = None
-        keys = geo_json['properties']['style'].keys()
-        if 'radius' in keys: # Checks whether it is a circle
-            geom = ee.Geometry(geo_json['geometry'])
-            radius = geo_json['properties']['style']['radius']
-            geom = geom.buffer(radius)  
-        elif geo_json['geometry']['type'] == 'Point':  # Checks whether it is a point
-            coordinates = geo_json['geometry']['coordinates']
-            longitude = coordinates[0]
-            latitude = coordinates[1]
-            geom = ee.Geometry.Point(longitude, latitude)
-        else:  
-            geom = ee.Geometry(geo_json['geometry'], "", geodesic)
-        return geom
+        
+        if geo_json['type'] == 'FeatureCollection':
+            features = ee.FeatureCollection(geo_json['features'])
+            return features
+        elif geo_json['type'] == 'Feature':        
+            geom = None
+            keys = geo_json['properties']['style'].keys()
+            if 'radius' in keys: # Checks whether it is a circle
+                geom = ee.Geometry(geo_json['geometry'])
+                radius = geo_json['properties']['style']['radius']
+                geom = geom.buffer(radius)  
+            elif geo_json['geometry']['type'] == 'Point':  # Checks whether it is a point
+                coordinates = geo_json['geometry']['coordinates']
+                longitude = coordinates[0]
+                latitude = coordinates[1]
+                geom = ee.Geometry.Point(longitude, latitude)
+            else:  
+                geom = ee.Geometry(geo_json['geometry'], "", geodesic)
+            return geom
+        else:
+            print("Could not convert the geojson to ee.Geometry()")
 
     except:
         print("Could not convert the geojson to ee.Geometry()")
 
+
+def ee_to_geojson(ee_object):
+    """Converts Earth Engine object to geojson.
+    
+    Args:
+        ee_object (object): An Earth Engine object.
+    
+    Returns:
+        object: GeoJSON object.
+    """
+    if isinstance(ee_object, ee.geometry.Geometry) or isinstance(ee_object, ee.feature.Feature) or isinstance(ee_object, ee.featurecollection.FeatureCollection):
+        json_object = ee_object.getInfo()
+        return json_object
+    else:
+        print("Could not convert the Earth Engine object to geojson")  
+    
 
 def open_github(subdir=None):
     """Opens the GitHub repository for this package.
