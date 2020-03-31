@@ -96,12 +96,6 @@ ee_basemaps = {
         url='https://services.arcgisonline.com/arcgis/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}',
         attribution='Esri',
         name='Esri Physical Map',
-    ),   
-
-    'Bing VirtualEarth': TileLayer(
-        url='http://ecn.t3.tiles.virtualearth.net/tiles/a{q}.jpeg?g=1',
-        attribution='Microsoft',
-        name='Bing VirtualEarth',
     )
 }
 
