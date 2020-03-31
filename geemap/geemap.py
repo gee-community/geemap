@@ -572,7 +572,7 @@ class Map(ipyleaflet.Map):
         dropdown.observe(on_click, 'value')
         basemap_control = WidgetControl(widget=dropdown, position='topright')
         self.remove_control(self.inspector_control)
-        self.remove_control(self.layer_control)
+        # self.remove_control(self.layer_control)
         self.add_control(basemap_control)
     
             
