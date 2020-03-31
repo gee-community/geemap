@@ -10,94 +10,7 @@ import os
 import webbrowser
 from ipyleaflet import *
 import ipywidgets as widgets
-
-
-# More WMS basemaps can be found at https://viewer.nationalmap.gov/services/
-ee_basemaps = {
-    'ROADMAP': TileLayer(
-        url='https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-        attribution='Google',
-        name='Google Maps'   
-    ),
-
-    'SATELLITE': TileLayer(
-        url='https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-        attribution='Google',
-        name='Google Satellite',
-    ),
-
-    'TERRAIN': TileLayer(
-        url='https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
-        attribution='Google',
-        name='Google Terrain',
-    ),
-
-    'HYBRID': TileLayer(
-        url='https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
-        attribution='Google',
-        name='Google Satellite',
-    ),
-
-    'ESRI': TileLayer(
-        url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        attribution='Esri',
-        name='Esri Satellite',       
-    ),
-
-    'Esri Ocean': TileLayer(
-        url='https://services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}',
-        attribution='Esri',
-        name='Esri Ocean', 
-    ),
-
-    'Esri Satellite': TileLayer(
-        url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        attribution='Esri',
-        name='Esri Satellite',  
-    ),
-
-    'Esri Standard': TileLayer(
-        url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-        attribution='Esri',
-        name='Esri Standard',
-    ),
-
-    'Esri Terrain': TileLayer(
-        url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}',
-        attribution='Esri',
-        name='Esri Terrain',
-    ),
-
-    'Esri Transportation': TileLayer(
-        url='https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',
-        attribution='Esri',
-        name='Esri Transportation',
-    ),
-
-    'Esri Topo World': TileLayer(
-        url='https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
-        attribution='Esri',
-        name='Esri Topo World',
-    ),
-
-    'Esri National Geographic': TileLayer(
-        url='http://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}',
-        attribution='Esri',
-        name='Esri National Geographic',
-    ),     
-
-    'Esri Shaded Relief': TileLayer(
-        url='https://services.arcgisonline.com/arcgis/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
-        attribution='Esri',
-        name='Esri Shaded Relief',      
-    ),   
-
-    'Esri Physical Map': TileLayer(
-        url='https://services.arcgisonline.com/arcgis/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}',
-        attribution='Esri',
-        name='Esri Physical Map',
-    )
-}
+from .basemaps import ee_basemaps
 
 
 class Map(ipyleaflet.Map):
@@ -451,7 +364,7 @@ class Map(ipyleaflet.Map):
         try:
             self.add_layer(ee_basemaps[basemap])
         except:
-            print('Basemap can only be one of the following: {}'.format(', '.join(ee_basemaps.keys())))
+            print('Basemap can only be one of the following:\n  {}'.format('\n  '.join(ee_basemaps.keys())))
 
 
     def add_wms_layer(self, url, layers, name=None, attribution='', format='image/jpeg', transparent=False, opacity=1.0, shown=True):
@@ -639,6 +552,29 @@ class Map(ipyleaflet.Map):
 
         except:
             print('The provided layers are invalid!')
+
+    
+    def basemap_demo(self):
+        """A demo for using geemap basemaps.
+
+        """
+        dropdown = widgets.Dropdown(
+            options=list(ee_basemaps.keys()),
+            value='HYBRID',
+            description='Basemaps'
+        )
+
+        def on_click(change):
+            basemap_name = change['new']
+            old_basemap = self.layers[-1]
+            self.substitute_layer(old_basemap, ee_basemaps[basemap_name])
+        
+        dropdown.observe(on_click, 'value')
+        basemap_control = WidgetControl(widget=dropdown, position='topright')
+        self.remove_control(self.inspector_control)
+        self.remove_control(self.layer_control)
+        self.add_control(basemap_control)
+    
             
 
 def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, opacity=1.0):
