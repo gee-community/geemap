@@ -1,9 +1,11 @@
 language: python
+os:
+  - linux
+  - osx
 python:
-- 3.8
-- 3.7
-- 3.6
-- 3.5
+  - 3.8
+  - 3.7
+  - 3.6
 install: pip install -U tox-travis
 script: tox
 deploy:

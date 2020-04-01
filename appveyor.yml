@@ -1,0 +1,15 @@
+# appveyor.yml
+---
+environment:
+  matrix:
+  - TOXENV: py36
+  - TOXENV: py37
+  - TOXENV: py38
+
+build: off
+
+install:
+- pip install tox
+
+test_script:
+- tox
