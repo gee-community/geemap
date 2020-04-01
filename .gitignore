@@ -10,6 +10,7 @@ __pycache__/
 md2rst.md
 md2rst.rst
 testing/
+paper/
 geemap/geemap_v*.py
 .Python
 env/
