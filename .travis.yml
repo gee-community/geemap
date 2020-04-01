@@ -13,6 +13,7 @@ matrix:
         - pip3 install -U pytest
         - pip3 install codecov
         - pip3 install click
+        - pip3 install .
       script: python3 -m pytest
       after_success: python 3 -m codecov
     - name: "Python 3.8.2 on Windows"
@@ -25,6 +26,7 @@ matrix:
         - pip3 install --upgrade pytest
         - pip3 install codecov
         - pip3 install click
+        - pip3 install .
       env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
 python:
   - 3.8
