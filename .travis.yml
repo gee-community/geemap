@@ -12,8 +12,20 @@ matrix:
         - pip3 install -U pip
         - pip3 install -U pytest
         - pip3 install codecov
+        - pip3 install click
       script: python3 -m pytest
       after_success: python 3 -m codecov
+    - name: "Python 3.8.2 on Windows"
+      os: windows           # Windows 10.0.17134 N/A Build 17134
+      language: shell       # 'language: python' is an error on Travis CI Windows
+      before_install:
+        - choco install python --version 3.8.2
+        - python --version
+        - python -m pip install --upgrade pip
+        - pip3 install --upgrade pytest
+        - pip3 install codecov
+        - pip3 install click
+      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
 python:
   - 3.8
   - 3.7
