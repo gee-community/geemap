@@ -3,9 +3,9 @@ os:
   - linux
 matrix:
   include:      
-    - name: "Python 3.7.3 on macOS 10.13"
+    - name: "Python 3.7.3 on macOS"
       os: osx
-      osx_image: xcode10.2  # Python 3.6.5 running on macOS 10.13
+      osx_image: xcode10.2  # Python 3.7.3 running on macOS https://docs.travis-ci.com/user/reference/osx/
       language: shell  # 'language: python' is an error on Travis CI macOS
       before_install:
         - python3 --version

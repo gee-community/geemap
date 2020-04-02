@@ -140,16 +140,7 @@ ee_basemaps = {
         attribution='MRLC',
         format= 'image/png',
         transparent=True,
-    ),   
-
-    'NLCD 2016 CONUS Land Cover': WMSLayer(
-        url='https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Land_Cover_L48/wms?',
-        layers='NLCD_2016_Land_Cover_L48',
-        name='NLCD 2016 CONUS Land Cover',
-        attribution='MRLC',
-        format= 'image/png',
-        transparent=True,
-    ),   
+    ),     
 
     'NLCD 2013 CONUS Land Cover': WMSLayer(
         url='https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2013_Land_Cover_L48/wms?',

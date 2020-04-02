@@ -26,8 +26,11 @@ geemap
 .. image:: https://readthedocs.org/projects/geemap/badge/?version=latest
         :target: https://geemap.readthedocs.io/en/latest/?badge=latest
 
-.. image:: https://img.shields.io/twitter/follow/giswqs?style=social   
-        :target: https://twitter.com/giswqs
+.. image:: https://readthedocs.org/projects/geemap/badge/?version=latest
+        :target: https://geemap.readthedocs.io/en/latest/?badge=latest
+
+.. image:: https://img.shields.io/badge/YouTube-GEE%20Tutorials-red   
+        :target: https://gishub.org/geemap
 
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
         :target: https://opensource.org/licenses/MIT
@@ -41,6 +44,7 @@ A Python package for interactive mapping with Google Earth Engine, ipyleaflet, a
 * Documentation: https://geemap.readthedocs.io
 * PyPI: https://pypi.org/project/geemap/
 * 360+ GEE notebook examples: https://github.com/giswqs/earthengine-py-notebooks
+* GEE Tutorials on YouTube: https://gishub.org/geemap
 * Free software: MIT license
 
 
@@ -119,6 +123,13 @@ Note that `Google Colab <https://colab.research.google.com/>`__ currently does n
 `import geemap.eefolium <https://github.com/giswqs/geemap/blob/master/geemap/eefolium.py>`__. If you are using geemap with `binder <https://mybinder.org/>`__ or a local Jupyter notebook server,
 you can use `import geemap <https://github.com/giswqs/geemap/blob/master/geemap/geemap.py>`__, which provides more functionalities for capturing user input (e.g.,
 mouse-clicking and moving).
+
+GEE Tutorials on my YouTube channel: https://gishub.org/geemap
+
+|YouTube|
+
+.. |YouTube| image:: https://i.imgur.com/o7BGYbD.png
+   :target: https://gishub.org/geemap
 
 To create an ipyleaflet-based interactive map:
 
