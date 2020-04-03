@@ -8,6 +8,7 @@ import ipyleaflet
 import math
 import os
 import webbrowser
+from bqplot import pyplot as plt
 from ipyleaflet import *
 import ipywidgets as widgets
 from .basemaps import ee_basemaps
@@ -15,16 +16,17 @@ from .basemaps import ee_basemaps
 
 class Map(ipyleaflet.Map):
     """The Map class inherits from ipyleaflet.Map
-    
+
     Args:
         ipyleaflet (object): An ipyleaflet map instance.
 
     Returns:
         object: ipyleaflet map object.
-    """    
+    """
+
     def __init__(self, **kwargs):
 
-        # Authenticates Earth Engine and initialize an Earth Engine session 
+        # Authenticates Earth Engine and initialize an Earth Engine session
         try:
             ee.Initialize()
         except Exception as e:
@@ -48,20 +50,20 @@ class Map(ipyleaflet.Map):
             kwargs['zoom'] = kwargs['zoom_start']
             kwargs.pop('zoom_start')
         if 'zoom' in kwargs.keys():
-            zoom = kwargs['zoom']   
+            zoom = kwargs['zoom']
         else:
             kwargs['zoom'] = zoom
 
         # Inherit the ipyleaflet Map class
         super().__init__(**kwargs)
-        self.scroll_wheel_zoom= True
+        self.scroll_wheel_zoom = True
         self.layout.height = '550px'
 
-        layer_control = LayersControl(position='topright')       
+        layer_control = LayersControl(position='topright')
         self.add_control(layer_control)
         self.layer_control = layer_control
 
-        scale =ScaleControl(position='bottomleft')
+        scale = ScaleControl(position='bottomleft')
         self.add_control(scale)
         self.scale_control = scale
 
@@ -78,15 +80,23 @@ class Map(ipyleaflet.Map):
         self.measure_control = measure
 
         draw_control = DrawControl(marker={'shapeOptions': {'color': '#0000FF'}},
-                 rectangle={'shapeOptions': {'color': '#0000FF'}},
-                 circle={'shapeOptions': {'color': '#0000FF'}},
-                 circlemarker={},
-                 )
+                                   rectangle={'shapeOptions': {
+                                       'color': '#0000FF'}},
+                                   circle={'shapeOptions': {
+                                       'color': '#0000FF'}},
+                                   circlemarker={},
+                                   )
 
         self.draw_count = 0  # The number of shapes drawn by the user using the DrawControl
-        self.draw_features = [] # The list of Earth Engine Geometry objects converted from geojson
-        self.draw_last_feature = None # The Earth Engine Geometry object converted from the last drawn feature
+        # The list of Earth Engine Geometry objects converted from geojson
+        self.draw_features = []
+        # The Earth Engine Geometry object converted from the last drawn feature
+        self.draw_last_feature = None
         self.draw_layer = None
+
+        self.plot_widget = None  # The plot widget for plotting Earth Engine data
+        self.plot_control = None  # The plot control for interacting plotting
+        self.marker = None
 
         # Handles draw events
         def handle_draw(target, action, geo_json):
@@ -97,8 +107,9 @@ class Map(ipyleaflet.Map):
                 self.draw_last_feature = feature
                 self.draw_features.append(feature)
                 collection = ee.FeatureCollection(self.draw_features)
-                ee_draw_layer = ee_tile_layer(collection, {'color': 'blue'}, 'Drawing Features', True, 0.5)
-                
+                ee_draw_layer = ee_tile_layer(
+                    collection, {'color': 'blue'}, 'Drawing Features', True, 0.5)
+
                 if self.draw_count == 1:
                     self.add_layer(ee_draw_layer)
                     self.draw_layer = ee_draw_layer
@@ -124,7 +135,7 @@ class Map(ipyleaflet.Map):
             description='Use Inspector',
             indent=False
         )
-        checkbox.layout.width='18ex'
+        checkbox.layout.width = '18ex'
         chk_control = WidgetControl(widget=checkbox, position='topright')
         self.add_control(chk_control)
         self.inspector_control = chk_control
@@ -142,8 +153,8 @@ class Map(ipyleaflet.Map):
         self.add_control(output_control)
 
         self.ee_layers = []
-        self.ee_layer_names = []        
-        self.add_layer(ee_basemaps['HYBRID']) 
+        self.ee_layer_names = []
+        self.add_layer(ee_basemaps['HYBRID'])
 
         def handle_interaction(**kwargs):
 
@@ -153,9 +164,9 @@ class Map(ipyleaflet.Map):
 
                 scale = self.getScale()
                 layers = self.ee_layers
-                
+
                 with output:
-                
+
                     output.clear_output(wait=True)
                     for index, ee_object in enumerate(layers):
                         xy = ee.Geometry.Point(latlon[::-1])
@@ -167,15 +178,17 @@ class Map(ipyleaflet.Map):
                             if isinstance(ee_object, ee.ImageCollection):
                                 ee_object = ee_object.mosaic()
                             elif isinstance(ee_object, ee.geometry.Geometry) or isinstance(ee_object, ee.feature.Feature) \
-                                or isinstance(ee_object, ee.featurecollection.FeatureCollection):
+                                    or isinstance(ee_object, ee.featurecollection.FeatureCollection):
                                 ee_object = ee.FeatureCollection(ee_object)
 
                             if isinstance(ee_object, ee.Image):
-                                item = ee_object.reduceRegion(ee.Reducer.first(), xy, scale).getInfo()
+                                item = ee_object.reduceRegion(
+                                    ee.Reducer.first(), xy, scale).getInfo()
                                 b_name = 'band'
                                 if len(item) > 1:
                                     b_name = 'bands'
-                                print("{}: {} ({} {})".format(layer_name, object_type, len(item), b_name))
+                                print("{}: {} ({} {})".format(
+                                    layer_name, object_type, len(item), b_name))
                                 keys = item.keys()
                                 for key in keys:
                                     print("  {}: {}".format(key, item[key]))
@@ -188,16 +201,17 @@ class Map(ipyleaflet.Map):
                                     b_name = 'property'
                                     if len(props) > 1:
                                         b_name = 'properties'
-                                    print("{}: Feature ({} {})".format(layer_name, len(props), b_name))
+                                    print("{}: Feature ({} {})".format(
+                                        layer_name, len(props), b_name))
                                     keys = props.keys()
                                     for key in keys:
-                                        print("  {}: {}".format(key, props[key]))     
+                                        print("  {}: {}".format(
+                                            key, props[key]))
                         except:
-                            pass                       
+                            pass
 
-                self.default_style = {'cursor': 'crosshair'}    
+                self.default_style = {'cursor': 'crosshair'}
         self.on_interaction(handle_interaction)
-
 
     def set_options(self, mapTypeId='HYBRID', styles=None, types=None):
         """Adds Google basemap and controls to the ipyleaflet map.
@@ -226,14 +240,14 @@ class Map(ipyleaflet.Map):
         try:
             self.add_layer(ee_basemaps[mapTypeId])
         except:
-            print('Google basemaps can only be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN".')
+            print(
+                'Google basemaps can only be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN".')
 
     setOptions = set_options
 
-
     def add_ee_layer(self, ee_object, vis_params={}, name=None, shown=True, opacity=1.0):
         """Adds a given EE object to the map as a layer.
-        
+
         Args:
             ee_object (Collection|Feature|Image|MapId): The object to add to the map.
             vis_params (dict, optional): The visualization parameters. Defaults to {}.
@@ -288,25 +302,23 @@ class Map(ipyleaflet.Map):
 
     addLayer = add_ee_layer
 
-
     def set_center(self, lon, lat, zoom=None):
         """Centers the map view at a given coordinates with the given zoom level.
-        
+
         Args:
             lon (float): The longitude of the center, in degrees.
             lat (float): The latitude of the center, in degrees.
             zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.
-        """    
+        """
         self.center = (lat, lon)
         if zoom is not None:
             self.zoom = zoom
 
     setCenter = set_center
 
-
     def center_object(self, ee_object, zoom=None):
         """Centers the map view on a given object.
-        
+
         Args:
             ee_object (Element|Geometry): An Earth Engine object to center on - a geometry, image or feature.
             zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.
@@ -332,7 +344,7 @@ class Map(ipyleaflet.Map):
             bounds = [coordinates[0][::-1], coordinates[2][::-1]]
         else:
             bounds = [[0, 0], [0, 0]]
-        
+
         lat = bounds[0][0]
         lon = bounds[0][1]
 
@@ -340,10 +352,9 @@ class Map(ipyleaflet.Map):
 
     centerObject = center_object
 
-
     def get_scale(self):
         """Returns the approximate pixel scale of the current map view, in meters.
-        
+
         Returns:
             float: Map resolution in meters.
         """
@@ -351,25 +362,24 @@ class Map(ipyleaflet.Map):
         # Reference: https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
         resolution = 156543.04 * math.cos(0) / math.pow(2, zoom_level)
         return resolution
-    
-    getScale = get_scale
 
+    getScale = get_scale
 
     def add_basemap(self, basemap='HYBRID'):
         """Adds a basemap to the map.
-        
+
         Args:
             basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'HYBRID'.
-        """        
+        """
         try:
             self.add_layer(ee_basemaps[basemap])
         except:
-            print('Basemap can only be one of the following:\n  {}'.format('\n  '.join(ee_basemaps.keys())))
-
+            print('Basemap can only be one of the following:\n  {}'.format(
+                '\n  '.join(ee_basemaps.keys())))
 
     def add_wms_layer(self, url, layers, name=None, attribution='', format='image/jpeg', transparent=False, opacity=1.0, shown=True):
         """Add a WMS layer to the map.
-        
+
         Args:
             url (str): The URL of the WMS web service.
             layers (str): Comma-separated list of WMS layers to show. 
@@ -399,10 +409,9 @@ class Map(ipyleaflet.Map):
         except:
             print("Failed to add the specified WMS TileLayer.")
 
-
     def add_tile_layer(self, url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', name=None, attribution='', opacity=1.0, shown=True):
         """Adds a TileLayer to the map.
-        
+
         Args:
             url (str, optional): The URL of the tile layer. Defaults to 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'.
             name (str, optional): The layer name to use for the layer. Defaults to None.
@@ -422,10 +431,9 @@ class Map(ipyleaflet.Map):
         except:
             print("Failed to add the specified TileLayer.")
 
-
     def add_minimap(self, zoom=5, position="bottomright"):
         """Adds a minimap (overview) to the ipyleaflet map.
-        
+
         Args:
             zoom (int, optional): Initial map zoom level. Defaults to 5.
             position (str, optional): Position of the minimap. Defaults to "bottomright".
@@ -440,10 +448,9 @@ class Map(ipyleaflet.Map):
         minimap_control = WidgetControl(widget=minimap, position=position)
         self.add_control(minimap_control)
 
-
     def marker_cluster(self):
         """Adds a marker cluster to the map and returns a list of ee.Feature, which can be accessed using Map.ee_marker_cluster.
-               
+
         Returns:
             object: a list of ee.Feature
         """
@@ -465,21 +472,198 @@ class Map(ipyleaflet.Map):
                 self.last_click = latlon
                 self.all_clicks = coordinates
                 markers.append(Marker(location=latlon))
-                marker_cluster.markers = markers                
+                marker_cluster.markers = markers
             elif kwargs.get('type') == 'mousemove':
                 pass
         # cursor style: https://www.w3schools.com/cssref/pr_class_cursor.asp
         self.default_style = {'cursor': 'crosshair'}
         self.on_interaction(handle_interaction)
 
+    def plot_xy(self, x=None, y=None, plot_type=None, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
+
+        if self.plot_widget is not None:
+            plot_widget = self.plot_widget
+        else:
+            plot_widget = widgets.Output(layout={'border': '1px solid black'})
+            plot_control = WidgetControl(widget=plot_widget, position=position, min_width=min_width,
+                                         max_width=max_width, min_height=min_height, max_height=max_height)
+            self.plot_widget = plot_widget
+            self.plot_control = plot_control
+            self.add_control(plot_control)
+
+        with plot_widget:
+
+            fig = plt.figure(1, **kwargs)
+            if max_width is not None:
+                fig.layout.width = str(max_width) + 'px'
+            if max_height is not None:
+                fig.layout.height = str(max_height) + 'px'
+
+            plot_widget.clear_output(wait=True)
+            plt.clear()
+
+            if plot_type is None:
+                plt.plot(x, y, **kwargs)
+            elif plot_type == 'bar':
+                plt.bar(x, y, **kwargs)
+            elif plot_type == 'scatter':
+                plt.scatter(x, y, **kwargs)
+            elif plot_type == 'hist':
+                plt.hist(y, **kwargs)
+            plt.show()
+
+    def plot_xy_demo(self, iterations=20, plot_type=None):
+        import numpy as np
+        import time
+
+        image = ee.Image('LE7_TOA_5YEAR/1999_2003').select([0, 1, 2, 3, 4, 6])
+        self.addLayer(
+            image, {'bands': ['B4', 'B3', 'B2'], 'gamma': 1.4}, "LE7_TOA_5YEAR/1999_2003")
+        self.setCenter(-50.078877, 25.190030, 3)
+        band_names = image.bandNames().getInfo()
+        band_count = len(band_names)
+
+        latitudes = np.random.uniform(30, 48, size=iterations)
+        longitudes = np.random.uniform(-121, -76, size=iterations)
+
+        marker = Marker(location=(0, 0))
+        self.add_layer(marker)
+
+        try:
+            for i in range(iterations):
+
+                plot_type = None
+                if i % 3 == 0:
+                    plot_type = 'bar'
+
+                coordinate = ee.Geometry.Point([longitudes[i], latitudes[i]])
+                dict_values = image.sample(
+                    coordinate).first().toDictionary().getInfo()
+                band_values = list(dict_values.values())
+                title = '{}/{}: Spectral signature at ({}, {})'.format(i+1, iterations,
+                        round(latitudes[i], 2), round(longitudes[i], 2))
+                marker.location = (latitudes[i], longitudes[i])
+                self.plot_xy(band_names, band_values, plot_type=plot_type,
+                             max_width=500, title=title, marker='circle')
+                time.sleep(0.5)
+        except:
+            pass
+
+    def plot(self, ee_object=None, x=None, y=None, plot_type=None, overlay=True, position='bottomright', add_marker=True, **kwargs):
+
+        # coordinates = []
+        # markers = []
+        # marker_cluster = MarkerCluster(name="Marker Cluster")
+        # self.last_click = []
+        # self.all_clicks = []
+        # if add_marker:
+        #     self.add_layer(marker_cluster)
+
+        # def handle_interaction(**kwargs):
+        #     latlon = kwargs.get('coordinates')
+
+        #     if kwargs.get('type') == 'click':
+        #         coordinates.append(latlon)
+        #         self.last_click = latlon
+        #         self.all_clicks = coordinates
+        #         if add_marker:
+        #             markers.append(Marker(location=latlon))
+        #             marker_cluster.markers = markers
+        #     elif kwargs.get('type') == 'mousemove':
+        #         pass
+        # # cursor style: https://www.w3schools.com/cssref/pr_class_cursor.asp
+        # self.default_style = {'cursor': 'crosshair'}
+        # self.on_interaction(handle_interaction)
+
+        if self.plot_control is None:
+            plot_output = widgets.Output(layout={'border': '1px solid black'})
+            plot_control = WidgetControl(
+                widget=plot_output, position=position, max_width=500)
+            self.plot_control = plot_control
+            self.add_control(plot_control)
+
+        # figure = plt.figure(1, **kwargs)
+        figure = plt.figure(1, title='Line Chart')
+
+        if (ee_object is None) and (x is not None) and (y is not None):
+            print('yes')
+            print(plot_output)
+            print(x)
+            print(y)
+            with plot_output:
+                plot_output.clear_output(wait=True)
+                plt.plot(x, y)
+                plt.show()
+
+        def handle_interaction(**kwargs):
+
+            latlon = kwargs.get('coordinates')
+            if kwargs.get('type') == 'click':
+                self.default_style = {'cursor': 'wait'}
+
+                scale = self.getScale()
+                layers = self.ee_layers
+
+                with plot_output:
+
+                    plot_output.clear_output(wait=True)
+                    for index, ee_object in enumerate(layers):
+                        xy = ee.Geometry.Point(latlon[::-1])
+                        layer_names = self.ee_layer_names
+                        layer_name = layer_names[index]
+                        object_type = ee_object.__class__.__name__
+
+                        try:
+                            if isinstance(ee_object, ee.ImageCollection):
+                                ee_object = ee_object.mosaic()
+                            elif isinstance(ee_object, ee.geometry.Geometry) or isinstance(ee_object, ee.feature.Feature) \
+                                    or isinstance(ee_object, ee.featurecollection.FeatureCollection):
+                                ee_object = ee.FeatureCollection(ee_object)
+
+                            if isinstance(ee_object, ee.Image):
+                                item = ee_object.reduceRegion(
+                                    ee.Reducer.first(), xy, scale).getInfo()
+                                x = range(1, len(list(item.keys())))
+                                y = list(item.values())
+                                # print(x)
+                                # print(y)
+                                plt.plot(x, y)
+                                plt.show()
+                                # b_name = 'band'
+                                # if len(item) > 1:
+                                #     b_name = 'bands'
+                                # print("{}: {} ({} {})".format(layer_name, object_type, len(item), b_name))
+                                # keys = item.keys()
+                                # for key in keys:
+                                #     print("  {}: {}".format(key, item[key]))
+                            elif isinstance(ee_object, ee.FeatureCollection):
+                                filtered = ee_object.filterBounds(xy)
+                                size = filtered.size().getInfo()
+                                if size > 0:
+                                    first = filtered.first()
+                                    props = first.toDictionary().getInfo()
+                                    b_name = 'property'
+                                    if len(props) > 1:
+                                        b_name = 'properties'
+                                    print("{}: Feature ({} {})".format(
+                                        layer_name, len(props), b_name))
+                                    keys = props.keys()
+                                    for key in keys:
+                                        print("  {}: {}".format(
+                                            key, props[key]))
+                        except:
+                            pass
+
+                self.default_style = {'cursor': 'crosshair'}
+        self.on_interaction(handle_interaction)
 
     def listening(self, event='click', add_marker=True):
         """Captures user inputs and add markers to the map.
-        
+
         Args:
             event (str, optional): [description]. Defaults to 'click'.
             add_marker (bool, optional): If True, add markers to the map. Defaults to True.
-        
+
         Returns:
             object: a marker cluster.
         """
@@ -509,31 +693,29 @@ class Map(ipyleaflet.Map):
         # cursor style: https://www.w3schools.com/cssref/pr_class_cursor.asp
         self.default_style = {'cursor': 'crosshair'}
         self.on_interaction(handle_interaction)
-        
+
     def set_control_visibility(self, layerControl=True, fullscreenControl=True, latLngPopup=True):
-            """Sets the visibility of the controls on the map.
-            
-            Args:
-                layerControl (bool, optional): Whether to show the control that allows the user to toggle layers on/off. Defaults to True.
-                fullscreenControl (bool, optional): Whether to show the control that allows the user to make the map full-screen. Defaults to True.
-                latLngPopup (bool, optional): Whether to show the control that pops up the Lat/lon when the user clicks on the map. Defaults to True.
-            """        
-            pass
+        """Sets the visibility of the controls on the map.
+
+        Args:
+            layerControl (bool, optional): Whether to show the control that allows the user to toggle layers on/off. Defaults to True.
+            fullscreenControl (bool, optional): Whether to show the control that allows the user to make the map full-screen. Defaults to True.
+            latLngPopup (bool, optional): Whether to show the control that pops up the Lat/lon when the user clicks on the map. Defaults to True.
+        """
+        pass
 
     setControlVisibility = set_control_visibility
 
-
     def add_layer_control(self):
         """Adds layer basemap to the map.
-        """        
+        """
         pass
 
     addLayerControl = add_layer_control
 
-
     def split_map(self, left_layer='HYBRID', right_layer='ESRI'):
         """Adds split map.
-        
+
         Args:
             left_layer (str, optional): The layer tile layer. Defaults to 'HYBRID'.
             right_layer (str, optional): The right tile layer. Defaults to 'ESRI'.
@@ -547,13 +729,13 @@ class Map(ipyleaflet.Map):
             if right_layer in ee_basemaps.keys():
                 right_layer = ee_basemaps[right_layer]
 
-            control = ipyleaflet.SplitMapControl(left_layer=left_layer, right_layer=right_layer)
+            control = ipyleaflet.SplitMapControl(
+                left_layer=left_layer, right_layer=right_layer)
             self.add_control(control)
 
         except:
             print('The provided layers are invalid!')
 
-    
     def basemap_demo(self):
         """A demo for using geemap basemaps.
 
@@ -568,18 +750,17 @@ class Map(ipyleaflet.Map):
             basemap_name = change['new']
             old_basemap = self.layers[-1]
             self.substitute_layer(old_basemap, ee_basemaps[basemap_name])
-        
+
         dropdown.observe(on_click, 'value')
         basemap_control = WidgetControl(widget=dropdown, position='topright')
         self.remove_control(self.inspector_control)
         # self.remove_control(self.layer_control)
         self.add_control(basemap_control)
-    
-            
+
 
 def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, opacity=1.0):
     """Converts and Earth Engine layer to ipyleaflet TileLayer.
-    
+
     Args:
         ee_object (Collection|Feature|Image|MapId): The object to add to the map.
         vis_params (dict, optional): The visualization parameters. Defaults to {}.
@@ -631,31 +812,31 @@ def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, o
 
 def geojson_to_ee(geo_json, geodesic=True):
     """Converts a geojson to ee.Geometry()
-    
+
     Args:
         geo_json (dict): A geojson geometry dictionary.
-    
+
     Returns:
         ee_object: An ee.Geometry object
-    """    
+    """
     try:
-        
+
         if geo_json['type'] == 'FeatureCollection':
             features = ee.FeatureCollection(geo_json['features'])
             return features
-        elif geo_json['type'] == 'Feature':        
+        elif geo_json['type'] == 'Feature':
             geom = None
             keys = geo_json['properties']['style'].keys()
-            if 'radius' in keys: # Checks whether it is a circle
+            if 'radius' in keys:  # Checks whether it is a circle
                 geom = ee.Geometry(geo_json['geometry'])
                 radius = geo_json['properties']['style']['radius']
-                geom = geom.buffer(radius)  
+                geom = geom.buffer(radius)
             elif geo_json['geometry']['type'] == 'Point':  # Checks whether it is a point
                 coordinates = geo_json['geometry']['coordinates']
                 longitude = coordinates[0]
                 latitude = coordinates[1]
                 geom = ee.Geometry.Point(longitude, latitude)
-            else:  
+            else:
                 geom = ee.Geometry(geo_json['geometry'], "", geodesic)
             return geom
         else:
@@ -667,10 +848,10 @@ def geojson_to_ee(geo_json, geodesic=True):
 
 def ee_to_geojson(ee_object):
     """Converts Earth Engine object to geojson.
-    
+
     Args:
         ee_object (object): An Earth Engine object.
-    
+
     Returns:
         object: GeoJSON object.
     """
@@ -678,15 +859,15 @@ def ee_to_geojson(ee_object):
         json_object = ee_object.getInfo()
         return json_object
     else:
-        print("Could not convert the Earth Engine object to geojson")  
-    
+        print("Could not convert the Earth Engine object to geojson")
+
 
 def open_github(subdir=None):
     """Opens the GitHub repository for this package.
-    
+
     Args:
         subdir (str, optional): Sub-directory of the repository. Defaults to None.
-    """    
+    """
     url = 'https://github.com/giswqs/geemap'
 
     if subdir == 'source':
@@ -697,5 +878,3 @@ def open_github(subdir=None):
         url += '/tree/master/tutorials'
 
     webbrowser.open_new_tab(url)
-
-
