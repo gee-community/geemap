@@ -32,6 +32,9 @@ geemap
 .. image:: https://img.shields.io/badge/YouTube-GEE%20Tutorials-red   
         :target: https://gishub.org/geemap
 
+.. image:: https://img.shields.io/twitter/follow/giswqs?style=social   	.. image:: https://readthedocs.org/projects/geemap/badge/?version=latest
+        :target: https://twitter.com/giswqs
+
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
         :target: https://opensource.org/licenses/MIT
 
@@ -124,11 +127,11 @@ Note that `Google Colab <https://colab.research.google.com/>`__ currently does n
 you can use `import geemap <https://github.com/giswqs/geemap/blob/master/geemap/geemap.py>`__, which provides more functionalities for capturing user input (e.g.,
 mouse-clicking and moving).
 
-GEE Tutorials on my YouTube channel: https://gishub.org/geemap
+More GEE Tutorials are available on my `YouTube channel <https://gishub.org/geemap>`__.
 
 |YouTube|
 
-.. |YouTube| image:: https://i.imgur.com/o7BGYbD.png
+.. |YouTube| image:: https://i.imgur.com/qIGmd0L.png
    :target: https://gishub.org/geemap
 
 To create an ipyleaflet-based interactive map:
