@@ -25,7 +25,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 2. [Using basemaps in geemap and ipyleaflet for interactive mapping with Google Earth Engine](#using-basemaps-in-geemap-and-ipyleaflet-for-interactive-mapping-with-google-earth-engine)
 3. [Introducing the Inspector tool for Earth Engine Python API](#introducing-the-inspector-tool-for-earth-engine-python-api)
 4. [Creating a split-panel map for visualizing Earth Engine data](#creating-a-split-panel-map-for-visualizing-earth-engine-data)
-5. [Using drawing tools to interactive with Earth Engine data](#using-drawing-tools-to-interactive-with-earth-engine-data)
+5. [Using drawing tools to interact with Earth Engine data](#using-drawing-tools-to-interact-with-earth-engine-data)
 6. [Creating an interactive map with a marker cluster](#creating-an-interactive-map-with-a-marker-cluster)
 7. [Converting data formats between GeoJSON and Earth Engine](#converting-data-formats-between-geojson-and-earth-engine)
 8. [Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks](#automated-conversion-from-earth-engine-javascripts-to-python-scripts-and-jupyter-notebooks)
@@ -46,7 +46,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 
 ![Split panel](https://i.imgur.com/kql7pC3.gif)
 
-### Using drawing tools to interactive with Earth Engine data
+### Using drawing tools to interact with Earth Engine data
 
 ![Drawing tools](https://i.imgur.com/Lm5pDUr.gif)
 

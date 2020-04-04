@@ -96,7 +96,12 @@ class Map(ipyleaflet.Map):
 
         self.plot_widget = None  # The plot widget for plotting Earth Engine data
         self.plot_control = None  # The plot control for interacting plotting
-        self.marker = None
+        self.random_marker = None
+
+        self.ee_layers = []
+        self.ee_layer_names = []
+        self.ee_raster_layers = []
+        self.ee_raster_layer_names = []
 
         # Handles draw events
         def handle_draw(target, action, geo_json):
@@ -118,7 +123,8 @@ class Map(ipyleaflet.Map):
                     self.draw_layer = ee_draw_layer
 
                 draw_control.clear()
-            except:
+            except Exception as e:
+                print(e)
                 print("There was an error creating Earth Engine Feature.")
                 self.draw_count = 0
                 self.draw_features = []
@@ -129,31 +135,83 @@ class Map(ipyleaflet.Map):
         self.add_control(draw_control)
         self.draw_control = draw_control
 
+        # Dropdown widget for plotting
+        self.plot_dropdown_control = None
+        self.plot_dropdown = None
+
+        # plot_dropdown = widgets.Dropdown(
+        #     options=list(self.ee_raster_layer_names),
+        #     # value='EE Layer',
+        #     # description='Layer'
+        # )
+        # plot_dropdown.layout.width = '18ex'
+        # self.plot_dropdown = plot_dropdown
+
+        # def on_click(change):
+        #     layer_name = change['new']
+        #     layer_index = self.ee_raster_layer_names.index(layer_name)
+        #     if layer_index != -1:
+        #         ee_object = self.ee_raster_layers[layer_index]
+        #         # print(ee_object)
+        #         self.plot(ee_object)
+
+        # plot_dropdown.observe(on_click, 'value')
+        # plot_dropdown_control = WidgetControl(widget=plot_dropdown, position='topright')
+        # self.plot_dropdown_control = plot_dropdown_control
+
         # Adds Inspector widget
-        checkbox = widgets.Checkbox(
+        inspector_checkbox = widgets.Checkbox(
             value=False,
             description='Use Inspector',
-            indent=False
+            indent=False, 
+            layout=widgets.Layout(height='18px')
         )
-        checkbox.layout.width = '18ex'
-        chk_control = WidgetControl(widget=checkbox, position='topright')
+        inspector_checkbox.layout.width = '18ex'
+
+        # Adds Plot widget
+        plot_checkbox = widgets.Checkbox(
+            value=False,
+            description='Use Plotting',
+            indent=False, 
+        )
+        plot_checkbox.layout.width = '18ex'
+        self.plot_checkbox = plot_checkbox
+
+        vb = widgets.VBox(children = [inspector_checkbox, plot_checkbox])
+
+        chk_control = WidgetControl(widget=vb, position='topright')
         self.add_control(chk_control)
         self.inspector_control = chk_control
 
-        self.inspector_checked = checkbox.value
+        self.inspector_checked = inspector_checkbox.value
+        self.plot_checked = plot_checkbox.value
 
-        def checkbox_changed(b):
-            self.inspector_checked = checkbox.value
+        def inspect_chk_changed(b):
+            self.inspector_checked = inspector_checkbox.value
             if not self.inspector_checked:
                 output.clear_output()
-        checkbox.observe(checkbox_changed)
+        inspector_checkbox.observe(inspect_chk_changed)
 
         output = widgets.Output(layout={'border': '1px solid black'})
         output_control = WidgetControl(widget=output, position='topright')
         self.add_control(output_control)
 
-        self.ee_layers = []
-        self.ee_layer_names = []
+        # def plot_chk_changed(button):
+        #     self.plot_checked = plot_checkbox.value
+        #     if self.plot_checked and plot_dropdown_control not in self.controls:
+        #         plot_dropdown.options = list(self.ee_raster_layer_names)
+        #         self.add_control(plot_dropdown_control)
+        #     # elif not self.plot_checked:
+        #     #     if plot_dropdown_control in self.controls:
+        #     #         self.remove_control(plot_dropdown_control)
+        #     #     if self.plot_control in self.controls:
+        #     #         self.remove_control(self.plot_control)
+        #     #     if self.plot_widget is not None:
+        #     #         plot_widget = self.plot_widget
+        #     #         del plot_widget
+
+        # plot_checkbox.observe(plot_chk_changed)       
+
         self.add_layer(ee_basemaps['HYBRID'])
 
         def handle_interaction(**kwargs):
@@ -207,11 +265,12 @@ class Map(ipyleaflet.Map):
                                     for key in keys:
                                         print("  {}: {}".format(
                                             key, props[key]))
-                        except:
-                            pass
+                        except Exception as e:
+                            print(e)
 
                 self.default_style = {'cursor': 'crosshair'}
         self.on_interaction(handle_interaction)
+
 
     def set_options(self, mapTypeId='HYBRID', styles=None, types=None):
         """Adds Google basemap and controls to the ipyleaflet map.
@@ -239,7 +298,8 @@ class Map(ipyleaflet.Map):
 
         try:
             self.add_layer(ee_basemaps[mapTypeId])
-        except:
+        except Exception as e:
+            print(e)
             print(
                 'Google basemaps can only be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN".')
 
@@ -298,7 +358,37 @@ class Map(ipyleaflet.Map):
         )
         self.ee_layers.append(ee_object)
         self.ee_layer_names.append(name)
+        
         self.add_layer(tile_layer)
+
+        if isinstance(ee_object, ee.Image) or isinstance(ee_object, ee.ImageCollection):
+            self.ee_raster_layers.append(ee_object)
+            self.ee_raster_layer_names.append(name)
+            if self.plot_dropdown is not None:
+                self.plot_dropdown.options=list(self.ee_raster_layer_names)
+
+        # if len(self.ee_raster_layers) == 1:
+        #     self.add_control(self.plot_dropdown_control)
+
+        # if self.plot_dropdown_control is None and len(self.ee_raster_layer_names) > 0:
+        #     plot_dropdown = widgets.Dropdown(
+        #         options=list(self.ee_raster_layer_names),
+        #         # value='EE Layer',
+        #         description='Plotting'
+        #     )
+
+        #     def on_click(change):
+        #         layer_name = change['new']
+        #         layer_index = self.ee_raster_layer_names.index(layer_name)
+        #         if layer_index != -1:
+        #             ee_object = self.ee_raster_layers[layer_index]
+        #             # print(ee_object)
+        #             self.plot(ee_object)
+
+        #     plot_dropdown.observe(on_click, 'value')
+        #     plot_dropdown_control = WidgetControl(widget=plot_dropdown, position='topright')
+        #     self.add_control(plot_dropdown_control)
+
 
     addLayer = add_ee_layer
 
@@ -373,7 +463,8 @@ class Map(ipyleaflet.Map):
         """
         try:
             self.add_layer(ee_basemaps[basemap])
-        except:
+        except Exception as e:
+            print(e)
             print('Basemap can only be one of the following:\n  {}'.format(
                 '\n  '.join(ee_basemaps.keys())))
 
@@ -406,7 +497,8 @@ class Map(ipyleaflet.Map):
                 visible=shown
             )
             self.add_layer(wms_layer)
-        except:
+        except Exception as e:
+            print(e)
             print("Failed to add the specified WMS TileLayer.")
 
     def add_tile_layer(self, url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', name=None, attribution='', opacity=1.0, shown=True):
@@ -428,7 +520,8 @@ class Map(ipyleaflet.Map):
                 visible=shown
             )
             self.add_layer(tile_layer)
-        except:
+        except Exception as e:
+            print(e)
             print("Failed to add the specified TileLayer.")
 
     def add_minimap(self, zoom=5, position="bottomright"):
@@ -479,8 +572,20 @@ class Map(ipyleaflet.Map):
         self.default_style = {'cursor': 'crosshair'}
         self.on_interaction(handle_interaction)
 
-    def plot_xy(self, x=None, y=None, plot_type=None, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
+    def plot_xy(self, x, y, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
+        """Creates a plot based on x-array and y-array data.
+        
+        Args:
+            x (numpy.ndarray or list): The x-coordinates of the plotted line.
+            y (numpy.ndarray or list): The y-coordinates of the plotted line.
+            plot_type (str, optional): The plot type can be one of "None", "bar", "scatter" or "hist". Defaults to None.
+            overlay (bool, optional): Whether to overlay plotted lines on the figure. Defaults to False.
+            position (str, optional): Position of the control, can be ‘bottomleft’, ‘bottomright’, ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
+            min_width ([type], optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            max_width ([type], optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            min_height ([type], optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
 
+        """
         if self.plot_widget is not None:
             plot_widget = self.plot_widget
         else:
@@ -491,30 +596,58 @@ class Map(ipyleaflet.Map):
             self.plot_control = plot_control
             self.add_control(plot_control)
 
+        if max_width is None:
+            max_width = 500
+
+        if (plot_type is None) and  ('markers' not in kwargs.keys()):
+            kwargs['markers'] = 'circle'
+
         with plot_widget:
+            try:
+                fig = plt.figure(1, **kwargs)
+                if max_width is not None:
+                    fig.layout.width = str(max_width) + 'px'
+                if max_height is not None:
+                    fig.layout.height = str(max_height) + 'px'
 
-            fig = plt.figure(1, **kwargs)
-            if max_width is not None:
-                fig.layout.width = str(max_width) + 'px'
-            if max_height is not None:
-                fig.layout.height = str(max_height) + 'px'
+                plot_widget.clear_output(wait=True)
+                if not overlay:
+                    plt.clear()
 
-            plot_widget.clear_output(wait=True)
-            plt.clear()
+                if plot_type is None:
+                    if 'marker' not in kwargs.keys():
+                        kwargs['marker'] = 'circle'
+                    plt.plot(x, y, **kwargs)
+                elif plot_type == 'bar':
+                    plt.bar(x, y, **kwargs)
+                elif plot_type == 'scatter':
+                    plt.scatter(x, y, **kwargs)
+                elif plot_type == 'hist':
+                    plt.hist(y, **kwargs)
+                plt.show()
 
-            if plot_type is None:
-                plt.plot(x, y, **kwargs)
-            elif plot_type == 'bar':
-                plt.bar(x, y, **kwargs)
-            elif plot_type == 'scatter':
-                plt.scatter(x, y, **kwargs)
-            elif plot_type == 'hist':
-                plt.hist(y, **kwargs)
-            plt.show()
+            except Exception as e:
+                print(e)
+                print("Failed to create plot.")
 
-    def plot_xy_demo(self, iterations=20, plot_type=None):
+    def plot_xy_demo(self, iterations=20, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
+        """A demo of interactive plotting using random pixel coordinates.
+                
+        Args:
+            iterations (int, optional): How many iterations to run for the demo. Defaults to 20.
+            plot_type (str, optional): The plot type can be one of "None", "bar", "scatter" or "hist". Defaults to None.
+            overlay (bool, optional): Whether to overlay plotted lines on the figure. Defaults to False.
+            position (str, optional): Position of the control, can be ‘bottomleft’, ‘bottomright’, ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
+            min_width ([type], optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            max_width ([type], optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            min_height ([type], optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
+        """ 
+ 
         import numpy as np
         import time
+
+        if self.random_marker is not None:
+            self.remove_layer(self.random_marker)
 
         image = ee.Image('LE7_TOA_5YEAR/1999_2003').select([0, 1, 2, 3, 4, 6])
         self.addLayer(
@@ -527,137 +660,109 @@ class Map(ipyleaflet.Map):
         longitudes = np.random.uniform(-121, -76, size=iterations)
 
         marker = Marker(location=(0, 0))
+        self.random_marker = marker
         self.add_layer(marker)
 
-        try:
-            for i in range(iterations):
-
-                plot_type = None
-                if i % 3 == 0:
-                    plot_type = 'bar'
-
+        for i in range(iterations):
+            try:
                 coordinate = ee.Geometry.Point([longitudes[i], latitudes[i]])
                 dict_values = image.sample(
                     coordinate).first().toDictionary().getInfo()
                 band_values = list(dict_values.values())
                 title = '{}/{}: Spectral signature at ({}, {})'.format(i+1, iterations,
-                        round(latitudes[i], 2), round(longitudes[i], 2))
+                                                                       round(latitudes[i], 2), round(longitudes[i], 2))
                 marker.location = (latitudes[i], longitudes[i])
-                self.plot_xy(band_names, band_values, plot_type=plot_type,
-                             max_width=500, title=title, marker='circle')
-                time.sleep(0.5)
-        except:
-            pass
+                self.plot_xy(band_names, band_values, plot_type=plot_type, overlay=overlay,
+                                 min_width=min_width, max_width=max_width, min_height=min_height, max_height=max_height, title=title, **kwargs)
+                time.sleep(0.3)
+            except Exception as e:
+                print(e)
 
-    def plot(self, ee_object=None, x=None, y=None, plot_type=None, overlay=True, position='bottomright', add_marker=True, **kwargs):
+    def plot(self, ee_object=None, scale=None, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
+        """Interactive plotting of Earth Engine data by clicking on the map.
+        
+        Args:
+            ee_object (object, optional): The ee.Image or ee.ImageCollection to sample. Defaults to None.
+            scale (float, optional): A nominal scale in meters of the projection to sample in. Defaults to None.
+            plot_type (str, optional): The plot type can be one of "None", "bar", "scatter" or "hist". Defaults to None.
+            overlay (bool, optional): Whether to overlay plotted lines on the figure. Defaults to False.
+            position (str, optional): Position of the control, can be ‘bottomleft’, ‘bottomright’, ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
+            min_width ([type], optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            max_width ([type], optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            min_height ([type], optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
 
-        # coordinates = []
-        # markers = []
-        # marker_cluster = MarkerCluster(name="Marker Cluster")
-        # self.last_click = []
-        # self.all_clicks = []
-        # if add_marker:
-        #     self.add_layer(marker_cluster)
+        """
+        if self.plot_control is not None:
+            del self.plot_widget
+            self.remove_control(self.plot_control)
 
-        # def handle_interaction(**kwargs):
-        #     latlon = kwargs.get('coordinates')
+        if self.random_marker is not None:
+            self.remove_layer(self.random_marker)
 
-        #     if kwargs.get('type') == 'click':
-        #         coordinates.append(latlon)
-        #         self.last_click = latlon
-        #         self.all_clicks = coordinates
-        #         if add_marker:
-        #             markers.append(Marker(location=latlon))
-        #             marker_cluster.markers = markers
-        #     elif kwargs.get('type') == 'mousemove':
-        #         pass
-        # # cursor style: https://www.w3schools.com/cssref/pr_class_cursor.asp
-        # self.default_style = {'cursor': 'crosshair'}
-        # self.on_interaction(handle_interaction)
+        plot_widget = widgets.Output(layout={'border': '1px solid black'})
+        plot_control = WidgetControl(widget=plot_widget, position=position, min_width=min_width,
+                                     max_width=max_width, min_height=min_height, max_height=max_height)
+        self.plot_widget = plot_widget
+        self.plot_control = plot_control
+        self.add_control(plot_control)
 
-        if self.plot_control is None:
-            plot_output = widgets.Output(layout={'border': '1px solid black'})
-            plot_control = WidgetControl(
-                widget=plot_output, position=position, max_width=500)
-            self.plot_control = plot_control
-            self.add_control(plot_control)
+        self.default_style = {'cursor': 'crosshair'}
+        msg = "The plot function can only be used on ee.Image or ee.ImageCollection with more than one band."
+        if (ee_object is None) and len(self.ee_raster_layers) > 0:
+            ee_object = self.ee_raster_layers[-1]
+            if isinstance(ee_object, ee.ImageCollection):
+                ee_object = ee_object.mosaic()
+        elif isinstance(ee_object, ee.ImageCollection):
+            ee_object = ee_object.mosaic()
+        elif not isinstance(ee_object, ee.Image):
+            print(msg)
+            return
 
-        # figure = plt.figure(1, **kwargs)
-        figure = plt.figure(1, title='Line Chart')
+        if scale is None:
+            scale = self.getScale()
 
-        if (ee_object is None) and (x is not None) and (y is not None):
-            print('yes')
-            print(plot_output)
-            print(x)
-            print(y)
-            with plot_output:
-                plot_output.clear_output(wait=True)
-                plt.plot(x, y)
-                plt.show()
+        if max_width is None:
+            max_width = 500
 
-        def handle_interaction(**kwargs):
+        band_names = ee_object.bandNames().getInfo()
 
-            latlon = kwargs.get('coordinates')
-            if kwargs.get('type') == 'click':
-                self.default_style = {'cursor': 'wait'}
+        coordinates = []
+        markers = []
+        marker_cluster = MarkerCluster(name="Marker Cluster")
+        self.last_click = []
+        self.all_clicks = []
+        self.add_layer(marker_cluster)
 
-                scale = self.getScale()
-                layers = self.ee_layers
+        def handle_interaction(**kwargs2):
+            latlon = kwargs2.get('coordinates')
 
-                with plot_output:
+            if kwargs2.get('type') == 'click':
+                try:
+                    coordinates.append(latlon)
+                    self.last_click = latlon
+                    self.all_clicks = coordinates
+                    markers.append(Marker(location=latlon))
+                    marker_cluster.markers = markers
+                    self.default_style = {'cursor': 'wait'}
+                    xy = ee.Geometry.Point(latlon[::-1])
+                    dict_values = ee_object.sample(
+                        xy, scale=scale).first().toDictionary().getInfo()
+                    band_values = list(dict_values.values())
+                    self.plot_xy(band_names, band_values, plot_type=plot_type, overlay=overlay,
+                                 min_width=min_width, max_width=max_width, min_height=min_height, max_height=max_height, **kwargs)
+                    self.default_style = {'cursor': 'crosshair'}
+                except Exception as e:
+                    if self.plot_widget is not None:
+                        with self.plot_widget:
+                            self.plot_widget.clear_output()
+                            print("No data for the clicked location.")
+                    else:
+                        print(e)
+                    self.default_style = {'cursor': 'crosshair'}
 
-                    plot_output.clear_output(wait=True)
-                    for index, ee_object in enumerate(layers):
-                        xy = ee.Geometry.Point(latlon[::-1])
-                        layer_names = self.ee_layer_names
-                        layer_name = layer_names[index]
-                        object_type = ee_object.__class__.__name__
-
-                        try:
-                            if isinstance(ee_object, ee.ImageCollection):
-                                ee_object = ee_object.mosaic()
-                            elif isinstance(ee_object, ee.geometry.Geometry) or isinstance(ee_object, ee.feature.Feature) \
-                                    or isinstance(ee_object, ee.featurecollection.FeatureCollection):
-                                ee_object = ee.FeatureCollection(ee_object)
-
-                            if isinstance(ee_object, ee.Image):
-                                item = ee_object.reduceRegion(
-                                    ee.Reducer.first(), xy, scale).getInfo()
-                                x = range(1, len(list(item.keys())))
-                                y = list(item.values())
-                                # print(x)
-                                # print(y)
-                                plt.plot(x, y)
-                                plt.show()
-                                # b_name = 'band'
-                                # if len(item) > 1:
-                                #     b_name = 'bands'
-                                # print("{}: {} ({} {})".format(layer_name, object_type, len(item), b_name))
-                                # keys = item.keys()
-                                # for key in keys:
-                                #     print("  {}: {}".format(key, item[key]))
-                            elif isinstance(ee_object, ee.FeatureCollection):
-                                filtered = ee_object.filterBounds(xy)
-                                size = filtered.size().getInfo()
-                                if size > 0:
-                                    first = filtered.first()
-                                    props = first.toDictionary().getInfo()
-                                    b_name = 'property'
-                                    if len(props) > 1:
-                                        b_name = 'properties'
-                                    print("{}: Feature ({} {})".format(
-                                        layer_name, len(props), b_name))
-                                    keys = props.keys()
-                                    for key in keys:
-                                        print("  {}: {}".format(
-                                            key, props[key]))
-                        except:
-                            pass
-
-                self.default_style = {'cursor': 'crosshair'}
         self.on_interaction(handle_interaction)
 
-    def listening(self, event='click', add_marker=True):
+    def add_maker_cluster(self, event='click', add_marker=True):
         """Captures user inputs and add markers to the map.
 
         Args:
@@ -685,9 +790,6 @@ class Map(ipyleaflet.Map):
                 if add_marker:
                     markers.append(Marker(location=latlon))
                     marker_cluster.markers = markers
-                    # self.add_layer(Marker(location=latlon))
-                    # self.clear_layers()
-                    # self.add_layer(marker_cluster)
             elif kwargs.get('type') == 'mousemove':
                 pass
         # cursor style: https://www.w3schools.com/cssref/pr_class_cursor.asp
@@ -733,7 +835,8 @@ class Map(ipyleaflet.Map):
                 left_layer=left_layer, right_layer=right_layer)
             self.add_control(control)
 
-        except:
+        except Exception as e:
+            print(e)
             print('The provided layers are invalid!')
 
     def basemap_demo(self):
@@ -842,7 +945,8 @@ def geojson_to_ee(geo_json, geodesic=True):
         else:
             print("Could not convert the geojson to ee.Geometry()")
 
-    except:
+    except Exception as e:
+        print(e)
         print("Could not convert the geojson to ee.Geometry()")
 
 

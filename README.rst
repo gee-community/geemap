@@ -63,11 +63,13 @@ A Python package for interactive mapping with Google Earth Engine, ipyleaflet, a
 Features
 --------
 
-* Automatically converts Earth Engine JavaScripts to Python scripts and Jupyter Notebooks.
-* Adds Earth Engine tile layers to ipyleaflet map for interactive mapping.
-* Supports Earth Engine JavaScript API functions in Python, such as ``Map.addLayer()``, ``Map.setCenter()``, ``Map.centerObject()``, ``Map.setOptions()``.
-* Captures user input and query Earth Engine objects.
-* Plots charts based on Earth Engine data.
+* Automatically converts Earth Engine JavaScripts to Python scripts and Jupyter notebooks.
+* Adds Earth Engine tile layers to ipyleaflet-based maps for interactive mapping.
+* Supports Earth Engine JavaScript API-styled functions in Python, such as ``Map.addLayer()``, ``Map.setCenter()``, ``Map.centerObject()``, ``Map.setOptions()``.
+* Queries and returns values of Earth Engine data interactively using the Inspector Tool.
+* Interactive plotting of Earth Engine data by clicking on the map.
+* Converts data format between GeoJSON and Earth Engine.
+* Uses drawing tools to 
 
 
 Installation
