@@ -15,7 +15,7 @@
 
 ## YouTube Channel
 
-More video tutorials for geemap and Earth Engine are available on my [YouTube channel](https://www.youtube.com/c/QiushengWu).
+More video tutorials for geemap and Earth Engine are available on my [YouTube channel](https://www.youtube.com/c/QiushengWu). If you can't access YouTube in your country, you can try [西瓜视频](http://gishub.org/xigua)。
 
 [![Earth Engine Tutorials on YouTube](https://i.imgur.com/qIGmd0L.png)](https://www.youtube.com/c/QiushengWu)
 
@@ -29,6 +29,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 6. [Creating an interactive map with a marker cluster](#creating-an-interactive-map-with-a-marker-cluster)
 7. [Converting data formats between GeoJSON and Earth Engine](#converting-data-formats-between-geojson-and-earth-engine)
 8. [Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks](#automated-conversion-from-earth-engine-javascripts-to-python-scripts-and-jupyter-notebooks)
+9. [Interactive plotting of Earth Engine data without writing code](#interactive-plotting-of-earth-engine-data-without-writing-code)
 
 ### Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
@@ -61,3 +62,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 ### Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks
 
 ![Conversion](https://i.imgur.com/BW0zJnN.gif)
+
+### Interactive plotting of Earth Engine data without writing code
+
+![Plotting](https://i.imgur.com/NOtwpfs.gif)

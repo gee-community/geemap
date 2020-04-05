@@ -79,6 +79,8 @@ class Map(ipyleaflet.Map):
         self.add_control(measure)
         self.measure_control = measure
 
+        self.add_layer(ee_basemaps['ROADMAP'])
+
         draw_control = DrawControl(marker={'shapeOptions': {'color': '#0000FF'}},
                                    rectangle={'shapeOptions': {
                                        'color': '#0000FF'}},
@@ -146,23 +148,11 @@ class Map(ipyleaflet.Map):
         self.plot_last_click = []
         self.plot_all_clicks = []
 
-        # def on_click(change):
-        #     layer_name = change['new']
-        #     layer_index = self.ee_raster_layer_names.index(layer_name)
-        #     if layer_index != -1:
-        #         ee_object = self.ee_raster_layers[layer_index]
-        #         # print(ee_object)
-        #         # self.plot(ee_object)
-
-        # plot_dropdown_widget.observe(on_click, 'value')
-        # plot_dropdown_control = WidgetControl(widget=plot_dropdown_widget, position='topright')
-        # self.plot_dropdown_control = plot_dropdown_control
-
         # Adds Inspector widget
         inspector_checkbox = widgets.Checkbox(
             value=False,
             description='Use Inspector',
-            indent=False, 
+            indent=False,
             layout=widgets.Layout(height='18px')
         )
         inspector_checkbox.layout.width = '18ex'
@@ -171,12 +161,12 @@ class Map(ipyleaflet.Map):
         plot_checkbox = widgets.Checkbox(
             value=False,
             description='Use Plotting',
-            indent=False, 
+            indent=False,
         )
         plot_checkbox.layout.width = '18ex'
         self.plot_checkbox = plot_checkbox
 
-        vb = widgets.VBox(children = [inspector_checkbox, plot_checkbox])
+        vb = widgets.VBox(children=[inspector_checkbox, plot_checkbox])
 
         chk_control = WidgetControl(widget=vb, position='topright')
         self.add_control(chk_control)
@@ -204,7 +194,8 @@ class Map(ipyleaflet.Map):
                 )
                 plot_dropdown_widget.layout.width = '18ex'
                 self.plot_dropdown_widget = plot_dropdown_widget
-                plot_dropdown_control = WidgetControl(widget=plot_dropdown_widget, position='topright')
+                plot_dropdown_control = WidgetControl(
+                    widget=plot_dropdown_widget, position='topright')
                 self.plot_dropdown_control = plot_dropdown_control
                 self.add_control(plot_dropdown_control)
             elif button['name'] == 'value' and (not button['new']):
@@ -222,15 +213,10 @@ class Map(ipyleaflet.Map):
                     self.plot_widget = None
                     del plot_control
                     del plot_widget
-                if self.plot_marker_cluster is not None:
+                if self.plot_marker_cluster is not None and self.plot_marker_cluster in self.layers:
                     self.remove_layer(self.plot_marker_cluster)
 
-
-                # if self.plot_widget
-
-        plot_checkbox.observe(plot_chk_changed)       
-
-        self.add_layer(ee_basemaps['HYBRID'])
+        plot_checkbox.observe(plot_chk_changed)
 
         def handle_interaction(**kwargs):
 
@@ -239,7 +225,7 @@ class Map(ipyleaflet.Map):
             if kwargs.get('type') == 'click' and self.inspector_checked:
                 self.default_style = {'cursor': 'wait'}
 
-                scale = self.getScale()
+                sample_scale = self.getScale()
                 layers = self.ee_layers
 
                 with output:
@@ -260,7 +246,7 @@ class Map(ipyleaflet.Map):
 
                             if isinstance(ee_object, ee.Image):
                                 item = ee_object.reduceRegion(
-                                    ee.Reducer.first(), xy, scale).getInfo()
+                                    ee.Reducer.first(), xy, sample_scale).getInfo()
                                 b_name = 'band'
                                 if len(item) > 1:
                                     b_name = 'bands'
@@ -288,7 +274,7 @@ class Map(ipyleaflet.Map):
                             print(e)
 
                 self.default_style = {'cursor': 'crosshair'}
-            if kwargs.get('type') == 'click' and self.plot_checked:
+            if kwargs.get('type') == 'click' and self.plot_checked and len(self.ee_raster_layers) > 0:
                 plot_layer_name = self.plot_dropdown_widget.value
                 layer_names = self.ee_raster_layer_names
                 layers = self.ee_raster_layers
@@ -301,10 +287,12 @@ class Map(ipyleaflet.Map):
                 try:
                     self.default_style = {'cursor': 'wait'}
                     plot_options = self.plot_options
-                    scale = self.getScale()
-                    if plot_options['sample_scale'] is not None:
-                        scale = plot_options['sample_scale']
-                    if plot_options['add_marker_cluster']:
+                    sample_scale = self.getScale()
+                    if'sample_scale' in plot_options.keys() and (plot_options['sample_scale'] is not None):
+                        sample_scale = plot_options['sample_scale']
+                    if 'title' not in plot_options.keys():
+                        plot_options['title'] = plot_layer_name
+                    if ('add_marker_cluster' in plot_options.keys()) and plot_options['add_marker_cluster']:
                         plot_coordinates = self.plot_coordinates
                         markers = self.plot_markers
                         marker_cluster = self.plot_marker_cluster
@@ -317,9 +305,12 @@ class Map(ipyleaflet.Map):
 
                     band_names = ee_object.bandNames().getInfo()
                     xy = ee.Geometry.Point(latlon[::-1])
-                    dict_values = ee_object.sample(xy, scale=scale).first().toDictionary().getInfo()
+                    dict_values = ee_object.sample(
+                        xy, scale=sample_scale).first().toDictionary().getInfo()
                     band_values = list(dict_values.values())
-                    self.plot_xy(band_names, band_values, **plot_options)
+                    self.plot(band_names, band_values, **plot_options)
+                    if plot_options['title'] == plot_layer_name:
+                        del plot_options['title']
                     self.default_style = {'cursor': 'crosshair'}
                 except Exception as e:
                     if self.plot_widget is not None:
@@ -331,7 +322,6 @@ class Map(ipyleaflet.Map):
                     self.default_style = {'cursor': 'crosshair'}
 
         self.on_interaction(handle_interaction)
-
 
     def set_options(self, mapTypeId='HYBRID', styles=None, types=None):
         """Adds Google basemap and controls to the ipyleaflet map.
@@ -419,14 +409,15 @@ class Map(ipyleaflet.Map):
         )
         self.ee_layers.append(ee_object)
         self.ee_layer_names.append(name)
-        
+
         self.add_layer(tile_layer)
 
         if isinstance(ee_object, ee.Image) or isinstance(ee_object, ee.ImageCollection):
             self.ee_raster_layers.append(ee_object)
             self.ee_raster_layer_names.append(name)
             if self.plot_dropdown_widget is not None:
-                self.plot_dropdown_widget.options=list(self.ee_raster_layer_names)
+                self.plot_dropdown_widget.options = list(
+                    self.ee_raster_layer_names)
 
     addLayer = add_ee_layer
 
@@ -611,6 +602,20 @@ class Map(ipyleaflet.Map):
         self.on_interaction(handle_interaction)
 
     def set_plot_options(self, add_marker_cluster=False, sample_scale=None, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
+        """Sets plotting options.
+        
+        Args:
+            add_marker_cluster (bool, optional): Whether to add a marker cluster. Defaults to False.
+            sample_scale (float, optional):  A nominal scale in meters of the projection to sample in . Defaults to None.
+            plot_type (str, optional): The plot type can be one of "None", "bar", "scatter" or "hist". Defaults to None.
+            overlay (bool, optional): Whether to overlay plotted lines on the figure. Defaults to False.
+            position (str, optional): Position of the control, can be ‘bottomleft’, ‘bottomright’, ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
+            min_width (int, optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            max_width (int, optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            min_height (int, optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.
+
+        """        
         plot_options_dict = {}
         plot_options_dict['add_marker_cluster'] = add_marker_cluster
         plot_options_dict['sample_scale'] = sample_scale
@@ -628,22 +633,21 @@ class Map(ipyleaflet.Map):
         self.plot_options = plot_options_dict
 
         if add_marker_cluster:
-
             self.add_layer(self.plot_marker_cluster)
 
-
-    def plot_xy(self, x, y, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
+    def plot(self, x, y, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
         """Creates a plot based on x-array and y-array data.
-        
+
         Args:
             x (numpy.ndarray or list): The x-coordinates of the plotted line.
             y (numpy.ndarray or list): The y-coordinates of the plotted line.
             plot_type (str, optional): The plot type can be one of "None", "bar", "scatter" or "hist". Defaults to None.
             overlay (bool, optional): Whether to overlay plotted lines on the figure. Defaults to False.
             position (str, optional): Position of the control, can be ‘bottomleft’, ‘bottomright’, ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
-            min_width ([type], optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            max_width ([type], optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            min_height ([type], optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            min_width (int, optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            max_width (int, optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            min_height (int, optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.            
 
         """
         if self.plot_widget is not None:
@@ -661,7 +665,7 @@ class Map(ipyleaflet.Map):
         if max_height is None:
             max_height = 300
 
-        if (plot_type is None) and  ('markers' not in kwargs.keys()):
+        if (plot_type is None) and ('markers' not in kwargs.keys()):
             kwargs['markers'] = 'circle'
 
         with plot_widget:
@@ -692,19 +696,20 @@ class Map(ipyleaflet.Map):
                 print(e)
                 print("Failed to create plot.")
 
-    def plot_xy_demo(self, iterations=20, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
+    def plot_demo(self, iterations=20, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
         """A demo of interactive plotting using random pixel coordinates.
-                
+
         Args:
             iterations (int, optional): How many iterations to run for the demo. Defaults to 20.
             plot_type (str, optional): The plot type can be one of "None", "bar", "scatter" or "hist". Defaults to None.
             overlay (bool, optional): Whether to overlay plotted lines on the figure. Defaults to False.
             position (str, optional): Position of the control, can be ‘bottomleft’, ‘bottomright’, ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
-            min_width ([type], optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            max_width ([type], optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            min_height ([type], optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
-        """ 
- 
+            min_width (int, optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            max_width (int, optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            min_height (int, optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.    
+        """
+
         import numpy as np
         import time
 
@@ -734,24 +739,25 @@ class Map(ipyleaflet.Map):
                 title = '{}/{}: Spectral signature at ({}, {})'.format(i+1, iterations,
                                                                        round(latitudes[i], 2), round(longitudes[i], 2))
                 marker.location = (latitudes[i], longitudes[i])
-                self.plot_xy(band_names, band_values, plot_type=plot_type, overlay=overlay,
-                                 min_width=min_width, max_width=max_width, min_height=min_height, max_height=max_height, title=title, **kwargs)
+                self.plot(band_names, band_values, plot_type=plot_type, overlay=overlay,
+                             min_width=min_width, max_width=max_width, min_height=min_height, max_height=max_height, title=title, **kwargs)
                 time.sleep(0.3)
             except Exception as e:
                 print(e)
 
-    def plot(self, ee_object=None, scale=None, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
+    def plot_raster(self, ee_object=None, sample_scale=None, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
         """Interactive plotting of Earth Engine data by clicking on the map.
-        
+
         Args:
             ee_object (object, optional): The ee.Image or ee.ImageCollection to sample. Defaults to None.
-            scale (float, optional): A nominal scale in meters of the projection to sample in. Defaults to None.
+            sample_scale (float, optional): A nominal scale in meters of the projection to sample in. Defaults to None.
             plot_type (str, optional): The plot type can be one of "None", "bar", "scatter" or "hist". Defaults to None.
             overlay (bool, optional): Whether to overlay plotted lines on the figure. Defaults to False.
             position (str, optional): Position of the control, can be ‘bottomleft’, ‘bottomright’, ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
-            min_width ([type], optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            max_width ([type], optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            min_height ([type], optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            min_width (int, optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            max_width (int, optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            min_height (int, optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.    
 
         """
         if self.plot_control is not None:
@@ -780,8 +786,8 @@ class Map(ipyleaflet.Map):
             print(msg)
             return
 
-        if scale is None:
-            scale = self.getScale()
+        if sample_scale is None:
+            sample_scale = self.getScale()
 
         if max_width is None:
             max_width = 500
@@ -808,9 +814,9 @@ class Map(ipyleaflet.Map):
                     self.default_style = {'cursor': 'wait'}
                     xy = ee.Geometry.Point(latlon[::-1])
                     dict_values = ee_object.sample(
-                        xy, scale=scale).first().toDictionary().getInfo()
+                        xy, scale=sample_scale).first().toDictionary().getInfo()
                     band_values = list(dict_values.values())
-                    self.plot_xy(band_names, band_values, plot_type=plot_type, overlay=overlay,
+                    self.plot(band_names, band_values, plot_type=plot_type, overlay=overlay,
                                  min_width=min_width, max_width=max_width, min_height=min_height, max_height=max_height, **kwargs)
                     self.default_style = {'cursor': 'crosshair'}
                 except Exception as e:
