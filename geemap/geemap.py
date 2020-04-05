@@ -137,15 +137,14 @@ class Map(ipyleaflet.Map):
 
         # Dropdown widget for plotting
         self.plot_dropdown_control = None
-        self.plot_dropdown = None
+        self.plot_dropdown_widget = None
+        self.plot_options = {}
 
-        # plot_dropdown = widgets.Dropdown(
-        #     options=list(self.ee_raster_layer_names),
-        #     # value='EE Layer',
-        #     # description='Layer'
-        # )
-        # plot_dropdown.layout.width = '18ex'
-        # self.plot_dropdown = plot_dropdown
+        self.plot_marker_cluster = MarkerCluster(name="Marker Cluster")
+        self.plot_coordinates = []
+        self.plot_markers = []
+        self.plot_last_click = []
+        self.plot_all_clicks = []
 
         # def on_click(change):
         #     layer_name = change['new']
@@ -153,10 +152,10 @@ class Map(ipyleaflet.Map):
         #     if layer_index != -1:
         #         ee_object = self.ee_raster_layers[layer_index]
         #         # print(ee_object)
-        #         self.plot(ee_object)
+        #         # self.plot(ee_object)
 
-        # plot_dropdown.observe(on_click, 'value')
-        # plot_dropdown_control = WidgetControl(widget=plot_dropdown, position='topright')
+        # plot_dropdown_widget.observe(on_click, 'value')
+        # plot_dropdown_control = WidgetControl(widget=plot_dropdown_widget, position='topright')
         # self.plot_dropdown_control = plot_dropdown_control
 
         # Adds Inspector widget
@@ -196,27 +195,47 @@ class Map(ipyleaflet.Map):
         output_control = WidgetControl(widget=output, position='topright')
         self.add_control(output_control)
 
-        # def plot_chk_changed(button):
-        #     self.plot_checked = plot_checkbox.value
-        #     if self.plot_checked and plot_dropdown_control not in self.controls:
-        #         plot_dropdown.options = list(self.ee_raster_layer_names)
-        #         self.add_control(plot_dropdown_control)
-        #     # elif not self.plot_checked:
-        #     #     if plot_dropdown_control in self.controls:
-        #     #         self.remove_control(plot_dropdown_control)
-        #     #     if self.plot_control in self.controls:
-        #     #         self.remove_control(self.plot_control)
-        #     #     if self.plot_widget is not None:
-        #     #         plot_widget = self.plot_widget
-        #     #         del plot_widget
+        def plot_chk_changed(button):
 
-        # plot_checkbox.observe(plot_chk_changed)       
+            if button['name'] == 'value' and button['new']:
+                self.plot_checked = True
+                plot_dropdown_widget = widgets.Dropdown(
+                    options=list(self.ee_raster_layer_names),
+                )
+                plot_dropdown_widget.layout.width = '18ex'
+                self.plot_dropdown_widget = plot_dropdown_widget
+                plot_dropdown_control = WidgetControl(widget=plot_dropdown_widget, position='topright')
+                self.plot_dropdown_control = plot_dropdown_control
+                self.add_control(plot_dropdown_control)
+            elif button['name'] == 'value' and (not button['new']):
+                self.plot_checked = False
+                plot_dropdown_widget = self.plot_dropdown_widget
+                plot_dropdown_control = self.plot_dropdown_control
+                self.remove_control(plot_dropdown_control)
+                del plot_dropdown_widget
+                del plot_dropdown_control
+                if self.plot_control in self.controls:
+                    plot_control = self.plot_control
+                    plot_widget = self.plot_widget
+                    self.remove_control(plot_control)
+                    self.plot_control = None
+                    self.plot_widget = None
+                    del plot_control
+                    del plot_widget
+                if self.plot_marker_cluster is not None:
+                    self.remove_layer(self.plot_marker_cluster)
+
+
+                # if self.plot_widget
+
+        plot_checkbox.observe(plot_chk_changed)       
 
         self.add_layer(ee_basemaps['HYBRID'])
 
         def handle_interaction(**kwargs):
 
             latlon = kwargs.get('coordinates')
+            # print(latlon)
             if kwargs.get('type') == 'click' and self.inspector_checked:
                 self.default_style = {'cursor': 'wait'}
 
@@ -269,6 +288,48 @@ class Map(ipyleaflet.Map):
                             print(e)
 
                 self.default_style = {'cursor': 'crosshair'}
+            if kwargs.get('type') == 'click' and self.plot_checked:
+                plot_layer_name = self.plot_dropdown_widget.value
+                layer_names = self.ee_raster_layer_names
+                layers = self.ee_raster_layers
+                index = layer_names.index(plot_layer_name)
+                ee_object = layers[index]
+
+                if isinstance(ee_object, ee.ImageCollection):
+                    ee_object = ee_object.mosaic()
+
+                try:
+                    self.default_style = {'cursor': 'wait'}
+                    plot_options = self.plot_options
+                    scale = self.getScale()
+                    if plot_options['sample_scale'] is not None:
+                        scale = plot_options['sample_scale']
+                    if plot_options['add_marker_cluster']:
+                        plot_coordinates = self.plot_coordinates
+                        markers = self.plot_markers
+                        marker_cluster = self.plot_marker_cluster
+                        plot_coordinates.append(latlon)
+                        self.plot_last_click = latlon
+                        self.plot_all_clicks = plot_coordinates
+                        markers.append(Marker(location=latlon))
+                        marker_cluster.markers = markers
+                        self.plot_marker_cluster = marker_cluster
+
+                    band_names = ee_object.bandNames().getInfo()
+                    xy = ee.Geometry.Point(latlon[::-1])
+                    dict_values = ee_object.sample(xy, scale=scale).first().toDictionary().getInfo()
+                    band_values = list(dict_values.values())
+                    self.plot_xy(band_names, band_values, **plot_options)
+                    self.default_style = {'cursor': 'crosshair'}
+                except Exception as e:
+                    if self.plot_widget is not None:
+                        with self.plot_widget:
+                            self.plot_widget.clear_output()
+                            print("No data for the clicked location.")
+                    else:
+                        print(e)
+                    self.default_style = {'cursor': 'crosshair'}
+
         self.on_interaction(handle_interaction)
 
 
@@ -364,31 +425,8 @@ class Map(ipyleaflet.Map):
         if isinstance(ee_object, ee.Image) or isinstance(ee_object, ee.ImageCollection):
             self.ee_raster_layers.append(ee_object)
             self.ee_raster_layer_names.append(name)
-            if self.plot_dropdown is not None:
-                self.plot_dropdown.options=list(self.ee_raster_layer_names)
-
-        # if len(self.ee_raster_layers) == 1:
-        #     self.add_control(self.plot_dropdown_control)
-
-        # if self.plot_dropdown_control is None and len(self.ee_raster_layer_names) > 0:
-        #     plot_dropdown = widgets.Dropdown(
-        #         options=list(self.ee_raster_layer_names),
-        #         # value='EE Layer',
-        #         description='Plotting'
-        #     )
-
-        #     def on_click(change):
-        #         layer_name = change['new']
-        #         layer_index = self.ee_raster_layer_names.index(layer_name)
-        #         if layer_index != -1:
-        #             ee_object = self.ee_raster_layers[layer_index]
-        #             # print(ee_object)
-        #             self.plot(ee_object)
-
-        #     plot_dropdown.observe(on_click, 'value')
-        #     plot_dropdown_control = WidgetControl(widget=plot_dropdown, position='topright')
-        #     self.add_control(plot_dropdown_control)
-
+            if self.plot_dropdown_widget is not None:
+                self.plot_dropdown_widget.options=list(self.ee_raster_layer_names)
 
     addLayer = add_ee_layer
 
@@ -572,6 +610,28 @@ class Map(ipyleaflet.Map):
         self.default_style = {'cursor': 'crosshair'}
         self.on_interaction(handle_interaction)
 
+    def set_plot_options(self, add_marker_cluster=False, sample_scale=None, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
+        plot_options_dict = {}
+        plot_options_dict['add_marker_cluster'] = add_marker_cluster
+        plot_options_dict['sample_scale'] = sample_scale
+        plot_options_dict['plot_type'] = plot_type
+        plot_options_dict['overlay'] = overlay
+        plot_options_dict['position'] = position
+        plot_options_dict['min_width'] = min_width
+        plot_options_dict['max_width'] = max_width
+        plot_options_dict['min_height'] = min_height
+        plot_options_dict['max_height'] = max_height
+
+        for key in kwargs.keys():
+            plot_options_dict[key] = kwargs[key]
+
+        self.plot_options = plot_options_dict
+
+        if add_marker_cluster:
+
+            self.add_layer(self.plot_marker_cluster)
+
+
     def plot_xy(self, x, y, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
         """Creates a plot based on x-array and y-array data.
         
@@ -598,6 +658,8 @@ class Map(ipyleaflet.Map):
 
         if max_width is None:
             max_width = 500
+        if max_height is None:
+            max_height = 300
 
         if (plot_type is None) and  ('markers' not in kwargs.keys()):
             kwargs['markers'] = 'circle'
