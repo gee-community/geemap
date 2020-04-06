@@ -29,7 +29,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 6. [Creating an interactive map with a marker cluster](#creating-an-interactive-map-with-a-marker-cluster)
 7. [Converting data formats between GeoJSON and Earth Engine](#converting-data-formats-between-geojson-and-earth-engine)
 8. [Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks](#automated-conversion-from-earth-engine-javascripts-to-python-scripts-and-jupyter-notebooks)
-9. [Interactive plotting of Earth Engine data without writing code](#interactive-plotting-of-earth-engine-data-without-writing-code)
+9. [Interactive plotting of Earth Engine data with minimal coding](#interactive-plotting-of-earth-engine-data-with-minimal-coding)
 
 ### Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
@@ -63,6 +63,6 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 
 ![Conversion](https://i.imgur.com/BW0zJnN.gif)
 
-### Interactive plotting of Earth Engine data without writing code
+### Interactive plotting of Earth Engine data with minimal coding
 
-![Plotting](https://i.imgur.com/NOtwpfs.gif)
+![Plotting](https://i.imgur.com/iGMRnRb.gif)

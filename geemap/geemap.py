@@ -405,7 +405,8 @@ class Map(ipyleaflet.Map):
             attribution='Google Earth Engine',
             name=name,
             opacity=opacity,
-            visible=shown
+            visible=True
+            # visible=shown
         )
         self.ee_layers.append(ee_object)
         self.ee_layer_names.append(name)
@@ -523,7 +524,8 @@ class Map(ipyleaflet.Map):
                 format=format,
                 transparent=transparent,
                 opacity=opacity,
-                visible=shown
+                visible=True
+                # visible=shown
             )
             self.add_layer(wms_layer)
         except Exception as e:
@@ -546,7 +548,8 @@ class Map(ipyleaflet.Map):
                 name=name,
                 attribution=attribution,
                 opacity=opacity,
-                visible=shown
+                visible=True
+                # visible=shown
             )
             self.add_layer(tile_layer)
         except Exception as e:
@@ -603,7 +606,7 @@ class Map(ipyleaflet.Map):
 
     def set_plot_options(self, add_marker_cluster=False, sample_scale=None, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
         """Sets plotting options.
-        
+
         Args:
             add_marker_cluster (bool, optional): Whether to add a marker cluster. Defaults to False.
             sample_scale (float, optional):  A nominal scale in meters of the projection to sample in . Defaults to None.
@@ -615,7 +618,7 @@ class Map(ipyleaflet.Map):
             min_height (int, optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
             max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.
 
-        """        
+        """
         plot_options_dict = {}
         plot_options_dict['add_marker_cluster'] = add_marker_cluster
         plot_options_dict['sample_scale'] = sample_scale
@@ -632,7 +635,7 @@ class Map(ipyleaflet.Map):
 
         self.plot_options = plot_options_dict
 
-        if add_marker_cluster:
+        if add_marker_cluster and (self.plot_marker_cluster not in self.layers):
             self.add_layer(self.plot_marker_cluster)
 
     def plot(self, x, y, plot_type=None, overlay=False, position='bottomright', min_width=None, max_width=None, min_height=None, max_height=None, **kwargs):
@@ -740,7 +743,7 @@ class Map(ipyleaflet.Map):
                                                                        round(latitudes[i], 2), round(longitudes[i], 2))
                 marker.location = (latitudes[i], longitudes[i])
                 self.plot(band_names, band_values, plot_type=plot_type, overlay=overlay,
-                             min_width=min_width, max_width=max_width, min_height=min_height, max_height=max_height, title=title, **kwargs)
+                          min_width=min_width, max_width=max_width, min_height=min_height, max_height=max_height, title=title, **kwargs)
                 time.sleep(0.3)
             except Exception as e:
                 print(e)
@@ -817,7 +820,7 @@ class Map(ipyleaflet.Map):
                         xy, scale=sample_scale).first().toDictionary().getInfo()
                     band_values = list(dict_values.values())
                     self.plot(band_names, band_values, plot_type=plot_type, overlay=overlay,
-                                 min_width=min_width, max_width=max_width, min_height=min_height, max_height=max_height, **kwargs)
+                              min_width=min_width, max_width=max_width, min_height=min_height, max_height=max_height, **kwargs)
                     self.default_style = {'cursor': 'crosshair'}
                 except Exception as e:
                     if self.plot_widget is not None:
@@ -976,7 +979,8 @@ def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, o
         attribution='Google Earth Engine',
         name=name,
         opacity=opacity,
-        visible=shown
+        visible=True
+        # visible=shown
     )
     return tile_layer
 
@@ -985,12 +989,18 @@ def geojson_to_ee(geo_json, geodesic=True):
     """Converts a geojson to ee.Geometry()
 
     Args:
-        geo_json (dict): A geojson geometry dictionary.
+        geo_json (dict): A geojson geometry dictionary or file path.
 
     Returns:
         ee_object: An ee.Geometry object
     """
     try:
+
+        import json
+
+        if not isinstance(geo_json, dict) and os.path.isfile(geo_json):
+            with open(os.path.abspath(geo_json)) as f:
+                geo_json = json.load(f)
 
         if geo_json['type'] == 'FeatureCollection':
             features = ee.FeatureCollection(geo_json['features'])
@@ -1014,11 +1024,11 @@ def geojson_to_ee(geo_json, geodesic=True):
             print("Could not convert the geojson to ee.Geometry()")
 
     except Exception as e:
-        print(e)
         print("Could not convert the geojson to ee.Geometry()")
+        print(e)
 
 
-def ee_to_geojson(ee_object):
+def ee_to_geojson(ee_object, out_json=None):
     """Converts Earth Engine object to geojson.
 
     Args:
@@ -1027,11 +1037,23 @@ def ee_to_geojson(ee_object):
     Returns:
         object: GeoJSON object.
     """
-    if isinstance(ee_object, ee.geometry.Geometry) or isinstance(ee_object, ee.feature.Feature) or isinstance(ee_object, ee.featurecollection.FeatureCollection):
-        json_object = ee_object.getInfo()
-        return json_object
-    else:
-        print("Could not convert the Earth Engine object to geojson")
+    from json import dumps
+    out_json = os.path.abspath(out_json)
+
+    try:
+        if isinstance(ee_object, ee.geometry.Geometry) or isinstance(ee_object, ee.feature.Feature) or isinstance(ee_object, ee.featurecollection.FeatureCollection):
+            json_object = ee_object.getInfo()
+            if not os.path.exists(os.path.dirname(out_json)):
+                os.makedirs(os.path.dirname(out_json))
+            geojson = open(out_json, "w")
+            geojson.write(dumps({"type": "FeatureCollection", "features": json_object}, indent=2) + "\n")
+            geojson.close()
+            return json_object
+        else:
+            print("Could not convert the Earth Engine object to geojson")
+    except Exception as e:
+        print(e)
+
 
 
 def open_github(subdir=None):
@@ -1050,3 +1072,89 @@ def open_github(subdir=None):
         url += '/tree/master/tutorials'
 
     webbrowser.open_new_tab(url)
+
+
+def check_install(package):
+    """Checks whether a package is installed. If not, it will install the package.
+
+    Args:
+        package (str): The name of the package to check.
+    """
+    import subprocess
+
+    try:
+        __import__(package)
+        print('{} is already installed.'.format(package))
+    except ImportError:
+        print('{} is not installed. Installing ...'.format(package))
+        try:
+            subprocess.check_call(["python", '-m', 'pip', 'install', package])
+        except Exception as e:
+            print('Failed to install {}'.format(package))
+            print(e)
+        print("{} has been installed successfully.".format(package))
+
+
+def shp_to_geojson(in_shp, out_json=None):
+    """Converts a shapefile to GeoJSON.
+    
+    Args:
+        in_shp (str): File path of the input shapefile.
+        out_json (str, optional): File path of the output GeoJSON. Defaults to None.
+    
+    Returns:
+        object: The json object representing the shapefile.
+    """
+    try:
+        import json
+        import shapefile
+        in_shp = os.path.abspath(in_shp)  
+
+        if out_json is None:
+            out_json = os.path.splitext(in_shp)[0] + ".json"
+
+            if os.path.exists(out_json):
+                out_json = out_json.replace('.json', '_bk.json')
+
+        elif not os.path.exists(os.path.dirname(out_json)):
+            os.makedirs(os.path.dirname(out_json))
+    
+        reader = shapefile.Reader(in_shp)
+        fields = reader.fields[1:]
+        field_names = [field[0] for field in fields]
+        buffer = []
+        for sr in reader.shapeRecords():
+            atr = dict(zip(field_names, sr.record))
+            geom = sr.shape.__geo_interface__
+            buffer.append(dict(type="Feature", geometry=geom, properties=atr)) 
+        
+        from json import dumps
+        geojson = open(out_json, "w")
+        geojson.write(dumps({"type": "FeatureCollection", "features": buffer}, indent=2) + "\n")
+        geojson.close()
+
+        with open(out_json) as f:
+            json_data = json.load(f)
+
+        return json_data
+    
+    except Exception as e:
+        print(e)
+
+
+def shp_to_ee(in_shp):
+    """Converts a shapefile to Earth Engine objects.
+    
+    Args:
+        in_shp (str): File path to a shapefile.
+    
+    Returns:
+        object: Earth Engine objects representing the shapefile.
+    """
+    try:
+        json_data = shp_to_geojson(in_shp)
+        ee_object = geojson_to_ee(json_data)
+        return ee_object
+    except Exception as e:
+        print(e)
+
