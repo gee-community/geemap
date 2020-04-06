@@ -211,6 +211,22 @@ To add a WMS layer to the Map:
   Map.add_wms_layer(url=naip_url, layers='0', name='NAIP Imagery', format='image/png', shown=True)
 
 
+To convert a shapefile to Earth Engine object and add it to the Map:
+
+.. code:: python
+
+  ee_object = geemap.shp_to_ee(shp_file_path)
+  Map.addLayer(ee_object, {}, 'Layer name')
+
+
+To convert a GeoJSON file to Earth Engine object and add it to the Map:
+
+.. code:: python
+
+  ee_object = geemap.geojson_to_ee(geojson_file_path)
+  Map.addLayer(ee_object, {}, 'Layer name')
+
+
 To create a split Map:
 
 .. code:: python
