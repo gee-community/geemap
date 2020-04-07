@@ -227,6 +227,20 @@ To convert a GeoJSON file to Earth Engine object and add it to the Map:
   Map.addLayer(ee_object, {}, 'Layer name')
 
 
+To download an ee.FeatureCollection as a shapefile:
+
+.. code:: python
+
+  geemap.ee_to_csv(ee_object, filename, selectors)
+
+
+To export an ee.FeatureCollection to other formats, including shp, csv, json, kml, and kmz:
+
+.. code:: python
+
+  geemap.ee_export_vector(ee_object, filename, selectors)
+
+
 To create a split Map:
 
 .. code:: python
