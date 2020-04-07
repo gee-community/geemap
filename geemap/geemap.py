@@ -1038,22 +1038,23 @@ def ee_to_geojson(ee_object, out_json=None):
         object: GeoJSON object.
     """
     from json import dumps
-    out_json = os.path.abspath(out_json)
 
     try:
         if isinstance(ee_object, ee.geometry.Geometry) or isinstance(ee_object, ee.feature.Feature) or isinstance(ee_object, ee.featurecollection.FeatureCollection):
             json_object = ee_object.getInfo()
-            if not os.path.exists(os.path.dirname(out_json)):
-                os.makedirs(os.path.dirname(out_json))
-            geojson = open(out_json, "w")
-            geojson.write(dumps({"type": "FeatureCollection", "features": json_object}, indent=2) + "\n")
-            geojson.close()
+            if out_json is not None:
+                out_json = os.path.abspath(out_json)
+                if not os.path.exists(os.path.dirname(out_json)):
+                    os.makedirs(os.path.dirname(out_json))
+                geojson = open(out_json, "w")
+                geojson.write(
+                    dumps({"type": "FeatureCollection", "features": json_object}, indent=2) + "\n")
+                geojson.close()
             return json_object
         else:
             print("Could not convert the Earth Engine object to geojson")
     except Exception as e:
         print(e)
-
 
 
 def open_github(subdir=None):
@@ -1097,18 +1098,18 @@ def check_install(package):
 
 def shp_to_geojson(in_shp, out_json=None):
     """Converts a shapefile to GeoJSON.
-    
+
     Args:
         in_shp (str): File path of the input shapefile.
         out_json (str, optional): File path of the output GeoJSON. Defaults to None.
-    
+
     Returns:
         object: The json object representing the shapefile.
     """
     try:
         import json
         import shapefile
-        in_shp = os.path.abspath(in_shp)  
+        in_shp = os.path.abspath(in_shp)
 
         if out_json is None:
             out_json = os.path.splitext(in_shp)[0] + ".json"
@@ -1118,7 +1119,7 @@ def shp_to_geojson(in_shp, out_json=None):
 
         elif not os.path.exists(os.path.dirname(out_json)):
             os.makedirs(os.path.dirname(out_json))
-    
+
         reader = shapefile.Reader(in_shp)
         fields = reader.fields[1:]
         field_names = [field[0] for field in fields]
@@ -1126,28 +1127,29 @@ def shp_to_geojson(in_shp, out_json=None):
         for sr in reader.shapeRecords():
             atr = dict(zip(field_names, sr.record))
             geom = sr.shape.__geo_interface__
-            buffer.append(dict(type="Feature", geometry=geom, properties=atr)) 
-        
+            buffer.append(dict(type="Feature", geometry=geom, properties=atr))
+
         from json import dumps
         geojson = open(out_json, "w")
-        geojson.write(dumps({"type": "FeatureCollection", "features": buffer}, indent=2) + "\n")
+        geojson.write(dumps({"type": "FeatureCollection",
+                             "features": buffer}, indent=2) + "\n")
         geojson.close()
 
         with open(out_json) as f:
             json_data = json.load(f)
 
         return json_data
-    
+
     except Exception as e:
         print(e)
 
 
 def shp_to_ee(in_shp):
     """Converts a shapefile to Earth Engine objects.
-    
+
     Args:
         in_shp (str): File path to a shapefile.
-    
+
     Returns:
         object: Earth Engine objects representing the shapefile.
     """
@@ -1158,3 +1160,137 @@ def shp_to_ee(in_shp):
     except Exception as e:
         print(e)
 
+
+def filter_polygons(ftr):
+    """Converts GeometryCollection to Polygon/MultiPolygon
+    
+    Args:
+        ftr (object): ee.Feature
+    
+    Returns:
+        object: ee.Feature
+    """    
+    geometries = ftr.geometry().geometries()
+    geometries = geometries.map(lambda geo: ee.Feature(
+        ee.Geometry(geo)).set('geoType',  ee.Geometry(geo).type()))
+
+    polygons = ee.FeatureCollection(geometries).filter(
+        ee.Filter.eq('geoType', 'Polygon')).geometry()
+    return ee.Feature(polygons).copyProperties(ftr)
+
+
+def ee_export_vector(ee_object, filename, selectors=None):
+    """Exports Earth Engine FeatureCollection to other formats, including shp, csv, json, kml, and kmz.
+    
+    Args:
+        ee_object (object): ee.FeatureCollection to export.
+        filename (str): Output file name.
+        selectors (list, optional): A list of attributes to export. Defaults to None.
+    """
+    import requests
+    import zipfile
+
+    if not isinstance(ee_object, ee.FeatureCollection):
+        print('The ee_object must be an ee.FeatureCollection.')
+        return
+
+    allowed_formats = ['csv', 'json', 'kml', 'kmz', 'shp']
+    filename = os.path.abspath(filename)
+    basename = os.path.basename(filename)
+    name = os.path.splitext(basename)[0]
+    filetype = os.path.splitext(basename)[1][1:]
+    filename_shp = filename
+
+    if filetype == 'shp':
+        filename = filename.replace('.shp', '.zip')
+
+    if not (filetype in allowed_formats):
+        print('The file type must be one of the following: {}'.format(
+            ', '.join(allowed_formats)))
+        return
+
+    if selectors is None:
+        selectors = ee_object.first().propertyNames().getInfo()
+    elif not isinstance(selectors, list):
+        print("selectors must be a list, such as ['attribute1', 'attribute2']")
+        return
+    else:
+        allowed_attributes = ee_object.first().propertyNames().getInfo()
+        for attribute in selectors:
+            if not (attribute in allowed_attributes):
+                print('Attributes must be one chosen from: {} '.format(
+                    ', '.join(allowed_attributes)))
+                return
+
+    try:
+        print('Generating URL ...')
+        url = ee_object.getDownloadURL(
+            filetype=filetype, selectors=selectors, filename=name)
+        print('Downloading data from {}\nPlease wait ...'.format(url))
+        r = requests.get(url, stream=True)
+
+        if r.status_code != 200:
+            print('An error occurred while downloading. \n Retrying ...')
+            try:
+                new_ee_object = ee_object.map(filter_polygons)
+                print('Generating URL ...')
+                url = new_ee_object.getDownloadURL(
+                    filetype=filetype, selectors=selectors, filename=name)
+                print('Downloading data from {}\nPlease wait ...'.format(url))
+                r = requests.get(url, stream=True)
+            except Exception as e:
+                print(e)
+
+        with open(filename, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size=1024):
+                fd.write(chunk)
+    except Exception as e:
+        print('An error occurred while downloading.')
+        print(e)
+
+    try:
+        if filetype == 'shp':
+            z = zipfile.ZipFile(filename)
+            z.extractall(os.path.dirname(filename))
+            os.remove(filename)
+            filename = filename.replace('.zip', '.shp')
+
+        print('Data downloaded to {}'.format(filename))
+    except Exception as e:
+        print(e)
+
+
+def ee_to_shp(ee_object, filename, selectors=None):
+    """Downloads an ee.FeatureCollection as a shapefile.
+
+    Args:
+        ee_object (object): ee.FeatureCollection
+        filename (str): The output filepath of the shapefile.
+        selectors (list, optional): A list of attributes to export. Defaults to None.
+    """
+    try:
+        if  filename.endswith('.shp'):
+            ee_export_vector(ee_object=ee_object, filename=filename, selectors=selectors)
+        else:
+            print('The filename must end with .shp')
+        
+    except Exception as e:
+        print(e)
+
+
+def ee_to_csv(ee_object, filename, selectors=None):
+    """Downloads an ee.FeatureCollection as a CSV file.
+
+    Args:
+        ee_object (object): ee.FeatureCollection
+        filename (str): The output filepath of the CSV file.
+        selectors (list, optional): A list of attributes to export. Defaults to None.
+    """
+    try:
+        if  filename.endswith('.csv'):
+            ee_export_vector(ee_object=ee_object, filename=filename, selectors=selectors)
+        else:
+            print('The filename must end with .csv')
+        
+    except Exception as e:
+        print(e)
