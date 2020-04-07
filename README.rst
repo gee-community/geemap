@@ -243,7 +243,21 @@ To export an ee.FeatureCollection to other formats, including shp, csv, json, km
   geemap.ee_export_vector(ee_object, filename, selectors)
 
 
-To create a split Map:
+To export an ee.Image as a GeoTIFF file:
+
+.. code:: python
+
+  geemap.ee_export_image(ee_object, filename, scale, crs, region, file_per_band)
+
+
+To export an ee.ImageCollection as GeoTIFF files:
+
+.. code:: python
+
+  geemap.ee_export_image_collection(ee_object, output, scale, crs, region, file_per_band)
+
+
+To create a split-panel Map:
 
 .. code:: python
 
