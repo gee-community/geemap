@@ -14,6 +14,17 @@ import ipywidgets as widgets
 from .basemaps import ee_basemaps
 
 
+def initialize_ee():
+    """Authenticates Earth Engine and initialize an Earth Engine session
+
+    """
+    try:
+        ee.Initialize()
+    except Exception as e:
+        ee.Authenticate()
+        ee.Initialize()
+
+
 class Map(ipyleaflet.Map):
     """The Map class inherits from ipyleaflet.Map
 
@@ -27,11 +38,7 @@ class Map(ipyleaflet.Map):
     def __init__(self, **kwargs):
 
         # Authenticates Earth Engine and initialize an Earth Engine session
-        try:
-            ee.Initialize()
-        except Exception as e:
-            ee.Authenticate()
-            ee.Initialize()
+        initialize_ee()
 
         # Default map center location and zoom level
         latlon = [40, -100]
@@ -942,6 +949,7 @@ def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, o
         shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
         opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
     """
+    initialize_ee()
 
     image = None
 
@@ -994,6 +1002,8 @@ def geojson_to_ee(geo_json, geodesic=True):
     Returns:
         ee_object: An ee.Geometry object
     """
+    initialize_ee()
+
     try:
 
         import json
@@ -1038,6 +1048,7 @@ def ee_to_geojson(ee_object, out_json=None):
         object: GeoJSON object.
     """
     from json import dumps
+    initialize_ee()
 
     try:
         if isinstance(ee_object, ee.geometry.Geometry) or isinstance(ee_object, ee.feature.Feature) or isinstance(ee_object, ee.featurecollection.FeatureCollection):
@@ -1106,6 +1117,7 @@ def shp_to_geojson(in_shp, out_json=None):
     Returns:
         object: The json object representing the shapefile.
     """
+    initialize_ee()
     try:
         import json
         import shapefile
@@ -1153,6 +1165,7 @@ def shp_to_ee(in_shp):
     Returns:
         object: Earth Engine objects representing the shapefile.
     """
+    initialize_ee()
     try:
         json_data = shp_to_geojson(in_shp)
         ee_object = geojson_to_ee(json_data)
@@ -1163,13 +1176,14 @@ def shp_to_ee(in_shp):
 
 def filter_polygons(ftr):
     """Converts GeometryCollection to Polygon/MultiPolygon
-    
+
     Args:
         ftr (object): ee.Feature
-    
+
     Returns:
         object: ee.Feature
-    """    
+    """
+    initialize_ee()
     geometries = ftr.geometry().geometries()
     geometries = geometries.map(lambda geo: ee.Feature(
         ee.Geometry(geo)).set('geoType',  ee.Geometry(geo).type()))
@@ -1181,7 +1195,7 @@ def filter_polygons(ftr):
 
 def ee_export_vector(ee_object, filename, selectors=None):
     """Exports Earth Engine FeatureCollection to other formats, including shp, csv, json, kml, and kmz.
-    
+
     Args:
         ee_object (object): ee.FeatureCollection to export.
         filename (str): Output file name.
@@ -1189,6 +1203,7 @@ def ee_export_vector(ee_object, filename, selectors=None):
     """
     import requests
     import zipfile
+    initialize_ee()
 
     if not isinstance(ee_object, ee.FeatureCollection):
         print('The ee_object must be an ee.FeatureCollection.')
@@ -1268,12 +1283,14 @@ def ee_to_shp(ee_object, filename, selectors=None):
         filename (str): The output filepath of the shapefile.
         selectors (list, optional): A list of attributes to export. Defaults to None.
     """
+    initialize_ee()
     try:
-        if  filename.endswith('.shp'):
-            ee_export_vector(ee_object=ee_object, filename=filename, selectors=selectors)
+        if filename.endswith('.shp'):
+            ee_export_vector(ee_object=ee_object,
+                             filename=filename, selectors=selectors)
         else:
             print('The filename must end with .shp')
-        
+
     except Exception as e:
         print(e)
 
@@ -1286,11 +1303,113 @@ def ee_to_csv(ee_object, filename, selectors=None):
         filename (str): The output filepath of the CSV file.
         selectors (list, optional): A list of attributes to export. Defaults to None.
     """
+    initialize_ee()
     try:
-        if  filename.endswith('.csv'):
-            ee_export_vector(ee_object=ee_object, filename=filename, selectors=selectors)
+        if filename.endswith('.csv'):
+            ee_export_vector(ee_object=ee_object,
+                             filename=filename, selectors=selectors)
         else:
             print('The filename must end with .csv')
-        
+
+    except Exception as e:
+        print(e)
+
+
+def ee_export_image(ee_object, filename, scale=None, crs=None, region=None, file_per_band=False):
+    """Exports an ee.Image as a GeoTIFF.
+
+    Args:
+        ee_object (object): The ee.Image to download.
+        filename (str): Output filename for the exported image.
+        scale (float, optional): A default scale to use for any bands that do not specify one; ignored if crs and crs_transform is specified. Defaults to None.
+        crs (str, optional): A default CRS string to use for any bands that do not explicitly specify one. Defaults to None.
+        region (object, optional): A polygon specifying a region to download; ignored if crs and crs_transform is specified. Defaults to None.
+        file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
+    """
+    import requests
+    import zipfile
+    initialize_ee()
+
+    if not isinstance(ee_object, ee.Image):
+        print('The ee_object must be an ee.Image.')
+        return
+
+    filename = os.path.abspath(filename)
+    basename = os.path.basename(filename)
+    name = os.path.splitext(basename)[0]
+    filetype = os.path.splitext(basename)[1][1:]
+    filename_zip = filename.replace('.tif', '.zip')
+
+    if filetype != 'tif':
+        print('The filename must end with .tif')
+        return
+
+    try:
+        print('Generating URL ...')
+        params = {'name': name, 'filePerBand': file_per_band}
+        if scale is None:
+            scale = ee_object.projection().nominalScale().multiply(10)
+        params['scale'] = scale
+        if region is None:
+            region = ee_object.geometry()
+        params['region'] = region
+        if crs is not None:
+            params['crs'] = crs
+
+        url = ee_object.getDownloadURL(params)
+        print('Downloading data from {}\nPlease wait ...'.format(url))
+        r = requests.get(url, stream=True)
+
+        if r.status_code != 200:
+            print('An error occurred while downloading.')
+            return
+
+        with open(filename_zip, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size=1024):
+                fd.write(chunk)
+
+    except Exception as e:
+        print('An error occurred while downloading.')
+        print(e)
+
+    try:
+        z = zipfile.ZipFile(filename_zip)
+        z.extractall(os.path.dirname(filename))
+        os.remove(filename_zip)
+
+        if file_per_band:
+            print('Data downloaded to {}'.format(os.path.dirname(filename)))
+        else:
+            print('Data downloaded to {}'.format(filename))
+    except Exception as e:
+        print(e)
+
+
+def ee_export_image_collection(ee_object, out_dir, scale=None, crs=None, region=None, file_per_band=False):
+
+    import requests
+    import zipfile
+    initialize_ee()
+
+    if not isinstance(ee_object, ee.ImageCollection):
+        print('The ee_object must be an ee.ImageCollection.')
+        return
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+    
+    try:
+
+        count = int(ee_object.size().getInfo())
+        print("Total number of images: {}".format(count))
+
+        for i in range(0, count):
+            image = ee.Image(ee_object.toList(count).get(i))
+            name = image.get('system:index').getInfo() + '.tif'
+            filename = os.path.join(os.path.abspath(out_dir), name)
+            print('Exporting {}/{}: {}'.format(i+1, count, name))
+            ee_export_image(image, filename=filename, scale=scale, crs=crs, region=region, file_per_band=file_per_band)
+            print('\n')
+
     except Exception as e:
         print(e)
