@@ -30,6 +30,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 7. [Converting data formats between GeoJSON and Earth Engine](#converting-data-formats-between-geojson-and-earth-engine)
 8. [Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks](#automated-conversion-from-earth-engine-javascripts-to-python-scripts-and-jupyter-notebooks)
 9. [Interactive plotting of Earth Engine data with minimal coding](#interactive-plotting-of-earth-engine-data-with-minimal-coding)
+10. [Using shapefiles with Earth Engine without having to upload data to GEE](#using-shapefiles-with-earth-engine-without-having-to-upload-data-to-gee)
 
 ### Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
@@ -66,3 +67,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 ### Interactive plotting of Earth Engine data with minimal coding
 
 ![Plotting](https://i.imgur.com/iGMRnRb.gif)
+
+### Using shapefiles with Earth Engine without having to upload data to GEE
+
+![shapefile](https://i.imgur.com/W3vNSdX.gif)

@@ -71,6 +71,8 @@ Features
 * Interactive plotting of Earth Engine data by simply clicking on the map.
 * Converting data format between GeoJSON and Earth Engine.
 * Using drawing tools to interact with Earth Engine data.
+* Using shapefiles with Earth Engine without having to upload data to one's GEE account.
+* Exporting Earth Engine FeatureCollection to other formats (i.e., shp, csv, json, kml, kmz) using only one line of code.
 
 
 Installation
