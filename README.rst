@@ -142,7 +142,7 @@ More GEE Tutorials are available on my `YouTube channel <https://gishub.org/geem
 
 |YouTube|
 
-.. |YouTube| image:: https://i.imgur.com/qIGmd0L.png
+.. |YouTube| image:: https://wetlands.io/file/images/youtube.png
    :target: https://gishub.org/geemap
 
 To create an ipyleaflet-based interactive map:

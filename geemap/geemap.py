@@ -1373,6 +1373,7 @@ def ee_export_image(ee_object, filename, scale=None, crs=None, region=None, file
     except Exception as e:
         print('An error occurred while downloading.')
         print(e)
+        return
 
     try:
         z = zipfile.ZipFile(filename_zip)
@@ -1403,7 +1404,7 @@ def ee_export_image_collection(ee_object, out_dir, scale=None, crs=None, region=
     try:
 
         count = int(ee_object.size().getInfo())
-        print("Total number of images: {}".format(count))
+        print("Total number of images: {}\n".format(count))
 
         for i in range(0, count):
             image = ee.Image(ee_object.toList(count).get(i))
@@ -1420,14 +1421,14 @@ def ee_export_image_collection(ee_object, out_dir, scale=None, crs=None, region=
 
 def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_value=None):
     """Extracts a rectangular region of pixels from an image into a 2D numpy array per band.
-    
+
     Args:
         ee_object (object): The image to sample.
         bands (list, optional): The list of band names to extract. Defaults to None.
         region (object, optional): The region whose projected bounding box is used to sample the image. Defaults to the footprint in each band.
         properties (list, optional): The properties to copy over from the sampled image. Defaults to all non-system properties.
         default_value (float, optional): A default value used when a sampled pixel is masked or outside a band's footprint. Defaults to None.
-    
+
     Returns:
         array: A 3D numpy array.
     """
