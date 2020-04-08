@@ -17,7 +17,7 @@
 
 More video tutorials for geemap and Earth Engine are available on my [YouTube channel](https://www.youtube.com/c/QiushengWu). If you can't access YouTube in your country, you can try [西瓜视频](http://gishub.org/xigua)。
 
-[![Earth Engine Tutorials on YouTube](https://i.imgur.com/qIGmd0L.png)](https://www.youtube.com/c/QiushengWu)
+[![Earth Engine Tutorials on YouTube](https://wetlands.io/file/images/youtube.png)](https://www.youtube.com/c/QiushengWu)
 
 ## Tutorials
 
@@ -31,6 +31,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 8. [Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks](#automated-conversion-from-earth-engine-javascripts-to-python-scripts-and-jupyter-notebooks)
 9. [Interactive plotting of Earth Engine data with minimal coding](#interactive-plotting-of-earth-engine-data-with-minimal-coding)
 10. [Using shapefiles with Earth Engine without having to upload data to GEE](#using-shapefiles-with-earth-engine-without-having-to-upload-data-to-gee)
+11. [Exporting Earth Engine Image and ImageCollection as GeoTIFF and Numpy array](#exporting-earth-engine-image-and-imagecollection-as-geotiff-and-numpy-array)
 
 ### Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
@@ -71,3 +72,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 ### Using shapefiles with Earth Engine without having to upload data to GEE
 
 ![shapefile](https://i.imgur.com/W3vNSdX.gif)
+
+### Exporting Earth Engine Image and ImageCollection as GeoTIFF and Numpy array
+
+![exporting](https://i.imgur.com/RonLr0j.gif)
