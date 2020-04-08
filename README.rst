@@ -73,6 +73,8 @@ Features
 * Using drawing tools to interact with Earth Engine data.
 * Using shapefiles with Earth Engine without having to upload data to one's GEE account.
 * Exporting Earth Engine FeatureCollection to other formats (i.e., shp, csv, json, kml, kmz) using only one line of code.
+* Exporting Earth Engine Image and ImageCollection as GeoTIFF.
+* Extracting pixels from an Earth Engine Image into a 3D numpy array.
 
 
 Installation
@@ -104,7 +106,14 @@ If you have installed **geemap** before and want to upgrade to the latest versio
 .. code:: python
 
   pip install -U geemap
+
+
+If you use conda, you can update geemap to the latest version by running the following command in your terminal:
   
+.. code:: python
+
+  conda update -c conda-forge geemap
+
 
 To install the development version from GitHub, run the following command in your terminal:
 
@@ -255,6 +264,13 @@ To export an ee.ImageCollection as GeoTIFF files:
 .. code:: python
 
   geemap.ee_export_image_collection(ee_object, output, scale, crs, region, file_per_band)
+
+
+To extract pixels from an ee.Image into a 3D numpy array:
+
+.. code:: python
+
+  geemap.ee_to_numpy(ee_object, bands, region, properties, default_value)
 
 
 To create a split-panel Map:

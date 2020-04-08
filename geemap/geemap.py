@@ -1,20 +1,18 @@
 """Main module for interactive mapping using Google Earth Engine Python API and ipyleaflet.
-Keep in mind that Earth Engine functions use camel case, such as setOptions(), setCenter(), centerObject(), addLayer().
+Keep in mind that Earth Engine functions use both camel case and snake case, such as setOptions(), setCenter(), centerObject(), addLayer().
 ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), add_minimap().
 """
 
 import ee
 import ipyleaflet
-import math
 import os
-import webbrowser
 from bqplot import pyplot as plt
 from ipyleaflet import *
 import ipywidgets as widgets
 from .basemaps import ee_basemaps
 
 
-def initialize_ee():
+def ee_initialize():
     """Authenticates Earth Engine and initialize an Earth Engine session
 
     """
@@ -38,7 +36,7 @@ class Map(ipyleaflet.Map):
     def __init__(self, **kwargs):
 
         # Authenticates Earth Engine and initialize an Earth Engine session
-        initialize_ee()
+        ee_initialize()
 
         # Default map center location and zoom level
         latlon = [40, -100]
@@ -485,6 +483,7 @@ class Map(ipyleaflet.Map):
         Returns:
             float: Map resolution in meters.
         """
+        import math
         zoom_level = self.zoom
         # Reference: https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
         resolution = 156543.04 * math.cos(0) / math.pow(2, zoom_level)
@@ -949,7 +948,7 @@ def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, o
         shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
         opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
     """
-    initialize_ee()
+    ee_initialize()
 
     image = None
 
@@ -1002,7 +1001,7 @@ def geojson_to_ee(geo_json, geodesic=True):
     Returns:
         ee_object: An ee.Geometry object
     """
-    initialize_ee()
+    ee_initialize()
 
     try:
 
@@ -1048,7 +1047,7 @@ def ee_to_geojson(ee_object, out_json=None):
         object: GeoJSON object.
     """
     from json import dumps
-    initialize_ee()
+    ee_initialize()
 
     try:
         if isinstance(ee_object, ee.geometry.Geometry) or isinstance(ee_object, ee.feature.Feature) or isinstance(ee_object, ee.featurecollection.FeatureCollection):
@@ -1074,6 +1073,8 @@ def open_github(subdir=None):
     Args:
         subdir (str, optional): Sub-directory of the repository. Defaults to None.
     """
+    import webbrowser
+
     url = 'https://github.com/giswqs/geemap'
 
     if subdir == 'source':
@@ -1117,7 +1118,8 @@ def shp_to_geojson(in_shp, out_json=None):
     Returns:
         object: The json object representing the shapefile.
     """
-    initialize_ee()
+    check_install('pyshp')
+    ee_initialize()
     try:
         import json
         import shapefile
@@ -1165,7 +1167,7 @@ def shp_to_ee(in_shp):
     Returns:
         object: Earth Engine objects representing the shapefile.
     """
-    initialize_ee()
+    ee_initialize()
     try:
         json_data = shp_to_geojson(in_shp)
         ee_object = geojson_to_ee(json_data)
@@ -1183,7 +1185,7 @@ def filter_polygons(ftr):
     Returns:
         object: ee.Feature
     """
-    initialize_ee()
+    ee_initialize()
     geometries = ftr.geometry().geometries()
     geometries = geometries.map(lambda geo: ee.Feature(
         ee.Geometry(geo)).set('geoType',  ee.Geometry(geo).type()))
@@ -1203,7 +1205,7 @@ def ee_export_vector(ee_object, filename, selectors=None):
     """
     import requests
     import zipfile
-    initialize_ee()
+    ee_initialize()
 
     if not isinstance(ee_object, ee.FeatureCollection):
         print('The ee_object must be an ee.FeatureCollection.')
@@ -1283,7 +1285,7 @@ def ee_to_shp(ee_object, filename, selectors=None):
         filename (str): The output filepath of the shapefile.
         selectors (list, optional): A list of attributes to export. Defaults to None.
     """
-    initialize_ee()
+    ee_initialize()
     try:
         if filename.endswith('.shp'):
             ee_export_vector(ee_object=ee_object,
@@ -1303,7 +1305,7 @@ def ee_to_csv(ee_object, filename, selectors=None):
         filename (str): The output filepath of the CSV file.
         selectors (list, optional): A list of attributes to export. Defaults to None.
     """
-    initialize_ee()
+    ee_initialize()
     try:
         if filename.endswith('.csv'):
             ee_export_vector(ee_object=ee_object,
@@ -1328,7 +1330,7 @@ def ee_export_image(ee_object, filename, scale=None, crs=None, region=None, file
     """
     import requests
     import zipfile
-    initialize_ee()
+    ee_initialize()
 
     if not isinstance(ee_object, ee.Image):
         print('The ee_object must be an ee.Image.')
@@ -1389,7 +1391,7 @@ def ee_export_image_collection(ee_object, out_dir, scale=None, crs=None, region=
 
     import requests
     import zipfile
-    initialize_ee()
+    ee_initialize()
 
     if not isinstance(ee_object, ee.ImageCollection):
         print('The ee_object must be an ee.ImageCollection.')
@@ -1397,7 +1399,7 @@ def ee_export_image_collection(ee_object, out_dir, scale=None, crs=None, region=
 
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
-    
+
     try:
 
         count = int(ee_object.size().getInfo())
@@ -1408,8 +1410,54 @@ def ee_export_image_collection(ee_object, out_dir, scale=None, crs=None, region=
             name = image.get('system:index').getInfo() + '.tif'
             filename = os.path.join(os.path.abspath(out_dir), name)
             print('Exporting {}/{}: {}'.format(i+1, count, name))
-            ee_export_image(image, filename=filename, scale=scale, crs=crs, region=region, file_per_band=file_per_band)
+            ee_export_image(image, filename=filename, scale=scale,
+                            crs=crs, region=region, file_per_band=file_per_band)
             print('\n')
+
+    except Exception as e:
+        print(e)
+
+
+def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_value=None):
+    """Extracts a rectangular region of pixels from an image into a 2D numpy array per band.
+    
+    Args:
+        ee_object (object): The image to sample.
+        bands (list, optional): The list of band names to extract. Defaults to None.
+        region (object, optional): The region whose projected bounding box is used to sample the image. Defaults to the footprint in each band.
+        properties (list, optional): The properties to copy over from the sampled image. Defaults to all non-system properties.
+        default_value (float, optional): A default value used when a sampled pixel is masked or outside a band's footprint. Defaults to None.
+    
+    Returns:
+        array: A 3D numpy array.
+    """
+    import numpy as np
+    if not isinstance(ee_object, ee.Image):
+        print('The input must be an ee.Image.')
+        return
+
+    if region is None:
+        region = ee_object.geometry()
+
+    try:
+
+        if bands is not None:
+            ee_object = ee_object.select(bands)
+        else:
+            bands = ee_object.bandNames().getInfo()
+
+        band_count = len(bands)
+        band_arrs = ee_object.sampleRectangle(
+            region=region, properties=properties, defaultValue=default_value)
+        band_values = []
+
+        for band in bands:
+            band_arr = band_arrs.get(band).getInfo()
+            band_value = np.array(band_arr)
+            band_values.append(band_value)
+
+        image = np.dstack(band_values)
+        return image
 
     except Exception as e:
         print(e)
