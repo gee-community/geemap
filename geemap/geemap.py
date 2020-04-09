@@ -1462,3 +1462,52 @@ def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_val
 
     except Exception as e:
         print(e)
+
+
+def zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_type='MEAN', scale=None, crs=None, tile_scale=1.0):
+
+    if not isinstance(in_value_raster, ee.Image):
+        print('The input raster must be an ee.Image.')
+        return
+
+    if not isinstance(in_zone_vector, ee.FeatureCollection):
+        print('The input zone data must be an ee.FeatureCollection.')
+        return
+
+    allowed_formats = ['csv', 'json', 'kml', 'kmz', 'shp']
+    filename = os.path.abspath(out_file_path)
+    basename = os.path.basename(filename)
+    name = os.path.splitext(basename)[0]
+    filetype = os.path.splitext(basename)[1][1:]
+
+    if not (filetype in allowed_formats):
+        print('The file type must be one of the following: {}'.format(
+            ', '.join(allowed_formats)))
+        return
+
+    allowed_statistics = {
+        'MEAN': ee.Reducer.mean(),
+        'MAXIMUM': ee.Reducer.max(),
+        'MEDIAN': ee.Reducer.median(),
+        'MINIMUM': ee.Reducer.min(),
+        'STD': ee.Reducer.stdDev(),
+        'MIN_MAX': ee.Reducer.minMax(),
+        'SUM': ee.Reducer.sum(),
+        'VARIANCE': ee.Reducer.variance()
+    }
+
+    if not (statistics_type in allowed_statistics.keys()):
+        print('The statistics type must be one of the following: {}'.format(
+            ', '.join(list(allowed_statistics.keys()))))
+        return
+
+    if scale is None:
+        scale = in_value_raster.projection().nominalScale().multiply(10)
+
+    try:
+        print('Computing statistics ...')
+        result = in_value_raster.reduceRegions(
+            collection=in_zone_vector, reducer=allowed_statistics[statistics_type], scale=scale, crs=crs, tileScale=tile_scale)
+        ee_export_vector(result, filename)
+    except Exception as e:
+        print(e)
