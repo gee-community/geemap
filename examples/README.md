@@ -21,58 +21,64 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 
 ## Tutorials
 
-1. [Introducing the geemap Python package for interactive mapping with Google Earth Engine](#introducing-the-geemap-python-package-for-interactive-mapping-with-google-earth-engine)
-2. [Using basemaps in geemap and ipyleaflet for interactive mapping with Google Earth Engine](#using-basemaps-in-geemap-and-ipyleaflet-for-interactive-mapping-with-google-earth-engine)
-3. [Introducing the Inspector tool for Earth Engine Python API](#introducing-the-inspector-tool-for-earth-engine-python-api)
-4. [Creating a split-panel map for visualizing Earth Engine data](#creating-a-split-panel-map-for-visualizing-earth-engine-data)
-5. [Using drawing tools to interact with Earth Engine data](#using-drawing-tools-to-interact-with-earth-engine-data)
-6. [Creating an interactive map with a marker cluster](#creating-an-interactive-map-with-a-marker-cluster)
-7. [Converting data formats between GeoJSON and Earth Engine](#converting-data-formats-between-geojson-and-earth-engine)
-8. [Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks](#automated-conversion-from-earth-engine-javascripts-to-python-scripts-and-jupyter-notebooks)
-9. [Interactive plotting of Earth Engine data with minimal coding](#interactive-plotting-of-earth-engine-data-with-minimal-coding)
-10. [Using shapefiles with Earth Engine without having to upload data to GEE](#using-shapefiles-with-earth-engine-without-having-to-upload-data-to-gee)
-11. [Exporting Earth Engine Image and ImageCollection as GeoTIFF and Numpy array](#exporting-earth-engine-image-and-imagecollection-as-geotiff-and-numpy-array)
+1. [Introducing the geemap Python package for interactive mapping with Google Earth Engine](#1-introducing-the-geemap-python-package-for-interactive-mapping-with-google-earth-engine)
+2. [Using basemaps in geemap and ipyleaflet for interactive mapping with Google Earth Engine](#2-using-basemaps-in-geemap-and-ipyleaflet-for-interactive-mapping-with-google-earth-engine)
+3. [Introducing the Inspector tool for Earth Engine Python API](#3-introducing-the-inspector-tool-for-earth-engine-python-api)
+4. [Creating a split-panel map for visualizing Earth Engine data](#4-creating-a-split-panel-map-for-visualizing-earth-engine-data)
+5. [Using drawing tools to interact with Earth Engine data](#5-using-drawing-tools-to-interact-with-earth-engine-data)
+6. [Creating an interactive map with a marker cluster](#6-creating-an-interactive-map-with-a-marker-cluster)
+7. [Converting data formats between GeoJSON and Earth Engine](#7-converting-data-formats-between-geojson-and-earth-engine)
+8. [Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks](#8-automated-conversion-from-earth-engine-javascripts-to-python-scripts-and-jupyter-notebooks)
+9. [Interactive plotting of Earth Engine data with minimal coding](#9-interactive-plotting-of-earth-engine-data-with-minimal-coding)
+10. [Using shapefiles with Earth Engine without having to upload data to GEE](#10-using-shapefiles-with-earth-engine-without-having-to-upload-data-to-gee)
+11. [Exporting Earth Engine Image and ImageCollection as GeoTIFF and Numpy array](#11-exporting-earth-engine-image-and-imagecollection-as-geotiff-and-numpy-array)
+12. [Zonal statistics with Earth Engine and exporting results as CSV or shapefile](#12-zonal-statistics-with-earth-engine-and-exporting-results-as-csv-or-shapefile)
 
-### Introducing the geemap Python package for interactive mapping with Google Earth Engine
+
+### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
 ![Intro geemap](https://i.imgur.com/pI39k7v.gif)
 
-### Using basemaps in geemap and ipyleaflet for interactive mapping with Google Earth Engine
+### 2. Using basemaps in geemap and ipyleaflet for interactive mapping with Google Earth Engine
 
 ![basemaps](https://i.imgur.com/P5B2f7p.gif)
 
-### Introducing the Inspector tool for Earth Engine Python API
+### 3. Introducing the Inspector tool for Earth Engine Python API
 
 ![Inspector tool](https://i.imgur.com/8d77gtI.gif)
 
-### Creating a split-panel map for visualizing Earth Engine data
+### 4. Creating a split-panel map for visualizing Earth Engine data
 
 ![Split panel](https://i.imgur.com/kql7pC3.gif)
 
-### Using drawing tools to interact with Earth Engine data
+### 5. Using drawing tools to interact with Earth Engine data
 
 ![Drawing tools](https://i.imgur.com/Lm5pDUr.gif)
 
-### Creating an interactive map with a marker cluster
+### 6. Creating an interactive map with a marker cluster
 
 ![Marker cluster](https://i.imgur.com/GF4cOqh.gif)
 
-### Converting data formats between GeoJSON and Earth Engine
+### 7. Converting data formats between GeoJSON and Earth Engine
 
 ![GeoJSON](https://i.imgur.com/hVPmUG1.gif)
 
-### Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks
+### 8. Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks
 
 ![Conversion](https://i.imgur.com/BW0zJnN.gif)
 
-### Interactive plotting of Earth Engine data with minimal coding
+### 9. Interactive plotting of Earth Engine data with minimal coding
 
 ![Plotting](https://i.imgur.com/iGMRnRb.gif)
 
-### Using shapefiles with Earth Engine without having to upload data to GEE
+### 10. Using shapefiles with Earth Engine without having to upload data to GEE
 
 ![shapefile](https://i.imgur.com/W3vNSdX.gif)
 
-### Exporting Earth Engine Image and ImageCollection as GeoTIFF and Numpy array
+### 11. Exporting Earth Engine Image and ImageCollection as GeoTIFF and Numpy array
 
 ![exporting](https://i.imgur.com/RonLr0j.gif)
+
+### 12. Zonal statistics with Earth Engine and exporting results as CSV or shapefile
+
+![zonal](https://i.imgur.com/8xmUitW.gif)
