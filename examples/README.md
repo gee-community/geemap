@@ -32,7 +32,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 9. [Interactive plotting of Earth Engine data with minimal coding](#9-interactive-plotting-of-earth-engine-data-with-minimal-coding)
 10. [Using shapefiles with Earth Engine without having to upload data to GEE](#10-using-shapefiles-with-earth-engine-without-having-to-upload-data-to-gee)
 11. [Exporting Earth Engine Image and ImageCollection as GeoTIFF and Numpy array](#11-exporting-earth-engine-image-and-imagecollection-as-geotiff-and-numpy-array)
-12. [Zonal statistics with Earth Engine and exporting results as CSV or shapefile](#12-zonal-statistics-with-earth-engine-and-exporting-results-as-csv-or-shapefile)
+12. [Computing zonal statistics with Earth Engine and exporting results as CSV or shapefile](#12-computing-zonal-statistics-with-earth-engine-and-exporting-results-as-csv-or-shapefile)
 
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
@@ -79,6 +79,6 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 
 ![exporting](https://i.imgur.com/RonLr0j.gif)
 
-### 12. Zonal statistics with Earth Engine and exporting results as CSV or shapefile
+### 12. Computing zonal statistics with Earth Engine and exporting results as CSV or shapefile
 
 ![zonal](https://i.imgur.com/8xmUitW.gif)

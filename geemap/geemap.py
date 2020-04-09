@@ -1465,7 +1465,17 @@ def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_val
 
 
 def zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_type='MEAN', scale=None, crs=None, tile_scale=1.0):
+    """Summarizes the values of a raster within the zones of another dataset and reports the results to a csv, shp, json, kml, or kmz.
 
+    Args:
+        in_value_raster (object): An ee.Image that contains the values on which to calculate a statistic.
+        in_zone_vector (object): An ee.FeatureCollection that defines the zones.
+        out_file_path (str): Output file path that will contain the summary of the values in each zone. The file type can be: csv, shp, json, kml, kmz
+        statistics_type (str, optional): Statistic type to be calculated. Defaults to 'MEAN'.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+        crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
+        tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
+    """
     if not isinstance(in_value_raster, ee.Image):
         print('The input raster must be an ee.Image.')
         return
