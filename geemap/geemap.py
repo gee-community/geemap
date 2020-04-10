@@ -1464,7 +1464,7 @@ def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_val
         print(e)
 
 
-def zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_type='MEAN', scale=None, crs=None, tile_scale=1.0):
+def zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_type='MEAN', scale=None, crs=None, tile_scale=1.0, hist_init=None, hist_end=None, hist_bins=None):
     """Summarizes the values of a raster within the zones of another dataset and reports the results to a csv, shp, json, kml, or kmz.
 
     Args:
@@ -1476,6 +1476,7 @@ def zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_
         crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
         tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
     """
+    
     if not isinstance(in_value_raster, ee.Image):
         print('The input raster must be an ee.Image.')
         return
@@ -1503,8 +1504,9 @@ def zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_
         'STD': ee.Reducer.stdDev(),
         'MIN_MAX': ee.Reducer.minMax(),
         'SUM': ee.Reducer.sum(),
-        'VARIANCE': ee.Reducer.variance()
-    }
+        'VARIANCE': ee.Reducer.variance(),
+        'HIST': ee.Reducer.histogram(),
+        'FIXED_HIST': ee.Reducer.fixedHistogram(hist_init, hist_end, hist_bins)}
 
     if not (statistics_type in allowed_statistics.keys()):
         print('The statistics type must be one of the following: {}'.format(
