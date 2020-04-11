@@ -1108,6 +1108,32 @@ def check_install(package):
         print("{} has been installed successfully.".format(package))
 
 
+def update_package(filename='geemap.py'):
+    """Updates the geemap package by downloading files from the geemap GitHub repository with the need to use pip or conda.
+        In this way, I don't have to keep updating pypi and conda-forge with every minor update of the package.
+
+    Args:
+        filename (str, optional): The file to update. Defaults to 'geemap.py'.
+
+    """
+    import urllib.request
+    import pkg_resources
+
+    repo_root = 'https://raw.githubusercontent.com/giswqs/geemap/master/geemap'
+    in_file = os.path.join(repo_root, filename)
+
+    pkg_dir = os.path.dirname(
+        pkg_resources.resource_filename("geemap", "geemap.py"))
+    out_file = os.path.join(pkg_dir, filename)
+
+    try:
+        print('Downloading {}'.format(in_file))
+        urllib.request.urlretrieve(in_file, out_file)
+        print('The geemap package has been updated successfully.')
+    except Exception as e:
+        print(e)
+
+
 def shp_to_geojson(in_shp, out_json=None):
     """Converts a shapefile to GeoJSON.
 
@@ -1118,7 +1144,7 @@ def shp_to_geojson(in_shp, out_json=None):
     Returns:
         object: The json object representing the shapefile.
     """
-    check_install('pyshp')
+    # check_install('pyshp')
     ee_initialize()
     try:
         import json
@@ -1215,13 +1241,13 @@ def ee_export_vector(ee_object, filename, selectors=None):
     filename = os.path.abspath(filename)
     basename = os.path.basename(filename)
     name = os.path.splitext(basename)[0]
-    filetype = os.path.splitext(basename)[1][1:]
+    filetype = os.path.splitext(basename)[1][1:].lower()
     filename_shp = filename
 
     if filetype == 'shp':
         filename = filename.replace('.shp', '.zip')
 
-    if not (filetype in allowed_formats):
+    if not (filetype.lower() in allowed_formats):
         print('The file type must be one of the following: {}'.format(
             ', '.join(allowed_formats)))
         return
@@ -1264,6 +1290,7 @@ def ee_export_vector(ee_object, filename, selectors=None):
     except Exception as e:
         print('An error occurred while downloading.')
         print(e)
+        return
 
     try:
         if filetype == 'shp':
@@ -1287,7 +1314,7 @@ def ee_to_shp(ee_object, filename, selectors=None):
     """
     ee_initialize()
     try:
-        if filename.endswith('.shp'):
+        if filename.lower().endswith('.shp'):
             ee_export_vector(ee_object=ee_object,
                              filename=filename, selectors=selectors)
         else:
@@ -1307,7 +1334,7 @@ def ee_to_csv(ee_object, filename, selectors=None):
     """
     ee_initialize()
     try:
-        if filename.endswith('.csv'):
+        if filename.lower().endswith('.csv'):
             ee_export_vector(ee_object=ee_object,
                              filename=filename, selectors=selectors)
         else:
@@ -1339,7 +1366,7 @@ def ee_export_image(ee_object, filename, scale=None, crs=None, region=None, file
     filename = os.path.abspath(filename)
     basename = os.path.basename(filename)
     name = os.path.splitext(basename)[0]
-    filetype = os.path.splitext(basename)[1][1:]
+    filetype = os.path.splitext(basename)[1][1:].lower()
     filename_zip = filename.replace('.tif', '.zip')
 
     if filetype != 'tif':
@@ -1464,19 +1491,19 @@ def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_val
         print(e)
 
 
-def zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_type='MEAN', scale=None, crs=None, tile_scale=1.0, hist_init=None, hist_end=None, hist_bins=None):
-    """Summarizes the values of a raster within the zones of another dataset and reports the results to a csv, shp, json, kml, or kmz.
+def zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_type='MEAN', scale=None, crs=None, tile_scale=1.0, **kwargs):
+    """Summarizes the values of a raster within the zones of another dataset and exports the results as a csv, shp, json, kml, or kmz.
 
     Args:
         in_value_raster (object): An ee.Image that contains the values on which to calculate a statistic.
         in_zone_vector (object): An ee.FeatureCollection that defines the zones.
         out_file_path (str): Output file path that will contain the summary of the values in each zone. The file type can be: csv, shp, json, kml, kmz
-        statistics_type (str, optional): Statistic type to be calculated. Defaults to 'MEAN'.
+        statistics_type (str, optional): Statistic type to be calculated. Defaults to 'MEAN'. For 'HIST', you can provide three parameters: max_buckets, min_bucket_width, and max_raw. For 'FIXED_HIST', you must provide three parameters: hist_min, hist_max, and hist_steps.
         scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
         crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
         tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
     """
-    
+
     if not isinstance(in_value_raster, ee.Image):
         print('The input raster must be an ee.Image.')
         return
@@ -1489,11 +1516,37 @@ def zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_
     filename = os.path.abspath(out_file_path)
     basename = os.path.basename(filename)
     name = os.path.splitext(basename)[0]
-    filetype = os.path.splitext(basename)[1][1:]
+    filetype = os.path.splitext(basename)[1][1:].lower()
 
     if not (filetype in allowed_formats):
         print('The file type must be one of the following: {}'.format(
             ', '.join(allowed_formats)))
+        return
+
+    # Parameters for histogram
+    # The maximum number of buckets to use when building a histogram; will be rounded up to a power of 2.
+    max_buckets = None
+    # The minimum histogram bucket width, or null to allow any power of 2.
+    min_bucket_width = None
+    # The number of values to accumulate before building the initial histogram.
+    max_raw = None
+    hist_min = 1.0  # The lower (inclusive) bound of the first bucket.
+    hist_max = 100.0  # The upper (exclusive) bound of the last bucket.
+    hist_steps = 10  # The number of buckets to use.
+
+    if 'max_buckets' in kwargs.keys():
+        max_buckets = kwargs['max_buckets']
+    if 'min_bucket_width' in kwargs.keys():
+        min_bucket_width = kwargs['min_bucket']
+    if 'max_raw' in kwargs.keys():
+        max_raw = kwargs['max_raw']
+
+    if statistics_type.upper() == 'FIXED_HIST' and ('hist_min' in kwargs.keys()) and ('hist_max' in kwargs.keys()) and ('hist_steps' in kwargs.keys()):
+        hist_min = kwargs['hist_min']
+        hist_max = kwargs['hist_max']
+        hist_steps = kwargs['hist_steps']
+    elif statistics_type.upper() == 'FIXED_HIST':
+        print('To use fixedHistogram, please provide these three parameters: hist_min, hist_max, and hist_steps.')
         return
 
     allowed_statistics = {
@@ -1505,10 +1558,11 @@ def zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_
         'MIN_MAX': ee.Reducer.minMax(),
         'SUM': ee.Reducer.sum(),
         'VARIANCE': ee.Reducer.variance(),
-        'HIST': ee.Reducer.histogram(),
-        'FIXED_HIST': ee.Reducer.fixedHistogram(hist_init, hist_end, hist_bins)}
+        'HIST': ee.Reducer.histogram(maxBuckets=max_buckets, minBucketWidth=min_bucket_width, maxRaw=max_raw),
+        'FIXED_HIST': ee.Reducer.fixedHistogram(hist_min, hist_max, hist_steps)
+    }
 
-    if not (statistics_type in allowed_statistics.keys()):
+    if not (statistics_type.upper() in allowed_statistics.keys()):
         print('The statistics type must be one of the following: {}'.format(
             ', '.join(list(allowed_statistics.keys()))))
         return
@@ -1521,5 +1575,132 @@ def zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_
         result = in_value_raster.reduceRegions(
             collection=in_zone_vector, reducer=allowed_statistics[statistics_type], scale=scale, crs=crs, tileScale=tile_scale)
         ee_export_vector(result, filename)
+    except Exception as e:
+        print(e)
+
+
+def zonal_statistics_by_group(in_value_raster, in_zone_vector, out_file_path, statistics_type='SUM', decimal_places=0, denominator=1.0, scale=None, crs=None, tile_scale=1.0):
+    """Summarizes the area or percentage of a raster by group within the zones of another dataset and exports the results as a csv, shp, json, kml, or kmz.
+
+    Args:
+        in_value_raster (object): An integer Image that contains the values on which to calculate area/percentage.
+        in_zone_vector (object): An ee.FeatureCollection that defines the zones.
+        out_file_path (str): Output file path that will contain the summary of the values in each zone. The file type can be: csv, shp, json, kml, kmz
+        statistics_type (str, optional): Can be either 'SUM' or 'PERCENTAGE' . Defaults to 'SUM'.
+        decimal_places (int, optional): The number of decimal places to use. Defaults to 0.
+        denominator (float, optional): To covert area units (e.g., from square meters to square kilometers). Defaults to 1.0.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+        crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
+        tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
+
+    """
+    if not isinstance(in_value_raster, ee.Image):
+        print('The input raster must be an ee.Image.')
+        return
+
+    band_count = in_value_raster.bandNames().size().getInfo()
+
+    band_name = ''
+    if band_count == 1:
+        band_name = in_value_raster.bandNames().get(0)
+    else:
+        print('The input image can only have one band.')
+        return
+
+    band_types = in_value_raster.bandTypes().get(band_name).getInfo()
+    band_type = band_types.get('precision')
+    if band_type != 'int':
+        print('The input image band must be integer type.')
+        return
+
+    if not isinstance(in_zone_vector, ee.FeatureCollection):
+        print('The input zone data must be an ee.FeatureCollection.')
+        return
+
+    allowed_formats = ['csv', 'json', 'kml', 'kmz', 'shp']
+    filename = os.path.abspath(out_file_path)
+    basename = os.path.basename(filename)
+    name = os.path.splitext(basename)[0]
+    filetype = os.path.splitext(basename)[1][1:]
+
+    if not (filetype.lower() in allowed_formats):
+        print('The file type must be one of the following: {}'.format(
+            ', '.join(allowed_formats)))
+        return
+
+    out_dir = os.path.dirname(filename)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    allowed_statistics = ['SUM', 'PERCENTAGE']
+    if not (statistics_type.upper() in allowed_statistics):
+        print('The statistics type can only be one of {}'.format(
+            ', '.join(allowed_statistics)))
+        return
+
+    if scale is None:
+        scale = in_value_raster.projection().nominalScale().multiply(10)
+
+    try:
+
+        print('Computing ... ')
+        geometry = in_zone_vector.geometry()
+
+        hist = in_value_raster.reduceRegion(ee.Reducer.frequencyHistogram(
+        ), geometry=geometry, bestEffort=True, scale=scale)
+        class_values = ee.Dictionary(hist.get(band_name)).keys().map(
+            lambda v: ee.Number.parse(v)).sort()
+
+        class_names = class_values.map(
+            lambda c: ee.String('Class_').cat(ee.Number(c).format()))
+
+        class_count = class_values.size().getInfo()
+        dataset = ee.Image.pixelArea().divide(denominator).addBands(in_value_raster)
+
+        init_result = dataset.reduceRegions(**{
+            'collection': in_zone_vector,
+            'reducer': ee.Reducer.sum().group(**{
+                'groupField': 1,
+                'groupName': 'group',
+            }),
+            'scale': scale
+        })
+
+        def build_dict(input_list):
+
+            decimal_format = '%.{}f'.format(decimal_places)
+            in_dict = input_list.map(lambda x: ee.Dictionary().set(ee.String('Class_').cat(
+                ee.Number(ee.Dictionary(x).get('group')).format()), ee.Number.parse(ee.Number(ee.Dictionary(x).get('sum')).format(decimal_format))))
+            return in_dict
+
+        def get_keys(input_list):
+            return input_list.map(lambda x: ee.String('Class_').cat(ee.Number(ee.Dictionary(x).get('group')).format()))
+
+        def get_values(input_list):
+            decimal_format = '%.{}f'.format(decimal_places)
+            return input_list.map(lambda x: ee.Number.parse(ee.Number(ee.Dictionary(x).get('sum')).format(decimal_format)))
+
+        def set_attribute(f):
+            groups = ee.List(f.get('groups'))
+            keys = get_keys(groups)
+            values = get_values(groups)
+            total_area = ee.List(values).reduce(ee.Reducer.sum())
+
+            def get_class_values(x):
+                cls_value = ee.Algorithms.If(
+                    keys.contains(x), values.get(keys.indexOf(x)), 0)
+                cls_value = ee.Algorithms.If(ee.String(statistics_type).compareTo(ee.String(
+                    'SUM')), ee.Number(cls_value).divide(ee.Number(total_area)), cls_value)
+                return cls_value
+
+            full_values = class_names.map(lambda x: get_class_values(x))
+            attr_dict = ee.Dictionary.fromLists(class_names, full_values)
+            attr_dict = attr_dict.set('Class_sum', total_area)
+
+            return f.set(attr_dict).set('groups', None)
+
+        final_result = init_result.map(set_attribute)
+        ee_export_vector(final_result, filename)
+
     except Exception as e:
         print(e)

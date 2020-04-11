@@ -75,7 +75,7 @@ Features
 * Exporting Earth Engine FeatureCollection to other formats (i.e., shp, csv, json, kml, kmz) using only one line of code.
 * Exporting Earth Engine Image and ImageCollection as GeoTIFF.
 * Extracting pixels from an Earth Engine Image into a 3D numpy array.
-
+* Calculating zonal statistics by group (e.g., calculating land over composition of each state/country).
 
 Installation
 ------------
@@ -271,6 +271,20 @@ To extract pixels from an ee.Image into a 3D numpy array:
 .. code:: python
 
   geemap.ee_to_numpy(ee_object, bands, region, properties, default_value)
+
+
+To calculate zonal statistics:
+
+.. code:: python
+
+  geemap.zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_type='MEAN')
+
+
+To calculate zonal statistics by group:
+
+.. code:: python
+
+  geemap.zonal_statistics_by_group(in_value_raster, in_zone_vector, out_file_path, statistics_type='SUM')
 
 
 To create a split-panel Map:

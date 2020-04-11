@@ -33,6 +33,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 10. [Using shapefiles with Earth Engine without having to upload data to GEE](#10-using-shapefiles-with-earth-engine-without-having-to-upload-data-to-gee)
 11. [Exporting Earth Engine Image and ImageCollection as GeoTIFF and Numpy array](#11-exporting-earth-engine-image-and-imagecollection-as-geotiff-and-numpy-array)
 12. [Computing zonal statistics with Earth Engine and exporting results as CSV or shapefile](#12-computing-zonal-statistics-with-earth-engine-and-exporting-results-as-csv-or-shapefile)
+13. [Calculating zonal statistics by group (e.g., analyzing land cover composition of each country/state)](#13-calculating-zonal-statistics-by-group-eg-analyzing-land-cover-composition-of-each-countrystate)
 
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
@@ -82,3 +83,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 ### 12. Computing zonal statistics with Earth Engine and exporting results as CSV or shapefile
 
 ![zonal](https://i.imgur.com/8xmUitW.gif)
+
+### 13. Calculating zonal statistics by group (e.g., analyzing land cover composition of each country/state)
+
+![zonal by group](https://i.imgur.com/LxD2em9.gif)
