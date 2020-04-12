@@ -6,3 +6,4 @@ __version__ = '0.6.4'
 
 from .geemap import *
 from .basemaps import ee_basemaps
+from .legends import builtin_legends

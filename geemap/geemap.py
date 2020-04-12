@@ -10,6 +10,7 @@ from bqplot import pyplot as plt
 from ipyleaflet import *
 import ipywidgets as widgets
 from .basemaps import ee_basemaps
+from .legends import *
 
 
 def ee_initialize():
@@ -104,6 +105,9 @@ class Map(ipyleaflet.Map):
         self.plot_widget = None  # The plot widget for plotting Earth Engine data
         self.plot_control = None  # The plot control for interacting plotting
         self.random_marker = None
+
+        self.legend_widget = None
+        self.legend_control = None
 
         self.ee_layers = []
         self.ee_layer_names = []
@@ -937,6 +941,188 @@ class Map(ipyleaflet.Map):
         # self.remove_control(self.layer_control)
         self.add_control(basemap_control)
 
+    def add_legend(self, legend_tile='Legend', legend_dict=None, legend_keys=None, legend_colors=None, position='bottomright', builtin_legend=None, **kwargs):
+        """Adds a customized basemap to the map.
+
+        Args:
+            legend_tile (str, optional): Title of the legend. Defaults to 'Legend'.
+            legend_dict (dict, optional): A dictionary containing legend items as keys and color as values. If provided, legend_keys and legend_colors will be ignored. Defaults to None.
+            legend_keys (list, optional): A list of legend keys. Defaults to None.
+            legend_colors (list, optional): A list of legend colors. Defaults to None.
+            position (str, optional): Position of the legend. Defaults to 'bottomright'.
+            builtin_legend (str, optional): Name of the builtin legend to add to the map. Defaults to None.
+
+        """
+        import pkg_resources
+        from IPython.display import display
+        pkg_dir = os.path.dirname(
+            pkg_resources.resource_filename("geemap", "geemap.py"))
+        legend_template = os.path.join(pkg_dir, 'data/template/legend.html')
+
+        # print(kwargs['min_height'])
+
+        if 'min_width' not in kwargs.keys():
+            min_width = None
+        else:
+            min_wdith = kwargs['min_width']
+        if 'max_width' not in kwargs.keys():
+            max_width = None
+        else: 
+            max_width = kwargs['max_width']
+        if 'min_height' not in kwargs.keys():
+            min_height = None
+        else:
+            min_height = kwargs['min_height']
+        if 'max_height' not in kwargs.keys():
+            max_height = None
+        else: 
+            max_height = kwargs['max_height']
+        if 'height' not in kwargs.keys():
+            height = None
+        else: 
+            height = kwargs['height']
+        if 'width' not in kwargs.keys():
+            width = None
+        else:
+            width = kwargs['width']
+
+        if width is None:
+            max_width = '300px'
+        if height is None:
+            max_height= '400px'
+
+        if not os.path.exists(legend_template):
+            print('The legend template does not exist.')
+            return
+
+        if legend_keys is not None:
+            if not isinstance(legend_keys, list):
+                print('The legend keys must be a list.')
+                return
+        else:
+            legend_keys = ['One', 'Two', 'Three', 'Four', 'ect']
+
+        if legend_colors is not None:
+            if not isinstance(legend_colors, list):
+                print('The legend colors must be a list.')
+                return
+            elif all(isinstance(item, tuple) for item in legend_colors):
+                try:
+                    legend_colors = [rgb_to_hex(x) for x in legend_colors]
+                except Exception as e:
+                    print(e)
+            else:
+                print('The legend colors must be a list of tuples.')
+                return
+        else:
+            legend_colors = ['#8DD3C7', '#FFFFB3',
+                             '#BEBADA', '#FB8072', '#80B1D3']
+
+        if len(legend_keys) != len(legend_colors):
+            print('The legend keys and values must be the same length.')
+            return
+
+        allowed_builtin_legends = builtin_legends.keys()
+        if builtin_legend is not None:
+            builtin_legend = builtin_legend.upper()
+            if builtin_legend not in allowed_builtin_legends:
+                print('The builtin legend must be one of the following: {}'.format(
+                    ', '.join(allowed_builtin_legends)))
+                return
+            else:
+                legend_dict = builtin_legends[builtin_legend]
+                legend_keys = list(legend_dict.keys())
+                legend_colors = list(legend_dict.values())
+
+        if legend_dict is not None:
+            if not isinstance(legend_dict, dict):
+                print('The legend dict must be a dictionary.')
+                return
+            else:
+                legend_keys = list(legend_dict.keys())
+                legend_colors = list(legend_dict.values())
+                if all(isinstance(item, tuple) for item in legend_colors):
+                    try:
+                        legend_colors = [rgb_to_hex(x) for x in legend_colors]
+                    except Exception as e:
+                        print(e)
+
+        allowed_positions = ['topleft', 'topright',
+                             'bottomleft', 'bottomright']
+        if position not in allowed_positions:
+            print('The position must be one of the following: {}'.format(
+                ', '.join(allowed_positions)))
+            return
+
+        header = []
+        content = []
+        footer = []
+
+        with open(legend_template) as f:
+            lines = f.readlines()
+            lines[3] = lines[3].replace('Legend', legend_tile)
+            header = lines[:6]
+            footer = lines[11:]
+
+        for index, key in enumerate(legend_keys):
+            color = legend_colors[index]
+            if not color.startswith('#'):
+                color = '#' + color
+            item = "      <li><span style='background:{};'></span>{}</li>\n".format(
+                color, key)
+            content.append(item)
+
+        legend_html = header + content + footer
+        legend_text = ''.join(legend_html)
+
+        try:
+            if self.legend_control is not None:
+                legend_widget = self.legend_widget
+                legend_widget.close()
+                self.remove_control(self.legend_control)
+
+            legend_output_widget = widgets.Output(
+                layout={'border': '1px solid black', 'max_width': max_width, 'min_width': min_width, 'max_height': max_height, 
+                'min_height': min_height, 'height': height, 'width': width, 'overflow': 'scroll'})
+            legend_control = WidgetControl(
+                widget=legend_output_widget, position=position)
+            legend_widget = widgets.HTML(value=legend_text)
+            with legend_output_widget:
+                display(legend_widget)
+
+            self.legend_widget = legend_output_widget
+            self.legend_control = legend_control
+            self.add_control(legend_control)
+
+        except Exception as e:
+            print(e)
+
+
+def rgb_to_hex(rgb=(255, 255, 255)):
+    """Converts RGB to hex color. In RGB color R stands for Red, G stands for Green, and B stands for Blue, and it ranges from the decimal value of 0 – 255.
+
+    Args:
+        rgb (tuple, optional): RGB color code as a tuple of (red, green, blue). Defaults to (255, 255, 255).
+
+    Returns:
+        str: hex color code
+    """
+    return '%02x%02x%02x' % rgb
+
+
+def hex_to_rgb(value='FFFFFF'):
+    """Converts hex color to RGB color. 
+
+    Args:
+        value (str, optional): Hex color code as a string. Defaults to 'FFFFFF'.
+
+    Returns:
+        tuple: RGB color as a tuple.
+    """
+    value = value.lstrip('#')
+    lv = len(value)
+    return tuple(int(value[i:i+lv//3], 16) for i in range(0, lv, lv//3))
+
 
 def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, opacity=1.0):
     """Converts and Earth Engine layer to ipyleaflet TileLayer.
@@ -1087,6 +1273,15 @@ def open_github(subdir=None):
     webbrowser.open_new_tab(url)
 
 
+def open_youtube():
+    """Opens the YouTube tutorials for geemap.
+    """
+    import webbrowser
+
+    url = 'https://www.youtube.com/playlist?list=PLAxJ4-o7ZoPccOFv1dCwvGI6TYnirRTg3'
+    webbrowser.open_new_tab(url)
+
+
 def check_install(package):
     """Checks whether a package is installed. If not, it will install the package.
 
@@ -1108,28 +1303,13 @@ def check_install(package):
         print("{} has been installed successfully.".format(package))
 
 
-def update_package(filename='geemap.py'):
-    """Updates the geemap package by downloading files from the geemap GitHub repository with the need to use pip or conda.
+def update_package():
+    """Updates the geemap package from the geemap GitHub repository with the need to use pip or conda.
         In this way, I don't have to keep updating pypi and conda-forge with every minor update of the package.
-
-    Args:
-        filename (str, optional): The file to update. Defaults to 'geemap.py'.
-
     """
-    import urllib.request
-    import pkg_resources
-
-    repo_root = 'https://raw.githubusercontent.com/giswqs/geemap/master/geemap'
-    in_file = os.path.join(repo_root, filename)
-
-    pkg_dir = os.path.dirname(
-        pkg_resources.resource_filename("geemap", "geemap.py"))
-    out_file = os.path.join(pkg_dir, filename)
-
     try:
-        print('Downloading {}'.format(in_file))
-        urllib.request.urlretrieve(in_file, out_file)
-        print('The geemap package has been updated successfully.')
+        cmd = 'pip install --upgrade git+https://github.com/giswqs/geemap'
+        os.system(cmd)
     except Exception as e:
         print(e)
 

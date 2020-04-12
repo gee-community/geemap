@@ -1,0 +1,19 @@
+Value	Color	Description
+0	1c0dff	Water
+1	05450a	Evergreen needleleaf forest
+2	086a10	Evergreen broadleaf forest
+3	54a708	Deciduous needleleaf forest
+4	78d203	Deciduous broadleaf forest
+5	009900	Mixed forest
+6	c6b044	Closed shrublands
+7	dcd159	Open shrublands
+8	dade48	Woody savannas
+9	fbff13	Savannas
+10	b6ff05	Grasslands
+11	27ff87	Permanent wetlands
+12	c24f44	Croplands
+13	a5a5a5	Urban and built-up
+14	ff6d4c	Cropland/natural vegetation mosaic
+15	69fff8	Snow and ice
+16	f9ffa4	Barren or sparsely vegetated
+254	ffffff	Unclassified

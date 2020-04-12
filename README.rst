@@ -302,6 +302,19 @@ To add a marker cluster to the Map:
   feature_collection = ee.FeatureCollection(Map.ee_markers)
 
 
+To add a customized legend to the Map:
+
+.. code:: python
+
+  legend_dict = {
+      'one': (0, 0, 0),
+      'two': (255,255,0),
+      'three': (127, 0, 127)
+  }
+  Map.add_legend(legend_title='Legend', legend_dict=legend_dict, position='bottomright')
+  Map.add_legend(builtin_legend='NLCD')
+
+
 To convert all GEE JavaScripts in a folder recursively to Python scripts:
 
 .. code:: python
