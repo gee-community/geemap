@@ -34,6 +34,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 11. [Exporting Earth Engine Image and ImageCollection as GeoTIFF and Numpy array](#11-exporting-earth-engine-image-and-imagecollection-as-geotiff-and-numpy-array)
 12. [Computing zonal statistics with Earth Engine and exporting results as CSV or shapefile](#12-computing-zonal-statistics-with-earth-engine-and-exporting-results-as-csv-or-shapefile)
 13. [Calculating zonal statistics by group (e.g., analyzing land cover composition of each country/state)](#13-calculating-zonal-statistics-by-group-eg-analyzing-land-cover-composition-of-each-countrystate)
+14. [Adding a customized legend for Earth Engine data](#14-adding-a-customized-legend-for-earth-engine-data)
 
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
@@ -87,3 +88,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 ### 13. Calculating zonal statistics by group (e.g., analyzing land cover composition of each country/state)
 
 ![zonal by group](https://i.imgur.com/LxD2em9.gif)
+
+### 14. Adding a customized legend for Earth Engine data
+
+![legend](https://i.imgur.com/idkZHQp.gif)
