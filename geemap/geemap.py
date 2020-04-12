@@ -6,11 +6,11 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 import ee
 import ipyleaflet
 import os
+import ipywidgets as widgets
 from bqplot import pyplot as plt
 from ipyleaflet import *
-import ipywidgets as widgets
 from .basemaps import ee_basemaps
-from .legends import *
+from .legends import builtin_legends
 
 
 def ee_initialize():
@@ -967,7 +967,7 @@ class Map(ipyleaflet.Map):
             min_wdith = kwargs['min_width']
         if 'max_width' not in kwargs.keys():
             max_width = None
-        else: 
+        else:
             max_width = kwargs['max_width']
         if 'min_height' not in kwargs.keys():
             min_height = None
@@ -975,11 +975,11 @@ class Map(ipyleaflet.Map):
             min_height = kwargs['min_height']
         if 'max_height' not in kwargs.keys():
             max_height = None
-        else: 
+        else:
             max_height = kwargs['max_height']
         if 'height' not in kwargs.keys():
             height = None
-        else: 
+        else:
             height = kwargs['height']
         if 'width' not in kwargs.keys():
             width = None
@@ -989,7 +989,7 @@ class Map(ipyleaflet.Map):
         if width is None:
             max_width = '300px'
         if height is None:
-            max_height= '400px'
+            max_height = '400px'
 
         if not os.path.exists(legend_template):
             print('The legend template does not exist.')
@@ -1011,6 +1011,10 @@ class Map(ipyleaflet.Map):
                     legend_colors = [rgb_to_hex(x) for x in legend_colors]
                 except Exception as e:
                     print(e)
+            elif all((item.startswith('#') and len(item) == 7) for item in legend_colors): 
+                pass
+            elif all((len(item) == 6) for item in legend_colors): 
+                pass
             else:
                 print('The legend colors must be a list of tuples.')
                 return
@@ -1082,8 +1086,8 @@ class Map(ipyleaflet.Map):
                 self.remove_control(self.legend_control)
 
             legend_output_widget = widgets.Output(
-                layout={'border': '1px solid black', 'max_width': max_width, 'min_width': min_width, 'max_height': max_height, 
-                'min_height': min_height, 'height': height, 'width': width, 'overflow': 'scroll'})
+                layout={'border': '1px solid black', 'max_width': max_width, 'min_width': min_width, 'max_height': max_height,
+                        'min_height': min_height, 'height': height, 'width': width, 'overflow': 'scroll'})
             legend_control = WidgetControl(
                 widget=legend_output_widget, position=position)
             legend_widget = widgets.HTML(value=legend_text)
@@ -1122,6 +1126,57 @@ def hex_to_rgb(value='FFFFFF'):
     value = value.lstrip('#')
     lv = len(value)
     return tuple(int(value[i:i+lv//3], 16) for i in range(0, lv, lv//3))
+
+
+def legend_from_ee(ee_class_table):
+    """Extract legend from an Earth Engine class table on the Earth Engine Data Catalog page
+    such as https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1
+
+    Value	Color	Description
+    0	1c0dff	Water
+    1	05450a	Evergreen needleleaf forest
+    2	086a10	Evergreen broadleaf forest
+    3	54a708	Deciduous needleleaf forest
+    4	78d203	Deciduous broadleaf forest
+    5	009900	Mixed forest
+    6	c6b044	Closed shrublands
+    7	dcd159	Open shrublands
+    8	dade48	Woody savannas
+    9	fbff13	Savannas
+    10	b6ff05	Grasslands
+    11	27ff87	Permanent wetlands
+    12	c24f44	Croplands
+    13	a5a5a5	Urban and built-up
+    14	ff6d4c	Cropland/natural vegetation mosaic
+    15	69fff8	Snow and ice
+    16	f9ffa4	Barren or sparsely vegetated
+    254	ffffff	Unclassified
+    
+    Args:
+        ee_class_table (str): An Earth Engine class table with triple quotes.
+     
+    Returns:
+        dict: Returns a legend dictionary that can be used to create a legend.
+    """
+    try:
+        ee_class_table = ee_class_table.strip()
+        lines = ee_class_table.split('\n')[1:]
+
+        if lines[0] == 'Value\tColor\tDescription':
+            lines = lines[1:]
+
+        legend_dict = {}
+        for index, line in enumerate(lines):
+            items = line.split("\t")
+            items = [item.strip() for item in items]
+            color = items[1]
+            key = items[0] + " " + items[2]
+            legend_dict[key] = color
+
+        return legend_dict
+
+    except Exception as e:
+        print(e)
 
 
 def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, opacity=1.0):
