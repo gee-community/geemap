@@ -10,6 +10,7 @@ import ipywidgets as widgets
 from bqplot import pyplot as plt
 from ipyleaflet import *
 from .basemaps import ee_basemaps
+from .conversion import *
 from .legends import builtin_legends
 
 
@@ -941,7 +942,7 @@ class Map(ipyleaflet.Map):
         # self.remove_control(self.layer_control)
         self.add_control(basemap_control)
 
-    def add_legend(self, legend_tile='Legend', legend_dict=None, legend_keys=None, legend_colors=None, position='bottomright', builtin_legend=None, **kwargs):
+    def add_legend(self, legend_title='Legend', legend_dict=None, legend_keys=None, legend_colors=None, position='bottomright', builtin_legend=None, **kwargs):
         """Adds a customized basemap to the map.
 
         Args:
@@ -1064,7 +1065,7 @@ class Map(ipyleaflet.Map):
 
         with open(legend_template) as f:
             lines = f.readlines()
-            lines[3] = lines[3].replace('Legend', legend_tile)
+            lines[3] = lines[3].replace('Legend', legend_title)
             header = lines[:6]
             footer = lines[11:]
 
@@ -1939,3 +1940,5 @@ def zonal_statistics_by_group(in_value_raster, in_zone_vector, out_file_path, st
 
     except Exception as e:
         print(e)
+
+
