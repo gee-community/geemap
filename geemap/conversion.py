@@ -29,14 +29,14 @@ from pathlib import Path
 
 def random_string(string_length=3):
     """Generates a random string of fixed length. 
-    
+
     Args:
         string_length (int, optional): Fixed length. Defaults to 3.
-    
+
     Returns:
         str: A random string
-    """   
-    # random.seed(1001) 
+    """
+    # random.seed(1001)
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(string_length))
 
@@ -169,10 +169,10 @@ def format_params(line, sep=':'):
 
 def use_math(lines):
     """Checks if an Earth Engine uses Math library
-    
+
     Args:
         lines (list): An Earth Engine JavaScript.
-    
+
     Returns:
         [bool]: Returns True if the script contains 'Math.'. For example 'Math.PI', 'Math.pow'
     """
@@ -180,26 +180,26 @@ def use_math(lines):
     for line in lines:
         if 'Math.' in line:
             math_import = True
-    
-    return math_import        
+
+    return math_import
 
 
 def convert_for_loop(line):
     """Converts JavaScript for loop to Python for loop.
-    
+
     Args:
         line (str): Input JavaScript for loop
-    
+
     Returns:
         str: Converted Python for loop.
-    """    
+    """
     new_line = ''
     if 'var ' in line:
         line = line.replace('var ', '')
     start_index = line.index('(')
     end_index = line.index(')')
 
-    prefix = line[:(start_index)] 
+    prefix = line[:(start_index)]
     suffix = line[(end_index + 1):]
 
     params = line[(start_index + 1): end_index]
@@ -211,14 +211,14 @@ def convert_for_loop(line):
     items = params.split('=')
     param_name = items[0].strip()
     items = params.split(';')
-  
+
     subitems = []
 
     for item in items:
         subitems.append(item.split(' ')[-1])
 
     start = subitems[0]
-    end = subitems[1]    
+    end = subitems[1]
     step = subitems[2]
 
     if '++' in step:
@@ -226,41 +226,45 @@ def convert_for_loop(line):
     elif '--' in step:
         step = -1
 
-    prefix = line[:(start_index)] 
+    prefix = line[:(start_index)]
     suffix = line[(end_index + 1):]
-    new_line = prefix + '{} in range({}, {}, {}):'.format(param_name, start, end, step) + suffix
+    new_line = prefix + \
+        '{} in range({}, {}, {}):'.format(
+            param_name, start, end, step) + suffix
 
     return new_line
 
 
 def check_map_functions(input_lines):
     """Extracts Earth Engine map function
-    
+
     Args:
         input_lines (list): List of Earth Engine JavaScrips
-    
+
     Returns:
         list: Output JavaScript with map function
-    """    
+    """
     output_lines = []
     for index, line in enumerate(input_lines):
 
         if ('.map(function' in line) or ('.map (function') in line:
 
             bracket_index = line.index("{")
-            matching_line_index, matching_char_index = find_matching_bracket(input_lines, index, bracket_index)
+            matching_line_index, matching_char_index = find_matching_bracket(
+                input_lines, index, bracket_index)
 
             func_start_index = line.index('function')
             func_name = 'func_' + random_string()
-            func_header = line[func_start_index:].replace('function', 'function ' + func_name)
+            func_header = line[func_start_index:].replace(
+                'function', 'function ' + func_name)
             output_lines.append('\n')
             output_lines.append(func_header)
 
             for sub_index, tmp_line in enumerate(input_lines[index+1: matching_line_index]):
                 output_lines.append(tmp_line)
-                input_lines[index+1+sub_index] = ''                
+                input_lines[index+1+sub_index] = ''
 
-            header_line = line[:func_start_index] + func_name 
+            header_line = line[:func_start_index] + func_name
             header_line = header_line.rstrip()
 
             func_footer = input_lines[matching_line_index][:matching_char_index+1]
@@ -275,8 +279,8 @@ def check_map_functions(input_lines):
 
             output_lines.append(header_line)
             output_lines.append(footer_line)
-        else: 
-            output_lines.append(line)            
+        else:
+            output_lines.append(line)
 
     return output_lines
 
@@ -327,7 +331,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
             line = line.strip()
             if line == 'import ee':
                 is_python = True
-            
+
     if math_import:
         math_import_str = "import math\n"
 
@@ -337,7 +341,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
         output = github_url + ''.join(map(str, lines))
     else:             # deal with JavaScript
 
-        header = github_url + "import ee \n" + qgis_import_str + math_import_str 
+        header = github_url + "import ee \n" + qgis_import_str + math_import_str
         function_defs = []
         output = header + "\n"
 
@@ -350,8 +354,9 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
             for index, line in enumerate(lines):
 
                 if ('/* color' in line) and ('*/' in line):
-                    line = line[:line.index('/*')].lstrip() + line[(line.index('*/')+2):]
-                
+                    line = line[:line.index('/*')].lstrip() + \
+                        line[(line.index('*/')+2):]
+
                 if ("= function" in line) or ("=function" in line) or line.strip().startswith("function"):
                     bracket_index = line.index("{")
                     matching_line_index, matching_char_index = find_matching_bracket(
@@ -368,7 +373,8 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
 
                     line = line.replace(" = function", "").replace(
                         "=function", '').replace("function ", '')
-                    line = " " * (len(line) - len(line.lstrip())) + "def " + line.strip() + ":"
+                    line = " " * (len(line) - len(line.lstrip())
+                                  ) + "def " + line.strip() + ":"
                 elif "{" in line:
                     bracket_index = line.index("{")
                     matching_line_index, matching_char_index = find_matching_bracket(
@@ -379,9 +385,11 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
                         line = convert_for_loop(line)
                         lines[index] = line
                         bracket_index = line.index("{")
-                        matching_line_index, matching_char_index = find_matching_bracket(lines, index, bracket_index)
+                        matching_line_index, matching_char_index = find_matching_bracket(
+                            lines, index, bracket_index)
                         tmp_line = lines[matching_line_index]
-                        lines[matching_line_index] = tmp_line[:matching_char_index] + tmp_line[matching_char_index+1:]
+                        lines[matching_line_index] = tmp_line[:matching_char_index] + \
+                            tmp_line[matching_char_index+1:]
                         line = line.replace('{', '')
 
                 if line is None:
@@ -405,8 +413,8 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
                 if line.endswith("+"):
                     line = line + " \\"
                 elif line.endswith(";"):
-                    line = line[:-1]             
-                
+                    line = line[:-1]
+
                 if line.lstrip().startswith('*'):
                     line = line.replace('*', '#')
 
@@ -414,7 +422,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
                     line = format_params(line)
 
                 if index < (len(lines) - 1) and line.lstrip().startswith("#") and lines[index+1].lstrip().startswith("."):
-                    line = ''               
+                    line = ''
 
                 if line.lstrip().startswith("."):
                     if "#" in line:
@@ -431,6 +439,79 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
         f.write(output)
 
     return output
+
+
+def create_new_cell(contents):
+    """Create a new cell in Jupyter notebook based on the contents.
+
+    Args:
+        contents (str): A string of Python code.
+    """
+    from IPython.core.getipython import get_ipython
+    shell = get_ipython()
+    shell.set_next_input(contents, replace=False)
+
+
+def js_snippet_to_py(in_js_snippet, add_new_cell=True, import_ee=True, import_geemap=True, show_map=True):
+    """Converts an Earth Engine JavaScript snippet wrapped in triple quotes to Python directly on a Jupyter notebook.
+    
+    Args:
+        in_js_snippet (str): Earth Engine JavaScript within triple quotes.
+        add_new_cell (bool, optional): Whether add the converted Python to a new cell.
+        import_ee (bool, optional): Whether to import ee. Defaults to True.
+        import_geemap (bool, optional): Whether to import geemap. Defaults to True.
+        show_map (bool, optional): Whether to show the map. Defaults to True.
+
+    Returns:
+        list: A list of Python script.
+    """
+    work_dir = os.path.expanduser("~")
+    in_js = os.path.join(work_dir, 'tmp_js_snippet.js')
+    out_py = os.path.join(work_dir, 'tmp_py_snippet.py')
+
+    try:
+        with open(in_js, 'w') as f:
+            f.write(in_js_snippet)
+        js_to_python(in_js, out_file=out_py, use_qgis=False)
+
+        out_lines = []
+        if import_ee:
+            out_lines.append('import ee\n')
+        if import_geemap:
+            out_lines.append('import geemap\n\n')
+            out_lines.append('Map = geemap.Map()\n')
+        if import_ee:
+            out_lines.append('ee.Initialize()\n')
+        with open(out_py) as f:
+            lines = f.readlines()
+            for index, line in enumerate(lines):
+                if index < (len(lines) - 1):
+                    if line.strip() == 'import ee':
+                        continue
+                    # elif import_ee and (line.strip() == 'import ee'):
+                    #     out_lines.append(line)
+                    #     out_lines.append('ee.Initialize()\n')
+                    #     continue
+                    next_line = lines[index + 1]
+                    if line.strip() == '' and next_line.strip() == '':
+                        continue
+                    else:
+                        out_lines.append(line)
+
+        if show_map:
+            out_lines.append('Map\n')
+
+        os.remove(in_js)
+        os.remove(out_py)
+
+        if add_new_cell:
+            contents = ''.join(out_lines)
+            create_new_cell(contents)
+        else:
+            return out_lines
+
+    except Exception as e:
+        print(e)
 
 
 def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
@@ -478,14 +559,14 @@ def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
 
 def remove_qgis_import(in_file):
     """Removes 'from ee_plugin import Map' from an Earth Engine Python script.
-    
+
     Args:
         in_file (str): Input file path of the Python script.
-    
+
     Returns:
         list: List of lines  'from ee_plugin import Map' removed.
     """
-    in_file = os.path.abspath(in_file)    
+    in_file = os.path.abspath(in_file)
     start_index = 0
     with open(in_file) as f:
         lines = f.readlines()
@@ -501,16 +582,18 @@ def remove_qgis_import(in_file):
                     else:
                         i = i + 1
 
+
 def get_js_examples(out_dir=None):
     """Gets Earth Engine JavaScript examples from the geemap package.
-    
+
     Args:
         out_dir (str, optional): The folder to copy the JavaScript examples to. Defaults to None.
-    
+
     Returns:
         str: The folder containing the JavaScript examples.
     """
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    pkg_dir = os.path.dirname(
+        pkg_resources.resource_filename("geemap", "geemap.py"))
     example_dir = os.path.join(pkg_dir, 'data')
     js_dir = os.path.join(example_dir, 'javascripts')
 
@@ -531,15 +614,16 @@ def get_js_examples(out_dir=None):
 
 def get_nb_template(download_latest=False, out_file=None):
     """Get the Earth Engine Jupyter notebook template.
-    
+
     Args:
         download_latest (bool, optional): If True, downloads the latest notebook template from GitHub. Defaults to False.
         out_file (str, optional): Set the output file path of the notebook template. Defaults to None.
-    
+
     Returns:
         str: The file path of the template.
     """
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    pkg_dir = os.path.dirname(
+        pkg_resources.resource_filename("geemap", "geemap.py"))
     example_dir = os.path.join(pkg_dir, 'data')
     template_dir = os.path.join(example_dir, 'template')
     template_file = os.path.join(template_dir, 'template.py')
@@ -557,7 +641,7 @@ def get_nb_template(download_latest=False, out_file=None):
     if download_latest:
         template_url = 'https://raw.githubusercontent.com/giswqs/geemap/master/examples/template/template.py'
         print("Downloading the latest notebook template from {}".format(template_url))
-        urllib.request.urlretrieve(template_url, out_file)   
+        urllib.request.urlretrieve(template_url, out_file)
     elif out_file is not None:
         shutil.copyfile(template_file, out_file)
 
@@ -566,13 +650,13 @@ def get_nb_template(download_latest=False, out_file=None):
 
 def template_header(in_template):
     """Extracts header from the notebook template.
-    
+
     Args:
         in_template (str): Input notebook template file path.
-    
+
     Returns:
         list: List of lines.
-    """    
+    """
     header = []
     template_lines = []
     header_end_index = 0
@@ -580,7 +664,7 @@ def template_header(in_template):
     with open(in_template) as f:
         template_lines = f.readlines()
         for index, line in enumerate(template_lines):
-           if '## Add Earth Engine Python script' in line:
+            if '## Add Earth Engine Python script' in line:
                 header_end_index = index + 5
 
     header = template_lines[:header_end_index]
@@ -590,13 +674,13 @@ def template_header(in_template):
 
 def template_footer(in_template):
     """Extracts footer from the notebook template.
-    
+
     Args:
         in_template (str): Input notebook template file path.
-    
+
     Returns:
         list: List of lines.
-    """    
+    """
     footer = []
     template_lines = []
     footer_start_index = 0
@@ -614,17 +698,17 @@ def template_footer(in_template):
 
 def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, github_repo=None):
     """Converts Earth Engine Python script to Jupyter notebook.
-    
+
     Args:
         in_file (str): Input Earth Engine Python script.
         template_file (str): Input Jupyter notebook template.
         out_file (str, optional)): Output Jupyter notebook.
         github_username (str, optional): GitHub username. Defaults to None.
         github_repo (str, optional): GitHub repo name. Defaults to None.
-    """    
+    """
     in_file = os.path.abspath(in_file)
     if out_file is None:
-        out_file =  os.path.splitext(in_file)[0].replace('_qgis', '') + '.ipynb'
+        out_file = os.path.splitext(in_file)[0].replace('_qgis', '') + '.ipynb'
 
     out_py_file = os.path.splitext(out_file)[0] + '.py'
 
@@ -646,16 +730,17 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
         out_ipynb_relative_path = out_py_relative_path.replace('.py', '.ipynb')
 
         new_header = []
-        for index, line in enumerate(header): 
+        for index, line in enumerate(header):
             if index < 9:  # Change Google Colab and binder URLs
                 line = line.replace('giswqs', github_username)
                 line = line.replace('geemap', github_repo)
-                line = line.replace('examples/template/template.ipynb', out_ipynb_relative_path)
+                line = line.replace(
+                    'examples/template/template.ipynb', out_ipynb_relative_path)
             new_header.append(line)
         header = new_header
 
     if content != None:
-        out_text = header + content + footer 
+        out_text = header + content + footer
     else:
         out_text = header + footer
 
@@ -663,7 +748,7 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
         os.makedirs(os.path.dirname(out_py_file))
 
     with open(out_py_file, 'w') as f:
-        f.writelines(out_text)    
+        f.writelines(out_text)
 
     try:
         command = 'ipynb-py-convert ' + out_py_file + ' ' + out_file
@@ -678,14 +763,14 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
 
 def py_to_ipynb_dir(in_dir, template_file, out_dir=None, github_username=None, github_repo=None):
     """Converts Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
-    
+
     Args:
         in_dir (str): Input folder containing Earth Engine Python scripts.
         template_file (str): Input jupyter notebook template file.
         out_dir str, optional): Output folder. Defaults to None.
         github_username (str, optional): GitHub username. Defaults to None.
         github_repo (str, optional): GitHub repo name. Defaults to None.
-    """    
+    """
     print('Converting Earth Engine Python scripts to Jupyter notebooks ...\n')
 
     in_dir = os.path.abspath(in_dir)
@@ -706,20 +791,21 @@ def py_to_ipynb_dir(in_dir, template_file, out_dir=None, github_username=None, g
     else:
         out_dir = os.path.abspath(out_dir)
 
-
     for index, file in enumerate(files):
         in_file = str(file)
-        out_file = in_file.replace(in_dir, out_dir).replace('_qgis', '').replace('.py', '.ipynb')
+        out_file = in_file.replace(in_dir, out_dir).replace(
+            '_qgis', '').replace('.py', '.ipynb')
         print('Processing {}/{}: {}'.format(index+1, len(files), in_file))
-        py_to_ipynb(in_file, template_file, out_file, github_username, github_repo)
+        py_to_ipynb(in_file, template_file, out_file,
+                    github_username, github_repo)
 
 
 def execute_notebook(in_file):
     """Executes a Jupyter notebook and save output cells 
-    
+
     Args:
         in_file (str): Input Jupyter notebook.
-    """    
+    """
     command = 'jupyter nbconvert --to notebook --execute ' + in_file + ' --inplace'
     print(os.popen(command).read().rstrip())
     # os.popen(command)
@@ -727,7 +813,7 @@ def execute_notebook(in_file):
 
 def execute_notebook_dir(in_dir):
     """Executes all Jupyter notebooks in the given directory recursively and save output cells.
-    
+
     Args:
         in_dir (str): Input folder containing notebooks.
     """
@@ -745,7 +831,7 @@ def execute_notebook_dir(in_dir):
 
 def update_nb_header(in_file, github_username=None, github_repo=None):
     """Updates notebook header (binder and Google Colab URLs).
-    
+
     Args:
         in_file (str): The input Jupyter notebook.
         github_username (str, optional): GitHub username. Defaults to None.
@@ -765,7 +851,8 @@ def update_nb_header(in_file, github_username=None, github_repo=None):
         lines = f.readlines()
         start_line_index = 2
         start_char_index = lines[start_line_index].index('{')
-        matching_line_index, matching_char_index = find_matching_bracket(lines, start_line_index, start_char_index)
+        matching_line_index, matching_char_index = find_matching_bracket(
+            lines, start_line_index, start_char_index)
 
         header = lines[:matching_line_index]
         content = lines[matching_line_index:]
@@ -777,13 +864,13 @@ def update_nb_header(in_file, github_username=None, github_repo=None):
             line = line.replace('geemap', github_repo)
             if 'master?filepath=' in line:
                 search_string = 'master?filepath='
-                start_index = line.index(search_string) + len(search_string) 
+                start_index = line.index(search_string) + len(search_string)
                 end_index = line.index('.ipynb') + 6
                 relative_path = line[start_index:end_index]
                 line = line.replace(relative_path, file_relative_path)
             elif '/master/' in line:
                 search_string = '/master/'
-                start_index = line.index(search_string) + len(search_string) 
+                start_index = line.index(search_string) + len(search_string)
                 end_index = line.index('.ipynb') + 6
                 relative_path = line[start_index:end_index]
                 line = line.replace(relative_path, file_relative_path)
@@ -797,7 +884,7 @@ def update_nb_header(in_file, github_username=None, github_repo=None):
 
 def update_nb_header_dir(in_dir, github_username=None, github_repo=None):
     """Updates header (binder and Google Colab URLs) of all notebooks in a folder .
-    
+
     Args:
         in_dir (str): The input directory containing Jupyter notebooks.
         github_username (str, optional): GitHub username. Defaults to None.
@@ -816,52 +903,54 @@ def update_nb_header_dir(in_dir, github_username=None, github_repo=None):
             update_nb_header(in_file, github_username, github_repo)
 
 
-def download_from_url(url, out_file_name=None, out_dir='.', unzip = True):
+def download_from_url(url, out_file_name=None, out_dir='.', unzip=True):
     """Download a file from a URL (e.g., https://github.com/giswqs/whitebox/raw/master/examples/testdata.zip)
-    
+
     Args:
         url (str): The HTTP URL to download.
         out_file_name (str, optional): The output file name to use. Defaults to None.
         out_dir (str, optional): The output directory to use. Defaults to '.'.
         unzip (bool, optional): Whether to unzip the downloaded file if it is a zip file. Defaults to True.
-    """    
+    """
     in_file_name = os.path.basename(url)
 
     if out_file_name is None:
-       out_file_name = in_file_name
+        out_file_name = in_file_name
     out_file_path = os.path.join(os.path.abspath(out_dir), out_file_name)
 
     print('Downloading {} ...'.format(in_file_name))
 
     try:
-        urllib.request.urlretrieve(url, out_file_path)           
+        urllib.request.urlretrieve(url, out_file_path)
     except:
         print("The URL is invalid. Please double check the URL.")
-        return 
+        return
 
     final_path = out_file_path
 
     if unzip:
         # if it is a zip file
-        if '.zip' in out_file_name:       
+        if '.zip' in out_file_name:
             print("Unzipping {} ...".format(out_file_name))
             with zipfile.ZipFile(out_file_path, "r") as zip_ref:
                 zip_ref.extractall(out_dir)
-            final_path = os.path.join(os.path.abspath(out_dir), out_file_name.replace('.zip', ''))
+            final_path = os.path.join(os.path.abspath(
+                out_dir), out_file_name.replace('.zip', ''))
 
         # if it is a tar file
-        if '.tar' in out_file_name:                  
+        if '.tar' in out_file_name:
             print("Unzipping {} ...".format(out_file_name))
             with tarfile.open(out_file_path, "r") as tar_ref:
                 tar_ref.extractall(out_dir)
-            final_path = os.path.join(os.path.abspath(out_dir), out_file_name.replace('.tart', ''))
-            
+            final_path = os.path.join(os.path.abspath(
+                out_dir), out_file_name.replace('.tart', ''))
+
     print('Data downloaded to: {}'.format(final_path))
 
 
 def download_gee_app(url, out_file=None):
     """Downloads JavaScript source code from a GEE App
-    
+
     Args:
         url (str): The URL of the GEE App.
         out_file (str, optional): The output file path for the downloaded JavaScript. Defaults to None.
@@ -887,10 +976,10 @@ def download_gee_app(url, out_file=None):
     json_path = out_file_path + 'on'
 
     try:
-        urllib.request.urlretrieve(json_url, json_path)           
+        urllib.request.urlretrieve(json_url, json_path)
     except:
         print("The URL is invalid. Please double check the URL.")
-        return 
+        return
 
     with open(out_file_path, 'w') as f1:
 
@@ -906,14 +995,14 @@ def download_gee_app(url, out_file=None):
                         item = item.replace('\\r', '')
                         f1.write(item + '\n')
     os.remove(json_path)
-    print('The JavaScript is saved at: {}'.format(out_file_path))  
+    print('The JavaScript is saved at: {}'.format(out_file_path))
 
 
 # Download file shared via Google Drive
 def download_from_gdrive(gfile_url, file_name, out_dir='.', unzip=True):
     """Download a file shared via Google Drive 
        (e.g., https://drive.google.com/file/d/18SUo_HcDGltuWYZs1s7PpOmOq_FvFn04/view?usp=sharing)
-    
+
     Args:
         gfile_url (str): The Google Drive shared file URL
         file_name (str): The output file name to use.
@@ -924,31 +1013,32 @@ def download_from_gdrive(gfile_url, file_name, out_dir='.', unzip=True):
         from google_drive_downloader import GoogleDriveDownloader as gdd
     except ImportError:
         print('GoogleDriveDownloader package not installed. Installing ...')
-        subprocess.check_call(["python", '-m', 'pip', 'install', 'googledrivedownloader'])
+        subprocess.check_call(
+            ["python", '-m', 'pip', 'install', 'googledrivedownloader'])
         from google_drive_downloader import GoogleDriveDownloader as gdd
 
-    file_id = gfile_url.split('/')[5]  
+    file_id = gfile_url.split('/')[5]
     print('Google Drive file id: {}'.format(file_id))
 
-    dest_path = os.path.join(out_dir, file_name) 
+    dest_path = os.path.join(out_dir, file_name)
     gdd.download_file_from_google_drive(file_id, dest_path, True, unzip)
-
 
 
 if __name__ == '__main__':
 
-     # Create a temporary working directory
+    # Create a temporary working directory
     work_dir = os.path.join(os.path.expanduser('~'), 'geemap')
-    # Get Earth Engine JavaScript examples. There are five examples in the geemap package data folder. 
+    # Get Earth Engine JavaScript examples. There are five examples in the geemap package data folder.
     # Change js_dir to your own folder containing your Earth Engine JavaScripts, such as js_dir = '/path/to/your/js/folder'
-    js_dir = get_js_examples(out_dir=work_dir) 
+    js_dir = get_js_examples(out_dir=work_dir)
 
     # Convert all Earth Engine JavaScripts in a folder recursively to Python scripts.
     js_to_python_dir(in_dir=js_dir, out_dir=js_dir, use_qgis=True)
     print("Python scripts saved at: {}".format(js_dir))
 
-     # Convert all Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
-    nb_template = get_nb_template()  # Get the notebook template from the package folder.
+    # Convert all Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
+    # Get the notebook template from the package folder.
+    nb_template = get_nb_template()
     py_to_ipynb_dir(js_dir, nb_template)
 
     # Execute all Jupyter notebooks in a folder recursively and save the output cells.
