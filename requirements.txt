@@ -1,7 +1,10 @@
 bqplot
 click
+colour
 earthengine-api
 folium>=0.10.1
+ipyfilechooser
 ipyleaflet>=0.12.2
 ipynb-py-convert
+matplotlib
 pyshp

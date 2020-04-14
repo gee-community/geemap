@@ -3,11 +3,13 @@ Keep in mind that Earth Engine functions use both camel case and snake case, suc
 ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), add_minimap().
 """
 
+import colour
 import ee
 import ipyleaflet
 import os
 import ipywidgets as widgets
 from bqplot import pyplot as plt
+# from colour import Color
 from ipyleaflet import *
 from .basemaps import ee_basemaps
 from .conversion import *
@@ -1012,9 +1014,9 @@ class Map(ipyleaflet.Map):
                     legend_colors = [rgb_to_hex(x) for x in legend_colors]
                 except Exception as e:
                     print(e)
-            elif all((item.startswith('#') and len(item) == 7) for item in legend_colors): 
+            elif all((item.startswith('#') and len(item) == 7) for item in legend_colors):
                 pass
-            elif all((len(item) == 6) for item in legend_colors): 
+            elif all((len(item) == 6) for item in legend_colors):
                 pass
             else:
                 print('The legend colors must be a list of tuples.')
@@ -1129,6 +1131,237 @@ def hex_to_rgb(value='FFFFFF'):
     return tuple(int(value[i:i+lv//3], 16) for i in range(0, lv, lv//3))
 
 
+def check_color(in_color):
+    """Checks the input color and returns the corresponding hex color code.
+
+    Args:
+        in_color (str or tuple): It can be a string (e.g., 'red', '#ffff00') or tuple (e.g., (255, 127, 0)).
+
+    Returns:
+        str: A hex color code.
+    """
+    out_color = '#000000'  # default black color
+    if isinstance(in_color, tuple) and len(in_color) == 3:
+        if all(isinstance(item, int) for item in in_color):
+            rescaled_color = [x / 255.0 for x in in_color]
+            out_color = colour.Color(rgb=tuple(rescaled_color))
+            return out_color.hex_l
+        else:
+            print(
+                'RGB color must be a tuple with three integer values ranging from 0 to 255.')
+            return
+    else:
+        try:
+            out_color = colour.Color(in_color)
+            return out_color.hex_l
+        except Exception as e:
+            print('The provided color is invalid. Using the default black color.')
+            print(e)
+            return out_color
+
+
+def system_fonts(show_full_path=False):
+    """Gets a list of system fonts.
+
+        # Common font locations:
+        # Linux: /usr/share/fonts/TTF/
+        # Windows: C:\Windows\Fonts
+        # macOS:  System > Library > Fonts
+
+    Args:
+        show_full_path (bool, optional): Whether to show the full path of each system font. Defaults to False.
+
+    Returns:
+        list: A list of system fonts.
+    """
+    try:
+        import matplotlib.font_manager
+
+        font_list = matplotlib.font_manager.findSystemFonts(
+            fontpaths=None, fontext='ttf')
+        font_list.sort()
+
+        font_names = [os.path.basename(f) for f in font_list]
+        font_names.sort()
+
+        if show_full_path:
+            return font_list
+        else:
+            return font_names
+
+    except Exception as e:
+        print(e)
+
+
+def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="arial.ttf", font_size=20, font_color='#000000', duration=100, loop=0):
+    """Adds animated text to a GIF image.
+
+    Args:
+        in_gif (str): The file path to the input GIF image.
+        out_gif (str): The file path to the output GIF image.
+        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        duration (int, optional): controls how long each frame will be displayed for, in milliseconds. It is the inverse of the frame rate. Setting it to 100 milliseconds gives 10 frames per second. You can decrease the duration to give a smoother animation.. Defaults to 100.
+        loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+
+    """
+    import io
+    import pkg_resources
+    import warnings
+    from PIL import Image, ImageDraw, ImageSequence, ImageFont
+
+    warnings.simplefilter('ignore')
+    pkg_dir = os.path.dirname(
+        pkg_resources.resource_filename("geemap", "geemap.py"))
+    default_font = os.path.join(pkg_dir, 'data/fonts/arial.ttf')
+
+    in_gif = os.path.abspath(in_gif)
+    out_gif = os.path.abspath(out_gif)
+
+    if not os.path.exists(in_gif):
+        print('The input gif file does not exist.')
+        return
+
+    if not os.path.exists(os.path.dirname(out_gif)):
+        os.makedirs(os.path.dirname(out_gif))
+
+    if font_type == 'arial.ttf':
+        font = ImageFont.truetype(default_font, font_size)
+    else:
+        try:
+            font_list = system_fonts(show_full_path=True)
+            font_names = [os.path.basename(f) for f in font_list]
+            if (font_type in font_list) or (font_type in font_names):
+                font = ImageFont.truetype(font_type, font_size)
+            else:
+                print(
+                    'The specified font type could not be found on your system. Using the default font instead.')
+                font = ImageFont.truetype(default_font, font_size)
+        except Exception as e:
+            print(e)
+            font = ImageFont.truetype(default_font, font_size)
+
+    color = check_color(font_color)
+
+    try:
+        image = Image.open(in_gif)
+    except Exception as e:
+        print('An error occurred while opening the gif.')
+        print(e)
+        return
+
+    count = image.n_frames
+    W, H = image.size
+
+    if xy is None:
+        # default text location is 5% width and 5% height of the image.
+        xy = (int(0.05 * W), int(0.05 * H))
+    elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
+        print("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
+        return
+    elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):
+        x, y = xy
+        if (x > 0) and (x < W) and (y > 0) and (y < H):
+            pass
+        else:
+            print(
+                'xy is out of bounds. x must be within [0, {}], and y must be within [0, {}]'.format(W, H))
+            return
+    elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
+        x, y = xy
+        if ('%' in x) and ('%' in y):
+            try:
+                x = int(float(x.replace('%', '')) / 100.0 * W)
+                y = int(float(y.replace('%', '')) / 100.0 * H)
+                xy = (x, y)
+            except Exception as e:
+                print(
+                    "The specified xy is invalid. It must be formatted like this ('10%', '10%')")
+                return
+    else:
+        print("The specified xy is invalid. It must be formatted like this: (10, 10) or ('10%', '10%')")
+        return
+
+    if text_sequence is None:
+        text_sequence = [str(x) for x in range(1, count + 1)]
+    elif isinstance(text_sequence, int):
+        text_sequence = [str(x) for x in range(
+            text_sequence, text_sequence + count + 1)]
+    elif isinstance(text_sequence, str):
+        try:
+            text_sequence = int(text_sequence)
+            text_sequence = [str(x) for x in range(
+                text_sequence, text_sequence + count + 1)]
+        except Exception as e:
+            text_sequence = text_sequence * count
+    elif isinstance(text_sequence, list) and len(text_sequence) != count:
+        print('The length of the text sequence must be equal to the number ({}) of frames in the gif.'.format(count))
+        return
+    else:
+        text_sequence = [str(x) for x in text_sequence]
+
+    try:
+
+        frames = []
+        # Loop over each frame in the animated image
+        for index, frame in enumerate(ImageSequence.Iterator(image)):
+            # Draw the text on the frame
+            frame = frame.convert('RGB')
+            draw = ImageDraw.Draw(frame)
+            w, h = draw.textsize(text_sequence[index])
+            draw.text(xy, text_sequence[index], font=font, fill=color)
+            del draw
+
+            b = io.BytesIO()
+            frame.save(b, format="GIF")
+            frame = Image.open(b)
+
+            frames.append(frame)
+        # https://www.pythoninformer.com/python-libraries/pillow/creating-animated-gif/
+        # Save the frames as a new image
+        frames[0].save(out_gif, save_all=True,
+                       append_images=frames[1:], duration=duration, loop=loop)
+    except Exception as e:
+        print(e)
+        return
+
+    # print('The output gif with animated text was saved to {}'.format(out_gif))
+
+
+def show_image(img_path, width=None, height=None):
+    """Shows an image within Jupyter notebook.
+
+    Args:
+        img_path (str): The image file path.
+        width (int, optional): Width of the image in pixels. Defaults to None.
+        height (int, optional): Height of the image in pixels. Defaults to None.
+
+    """
+    from IPython.display import display
+
+    try:
+        out = widgets.Output()
+        # layout={'border': '1px solid black'})
+        # layout={'border': '1px solid black', 'width': str(width + 20) + 'px', 'height': str(height + 10) + 'px'},)
+        out.clear_output(wait=True)
+        display(out)
+        with out:
+            file = open(img_path, "rb")
+            image = file.read()
+            if (width is None) and (height is None):
+                display(widgets.Image(value=image))
+            elif (width is not None) and (height is not None):
+                display(widgets.Image(value=image, width=width, height=height))
+            else:
+                print('You need set both width and height.')
+                return
+    except Exception as e:
+        print(e)
+
+
 def legend_from_ee(ee_class_table):
     """Extract legend from an Earth Engine class table on the Earth Engine Data Catalog page
     such as https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1
@@ -1152,10 +1385,10 @@ def legend_from_ee(ee_class_table):
     15	69fff8	Snow and ice
     16	f9ffa4	Barren or sparsely vegetated
     254	ffffff	Unclassified
-    
+
     Args:
         ee_class_table (str): An Earth Engine class table with triple quotes.
-     
+
     Returns:
         dict: Returns a legend dictionary that can be used to create a legend.
     """
@@ -1336,6 +1569,25 @@ def open_youtube():
 
     url = 'https://www.youtube.com/playlist?list=PLAxJ4-o7ZoPccOFv1dCwvGI6TYnirRTg3'
     webbrowser.open_new_tab(url)
+
+
+def show_youtube(id='h0pz3S6Tvx0'):
+    """Displays a YouTube video within Jupyter notebooks.
+
+    Args:
+        id (str, optional): Unique ID of the video. Defaults to 'h0pz3S6Tvx0'.
+
+    """
+    from IPython.display import YouTubeVideo, display
+    try:
+        out = widgets.Output(
+            layout={'border': '1px solid black', 'width': '815px'})
+        out.clear_output(wait=True)
+        display(out)
+        with out:
+            display(YouTubeVideo(id, width=800, height=450))
+    except Exception as e:
+        print(e)
 
 
 def check_install(package):
@@ -1940,5 +2192,3 @@ def zonal_statistics_by_group(in_value_raster, in_zone_vector, out_file_path, st
 
     except Exception as e:
         print(e)
-
-
