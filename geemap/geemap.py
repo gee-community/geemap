@@ -1286,22 +1286,22 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
         return
 
     if text_sequence is None:
-        text_sequence = [str(x) for x in range(1, count + 1)]
+        text = [str(x) for x in range(1, count + 1)]
     elif isinstance(text_sequence, int):
-        text_sequence = [str(x) for x in range(
+        text = [str(x) for x in range(
             text_sequence, text_sequence + count + 1)]
     elif isinstance(text_sequence, str):
         try:
             text_sequence = int(text_sequence)
-            text_sequence = [str(x) for x in range(
+            text = [str(x) for x in range(
                 text_sequence, text_sequence + count + 1)]
         except Exception as e:
-            text_sequence = text_sequence * count
+            text = [text_sequence] * count
     elif isinstance(text_sequence, list) and len(text_sequence) != count:
         print('The length of the text sequence must be equal to the number ({}) of frames in the gif.'.format(count))
         return
     else:
-        text_sequence = [str(x) for x in text_sequence]
+        text = [str(x) for x in text_sequence]
 
     try:
 
@@ -1311,8 +1311,8 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
             # Draw the text on the frame
             frame = frame.convert('RGB')
             draw = ImageDraw.Draw(frame)
-            w, h = draw.textsize(text_sequence[index])
-            draw.text(xy, text_sequence[index], font=font, fill=color)
+            w, h = draw.textsize(text[index])
+            draw.text(xy, text[index], font=font, fill=color)
             del draw
 
             b = io.BytesIO()
@@ -1322,6 +1322,7 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
             frames.append(frame)
         # https://www.pythoninformer.com/python-libraries/pillow/creating-animated-gif/
         # Save the frames as a new image
+
         frames[0].save(out_gif, save_all=True,
                        append_images=frames[1:], duration=duration, loop=loop)
     except Exception as e:
@@ -1581,7 +1582,8 @@ def show_youtube(id='h0pz3S6Tvx0'):
     from IPython.display import YouTubeVideo, display
     try:
         out = widgets.Output(
-            layout={'border': '1px solid black', 'width': '815px'})
+            layout={'width': '815px'})
+            # layout={'border': '1px solid black', 'width': '815px'})
         out.clear_output(wait=True)
         display(out)
         with out:
@@ -1975,6 +1977,43 @@ def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_val
         image = np.dstack(band_values)
         return image
 
+    except Exception as e:
+        print(e)
+
+
+def download_ee_video(collection, video_args, out_gif):
+    """[summary]
+    
+    Args:
+        collection ([type]): [description]
+        video_args ([type]): [description]
+        out_gif ([type]): [description]
+    """    
+    import requests
+
+    out_gif = os.path.abspath(out_gif)
+    if not out_gif.endswith(".gif"):
+        print('The output file must have an extension of .gif.')
+        return
+
+    if not os.path.exists(os.path.dirname(out_gif)):
+        os.makedirs(os.path.dirname(out_gif))
+
+    try:
+        print('Generating URL...')
+        url = collection.getVideoThumbURL(video_args)
+
+        print('Downloading data from {}\nPlease wait ...'.format(url))
+        r = requests.get(url, stream=True)
+
+        if r.status_code != 200:
+            print('An error occurred while downloading.')
+            return
+        else: 
+            with open(out_gif, 'wb') as fd:
+                for chunk in r.iter_content(chunk_size=1024):
+                    fd.write(chunk)
+            print('The GIF image has been saved to: {}'.format(out_gif))
     except Exception as e:
         print(e)
 

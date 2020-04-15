@@ -7,4 +7,5 @@ ipyfilechooser
 ipyleaflet>=0.12.2
 ipynb-py-convert
 matplotlib
+pillow
 pyshp
