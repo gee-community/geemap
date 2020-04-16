@@ -1329,7 +1329,99 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
         print(e)
         return
 
-    # print('The output gif with animated text was saved to {}'.format(out_gif))
+
+def add_logo_to_gif(in_gif, out_gif, logo, xy=None, circle_mask=False):
+    """Adds an image logo to a GIF image.
+    
+    Args:
+        in_gif (str): Input file path to the GIF image.
+        out_gif (str): Output file path to the GIF image.
+        logo (str): Input file path to the logo image.
+        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        circle_mask (bool, optional): Whether to append a circle mask to the log.. Defaults to False.
+    """    
+    import io
+    import warnings
+    from PIL import Image, ImageDraw, ImageSequence, ImageFilter
+
+    warnings.simplefilter('ignore')
+
+    in_gif = os.path.abspath(in_gif)
+    logo = os.path.abspath(logo)
+
+    if not os.path.exists(in_gif):
+        print('The input gif file does not exist.')
+        return
+
+    if not os.path.exists(logo):
+        print('The provided logo file does not exist.')
+        return
+
+    if not os.path.exists(os.path.dirname(out_gif)):
+        os.makedirs(os.path.dirname(out_gif))
+
+    try:
+        image = Image.open(in_gif)
+        logo_image = Image.open(logo)
+    except Exception as e:
+        print('An error occurred while opening the image.')
+        print(e)
+        return
+
+    W, H = image.size
+    logo_size = logo_image.size
+    mask_im = None
+
+    if circle_mask:
+        mask_im = Image.new("L", logo_size, 0)
+        draw = ImageDraw.Draw(mask_im)
+        draw.ellipse((0, 0, logo_size[0], logo_size[1]), fill=255)
+
+    if xy is None:
+        # default logo location is 5% width and 5% height of the image.
+        xy = (int(0.05 * W), int(0.05 * H))
+    elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
+        print("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
+        return
+    elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):
+        x, y = xy
+        if (x > 0) and (x < W) and (y > 0) and (y < H):
+            pass
+        else:
+            print(
+                'xy is out of bounds. x must be within [0, {}], and y must be within [0, {}]'.format(W, H))
+            return
+    elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
+        x, y = xy
+        if ('%' in x) and ('%' in y):
+            try:
+                x = int(float(x.replace('%', '')) / 100.0 * W)
+                y = int(float(y.replace('%', '')) / 100.0 * H)
+                xy = (x, y)
+            except Exception as e:
+                print(
+                    "The specified xy is invalid. It must be formatted like this ('10%', '10%')")
+                return
+    else:
+        print("The specified xy is invalid. It must be formatted like this: (10, 10) or ('10%', '10%')")
+        return
+
+    try:
+
+        frames = []
+        for index, frame in enumerate(ImageSequence.Iterator(image)):
+            frame = frame.convert('RGB')
+            frame.paste(logo_image, xy, mask_im)
+
+            b = io.BytesIO()
+            frame.save(b, format="GIF")
+            frame = Image.open(b)
+            frames.append(frame)
+
+        frames[0].save(out_gif, save_all=True, append_images=frames[1:])
+    except Exception as e:
+        print(e)
+        return
 
 
 def show_image(img_path, width=None, height=None):
