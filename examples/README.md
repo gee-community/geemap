@@ -21,22 +21,23 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 
 ## Tutorials
 
-1. [Introducing the geemap Python package for interactive mapping with Google Earth Engine](#1-introducing-the-geemap-python-package-for-interactive-mapping-with-google-earth-engine)
-2. [Using basemaps in geemap and ipyleaflet for interactive mapping with Google Earth Engine](#2-using-basemaps-in-geemap-and-ipyleaflet-for-interactive-mapping-with-google-earth-engine)
-3. [Introducing the Inspector tool for Earth Engine Python API](#3-introducing-the-inspector-tool-for-earth-engine-python-api)
-4. [Creating a split-panel map for visualizing Earth Engine data](#4-creating-a-split-panel-map-for-visualizing-earth-engine-data)
-5. [Using drawing tools to interact with Earth Engine data](#5-using-drawing-tools-to-interact-with-earth-engine-data)
-6. [Creating an interactive map with a marker cluster](#6-creating-an-interactive-map-with-a-marker-cluster)
-7. [Converting data formats between GeoJSON and Earth Engine](#7-converting-data-formats-between-geojson-and-earth-engine)
-8. [Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks](#8-automated-conversion-from-earth-engine-javascripts-to-python-scripts-and-jupyter-notebooks)
-9. [Interactive plotting of Earth Engine data with minimal coding](#9-interactive-plotting-of-earth-engine-data-with-minimal-coding)
-10. [Using shapefiles with Earth Engine without having to upload data to GEE](#10-using-shapefiles-with-earth-engine-without-having-to-upload-data-to-gee)
-11. [Exporting Earth Engine Image and ImageCollection as GeoTIFF and Numpy array](#11-exporting-earth-engine-image-and-imagecollection-as-geotiff-and-numpy-array)
-12. [Computing zonal statistics with Earth Engine and exporting results as CSV or shapefile](#12-computing-zonal-statistics-with-earth-engine-and-exporting-results-as-csv-or-shapefile)
-13. [Calculating zonal statistics by group (e.g., analyzing land cover composition of each country/state)](#13-calculating-zonal-statistics-by-group-eg-analyzing-land-cover-composition-of-each-countrystate)
-14. [Adding a customized legend for Earth Engine data](#14-adding-a-customized-legend-for-earth-engine-data)
-15. [Converting Earth Engine JavaScripts to Python code directly within Jupyter notebook](#15-converting-earth-engine-javascripts-to-python-code-directly-within-jupyter-notebook)
-
+1. [Introducing the geemap Python package for interactive mapping with Google Earth Engine](#1-introducing-the-geemap-python-package-for-interactive-mapping-with-google-earth-engine) ([video](https://youtu.be/h0pz3S6Tvx0) | [gif](https://i.imgur.com/pI39k7v.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/01_geemap_intro.ipynb))
+2. [Using basemaps in geemap and ipyleaflet for interactive mapping with Google Earth Engine](#2-using-basemaps-in-geemap-and-ipyleaflet-for-interactive-mapping-with-google-earth-engine) ([video](https://youtu.be/6J5ZCIUPXfI) | [gif](https://i.imgur.com/P5B2f7p.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/02_using_basemaps.ipynb)) 
+3. [Introducing the Inspector tool for Earth Engine Python API](#3-introducing-the-inspector-tool-for-earth-engine-python-api) ([video](https://youtu.be/k477ksjkaXw) | [gif](https://i.imgur.com/8d77gtI.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/03_inspector_tool.ipynb))
+4. [Creating a split-panel map for visualizing Earth Engine data](#4-creating-a-split-panel-map-for-visualizing-earth-engine-data) ([video](https://youtu.be/9EUTX8j-YVM) | [gif](https://i.imgur.com/kql7pC3.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/04_split_panel_map.ipynb))
+5. [Using drawing tools to interact with Earth Engine data](#5-using-drawing-tools-to-interact-with-earth-engine-data) ([video](https://youtu.be/N7rK2aV1R4c) | [gif](https://i.imgur.com/Lm5pDUr.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/05_drawing_tools.ipynb))
+6. [Creating an interactive map with a marker cluster](#6-creating-an-interactive-map-with-a-marker-cluster) ([video](https://youtu.be/4HycJPrwpuo) | [gif](https://i.imgur.com/GF4cOqh.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/06_marker_cluster.ipynb))
+7. [Converting data formats between GeoJSON and Earth Engine](#7-converting-data-formats-between-geojson-and-earth-engine) ([video](https://youtu.be/DbK_SRgrCHw) | [gif](https://i.imgur.com/hVPmUG1.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/07_geojson.ipynb))
+8. [Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks](#8-automated-conversion-from-earth-engine-javascripts-to-python-scripts-and-jupyter-notebooks) ([video](https://youtu.be/RpIaalFk4H8) | [gif](https://i.imgur.com/BW0zJnN.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/08_ee_js_to_ipynb.ipynb))
+9. [Interactive plotting of Earth Engine data with minimal coding](#9-interactive-plotting-of-earth-engine-data-with-minimal-coding) ([video](https://youtu.be/PDab8mkAFL0) | [gif](https://i.imgur.com/iGMRnRb.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/09_plotting.ipynb))
+10. [Using shapefiles with Earth Engine without having to upload data to GEE](#10-using-shapefiles-with-earth-engine-without-having-to-upload-data-to-gee) ([video](https://youtu.be/OlNlqfj4uHo) | [gif](https://i.imgur.com/W3vNSdX.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/10_shapefiles.ipynb))
+11. [Exporting Earth Engine Image and ImageCollection as GeoTIFF and Numpy array](#11-exporting-earth-engine-image-and-imagecollection-as-geotiff-and-numpy-array) ([video](https://youtu.be/_6JOA-iiEGU) | [gif](https://i.imgur.com/RonLr0j.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/11_export_image.ipynb))
+12. [Computing zonal statistics with Earth Engine and exporting results as CSV or shapefile](#12-computing-zonal-statistics-with-earth-engine-and-exporting-results-as-csv-or-shapefile) ([video](https://youtu.be/ou-Xm3CLitM) | [gif](https://i.imgur.com/8xmUitW.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/12_zonal_statistics.ipynb))
+13. [Calculating zonal statistics by group (e.g., analyzing land cover composition of each country/state)](#13-calculating-zonal-statistics-by-group-eg-analyzing-land-cover-composition-of-each-countrystate) ([video](https://youtu.be/cORcGGH03gg) | [gif](https://i.imgur.com/LxD2em9.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/13_zonal_statistics_by_group.ipynb))
+14. [Adding a customized legend for Earth Engine data](#14-adding-a-customized-legend-for-earth-engine-data) ([video](https://youtu.be/NwnW_qOkNRw) | [gif](https://i.imgur.com/idkZHQp.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/14_legends.ipynb))
+15. [Converting Earth Engine JavaScripts to Python code directly within Jupyter notebook](#15-converting-earth-engine-javascripts-to-python-code-directly-within-jupyter-notebook) ([video](https://youtu.be/nAzZjKKd4w0) | [gif](https://i.imgur.com/aGCBWSV.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/15_convert_js_to_py.ipynb))
+16. [Adding animated text to GIF images generated from Earth Engine data](#16-adding-animated-text-to-gif-images-generated-from-earth-engine-data) ([video](https://youtu.be/fDnDVuM_Ke4) | [gif](https://i.imgur.com/MSde1om.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/16_add_animated_text.ipynb))
+17. [Adding image logos to GIF images generated from Earth Engine data](#17-adding-image-logos-to-gif-images-generated-from-earth-engine-data) (video | [gif](https://i.imgur.com/MVPnuYZ.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/17_add_logo_to_gif.ipynb))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
@@ -97,3 +98,11 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 ### 15. Converting Earth Engine JavaScripts to Python code directly within Jupyter notebook
 
 ![js-py](https://i.imgur.com/aGCBWSV.gif)
+
+### 16. Adding animated text to GIF images generated from Earth Engine data
+
+![animated text](https://i.imgur.com/MSde1om.gif)
+
+### 17. Adding image logos to GIF images generated from Earth Engine data
+
+![logo](https://i.imgur.com/MVPnuYZ.gif)

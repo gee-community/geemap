@@ -1330,16 +1330,73 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
         return
 
 
-def add_logo_to_gif(in_gif, out_gif, logo, xy=None, circle_mask=False):
+def open_image_from_url(url):
+    """Loads an image from the specified URL.
+
+    Args:
+        url (str): URL of the image.
+
+    Returns:
+        object: Image object.
+    """
+    from PIL import Image
+    import requests
+    from io import BytesIO
+    from urllib.parse import urlparse
+
+    try:
+
+        # if url.endswith('.gif'):
+        #     out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+        #     if not os.path.exists(out_dir):
+        #         os.makedirs(out_dir)
+        #     a = urlparse(url)
+        #     out_name = os.path.basename(a.path)
+        #     out_path = os.path.join(out_dir, out_name)
+        #     download_from_url(url, out_name, out_dir, unzip=False)
+        #     img =  Image.open(out_path)
+        # else:
+        response = requests.get(url)
+        img = Image.open(BytesIO(response.content))
+        return img
+    except Exception as e:
+        print(e)
+
+
+def has_transparency(img):
+    """Checks whether an image has transparency.
+
+    Args:
+        img (object):  a PIL Image object.
+
+    Returns:
+        bool: True if it has transparency, False otherwise.
+    """
+
+    if img.mode == "P":
+        transparent = img.info.get("transparency", -1)
+        for _, index in img.getcolors():
+            if index == transparent:
+                return True
+    elif img.mode == "RGBA":
+        extrema = img.getextrema()
+        if extrema[3][0] < 255:
+            return True
+
+    return False
+
+
+def add_logo_to_gif(in_gif, out_gif, logo, xy=None, logo_size=(80, 80), circle_mask=False):
     """Adds an image logo to a GIF image.
-    
+
     Args:
         in_gif (str): Input file path to the GIF image.
         out_gif (str): Output file path to the GIF image.
         logo (str): Input file path to the logo image.
         xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        circle_mask (bool, optional): Whether to append a circle mask to the log.. Defaults to False.
-    """    
+        logo_size (tuple, optional): Resize logo. Defaults to (80, 80).
+        circle_mask (bool, optional): Whether to append a circle mask to the logo. This only works with non-png images. Defaults to False.
+    """
     import io
     import warnings
     from PIL import Image, ImageDraw, ImageSequence, ImageFilter
@@ -1347,13 +1404,16 @@ def add_logo_to_gif(in_gif, out_gif, logo, xy=None, circle_mask=False):
     warnings.simplefilter('ignore')
 
     in_gif = os.path.abspath(in_gif)
-    logo = os.path.abspath(logo)
+
+    is_url = False
+    if logo.startswith('http'):
+        is_url = True
 
     if not os.path.exists(in_gif):
         print('The input gif file does not exist.')
         return
 
-    if not os.path.exists(logo):
+    if (not is_url) and (not os.path.exists(logo)):
         print('The provided logo file does not exist.')
         return
 
@@ -1362,20 +1422,37 @@ def add_logo_to_gif(in_gif, out_gif, logo, xy=None, circle_mask=False):
 
     try:
         image = Image.open(in_gif)
-        logo_image = Image.open(logo)
     except Exception as e:
         print('An error occurred while opening the image.')
         print(e)
         return
 
+    try:
+        if logo.startswith('http'):
+            logo_raw_image = open_image_from_url(logo)
+        else:
+            logo = os.path.abspath(logo)
+            logo_raw_image = Image.open(logo)
+    except Exception as e:
+        print(e)
+
+    logo_raw_size = logo_raw_image.size
+    logo_size = min(logo_raw_size[0], logo_size[0]), min(
+        logo_raw_size[1], logo_size[1])
+
+    logo_image = logo_raw_image.convert('RGBA')
+    logo_image.thumbnail(logo_size, Image.ANTIALIAS)
+
     W, H = image.size
-    logo_size = logo_image.size
     mask_im = None
 
     if circle_mask:
         mask_im = Image.new("L", logo_size, 0)
         draw = ImageDraw.Draw(mask_im)
         draw.ellipse((0, 0, logo_size[0], logo_size[1]), fill=255)
+
+    if has_transparency(logo_raw_image):
+        mask_im = logo_image.copy()
 
     if xy is None:
         # default logo location is 5% width and 5% height of the image.
@@ -1410,7 +1487,7 @@ def add_logo_to_gif(in_gif, out_gif, logo, xy=None, circle_mask=False):
 
         frames = []
         for index, frame in enumerate(ImageSequence.Iterator(image)):
-            frame = frame.convert('RGB')
+            frame = frame.convert('RGBA')
             frame.paste(logo_image, xy, mask_im)
 
             b = io.BytesIO()
@@ -1655,6 +1732,19 @@ def open_github(subdir=None):
     webbrowser.open_new_tab(url)
 
 
+def clone_repo(out_dir='.', unzip=True):
+    """Clones the geemap GitHub repository.
+
+    Args:
+        out_dir (str, optional): Output folder for the repo. Defaults to '.'.
+        unzip (bool, optional): Whether to unzip the repository. Defaults to True.
+    """
+    url = 'https://github.com/giswqs/geemap/archive/master.zip'
+    filename = 'geemap-master.zip'
+    download_from_url(url, out_file_name=filename,
+                      out_dir=out_dir, unzip=unzip)
+
+
 def open_youtube():
     """Opens the YouTube tutorials for geemap.
     """
@@ -1675,7 +1765,7 @@ def show_youtube(id='h0pz3S6Tvx0'):
     try:
         out = widgets.Output(
             layout={'width': '815px'})
-            # layout={'border': '1px solid black', 'width': '815px'})
+        # layout={'border': '1px solid black', 'width': '815px'})
         out.clear_output(wait=True)
         display(out)
         with out:
@@ -1705,15 +1795,22 @@ def check_install(package):
         print("{} has been installed successfully.".format(package))
 
 
-def update_package():
+def update_package(download_examples=False, download_dir='.'):
     """Updates the geemap package from the geemap GitHub repository with the need to use pip or conda.
         In this way, I don't have to keep updating pypi and conda-forge with every minor update of the package.
+
+    Args:
+        download_examples (bool, optional): Whether to download the example files. Defaults to False.
+        download_dir (str, optional): Output folder for the downloaded example files. Defaults to '.'.
     """
     try:
         cmd = 'pip install --upgrade git+https://github.com/giswqs/geemap'
         os.system(cmd)
     except Exception as e:
         print(e)
+
+    if download_examples:
+        clone_repo(out_dir=download_dir)
 
 
 def shp_to_geojson(in_shp, out_json=None):
@@ -2075,12 +2172,12 @@ def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_val
 
 def download_ee_video(collection, video_args, out_gif):
     """[summary]
-    
+
     Args:
         collection ([type]): [description]
         video_args ([type]): [description]
         out_gif ([type]): [description]
-    """    
+    """
     import requests
 
     out_gif = os.path.abspath(out_gif)
@@ -2101,7 +2198,7 @@ def download_ee_video(collection, video_args, out_gif):
         if r.status_code != 200:
             print('An error occurred while downloading.')
             return
-        else: 
+        else:
             with open(out_gif, 'wb') as fd:
                 for chunk in r.iter_content(chunk_size=1024):
                     fd.write(chunk)
