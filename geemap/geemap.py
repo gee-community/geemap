@@ -1324,7 +1324,7 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
         # Save the frames as a new image
 
         frames[0].save(out_gif, save_all=True,
-                       append_images=frames[1:], duration=duration, loop=loop)
+                       append_images=frames[1:], duration=duration, loop=loop, optimize=True)
     except Exception as e:
         print(e)
         return
@@ -1386,16 +1386,16 @@ def has_transparency(img):
     return False
 
 
-def add_logo_to_gif(in_gif, out_gif, logo, xy=None, logo_size=(80, 80), circle_mask=False):
+def add_image_to_gif(in_gif, out_gif, in_image, xy=None, image_size=(80, 80), circle_mask=False):
     """Adds an image logo to a GIF image.
 
     Args:
         in_gif (str): Input file path to the GIF image.
         out_gif (str): Output file path to the GIF image.
-        logo (str): Input file path to the logo image.
+        in_image (str): Input file path to the image.
         xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        logo_size (tuple, optional): Resize logo. Defaults to (80, 80).
-        circle_mask (bool, optional): Whether to append a circle mask to the logo. This only works with non-png images. Defaults to False.
+        image_size (tuple, optional): Resize image. Defaults to (80, 80).
+        circle_mask (bool, optional): Whether to apply a circle mask to the image. This only works with non-png images. Defaults to False.
     """
     import io
     import warnings
@@ -1406,14 +1406,14 @@ def add_logo_to_gif(in_gif, out_gif, logo, xy=None, logo_size=(80, 80), circle_m
     in_gif = os.path.abspath(in_gif)
 
     is_url = False
-    if logo.startswith('http'):
+    if in_image.startswith('http'):
         is_url = True
 
     if not os.path.exists(in_gif):
         print('The input gif file does not exist.')
         return
 
-    if (not is_url) and (not os.path.exists(logo)):
+    if (not is_url) and (not os.path.exists(in_image)):
         print('The provided logo file does not exist.')
         return
 
@@ -1428,28 +1428,28 @@ def add_logo_to_gif(in_gif, out_gif, logo, xy=None, logo_size=(80, 80), circle_m
         return
 
     try:
-        if logo.startswith('http'):
-            logo_raw_image = open_image_from_url(logo)
+        if in_image.startswith('http'):
+            logo_raw_image = open_image_from_url(in_image)
         else:
-            logo = os.path.abspath(logo)
-            logo_raw_image = Image.open(logo)
+            in_image = os.path.abspath(in_image)
+            logo_raw_image = Image.open(in_image)
     except Exception as e:
         print(e)
 
     logo_raw_size = logo_raw_image.size
-    logo_size = min(logo_raw_size[0], logo_size[0]), min(
-        logo_raw_size[1], logo_size[1])
+    image_size = min(logo_raw_size[0], image_size[0]), min(
+        logo_raw_size[1], image_size[1])
 
     logo_image = logo_raw_image.convert('RGBA')
-    logo_image.thumbnail(logo_size, Image.ANTIALIAS)
+    logo_image.thumbnail(image_size, Image.ANTIALIAS)
 
     W, H = image.size
     mask_im = None
 
     if circle_mask:
-        mask_im = Image.new("L", logo_size, 0)
+        mask_im = Image.new("L", image_size, 0)
         draw = ImageDraw.Draw(mask_im)
-        draw.ellipse((0, 0, logo_size[0], logo_size[1]), fill=255)
+        draw.ellipse((0, 0, image_size[0], image_size[1]), fill=255)
 
     if has_transparency(logo_raw_image):
         mask_im = logo_image.copy()
@@ -2420,3 +2420,192 @@ def zonal_statistics_by_group(in_value_raster, in_zone_vector, out_file_path, st
 
     except Exception as e:
         print(e)
+
+
+def create_colorbar(width=150, height=30, palette=['blue', 'green', 'red'], add_ticks=True, add_labels=True, labels=None, vertical=False, out_file=None, font_type='arial.ttf', font_size=12, font_color='black', add_outline=True, outline_color='black'):
+    """Creates a colorbar based on the provided palette.
+
+    Args:
+        width (int, optional): Width of the colorbar in pixels. Defaults to 150.
+        height (int, optional): Height of the colorbar in pixels. Defaults to 30.
+        palette (list, optional): Palette for the colorbar. Each color can be provided as a string (e.g., 'red'), a hex string (e.g., '#ff0000'), or an RGB tuple (255, 0, 255). Defaults to ['blue', 'green', 'red'].
+        add_ticks (bool, optional): Whether to add tick markers to the colorbar. Defaults to True.
+        add_labels (bool, optional): Whether to add labels to the colorbar. Defaults to True.
+        labels (list, optional): A list of labels to add to the colorbar. Defaults to None.
+        vertical (bool, optional): Whether to rotate the colorbar vertically. Defaults to False.
+        out_file (str, optional): File path to the output colorbar in png format. Defaults to None.
+        font_type (str, optional): Font type to use for labels. Defaults to 'arial.ttf'.
+        font_size (int, optional): Font size to use for labels. Defaults to 12.
+        font_color (str, optional): Font color to use for labels. Defaults to 'black'.
+        add_outline (bool, optional): Whether to add an outline to the colorbar. Defaults to True.
+        outline_color (str, optional): Color for the outline of the colorbar. Defaults to 'black'.
+
+    Returns:
+        str: File path of the output colorbar in png format.
+
+    """
+    import decimal
+    import io
+    import math
+    import pkg_resources
+    import warnings
+    from colour import Color
+    from PIL import Image, ImageDraw, ImageFont
+
+    warnings.simplefilter('ignore')
+    pkg_dir = os.path.dirname(
+        pkg_resources.resource_filename("geemap", "geemap.py"))
+
+    if out_file is None:
+        filename = 'colorbar_' + random_string() + '.png'
+        out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+        out_file = os.path.join(out_dir, filename)
+    elif not out_file.endswith('.png'):
+        print('The output file must end with .png')
+        return
+    else:
+        out_file = os.path.abspath(out_file)
+
+    if not os.path.exists(os.path.dirname(out_file)):
+        os.makedirs(os.path.dirname(out_file))
+
+    im = Image.new('RGBA', (width, height))
+    ld = im.load()
+
+    def float_range(start, stop, step):
+        while start < stop:
+            yield float(start)
+            start += decimal.Decimal(step)
+
+    n_colors = len(palette)
+    decimal_places = 2
+    rgb_colors = [Color(check_color(c)).rgb for c in palette]
+    keys = [round(c, decimal_places)
+            for c in list(float_range(0, 1.0001, 1.0/(n_colors - 1)))]
+
+    heatmap = []
+    for index, item in enumerate(keys):
+        pair = [item, rgb_colors[index]]
+        heatmap.append(pair)
+
+    def gaussian(x, a, b, c, d=0):
+        return a * math.exp(-(x - b)**2 / (2 * c**2)) + d
+
+    def pixel(x, width=100, map=[], spread=1):
+        width = float(width)
+        r = sum([gaussian(x, p[1][0], p[0] * width, width/(spread*len(map)))
+                 for p in map])
+        g = sum([gaussian(x, p[1][1], p[0] * width, width/(spread*len(map)))
+                 for p in map])
+        b = sum([gaussian(x, p[1][2], p[0] * width, width/(spread*len(map)))
+                 for p in map])
+        return min(1.0, r), min(1.0, g), min(1.0, b)
+
+    for x in range(im.size[0]):
+        r, g, b = pixel(x, width=width, map=heatmap)
+        r, g, b = [int(256*v) for v in (r, g, b)]
+        for y in range(im.size[1]):
+            ld[x, y] = r, g, b
+
+    if add_outline:
+        draw = ImageDraw.Draw(im)
+        draw.rectangle([(0, 0), (width-1, height-1)],
+                       outline=check_color(outline_color))
+        del draw
+
+    if add_ticks:
+        tick_length = height * 0.1
+        x = [key * width for key in keys]
+        y_top = height - tick_length
+        y_bottom = height
+        draw = ImageDraw.Draw(im)
+        for i in x:
+            shape = [(i, y_top), (i, y_bottom)]
+            draw.line(shape, fill='black', width=0)
+        del draw
+
+    if vertical:
+        im = im.transpose(Image.ROTATE_90)
+
+    width, height = im.size
+
+    if labels is None:
+        labels = [str(c) for c in keys]
+    elif len(labels) == 2:
+        try:
+            lowerbound = float(labels[0])
+            upperbound = float(labels[1])
+            step = (upperbound - lowerbound) / (len(palette) - 1)
+            labels = [str(lowerbound + c * step)
+                      for c in range(0, len(palette))]
+        except Exception as e:
+            print(e)
+            print('The labels are invalid.')
+            return
+    elif len(labels) == len(palette):
+        labels = [str(c) for c in labels]
+    else:
+        print('The labels must have the same length as the palette.')
+        return
+
+    if add_labels:
+
+        default_font = os.path.join(pkg_dir, 'data/fonts/arial.ttf')
+        if font_type == 'arial.ttf':
+            font = ImageFont.truetype(default_font, font_size)
+        else:
+            try:
+                font_list = system_fonts(show_full_path=True)
+                font_names = [os.path.basename(f) for f in font_list]
+                if (font_type in font_list) or (font_type in font_names):
+                    font = ImageFont.truetype(font_type, font_size)
+                else:
+                    print(
+                        'The specified font type could not be found on your system. Using the default font instead.')
+                    font = ImageFont.truetype(default_font, font_size)
+            except Exception as e:
+                print(e)
+                font = ImageFont.truetype(default_font, font_size)
+
+        font_color = check_color(font_color)
+
+        draw = ImageDraw.Draw(im)
+        w, h = draw.textsize(labels[0], font=font)
+
+        for label in labels:
+            w_tmp, h_tmp = draw.textsize(label, font)
+            if w_tmp > w:
+                w = w_tmp
+            if h_tmp > h:
+                h = h_tmp
+
+        W, H = width + w * 2, height + h * 2
+        background = Image.new('RGBA', (W, H))
+        draw = ImageDraw.Draw(background)
+
+        if vertical:
+            xy = (0, h)
+        else:
+            xy = (w, 0)
+        background.paste(im, xy, im)
+
+        for index, label in enumerate(labels):
+
+            w_tmp, h_tmp = draw.textsize(label, font)
+
+            if vertical:
+                spacing = 5
+                x = width + spacing
+                y = int(height + h - keys[index] * height - h_tmp / 2 - 1)
+                draw.text((x, y), label, font=font, fill=font_color)
+
+            else:
+                x = int(keys[index] * width + w - w_tmp / 2)
+                spacing = int(h * 0.05)
+                y = height + spacing
+                draw.text((x, y), label, font=font, fill=font_color)
+
+        im = background.copy()
+
+    im.save(out_file)
+    return out_file

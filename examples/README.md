@@ -37,7 +37,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 14. [Adding a customized legend for Earth Engine data](#14-adding-a-customized-legend-for-earth-engine-data) ([video](https://youtu.be/NwnW_qOkNRw) | [gif](https://i.imgur.com/idkZHQp.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/14_legends.ipynb))
 15. [Converting Earth Engine JavaScripts to Python code directly within Jupyter notebook](#15-converting-earth-engine-javascripts-to-python-code-directly-within-jupyter-notebook) ([video](https://youtu.be/nAzZjKKd4w0) | [gif](https://i.imgur.com/aGCBWSV.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/15_convert_js_to_py.ipynb))
 16. [Adding animated text to GIF images generated from Earth Engine data](#16-adding-animated-text-to-gif-images-generated-from-earth-engine-data) ([video](https://youtu.be/fDnDVuM_Ke4) | [gif](https://i.imgur.com/MSde1om.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/16_add_animated_text.ipynb))
-17. [Adding image logos to GIF images generated from Earth Engine data](#17-adding-image-logos-to-gif-images-generated-from-earth-engine-data) (video | [gif](https://i.imgur.com/MVPnuYZ.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/17_add_logo_to_gif.ipynb))
+17. [Adding colorbar and images to GIF animations generated from Earth Engine data](#17-adding-colorbar-and-images-to-gif-animations-generated-from-earth-engine-data) (video | [gif](https://i.imgur.com/13tFMSI.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/17_add_colorbar_to_gif.ipynb))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
@@ -103,6 +103,6 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 
 ![animated text](https://i.imgur.com/MSde1om.gif)
 
-### 17. Adding image logos to GIF images generated from Earth Engine data
+### 17. Adding colorbar and images to GIF animations generated from Earth Engine data
 
-![logo](https://i.imgur.com/MVPnuYZ.gif)
+![logo](https://i.imgur.com/13tFMSI.gif)
