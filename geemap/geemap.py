@@ -2609,3 +2609,235 @@ def create_colorbar(width=150, height=30, palette=['blue', 'green', 'red'], add_
 
     im.save(out_file)
     return out_file
+
+
+def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', rgb_combo='SWIR1/NIR/RED', frames_per_second=10):
+
+    ################################################################################
+    # Input and output parameters.
+    import re
+    import datetime
+
+    ee_initialize()
+
+    if roi is None:
+        roi = ee.Geometry.Polygon(
+            [[[-64.81494128992148, -15.5314882713746],
+                [-64.81494128992148, -15.838227596066043],
+                [-64.69958484460898, -15.838227596066043],
+                [-64.69958484460898, -15.5314882713746]]], None, False)
+
+    if not isinstance(roi, ee.Geometry):
+
+        try:
+            roi = roi.geometry()
+        except Exception as e:
+            print('Could not convert the provided roi to ee.Geometry')
+            print(e)
+            return
+    
+    if out_file is None:
+        out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+        filename = 'landsat_' + random_string() + '.gif'
+        out_file = os.path.join(out_dir, filename)
+    elif not out_file.endswith('.gif'):
+        print('The output file must end with .gif')
+        return
+    elif not os.path.isfile(out_file):
+        print('The output file must be a file')
+        return
+    else:
+        out_file = os.path.abspath(out_file)
+        out_dir = os.path.dirname(out_file)
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)    
+
+    ################################################################################
+
+    # Setup vars to get dates.
+    if isinstance(start_year, int) and (start_year >= 1984) and (start_year < 2020):
+        pass
+    else:
+        print('The start year must be an integer >= 1984.')
+        return
+    
+    if isinstance(end_year, int) and (end_year > 1984) and (end_year <= 2020):
+        pass
+    else:
+        print('The end year must be an integer <= 2020.')
+        return 
+
+    if re.match("[0-9]{2}\-[0-9]{2}", start_date) and re.match("[0-9]{2}\-[0-9]{2}", end_date):
+        pass
+    else:
+        print('The start data and end date must be month-day, such as 06-10, 09-20')
+        return 
+
+    try:
+        datetime.datetime(int(start_year), int(start_date[:2]), int(start_date[3:5]))
+        datetime.datetime(int(end_year), int(end_date[:2]), int(end_date[3:5]))
+    except Exception as e:
+        print('Input dates are invalid.')
+        return
+
+    def days_between(d1, d2):
+        d1 = datetime.datetime.strptime(d1, "%Y-%m-%d")
+        d2 = datetime.datetime.strptime(d2, "%Y-%m-%d")
+        return abs((d2 - d1).days)
+
+    n_days = days_between(str(start_year) + '-' + start_date, str(start_year) + '-' + end_date)
+    start_month = int(start_date[:2])
+    start_day = int(start_date[3:5])
+    start_date = str(start_year) + '-' + start_date
+    end_date = str(end_year)  + '-' + end_date
+
+
+    # Define a collection filter by date, bounds, and quality.
+    def colFilter(col, aoi):#, startDate, endDate):
+        return(col.filterBounds(aoi))
+
+    # Landsat collection preprocessingEnabled
+    # Get Landsat surface reflectance collections for OLI, ETM+ and TM sensors.
+    LC08col = ee.ImageCollection('LANDSAT/LC08/C01/T1_SR')
+    LE07col = ee.ImageCollection('LANDSAT/LE07/C01/T1_SR')
+    LT05col = ee.ImageCollection('LANDSAT/LT05/C01/T1_SR')
+    LT04col = ee.ImageCollection('LANDSAT/LT04/C01/T1_SR')
+
+    # Define a collection filter by date, bounds, and quality.
+    def colFilter(col, roi, start_date, end_date):
+        return(col
+            .filterBounds(roi)
+            .filterDate(start_date, end_date))
+            #.filter('CLOUD_COVER < 5')
+            #.filter('GEOMETRIC_RMSE_MODEL < 15')
+            #.filter('IMAGE_QUALITY == 9 || IMAGE_QUALITY_OLI == 9'))
+
+    # Function to get and rename bands of interest from OLI.
+    def renameOli(img):
+        return(img.select(
+            ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'pixel_qa'],
+            ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']))
+
+    # Function to get and rename bands of interest from ETM+.
+    def renameEtm(img):
+        return(img.select(
+            ['B1', 'B2', 'B3', 'B4', 'B5', 'B7', 'pixel_qa'],
+            ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']))
+
+    # Add NBR for LandTrendr segmentation.
+    def calcNbr(img):
+        return(img.addBands(img.normalizedDifference(['NIR', 'SWIR2'])
+            .multiply(-10000).rename('NBR')).int16())
+
+    # Define function to mask out clouds and cloud shadows in images.
+    # Use CFmask band included in USGS Landsat SR image product.
+    def fmask(img):
+        cloudShadowBitMask = 1 << 3
+        cloudsBitMask = 1 << 5
+        qa = img.select('pixel_qa')
+        mask = qa.bitwiseAnd(cloudShadowBitMask).eq(0) \
+            .And(qa.bitwiseAnd(cloudsBitMask).eq(0))
+        return(img.updateMask(mask))
+
+    # Define function to prepare OLI images.
+    def prepOli(img):
+        orig = img
+        img = renameOli(img)
+        img = fmask(img)
+        return (ee.Image(img.copyProperties(orig, orig.propertyNames()))
+            .resample('bicubic'))
+
+    # Define function to prepare ETM+ images.
+    def prepEtm(img):
+        orig = img
+        img = renameEtm(img)
+        img = fmask(img)
+        return(ee.Image(img.copyProperties(orig, orig.propertyNames()))
+            .resample('bicubic'))
+
+    # Get annual median collection.    
+    def getAnnualComp(y):
+        startDate = ee.Date.fromYMD(
+            ee.Number(y), ee.Number(start_month), ee.Number(start_day))
+        endDate = startDate.advance(ee.Number(n_days), 'day')
+        
+        # Filter collections and prepare them for merging.
+        LC08coly = colFilter(LC08col, roi, startDate, endDate).map(prepOli)
+        LE07coly = colFilter(LE07col, roi, startDate, endDate).map(prepEtm)
+        LT05coly = colFilter(LT05col, roi, startDate, endDate).map(prepEtm)
+        LT04coly = colFilter(LT04col, roi, startDate, endDate).map(prepEtm)
+        
+        # Merge the collections.
+        col = LC08coly.merge(LE07coly).merge(LT05coly).merge(LT04coly)
+        
+        yearImg = col.median()
+        nBands = yearImg.bandNames().size()
+        yearImg = ee.Image(ee.Algorithms.If(
+            nBands,
+            yearImg,
+            dummyImg))
+        return(calcNbr(yearImg)
+            .set({'year': y, 'system:time_start': startDate.millis(), 'nBands': nBands}))
+
+
+    ################################################################################
+
+    # Make a dummy image for missing years.
+    bandNames = ee.List(['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa'])
+    fillerValues = ee.List.repeat(0, bandNames.size())
+    dummyImg = ee.Image.constant(fillerValues).rename(bandNames) \
+        .selfMask().int16()
+
+    ################################################################################
+    # Get a list of years
+    years = ee.List.sequence(start_year, end_year)
+
+    ################################################################################
+    # Make list of annual image composites.
+    imgList = years.map(getAnnualComp)
+
+    # Convert image composite list to collection
+    imgCol = ee.ImageCollection.fromImages(imgList)
+    
+    imgCol = imgCol.map(lambda img: img.clip(roi))
+
+    return imgCol
+
+    # ################################################################################
+    # # Run LandTrendr.
+    # lt = ee.Algorithms.TemporalSegmentation.LandTrendr(
+    #     timeSeries=imgCol.select(['NBR', 'SWIR1', 'NIR', 'Green']),
+    #     maxSegments=10,
+    #     spikeThreshold=0.7,
+    #     vertexCountOvershoot=3,
+    #     preventOneYearRecovery=True,
+    #     recoveryThreshold=0.5,
+    #     pvalThreshold=0.05,
+    #     bestModelProportion=0.75,
+    #     minObservationsNeeded=6)
+
+    # ################################################################################
+    # # Get fitted imagery. This starts export tasks.
+    # def getYearStr(year):
+    #     return(ee.String('yr_').cat(ee.Algorithms.String(year).slice(0,4)))
+
+    # yearsStr = years.map(getYearStr)
+
+    # r = lt.select(['SWIR1_fit']).arrayFlatten([yearsStr]).toShort()
+    # g = lt.select(['NIR_fit']).arrayFlatten([yearsStr]).toShort()
+    # b = lt.select(['Green_fit']).arrayFlatten([yearsStr]).toShort()
+
+    # for i, c in zip([r, g, b], ['r', 'g', 'b']):
+    #     descr = 'mamore-river-'+c
+    #     name = 'users/user/'+descr
+    #     print(name)
+    #     task = ee.batch.Export.image.toAsset(
+    #     image=i,
+    #     region=roi.getInfo()['coordinates'],
+    #     assetId=name,
+    #     description=descr,
+    #     scale=30,
+    #     crs='EPSG:3857',
+    #     maxPixels=1e13)
+    #     task.start()
