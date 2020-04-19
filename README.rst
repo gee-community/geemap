@@ -65,6 +65,8 @@ A Python package for interactive mapping with Google Earth Engine, ipyleaflet, a
 Features
 --------
 
+Below is a partial list of features available for the geemap package. Please check the `examples <https://github.com/giswqs/geemap/tree/master/examples>`__ page for notebook examples, GIF animations, and video tutorials.
+
 * Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks.
 * Displaying Earth Engine data layers for interactive mapping.
 * Supporting Earth Engine JavaScript API-styled functions in Python, such as ``Map.addLayer()``, ``Map.setCenter()``, ``Map.centerObject()``, ``Map.setOptions()``.
@@ -78,6 +80,12 @@ Features
 * Exporting Earth Engine Image and ImageCollection as GeoTIFF.
 * Extracting pixels from an Earth Engine Image into a 3D numpy array.
 * Calculating zonal statistics by group (e.g., calculating land over composition of each state/country).
+* Adding a customized legend for Earth Engine data.
+* Converting Earth Engine JavaScripts to Python code directly within Jupyter notebook.
+* Adding animated text to GIF images generated from Earth Engine data.
+* Adding colorbar and images to GIF animations generated from Earth Engine data.
+* Creating Landsat timelapse animations with animated text using Earth Engine.
+
 
 Installation
 ------------
@@ -315,6 +323,35 @@ To add a customized legend to the Map:
   }
   Map.add_legend(legend_title='Legend', legend_dict=legend_dict, position='bottomright')
   Map.add_legend(builtin_legend='NLCD')
+
+
+To download a GIF from an Earth Engine ImageCollection:
+
+.. code:: python
+
+  geemap.download_ee_video(tempCol, videoArgs, saved_gif)
+
+
+To add animated text to an existing GIF image:
+
+.. code:: python
+
+  geemap.add_text_to_gif(in_gif, out_gif, xy=('5%', '5%'), text_sequence=1984, font_size=30, font_color='#0000ff', duration=100)
+
+
+To create a colorbar for an Earth Engine image:
+
+.. code:: python
+
+  palette = ['blue', 'purple', 'cyan', 'green', 'yellow', 'red']
+  create_colorbar(width=250, height=30, palette=palette, vertical=False,add_labels=True, font_size=20, labels=[-40, 35])
+
+
+To create a Landsat timelapse animation and add it to the Map:
+
+.. code:: python
+
+  Map.add_landsat_ts_gif(label='Place name', start_year=1985, bands=['NIR', 'Red', 'Green'], frames_per_second=5)
 
 
 To convert all GEE JavaScripts in a folder recursively to Python scripts:
