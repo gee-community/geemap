@@ -104,6 +104,8 @@ class Map(ipyleaflet.Map):
         # The Earth Engine Geometry object converted from the last drawn feature
         self.draw_last_feature = None
         self.draw_layer = None
+        self.draw_last_json = None
+        self.draw_last_bounds = None
 
         self.plot_widget = None  # The plot widget for plotting Earth Engine data
         self.plot_control = None  # The plot control for interacting plotting
@@ -123,6 +125,8 @@ class Map(ipyleaflet.Map):
                 self.draw_count += 1
                 geom = geojson_to_ee(geo_json, False)
                 feature = ee.Feature(geom)
+                self.draw_last_json = geo_json
+                self.draw_last_bounds = minimum_bounding_box(geo_json)
                 self.draw_last_feature = feature
                 self.draw_features.append(feature)
                 collection = ee.FeatureCollection(self.draw_features)
@@ -1104,6 +1108,133 @@ class Map(ipyleaflet.Map):
         except Exception as e:
             print(e)
 
+    def image_overlay(self, url, bounds, name):
+        """Overlays an image from the Internet or locally on the map.
+
+        Args:
+            url (str): http URL or local file path to the image.
+            bounds (tuple): bounding box of the image in the format of (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -100)).
+            name (str): name of the layer to show on the layer control.
+        """
+        from base64 import b64encode
+        from PIL import Image, ImageSequence
+        from io import BytesIO
+        try:
+            if not url.startswith('http'):
+
+                if not os.path.exists(url):
+                    print('The provided file does not exist.')
+                    return
+
+                ext = os.path.splitext(url)[1][1:]  # file extension
+                image = Image.open(url)
+
+                f = BytesIO()
+                if ext.lower() == 'gif':
+                    frames = []
+                    # Loop over each frame in the animated image
+                    for frame in ImageSequence.Iterator(image):
+                        frame = frame.convert('RGBA')
+                        b = BytesIO()
+                        frame.save(b, format="gif")
+                        frame = Image.open(b)
+                        frames.append(frame)
+                    frames[0].save(f, format='GIF', save_all=True,
+                                   append_images=frames[1:], loop=0)
+                else:
+                    image.save(f, ext)
+
+                data = b64encode(f.getvalue())
+                data = data.decode('ascii')
+                url = 'data:image/{};base64,'.format(ext) + data
+            img = ipyleaflet.ImageOverlay(url=url, bounds=bounds, name=name)
+            self.add_layer(img)
+        except Exception as e:
+            print(e)
+            return
+
+    def video_overlay(self, url, bounds, name):
+        """Overlays a video from the Internet on the map.
+
+        Args:
+            url (str): http URL of the video, such as "https://www.mapbox.com/bites/00188/patricia_nasa.webm"
+            bounds (tuple): bounding box of the video in the format of (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -100)).
+            name (str): name of the layer to show on the layer control.
+        """
+        try:
+            video = ipyleaflet.VideoOverlay(url=url, bounds=bounds, name=name)
+            self.add_layer(video)
+        except Exception as e:
+            print(e)
+            return
+
+    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='black', out_gif=None):
+        """Adds a Landsat timelapse to the map.
+
+        Args:
+            layer_name (str, optional): Layer name to show under the layer control. Defaults to 'Timelapse'.
+            roi (object, optional): Region of interest to create the timelapse. Defaults to None.
+            label (str, optional): A label to shown on the GIF, such as place name. Defaults to None.
+            start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
+            end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
+            start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
+            end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+            bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']. Defaults to ['NIR', 'Red', 'Green'].
+            vis_params (dict, optional): Visualization parameters. Defaults to None.
+            dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+            frames_per_second (int, optional): Animation speed. Defaults to 10.
+            font_size (int, optional): Font size of the animated text and label. Defaults to 30.
+            font_color (str, optional): Font color of the animated text and label. Defaults to 'black'.
+            out_gif ([type], optional): File path to the output animated GIF. Defaults to None.
+
+        """
+        try:
+
+            if roi is None:
+                if self.draw_last_feature is not None:
+                    feature = self.draw_last_feature
+                    roi = feature.geometry()
+                else:
+                    roi = ee.Geometry.Polygon(
+                        [[[-115.471773, 35.892718],
+                          [-115.471773, 36.409454],
+                            [-114.271283, 36.409454],
+                            [-114.271283, 35.892718],
+                            [-115.471773, 35.892718]]], None, False)
+            elif isinstance(roi, ee.Feature) or isinstance(roi, ee.FeatureCollection):
+                roi = roi.geometry()
+            elif isinstance(roi, ee.Geometry):
+                pass
+            else:
+                print('The provided roi is invalid. It must be an ee.Geometry')
+                return
+
+            geojson = ee_to_geojson(roi)
+
+            in_gif = landsat_ts_gif(roi=roi, out_gif=out_gif, start_year=start_year, end_year=end_year, start_date=start_date,
+                                    end_date=end_date, bands=bands, vis_params=vis_params, dimensions=dimensions, frames_per_second=frames_per_second)
+
+            print('Adding animated text to GIF ...')
+            add_text_to_gif(in_gif, in_gif, xy=('2%', '2%'), text_sequence=start_year,
+                            font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second))
+
+            if label is not None:
+                add_text_to_gif(in_gif, in_gif, xy=('2%', '90%'), text_sequence=label,
+                                font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second))
+
+            bounds = minimum_bounding_box(geojson)
+            # bounds = ((35.892718, -115.471773), (36.409454, -114.271283))
+            lat = (bounds[0][0] + bounds[1][0]) / 2.0
+            lon = (bounds[0][1] + bounds[1][1]) / 2.0
+
+            print('Adding GIF to the map ...')
+
+            self.image_overlay(url=in_gif, bounds=bounds, name=layer_name)
+
+        except Exception as e:
+            print(e)
+            return
+
 
 def rgb_to_hex(rgb=(255, 255, 255)):
     """Converts RGB to hex color. In RGB color R stands for Red, G stands for Green, and B stands for Blue, and it ranges from the decimal value of 0 – 255.
@@ -1795,22 +1926,28 @@ def check_install(package):
         print("{} has been installed successfully.".format(package))
 
 
-def update_package(download_examples=False, download_dir='.'):
-    """Updates the geemap package from the geemap GitHub repository with the need to use pip or conda.
+def update_package():
+    """Updates the geemap package from the geemap GitHub repository without the need to use pip or conda.
         In this way, I don't have to keep updating pypi and conda-forge with every minor update of the package.
 
-    Args:
-        download_examples (bool, optional): Whether to download the example files. Defaults to False.
-        download_dir (str, optional): Output folder for the downloaded example files. Defaults to '.'.
     """
     try:
-        cmd = 'pip install --upgrade git+https://github.com/giswqs/geemap'
+        download_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+        if not os.path.exists(download_dir):
+            os.makedirs(download_dir)
+        clone_repo(out_dir=download_dir)
+
+        pkg_dir = os.path.join(download_dir, 'geemap-master')
+        work_dir = os.getcwd()
+        os.chdir(pkg_dir)
+        cmd = 'pip install .'
         os.system(cmd)
+        os.chdir(work_dir)
+
+        print("\nPlease comment out 'geemap.update_package()' and restart the kernel to take effect:\nJupyter menu -> Kernel -> Restart & Clear Output")
+
     except Exception as e:
         print(e)
-
-    if download_examples:
-        clone_repo(out_dir=download_dir)
 
 
 def shp_to_geojson(in_shp, out_json=None):
@@ -2171,12 +2308,12 @@ def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_val
 
 
 def download_ee_video(collection, video_args, out_gif):
-    """[summary]
+    """Downloads a video thumbnail as a GIF image from Earth Engine.
 
     Args:
-        collection ([type]): [description]
-        video_args ([type]): [description]
-        out_gif ([type]): [description]
+        collection (object): An ee.ImageCollection.
+        video_args ([type]): Parameters for expring the video thumbnail.
+        out_gif (str): File path to the output GIF.
     """
     import requests
 
@@ -2192,7 +2329,7 @@ def download_ee_video(collection, video_args, out_gif):
         print('Generating URL...')
         url = collection.getVideoThumbURL(video_args)
 
-        print('Downloading data from {}\nPlease wait ...'.format(url))
+        print('Downloading GIF image from {}\nPlease wait ...'.format(url))
         r = requests.get(url, stream=True)
 
         if r.status_code != 200:
@@ -2611,7 +2748,24 @@ def create_colorbar(width=150, height=30, palette=['blue', 'green', 'red'], add_
     return out_file
 
 
-def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', rgb_combo='SWIR1/NIR/RED', frames_per_second=10):
+def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20'):
+    """Generates an annual Landsat ImageCollection. This algorithm is adated from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
+
+    Args:
+        roi ([type], optional): [description]. Defaults to None.
+        start_year (int, optional): [description]. Defaults to 1984.
+        end_year (int, optional): [description]. Defaults to 2019.
+        start_date (str, optional): [description]. Defaults to '06-10'.
+        end_date (str, optional): [description]. Defaults to '09-20'.
+
+        roi (object, optional): Region of interest to create the timelapse. Defaults to None.
+        start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
+        end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
+        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
+        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+    Returns:
+        object: Returns an ImageCollection containing annual Landsat images.
+    """
 
     ################################################################################
     # Input and output parameters.
@@ -2622,10 +2776,11 @@ def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, 
 
     if roi is None:
         roi = ee.Geometry.Polygon(
-            [[[-64.81494128992148, -15.5314882713746],
-                [-64.81494128992148, -15.838227596066043],
-                [-64.69958484460898, -15.838227596066043],
-                [-64.69958484460898, -15.5314882713746]]], None, False)
+            [[[-115.471773, 35.892718],
+              [-115.471773, 36.409454],
+                [-114.271283, 36.409454],
+                [-114.271283, 35.892718],
+                [-115.471773, 35.892718]]], None, False)
 
     if not isinstance(roi, ee.Geometry):
 
@@ -2635,23 +2790,6 @@ def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, 
             print('Could not convert the provided roi to ee.Geometry')
             print(e)
             return
-    
-    if out_file is None:
-        out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
-        filename = 'landsat_' + random_string() + '.gif'
-        out_file = os.path.join(out_dir, filename)
-    elif not out_file.endswith('.gif'):
-        print('The output file must end with .gif')
-        return
-    elif not os.path.isfile(out_file):
-        print('The output file must be a file')
-        return
-    else:
-        out_file = os.path.abspath(out_file)
-        out_dir = os.path.dirname(out_file)
-
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)    
 
     ################################################################################
 
@@ -2661,24 +2799,25 @@ def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, 
     else:
         print('The start year must be an integer >= 1984.')
         return
-    
+
     if isinstance(end_year, int) and (end_year > 1984) and (end_year <= 2020):
         pass
     else:
         print('The end year must be an integer <= 2020.')
-        return 
+        return
 
     if re.match("[0-9]{2}\-[0-9]{2}", start_date) and re.match("[0-9]{2}\-[0-9]{2}", end_date):
         pass
     else:
         print('The start data and end date must be month-day, such as 06-10, 09-20')
-        return 
+        return
 
     try:
-        datetime.datetime(int(start_year), int(start_date[:2]), int(start_date[3:5]))
+        datetime.datetime(int(start_year), int(
+            start_date[:2]), int(start_date[3:5]))
         datetime.datetime(int(end_year), int(end_date[:2]), int(end_date[3:5]))
     except Exception as e:
-        print('Input dates are invalid.')
+        print('The input dates are invalid.')
         return
 
     def days_between(d1, d2):
@@ -2686,15 +2825,15 @@ def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, 
         d2 = datetime.datetime.strptime(d2, "%Y-%m-%d")
         return abs((d2 - d1).days)
 
-    n_days = days_between(str(start_year) + '-' + start_date, str(start_year) + '-' + end_date)
+    n_days = days_between(str(start_year) + '-' + start_date,
+                          str(start_year) + '-' + end_date)
     start_month = int(start_date[:2])
     start_day = int(start_date[3:5])
     start_date = str(start_year) + '-' + start_date
-    end_date = str(end_year)  + '-' + end_date
-
+    end_date = str(end_year) + '-' + end_date
 
     # Define a collection filter by date, bounds, and quality.
-    def colFilter(col, aoi):#, startDate, endDate):
+    def colFilter(col, aoi):  # , startDate, endDate):
         return(col.filterBounds(aoi))
 
     # Landsat collection preprocessingEnabled
@@ -2707,11 +2846,11 @@ def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, 
     # Define a collection filter by date, bounds, and quality.
     def colFilter(col, roi, start_date, end_date):
         return(col
-            .filterBounds(roi)
-            .filterDate(start_date, end_date))
-            #.filter('CLOUD_COVER < 5')
-            #.filter('GEOMETRIC_RMSE_MODEL < 15')
-            #.filter('IMAGE_QUALITY == 9 || IMAGE_QUALITY_OLI == 9'))
+               .filterBounds(roi)
+               .filterDate(start_date, end_date))
+        # .filter('CLOUD_COVER < 5')
+        # .filter('GEOMETRIC_RMSE_MODEL < 15')
+        # .filter('IMAGE_QUALITY == 9 || IMAGE_QUALITY_OLI == 9'))
 
     # Function to get and rename bands of interest from OLI.
     def renameOli(img):
@@ -2728,7 +2867,7 @@ def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, 
     # Add NBR for LandTrendr segmentation.
     def calcNbr(img):
         return(img.addBands(img.normalizedDifference(['NIR', 'SWIR2'])
-            .multiply(-10000).rename('NBR')).int16())
+                            .multiply(-10000).rename('NBR')).int16())
 
     # Define function to mask out clouds and cloud shadows in images.
     # Use CFmask band included in USGS Landsat SR image product.
@@ -2746,7 +2885,7 @@ def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, 
         img = renameOli(img)
         img = fmask(img)
         return (ee.Image(img.copyProperties(orig, orig.propertyNames()))
-            .resample('bicubic'))
+                .resample('bicubic'))
 
     # Define function to prepare ETM+ images.
     def prepEtm(img):
@@ -2754,23 +2893,23 @@ def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, 
         img = renameEtm(img)
         img = fmask(img)
         return(ee.Image(img.copyProperties(orig, orig.propertyNames()))
-            .resample('bicubic'))
+               .resample('bicubic'))
 
-    # Get annual median collection.    
+    # Get annual median collection.
     def getAnnualComp(y):
         startDate = ee.Date.fromYMD(
             ee.Number(y), ee.Number(start_month), ee.Number(start_day))
         endDate = startDate.advance(ee.Number(n_days), 'day')
-        
+
         # Filter collections and prepare them for merging.
         LC08coly = colFilter(LC08col, roi, startDate, endDate).map(prepOli)
         LE07coly = colFilter(LE07col, roi, startDate, endDate).map(prepEtm)
         LT05coly = colFilter(LT05col, roi, startDate, endDate).map(prepEtm)
         LT04coly = colFilter(LT04col, roi, startDate, endDate).map(prepEtm)
-        
+
         # Merge the collections.
         col = LC08coly.merge(LE07coly).merge(LT05coly).merge(LT04coly)
-        
+
         yearImg = col.median()
         nBands = yearImg.bandNames().size()
         yearImg = ee.Image(ee.Algorithms.If(
@@ -2778,13 +2917,13 @@ def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, 
             yearImg,
             dummyImg))
         return(calcNbr(yearImg)
-            .set({'year': y, 'system:time_start': startDate.millis(), 'nBands': nBands}))
-
+               .set({'year': y, 'system:time_start': startDate.millis(), 'nBands': nBands}))
 
     ################################################################################
 
     # Make a dummy image for missing years.
-    bandNames = ee.List(['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa'])
+    bandNames = ee.List(['Blue', 'Green', 'Red', 'NIR',
+                         'SWIR1', 'SWIR2', 'pixel_qa'])
     fillerValues = ee.List.repeat(0, bandNames.size())
     dummyImg = ee.Image.constant(fillerValues).rename(bandNames) \
         .selfMask().int16()
@@ -2799,7 +2938,7 @@ def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, 
 
     # Convert image composite list to collection
     imgCol = ee.ImageCollection.fromImages(imgList)
-    
+
     imgCol = imgCol.map(lambda img: img.clip(roi))
 
     return imgCol
@@ -2841,3 +2980,124 @@ def landsat_timeseries(roi=None, out_file=None, start_year=1984, end_year=2019, 
     #     crs='EPSG:3857',
     #     maxPixels=1e13)
     #     task.start()
+
+
+def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10):
+    """Generates a Landsat timelapse GIF image. This function is adated from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
+
+    Args:
+        roi (object, optional): Region of interest to create the timelapse. Defaults to None.
+        out_gif ([type], optional): File path to the output animated GIF. Defaults to None.
+        start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
+        end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
+        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
+        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+        bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']. Defaults to ['NIR', 'Red', 'Green'].
+        vis_params (dict, optional): Visualization parameters. Defaults to None.
+        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+
+    Returns:
+        str: File path to the output GIF image.
+    """
+
+    ee_initialize()
+
+    if roi is None:
+        roi = ee.Geometry.Polygon(
+            [[[-115.471773, 35.892718],
+              [-115.471773, 36.409454],
+                [-114.271283, 36.409454],
+                [-114.271283, 35.892718],
+                [-115.471773, 35.892718]]], None, False)
+
+    if out_gif is None:
+        out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+        filename = 'landsat_ts_' + random_string() + '.gif'
+        out_gif = os.path.join(out_dir, filename)
+    elif not out_gif.endswith('.gif'):
+        print('The output file must end with .gif')
+        return
+    elif not os.path.isfile(out_gif):
+        print('The output file must be a file')
+        return
+    else:
+        out_gif = os.path.abspath(out_gif)
+        out_dir = os.path.dirname(out_gif)
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    allowed_bands = ['Blue', 'Green', 'Red',
+                     'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']
+
+    if len(bands) == 3 and all(x in allowed_bands for x in bands):
+        pass
+    else:
+        print('You can only select 3 bands from the following: {}'.format(
+            ', '.join(allowed_bands)))
+        return
+
+    try:
+        col = landsat_timeseries(
+            roi, start_year, end_year, start_date, end_date)
+
+        if vis_params is None:
+            vis_params = {}
+            vis_params['bands'] = bands
+            vis_params['min'] = 0
+            vis_params['max'] = 4000
+            vis_params['gamma'] = [1, 1, 1]
+
+        video_args = vis_params.copy()
+        video_args['dimensions'] = dimensions
+        video_args['region'] = roi
+        video_args['framesPerSecond'] = frames_per_second
+        video_args['crs'] = 'EPSG:3857'
+
+        if 'bands' not in video_args.keys():
+            video_args['bands'] = bands
+
+        if 'min' not in video_args.keys():
+            video_args['min'] = 0
+
+        if 'max' not in video_args.keys():
+            video_args['max'] = 4000
+
+        if 'gamma' not in video_args.keys():
+            video_args['gamma'] = [1, 1, 1]
+
+        download_ee_video(col, video_args, out_gif)
+
+        return out_gif
+
+    except Exception as e:
+        print(e)
+        return
+
+
+def minimum_bounding_box(geojson):
+    """Gets the minimum bounding box for a geojson polygon.
+
+    Args:
+        geojson (dict): A geojson dictionary.
+
+    Returns:
+        tuple: Returns a tuple containing the minimum bounding box in the format of (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -120)).
+    """
+    coordinates = []
+    try:
+        if 'geometry' in geojson.keys():
+            coordinates = geojson['geometry']['coordinates'][0]
+        else:
+            coordinates = geojson['coordinates'][0]
+
+        lower_left = min([x[1] for x in coordinates]), min(
+            [x[0] for x in coordinates])  # (lat, lon)
+        upper_right = max([x[1] for x in coordinates]), max([x[0]
+                                                             for x in coordinates])  # (lat, lon)
+        bounds = (lower_left, upper_right)
+        return bounds
+    except Exception as e:
+        print(e)
+        return

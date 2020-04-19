@@ -918,7 +918,7 @@ def download_from_url(url, out_file_name=None, out_dir='.', unzip=True):
         out_file_name = in_file_name
     out_file_path = os.path.join(os.path.abspath(out_dir), out_file_name)
 
-    print('Downloading {} ...'.format(in_file_name))
+    print('Downloading {} ...'.format(url))
 
     try:
         urllib.request.urlretrieve(url, out_file_path)
