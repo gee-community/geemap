@@ -1168,7 +1168,7 @@ class Map(ipyleaflet.Map):
             print(e)
             return
 
-    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='black', out_gif=None):
+    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='black', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, out_gif=None):
         """Adds a Landsat timelapse to the map.
 
         Args:
@@ -1185,6 +1185,9 @@ class Map(ipyleaflet.Map):
             frames_per_second (int, optional): Animation speed. Defaults to 10.
             font_size (int, optional): Font size of the animated text and label. Defaults to 30.
             font_color (str, optional): Font color of the animated text and label. Defaults to 'black'.
+            add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+            progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
+            progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
             out_gif ([type], optional): File path to the output animated GIF. Defaults to None.
 
         """
@@ -1216,11 +1219,11 @@ class Map(ipyleaflet.Map):
 
             print('Adding animated text to GIF ...')
             add_text_to_gif(in_gif, in_gif, xy=('2%', '2%'), text_sequence=start_year,
-                            font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second))
+                            font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
 
             if label is not None:
                 add_text_to_gif(in_gif, in_gif, xy=('2%', '90%'), text_sequence=label,
-                                font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second))
+                                font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
 
             bounds = minimum_bounding_box(geojson)
             # bounds = ((35.892718, -115.471773), (36.409454, -114.271283))
@@ -1324,7 +1327,7 @@ def system_fonts(show_full_path=False):
         print(e)
 
 
-def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="arial.ttf", font_size=20, font_color='#000000', duration=100, loop=0):
+def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="arial.ttf", font_size=20, font_color='#000000', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, duration=100, loop=0):
     """Adds animated text to a GIF image.
 
     Args:
@@ -1335,6 +1338,9 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
         font_type (str, optional): Font type. Defaults to "arial.ttf".
         font_size (int, optional): Font size. Defaults to 20.
         font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
         duration (int, optional): controls how long each frame will be displayed for, in milliseconds. It is the inverse of the frame rate. Setting it to 100 milliseconds gives 10 frames per second. You can decrease the duration to give a smoother animation.. Defaults to 100.
         loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
 
@@ -1376,6 +1382,7 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
             font = ImageFont.truetype(default_font, font_size)
 
     color = check_color(font_color)
+    progress_bar_color = check_color(progress_bar_color)
 
     try:
         image = Image.open(in_gif)
@@ -1386,6 +1393,8 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
 
     count = image.n_frames
     W, H = image.size
+    progress_bar_widths = [i * 1.0 / count * W for i in range(1, count + 1)]
+    progress_bar_shapes = [[(0, H - progress_bar_height), (x, H)] for x in progress_bar_widths]
 
     if xy is None:
         # default text location is 5% width and 5% height of the image.
@@ -1442,8 +1451,10 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
             # Draw the text on the frame
             frame = frame.convert('RGB')
             draw = ImageDraw.Draw(frame)
-            w, h = draw.textsize(text[index])
+            # w, h = draw.textsize(text[index])
             draw.text(xy, text[index], font=font, fill=color)
+            if add_progress_bar:
+                draw.rectangle(progress_bar_shapes[index], fill=progress_bar_color)
             del draw
 
             b = io.BytesIO()
