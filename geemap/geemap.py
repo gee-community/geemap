@@ -1394,7 +1394,8 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
     count = image.n_frames
     W, H = image.size
     progress_bar_widths = [i * 1.0 / count * W for i in range(1, count + 1)]
-    progress_bar_shapes = [[(0, H - progress_bar_height), (x, H)] for x in progress_bar_widths]
+    progress_bar_shapes = [[(0, H - progress_bar_height), (x, H)]
+                           for x in progress_bar_widths]
 
     if xy is None:
         # default text location is 5% width and 5% height of the image.
@@ -1454,7 +1455,8 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
             # w, h = draw.textsize(text[index])
             draw.text(xy, text[index], font=font, fill=color)
             if add_progress_bar:
-                draw.rectangle(progress_bar_shapes[index], fill=progress_bar_color)
+                draw.rectangle(
+                    progress_bar_shapes[index], fill=progress_bar_color)
             del draw
 
             b = io.BytesIO()
@@ -2336,6 +2338,20 @@ def download_ee_video(collection, video_args, out_gif):
     if not os.path.exists(os.path.dirname(out_gif)):
         os.makedirs(os.path.dirname(out_gif))
 
+    if 'region' in video_args.keys():
+        roi = video_args['region']
+
+        if not isinstance(roi, ee.Geometry):
+
+            try:
+                roi = roi.geometry()
+            except Exception as e:
+                print('Could not convert the provided roi to ee.Geometry')
+                print(e)
+                return
+
+        video_args['region'] = roi
+
     try:
         print('Generating URL...')
         url = collection.getVideoThumbURL(video_args)
@@ -3021,6 +3037,13 @@ def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start
                 [-114.271283, 36.409454],
                 [-114.271283, 35.892718],
                 [-115.471773, 35.892718]]], None, False)
+    elif isinstance(roi, ee.Feature) or isinstance(roi, ee.FeatureCollection):
+        roi = roi.geometry()
+    elif isinstance(roi, ee.Geometry):
+        pass
+    else:
+        print('The provided roi is invalid. It must be an ee.Geometry')
+        return
 
     if out_gif is None:
         out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
