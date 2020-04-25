@@ -5,12 +5,14 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 
 import colour
 import ee
+import geocoder
 import ipyleaflet
 import os
 import ipywidgets as widgets
 from bqplot import pyplot as plt
 # from colour import Color
 from ipyleaflet import *
+from IPython.display import display
 from .basemaps import ee_basemaps
 from .conversion import *
 from .legends import builtin_legends
@@ -63,10 +65,145 @@ class Map(ipyleaflet.Map):
         else:
             kwargs['zoom'] = zoom
 
-        # Inherit the ipyleaflet Map class
+        # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
         self.scroll_wheel_zoom = True
         self.layout.height = '550px'
+
+        self.clear_controls()
+
+        self.draw_count = 0  # The number of shapes drawn by the user using the DrawControl
+        # The list of Earth Engine Geometry objects converted from geojson
+        self.draw_features = []
+        # The Earth Engine Geometry object converted from the last drawn feature
+        self.draw_last_feature = None
+        self.draw_layer = None
+        self.draw_last_json = None
+        self.draw_last_bounds = None
+
+        self.plot_widget = None  # The plot widget for plotting Earth Engine data
+        self.plot_control = None  # The plot control for interacting plotting
+        self.random_marker = None
+
+        self.legend_widget = None
+        self.legend_control = None
+
+        self.ee_layers = []
+        self.ee_layer_names = []
+        self.ee_raster_layers = []
+        self.ee_raster_layer_names = []
+
+        self.search_locations = None
+        self.search_loc_marker = None
+
+        # Adds search button and search box
+        search_button = widgets.ToggleButton(
+            value=False,
+            tooltip='Search location/data',
+            icon='search'
+        )
+        search_button.layout.width = '37px'
+
+        search_type = widgets.ToggleButtons(
+            options=['name/address', 'lat-lon', 'data'],
+            tooltips=['Search by place name or address',
+                      'Search by lat-lon coordinates', 'Search Earth Engine data catalog']
+        )
+        search_type.style.button_width = '110px'
+
+        search_box = widgets.Text(
+            placeholder='Search by place name or address',
+            tooltip='Search location',
+        )
+        search_box.layout.width = '340px'
+
+        search_output = widgets.Output(
+            layout={'max_width': '340px', 'max_height': '120px', 'overflow': 'scroll'})
+
+        search_results = widgets.RadioButtons()
+
+        def search_result_change(change):
+            result_index = search_results.index
+            locations = self.search_locations
+            location = locations[result_index]
+            latlon = (location.lat, location.lng)
+            marker = self.search_loc_marker
+            marker.location = latlon
+            self.center = latlon
+
+        search_results.observe(search_result_change, names='value')
+
+        def search_btn_click(change):
+            if change['new']:
+                search_widget.children = [search_button, search_result_widget]
+            else:
+                search_widget.children = [search_button]
+                search_result_widget.children = [search_type, search_box]
+
+        search_button.observe(search_btn_click, 'value')
+
+        def search_type_changed(change):
+            search_box.value = ''
+            if change['new'] == 'name/address':
+                search_box.placeholder = 'Search by place name or address, e.g., Paris'
+                search_output.clear_output()
+            elif change['new'] == 'lat-lon':
+                search_box.placeholder = 'Search by lat-lon, e.g., 40, -100'
+                search_output.clear_output()
+            elif change['new'] == 'data':
+                search_box.placeholder = 'Search GEE data catalog by keywords, e.g., elevation'
+                search_output.clear_output()
+
+        search_type.observe(search_type_changed, names='value')
+
+        def search_box_callback(text):
+
+            if text.value != '':
+
+                if search_type.value == 'name/address':
+                    g = geocode(text.value)
+                elif search_type.value == 'lat-lon':
+                    g = geocode(text.value, reverse=True)
+                elif search_type.value == 'data':
+                    return
+
+                self.search_locations = g
+                if len(g) > 0:
+                    top_loc = g[0]
+                    latlon = (top_loc.lat, top_loc.lng)
+                    if self.search_loc_marker is None:
+                        marker = Marker(
+                            location=latlon, draggable=False, name='Search location')
+                        self.search_loc_marker = marker
+                        self.add_layer(marker)
+                        self.center = latlon
+                    else:
+                        marker = self.search_loc_marker
+                        marker.location = latlon
+                        self.center = latlon
+                    search_results.options = [x.address for x in g]
+                    search_result_widget.children = [
+                        search_type, search_box, search_output]
+                    with search_output:
+                        search_output.clear_output(wait=True)
+                        display(search_results)
+                else:
+                    with search_output:
+                        search_output.clear_output()
+
+        search_box.on_submit(search_box_callback)
+
+        search_result_widget = widgets.VBox()
+        search_result_widget.children = [search_type, search_box]
+
+        search_widget = widgets.HBox()
+        search_widget.children = [search_button]
+        search_control = WidgetControl(
+            widget=search_widget, position='topleft')
+
+        self.add_control(control=search_control)
+
+        self.add_control(ZoomControl(position='topleft'))
 
         layer_control = LayersControl(position='topright')
         self.add_control(layer_control)
@@ -97,27 +234,6 @@ class Map(ipyleaflet.Map):
                                        'color': '#0000FF'}},
                                    circlemarker={},
                                    )
-
-        self.draw_count = 0  # The number of shapes drawn by the user using the DrawControl
-        # The list of Earth Engine Geometry objects converted from geojson
-        self.draw_features = []
-        # The Earth Engine Geometry object converted from the last drawn feature
-        self.draw_last_feature = None
-        self.draw_layer = None
-        self.draw_last_json = None
-        self.draw_last_bounds = None
-
-        self.plot_widget = None  # The plot widget for plotting Earth Engine data
-        self.plot_control = None  # The plot control for interacting plotting
-        self.random_marker = None
-
-        self.legend_widget = None
-        self.legend_control = None
-
-        self.ee_layers = []
-        self.ee_layer_names = []
-        self.ee_raster_layers = []
-        self.ee_raster_layer_names = []
 
         # Handles draw events
         def handle_draw(target, action, geo_json):
@@ -2776,7 +2892,7 @@ def create_colorbar(width=150, height=30, palette=['blue', 'green', 'red'], add_
 
 
 def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20'):
-    """Generates an annual Landsat ImageCollection. This algorithm is adated from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
+    """Generates an annual Landsat ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
 
     Args:
         roi ([type], optional): [description]. Defaults to None.
@@ -3135,3 +3251,50 @@ def minimum_bounding_box(geojson):
     except Exception as e:
         print(e)
         return
+
+
+def geocode(location, max_rows=10, reverse=False):
+
+    if not isinstance(location, str):
+        print('The location must be a string.')
+        return
+
+    if not reverse:
+
+        locations = []
+        addresses = set()
+        g = geocoder.arcgis(location, maxRows=max_rows)
+
+        for result in g:
+            address = result.address
+            if not address in addresses:
+                addresses.add(address)
+                locations.append(result)
+
+        return locations
+
+    else:
+        try:
+            if ',' in location:
+                latlon = [float(x) for x in location.split(',')]
+            elif ' ' in location:
+                latlon = [float(x) for x in location.split(' ')]
+            else:
+                print(
+                    'The coordinates should be numbers only and separated by comma or space, such as 40.2, -100.3')
+                return
+            g = geocoder.arcgis(latlon, method='reverse')
+            locations = []
+            addresses = set()
+
+            for result in g:
+                address = result.address
+                if not address in addresses:
+                    addresses.add(address)
+                    locations.append(result)
+
+            return locations
+
+        except Exception as e:
+            print(e)
+            return
