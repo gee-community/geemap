@@ -3,6 +3,7 @@ click
 colour
 earthengine-api
 folium>=0.10.1
+geocoder
 ipyfilechooser
 ipyleaflet>=0.12.2
 ipynb-py-convert
