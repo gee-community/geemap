@@ -10,7 +10,6 @@ import ipyleaflet
 import os
 import ipywidgets as widgets
 from bqplot import pyplot as plt
-# from colour import Color
 from ipyleaflet import *
 from IPython.display import display
 from .basemaps import ee_basemaps
@@ -41,7 +40,7 @@ class Map(ipyleaflet.Map):
 
     def __init__(self, **kwargs):
 
-        # Authenticates Earth Engine and initialize an Earth Engine session
+        # Authenticates Earth Engine and initializes an Earth Engine session
         ee_initialize()
 
         # Default map center location and zoom level
@@ -94,7 +93,10 @@ class Map(ipyleaflet.Map):
         self.ee_raster_layer_names = []
 
         self.search_locations = None
+        self.search_loc = None
         self.search_loc_marker = None
+        self.search_loc_bbox = None
+        self.search_datasets = None
 
         # Adds search button and search box
         search_button = widgets.ToggleButton(
@@ -118,9 +120,56 @@ class Map(ipyleaflet.Map):
         search_box.layout.width = '340px'
 
         search_output = widgets.Output(
-            layout={'max_width': '340px', 'max_height': '120px', 'overflow': 'scroll'})
+            layout={'max_width': '340px', 'max_height': '250px', 'overflow': 'scroll'})
 
         search_results = widgets.RadioButtons()
+
+        assets_dropdown = widgets.Dropdown()
+        assets_dropdown.layout.min_width = '279px'
+        assets_dropdown.layout.max_width = '279px'
+        assets_dropdown.options = []
+
+        import_btn = widgets.Button(
+            description='import',
+            button_style='primary',
+            tooltip='Click to import the selected asset',
+        )
+        import_btn.layout.min_width = '57px'
+        import_btn.layout.max_width = '57px'
+
+        def import_btn_clicked(b):
+            if assets_dropdown.value != '':
+                datasets = self.search_datasets
+                dataset = datasets[assets_dropdown.index]
+                dataset_uid = 'dataset_' + random_string(string_length=3)
+                line1 = '{} = {}\n'.format(
+                    dataset_uid, dataset['ee_id_snippet'])
+                line2 = 'Map.addLayer(' + dataset_uid + \
+                    ', {}, "' + dataset['id'] + '")'
+                contents = ''.join([line1, line2])
+                create_code_cell(contents)
+
+        import_btn.on_click(import_btn_clicked)
+
+        html_widget = widgets.HTML()
+
+        def dropdown_change(change):
+            dropdown_index = assets_dropdown.index
+            if dropdown_index is not None and dropdown_index >= 0:
+                with search_output:
+                    search_output.clear_output()
+                    print('Loading ...')
+                    datasets = self.search_datasets
+                    dataset = datasets[dropdown_index]
+                    dataset_html = ee_data_html(dataset)
+                    html_widget.value = dataset_html
+                    search_output.clear_output()
+                    display(html_widget)
+
+        assets_dropdown.observe(dropdown_change, names='value')
+
+        assets_combo = widgets.HBox()
+        assets_combo.children = [import_btn, assets_dropdown]
 
         def search_result_change(change):
             result_index = search_results.index
@@ -144,15 +193,21 @@ class Map(ipyleaflet.Map):
 
         def search_type_changed(change):
             search_box.value = ''
+            search_output.clear_output()
             if change['new'] == 'name/address':
                 search_box.placeholder = 'Search by place name or address, e.g., Paris'
-                search_output.clear_output()
+                assets_dropdown.options = []
+                search_result_widget.children = [
+                    search_type, search_box, search_output]
             elif change['new'] == 'lat-lon':
                 search_box.placeholder = 'Search by lat-lon, e.g., 40, -100'
-                search_output.clear_output()
+                assets_dropdown.options = []
+                search_result_widget.children = [
+                    search_type, search_box, search_output]
             elif change['new'] == 'data':
                 search_box.placeholder = 'Search GEE data catalog by keywords, e.g., elevation'
-                search_output.clear_output()
+                search_result_widget.children = [
+                    search_type, search_box, assets_combo, search_output]
 
         search_type.observe(search_type_changed, names='value')
 
@@ -165,10 +220,26 @@ class Map(ipyleaflet.Map):
                 elif search_type.value == 'lat-lon':
                     g = geocode(text.value, reverse=True)
                 elif search_type.value == 'data':
+                    search_output.clear_output()
+                    with search_output:
+                        print('Searching ...')
+                    self.default_style = {'cursor': 'wait'}
+                    ee_assets = search_ee_data(text.value)
+                    self.search_datasets = ee_assets
+                    asset_titles = [x['title'] for x in ee_assets]
+                    assets_dropdown.options = asset_titles
+                    search_output.clear_output()
+                    if len(ee_assets) > 0:
+                        html_widget.value = ee_data_html(ee_assets[0])
+                    with search_output:
+                        display(html_widget)
+
+                    self.default_style = {'cursor': 'default'}
+
                     return
 
                 self.search_locations = g
-                if len(g) > 0:
+                if g is not None and len(g) > 0:
                     top_loc = g[0]
                     latlon = (top_loc.lat, top_loc.lng)
                     if self.search_loc_marker is None:
@@ -190,6 +261,7 @@ class Map(ipyleaflet.Map):
                 else:
                     with search_output:
                         search_output.clear_output()
+                        print('No results could be found.')
 
         search_box.on_submit(search_box_callback)
 
@@ -580,6 +652,10 @@ class Map(ipyleaflet.Map):
         bounds = [[lat, lon], [lat, lon]]
         if isinstance(ee_object, ee.geometry.Geometry):
             centroid = ee_object.centroid()
+            lon, lat = centroid.getInfo()['coordinates']
+            bounds = [[lat, lon], [lat, lon]]
+        elif isinstance(ee_object, ee.feature.Feature):
+            centroid = ee_object.geometry().centroid(1)
             lon, lat = centroid.getInfo()['coordinates']
             bounds = [[lat, lon], [lat, lon]]
         elif isinstance(ee_object, ee.featurecollection.FeatureCollection):
@@ -3254,7 +3330,16 @@ def minimum_bounding_box(geojson):
 
 
 def geocode(location, max_rows=10, reverse=False):
+    """Search location by address and lat/lon coordinates.
 
+    Args:
+        location (str): Place name or address
+        max_rows (int, optional): Maximum number of records to return. Defaults to 10.
+        reverse (bool, optional): Search place based on coordinates. Defaults to False.
+
+    Returns:
+        list: Returns a list of locations.
+    """
     if not isinstance(location, str):
         print('The location must be a string.')
         return
@@ -3298,3 +3383,138 @@ def geocode(location, max_rows=10, reverse=False):
         except Exception as e:
             print(e)
             return
+
+
+def search_ee_data(keywords):
+    """Searches Earth Engine data catalog.
+
+    Args:
+        keywords (str): Keywords to search for can be id, provider, tag and so on
+
+    Returns:
+        list: Returns a lit of assets.
+    """
+    try:
+        cmd = 'geeadd search --keywords "{}"'.format(str(keywords))
+        output = os.popen(cmd).read()
+        start_index = output.index('[')
+        assets = eval(output[start_index:])
+
+        results = []
+        for asset in assets:
+            asset_dates = asset['start_date'] + ' - ' + asset['end_date']
+            asset_snippet = asset['ee_id_snippet']
+            start_index = asset_snippet.index("'") + 1
+            end_index = asset_snippet.index("'", start_index)
+            asset_id = asset_snippet[start_index:end_index]
+            asset_url = asset_id.replace('/', '_')
+
+            asset['dates'] = asset_dates
+            asset['id'] = asset_id
+            asset['uid'] = asset_id.replace('/', '_')
+            asset['url'] = 'https://developers.google.com/earth-engine/datasets/catalog/' + asset['uid']
+            asset['thumbnail'] = 'https://mw1.google.com/ges/dd/images/{}_sample.png'.format(
+                asset['uid'])
+            results.append(asset)
+
+        return results
+
+    except Exception as e:
+        print(e)
+        return
+
+
+def ee_data_thumbnail(asset_id):
+    """Retrieves the thumbnail URL of an Earth Engine asset.
+
+    Args:
+        asset_id (str): An Earth Engine asset id.
+
+    Returns:
+        str: An http url of the thumbnail.
+    """
+    import requests
+    import urllib
+    from bs4 import BeautifulSoup
+
+    asset_uid = asset_id.replace('/', '_')
+    asset_url = "https://developers.google.com/earth-engine/datasets/catalog/{}".format(
+        asset_uid)
+    thumbnail_url = 'https://mw1.google.com/ges/dd/images/{}_sample.png'.format(
+        asset_uid)
+
+    r = requests.get(thumbnail_url)
+
+    try:
+        if r.status_code != 200:
+            html_page = urllib.request.urlopen(asset_url)
+            soup = BeautifulSoup(html_page, features="html.parser")
+
+            for img in soup.findAll('img'):
+                if 'sample.png' in img.get('src'):
+                    thumbnail_url = img.get('src')
+                    return thumbnail_url
+
+        return thumbnail_url
+    except Exception as e:
+        print(e)
+        return
+
+
+def ee_data_html(asset):
+    """Generates HTML from an asset to be used in the HTML widget.
+
+    Args:
+        asset (dict): A dictionary containing an Earth Engine asset.
+
+    Returns:
+        str: A string containing HTML.
+    """
+    template = '''
+        <html>
+        <body>
+            <h3>asset_title</h3>
+            <h4>Dataset Availability</h4>
+                <p style="margin-left: 40px">asset_dates</p>
+            <h4>Earth Engine Snippet</h4>
+                <p style="margin-left: 40px">ee_id_snippet</p>
+            <h4>Earth Engine Data Catalog</h4>
+                <p style="margin-left: 40px"><a href="asset_url" target="_blank">asset_id</a></p>
+            <h4>Dataset Thumbnail</h4>
+                <img src="asset_thumbnail">
+        </body>
+        </html>
+    '''
+
+    try:
+
+        text = template.replace('asset_title', asset['title'])
+        text = text.replace('asset_dates', asset['dates'])
+        text = text.replace('ee_id_snippet', asset['ee_id_snippet'])
+        text = text.replace('asset_id', asset['id'])
+        text = text.replace('asset_url', asset['url'])
+        asset['thumbnail'] = ee_data_thumbnail(asset['id'])
+        text = text.replace('asset_thumbnail', asset['thumbnail'])
+
+        return text
+
+    except Exception as e:
+        print(e)
+        return
+
+
+def create_code_cell(code='', where='below'):
+    """Creates a code cell in the IPython Notebook.
+
+    Args:
+        code (str, optional): Code to fill the new code cell with. Defaults to ''.
+        where (str, optional): Where to add the new code cell. It can be one of the following: above, below, at_bottom. Defaults to 'below'.
+    """
+
+    import base64
+    from IPython.display import Javascript, display
+    encoded_code = (base64.b64encode(str.encode(code))).decode()
+    display(Javascript("""
+        var code = IPython.notebook.insert_cell_{0}('code');
+        code.set_text(atob("{1}"));
+    """.format(where, encoded_code)))

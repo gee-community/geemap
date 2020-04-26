@@ -85,6 +85,7 @@ Below is a partial list of features available for the geemap package. Please che
 * Adding animated text to GIF images generated from Earth Engine data.
 * Adding colorbar and images to GIF animations generated from Earth Engine data.
 * Creating Landsat timelapse animations with animated text using Earth Engine.
+* Searching places and datasets from Earth Engine Data Catalog.
 
 
 Installation

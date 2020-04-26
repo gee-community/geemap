@@ -441,7 +441,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
     return output
 
 
-def create_new_cell(contents):
+def create_new_cell(contents, replace=False):
     """Create a new cell in Jupyter notebook based on the contents.
 
     Args:
@@ -449,7 +449,7 @@ def create_new_cell(contents):
     """
     from IPython.core.getipython import get_ipython
     shell = get_ipython()
-    shell.set_next_input(contents, replace=False)
+    shell.set_next_input(contents, replace=replace)
 
 
 def js_snippet_to_py(in_js_snippet, add_new_cell=True, import_ee=True, import_geemap=True, show_map=True):
