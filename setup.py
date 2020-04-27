@@ -61,6 +61,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/giswqs/geemap',
-    version='0.6.8',
+    version='0.6.9',
     zip_safe=False,
 )
