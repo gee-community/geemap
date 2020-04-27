@@ -39,6 +39,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 16. [Adding animated text to GIF images generated from Earth Engine data](#16-adding-animated-text-to-gif-images-generated-from-earth-engine-data) ([video](https://youtu.be/fDnDVuM_Ke4) | [gif](https://i.imgur.com/MSde1om.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/16_add_animated_text.ipynb))
 17. [Adding colorbar and images to GIF animations generated from Earth Engine data](#17-adding-colorbar-and-images-to-gif-animations-generated-from-earth-engine-data) ([video](https://youtu.be/CpT3LQPNKJs) | [gif](https://i.imgur.com/13tFMSI.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/17_add_colorbar_to_gif.ipynb))
 18. [Creating Landsat timelapse animations with animated text using Earth Engine](#18-creating-landsat-timelapse-animations-with-animated-text-using-earth-engine) ([video](https://youtu.be/OwjSJnGWKJs) | [gif](https://i.imgur.com/XOHOeXk.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/18_create_landsat_timelapse.ipynb))
+19. [How to search and import datasets from Earth Engine Data Catalog](#19-how-to-search-and-import-datasets-from-earth-engine-data-catalog) ([video](https://youtu.be/lwtgzrHrXj8) | [gif](https://i.imgur.com/E09p64F.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/19_search_places_and_datasets.ipynb))
 
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
@@ -112,3 +113,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 ### 18. Creating Landsat timelapse animations with animated text using Earth Engine
 
 ![timelapse](https://i.imgur.com/XOHOeXk.gif)
+
+### 19. How to search and import datasets from Earth Engine Data Catalog
+
+![search](https://i.imgur.com/E09p64F.gif)

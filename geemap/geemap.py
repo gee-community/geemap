@@ -93,9 +93,8 @@ class Map(ipyleaflet.Map):
         self.ee_raster_layer_names = []
 
         self.search_locations = None
-        self.search_loc = None
         self.search_loc_marker = None
-        self.search_loc_bbox = None
+        self.search_loc_geom = None
         self.search_datasets = None
 
         # Adds search button and search box
@@ -157,13 +156,13 @@ class Map(ipyleaflet.Map):
             dropdown_index = assets_dropdown.index
             if dropdown_index is not None and dropdown_index >= 0:
                 with search_output:
-                    search_output.clear_output()
+                    search_output.clear_output(wait=True)
                     print('Loading ...')
                     datasets = self.search_datasets
                     dataset = datasets[dropdown_index]
                     dataset_html = ee_data_html(dataset)
                     html_widget.value = dataset_html
-                    search_output.clear_output()
+                    search_output.clear_output(wait=True)
                     display(html_widget)
 
         assets_dropdown.observe(dropdown_change, names='value')
@@ -176,6 +175,8 @@ class Map(ipyleaflet.Map):
             locations = self.search_locations
             location = locations[result_index]
             latlon = (location.lat, location.lng)
+            self.search_loc_geom = ee.Geometry.Point(
+                location.lng, location.lat)
             marker = self.search_loc_marker
             marker.location = latlon
             self.center = latlon
@@ -219,6 +220,24 @@ class Map(ipyleaflet.Map):
                     g = geocode(text.value)
                 elif search_type.value == 'lat-lon':
                     g = geocode(text.value, reverse=True)
+                    if g is None and latlon_from_text(text.value):
+                        search_output.clear_output()
+                        latlon = latlon_from_text(text.value)
+                        self.search_loc_geom = ee.Geometry.Point(
+                            latlon[1], latlon[0])
+                        if self.search_loc_marker is None:
+                            marker = Marker(
+                                location=latlon, draggable=False, name='Search location')
+                            self.search_loc_marker = marker
+                            self.add_layer(marker)
+                            self.center = latlon
+                        else:
+                            marker = self.search_loc_marker
+                            marker.location = latlon
+                            self.center = latlon
+                        with search_output:
+                            print('No address found for {}'.format(latlon))
+                        return
                 elif search_type.value == 'data':
                     search_output.clear_output()
                     with search_output:
@@ -242,6 +261,8 @@ class Map(ipyleaflet.Map):
                 if g is not None and len(g) > 0:
                     top_loc = g[0]
                     latlon = (top_loc.lat, top_loc.lng)
+                    self.search_loc_geom = ee.Geometry.Point(
+                        top_loc.lng, top_loc.lat)
                     if self.search_loc_marker is None:
                         marker = Marker(
                             location=latlon, draggable=False, name='Search location')
@@ -3342,7 +3363,7 @@ def geocode(location, max_rows=10, reverse=False):
     """
     if not isinstance(location, str):
         print('The location must be a string.')
-        return
+        return None
 
     if not reverse:
 
@@ -3356,7 +3377,10 @@ def geocode(location, max_rows=10, reverse=False):
                 addresses.add(address)
                 locations.append(result)
 
-        return locations
+        if len(locations) > 0:
+            return locations
+        else:
+            return None
 
     else:
         try:
@@ -3366,7 +3390,7 @@ def geocode(location, max_rows=10, reverse=False):
                 latlon = [float(x) for x in location.split(' ')]
             else:
                 print(
-                    'The coordinates should be numbers only and separated by comma or space, such as 40.2, -100.3')
+                    'The lat-lon coordinates should be numbers only and separated by comma or space, such as 40.2, -100.3')
                 return
             g = geocoder.arcgis(latlon, method='reverse')
             locations = []
@@ -3378,11 +3402,76 @@ def geocode(location, max_rows=10, reverse=False):
                     addresses.add(address)
                     locations.append(result)
 
-            return locations
+            if len(locations) > 0:
+                return locations
+            else:
+                return None
 
         except Exception as e:
             print(e)
-            return
+            return None
+
+
+def is_latlon_valid(location):
+    """Checks whether a pair of coordinates is valid.
+
+    Args:
+        location (str): A pair of latlon coordinates separated by comma or space.
+
+    Returns:
+        bool: Returns True if valid.
+    """
+    latlon = []
+    if ',' in location:
+        latlon = [float(x) for x in location.split(',')]
+    elif ' ' in location:
+        latlon = [float(x) for x in location.split(' ')]
+    else:
+        print(
+            'The coordinates should be numbers only and separated by comma or space, such as 40.2, -100.3')
+        return False
+
+    try:
+        lat, lon = float(latlon[0]), float(latlon[1])
+        if lat >= -90 and lat <= 90 and lon >= -180 and lat <= 180:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(e)
+        return False
+
+
+def latlon_from_text(location):
+    """Extracts latlon from text.
+
+    Args:
+        location (str): A pair of latlon coordinates separated by comma or space.
+
+    Returns:
+        bool: Returns (lat, lon) if valid.
+    """
+    latlon = []
+    try:
+        if ',' in location:
+            latlon = [float(x) for x in location.split(',')]
+        elif ' ' in location:
+            latlon = [float(x) for x in location.split(' ')]
+        else:
+            print(
+                'The lat-lon coordinates should be numbers only and separated by comma or space, such as 40.2, -100.3')
+            return None
+
+        lat, lon = latlon[0], latlon[1]
+        if lat >= -90 and lat <= 90 and lon >= -180 and lat <= 180:
+            return lat, lon
+        else:
+            return None
+
+    except Exception as e:
+        print(e)
+        print('The lat-lon coordinates should be numbers only and separated by comma or space, such as 40.2, -100.3')
+        return None
 
 
 def search_ee_data(keywords):
@@ -3407,7 +3496,6 @@ def search_ee_data(keywords):
             start_index = asset_snippet.index("'") + 1
             end_index = asset_snippet.index("'", start_index)
             asset_id = asset_snippet[start_index:end_index]
-            asset_url = asset_id.replace('/', '_')
 
             asset['dates'] = asset_dates
             asset['id'] = asset_id
