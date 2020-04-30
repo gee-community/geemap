@@ -1,20 +1,27 @@
 import ee
 
-# Compute area in square meters
 
-def vecArea(f):
+try:
+    ee.Initialize()
+except Exception as e:
+    ee.Authenticate()
+    ee.Initialize()
+
+
+# Compute area in square meters
+def vec_area(f):
     # Compute area in square meters.  Convert to hectares.
     areaSqm = f.area()
     # A new property called 'area' will be set on each feature.
     return f.set({'area': areaSqm})
 
 
-def vecAreaSqkm(f):
+def vec_area_sqkm(f):
     areaSqkm = f.area().divide(1000 * 1000)
     return f.set({'area': areaSqkm})
 
 
-def vecAreaHa(f):
+def vec_area_ha(f):
     # Compute area in square meters.  Convert to hectares.
     areaHa = f.area(1).divide(100 * 100)
 
@@ -22,29 +29,64 @@ def vecAreaHa(f):
     return f.set({'area': areaHa})
 
 
-def getYear(date):
+def get_year(date):
     return ee.Date(date).get('year')
 
 
 # Convert string to number
-def stringToNumber(str):
+def str_to_number(str):
     return ee.Number.parse(str)
 
 
 # Calculate array sum
-def arraySum(arr):
+def array_sum(arr):
     return ee.Array(arr).accum(0).get([-1])
 
 
 # Calculate array mean
-def arrayMean(arr):
+def array_mean(arr):
     sum = ee.Array(arr).accum(0).get([-1])
     size = arr.length()
     return ee.Number(sum.divide(size))
 
 
+def get_annual_NAIP(year):
+    try:
+        collection = ee.ImageCollection('USDA/NAIP/DOQQ')
+        start_date = str(year) + '-01-01'
+        end_date = str(year) + '-12-31'
+        naip = collection.filterDate(start_date, end_date) \
+            .filter(ee.Filter.listContains("system:band_names", "N"))
+        return naip
+    except Exception as e:
+        print(e)
+
+
+def get_all_NAIP(start_year=2009, end_year=2018):
+
+    try:
+
+        def get_annual_NAIP(year):
+            try:
+                collection = ee.ImageCollection('USDA/NAIP/DOQQ')
+                start_date = ee.Date.fromYMD(year, 1, 1)
+                end_date = ee.Date.fromYMD(year, 12, 31)
+                naip = collection.filterDate(start_date, end_date) \
+                    .filter(ee.Filter.listContains("system:band_names", "N"))
+                return ee.ImageCollection(naip)
+            except Exception as e:
+                print(e)
+
+        years = ee.List.sequence(start_year, end_year)
+        collection = years.map(get_annual_NAIP)
+        return collection
+
+    except Exception as e:
+        print(e)
+
+
 # Create NAIP mosaic for a specified year
-def annualNAIP(year, geometry):
+def annual_NAIP(year, geometry):
     start_date = ee.Date.fromYMD(year, 1, 1)
     end_date = ee.Date.fromYMD(year, 12, 31)
     collection = ee.ImageCollection('USDA/NAIP/DOQQ') \
@@ -66,7 +108,7 @@ def annualNAIP(year, geometry):
 
 
 # Find all available NAIP images for a geometry
-def findNAIP(geometry, add_NDVI=True, add_NDWI=True):
+def find_NAIP(geometry, add_NDVI=True, add_NDWI=True):
     init_collection = ee.ImageCollection('USDA/NAIP/DOQQ') \
         .filterBounds(geometry) \
         .filterDate('2009-01-01', '2018-12-31') \
@@ -130,7 +172,7 @@ def findNAIP(geometry, add_NDVI=True, add_NDWI=True):
 
 
 # Get NWI by HUC
-def filterNWI(HUC08_Id, geometry):
+def filter_NWI(HUC08_Id, geometry):
     nwi_asset_prefix = 'users/wqs/NWI-HU8/HU8_'
     nwi_asset_suffix = '_Wetlands'
     nwi_asset_path = nwi_asset_prefix + HUC08_Id + nwi_asset_suffix
@@ -140,14 +182,14 @@ def filterNWI(HUC08_Id, geometry):
 
 
 # Find HUC08 intersecting a geometry
-def filterHUC08(geometry):
+def filter_HUC08(geometry):
     USGS_HUC08 = ee.FeatureCollection('USGS/WBD/2017/HUC08')   # Subbasins
     HUC08 = USGS_HUC08.filterBounds(geometry)
     return HUC08
 
 
 # Find HUC10 intersecting a geometry
-def filterHUC10(geometry):
+def filter_HUC10(geometry):
     USGS_HUC10 = ee.FeatureCollection('USGS/WBD/2017/HUC10')   # Watersheds
     HUC10 = USGS_HUC10.filterBounds(geometry)
     return HUC10
@@ -155,21 +197,21 @@ def filterHUC10(geometry):
     # Find HUC08 by HUC ID
 
 
-def findHUC08(HUC08_Id):
+def find_HUC08(HUC08_Id):
     USGS_HUC08 = ee.FeatureCollection('USGS/WBD/2017/HUC08')   # Subbasins
     HUC08 = USGS_HUC08.filter(ee.Filter.eq('huc8', HUC08_Id))
     return HUC08
 
 
 # Find HUC10 by HUC ID
-def findHUC10(HUC10_Id):
+def find_HUC10(HUC10_Id):
     USGS_HUC10 = ee.FeatureCollection('USGS/WBD/2017/HUC10')   # Watersheds
     HUC10 = USGS_HUC10.filter(ee.Filter.eq('huc10', HUC10_Id))
     return HUC10
 
 
 # find NWI by HUC08
-def findNWI(HUC08_Id):
+def find_NWI(HUC08_Id):
     nwi_asset_prefix = 'users/wqs/NWI-HU8/HU8_'
     nwi_asset_suffix = '_Wetlands'
     nwi_asset_path = nwi_asset_prefix + HUC08_Id + nwi_asset_suffix
@@ -178,14 +220,14 @@ def findNWI(HUC08_Id):
     return nwi_huc
 
 
-# Extract NWI by providing a geometry
-def extractNWI(geometry):
+# # Extract NWI by providing a geometry
+# def extractNWI(geometry):
 
-    HUC08 = filterHUC08(geometry)
-    HUC_list = ee.List(HUC08.aggregate_array('huc8')).getInfo()
-    # print('Intersecting HUC08 IDs:', HUC_list)
-    nwi = ee.FeatureCollection(HUC_list.map(findNWI)).flatten()
-    return nwi.filterBounds(geometry)
+#     HUC08 = filterHUC08(geometry)
+#     HUC_list = ee.List(HUC08.aggregate_array('huc8')).getInfo()
+#     # print('Intersecting HUC08 IDs:', HUC_list)
+#     nwi = ee.FeatureCollection(HUC_list.map(findNWI)).flatten()
+#     return nwi.filterBounds(geometry)
 
 # NWI legend: https://www.fws.gov/wetlands/Data/Mapper-Wetlands-Legend.html
 
@@ -218,12 +260,12 @@ def nwi_add_color(fc):
     base = ee.Image().byte()
     img = base.paint(fc, 'R') \
         .addBands(base.paint(fc, 'G')
-                  .addBands(base.paint(fc, 'B')))
+                .addBands(base.paint(fc, 'B')))
     return img
 
 
 # calculate total image area (unit: m2)
-def imageArea(img, geometry, scale):
+def image_area(img, geometry, scale):
     pixelArea = img.Add(ee.Image(1)).multiply(
         ee.Image.pixelArea())
     imgArea = pixelArea.reduceRegion(**{
@@ -236,7 +278,7 @@ def imageArea(img, geometry, scale):
 
 
 # calculate total image area (unit: ha)
-def imageAreaHa(img, geometry, scale):
+def image_area_ha(img, geometry, scale):
     pixelArea = img.Add(ee.Image(1)).multiply(
         ee.Image.pixelArea()).divide(10000)
     imgArea = pixelArea.reduceRegion(**{
@@ -249,7 +291,7 @@ def imageAreaHa(img, geometry, scale):
 
 
 # get highest value
-def maxValue(img, scale=30):
+def max_value(img, scale=30):
     max_value = img.reduceRegion(**{
         'reducer': ee.Reducer.max(),
         'geometry': img.geometry(),
@@ -260,7 +302,7 @@ def maxValue(img, scale=30):
 
 
 # get lowest value
-def minValue(img, scale=30):
+def min_value(img, scale=30):
     min_value = img.reduceRegion(**{
         'reducer': ee.Reducer.min(),
         'geometry': img.geometry(),
@@ -271,7 +313,7 @@ def minValue(img, scale=30):
 
 
 # get mean value
-def meanValue(img, scale=30):
+def mean_value(img, scale=30):
     mean_value = img.reduceRegion(**{
         'reducer': ee.Reducer.mean(),
         'geometry': img.geometry(),
@@ -282,7 +324,7 @@ def meanValue(img, scale=30):
 
 
 # get standard deviation
-def stdValue(img, scale=30):
+def std_value(img, scale=30):
     std_value = img.reduceRegion(**{
         'reducer': ee.Reducer.stdDev(),
         'geometry': img.geometry(),

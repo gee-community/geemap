@@ -672,7 +672,7 @@ class Map(ipyleaflet.Map):
         lon = 0
         bounds = [[lat, lon], [lat, lon]]
         if isinstance(ee_object, ee.geometry.Geometry):
-            centroid = ee_object.centroid()
+            centroid = ee_object.centroid(1)
             lon, lat = centroid.getInfo()['coordinates']
             bounds = [[lat, lon], [lat, lon]]
         elif isinstance(ee_object, ee.feature.Feature):
@@ -1139,6 +1139,124 @@ class Map(ipyleaflet.Map):
         except Exception as e:
             print(e)
             print('The provided layers are invalid!')
+
+    def ts_inspector(self, left_ts, right_ts, left_names, right_names, left_vis={}, right_vis={}):
+        """Creates a split-panel map for inspecting timeseries images.
+
+        Args:
+            left_ts (object): An ee.ImageCollection to show on the left panel.
+            right_ts (object): An ee.ImageCollection to show on the right panel.
+            left_names (list): A list of names to show under the left dropdown.
+            right_names (list): A list of names to show under the right dropdown.
+            left_vis (dict, optional): Visualization parameters for the left layer. Defaults to {}.
+            right_vis (dict, optional): Visualization parameters for the right layer. Defaults to {}.
+        """
+        left_count = int(left_ts.size().getInfo())
+        right_count = int(right_ts.size().getInfo())
+
+        if left_count != len(left_names):
+            print(
+                'The number of images in left_ts must match the number of layer names in left_names.')
+            return
+        if right_count != len(right_names):
+            print(
+                'The number of images in right_ts must match the number of layer names in right_names.')
+            return
+
+        left_layer = TileLayer(
+            url='https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+            attribution='Google',
+            name='Google Maps'   
+        )
+        right_layer = TileLayer(
+            url='https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+            attribution='Google',
+            name='Google Maps'   
+        )
+
+        self.clear_controls()
+        left_dropdown = widgets.Dropdown(options=left_names, value=None)
+        right_dropdown = widgets.Dropdown(options=right_names, value=None)
+        left_dropdown.layout.max_width = '130px'
+        right_dropdown.layout.max_width = '130px'
+
+        left_control = WidgetControl(widget=left_dropdown, position='topleft')
+        right_control = WidgetControl(
+            widget=right_dropdown, position='topright')
+
+        self.add_control(control=left_control)
+        self.add_control(control=right_control)
+
+        self.add_control(ZoomControl(position='topleft'))
+        self.add_control(ScaleControl(position='bottomleft'))
+        self.add_control(FullScreenControl())
+
+        def left_dropdown_change(change):
+            left_dropdown_index = left_dropdown.index
+            if left_dropdown_index is not None and left_dropdown_index >= 0:
+                try:
+                    if isinstance(left_ts, ee.ImageCollection):
+                        left_image = left_ts.toList(
+                            left_ts.size()).get(left_dropdown_index)
+                    elif isinstance(left_ts, ee.List):
+                        left_image = left_ts.get(left_dropdown_index)
+                    else:
+                        print('The left_ts argument must be an ImageCollection.')
+                        return
+
+                    if isinstance(left_image, ee.ImageCollection):
+                        left_image = ee.Image(left_image.mosaic())
+                    elif isinstance(left_image, ee.Image):
+                        pass
+                    else:
+                        left_image = ee.Image(left_image)
+
+                    left_image = ee_tile_layer(
+                        left_image, left_vis, left_names[left_dropdown_index])
+                    left_layer.url = left_image.url
+                except Exception as e:
+                    print(e)
+                    return
+
+        left_dropdown.observe(left_dropdown_change, names='value')
+
+        def right_dropdown_change(change):
+            right_dropdown_index = right_dropdown.index
+            if right_dropdown_index is not None and right_dropdown_index >= 0:
+                try:
+                    if isinstance(right_ts, ee.ImageCollection):
+                        right_image = right_ts.toList(
+                            left_ts.size()).get(right_dropdown_index)
+                    elif isinstance(right_ts, ee.List):
+                        right_image = right_ts.get(right_dropdown_index)
+                    else:
+                        print('The left_ts argument must be an ImageCollection.')
+                        return
+
+                    if isinstance(right_image, ee.ImageCollection):
+                        right_image = ee.Image(right_image.mosaic())
+                    elif isinstance(right_image, ee.Image):
+                        pass
+                    else:
+                        right_image = ee.Image(right_image)
+
+                    right_image = ee_tile_layer(
+                        right_image, right_vis, right_names[right_dropdown_index])
+                    right_layer.url = right_image.url
+                except Exception as e:
+                    print(e)
+                    return
+
+        right_dropdown.observe(right_dropdown_change, names='value')
+
+        try:
+
+            split_control = ipyleaflet.SplitMapControl(
+                left_layer=left_layer, right_layer=right_layer)
+            self.add_control(split_control)
+
+        except Exception as e:
+            print(e)
 
     def basemap_demo(self):
         """A demo for using geemap basemaps.
@@ -1980,7 +2098,7 @@ def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, o
     elif isinstance(ee_object, ee.image.Image):
         image = ee_object
     elif isinstance(ee_object, ee.imagecollection.ImageCollection):
-        image = ee_object.median()
+        image = ee_object.mosaic()
 
     map_id_dict = ee.Image(image).getMapId(vis_params)
     tile_layer = ipyleaflet.TileLayer(
@@ -2988,6 +3106,42 @@ def create_colorbar(width=150, height=30, palette=['blue', 'green', 'red'], add_
     return out_file
 
 
+def naip_timeseries(roi=None, start_year=2009, end_year=2018):
+    """Creates NAIP annual timeseries
+
+    Args:
+        roi (object, optional): An ee.Geometry representing the region of interest. Defaults to None.
+        start_year (int, optional): Starting year for the timeseries. Defaults to2009.
+        end_year (int, optional): Ending year for the timeseries. Defaults to 2018.
+
+    Returns:
+        object: An ee.ImageCollection representing annual NAIP imagery.
+    """
+    ee_initialize()
+    try:
+
+        def get_annual_NAIP(year):
+            try:
+                collection = ee.ImageCollection('USDA/NAIP/DOQQ')
+                if roi is not None:
+                    collection = collection.filterBounds(roi)
+                start_date = ee.Date.fromYMD(year, 1, 1)
+                end_date = ee.Date.fromYMD(year, 12, 31)
+                naip = collection.filterDate(start_date, end_date) \
+                    .filter(ee.Filter.listContains("system:band_names", "N"))
+                naip = ee.Image(ee.ImageCollection(naip).mosaic())
+                return naip
+            except Exception as e:
+                print(e)
+
+        years = ee.List.sequence(start_year, end_year)
+        collection = years.map(get_annual_NAIP)
+        return collection
+
+    except Exception as e:
+        print(e)
+
+
 def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20'):
     """Generates an annual Landsat ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
 
@@ -3015,6 +3169,12 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     ee_initialize()
 
     if roi is None:
+        # roi = ee.Geometry.Polygon(
+        #     [[[-180, -80],
+        #       [-180, 80],
+        #         [180, 80],
+        #         [180, -80],
+        #         [-180, -80]]], None, False)
         roi = ee.Geometry.Polygon(
             [[[-115.471773, 35.892718],
               [-115.471773, 36.409454],
@@ -3500,9 +3660,9 @@ def search_ee_data(keywords):
             asset['dates'] = asset_dates
             asset['id'] = asset_id
             asset['uid'] = asset_id.replace('/', '_')
-            asset['url'] = 'https://developers.google.com/earth-engine/datasets/catalog/' + asset['uid']
-            asset['thumbnail'] = 'https://mw1.google.com/ges/dd/images/{}_sample.png'.format(
-                asset['uid'])
+            # asset['url'] = 'https://developers.google.com/earth-engine/datasets/catalog/' + asset['uid']
+            # asset['thumbnail'] = 'https://mw1.google.com/ges/dd/images/{}_sample.png'.format(
+            #     asset['uid'])
             results.append(asset)
 
         return results
@@ -3569,7 +3729,7 @@ def ee_data_html(asset):
             <h4>Earth Engine Data Catalog</h4>
                 <p style="margin-left: 40px"><a href="asset_url" target="_blank">asset_id</a></p>
             <h4>Dataset Thumbnail</h4>
-                <img src="asset_thumbnail">
+                <img src="thumbnail_url">
         </body>
         </html>
     '''
@@ -3580,9 +3740,9 @@ def ee_data_html(asset):
         text = text.replace('asset_dates', asset['dates'])
         text = text.replace('ee_id_snippet', asset['ee_id_snippet'])
         text = text.replace('asset_id', asset['id'])
-        text = text.replace('asset_url', asset['url'])
-        asset['thumbnail'] = ee_data_thumbnail(asset['id'])
-        text = text.replace('asset_thumbnail', asset['thumbnail'])
+        text = text.replace('asset_url', asset['asset_url'])
+        # asset['thumbnail'] = ee_data_thumbnail(asset['id'])
+        text = text.replace('thumbnail_url', asset['thumbnail_url'])
 
         return text
 
