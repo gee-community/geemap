@@ -3,19 +3,19 @@ os:
   - linux
 matrix:
   include:      
-    - name: "Python 3.7.3 on macOS"
-      os: osx
-      osx_image: xcode10.2  # Python 3.7.3 running on macOS https://docs.travis-ci.com/user/reference/osx/
-      language: shell  # 'language: python' is an error on Travis CI macOS
-      before_install:
-        - python3 --version
-        - pip3 install -U pip
-        - pip3 install -U pytest
-        - pip3 install codecov
-        - pip3 install click
-        - pip3 install .
-      script: python3 -m pytest
-      after_success: python 3 -m codecov
+    # - name: "Python 3.7.3 on macOS"
+    #   os: osx
+    #   osx_image: xcode10.2  # Python 3.7.3 running on macOS https://docs.travis-ci.com/user/reference/osx/
+    #   language: shell  # 'language: python' is an error on Travis CI macOS
+    #   before_install:
+    #     - python3 --version
+    #     - pip3 install -U pip
+    #     - pip3 install -U pytest
+    #     - pip3 install codecov
+    #     - pip3 install click
+    #     - pip3 install .
+    #   script: python3 -m pytest
+    #   after_success: python 3 -m codecov
     - name: "Python 3.8.2 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
       language: shell       # 'language: python' is an error on Travis CI Windows
