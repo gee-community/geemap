@@ -3,7 +3,7 @@ click
 colour
 earthengine-api
 folium>=0.10.1
-geeadd
+geeadd>=0.4.6
 geocoder
 ipyfilechooser
 ipyleaflet>=0.12.2
