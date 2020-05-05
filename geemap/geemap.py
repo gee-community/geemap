@@ -23,7 +23,7 @@ def ee_initialize():
     """
     try:
         ee.Initialize()
-    except Exception as e:
+    except:
         ee.Authenticate()
         ee.Initialize()
 
@@ -32,7 +32,7 @@ class Map(ipyleaflet.Map):
     """The Map class inherits from ipyleaflet.Map
 
     Args:
-        ipyleaflet (object): An ipyleaflet map instance.
+        ipyleaflet (object): An ipyleaflet map instance. The arguments you can pass to the Map can be found at https://ipyleaflet.readthedocs.io/en/latest/api_reference/map.html
 
     Returns:
         object: ipyleaflet map object.
@@ -446,7 +446,6 @@ class Map(ipyleaflet.Map):
         def handle_interaction(**kwargs):
 
             latlon = kwargs.get('coordinates')
-            # print(latlon)
             if kwargs.get('type') == 'click' and self.inspector_checked:
                 self.default_style = {'cursor': 'wait'}
 
@@ -2576,6 +2575,16 @@ def ee_export_image(ee_object, filename, scale=None, crs=None, region=None, file
 
 
 def ee_export_image_collection(ee_object, out_dir, scale=None, crs=None, region=None, file_per_band=False):
+    """Exports an ImageCollection as GeoTIFFs.
+
+    Args:
+        ee_object (object): The ee.Image to download.
+        out_dir (str): The output directory for the exported images.
+        scale (float, optional): A default scale to use for any bands that do not specify one; ignored if crs and crs_transform is specified. Defaults to None.
+        crs (str, optional): A default CRS string to use for any bands that do not explicitly specify one. Defaults to None.
+        region (object, optional): A polygon specifying a region to download; ignored if crs and crs_transform is specified. Defaults to None.
+        file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
+    """    
 
     import requests
     import zipfile
@@ -2611,8 +2620,8 @@ def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_val
 
     Args:
         ee_object (object): The image to sample.
-        bands (list, optional): The list of band names to extract. Defaults to None.
-        region (object, optional): The region whose projected bounding box is used to sample the image. Defaults to the footprint in each band.
+        bands (list, optional): The list of band names to extract. Please make sure that all bands have the same spatial resolution. Defaults to None. 
+        region (object, optional): The region whose projected bounding box is used to sample the image. The maximum number of pixels you can export is 262,144. Resampling and reprojecting all bands to a fixed scale can be useful. Defaults to the footprint in each band.
         properties (list, optional): The properties to copy over from the sampled image. Defaults to all non-system properties.
         default_value (float, optional): A default value used when a sampled pixel is masked or outside a band's footprint. Defaults to None.
 
