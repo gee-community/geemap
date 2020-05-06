@@ -3150,6 +3150,197 @@ def naip_timeseries(roi=None, start_year=2009, end_year=2018):
     except Exception as e:
         print(e)
 
+def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='01-01', end_date='12-31'):
+    """Generates an annual Sentinel 2 ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
+       Images include both level 1C and level 2A imagery.
+    Args:
+
+        roi (object, optional): Region of interest to create the timelapse. Defaults to None.
+        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
+        end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
+        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
+        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
+    Returns:
+        object: Returns an ImageCollection containing annual Sentinel 2 images.
+    """
+
+    ################################################################################
+
+    ################################################################################
+    # Input and output parameters.
+    import re
+    import datetime
+
+    ee_initialize()
+
+    if roi is None:
+        # roi = ee.Geometry.Polygon(
+        #     [[[-180, -80],
+        #       [-180, 80],
+        #         [180, 80],
+        #         [180, -80],
+        #         [-180, -80]]], None, False)
+        roi = ee.Geometry.Polygon(
+            [[[-115.471773, 35.892718],
+              [-115.471773, 36.409454],
+                [-114.271283, 36.409454],
+                [-114.271283, 35.892718],
+                [-115.471773, 35.892718]]], None, False)
+
+    if not isinstance(roi, ee.Geometry):
+
+        try:
+            roi = roi.geometry()
+        except Exception as e:
+            print('Could not convert the provided roi to ee.Geometry')
+            print(e)
+            return
+
+    ################################################################################
+    # Setup vars to get dates.
+    if isinstance(start_year, int) and (start_year >= 2015) and (start_year <= 2020):
+        pass
+    else:
+        print('The start year must be an integer >= 2015.')
+        return
+
+    if isinstance(end_year, int) and (end_year >= 2015) and (end_year <= 2020):
+        pass
+    else:
+        print('The end year must be an integer <= 2020.')
+        return
+
+    if re.match("[0-9]{2}\-[0-9]{2}", start_date) and re.match("[0-9]{2}\-[0-9]{2}", end_date):
+        pass
+    else:
+        print('The start data and end date must be month-day, such as 06-10, 09-20')
+        return
+
+    try:
+        datetime.datetime(int(start_year), int(
+            start_date[:2]), int(start_date[3:5]))
+        datetime.datetime(int(end_year), int(end_date[:2]), int(end_date[3:5]))
+    except Exception as e:
+        print('The input dates are invalid.')
+        print(e)
+        return
+
+    try:
+        start_test = datetime.datetime(int(start_year), int(start_date[:2]), int(start_date[3:5]))
+        end_test = datetime.datetime(int(end_year), int(end_date[:2]), int(end_date[3:5]))
+        if start_test > end_test:
+            raise ValueError('Start date must be prior to end date')
+    except Exception as e:
+        print(e)
+        return
+
+    def days_between(d1, d2):
+        d1 = datetime.datetime.strptime(d1, "%Y-%m-%d")
+        d2 = datetime.datetime.strptime(d2, "%Y-%m-%d")
+        return abs((d2 - d1).days)
+
+    n_days = days_between(str(start_year) + '-' + start_date,
+                          str(start_year) + '-' + end_date)
+    start_month = int(start_date[:2])
+    start_day = int(start_date[3:5])
+    start_date = str(start_year) + '-' + start_date
+    end_date = str(end_year) + '-' + end_date
+
+    # Define a collection filter by date, bounds, and quality.
+    def colFilter(col, aoi):  # , startDate, endDate):
+        return(col.filterBounds(aoi))
+
+    # Get Sentinel 2 collections, both Level-1C (top of atmophere) and Level-2A (surface reflectance)
+    MSILCcol = ee.ImageCollection('COPERNICUS/S2')
+    MSI2Acol = ee.ImageCollection('COPERNICUS/S2_SR')
+
+    # Define a collection filter by date, bounds, and quality.
+    def colFilter(col, roi, start_date, end_date):
+        return(col
+               .filterBounds(roi)
+               .filterDate(start_date, end_date))
+        # .filter('CLOUD_COVER < 5')
+        # .filter('GEOMETRIC_RMSE_MODEL < 15')
+        # .filter('IMAGE_QUALITY == 9 || IMAGE_QUALITY_OLI == 9'))
+
+    # Function to get and rename bands of interest from MSI
+    def renameMSI(img):
+        return(img.select(
+            ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'QA60'],
+            ['Blue', 'Green', 'Red', 'Red Edge 1', 'Red Edge 2', 'Red Edge 3', 'NIR', 'Red Edge 4', 'SWIR1', 'SWIR2', 'QA60']))
+
+
+    # Add NBR for LandTrendr segmentation.
+    def calcNbr(img):
+        return(img.addBands(img.normalizedDifference(['NIR', 'SWIR2'])
+                            .multiply(-10000).rename('NBR')).int16())
+
+    # Define function to mask out clouds and cloud shadows in images.
+    # Use CFmask band included in USGS Landsat SR image product.
+
+    def fmask(img):
+        cloudOpaqueBitMask = 1 << 10
+        cloudCirrusBitMask = 1 << 11
+        qa = img.select('QA60')
+        mask = qa.bitwiseAnd(cloudOpaqueBitMask).eq(0) \
+            .And(qa.bitwiseAnd(cloudCirrusBitMask).eq(0))
+        return(img.updateMask(mask))
+
+    # Define function to prepare MSI images.
+    def prepMSI(img):
+        orig = img
+        img = renameMSI(img)
+        img = fmask(img)
+        return(ee.Image(img.copyProperties(orig, orig.propertyNames()))
+                .resample('bicubic'))
+    
+    # Get annual median collection.
+    def getAnnualComp(y):
+        startDate = ee.Date.fromYMD(
+            ee.Number(y), ee.Number(start_month), ee.Number(start_day))
+        endDate = startDate.advance(ee.Number(n_days), 'day')
+
+        # Filter collections and prepare them for merging.
+        MSILCcoly = colFilter(MSILCcol, roi, startDate, endDate).map(prepMSI)
+        MSI2Acoly = colFilter(MSI2Acol, roi, startDate, endDate).map(prepMSI)
+
+        # Merge the collections.
+        col = MSILCcoly.merge(MSI2Acoly)
+
+        yearImg = col.median()
+        nBands = yearImg.bandNames().size()
+        yearImg = ee.Image(ee.Algorithms.If(
+            nBands,
+            yearImg,
+            dummyImg))
+        return(calcNbr(yearImg)
+               .set({'year': y, 'system:time_start': startDate.millis(), 'nBands': nBands}))
+
+    ################################################################################
+
+    # Make a dummy image for missing years.
+    bandNames = ee.List(['Blue', 'Green', 'Red', 'Red Edge 1',
+                         'Red Edge 2', 'Red Edge 3', 'NIR', 
+                         'Red Edge 4', 'SWIR1', 'SWIR2', 'QA60'])
+    fillerValues = ee.List.repeat(0, bandNames.size())
+    dummyImg = ee.Image.constant(fillerValues).rename(bandNames) \
+        .selfMask().int16()
+
+    ################################################################################
+    # Get a list of years
+    years = ee.List.sequence(start_year, end_year)
+
+    ################################################################################
+    # Make list of annual image composites.
+    imgList = years.map(getAnnualComp)
+
+    # Convert image composite list to collection
+    imgCol = ee.ImageCollection.fromImages(imgList)
+
+    imgCol = imgCol.map(lambda img: img.clip(roi))
+
+    return imgCol
+
 
 def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20'):
     """Generates an annual Landsat ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
@@ -3218,7 +3409,7 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     if re.match("[0-9]{2}\-[0-9]{2}", start_date) and re.match("[0-9]{2}\-[0-9]{2}", end_date):
         pass
     else:
-        print('The start data and end date must be month-day, such as 06-10, 09-20')
+        print('The start date and end date must be month-day, such as 06-10, 09-20')
         return
 
     try:
@@ -3392,7 +3583,7 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
 
 
 def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10):
-    """Generates a Landsat timelapse GIF image. This function is adated from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
+    """Generates a Landsat timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
 
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
