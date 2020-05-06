@@ -3189,13 +3189,13 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
 
     ################################################################################
     # Setup vars to get dates.
-    if isinstance(start_year, int) and (start_year >= 2015) and (start_year < 2020):
+    if isinstance(start_year, int) and (start_year >= 2015) and (start_year <= 2020):
         pass
     else:
         print('The start year must be an integer >= 2015.')
         return
 
-    if isinstance(end_year, int) and (end_year > 2015) and (end_year <= 2020):
+    if isinstance(end_year, int) and (end_year >= 2015) and (end_year <= 2020):
         pass
     else:
         print('The end year must be an integer <= 2020.')
@@ -3213,6 +3213,16 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
         datetime.datetime(int(end_year), int(end_date[:2]), int(end_date[3:5]))
     except Exception as e:
         print('The input dates are invalid.')
+        print(e)
+        return
+
+    try:
+        start_test = datetime.datetime(int(start_year), int(start_date[:2]), int(start_date[3:5]))
+        end_test = datetime.datetime(int(end_year), int(end_date[:2]), int(end_date[3:5]))
+        if start_test > end_test:
+            raise ValueError('Start date must be prior to end date')
+    except Exception as e:
+        print(e)
         return
 
     def days_between(d1, d2):
