@@ -1,0 +1,44 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+name: py-check
+jobs:
+  py-check:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.py }})
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: windows-latest, py: '3.6'}
+          - {os: macOS-latest,   py: '3.6'}
+          - {os: ubuntu-latest,  py: '3.5'}
+          - {os: ubuntu-latest,  py: '3.6'}
+          - {os: ubuntu-latest,  py: '3.7'}
+    env:
+      SDKROOT: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
+    steps:
+      - name: CHECKOUT CODE
+        uses: actions/checkout@v2
+      - name: SETUP PYTHON
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.config.py }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --user --no-cache-dir Cython
+          pip install --user -r requirements.txt
+          pip install --user -r requirements_dev.txt
+      - name: LOAD EE CREDENTIALS
+        run: python ./.github/ee_token.py
+        env:
+          EARTHENGINE_TOKEN: ${{ secrets.EARTHENGINE_TOKEN }}
+      - name: GEEMAP-TEST
+        run: |
+          python -m unittest discover tests/

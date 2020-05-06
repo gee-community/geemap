@@ -26,7 +26,7 @@ class TestGeemap(unittest.TestCase):
         self.assertIsInstance(sentCollection, ee.imagecollection.ImageCollection)
 
     def test_002_good_years(self):
-        start_year = [*range(2015, 2020, 1)] 
+        start_year = [*range(2015, 2020, 1)]
         end_year = 2020
         for year in start_year:
             sentCollection = geemap.sentinel2_timeseries(start_year = year, end_year = end_year)
