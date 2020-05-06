@@ -6,12 +6,11 @@ on:
     branches:
       - master
 
-name: R-CMD-check
-
+name: py-check
 jobs:
   py-check:
     runs-on: ${{ matrix.config.os }}
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.py }})
     strategy:
       fail-fast: false
       matrix:
