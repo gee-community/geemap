@@ -17,7 +17,6 @@ jobs:
         config:
           - {os: windows-latest, py: '3.7'}
           - {os: macOS-latest,   py: '3.7'}
-          - {os: ubuntu-latest,  py: '3.5'}
           - {os: ubuntu-latest,  py: '3.6'}
           - {os: ubuntu-latest,  py: '3.7'}
           - {os: ubuntu-latest,  py: '3.8'}

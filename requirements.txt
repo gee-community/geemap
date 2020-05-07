@@ -2,11 +2,11 @@ bqplot
 click
 colour
 earthengine-api
-folium>=0.10.1
-geeadd>=0.4.6
+folium
+geeadd
 geocoder
 ipyfilechooser
-ipyleaflet>=0.12.2
+ipyleaflet
 ipynb-py-convert
 matplotlib
 pillow
