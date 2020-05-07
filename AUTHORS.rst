@@ -5,9 +5,11 @@ Credits
 Development Lead
 ----------------
 
-* Qiusheng Wu <giswqs@gmail.com>
+* `Qiusheng Wu  <https://github.com/giswqs>`__
 
 Contributors
 ------------
 
-None yet. Why not be the first?
+* `Cesar Aybar <https://github.com/csaybar>`__
+* `Ojaybee <https://github.com/Ojaybee>`__
+* `Diego Garcia Diaz <https://github.com/Digdgeo>`__
