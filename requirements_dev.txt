@@ -2,7 +2,7 @@ pip
 bump2version
 wheel
 watchdog
-flake8
+flake8==3.7.9
 tox
 coverage
 Sphinx
