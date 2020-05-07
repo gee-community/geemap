@@ -8,6 +8,6 @@ geocoder
 ipyfilechooser
 ipyleaflet
 ipynb-py-convert
-matplotlib
+matplotlib==3.2.1
 pillow
 pyshp
