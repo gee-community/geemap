@@ -1,6 +1,6 @@
 bqplot
 click
-colour
+colour==0.1.5
 earthengine-api
 folium
 geeadd
