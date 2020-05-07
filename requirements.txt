@@ -9,5 +9,5 @@ ipyfilechooser==0.3.4
 ipyleaflet>=0.12.2
 ipynb-py-convert==0.4.4
 matplotlib==3.2.1
-pillow
+pillow==7.1.2
 pyshp
