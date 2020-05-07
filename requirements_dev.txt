@@ -6,5 +6,5 @@ flake8
 tox
 coverage
 Sphinx
-twine
+twine==3.1.1
 Click
