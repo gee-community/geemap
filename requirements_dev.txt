@@ -7,4 +7,4 @@ tox
 coverage
 Sphinx
 twine
-Click
+Click==7.1.2
