@@ -1,5 +1,5 @@
 bqplot==0.12.9
-click
+click==7.1.2
 colour
 earthengine-api
 folium>=0.10.1
