@@ -4,7 +4,7 @@ colour==0.1.5
 earthengine-api==0.1.221
 folium>=0.10.1
 geeadd>=0.4.6
-geocoder
+geocoder==1.38.1
 ipyfilechooser
 ipyleaflet>=0.12.2
 ipynb-py-convert
