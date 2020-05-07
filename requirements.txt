@@ -1,4 +1,4 @@
-bqplot
+bqplot==0.12.9
 click
 colour
 earthengine-api
