@@ -5,6 +5,6 @@ watchdog
 flake8
 tox
 coverage
-Sphinx
+Sphinx==3.0.3
 twine
 Click
