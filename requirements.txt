@@ -6,7 +6,7 @@ folium
 geeadd
 geocoder
 ipyfilechooser
-ipyleaflet
+ipyleaflet==0.12.4
 ipynb-py-convert
 matplotlib
 pillow
