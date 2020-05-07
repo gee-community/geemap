@@ -23,6 +23,9 @@ geemap
 .. image:: https://readthedocs.org/projects/geemap/badge/?version=latest
         :target: https://geemap.readthedocs.io/en/latest/?badge=latest
 
+.. image:: https://pyup.io/repos/github/giswqs/geemap/shield.svg
+     :target: https://pyup.io/repos/github/giswqs/geemap/
+
 .. image:: https://img.shields.io/badge/YouTube-GEE%20Tutorials-red   
         :target: https://gishub.org/geemap
 
