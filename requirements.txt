@@ -1,7 +1,7 @@
 bqplot
 click
 colour
-earthengine-api
+earthengine-api==0.1.221
 folium
 geeadd
 geocoder
