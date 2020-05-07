@@ -1,6 +1,6 @@
 bqplot==0.12.9
 click==7.1.2
-colour
+colour==0.1.5
 earthengine-api
 folium>=0.10.1
 geeadd>=0.4.6
