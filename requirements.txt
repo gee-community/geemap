@@ -10,4 +10,4 @@ ipyleaflet
 ipynb-py-convert
 matplotlib
 pillow
-pyshp
+pyshp==2.1.0
