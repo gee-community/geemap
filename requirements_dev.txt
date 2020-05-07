@@ -3,7 +3,7 @@ bump2version==1.0.0
 wheel==0.34.2
 watchdog==0.10.2
 flake8==3.7.9
-tox
+tox==3.15.0
 coverage
 Sphinx
 twine
