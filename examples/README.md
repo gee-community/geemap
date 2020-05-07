@@ -7,7 +7,6 @@
 [![image](https://img.shields.io/pypi/v/geemap.svg)](https://pypi.python.org/pypi/geemap)
 [![image](https://img.shields.io/conda/vn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
 [![image](https://pepy.tech/badge/geemap)](https://pepy.tech/project/geemap)
-[![image](https://img.shields.io/travis/giswqs/geemap.svg)](https://travis-ci.com/giswqs/geemap)
 [![image](https://readthedocs.org/projects/geemap/badge/?version=latest)](https://geemap.readthedocs.io/en/latest/?badge=latest)
 [![image](https://img.shields.io/badge/YouTube-GEE%20Tutorials-red)](https://gishub.org/geemap)
 [![image](https://img.shields.io/twitter/follow/giswqs?style=social%20%20%20%20..%20image::%20https://readthedocs.org/projects/geemap/badge/?version=latest)](https://twitter.com/giswqs)

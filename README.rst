@@ -20,9 +20,6 @@ geemap
 .. image:: https://pepy.tech/badge/geemap
         :target: https://pepy.tech/project/geemap
 
-.. image:: https://img.shields.io/travis/giswqs/geemap.svg
-        :target: https://travis-ci.com/giswqs/geemap
-
 .. image:: https://readthedocs.org/projects/geemap/badge/?version=latest
         :target: https://geemap.readthedocs.io/en/latest/?badge=latest
 
