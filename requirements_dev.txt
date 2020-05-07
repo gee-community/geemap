@@ -4,7 +4,7 @@ wheel
 watchdog
 flake8
 tox
-coverage
+coverage==5.1
 Sphinx
 twine
 Click
