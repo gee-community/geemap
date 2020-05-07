@@ -7,7 +7,7 @@ geeadd
 geocoder
 ipyfilechooser
 ipyleaflet
-ipynb-py-convert
+ipynb-py-convert==0.4.5
 matplotlib
 pillow
 pyshp
