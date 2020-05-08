@@ -1642,11 +1642,16 @@ class Map(ipyleaflet.Map):
             print(e)
 
 
-def install_from_github(url):
-    """Updates the geemap package from the geemap GitHub repository without the need to use pip or conda.
-        In this way, I don't have to keep updating pypi and conda-forge with every minor update of the package.
+# The functions below are outside the Map class.
 
+
+def install_from_github(url):
+    """Install a package from a GitHub repository.
+
+    Args:
+        url (str): The URL of the GitHub repository.
     """
+
     try:
         download_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
         if not os.path.exists(download_dir):
@@ -1670,8 +1675,6 @@ def install_from_github(url):
     except Exception as e:
         print(e)
 
-
-# The functions below are outside the Map class.
 
 def rgb_to_hex(rgb=(255, 255, 255)):
     """Converts RGB to hex color. In RGB color R stands for Red, G stands for Green, and B stands for Blue, and it ranges from the decimal value of 0 – 255.
