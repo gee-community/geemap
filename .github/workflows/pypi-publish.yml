@@ -1,0 +1,11 @@
+- name: pypi-publish
+  uses: pypa/gh-action-pypi-publish@v1.1.0
+  with:
+    # PyPI user
+    user: ${{ secrets.PYPI_USERS}}
+    # Password for your PyPI user or an access token
+    password: ${{ secrets.PYPI_PASSWORD}}
+    # The repository URL to use
+    repository_url: # optional
+    # The target directory for distribution
+    packages_dir: # optional, default is dist
