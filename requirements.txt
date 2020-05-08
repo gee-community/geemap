@@ -9,5 +9,6 @@ ipyfilechooser
 ipyleaflet
 ipynb-py-convert
 matplotlib
+mss
 pillow
 pyshp

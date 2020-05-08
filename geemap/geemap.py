@@ -1165,12 +1165,12 @@ class Map(ipyleaflet.Map):
         left_layer = TileLayer(
             url='https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
             attribution='Google',
-            name='Google Maps'   
+            name='Google Maps'
         )
         right_layer = TileLayer(
             url='https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
             attribution='Google',
-            name='Google Maps'   
+            name='Google Maps'
         )
 
         self.clear_controls()
@@ -1568,6 +1568,110 @@ class Map(ipyleaflet.Map):
             print(e)
             return
 
+    def to_html(self, outfile, title='My Map', width='100%', height='880px'):
+        """Saves the map as a HTML file.
+
+        Args:
+            outfile (str): The output file path to the HTML file.
+            title (str, optional): The title of the HTML file. Defaults to 'My Map'.
+            width (str, optional): The width of the map in pixels or percentage. Defaults to '100%'.
+            height (str, optional): The height of the map in pixels. Defaults to '880px'.
+        """
+        try:
+
+            if not outfile.endswith('.html'):
+                print('The output file must end with .html')
+                return
+
+            out_dir = os.path.dirname(outfile)
+            if not os.path.exists(out_dir):
+                os.makedirs(out_dir)
+
+            before_width = self.layout.width
+            before_height = self.layout.height
+
+            if not isinstance(width, str):
+                print("width must be a string.")
+                return
+            elif width.endswith('px') or width.endswith('%'):
+                pass
+            else:
+                print('width must end with px or %')
+                return
+
+            if not isinstance(height, str):
+                print("height must be a string.")
+                return
+            elif not height.endswith('px'):
+                print('height must end with px')
+                return
+
+            self.layout.width = width
+            self.layout.height = height
+
+            self.save(outfile, title=title)
+
+            self.layout.width = before_width
+            self.layout.height = before_height
+
+        except Exception as e:
+            print(e)
+
+    def screenshot(self, outfile, monitor=1):
+        """Takes a full screenshot of the selected monitor.
+
+        Args:
+            outfile (str): The output file path to the screenshot.
+            monitor (int, optional): The monitor to take the screenshot. Defaults to 1.
+        """
+        from mss import mss
+
+        out_dir = os.path.dirname(outfile)
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+
+        if not isinstance(monitor, int):
+            print('The monitor number must be an integer.')
+            return
+
+        try:
+            with mss() as sct:
+                sct.shot(output=outfile, mon=monitor)
+
+        except Exception as e:
+            print(e)
+
+
+def install_from_github(url):
+    """Updates the geemap package from the geemap GitHub repository without the need to use pip or conda.
+        In this way, I don't have to keep updating pypi and conda-forge with every minor update of the package.
+
+    """
+    try:
+        download_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+        if not os.path.exists(download_dir):
+            os.makedirs(download_dir)
+
+        repo_name = os.path.basename(url)
+        zip_url = os.path.join(url, 'archive/master.zip')
+        filename = repo_name + '-master.zip'
+        download_from_url(url=zip_url, out_file_name=filename,
+                          out_dir=download_dir, unzip=True)
+
+        pkg_dir = os.path.join(download_dir, repo_name + '-master')
+        work_dir = os.getcwd()
+        os.chdir(pkg_dir)
+        cmd = 'pip install .'
+        os.system(cmd)
+        os.chdir(work_dir)
+
+        print("\nPlease comment out 'install_from_github()' and restart the kernel to take effect:\nJupyter menu -> Kernel -> Restart & Clear Output")
+
+    except Exception as e:
+        print(e)
+
+
+# The functions below are outside the Map class.
 
 def rgb_to_hex(rgb=(255, 255, 255)):
     """Converts RGB to hex color. In RGB color R stands for Red, G stands for Green, and B stands for Blue, and it ranges from the decimal value of 0 – 255.
@@ -2584,7 +2688,7 @@ def ee_export_image_collection(ee_object, out_dir, scale=None, crs=None, region=
         crs (str, optional): A default CRS string to use for any bands that do not explicitly specify one. Defaults to None.
         region (object, optional): A polygon specifying a region to download; ignored if crs and crs_transform is specified. Defaults to None.
         file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
-    """    
+    """
 
     import requests
     import zipfile
@@ -3150,6 +3254,7 @@ def naip_timeseries(roi=None, start_year=2009, end_year=2018):
     except Exception as e:
         print(e)
 
+
 def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='01-01', end_date='12-31'):
     """Generates an annual Sentinel 2 ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
        Images include both level 1C and level 2A imagery.
@@ -3226,8 +3331,10 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
         return
 
     try:
-        start_test = datetime.datetime(int(start_year), int(start_date[:2]), int(start_date[3:5]))
-        end_test = datetime.datetime(int(end_year), int(end_date[:2]), int(end_date[3:5]))
+        start_test = datetime.datetime(int(start_year), int(
+            start_date[:2]), int(start_date[3:5]))
+        end_test = datetime.datetime(
+            int(end_year), int(end_date[:2]), int(end_date[3:5]))
         if start_test > end_test:
             raise ValueError('Start date must be prior to end date')
     except Exception as e:
@@ -3266,11 +3373,12 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
     # Function to get and rename bands of interest from MSI
     def renameMSI(img):
         return(img.select(
-            ['B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12', 'QA60'],
+            ['B2', 'B3', 'B4', 'B5', 'B6', 'B7',
+                'B8', 'B8A', 'B11', 'B12', 'QA60'],
             ['Blue', 'Green', 'Red', 'Red Edge 1', 'Red Edge 2', 'Red Edge 3', 'NIR', 'Red Edge 4', 'SWIR1', 'SWIR2', 'QA60']))
 
-
     # Add NBR for LandTrendr segmentation.
+
     def calcNbr(img):
         return(img.addBands(img.normalizedDifference(['NIR', 'SWIR2'])
                             .multiply(-10000).rename('NBR')).int16())
@@ -3292,8 +3400,8 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
         img = renameMSI(img)
         img = fmask(img)
         return(ee.Image(img.copyProperties(orig, orig.propertyNames()))
-                .resample('bicubic'))
-    
+               .resample('bicubic'))
+
     # Get annual median collection.
     def getAnnualComp(y):
         startDate = ee.Date.fromYMD(
@@ -3320,7 +3428,7 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
 
     # Make a dummy image for missing years.
     bandNames = ee.List(['Blue', 'Green', 'Red', 'Red Edge 1',
-                         'Red Edge 2', 'Red Edge 3', 'NIR', 
+                         'Red Edge 2', 'Red Edge 3', 'NIR',
                          'Red Edge 4', 'SWIR1', 'SWIR2', 'QA60'])
     fillerValues = ee.List.repeat(0, bandNames.size())
     dummyImg = ee.Image.constant(fillerValues).rename(bandNames) \
