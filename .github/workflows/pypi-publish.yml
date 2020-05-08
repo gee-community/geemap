@@ -6,6 +6,25 @@ on:
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
+jobs:
+  # release:
+  #   name: Create Release
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@master
+  #     - name: Create Release
+  #       id: create_release
+  #       uses: actions/create-release@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+  #       with:
+  #         tag_name: ${{ github.ref }}
+  #         release_name: Release ${{ github.ref }}
+  #         body: |
+  #           Changes in this Release
+  #         draft: false
+  #         prerelease: false
   deploy:
     needs: release
     runs-on: ubuntu-latest
@@ -21,7 +40,7 @@ on:
         pip install setuptools wheel twine
     - name: Build and publish
       env:
-        TWINE_USERNAME: ${{ secrets. PYPI_USERS}}
+        TWINE_USERNAME: ${{ secrets.PYPI_USERS}}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD}}
       run: |
         python setup.py sdist bdist_wheel
