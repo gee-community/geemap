@@ -1,11 +1,28 @@
-- name: pypi-publish
-  uses: pypa/gh-action-pypi-publish@v1.1.0
-  with:
-    # PyPI user
-    user: ${{ secrets.PYPI_USERS}}
-    # Password for your PyPI user or an access token
-    password: ${{ secrets.PYPI_PASSWORD}}
-    # The repository URL to use
-    repository_url: # optional
-    # The target directory for distribution
-    packages_dir: # optional, default is dist
+name: Upload Python Package
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+  deploy:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel twine
+    - name: Build and publish
+      env:
+        TWINE_USERNAME: ${{ secrets. PYPI_USERS}}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD}}
+      run: |
+        python setup.py sdist bdist_wheel
+        twine upload dist/*
