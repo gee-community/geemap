@@ -1,10 +1,15 @@
 ''' Module for converting Google Earth Engine (GEE) JavaScripts to Python scripts and Jupyter notebooks.
 
 To convert a GEE JavaScript to Python script:                                       js_to_python(in_file out_file)
+
 To convert all GEE JavaScripts in a folder recursively to Python scripts:           js_to_python_dir(in_dir, out_dir)
+
 To convert a GEE Python script to Jupyter notebook:                                 py_to_ipynb(in_file, template_file, out_file)
+
 To convert all GEE Python scripts in a folder recursively to Jupyter notebooks:     py_to_ipynb_dir(in_dir, template_file, out_dir)
+
 To execute a Jupyter notebook and save output cells:                                execute_notebook(in_file)
+
 To execute all Jupyter notebooks in a folder recursively:                           execute_notebook_dir(in_dir)           
 
 '''

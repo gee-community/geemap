@@ -1,9 +1,18 @@
-from ipyleaflet import TileLayer, WMSLayer, basemaps, basemap_to_tiles
+"""Module for basemaps. Each basemap is defined as item in the ee_basemaps dictionary. For example, to access Google basemaps, use the following:
 
-# More WMS basemaps can be found at the following websites:
-# USGS National Map: https://viewer.nationalmap.gov/services/
-# MRLC NLCD Land Cover data: https://viewer.nationalmap.gov/services/
-# FWS NWI Wetlands data: https://www.fws.gov/wetlands/Data/Web-Map-Services.html
+ee_basemaps['ROADMAP], ee_basemaps['SATELLITE'], ee_basemaps['HYBRID'].
+
+More WMS basemaps can be found at the following websites:
+
+1. USGS National Map: https://viewer.nationalmap.gov/services/
+
+2. MRLC NLCD Land Cover data: https://viewer.nationalmap.gov/services/
+
+3. FWS NWI Wetlands data: https://www.fws.gov/wetlands/Data/Web-Map-Services.html
+
+"""
+
+from ipyleaflet import TileLayer, WMSLayer, basemaps, basemap_to_tiles
 
 
 ee_basemaps = {
@@ -237,3 +246,4 @@ for item in basemaps.values():
             basemap = 'basemaps.{}'.format(name)
             basemap = basemap.replace('Mids', 'Modis')
             ee_basemaps[name] = basemap_to_tiles(eval(basemap))
+
