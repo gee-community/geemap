@@ -1,6 +1,6 @@
 """Module for basemaps. Each basemap is defined as item in the ee_basemaps dictionary. For example, to access Google basemaps, use the following:
 
-ee_basemaps['ROADMAP], ee_basemaps['SATELLITE'], ee_basemaps['HYBRID'].
+ee_basemaps['ROADMAP'], ee_basemaps['SATELLITE'], ee_basemaps['HYBRID'].
 
 More WMS basemaps can be found at the following websites:
 

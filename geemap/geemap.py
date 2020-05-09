@@ -1109,7 +1109,7 @@ class Map(ipyleaflet.Map):
     setControlVisibility = set_control_visibility
 
     def add_layer_control(self):
-        """Adds layer basemap to the map.
+        """Adds the layer control to the map.
         """
         pass
 
