@@ -40,6 +40,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 18. [Creating Landsat timelapse animations with animated text using Earth Engine](#18-creating-landsat-timelapse-animations-with-animated-text-using-earth-engine) ([video](https://youtu.be/OwjSJnGWKJs) | [gif](https://i.imgur.com/XOHOeXk.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/18_create_landsat_timelapse.ipynb))
 19. [How to search and import datasets from Earth Engine Data Catalog](#19-how-to-search-and-import-datasets-from-earth-engine-data-catalog) ([video](https://youtu.be/lwtgzrHrXj8) | [gif](https://i.imgur.com/E09p64F.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/19_search_places_and_datasets.ipynb))
 20. [Using timeseries inspector to visualize landscape changes over time](#20-using-timeseries-inspector-to-visualize-landscape-changes-over-time) ([video](https://youtu.be/0CZ7Aj8hCyo) | [gif](https://i.imgur.com/61wbRjK.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/20_timeseries_inspector.ipynb))
+21. [Exporting Earth Engine maps as HTML files and PNG images](#21-exporting-earth-engine-maps-as-html-files-and-png-images) ([video](https://youtu.be/GWMvaNQz3kY) | [gif](https://i.imgur.com/rJuXH4a.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/21_export_map_to_html_png.ipynb))
 
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
@@ -121,3 +122,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 ### 20. Using timeseries inspector to visualize landscape changes over time
 
 ![ts inspector](https://i.imgur.com/61wbRjK.gif)
+
+### 21. Exporting Earth Engine maps as HTML files and PNG images
+
+![export html](https://i.imgur.com/rJuXH4a.gif)

@@ -84,6 +84,7 @@ Below is a partial list of features available for the geemap package. Please che
 * Creating Landsat timelapse animations with animated text using Earth Engine.
 * Searching places and datasets from Earth Engine Data Catalog.
 * Using timeseries inspector to visualize landscape changes over time.
+* Exporting Earth Engine maps as HTML files and PNG images.
 
 
 Installation
