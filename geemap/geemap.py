@@ -7,9 +7,12 @@ import colour
 import ee
 import geocoder
 import ipyleaflet
+import math
 import os
+import time
 import ipywidgets as widgets
 from bqplot import pyplot as plt
+from ipyfilechooser import FileChooser
 from ipyleaflet import *
 from IPython.display import display
 from .basemaps import ee_basemaps
@@ -96,6 +99,9 @@ class Map(ipyleaflet.Map):
         self.search_loc_marker = None
         self.search_loc_geom = None
         self.search_datasets = None
+        self.screenshot = None
+        self.toolbar = None
+        self.toolbar_button = None
 
         # Adds search button and search box
         search_button = widgets.ToggleButton(
@@ -443,6 +449,148 @@ class Map(ipyleaflet.Map):
 
         plot_checkbox.observe(plot_chk_changed)
 
+        tool_output = widgets.Output()
+        tool_output.clear_output(wait=True)
+
+        save_map_widget = widgets.VBox()
+
+        save_type = widgets.ToggleButtons(
+            options=['HTML', 'PNG', 'JPG'],
+            tooltips=['Save the map as an HTML file',
+                      'Take a screenshot and save as a PNG file',
+                      'Take a screenshot and save as a JPG file']
+        )
+
+        # download_dir = os.getcwd()
+        file_chooser = FileChooser(os.getcwd())
+        file_chooser.default_filename = 'my_map.html'
+        file_chooser.use_dir_icons = False
+
+        ok_cancel = widgets.ToggleButtons(
+            options=['OK', 'Cancel'],
+            tooltips=['OK', 'Cancel'],
+            button_style='primary'
+        )
+        ok_cancel.value = None
+
+        def save_type_changed(change):
+            ok_cancel.value = None
+            # file_chooser.reset()
+            file_chooser.default_path = os.getcwd()
+            if change['new'] == 'HTML':
+                file_chooser.default_filename = 'my_map.html'
+            elif change['new'] == 'PNG':
+                file_chooser.default_filename = 'my_map.png'
+            elif change['new'] == 'JPG':
+                file_chooser.default_filename = 'my_map.jpg'
+            save_map_widget.children = [save_type, file_chooser]
+
+        def chooser_callback(chooser):
+            # file_chooser.default_path = os.getcwd()
+            save_map_widget.children = [save_type, file_chooser, ok_cancel]
+
+        def ok_cancel_clicked(change):
+            if change['new'] == 'OK':
+                file_path = file_chooser.selected
+                ext = os.path.splitext(file_path)[1]
+                if save_type.value == 'HTML' and ext.upper() == '.HTML':
+                    tool_output.clear_output()
+                    self.to_html(file_path)
+                elif save_type.value == 'PNG' and ext.upper() == '.PNG':
+                    tool_output.clear_output()
+                    self.toolbar_button.value = False
+                    time.sleep(1)
+                    screen_capture(outfile=file_path)
+                elif save_type.value == 'JPG' and ext.upper() == '.JPG':
+                    tool_output.clear_output()
+                    self.toolbar_button.value = False
+                    time.sleep(1)
+                    screen_capture(outfile=file_path)
+                else:
+                    label = widgets.Label(
+                        value="The selected file extension does not match the selected exporting type.")
+                    save_map_widget.children = [save_type, file_chooser, label]
+                self.toolbar_reset()
+            elif change['new'] == 'Cancel':
+                tool_output.clear_output()
+                self.toolbar_reset()
+        save_type.observe(save_type_changed, names='value')
+        ok_cancel.observe(ok_cancel_clicked, names='value')
+
+        file_chooser.register_callback(chooser_callback)
+
+        save_map_widget.children = [save_type, file_chooser]
+
+        tools = {
+            'mouse-pointer': 'pointer',
+            'camera': 'to_image',
+            'info': 'identify',
+            'map-marker': 'plotting'
+        }
+        icons = ['mouse-pointer', 'camera', 'info', 'map-marker']
+        tooltips = ['Default pointer',
+                    'Save map as HTML or image', 'Inspector', 'Plotting']
+        icon_width = '42px'
+        icon_height = '40px'
+        n_cols = 2
+        n_rows = math.ceil(len(icons) / n_cols)
+
+        toolbar_grid = widgets.GridBox(children=[widgets.ToggleButton(layout=widgets.Layout(width='auto', height='auto'),
+                                                                      button_style='primary', icon=icons[i], tooltip=tooltips[i]) for i in range(len(icons))],
+                                       layout=widgets.Layout(
+            width='90px',
+            grid_template_columns=(icon_width + ' ') * 2,
+            grid_template_rows=(icon_height + ' ') * n_rows,
+            grid_gap='1px 1px')
+        )
+        self.toolbar = toolbar_grid
+
+        def tool_callback(change):
+            if change['new']:
+                current_tool = change['owner']
+                for tool in toolbar_grid.children:
+                    if not tool is current_tool:
+                        tool.value = False
+                tool = change['owner']
+                if tools[tool.icon] == 'to_image':
+                    with tool_output:
+                        tool_output.clear_output()
+                        display(save_map_widget)
+            else:
+                tool_output.clear_output()
+                save_map_widget.children = [save_type, file_chooser]
+
+        for tool in toolbar_grid.children:
+            tool.observe(tool_callback, 'value')
+
+        toolbar_button = widgets.ToggleButton(
+            value=False,
+            tooltip='Toolbar',
+            icon='wrench'
+        )
+        toolbar_button.layout.width = '37px'
+        self.toolbar_button = toolbar_button
+
+        def toolbar_btn_click(change):
+            if change['new']:
+                toolbar_widget.children = [toolbar_button, toolbar_grid]
+            else:
+                toolbar_widget.children = [toolbar_button]
+                tool_output.clear_output()
+                self.toolbar_reset()
+
+        toolbar_button.observe(toolbar_btn_click, 'value')
+
+        toolbar_widget = widgets.VBox()
+        toolbar_widget.children = [toolbar_button]
+        toolbar_control = WidgetControl(
+            widget=toolbar_widget, position='topright')
+        self.add_control(toolbar_control)
+
+        tool_output_control = WidgetControl(
+            widget=tool_output, position='topright')
+        self.add_control(tool_output_control)
+
         def handle_interaction(**kwargs):
 
             latlon = kwargs.get('coordinates')
@@ -706,7 +854,6 @@ class Map(ipyleaflet.Map):
         Returns:
             float: Map resolution in meters.
         """
-        import math
         zoom_level = self.zoom
         # Reference: https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
         resolution = 156543.04 * math.cos(0) / math.pow(2, zoom_level)
@@ -1617,32 +1764,64 @@ class Map(ipyleaflet.Map):
         except Exception as e:
             print(e)
 
-    def screenshot(self, outfile, monitor=1):
-        """Takes a full screenshot of the selected monitor.
+    def to_image(self, outfile=None, monitor=1):
+        """Saves the map as a PNG or JPG image.
 
         Args:
-            outfile (str): The output file path to the screenshot.
+            outfile (str, optional): The output file path to the image. Defaults to None.
             monitor (int, optional): The monitor to take the screenshot. Defaults to 1.
         """
-        from mss import mss
+        if outfile is None:
+            outfile = os.path.join(os.getcwd(), 'my_map.png')
 
-        out_dir = os.path.dirname(outfile)
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
-
-        if not isinstance(monitor, int):
-            print('The monitor number must be an integer.')
+        if outfile.endswith('.png') or outfile.endswith('.jpg'):
+            pass
+        else:
+            print('The output file must be a PNG or JPG image.')
             return
 
-        try:
-            with mss() as sct:
-                sct.shot(output=outfile, mon=monitor)
+        work_dir = os.path.dirname(outfile)
+        if not os.path.exists(work_dir):
+            os.makedirs(work_dir)
 
-        except Exception as e:
-            print(e)
+        screenshot = screen_capture(outfile, monitor)
+        self.screenshot = screenshot
+
+    def toolbar_reset(self):
+        """Reset the toolbar so that no tool is selected.
+        """
+        toolbar_grid = self.toolbar
+        for tool in toolbar_grid.children:
+            tool.value = False
 
 
 # The functions below are outside the Map class.
+
+def screen_capture(outfile, monitor=1):
+    """Takes a full screenshot of the selected monitor.
+
+    Args:
+        outfile (str): The output file path to the screenshot.
+        monitor (int, optional): The monitor to take the screenshot. Defaults to 1.
+    """
+    from mss import mss
+
+    out_dir = os.path.dirname(outfile)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    if not isinstance(monitor, int):
+        print('The monitor number must be an integer.')
+        return
+
+    try:
+        with mss() as sct:
+            sct.shot(output=outfile, mon=monitor)
+            return outfile
+
+    except Exception as e:
+        print(e)
+        return None
 
 
 def install_from_github(url):
@@ -3057,7 +3236,6 @@ def create_colorbar(width=150, height=30, palette=['blue', 'green', 'red'], add_
     """
     import decimal
     import io
-    import math
     import pkg_resources
     import warnings
     from colour import Color
