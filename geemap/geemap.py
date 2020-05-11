@@ -576,6 +576,8 @@ class Map(ipyleaflet.Map):
                 toolbar_widget.children = [toolbar_button, toolbar_grid]
             else:
                 toolbar_widget.children = [toolbar_button]
+                tool_output.clear_output()
+                self.toolbar_reset()
 
         toolbar_button.observe(toolbar_btn_click, 'value')
 
