@@ -1512,7 +1512,7 @@ class Map(ipyleaflet.Map):
 
         allowed_builtin_legends = builtin_legends.keys()
         if builtin_legend is not None:
-            builtin_legend = builtin_legend.upper()
+            # builtin_legend = builtin_legend.upper()
             if builtin_legend not in allowed_builtin_legends:
                 print('The builtin legend must be one of the following: {}'.format(
                     ', '.join(allowed_builtin_legends)))
@@ -4255,3 +4255,157 @@ def create_code_cell(code='', where='below'):
         var code = IPython.notebook.insert_cell_{0}('code');
         code.set_text(atob("{1}"));
     """.format(where, encoded_code)))
+
+
+def ee_api_to_csv(outfile=None):
+    """Extracts Earth Engine API documentation from https://developers.google.com/earth-engine/api_docs as a csv file.
+
+    Args:
+        outfile (str, optional): The output file path to a csv file. Defaults to None.
+    """
+    import csv
+    import requests
+    from bs4 import BeautifulSoup
+
+    pkg_dir = os.path.dirname(
+        pkg_resources.resource_filename("geemap", "geemap.py"))
+    data_dir = os.path.join(pkg_dir, 'data')
+    template_dir = os.path.join(data_dir, 'template')
+    csv_file = os.path.join(template_dir, 'ee_api_docs.csv')
+
+    if outfile is None:
+        outfile = csv_file
+    else:
+        if not outfile.endswith('.csv'):
+            print('The output file must end with .csv')
+            return
+        else:
+            out_dir = os.path.dirname(outfile)
+            if not os.path.exists(out_dir):
+                os.makedirs(out_dir)
+
+    url = 'https://developers.google.com/earth-engine/api_docs'
+
+    try:
+
+        r = requests.get(url)
+        soup = BeautifulSoup(r.content, 'html.parser')    
+
+        names = []
+        descriptions = []
+        functions = []
+        returns = []
+        arguments = []
+        types = []
+        details = []   
+
+        names = [h2.text for h2 in soup.find_all('h2')] 
+        descriptions = [h2.next_sibling.next_sibling.text for h2 in soup.find_all('h2')]       
+        func_tables = soup.find_all('table', class_='blue')
+        functions = [func_table.find('code').text for func_table in func_tables]    
+        returns = [func_table.find_all('td')[1].text for func_table in func_tables]
+
+        detail_tables = []
+        tables = soup.find_all('table', class_='blue')
+
+        for table in tables:
+            item = table.next_sibling
+            if item.attrs == {'class': ['details']}:
+                detail_tables.append(item)
+            else:
+                detail_tables.append("")
+
+        for detail_table in detail_tables:
+            if detail_table != '':
+                items = [item.text for item in detail_table.find_all('code')]
+            else: 
+                items = ""
+            arguments.append(items)   
+
+        for detail_table in detail_tables:
+            if detail_table != '':
+                items = [item.text for item in detail_table.find_all('td')]
+                items = items[1::3] 
+            else:
+                items = ""
+            types.append(items)
+
+        for detail_table in detail_tables:
+            if detail_table != '':
+                items = [item.text for item in detail_table.find_all('p')]
+            else:
+                items = ""
+            details.append(items)
+
+        csv_file = open(outfile, 'w')
+        csv_writer = csv.writer(csv_file, delimiter='\t')
+
+        csv_writer.writerow(['name', 'description', 'function', 'returns', 'argument', 'type', 'details'])
+
+        for i in range(len(names)):
+            name = names[i]
+            description = descriptions[i]
+            function = functions[i]
+            return_type = returns[i]
+            argument = '|'.join(arguments[i])
+            argu_type = '|'.join(types[i])
+            detail = '|'.join(details[i])
+
+            csv_writer.writerow([name, description, function, return_type, argument, argu_type, detail])
+
+        csv_file.close()
+
+    except Exception as e:
+        print(e)
+
+
+def ee_function_tree(name):
+
+    func_list = []
+    try:
+        items = name.split('.')
+        if items[0] == 'ee':
+            for i in range(2, len(items) + 1):
+                func_list.append('.'.join(items[0:i]))
+        else:
+            for i in range(1, len(items) + 1):
+                func_list.append('.'.join(items[0:i]))        
+
+        return func_list
+    except Exception as e:
+        print(e)
+        print('The provided function name is invalid.')
+
+
+def build_api_tree(names, layout_width='100%'):
+
+    from ipytree import Tree, Node
+    import warnings
+    warnings.filterwarnings('ignore')
+    tree = Tree()
+    tree_dict = {}
+
+    for name in names:
+        func_list = ee_function_tree(name)
+        first = func_list[0]
+        
+        if first not in tree_dict.keys():
+            tree_dict[first] = Node(first)
+            tree_dict[first].opened = False
+            tree.add_node(tree_dict[first])
+
+        for index, func in enumerate(func_list):
+            if index > 0:
+                if func not in tree_dict.keys():
+                    node = tree_dict[func_list[index - 1]]
+                    node.opened = False
+                    tree_dict[func] = Node(func)
+                    node.add_node(tree_dict[func])
+
+    return tree
+
+
+
+
+
+
