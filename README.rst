@@ -125,6 +125,11 @@ If you use conda, you can update geemap to the latest version by running the fol
   conda update -c conda-forge geemap
 
 
+To install the package in a Docker container, see the page here:
+ 
+.. _Docker: https://hub.docker.com/r/bkavlak/geemap
+
+
 To install the development version from GitHub, run the following command in your terminal:
 
 .. code:: python
