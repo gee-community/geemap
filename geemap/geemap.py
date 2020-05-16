@@ -4289,7 +4289,7 @@ def ee_api_to_csv(outfile=None):
     try:
 
         r = requests.get(url)
-        soup = BeautifulSoup(r.content, 'html.parser')    
+        soup = BeautifulSoup(r.content, 'html.parser')
 
         names = []
         descriptions = []
@@ -4297,13 +4297,16 @@ def ee_api_to_csv(outfile=None):
         returns = []
         arguments = []
         types = []
-        details = []   
+        details = []
 
-        names = [h2.text for h2 in soup.find_all('h2')] 
-        descriptions = [h2.next_sibling.next_sibling.text for h2 in soup.find_all('h2')]       
+        names = [h2.text for h2 in soup.find_all('h2')]
+        descriptions = [
+            h2.next_sibling.next_sibling.text for h2 in soup.find_all('h2')]
         func_tables = soup.find_all('table', class_='blue')
-        functions = [func_table.find('code').text for func_table in func_tables]    
-        returns = [func_table.find_all('td')[1].text for func_table in func_tables]
+        functions = [func_table.find(
+            'code').text for func_table in func_tables]
+        returns = [func_table.find_all(
+            'td')[1].text for func_table in func_tables]
 
         detail_tables = []
         tables = soup.find_all('table', class_='blue')
@@ -4318,14 +4321,14 @@ def ee_api_to_csv(outfile=None):
         for detail_table in detail_tables:
             if detail_table != '':
                 items = [item.text for item in detail_table.find_all('code')]
-            else: 
+            else:
                 items = ""
-            arguments.append(items)   
+            arguments.append(items)
 
         for detail_table in detail_tables:
             if detail_table != '':
                 items = [item.text for item in detail_table.find_all('td')]
-                items = items[1::3] 
+                items = items[1::3]
             else:
                 items = ""
             types.append(items)
@@ -4340,7 +4343,8 @@ def ee_api_to_csv(outfile=None):
         csv_file = open(outfile, 'w')
         csv_writer = csv.writer(csv_file, delimiter='\t')
 
-        csv_writer.writerow(['name', 'description', 'function', 'returns', 'argument', 'type', 'details'])
+        csv_writer.writerow(
+            ['name', 'description', 'function', 'returns', 'argument', 'type', 'details'])
 
         for i in range(len(names)):
             name = names[i]
@@ -4351,7 +4355,8 @@ def ee_api_to_csv(outfile=None):
             argu_type = '|'.join(types[i])
             detail = '|'.join(details[i])
 
-            csv_writer.writerow([name, description, function, return_type, argument, argu_type, detail])
+            csv_writer.writerow(
+                [name, description, function, return_type, argument, argu_type, detail])
 
         csv_file.close()
 
@@ -4359,8 +4364,100 @@ def ee_api_to_csv(outfile=None):
         print(e)
 
 
-def ee_function_tree(name):
+def read_api_csv():
+    """Extracts Earth Engine API from a csv file and returns a dictionary containing information about each function.
 
+    Returns:
+        dict: The dictionary containing information about each function, including name, description, function form, return type, arguments, html. 
+    """
+    import copy
+    import csv
+
+    pkg_dir = os.path.dirname(
+        pkg_resources.resource_filename("geemap", "geemap.py"))
+    data_dir = os.path.join(pkg_dir, 'data')
+    template_dir = os.path.join(data_dir, 'template')
+    csv_file = os.path.join(template_dir, 'ee_api_docs.csv')
+    html_file = os.path.join(template_dir, 'ee_api_docs.html')
+
+    with open(html_file) as f:
+        in_html_lines = f.readlines()
+
+    api_dict = {}
+
+    with open(csv_file, 'r') as f:
+        csv_reader = csv.DictReader(f, delimiter='\t')
+
+        for line in csv_reader:
+
+            out_html_lines = copy.copy(in_html_lines)
+            out_html_lines[65] = in_html_lines[65].replace(
+                'function_name', line['name'])
+            out_html_lines[66] = in_html_lines[66].replace(
+                'function_description', line.get('description'))
+            out_html_lines[74] = in_html_lines[74].replace(
+                'function_usage', line.get('function'))
+            out_html_lines[75] = in_html_lines[75].replace(
+                'function_returns', line.get('returns'))
+
+            arguments = line.get('argument')
+            types = line.get('type')
+            details = line.get('details')
+
+            if '|' in arguments:
+                argument_items = arguments.split('|')
+            else:
+                argument_items = [arguments]
+
+            if '|' in types:
+                types_items = types.split('|')
+            else:
+                types_items = [types]
+
+            if '|' in details:
+                details_items = details.split('|')
+            else:
+                details_items = [details]
+
+            out_argument_lines = []
+
+            for index in range(len(argument_items)):
+                in_argument_lines = in_html_lines[87:92]
+                in_argument_lines[1] = in_argument_lines[1].replace(
+                    'function_argument', argument_items[index])
+                in_argument_lines[2] = in_argument_lines[2].replace(
+                    'function_type', types_items[index])
+                in_argument_lines[3] = in_argument_lines[3].replace(
+                    'function_details', details_items[index])
+                out_argument_lines.append("".join(in_argument_lines))
+
+            out_html_lines = out_html_lines[:87] + \
+                out_argument_lines + out_html_lines[92:]
+
+            contents = ''.join(out_html_lines)
+
+            api_dict[line['name']] = {
+                'description': line.get('description'),
+                'function': line.get('function'),
+                'returns': line.get('returns'),
+                'argument': line.get('argument'),
+                'type': line.get('type'),
+                'details': line.get('details'),
+                'html': contents
+            }
+
+    return api_dict
+
+
+def ee_function_tree(name):
+    """Construct the tree structure based on an Earth Engine function. For example, the function "ee.Algorithms.FMask.matchClouds" will return a list ["ee.Algorithms", "ee.Algorithms.FMask", "ee.Algorithms.FMask.matchClouds"]
+
+    Args:
+        name (str): The name of the Earth Engine function
+
+    Returns:
+        list: The list for parent functions.
+    """
     func_list = []
     try:
         items = name.split('.')
@@ -4369,7 +4466,7 @@ def ee_function_tree(name):
                 func_list.append('.'.join(items[0:i]))
         else:
             for i in range(1, len(items) + 1):
-                func_list.append('.'.join(items[0:i]))        
+                func_list.append('.'.join(items[0:i]))
 
         return func_list
     except Exception as e:
@@ -4377,18 +4474,40 @@ def ee_function_tree(name):
         print('The provided function name is invalid.')
 
 
-def build_api_tree(names, layout_width='100%'):
+def build_api_tree(api_dict, output_widget, layout_width='100%'):
+    """Builds an Earth Engine API tree view.
 
+    Args:
+        api_dict (dict): The dictionary containing information about each Earth Engine API function.
+        output_widget (object): An Output widget.
+        layout_width (str, optional): The percentage width of the widget. Defaults to '100%'.
+
+    Returns:
+        tuple: Returns a tuple containing two items: a tree Output widget and a tree dictionary.
+    """
     from ipytree import Tree, Node
     import warnings
     warnings.filterwarnings('ignore')
+
     tree = Tree()
     tree_dict = {}
+
+    names = api_dict.keys()
+
+    def handle_click(event):
+        if event['new']:
+            name = event['owner'].name
+            values = api_dict[name]
+
+            with output_widget:
+                output_widget.clear_output()
+                html_widget = widgets.HTML(value=values['html'])
+                display(html_widget)
 
     for name in names:
         func_list = ee_function_tree(name)
         first = func_list[0]
-        
+
         if first not in tree_dict.keys():
             tree_dict[first] = Node(first)
             tree_dict[first].opened = False
@@ -4402,10 +4521,105 @@ def build_api_tree(names, layout_width='100%'):
                     tree_dict[func] = Node(func)
                     node.add_node(tree_dict[func])
 
-    return tree
+                    if index == len(func_list) - 1:
+                        node = tree_dict[func_list[index]]
+                        node.icon = 'file'
+                        node.observe(handle_click, 'selected')
+
+    return tree, tree_dict
 
 
+def search_api_tree(keywords, api_tree):
+    """Search Earth Engine API and return functions containing the specified keywords
+
+    Args:
+        keywords (str): The keywords to search for.
+        api_tree (dict): The dictionary containing the Earth Engine API tree.
+
+    Returns:
+        object: An ipytree object/widget.
+    """
+    from ipytree import Tree, Node
+    import warnings
+    warnings.filterwarnings('ignore')
+
+    sub_tree = Tree()
+
+    for key in api_tree.keys():
+        if keywords in key:
+            sub_tree.add_node(api_tree[key])
+
+    return sub_tree
 
 
+def ee_search():
+    """Search Earth Engine API and user assets. If you received a warning (IOPub message rate exceeded) in Jupyter notebook, you can relaunch Jupyter notebook using the following command:
+        jupyter notebook --NotebookApp.iopub_msg_rate_limit=10000
+    """
+    import warnings
+    warnings.filterwarnings('ignore')
 
+    search_type = widgets.ToggleButtons(
+        options=['Scripts', 'Docs', 'Assets'],
+        tooltips=['Search Earth Engine Scripts',
+                  'Search Earth Engine API', 'Search Earth Engine Assets'],
+        button_style='primary'
 
+    )
+    search_type.style.button_width = '100px'
+
+    search_box = widgets.Text(placeholder='Filter scripts...')
+    search_box.layout.width = '310px'
+
+    tree_widget = widgets.Output()
+    with tree_widget:
+        print('Coming soon...')
+
+    left_widget = widgets.VBox()
+    right_widget = widgets.Output()
+    right_widget.layout.max_width = '650px'
+
+    left_widget.children = [search_type, search_box, tree_widget]
+
+    search_widget = widgets.HBox()
+    search_widget.children = [left_widget, right_widget]
+
+    display(search_widget)
+
+    api_dict = read_api_csv()
+    ee_api_tree, tree_dict = build_api_tree(api_dict, right_widget)
+
+    def search_type_changed(change):
+        search_box.value = ''
+
+        right_widget.clear_output()
+        tree_widget.clear_output()
+        if change['new'] == 'Scripts':
+            search_box.placeholder = 'Filter scripts...'
+        elif change['new'] == 'Docs':
+            search_box.placeholder = 'Filter methods...'
+            with tree_widget:
+                tree_widget.clear_output()
+                print('Loading...')
+                tree_widget.clear_output(wait=True)
+                display(ee_api_tree)
+
+        elif change['new'] == 'Assets':
+            search_box.placeholder = 'Filter assets...'
+
+    search_type.observe(search_type_changed, names='value')
+
+    def search_box_callback(text):
+
+        with tree_widget:
+            if text.value == '':
+                print('Loading...')
+                tree_widget.clear_output(wait=True)
+                display(ee_api_tree)
+            else:
+                tree_widget.clear_output()
+                print('Searching...')
+                tree_widget.clear_output(wait=True)
+                sub_tree = search_api_tree(text.value, tree_dict)
+                display(sub_tree)
+    search_box.on_submit(search_box_callback)

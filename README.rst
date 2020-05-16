@@ -132,6 +132,9 @@ To install the development version from GitHub, run the following command in you
   pip install git+https://github.com/giswqs/geemap
   
 
+To use geemap in a Docker container, check out this `page <https://hub.docker.com/r/bkavlak/geemap>`__.
+
+
 .. _Anaconda: https://www.anaconda.com/distribution/#download-section
 .. _Miniconda: https://docs.conda.io/en/latest/miniconda.html
 
