@@ -55,6 +55,7 @@ A Python package for interactive mapping with Google Earth Engine, ipyleaflet, a
 - `Examples`_
 - `Dependencies`_
 - `Contributing`_
+- `References`_
 - `Credits`_
 
 
@@ -632,6 +633,17 @@ $ git push
 $ git push --tags
 
 Travis will then deploy to PyPI if tests pass.
+
+
+References
+----------
+
+To support my work, please consider citing the following articles:
+
+- **Wu, Q.**, Lane, C. R., Li, X., Zhao, K., Zhou, Y., Clinton, N., DeVries, B., Golden, H. E., & Lang, M. W. (2019). Integrating LiDAR data and multi-temporal aerial imagery to map wetland inundation dynamics using Google Earth Engine. *Remote Sensing of Environment*, 228, 1-13. https://doi.org/10.1016/j.rse.2019.04.015 (`pdf <https://spatial.utk.edu/pubs/2019_RSE.pdf>`_ | `source code <https://doi.org/10.6084/m9.figshare.8864921>`_)
+
+
+
 
 Credits
 -------
