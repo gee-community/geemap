@@ -9,6 +9,7 @@ geocoder
 ipyfilechooser
 ipyleaflet>=0.12.6
 ipynb-py-convert
+ipytree
 matplotlib
 mss
 pillow

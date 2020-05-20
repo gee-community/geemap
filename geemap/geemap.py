@@ -4793,6 +4793,8 @@ def file_browser(in_dir=None, show_hidden=False):
     search_box = widgets.Text(placeholder='Search files/folders...')
     search_box.layout.width = '310px'
     tree_widget = widgets.Output()
+    tree_widget.layout.max_width = '310px'
+    tree_widget.overflow = 'auto'
 
     left_widget.children = [search_box, tree_widget]
 
