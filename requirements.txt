@@ -1,6 +1,7 @@
 bqplot
 click
 colour
+dulwich
 earthengine-api
 folium>=0.11.0
 geeadd>=0.4.8

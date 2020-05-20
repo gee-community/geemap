@@ -14,6 +14,7 @@ import ipywidgets as widgets
 from bqplot import pyplot as plt
 from ipyfilechooser import FileChooser
 from ipyleaflet import *
+from ipytree import Tree, Node
 from IPython.display import display
 from .basemaps import ee_basemaps
 from .conversion import *
@@ -4485,7 +4486,6 @@ def build_api_tree(api_dict, output_widget, layout_width='100%'):
     Returns:
         tuple: Returns a tuple containing two items: a tree Output widget and a tree dictionary.
     """
-    from ipytree import Tree, Node
     import warnings
     warnings.filterwarnings('ignore')
 
@@ -4539,7 +4539,6 @@ def search_api_tree(keywords, api_tree):
     Returns:
         object: An ipytree object/widget.
     """
-    from ipytree import Tree, Node
     import warnings
     warnings.filterwarnings('ignore')
 
@@ -4572,8 +4571,12 @@ def ee_search():
     search_box.layout.width = '310px'
 
     tree_widget = widgets.Output()
+
+    repo_tree, repo_tree_dict = build_repo_tree()
+
     with tree_widget:
-        print('Coming soon...')
+        tree_widget.clear_output()
+        display(repo_tree)
 
     left_widget = widgets.VBox()
     right_widget = widgets.Output()
@@ -4589,6 +4592,8 @@ def ee_search():
     api_dict = read_api_csv()
     ee_api_tree, tree_dict = build_api_tree(api_dict, right_widget)
 
+    asset_tree, asset_dict = build_asset_tree()
+
     def search_type_changed(change):
         search_box.value = ''
 
@@ -4596,6 +4601,11 @@ def ee_search():
         tree_widget.clear_output()
         if change['new'] == 'Scripts':
             search_box.placeholder = 'Filter scripts...'
+            with tree_widget:
+                tree_widget.clear_output()
+                print('Loading...')
+                tree_widget.clear_output(wait=True)
+                display(repo_tree)
         elif change['new'] == 'Docs':
             search_box.placeholder = 'Filter methods...'
             with tree_widget:
@@ -4603,9 +4613,13 @@ def ee_search():
                 print('Loading...')
                 tree_widget.clear_output(wait=True)
                 display(ee_api_tree)
-
         elif change['new'] == 'Assets':
             search_box.placeholder = 'Filter assets...'
+            with tree_widget:
+                tree_widget.clear_output()
+                print('Loading...')
+                tree_widget.clear_output(wait=True)
+                display(asset_tree)
 
     search_type.observe(search_type_changed, names='value')
 
@@ -4623,3 +4637,280 @@ def ee_search():
                 sub_tree = search_api_tree(text.value, tree_dict)
                 display(sub_tree)
     search_box.on_submit(search_box_callback)
+
+
+def ee_user_id():
+    """Gets Earth Engine account user id.
+
+    Returns:
+        str: A string containing the user id.
+    """
+    ee_initialize()
+    root = ee.data.getAssetRoots()[0]
+    user_id = root['id'].replace("projects/earthengine-legacy/assets/", "")
+    return user_id
+
+
+def build_asset_tree():
+
+    import warnings
+    warnings.filterwarnings('ignore')
+
+    tree = Tree()
+    tree_dict = {}
+    asset_types = {}
+
+    asset_icons = {
+        'FOLDER': 'folder',
+        'TABLE': 'table',
+        'IMAGE': 'image',
+        'IMAGE_COLLECTION': 'file'
+    }
+
+    user_id = ee_user_id()
+    user_name = 'projects/earthengine-legacy/assets/' + user_id
+    root_node = Node(user_id)
+    root_node.opened = True
+    tree_dict[user_id] = root_node
+    tree.add_node(root_node)
+
+    assets = ee.data.listAssets({"parent": user_name})['assets']
+    root_node = tree_dict[user_id]
+
+    def handle_click_level1(event):
+        if event['new']:
+            cur_node = event['owner']
+            for key in tree_dict.keys():
+                if (cur_node is tree_dict[key]) and (asset_types[key] == 'FOLDER'):
+                    cur_node.name = key
+                    break
+
+    for asset in assets:
+        asset_id = user_id + '/' + asset['id'].split('/')[-1]
+        asset_name = asset_id.split('/')[-1]
+        asset_type = asset['type']
+        node = Node(asset_name)
+        node.icon = asset_icons[asset_type]
+        tree_dict[asset_id] = node
+        asset_types[asset_id] = asset_type
+        root_node.add_node(node)
+        node.observe(handle_click_level1, 'selected')
+
+    return tree, tree_dict
+
+
+def build_repo_tree(out_dir=None):
+
+    import warnings
+    warnings.filterwarnings('ignore')
+
+    if out_dir is None:
+        out_dir = os.path.join(os.path.expanduser('~'), 'gee_repo_tree')
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+
+    tree = Tree()
+    tree_dict = {}
+
+    groups = ['Owner', 'Writer', 'Reader', 'Examples', 'Archive']
+
+    for group in groups:
+        node = Node(group)
+        tree_dict[group] = node
+        tree.add_node(node)
+        group_dir = os.path.join(out_dir, group)
+        if not os.path.exists(group_dir):
+            os.makedirs(group_dir)
+
+    return tree, tree_dict
+
+
+def build_repo_tree2(repo_dir=None, output_widget=None):
+
+    import warnings
+    warnings.filterwarnings('ignore')
+
+    if repo_dir is None:
+        repo_dir = os.path.join(os.path.expanduser("~"), 'gee-default')
+
+    tree = Tree()
+    tree_dict = {}
+
+    for root, d_names, f_names in os.walk(repo_dir):
+        if '.git' in d_names:
+            d_names.remove('.git')
+        d_names.sort()
+        f_names.sort()
+
+        if root not in tree_dict.keys():
+            pass
+
+        print(root, d_names, f_names, '\n')
+
+
+def file_browser(in_dir=None, show_hidden=False):
+    """Creates a simple file browser and text editor.
+
+    Args:
+        in_dir (str, optional): The input directory. Defaults to None, which will use the current working directory.
+        show_hidden (bool, optional): Whether to show hidden files/folders. Defaults to False.
+
+    Returns:
+        object: An ipywidget.
+    """
+    if in_dir is None:
+        in_dir = os.getcwd()
+
+    if not os.path.exists(in_dir):
+        print('The provided directory does not exist.')
+        return
+    elif not os.path.isdir(in_dir):
+        print('The provided path is not a valid directory.')
+        return
+
+    if in_dir.endswith('/'):
+        in_dir = in_dir[:-1]
+
+    full_widget = widgets.HBox()
+    left_widget = widgets.VBox()
+
+    right_widget = widgets.VBox()
+
+    path_widget = widgets.Text()
+    path_widget.layout.min_width = '475px'
+    save_widget = widgets.Button(
+        description='Save', button_style='primary', tooltip='Save edits to file.')
+    info_widget = widgets.HBox()
+    info_widget.children = [path_widget, save_widget]
+
+    text_widget = widgets.Textarea()
+    text_widget.layout.width = '630px'
+    text_widget.layout.height = '600px'
+
+    right_widget.children = [info_widget, text_widget]
+    full_widget.children = [left_widget]
+
+    search_box = widgets.Text(placeholder='Search files/folders...')
+    search_box.layout.width = '310px'
+    tree_widget = widgets.Output()
+
+    left_widget.children = [search_box, tree_widget]
+
+    tree = Tree(multiple_selection=False)
+    tree_dict = {}
+
+    def on_button_clicked(b):
+        content = text_widget.value
+        out_file = path_widget.value
+
+        out_dir = os.path.dirname(out_file)
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+
+        with open(out_file, 'w') as f:
+            f.write(content)
+
+        text_widget.disabled = True
+        text_widget.value = 'The content has been saved successfully.'
+        save_widget.disabled = True
+        path_widget.disabled = True
+
+        if (out_file not in tree_dict.keys()) and (out_dir in tree_dict.keys()):
+            node = Node(os.path.basename(out_file))
+            tree_dict[out_file] = node
+            parent_node = tree_dict[out_dir]
+            parent_node.add_node(node)
+
+    save_widget.on_click(on_button_clicked)
+
+    def search_box_callback(text):
+
+        with tree_widget:
+            if text.value == '':
+                print('Loading...')
+                tree_widget.clear_output(wait=True)
+                display(tree)
+            else:
+                tree_widget.clear_output()
+                print('Searching...')
+                tree_widget.clear_output(wait=True)
+                sub_tree = search_api_tree(text.value, tree_dict)
+                display(sub_tree)
+    search_box.on_submit(search_box_callback)
+
+    def handle_file_click(event):
+        if event['new']:
+            cur_node = event['owner']
+            for key in tree_dict.keys():
+                if (cur_node is tree_dict[key]) and (os.path.isfile(key)):
+                    try:
+                        with open(key) as f:
+                            content = f.read()
+                            text_widget.value = content
+                            text_widget.disabled = False
+                            path_widget.value = key
+                            path_widget.disabled = False
+                            save_widget.disabled = False
+                            full_widget.children = [left_widget, right_widget]
+                    except Exception as e:
+                        path_widget.value = key
+                        path_widget.disabled = True
+                        save_widget.disabled = True
+                        text_widget.disabled = True
+                        text_widget.value = 'Failed to open {}.'.format(
+                            cur_node.name) + '\n\n' + str(e)
+                        return
+
+    def handle_folder_click(event):
+        if event['new']:
+            full_widget.children = [left_widget]
+            text_widget.value = ''
+
+    root_name = in_dir.split('/')[-1]
+    root_node = Node(root_name)
+    tree_dict[in_dir] = root_node
+    tree.add_node(root_node)
+    root_node.observe(handle_folder_click, 'selected')
+
+    for root, d_names, f_names in os.walk(in_dir):
+
+        if not show_hidden:
+            folders = root.split('/')
+            for folder in folders:
+                if folder.startswith('.'):
+                    continue
+            for d_name in d_names:
+                if d_name.startswith('.'):
+                    d_names.remove(d_name)
+            for f_name in f_names:
+                if f_name.startswith('.'):
+                    f_names.remove(f_name)
+
+        d_names.sort()
+        f_names.sort()
+
+        if root not in tree_dict.keys():
+            name = root.split('/')[-1]
+            dir_name = os.path.dirname(root)
+            parent_node = tree_dict[dir_name]
+            node = Node(name)
+            tree_dict[root] = node
+            parent_node.add_node(node)
+            node.observe(handle_folder_click, 'selected')
+
+        if len(f_names) > 0:
+            parent_node = tree_dict[root]
+            parent_node.opened = False
+            for f_name in f_names:
+                node = Node(f_name)
+                node.icon = 'file'
+                full_path = os.path.join(root, f_name)
+                tree_dict[full_path] = node
+                parent_node.add_node(node)
+                node.observe(handle_file_click, 'selected')
+
+    with tree_widget:
+        tree_widget.clear_output()
+        display(tree)
+
+    return full_widget
