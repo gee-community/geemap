@@ -35,13 +35,14 @@ geemap
 .. image:: https://img.shields.io/badge/Donate-Buy%20me%20a%20coffee-yellowgreen.svg
         :target: https://www.buymeacoffee.com/giswqs
 
-Authors: Dr. Qiusheng Wu (https://wetlands.io)
+Lead authors: Dr. Qiusheng Wu (https://wetlands.io)
 
-A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.
+**A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.**
 
 * GitHub repo: https://github.com/giswqs/geemap
 * Documentation: https://geemap.readthedocs.io
 * PyPI: https://pypi.org/project/geemap/
+* Conda-forge: https://anaconda.org/conda-forge/geemap
 * 360+ GEE notebook examples: https://github.com/giswqs/earthengine-py-notebooks
 * GEE Tutorials on YouTube: https://gishub.org/geemap
 * Free software: MIT license
@@ -49,6 +50,7 @@ A Python package for interactive mapping with Google Earth Engine, ipyleaflet, a
 
 **Contents**
 
+- `Introduction`_
 - `Features`_
 - `Installation`_
 - `Usage`_
@@ -58,6 +60,20 @@ A Python package for interactive mapping with Google Earth Engine, ipyleaflet, a
 - `References`_
 - `Credits`_
 
+
+Introduction
+------------
+
+**geemap** is a Python package for interactive mapping with `Google Earth Engine <https://earthengine.google.com/>`__ (GEE), which is a cloud computing platform with a `multi-petabyte catalog <https://developers.google.com/earth-engine/datasets/>`__ of satellite imagery and geospatial datasets. During the past few years, 
+GEE has become very popular in the geospatial community and it has empowered numerous environmental applications at local, regional, and global scales. GEE provides both JavaScript and Python APIs for 
+making computational requests to the Earth Engine servers. Compared with the comprehensive `documentation <https://developers.google.com/earth-engine>`__ and interactive IDE (i.e., `GEE JavaScript Code Editor <https://code.earthengine.google.com/>`__) of the GEE JavaScript API, 
+the GEE Python API lacks good documentation and functionality for visualizing results interactively. The **geemap** Python packages is created to fill this gap. It is built upon `ipyleaflet <https://github.com/jupyter-widgets/ipyleaflet>`__ and `ipywidgets <https://github.com/jupyter-widgets/ipywidgets>`__, enabling GEE users to 
+analyze and visualize Earth Engine datasets interactively with Jupyter notebooks.
+
+**geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python `conversion module <https://github.com/giswqs/geemap/blob/master/geemap/conversion.py>`__ of the **geemap** package
+can greatly reduce the time needed to convert existing GEE JavaScripts to Python scripts and Jupyter notebooks.
+
+For video tutorials and notebook examples, please visit `<https://github.com/giswqs/geemap/tree/master/examples>`__. For complete documentation on geemap modules and methods, please visit `<https://geemap.readthedocs.io/en/latest/source/geemap.html>`_.
 
 
 Features
@@ -86,24 +102,25 @@ Below is a partial list of features available for the geemap package. Please che
 * Searching places and datasets from Earth Engine Data Catalog.
 * Using timeseries inspector to visualize landscape changes over time.
 * Exporting Earth Engine maps as HTML files and PNG images.
+* Searching Earth Engine API documentation within Jupyter notebooks.
 
 
 Installation
 ------------
 
-The **geemap** Python package is built upon the `ipyleaflet <https://github.com/jupyter-widgets/ipyleaflet>`__ and `folium <https://github.com/python-visualization/folium>`__ packages and
-implements several methods for interacting with Earth Engine data layers, such as ``Map.addLayer()``, ``Map.setCenter()``, and ``Map.centerObject()``.
+To use **geemap**, you must first `sign up <https://earthengine.google.com/signup/>`__ for a `Google Earth Engine <https://earthengine.google.com/>`__ account.
 
+.. image:: https://i.imgur.com/ng0FzUT.png
+        :target: https://earthengine.google.com
 
-
-To install **geemap**, run this command in your terminal:
+**geemap** is available on `PyPI <https://pypi.org/project/geemap/>`__. To install **geemap**, run this command in your terminal:
 
 .. code:: python
 
   pip install geemap
 
 
-**geemap** is also available on `conda-forge <https://anaconda.org/conda-forge/geemap>`__. If you have Anaconda_ or Miniconda_ installed on your computer, you can create a conda Python environment to install geemap:
+**geemap** is also available on `conda-forge <https://anaconda.org/conda-forge/geemap>`__. If you have `Anaconda <https://www.anaconda.com/distribution/#download-section>`__ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`__ installed on your computer, you can create a conda Python environment to install geemap:
 
 .. code:: python
 
@@ -126,18 +143,22 @@ If you use conda, you can update geemap to the latest version by running the fol
   conda update -c conda-forge geemap
 
 
-To install the development version from GitHub, run the following command in your terminal:
+To install the development version from GitHub using `Git <https://git-scm.com/>`__, run the following command in your terminal:
 
 .. code:: python
 
   pip install git+https://github.com/giswqs/geemap
+
+
+To install the development version from GitHub directly within Jupyter notebook without using Git, run the following code:
+
+.. code:: python
+
+  import geemap
+  geemap.update_package()
   
 
 To use geemap in a Docker container, check out this `page <https://hub.docker.com/r/bkavlak/geemap>`__.
-
-
-.. _Anaconda: https://www.anaconda.com/distribution/#download-section
-.. _Miniconda: https://docs.conda.io/en/latest/miniconda.html
 
 
 Usage
@@ -383,6 +404,15 @@ To execute all Jupyter notebooks in a folder recursively and save output cells:
   execute_notebook_dir(in_dir) 
 
 
+To search Earth Engine API documentation with Jupyter notebooks:  
+
+.. code:: python
+
+  import geemap
+  geemap.ee_search()
+
+
+
 Examples
 --------
 
@@ -396,7 +426,7 @@ Converting GEE JavaScripts to Python scripts and Jupyter notebooks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Launch an interactive notebook with **Google Colab**. Keep in mind that the conversion might not always work perfectly. Additional manual changes might still be needed. ``ui`` and ``chart`` are not supported. 
-The source code for this automated conversion module can be found at `conversion.py`_.
+The source code for this automated conversion module can be found at `conversion.py <https://github.com/giswqs/geemap/blob/master/geemap/conversion.py>`__.
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
         :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/notebooks/earthengine_js_to_ipynb.ipynb
@@ -427,7 +457,6 @@ The source code for this automated conversion module can be found at `conversion
 
 .. image:: https://i.imgur.com/8bedWtl.gif
 
-.. _`conversion.py`: https://github.com/giswqs/geemap/blob/master/geemap/conversion.py
 
 
 Interactive mapping using GEE Python API and geemap
@@ -497,19 +526,23 @@ Launch an interactive notebook with **Google Colab**. Note that **Google Colab**
 Dependencies
 ------------
 
-* earthengine-api_
-* ipyleaflet_
-* ipywidgets_
-* folium_
-* bqplot_
-* ipynb-py-convert_
+* `bqplot <https://github.com/bloomberg/bqplot>`__
+* `colour <https://github.com/vaab/colour>`__
+* `dulwich <https://github.com/dulwich/dulwich>`__
+* `earthengine-api <https://github.com/google/earthengine-api>`__
+* `folium <https://github.com/python-visualization/folium>`__
+* `geeadd <https://github.com/samapriya/gee_asset_manager_addon>`__
+* `geocoder <https://github.com/DenisCarriere/geocoder>`__
+* `ipyfilechooser <https://github.com/crahan/ipyfilechooser>`__
+* `ipyleaflet <https://github.com/jupyter-widgets/ipyleaflet>`__
+* `ipynb-py-convert <https://github.com/kiwi0fruit/ipynb-py-convert>`__
+* `ipytree <https://github.com/QuantStack/ipytree>`__
+* `ipywidgets <https://github.com/jupyter-widgets/ipywidgets>`__
+* `mss <https://github.com/BoboTiG/python-mss>`__
+* `pillow <https://github.com/python-pillow/Pillow>`__
+* `pyshp <https://github.com/GeospatialPython/pyshp>`__
 
-.. _earthengine-api: https://github.com/google/earthengine-api
-.. _ipyleaflet: https://github.com/jupyter-widgets/ipyleaflet
-.. _ipywidgets: https://github.com/jupyter-widgets/ipywidgets
-.. _folium: https://github.com/python-visualization/folium
-.. _bqplot: https://github.com/bloomberg/bqplot
-.. _ipynb-py-convert: https://github.com/kiwi0fruit/ipynb-py-convert
+
 
 Contributing
 ------------
@@ -643,12 +676,7 @@ To support my work, please consider citing the following articles:
 - **Wu, Q.**, Lane, C. R., Li, X., Zhao, K., Zhou, Y., Clinton, N., DeVries, B., Golden, H. E., & Lang, M. W. (2019). Integrating LiDAR data and multi-temporal aerial imagery to map wetland inundation dynamics using Google Earth Engine. *Remote Sensing of Environment*, 228, 1-13. https://doi.org/10.1016/j.rse.2019.04.015 (`pdf <https://gishub.org/2019_rse>`_ | `source code <https://doi.org/10.6084/m9.figshare.8864921>`_)
 
 
-
-
 Credits
 -------
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+This package was created with `Cookiecutter <https://github.com/audreyr/cookiecutter>`__ and the `audreyr/cookiecutter-pypackage <https://github.com/audreyr/cookiecutter-pypackage>`__ project template.
