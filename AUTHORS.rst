@@ -11,5 +11,6 @@ Contributors
 ------------
 
 * `Cesar Aybar <https://github.com/csaybar>`__
-* `Ojaybee <https://github.com/Ojaybee>`__
+* `Oliver Burdekin <https://github.com/Ojaybee>`__
 * `Diego Garcia Diaz <https://github.com/Digdgeo>`__
+* `Justin Braaten <https://github.com/jdbcode>`__
