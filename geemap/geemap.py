@@ -37,6 +37,7 @@ class Map(ipyleaflet.Map):
 
     Args:
         ipyleaflet (object): An ipyleaflet map instance. The arguments you can pass to the Map can be found at https://ipyleaflet.readthedocs.io/en/latest/api_reference/map.html
+        By default, the Map will add Google Maps as the basemap. Set add_google_map = False to use OpenStreetMap as the basemap.
 
     Returns:
         object: ipyleaflet map object.
@@ -67,6 +68,9 @@ class Map(ipyleaflet.Map):
             zoom = kwargs['zoom']
         else:
             kwargs['zoom'] = zoom
+
+        if 'add_google_map' not in kwargs.keys():
+            kwargs['add_google_map'] = True  
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -325,7 +329,8 @@ class Map(ipyleaflet.Map):
         self.add_control(measure)
         self.measure_control = measure
 
-        self.add_layer(ee_basemaps['ROADMAP'])
+        if kwargs.get('add_google_map'):
+            self.add_layer(ee_basemaps['ROADMAP'])
 
         draw_control = DrawControl(marker={'shapeOptions': {'color': '#0000FF'}},
                                    rectangle={'shapeOptions': {
@@ -4551,7 +4556,7 @@ def search_api_tree(keywords, api_tree):
     return sub_tree
 
 
-def ee_search():
+def ee_search(out_repo_dir=None):
     """Search Earth Engine API and user assets. If you received a warning (IOPub message rate exceeded) in Jupyter notebook, you can relaunch Jupyter notebook using the following command:
         jupyter notebook --NotebookApp.iopub_msg_rate_limit=10000
     """
@@ -4572,32 +4577,34 @@ def ee_search():
 
     tree_widget = widgets.Output()
 
-    repo_tree, repo_tree_dict = build_repo_tree()
-
-    with tree_widget:
-        tree_widget.clear_output()
-        display(repo_tree)
 
     left_widget = widgets.VBox()
-    right_widget = widgets.Output()
-    right_widget.layout.max_width = '650px'
+    right_widget = widgets.VBox()
+    output_widget = widgets.Output()
+    output_widget.layout.max_width = '650px'
 
+    repo_tree, repo_tree_dict = build_repo_tree(out_repo_dir, right_widget)
     left_widget.children = [search_type, search_box, tree_widget]
+    right_widget.children = [output_widget]
 
     search_widget = widgets.HBox()
     search_widget.children = [left_widget, right_widget]
 
     display(search_widget)
 
+    with tree_widget:
+        tree_widget.clear_output()
+        display(repo_tree)
+
     api_dict = read_api_csv()
-    ee_api_tree, tree_dict = build_api_tree(api_dict, right_widget)
+    ee_api_tree, tree_dict = build_api_tree(api_dict, output_widget)
 
     asset_tree, asset_dict = build_asset_tree()
 
     def search_type_changed(change):
         search_box.value = ''
 
-        right_widget.clear_output()
+        output_widget.clear_output()
         tree_widget.clear_output()
         if change['new'] == 'Scripts':
             search_box.placeholder = 'Filter scripts...'
@@ -4613,6 +4620,7 @@ def ee_search():
                 print('Loading...')
                 tree_widget.clear_output(wait=True)
                 display(ee_api_tree)
+                right_widget.children = [output_widget]
         elif change['new'] == 'Assets':
             search_box.placeholder = 'Filter assets...'
             with tree_widget:
@@ -4656,7 +4664,7 @@ def build_asset_tree():
     import warnings
     warnings.filterwarnings('ignore')
 
-    tree = Tree()
+    tree = Tree(multiple_selection=False)
     tree_dict = {}
     asset_types = {}
 
@@ -4699,18 +4707,34 @@ def build_asset_tree():
     return tree, tree_dict
 
 
-def build_repo_tree(out_dir=None):
+def build_repo_tree(out_dir, out_widget):
 
     import warnings
     warnings.filterwarnings('ignore')
 
     if out_dir is None:
-        out_dir = os.path.join(os.path.expanduser('~'), 'gee_repo_tree')
+        out_dir = os.path.join(os.path.expanduser('~'), 'gee_repos')
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
 
-    tree = Tree()
+    tree = Tree(multiple_selection=False)
     tree_dict = {}
+
+    path_widget = widgets.Text()
+    path_widget.layout.width = '450px'
+    clone_widget = widgets.Button(
+        description='Clone', button_style='primary', tooltip='Clone the repository to folder.')
+    clone_widget.layout.width = '100px'
+    info_widget = widgets.HBox()
+    info_widget.children = [path_widget, clone_widget]
+
+    def handle_click(event):
+        if event['new']:
+            selected = event['owner']
+            if selected.name == 'Owner':
+                out_widget.children = [info_widget]
+
+
 
     groups = ['Owner', 'Writer', 'Reader', 'Examples', 'Archive']
 
@@ -4721,6 +4745,8 @@ def build_repo_tree(out_dir=None):
         group_dir = os.path.join(out_dir, group)
         if not os.path.exists(group_dir):
             os.makedirs(group_dir)
+
+        node.observe(handle_click, 'selected')
 
     return tree, tree_dict
 
@@ -4733,7 +4759,7 @@ def build_repo_tree2(repo_dir=None, output_widget=None):
     if repo_dir is None:
         repo_dir = os.path.join(os.path.expanduser("~"), 'gee-default')
 
-    tree = Tree()
+    tree = Tree(multiple_selection=False)
     tree_dict = {}
 
     for root, d_names, f_names in os.walk(repo_dir):

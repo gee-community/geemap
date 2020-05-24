@@ -163,7 +163,7 @@ ee_basemaps = {
 
 
 class Map(folium.Map):
-    """The Map class inherits from folium.Map
+    """The Map class inherits from folium.Map. By default, the Map will add Google Maps as the basemap. Set add_google_map = False to use OpenStreetMap as the basemap.
     
     Args:
         folium (object): An folium map instance.
@@ -192,12 +192,17 @@ class Map(folium.Map):
         if 'zoom_start' in kwargs.keys():
             zoom = kwargs['zoom_start']
         else:
-            kwargs['zoom_start'] = zoom       
+            kwargs['zoom_start'] = zoom 
+
+        if 'add_google_map' not in kwargs.keys():
+            kwargs['add_google_map'] = True              
 
         super().__init__(**kwargs)
-        ee_basemaps['HYBRID'].add_to(self)
+
+        if kwargs.get('add_google_map'):
+            ee_basemaps['ROADMAP'].add_to(self)
         folium.LatLngPopup().add_to(self)
-        plugins.Fullscreen().add_to(self)
+        # plugins.Fullscreen().add_to(self)
 
         self.fit_bounds([latlon, latlon], max_zoom=zoom)
  
