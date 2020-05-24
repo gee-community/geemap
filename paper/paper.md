@@ -31,7 +31,7 @@ GEE provides both JavaScript and Python APIs for making computational requests t
 Compared with the comprehensive [documentation](https://earthengine.google.com/) and interactive IDE
 (i.e., [GEE JavaScript Code Editor](https://code.earthengine.google.com/)) of the GEE JavaScript API, the
 GEE Python API lacks good documentation and functionality for visualizing results interactively.
-The **geemap** Python package is created to fill this gap[. It is built upon
+The **geemap** Python package is created to fill this gap. It is built upon
 [ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet) and [ipywidgets](https://github.com/jupyter-widgets/ipywidgets),
 enabling GEE users to analyze and visualize Earth Engine datasets interactively with Jupyter notebooks.
 
@@ -63,7 +63,7 @@ The key functionality of **geemap** is organized into several modules:
 Various tutorials and documentation are available for using **geemap**, including:
 
 -   [20+ video tutorials with corresponding notebook examples](https://github.com/giswqs/geemap/tree/master/examples)
--   [360+ Jupyter notebook examples using Google Earth Engine](https://github.com/giswqs/earthengine-py-notebooks)
+-   [360+ Jupyter notebook examples for using Google Earth Engine](https://github.com/giswqs/earthengine-py-notebooks)
 -   [Complete documentation on geemap modules and methods](https://geemap.readthedocs.io/en/latest/source/geemap.html)
 
 # Acknowledgements
