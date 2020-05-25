@@ -50,7 +50,7 @@ The default basemap is `Google Satellite`. [Additional basemaps](https://github.
 
 # %%
 Map = emap.Map(center=[40,-100], zoom=4)
-Map.add_basemap('ROADMAP') # Add Google Map
+# Map.add_basemap('ROADMAP') # Add Google Map
 Map
 
 # %%

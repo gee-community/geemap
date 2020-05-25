@@ -756,7 +756,8 @@ def py_to_ipynb(in_file, template_file, out_file=None, github_username=None, git
         f.writelines(out_text)
 
     try:
-        command = 'ipynb-py-convert ' + out_py_file + ' ' + out_file
+        # command = 'ipynb-py-convert ' + out_py_file + ' ' + out_file
+        command = 'ipynb-py-convert "{}" "{}"'.format(out_py_file, out_file)
         print(os.popen(command).read().rstrip())
         # os.popen(command)
     except:
@@ -811,7 +812,8 @@ def execute_notebook(in_file):
     Args:
         in_file (str): Input Jupyter notebook.
     """
-    command = 'jupyter nbconvert --to notebook --execute ' + in_file + ' --inplace'
+    # command = 'jupyter nbconvert --to notebook --execute ' + in_file + ' --inplace'
+    command = 'jupyter nbconvert --to notebook --execute "{}" --inplace'.format(in_file)
     print(os.popen(command).read().rstrip())
     # os.popen(command)
 
