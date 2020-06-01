@@ -70,7 +70,7 @@ class Map(ipyleaflet.Map):
             kwargs['zoom'] = zoom
 
         if 'add_google_map' not in kwargs.keys():
-            kwargs['add_google_map'] = True  
+            kwargs['add_google_map'] = True
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -4577,15 +4577,14 @@ def ee_search(out_repo_dir=None):
 
     tree_widget = widgets.Output()
 
-
     left_widget = widgets.VBox()
     right_widget = widgets.VBox()
     output_widget = widgets.Output()
     output_widget.layout.max_width = '650px'
 
-    repo_tree, repo_tree_dict = build_repo_tree(out_repo_dir, right_widget)
-    left_widget.children = [search_type, search_box, tree_widget]
-    right_widget.children = [output_widget]
+    repo_tree, repo_output, repo_dict = build_repo_tree()
+    left_widget.children = [search_type, repo_tree]
+    right_widget.children = [repo_output]
 
     search_widget = widgets.HBox()
     search_widget.children = [left_widget, right_widget]
@@ -4608,6 +4607,8 @@ def ee_search(out_repo_dir=None):
         tree_widget.clear_output()
         if change['new'] == 'Scripts':
             search_box.placeholder = 'Filter scripts...'
+            left_widget.children = [search_type, repo_tree]
+            right_widget.children = [repo_output]
             with tree_widget:
                 tree_widget.clear_output()
                 print('Loading...')
@@ -4615,6 +4616,8 @@ def ee_search(out_repo_dir=None):
                 display(repo_tree)
         elif change['new'] == 'Docs':
             search_box.placeholder = 'Filter methods...'
+            left_widget.children = [search_type, search_box, tree_widget]
+            right_widget.children = [output_widget]
             with tree_widget:
                 tree_widget.clear_output()
                 print('Loading...')
@@ -4623,6 +4626,8 @@ def ee_search(out_repo_dir=None):
                 right_widget.children = [output_widget]
         elif change['new'] == 'Assets':
             search_box.placeholder = 'Filter assets...'
+            left_widget.children = [search_type, search_box, tree_widget]
+            right_widget.children = [output_widget]
             with tree_widget:
                 tree_widget.clear_output()
                 print('Loading...')
@@ -4707,79 +4712,110 @@ def build_asset_tree():
     return tree, tree_dict
 
 
-def build_repo_tree(out_dir, out_widget):
+def build_repo_tree(out_dir=None, name='gee_repos'):
+    """Builds a repo tree for GEE account.
 
+    Args:
+        out_dir (str): The output directory for the repos. Defaults to None.
+        name (str, optional): The output name for the repo directory. Defaults to 'gee_repos'.
+
+    Returns:
+        tuple: Returns a tuple containing a tree widget, an output widget, and a tree dictionary containing nodes.
+    """
     import warnings
     warnings.filterwarnings('ignore')
 
     if out_dir is None:
-        out_dir = os.path.join(os.path.expanduser('~'), 'gee_repos')
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
+        out_dir = os.path.join(os.path.expanduser('~'))
 
-    tree = Tree(multiple_selection=False)
-    tree_dict = {}
+    repo_dir = os.path.join(out_dir, name)
+    if not os.path.exists(repo_dir):
+        os.makedirs(repo_dir)
 
-    path_widget = widgets.Text()
-    path_widget.layout.width = '450px'
+    URLs = {
+        'Owner': 'https://earthengine.googlesource.com/{}/default'.format(ee_user_id()),
+        'Writer': '',
+        'Reader': 'https://github.com/giswqs/geemap',
+        'Examples': 'https://github.com/giswqs/earthengine-js-examples',
+        'Archive': 'https://earthengine.googlesource.com/EGU2017-EE101'
+    }
+    path_widget = widgets.Text(
+        placeholder='Enter the link to a Git repository here...')
+    path_widget.layout.width = '475px'
     clone_widget = widgets.Button(
         description='Clone', button_style='primary', tooltip='Clone the repository to folder.')
-    clone_widget.layout.width = '100px'
+    # clone_widget.layout.width = '100px'
     info_widget = widgets.HBox()
-    info_widget.children = [path_widget, clone_widget]
-
-    def handle_click(event):
-        if event['new']:
-            selected = event['owner']
-            if selected.name == 'Owner':
-                out_widget.children = [info_widget]
-
-
+    # info_widget.children = [path_widget, clone_widget]
 
     groups = ['Owner', 'Writer', 'Reader', 'Examples', 'Archive']
-
     for group in groups:
-        node = Node(group)
-        tree_dict[group] = node
-        tree.add_node(node)
-        group_dir = os.path.join(out_dir, group)
+        group_dir = os.path.join(repo_dir, group)
         if not os.path.exists(group_dir):
             os.makedirs(group_dir)
 
-        node.observe(handle_click, 'selected')
+    left_widget, right_widget, tree_dict = file_browser(
+        in_dir=repo_dir, add_root_node=False, search_description='Filter scripts...', return_sep_widgets=True)
+    # info_widget.children = [right_widget]
 
-    return tree, tree_dict
+    def handle_folder_click(event):
+        if event['new']:
+            url = ''
+            selected = event['owner']
+            if selected.name in URLs.keys():
+                url = URLs[selected.name]
+
+            path_widget.value = url
+            clone_widget.disabled = False
+            info_widget.children = [path_widget, clone_widget]
+        else:
+            info_widget.children = [right_widget]
+
+    for group in groups:
+        dirname = os.path.join(repo_dir, group)
+        node = tree_dict[dirname]
+        node.observe(handle_folder_click, 'selected')
+
+    def handle_clone_click(b):
+
+        url = path_widget.value
+        default_dir = os.path.join(repo_dir, 'Examples')
+        if url == '':
+            path_widget.value = 'Please enter a valid URL to the repository.'
+        else:
+            for group in groups:
+                key = os.path.join(repo_dir, group)
+                node = tree_dict[key]
+                if node.selected:
+                    default_dir = key
+            try:
+                path_widget.value = 'Cloning...'
+                clone_dir = os.path.join(default_dir, os.path.basename(url))
+                if 'github.com' in url:
+                    clone_github_repo(url, out_dir=clone_dir)
+                elif 'googlesource' in url:
+                    clone_google_repo(url, out_dir=clone_dir)
+                path_widget.value = 'Cloned to {}'.format(clone_dir)
+                clone_widget.disabled = True
+            except Exception as e:
+                path_widget.value = 'An error occurred when trying to clone the repository ' + \
+                    str(e)
+                clone_widget.disabled = True
+
+    clone_widget.on_click(handle_clone_click)
+
+    return left_widget, info_widget, tree_dict
 
 
-def build_repo_tree2(repo_dir=None, output_widget=None):
-
-    import warnings
-    warnings.filterwarnings('ignore')
-
-    if repo_dir is None:
-        repo_dir = os.path.join(os.path.expanduser("~"), 'gee-default')
-
-    tree = Tree(multiple_selection=False)
-    tree_dict = {}
-
-    for root, d_names, f_names in os.walk(repo_dir):
-        if '.git' in d_names:
-            d_names.remove('.git')
-        d_names.sort()
-        f_names.sort()
-
-        if root not in tree_dict.keys():
-            pass
-
-        print(root, d_names, f_names, '\n')
-
-
-def file_browser(in_dir=None, show_hidden=False):
+def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_description=None, return_sep_widgets=False):
     """Creates a simple file browser and text editor.
 
     Args:
         in_dir (str, optional): The input directory. Defaults to None, which will use the current working directory.
         show_hidden (bool, optional): Whether to show hidden files/folders. Defaults to False.
+        add_root_node (bool, optional): Whether to add the input directory as a root node. Defaults to True.
+        search_description (str, optional): The description of the search box. Defaults to None.
+        return_sep_widgets (bool, optional): Whether to return the results as separate widgets. Defaults to False.
 
     Returns:
         object: An ipywidget.
@@ -4816,7 +4852,9 @@ def file_browser(in_dir=None, show_hidden=False):
     right_widget.children = [info_widget, text_widget]
     full_widget.children = [left_widget]
 
-    search_box = widgets.Text(placeholder='Search files/folders...')
+    if search_description is None:
+        search_description = 'Search files/folders...'
+    search_box = widgets.Text(placeholder=search_description)
     search_box.layout.width = '310px'
     tree_widget = widgets.Output()
     tree_widget.layout.max_width = '310px'
@@ -4894,11 +4932,12 @@ def file_browser(in_dir=None, show_hidden=False):
             full_widget.children = [left_widget]
             text_widget.value = ''
 
-    root_name = in_dir.split('/')[-1]
-    root_node = Node(root_name)
-    tree_dict[in_dir] = root_node
-    tree.add_node(root_node)
-    root_node.observe(handle_folder_click, 'selected')
+    if add_root_node:
+        root_name = in_dir.split('/')[-1]
+        root_node = Node(root_name)
+        tree_dict[in_dir] = root_node
+        tree.add_node(root_node)
+        root_node.observe(handle_folder_click, 'selected')
 
     for root, d_names, f_names in os.walk(in_dir):
 
@@ -4917,7 +4956,15 @@ def file_browser(in_dir=None, show_hidden=False):
         d_names.sort()
         f_names.sort()
 
-        if root not in tree_dict.keys():
+        if (not add_root_node) and (root == in_dir):
+            for d_name in d_names:
+                node = Node(d_name)
+                tree_dict[os.path.join(in_dir, d_name)] = node
+                tree.add_node(node)
+                node.opened = False
+                node.observe(handle_folder_click, 'selected')
+
+        if (root != in_dir) and (root not in tree_dict.keys()):
             name = root.split('/')[-1]
             dir_name = os.path.dirname(root)
             parent_node = tree_dict[dir_name]
@@ -4941,4 +4988,83 @@ def file_browser(in_dir=None, show_hidden=False):
         tree_widget.clear_output()
         display(tree)
 
-    return full_widget
+    if return_sep_widgets:
+        return left_widget, right_widget, tree_dict
+    else:
+        return full_widget
+
+
+def check_git_install():
+    """Checks if Git is installed.
+
+    Returns:
+        bool: Returns True if Git is installed, otherwise returns False.
+    """
+    import webbrowser
+
+    cmd = 'git --version'
+    output = os.popen(cmd).read()
+
+    if 'git version' in output:
+        return True
+    else:
+        url = 'https://git-scm.com/downloads'
+        print(
+            "Git is not installed. Please download Git from {} and install it.".format(url))
+        webbrowser.open_new_tab(url)
+        return False
+
+
+def clone_github_repo(url, out_dir=None):
+    """Clones a GitHub repository.
+
+    Args:
+        url (str): The link to the GitHub repository
+        out_dir (str, optional): The output directory for the cloned repository. Defaults to None.
+    """
+    from dulwich import porcelain
+
+    repo_name = os.path.basename(url)
+
+    if out_dir is None:
+        out_dir = os.path.join(os.getcwd(), repo_name)
+
+    if not os.path.exists(os.path.dirname(out_dir)):
+        os.makedirs(os.path.dirname(out_dir))
+
+    if os.path.exists(out_dir):
+        print(
+            'The specified output directory already exists. Please choose a new directory.')
+        return
+
+    try:
+        porcelain.clone(url, out_dir)
+    except Exception as e:
+        print('Failed to clone the repository.')
+        print(e)
+
+
+def clone_google_repo(url, out_dir=None):
+    """Clones an Earth Engine repository from https://earthengine.googlesource.com, such as https://earthengine.googlesource.com/users/google/datasets
+
+    Args:
+        url (str): The link to the Earth Engine repository
+        out_dir (str, optional): The output directory for the cloned repository. Defaults to None.
+    """
+    repo_name = os.path.basename(url)
+
+    if out_dir is None:
+        out_dir = os.path.join(os.getcwd(), repo_name)
+
+    if not os.path.exists(os.path.dirname(out_dir)):
+        os.makedirs(os.path.dirname(out_dir))
+
+    if os.path.exists(out_dir):
+        print(
+            'The specified output directory already exists. Please choose a new directory.')
+        return
+
+    if check_git_install():
+
+        cmd = 'git clone "{}" "{}"'.format(url, out_dir)
+        os.popen(cmd).read()
