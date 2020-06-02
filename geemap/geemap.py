@@ -2907,6 +2907,90 @@ def ee_export_image_collection(ee_object, out_dir, scale=None, crs=None, region=
         print(e)
 
 
+def ee_export_image_to_drive(ee_object, description, folder=None, region=None, scale=None, crs=None, max_pixels=1.0E13, file_format='GeoTIFF'):
+    """Creates a batch task to export an Image as a raster to Google Drive.
+
+    Args:
+        ee_object (object): The image to export.
+        description (str): A human-readable name of the task. 
+        folder (str, optional): The Google Drive Folder that the export will reside in. Defaults to None.
+        region (object, optional): A LinearRing, Polygon, or coordinates representing region to export. These may be specified as the Geometry objects or coordinates serialized as a string. If not specified, the region defaults to the viewport at the time of invocation. Defaults to None.
+        scale (float, optional): Resolution in meters per pixel. Defaults to 10 times of the image resolution.
+        crs (str, optional): CRS to use for the exported image.. Defaults to None.
+        max_pixels (int, optional): Restrict the number of pixels in the export. Defaults to 1.0E13.
+        file_format (str, optional): The string file format to which the image is exported. Currently only 'GeoTIFF' and 'TFRecord' are supported. Defaults to 'GeoTIFF'.
+    """
+    ee_initialize()
+
+    if not isinstance(ee_object, ee.Image):
+        print('The ee_object must be an ee.Image.')
+        return
+
+    try:
+        params = {}
+
+        if folder is not None:      
+            params['driveFolder'] = folder
+        if region is not None:
+            params['region'] = region 
+        if scale is None:  
+            scale = ee_object.projection().nominalScale().multiply(10) 
+        params['scale'] = scale        
+        if crs is not None:
+            params['crs'] = crs        
+        params['maxPixels'] = max_pixels
+        params['fileFormat'] = file_format  
+
+        task = ee.batch.Export.image(ee_object, description, params)
+        task.start()
+
+        print('Exporting {} ...'.format(description))
+
+    except Exception as e:
+        print(e)
+
+
+def ee_export_image_collection_to_drive(ee_object, descriptions=None, folder=None, region=None, scale=None, crs=None, max_pixels=1.0E13, file_format='GeoTIFF'):
+    """Creates a batch task to export an ImageCollection as raster images to Google Drive.
+
+    Args:
+        ee_object (object): The image to export.
+        descriptions (list): A list of human-readable names of the tasks. 
+        folder (str, optional): The Google Drive Folder that the export will reside in. Defaults to None.
+        region (object, optional): A LinearRing, Polygon, or coordinates representing region to export. These may be specified as the Geometry objects or coordinates serialized as a string. If not specified, the region defaults to the viewport at the time of invocation. Defaults to None.
+        scale (float, optional): Resolution in meters per pixel. Defaults to 10 times of the image resolution.
+        crs (str, optional): CRS to use for the exported image.. Defaults to None.
+        max_pixels (int, optional): Restrict the number of pixels in the export. Defaults to 1.0E13.
+        file_format (str, optional): The string file format to which the image is exported. Currently only 'GeoTIFF' and 'TFRecord' are supported. Defaults to 'GeoTIFF'.
+    """  
+    ee_initialize()
+
+    if not isinstance(ee_object, ee.ImageCollection):
+        print('The ee_object must be an ee.ImageCollection.')
+        return  
+
+    try:
+        count = int(ee_object.size().getInfo())
+        print("Total number of images: {}\n".format(count))
+
+        if (descriptions is not None) and (len(descriptions) != count):
+            print('The number of descriptions is not equal to the number of images.')
+            return     
+        
+        if descriptions is None:
+            descriptions = ee_object.aggregate_array('system:index').getInfo()
+
+        images = ee_object.toList(count)
+
+        for i in range(0, count):
+            image = ee.Image(images.get(i))
+            name = descriptions[i]
+            ee_export_image_to_drive(image, name, folder, region, scale, crs, max_pixels, file_format)
+
+    except Exception as e:
+        print(e)    
+
+
 def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_value=None):
     """Extracts a rectangular region of pixels from an image into a 2D numpy array per band.
 
@@ -4582,7 +4666,7 @@ def ee_search(out_repo_dir=None):
     output_widget = widgets.Output()
     output_widget.layout.max_width = '650px'
 
-    repo_tree, repo_output, repo_dict = build_repo_tree()
+    repo_tree, repo_output, _ = build_repo_tree()
     left_widget.children = [search_type, repo_tree]
     right_widget.children = [repo_output]
 
@@ -4595,8 +4679,17 @@ def ee_search(out_repo_dir=None):
         tree_widget.clear_output()
         display(repo_tree)
 
-    api_dict = read_api_csv()
-    ee_api_tree, tree_dict = build_api_tree(api_dict, output_widget)
+    chk_docs = widgets.Checkbox(value=False)
+
+    ee_api_tree = None
+
+    class TreeObject:
+        def __init__(self, docs=None, assets=None):
+            self.docs = docs
+            self.assets = assets
+    tree_obj = TreeObject()
+    # api_dict = read_api_csv()
+    # ee_api_tree, tree_dict = build_api_tree(api_dict, output_widget)
 
     asset_tree, asset_dict = build_asset_tree()
 
@@ -4618,6 +4711,13 @@ def ee_search(out_repo_dir=None):
             search_box.placeholder = 'Filter methods...'
             left_widget.children = [search_type, search_box, tree_widget]
             right_widget.children = [output_widget]
+            if tree_obj.docs is None:
+            # if not chk_docs.value:
+                api_dict = read_api_csv()
+                ee_api_tree, tree_dict = build_api_tree(api_dict, output_widget)
+                tree_obj.docs = ee_api_tree
+            else:
+                ee_api_tree = tree_obj.docs
             with tree_widget:
                 tree_widget.clear_output()
                 print('Loading...')
