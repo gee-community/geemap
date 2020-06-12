@@ -4922,7 +4922,7 @@ def build_repo_tree(out_dir=None, name='gee_repos'):
         'Owner': 'https://earthengine.googlesource.com/{}/default'.format(ee_user_id()),
         'Writer': '',
         'Reader': 'https://github.com/giswqs/geemap',
-        'Examples': 'https://github.com/giswqs/earthengine-js-examples',
+        'Examples': 'https://github.com/giswqs/earthengine-py-examples',
         'Archive': 'https://earthengine.googlesource.com/EGU2017-EE101'
     }
     path_widget = widgets.Text(

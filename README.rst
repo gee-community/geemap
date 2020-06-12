@@ -106,6 +106,7 @@ Below is a partial list of features available for the geemap package. Please che
 * Using timeseries inspector to visualize landscape changes over time.
 * Exporting Earth Engine maps as HTML files and PNG images.
 * Searching Earth Engine API documentation within Jupyter notebooks.
+* Importing Earth Engine assets from personal account.
 
 
 Installation
