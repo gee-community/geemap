@@ -35,6 +35,9 @@ geemap
 .. image:: https://img.shields.io/badge/Donate-Buy%20me%20a%20coffee-yellowgreen.svg
         :target: https://www.buymeacoffee.com/giswqs
 
+.. image:: https://joss.theoj.org/papers/91af8757c56e3fed2535fcd165137116/status.svg
+        :target: https://joss.theoj.org/papers/91af8757c56e3fed2535fcd165137116
+
 Lead authors: Dr. Qiusheng Wu (https://wetlands.io)
 
 **A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.**
@@ -673,6 +676,7 @@ References
 
 To support my work, please consider citing the following articles:
 
+- **Wu, Q.** (2020). geemap: A Python package for interactive mapping with Google Earth Engine. *The Journal of Open Source Software*. https://doi.org/10.21105/joss.02305 
 - **Wu, Q.**, Lane, C. R., Li, X., Zhao, K., Zhou, Y., Clinton, N., DeVries, B., Golden, H. E., & Lang, M. W. (2019). Integrating LiDAR data and multi-temporal aerial imagery to map wetland inundation dynamics using Google Earth Engine. *Remote Sensing of Environment*, 228, 1-13. https://doi.org/10.1016/j.rse.2019.04.015 (`pdf <https://gishub.org/2019_rse>`_ | `source code <https://doi.org/10.6084/m9.figshare.8864921>`_)
 
 

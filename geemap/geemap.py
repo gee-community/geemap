@@ -2929,17 +2929,17 @@ def ee_export_image_to_drive(ee_object, description, folder=None, region=None, s
     try:
         params = {}
 
-        if folder is not None:      
+        if folder is not None:
             params['driveFolder'] = folder
         if region is not None:
-            params['region'] = region 
-        if scale is None:  
-            scale = ee_object.projection().nominalScale().multiply(10) 
-        params['scale'] = scale        
+            params['region'] = region
+        if scale is None:
+            scale = ee_object.projection().nominalScale().multiply(10)
+        params['scale'] = scale
         if crs is not None:
-            params['crs'] = crs        
+            params['crs'] = crs
         params['maxPixels'] = max_pixels
-        params['fileFormat'] = file_format  
+        params['fileFormat'] = file_format
 
         task = ee.batch.Export.image(ee_object, description, params)
         task.start()
@@ -2962,12 +2962,12 @@ def ee_export_image_collection_to_drive(ee_object, descriptions=None, folder=Non
         crs (str, optional): CRS to use for the exported image.. Defaults to None.
         max_pixels (int, optional): Restrict the number of pixels in the export. Defaults to 1.0E13.
         file_format (str, optional): The string file format to which the image is exported. Currently only 'GeoTIFF' and 'TFRecord' are supported. Defaults to 'GeoTIFF'.
-    """  
+    """
     ee_initialize()
 
     if not isinstance(ee_object, ee.ImageCollection):
         print('The ee_object must be an ee.ImageCollection.')
-        return  
+        return
 
     try:
         count = int(ee_object.size().getInfo())
@@ -2975,8 +2975,8 @@ def ee_export_image_collection_to_drive(ee_object, descriptions=None, folder=Non
 
         if (descriptions is not None) and (len(descriptions) != count):
             print('The number of descriptions is not equal to the number of images.')
-            return     
-        
+            return
+
         if descriptions is None:
             descriptions = ee_object.aggregate_array('system:index').getInfo()
 
@@ -2985,10 +2985,11 @@ def ee_export_image_collection_to_drive(ee_object, descriptions=None, folder=Non
         for i in range(0, count):
             image = ee.Image(images.get(i))
             name = descriptions[i]
-            ee_export_image_to_drive(image, name, folder, region, scale, crs, max_pixels, file_format)
+            ee_export_image_to_drive(
+                image, name, folder, region, scale, crs, max_pixels, file_format)
 
     except Exception as e:
-        print(e)    
+        print(e)
 
 
 def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_value=None):
@@ -4640,23 +4641,38 @@ def search_api_tree(keywords, api_tree):
     return sub_tree
 
 
-def ee_search(out_repo_dir=None):
+def ee_search(asset_limit=100):
     """Search Earth Engine API and user assets. If you received a warning (IOPub message rate exceeded) in Jupyter notebook, you can relaunch Jupyter notebook using the following command:
         jupyter notebook --NotebookApp.iopub_msg_rate_limit=10000
-    """
+
+    Args:
+        asset_limit (int, optional): The number of assets to display for each asset type, i.e., Image, ImageCollection, and FeatureCollection. Defaults to 100.
+    """    
+
     import warnings
     warnings.filterwarnings('ignore')
+
+    class Flags:
+        def __init__(self, repos=None, docs=None, assets=None, docs_dict=None, asset_dict=None, asset_import=None):
+            self.repos = repos
+            self.docs = docs
+            self.assets = assets
+            self.docs_dict = docs_dict
+            self.asset_dict = asset_dict
+            self.asset_import = asset_import
+
+    flags = Flags()
 
     search_type = widgets.ToggleButtons(
         options=['Scripts', 'Docs', 'Assets'],
         tooltips=['Search Earth Engine Scripts',
                   'Search Earth Engine API', 'Search Earth Engine Assets'],
         button_style='primary'
-
     )
     search_type.style.button_width = '100px'
 
-    search_box = widgets.Text(placeholder='Filter scripts...')
+    search_box = widgets.Text(
+        placeholder='Filter scripts...', value='Loading...')
     search_box.layout.width = '310px'
 
     tree_widget = widgets.Output()
@@ -4666,32 +4682,16 @@ def ee_search(out_repo_dir=None):
     output_widget = widgets.Output()
     output_widget.layout.max_width = '650px'
 
+    search_widget = widgets.HBox()
+    search_widget.children = [left_widget, right_widget]
+    display(search_widget)
+
     repo_tree, repo_output, _ = build_repo_tree()
     left_widget.children = [search_type, repo_tree]
     right_widget.children = [repo_output]
 
-    search_widget = widgets.HBox()
-    search_widget.children = [left_widget, right_widget]
-
-    display(search_widget)
-
-    with tree_widget:
-        tree_widget.clear_output()
-        display(repo_tree)
-
-    chk_docs = widgets.Checkbox(value=False)
-
-    ee_api_tree = None
-
-    class TreeObject:
-        def __init__(self, docs=None, assets=None):
-            self.docs = docs
-            self.assets = assets
-    tree_obj = TreeObject()
-    # api_dict = read_api_csv()
-    # ee_api_tree, tree_dict = build_api_tree(api_dict, output_widget)
-
-    asset_tree, asset_dict = build_asset_tree()
+    flags.repos = repo_tree
+    search_box.value = ''
 
     def search_type_changed(change):
         search_box.value = ''
@@ -4702,53 +4702,70 @@ def ee_search(out_repo_dir=None):
             search_box.placeholder = 'Filter scripts...'
             left_widget.children = [search_type, repo_tree]
             right_widget.children = [repo_output]
-            with tree_widget:
-                tree_widget.clear_output()
-                print('Loading...')
-                tree_widget.clear_output(wait=True)
-                display(repo_tree)
         elif change['new'] == 'Docs':
             search_box.placeholder = 'Filter methods...'
+            search_box.value = 'Loading...'
             left_widget.children = [search_type, search_box, tree_widget]
             right_widget.children = [output_widget]
-            if tree_obj.docs is None:
-            # if not chk_docs.value:
+            if flags.docs is None:
                 api_dict = read_api_csv()
-                ee_api_tree, tree_dict = build_api_tree(api_dict, output_widget)
-                tree_obj.docs = ee_api_tree
+                ee_api_tree, tree_dict = build_api_tree(
+                    api_dict, output_widget)
+                flags.docs = ee_api_tree
+                flags.docs_dict = tree_dict
             else:
-                ee_api_tree = tree_obj.docs
+                ee_api_tree = flags.docs
             with tree_widget:
                 tree_widget.clear_output()
-                print('Loading...')
-                tree_widget.clear_output(wait=True)
                 display(ee_api_tree)
                 right_widget.children = [output_widget]
+            search_box.value = ''
         elif change['new'] == 'Assets':
             search_box.placeholder = 'Filter assets...'
             left_widget.children = [search_type, search_box, tree_widget]
             right_widget.children = [output_widget]
+            search_box.value = 'Loading...'
+            if flags.assets is None:
+                asset_tree, asset_widget, asset_dict = build_asset_tree(limit=asset_limit)
+                flags.assets = asset_tree
+                flags.asset_dict = asset_dict
+                flags.asset_import = asset_widget
+
             with tree_widget:
                 tree_widget.clear_output()
-                print('Loading...')
-                tree_widget.clear_output(wait=True)
-                display(asset_tree)
+                display(flags.assets)
+            right_widget.children = [flags.asset_import]
+            search_box.value = ''
 
     search_type.observe(search_type_changed, names='value')
 
     def search_box_callback(text):
 
-        with tree_widget:
-            if text.value == '':
-                print('Loading...')
-                tree_widget.clear_output(wait=True)
-                display(ee_api_tree)
-            else:
-                tree_widget.clear_output()
-                print('Searching...')
-                tree_widget.clear_output(wait=True)
-                sub_tree = search_api_tree(text.value, tree_dict)
-                display(sub_tree)
+        if search_type.value == 'Docs':
+            with tree_widget:
+                if text.value == '':
+                    print('Loading...')
+                    tree_widget.clear_output(wait=True)
+                    display(flags.docs)
+                else:
+                    tree_widget.clear_output()
+                    print('Searching...')
+                    tree_widget.clear_output(wait=True)
+                    sub_tree = search_api_tree(text.value, flags.docs_dict)
+                    display(sub_tree)
+        elif search_type.value == 'Assets':
+            with tree_widget:
+                if text.value == '':
+                    print('Loading...')
+                    tree_widget.clear_output(wait=True)
+                    display(flags.assets)
+                else:
+                    tree_widget.clear_output()
+                    print('Searching...')
+                    tree_widget.clear_output(wait=True)
+                    sub_tree = search_api_tree(text.value, flags.asset_dict)
+                    display(sub_tree)
+
     search_box.on_submit(search_box_callback)
 
 
@@ -4764,10 +4781,13 @@ def ee_user_id():
     return user_id
 
 
-def build_asset_tree():
+def build_asset_tree(limit=100):
 
     import warnings
+    import geeadd.ee_report as geeadd
     warnings.filterwarnings('ignore')
+
+    ee_initialize()
 
     tree = Tree(multiple_selection=False)
     tree_dict = {}
@@ -4780,36 +4800,102 @@ def build_asset_tree():
         'IMAGE_COLLECTION': 'file'
     }
 
+    info_widget = widgets.HBox()
+
+    import_btn = widgets.Button(
+        description='import',
+        button_style='primary',
+        tooltip='Click to import the selected asset',
+        disabled=True
+    )
+    import_btn.layout.min_width = '57px'
+    import_btn.layout.max_width = '57px'
+
+
+    path_widget = widgets.Text()
+    path_widget.layout.min_width = '500px'
+    # path_widget.disabled = True
+
+    info_widget.children = [import_btn, path_widget]
+
     user_id = ee_user_id()
-    user_name = 'projects/earthengine-legacy/assets/' + user_id
+    user_path = 'projects/earthengine-legacy/assets/' + user_id
     root_node = Node(user_id)
     root_node.opened = True
     tree_dict[user_id] = root_node
     tree.add_node(root_node)
 
-    assets = ee.data.listAssets({"parent": user_name})['assets']
-    root_node = tree_dict[user_id]
+    collection_list, table_list, image_list, folder_paths = geeadd.fparse(
+        user_path)
+    collection_list = collection_list[:limit]
+    table_list = table_list[:limit]
+    image_list = image_list[:limit]
+    folder_paths = folder_paths[:limit]
+    folders = [p[35:] for p in folder_paths[1:]]
 
-    def handle_click_level1(event):
+    asset_type = 'FOLDER'
+    for folder in folders:
+        bare_folder = folder.replace(user_id + '/', '')
+        if folder not in tree_dict.keys():
+            node = Node(bare_folder)
+            node.opened = False
+            node.icon = asset_icons[asset_type]
+            root_node.add_node(node)
+            tree_dict[folder] = node
+            asset_types[folder] = asset_type
+
+    def import_btn_clicked(b):
+        if path_widget.value != '':
+            dataset_uid = 'dataset_' + random_string(string_length=3)
+            layer_name = path_widget.value.split('/')[-1][:-2:]
+            line1 = '{} = {}\n'.format(
+                dataset_uid, path_widget.value)
+            line2 = 'Map.addLayer(' + dataset_uid + \
+                ', {}, "' + layer_name + '")'
+            contents = ''.join([line1, line2])
+            create_code_cell(contents)
+
+    import_btn.on_click(import_btn_clicked)
+
+    def handle_click(event):
         if event['new']:
             cur_node = event['owner']
             for key in tree_dict.keys():
-                if (cur_node is tree_dict[key]) and (asset_types[key] == 'FOLDER'):
-                    cur_node.name = key
+                if cur_node is tree_dict[key]:
+                    if asset_types[key] == 'IMAGE':
+                        path_widget.value = "ee.Image('{}')".format(key)
+                    elif asset_types[key] == 'IMAGE_COLLECTION':
+                        path_widget.value = "ee.ImageCollection('{}')".format(
+                            key)
+                    elif asset_types[key] == 'TABLE':
+                        path_widget.value = "ee.FeatureCollection('{}')".format(
+                            key)
+                    if import_btn.disabled:
+                        import_btn.disabled = False
                     break
 
-    for asset in assets:
-        asset_id = user_id + '/' + asset['id'].split('/')[-1]
-        asset_name = asset_id.split('/')[-1]
-        asset_type = asset['type']
-        node = Node(asset_name)
-        node.icon = asset_icons[asset_type]
-        tree_dict[asset_id] = node
-        asset_types[asset_id] = asset_type
-        root_node.add_node(node)
-        node.observe(handle_click_level1, 'selected')
+    assets = [collection_list, image_list, table_list]
+    for index, asset_list in enumerate(assets):
+        if index == 0:
+            asset_type = 'IMAGE_COLLECTION'
+        elif index == 1:
+            asset_type = 'IMAGE'
+        else:
+            asset_type = 'TABLE'
 
-    return tree, tree_dict
+        for asset in asset_list:
+            items = asset.split('/')
+            parent = '/'.join(items[:-1])
+            child = items[-1]
+            parent_node = tree_dict[parent]
+            child_node = Node(child)
+            child_node.icon = asset_icons[asset_type]
+            parent_node.add_node(child_node)
+            tree_dict[asset] = child_node
+            asset_types[asset] = asset_type
+            child_node.observe(handle_click, 'selected')
+
+    return tree, info_widget, tree_dict
 
 
 def build_repo_tree(out_dir=None, name='gee_repos'):
@@ -4855,8 +4941,8 @@ def build_repo_tree(out_dir=None, name='gee_repos'):
             os.makedirs(group_dir)
 
     left_widget, right_widget, tree_dict = file_browser(
-        in_dir=repo_dir, add_root_node=False, search_description='Filter scripts...', return_sep_widgets=True)
-    # info_widget.children = [right_widget]
+        in_dir=repo_dir, add_root_node=False, search_description='Filter scripts...', use_import=True, return_sep_widgets=True)
+    info_widget.children = [right_widget]
 
     def handle_folder_click(event):
         if event['new']:
@@ -4907,7 +4993,7 @@ def build_repo_tree(out_dir=None, name='gee_repos'):
     return left_widget, info_widget, tree_dict
 
 
-def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_description=None, return_sep_widgets=False):
+def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_description=None, use_import=False, return_sep_widgets=False):
     """Creates a simple file browser and text editor.
 
     Args:
@@ -4915,6 +5001,7 @@ def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_desc
         show_hidden (bool, optional): Whether to show hidden files/folders. Defaults to False.
         add_root_node (bool, optional): Whether to add the input directory as a root node. Defaults to True.
         search_description (str, optional): The description of the search box. Defaults to None.
+        use_import (bool, optional): Whether to show the import button. Defaults to False.
         return_sep_widgets (bool, optional): Whether to return the results as separate widgets. Defaults to False.
 
     Returns:
@@ -4938,13 +5025,19 @@ def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_desc
 
     right_widget = widgets.VBox()
 
+    import_btn = widgets.Button(
+        description='import', button_style='primary', tooltip='import the content to a new cell', disabled=True)
+    import_btn.layout.width = '70px'
     path_widget = widgets.Text()
-    path_widget.layout.min_width = '475px'
+    path_widget.layout.min_width = '400px'
+    # path_widget.layout.max_width = '400px'
     save_widget = widgets.Button(
-        description='Save', button_style='primary', tooltip='Save edits to file.')
+        description='Save', button_style='primary', tooltip='Save edits to file.', disabled = True)
     info_widget = widgets.HBox()
     info_widget.children = [path_widget, save_widget]
-
+    if use_import:
+        info_widget.children = [import_btn, path_widget, save_widget]
+    
     text_widget = widgets.Textarea()
     text_widget.layout.width = '630px'
     text_widget.layout.height = '600px'
@@ -4989,6 +5082,12 @@ def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_desc
 
     save_widget.on_click(on_button_clicked)
 
+    def import_btn_clicked(b):
+        if (text_widget.value != '') and (path_widget.value.endswith('.py')):
+            create_code_cell(text_widget.value)
+
+    import_btn.on_click(import_btn_clicked)
+
     def search_box_callback(text):
 
         with tree_widget:
@@ -5009,6 +5108,10 @@ def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_desc
             cur_node = event['owner']
             for key in tree_dict.keys():
                 if (cur_node is tree_dict[key]) and (os.path.isfile(key)):
+                    if key.endswith('.py'):
+                        import_btn.disabled = False
+                    else:
+                        import_btn.disabled = True
                     try:
                         with open(key) as f:
                             content = f.read()
@@ -5025,7 +5128,9 @@ def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_desc
                         text_widget.disabled = True
                         text_widget.value = 'Failed to open {}.'.format(
                             cur_node.name) + '\n\n' + str(e)
+                        full_widget.children = [left_widget, right_widget]
                         return
+                    break
 
     def handle_folder_click(event):
         if event['new']:
