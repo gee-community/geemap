@@ -4930,15 +4930,17 @@ def build_repo_tree(out_dir=None, name='gee_repos'):
     path_widget.layout.width = '475px'
     clone_widget = widgets.Button(
         description='Clone', button_style='primary', tooltip='Clone the repository to folder.')
-    # clone_widget.layout.width = '100px'
     info_widget = widgets.HBox()
-    # info_widget.children = [path_widget, clone_widget]
 
     groups = ['Owner', 'Writer', 'Reader', 'Examples', 'Archive']
     for group in groups:
         group_dir = os.path.join(repo_dir, group)
         if not os.path.exists(group_dir):
             os.makedirs(group_dir)
+
+    example_dir = os.path.join(repo_dir, 'Examples/earthengine-py-examples')
+    if not os.path.exists(example_dir):        
+        clone_github_repo(URLs['Examples'], out_dir=example_dir)     
 
     left_widget, right_widget, tree_dict = file_browser(
         in_dir=repo_dir, add_root_node=False, search_description='Filter scripts...', use_import=True, return_sep_widgets=True)
