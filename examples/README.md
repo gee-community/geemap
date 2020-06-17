@@ -42,7 +42,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 20. [Using timeseries inspector to visualize landscape changes over time](#20-using-timeseries-inspector-to-visualize-landscape-changes-over-time) ([video](https://youtu.be/0CZ7Aj8hCyo) | [gif](https://i.imgur.com/61wbRjK.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/20_timeseries_inspector.ipynb))
 21. [Exporting Earth Engine maps as HTML files and PNG images](#21-exporting-earth-engine-maps-as-html-files-and-png-images) ([video](https://youtu.be/GWMvaNQz3kY) | [gif](https://i.imgur.com/rJuXH4a.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/21_export_map_to_html_png.ipynb))
 22. [How to import Earth Engine Python scripts into Jupyter notebook?](#22-how-to-import-earth-engine-python-scripts-into-jupyter-notebook) ([video](https://youtu.be/V7CbB9W41w8) | [gif](https://i.imgur.com/WwJoBHF.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/22_import_scripts.ipynb))
-
+23. [How to search Earth Engine API and import assets from GEE personal account?](#23-how-to-search-earth-engine-api-and-import-assets-from-gee-personal-account) ([video](https://youtu.be/c9VJ_uRYSkw) | [gif](https://i.imgur.com/b1auzkr.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/22_import_assets.ipynb))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
@@ -131,3 +131,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 ### 22. How to import Earth Engine Python scripts into Jupyter notebook?
 
 ![import scripts](https://i.imgur.com/WwJoBHF.gif)
+
+### 23. How to search Earth Engine API and import assets from GEE personal account?
+
+![import assets](https://i.imgur.com/b1auzkr.gif)
