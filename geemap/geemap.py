@@ -4431,7 +4431,7 @@ def ee_api_to_csv(outfile=None):
                 items = ""
             details.append(items)
 
-        csv_file = open(outfile, 'w')
+        csv_file = open(outfile, 'w', encoding='utf-8')
         csv_writer = csv.writer(csv_file, delimiter='\t')
 
         csv_writer.writerow(
