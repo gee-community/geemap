@@ -5283,13 +5283,49 @@ def check_git_install():
         return False
 
 
-def clone_github_repo(url, out_dir=None):
+def clone_github_repo(url, out_dir):
+    """Clones a GitHub repository.
+
+    Args:
+        url (str): The link to the GitHub repository
+        out_dir (str): The output directory for the cloned repository. 
+    """
+
+    import zipfile
+
+    repo_name = os.path.basename(url)
+    url_zip = os.path.join(url, 'archive/master.zip')
+
+    if os.path.exists(out_dir):
+        print(
+            'The specified output directory already exists. Please choose a new directory.')
+        return
+
+    parent_dir = os.path.dirname(out_dir)
+    out_file_path = os.path.join(parent_dir, repo_name + '.zip')
+
+    try:
+        urllib.request.urlretrieve(url_zip, out_file_path)
+    except:
+        print("The provided URL is invalid. Please double check the URL.")
+        return
+
+    with zipfile.ZipFile(out_file_path, "r") as zip_ref:
+        zip_ref.extractall(parent_dir)
+
+    src = out_file_path.replace('.zip', '-master')
+    os.rename(src, out_dir)
+    os.remove(out_file_path)
+
+
+def clone_github_repo2(url, out_dir=None):
     """Clones a GitHub repository.
 
     Args:
         url (str): The link to the GitHub repository
         out_dir (str, optional): The output directory for the cloned repository. Defaults to None.
     """
+    check_install('dulwich')
     from dulwich import porcelain
 
     repo_name = os.path.basename(url)
