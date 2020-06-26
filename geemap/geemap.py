@@ -4523,7 +4523,7 @@ def read_api_csv():
 
     api_dict = {}
 
-    with open(csv_file, 'r') as f:
+    with open(csv_file, 'r', encoding='utf-8') as f:
         csv_reader = csv.DictReader(f, delimiter='\t')
 
         for line in csv_reader:
@@ -5070,6 +5070,7 @@ def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_desc
     Returns:
         object: An ipywidget.
     """
+    import platform
     if in_dir is None:
         in_dir = os.getcwd()
 
@@ -5080,7 +5081,11 @@ def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_desc
         print('The provided path is not a valid directory.')
         return
 
-    if in_dir.endswith('/'):
+    sep = '/'
+    if platform.system() == "Windows":
+        sep = '\\'
+
+    if in_dir.endswith(sep):
         in_dir = in_dir[:-1]
 
     full_widget = widgets.HBox()
@@ -5201,7 +5206,7 @@ def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_desc
             text_widget.value = ''
 
     if add_root_node:
-        root_name = in_dir.split('/')[-1]
+        root_name = in_dir.split(sep)[-1]
         root_node = Node(root_name)
         tree_dict[in_dir] = root_node
         tree.add_node(root_node)
@@ -5210,7 +5215,7 @@ def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_desc
     for root, d_names, f_names in os.walk(in_dir):
 
         if not show_hidden:
-            folders = root.split('/')
+            folders = root.split(sep)
             for folder in folders:
                 if folder.startswith('.'):
                     continue
@@ -5233,7 +5238,7 @@ def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_desc
                 node.observe(handle_folder_click, 'selected')
 
         if (root != in_dir) and (root not in tree_dict.keys()):
-            name = root.split('/')[-1]
+            name = root.split(sep)[-1]
             dir_name = os.path.dirname(root)
             parent_node = tree_dict[dir_name]
             node = Node(name)
