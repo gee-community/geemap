@@ -87,6 +87,8 @@ class Map(ipyleaflet.Map):
         self.draw_layer = None
         self.draw_last_json = None
         self.draw_last_bounds = None
+        self.user_roi = None
+        self.user_rois = None
 
         self.plot_widget = None  # The plot widget for plotting Earth Engine data
         self.plot_control = None  # The plot control for interacting plotting
@@ -345,12 +347,14 @@ class Map(ipyleaflet.Map):
             try:
                 self.draw_count += 1
                 geom = geojson_to_ee(geo_json, False)
+                self.user_roi = geom
                 feature = ee.Feature(geom)
                 self.draw_last_json = geo_json
                 self.draw_last_bounds = minimum_bounding_box(geo_json)
                 self.draw_last_feature = feature
                 self.draw_features.append(feature)
                 collection = ee.FeatureCollection(self.draw_features)
+                self.user_rois = collection
                 ee_draw_layer = ee_tile_layer(
                     collection, {'color': 'blue'}, 'Drawing Features', True, 0.5)
 
@@ -369,6 +373,7 @@ class Map(ipyleaflet.Map):
                 self.draw_features = []
                 self.draw_last_feature = None
                 self.draw_layer = None
+                self.user_roi = None
 
         draw_control.on_draw(handle_draw)
         self.add_control(draw_control)
@@ -2520,6 +2525,15 @@ def open_youtube():
     webbrowser.open_new_tab(url)
 
 
+def api_docs():
+    """Open a browser and navigate to the geemap API documentation.
+    """
+    import webbrowser
+
+    url = 'https://geemap.readthedocs.io/en/latest/source/geemap.html#geemap-package'
+    webbrowser.open_new_tab(url)
+
+
 def show_youtube(id='h0pz3S6Tvx0'):
     """Displays a YouTube video within Jupyter notebooks.
 
@@ -2753,6 +2767,39 @@ def ee_export_vector(ee_object, filename, selectors=None):
         print('Data downloaded to {}'.format(filename))
     except Exception as e:
         print(e)
+
+
+def ee_export_vector_to_drive(ee_object, description, folder, file_format='shp', selectors=None):
+    """Exports Earth Engine FeatureCollection to Google Drive. other formats, including shp, csv, json, kml, and kmz.
+
+    Args:
+        ee_object (object): ee.FeatureCollection to export.
+        description (str): File name of the output file.
+        folder (str): Folder name within Google Drive to save the exported file.
+        file_format (str, optional): The supported file format include shp, csv, json, kml, kmz, and TFRecord. Defaults to 'shp'.
+        selectors (list, optional): The list of attributes to export. Defaults to None.
+    """
+    if not isinstance(ee_object, ee.FeatureCollection):
+        print('The ee_object must be an ee.FeatureCollection.')
+        return
+
+    allowed_formats = ['csv', 'json', 'kml', 'kmz', 'shp', 'tfrecord']
+    if not (file_format.lower() in allowed_formats):
+        print('The file type must be one of the following: {}'.format(
+            ', '.join(allowed_formats)))
+        return
+
+    task_config = {
+        'folder': folder,
+        'fileFormat': file_format,
+    }
+
+    if selectors is not None:
+        task_config['selectors'] = selectors
+
+    print('Exporting {}...'.format(description))
+    task = ee.batch.Export.table.toDrive(ee_object, description, **task_config)
+    task.start()
 
 
 def ee_to_shp(ee_object, filename, selectors=None):
@@ -4086,8 +4133,8 @@ def minimum_bounding_box(geojson):
         bounds = (lower_left, upper_right)
         return bounds
     except Exception as e:
-        print(e)
-        return
+        # print(e)
+        return None
 
 
 def geocode(location, max_rows=10, reverse=False):
@@ -4647,7 +4694,7 @@ def ee_search(asset_limit=100):
 
     Args:
         asset_limit (int, optional): The number of assets to display for each asset type, i.e., Image, ImageCollection, and FeatureCollection. Defaults to 100.
-    """    
+    """
 
     import warnings
     warnings.filterwarnings('ignore')
@@ -4726,7 +4773,8 @@ def ee_search(asset_limit=100):
             right_widget.children = [output_widget]
             search_box.value = 'Loading...'
             if flags.assets is None:
-                asset_tree, asset_widget, asset_dict = build_asset_tree(limit=asset_limit)
+                asset_tree, asset_widget, asset_dict = build_asset_tree(
+                    limit=asset_limit)
                 flags.assets = asset_tree
                 flags.asset_dict = asset_dict
                 flags.asset_import = asset_widget
@@ -4776,9 +4824,13 @@ def ee_user_id():
         str: A string containing the user id.
     """
     ee_initialize()
-    root = ee.data.getAssetRoots()[0]
-    user_id = root['id'].replace("projects/earthengine-legacy/assets/", "")
-    return user_id
+    roots = ee.data.getAssetRoots()
+    if len(roots) == 0:
+        return None
+    else:
+        root = ee.data.getAssetRoots()[0]
+        user_id = root['id'].replace("projects/earthengine-legacy/assets/", "")
+        return user_id
 
 
 def build_asset_tree(limit=100):
@@ -4811,7 +4863,6 @@ def build_asset_tree(limit=100):
     import_btn.layout.min_width = '57px'
     import_btn.layout.max_width = '57px'
 
-
     path_widget = widgets.Text()
     path_widget.layout.min_width = '500px'
     # path_widget.disabled = True
@@ -4819,6 +4870,10 @@ def build_asset_tree(limit=100):
     info_widget.children = [import_btn, path_widget]
 
     user_id = ee_user_id()
+    if user_id is None:
+        print('Your GEE account does not have any assets. Please create a repository at https://code.earthengine.google.com')
+        return
+
     user_path = 'projects/earthengine-legacy/assets/' + user_id
     root_node = Node(user_id)
     root_node.opened = True
@@ -4919,12 +4974,18 @@ def build_repo_tree(out_dir=None, name='gee_repos'):
         os.makedirs(repo_dir)
 
     URLs = {
-        'Owner': 'https://earthengine.googlesource.com/{}/default'.format(ee_user_id()),
+        # 'Owner': 'https://earthengine.googlesource.com/{}/default'.format(ee_user_id()),
         'Writer': '',
         'Reader': 'https://github.com/giswqs/geemap',
         'Examples': 'https://github.com/giswqs/earthengine-py-examples',
         'Archive': 'https://earthengine.googlesource.com/EGU2017-EE101'
     }
+
+    user_id = ee_user_id()
+    if user_id is not None:
+        URLs['Owner'] = 'https://earthengine.googlesource.com/{}/default'.format(
+            ee_user_id())
+
     path_widget = widgets.Text(
         placeholder='Enter the link to a Git repository here...')
     path_widget.layout.width = '475px'
@@ -4939,8 +5000,8 @@ def build_repo_tree(out_dir=None, name='gee_repos'):
             os.makedirs(group_dir)
 
     example_dir = os.path.join(repo_dir, 'Examples/earthengine-py-examples')
-    if not os.path.exists(example_dir):        
-        clone_github_repo(URLs['Examples'], out_dir=example_dir)     
+    if not os.path.exists(example_dir):
+        clone_github_repo(URLs['Examples'], out_dir=example_dir)
 
     left_widget, right_widget, tree_dict = file_browser(
         in_dir=repo_dir, add_root_node=False, search_description='Filter scripts...', use_import=True, return_sep_widgets=True)
@@ -5034,12 +5095,12 @@ def file_browser(in_dir=None, show_hidden=False, add_root_node=True, search_desc
     path_widget.layout.min_width = '400px'
     # path_widget.layout.max_width = '400px'
     save_widget = widgets.Button(
-        description='Save', button_style='primary', tooltip='Save edits to file.', disabled = True)
+        description='Save', button_style='primary', tooltip='Save edits to file.', disabled=True)
     info_widget = widgets.HBox()
     info_widget.children = [path_widget, save_widget]
     if use_import:
         info_widget.children = [import_btn, path_widget, save_widget]
-    
+
     text_widget = widgets.Textarea()
     text_widget.layout.width = '630px'
     text_widget.layout.height = '600px'
