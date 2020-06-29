@@ -8,62 +8,283 @@ except Exception as e:
     ee.Initialize()
 
 
-# Compute area in square meters
-def vec_area(f):
-    # Compute area in square meters.  Convert to hectares.
-    areaSqm = f.area()
-    # A new property called 'area' will be set on each feature.
-    return f.set({'area': areaSqm})
+def vec_area(fc):
+    """Calculate the area (m2) of each each feature in a feature collection.
+
+    Args:
+        fc (object): The feature collection to compute the area.
+
+    Returns:
+        object: ee.FeatureCollection
+    """
+    return fc.map(lambda f: f.set({'area_m2': f.area(1).round()}))
 
 
-def vec_area_sqkm(f):
-    areaSqkm = f.area().divide(1000 * 1000)
-    return f.set({'area': areaSqkm})
+def vec_area_km2(fc):
+    """Calculate the area (km2) of each each feature in a feature collection.
+
+    Args:
+        fc (object): The feature collection to compute the area.
+
+    Returns:
+        object: ee.FeatureCollection
+    """
+    return fc.map(lambda f: f.set({'area_km2': f.area(1).divide(1e6).round()}))
 
 
-def vec_area_ha(f):
-    # Compute area in square meters.  Convert to hectares.
-    areaHa = f.area(1).divide(100 * 100)
+def vec_area_mi2(fc):
+    """Calculate the area (square mile) of each each feature in a feature collection.
 
-    # A new property called 'area' will be set on each feature.
-    return f.set({'area': areaHa})
+    Args:
+        fc (object): The feature collection to compute the area.
+
+    Returns:
+        object: ee.FeatureCollection
+    """
+    return fc.map(lambda f: f.set({'area_mi2': f.area(1).divide(2.59e6).round()}))
 
 
-def get_year(date):
-    return ee.Date(date).get('year')
+def vec_area_ha(fc):
+    """Calculate the area (hectare) of each each feature in a feature collection.
+
+    Args:
+        fc (object): The feature collection to compute the area.
+
+    Returns:
+        object: ee.FeatureCollection
+    """
+    return fc.map(lambda f: f.set({'area_ha': f.area(1).divide(1e4).round()}))
 
 
-# Convert string to number
-def str_to_number(str):
+def image_cell_size(img):
+    """Retrieves the image cell size (e.g., spatial resolution)
+
+    Args:
+        img (object): ee.Image
+
+    Returns:
+        float: The nominal scale in meters.
+    """
+    return img.projection().nominalScale().getInfo()
+
+
+def image_date(img, date_format='YYYY-MM-dd'):
+    """Retrieves the image acquisition date.
+
+    Args:
+        img (object): ee.Image
+        date_format (str, optional): The date format to use. Defaults to 'YYYY-MM-dd'.
+
+    Returns:
+        str: A string representing the acquisition of the image.
+    """
+    return ee.Date(img.get('system:time_start')).format(date_format).getInfo()
+
+
+def image_area(img, region=None, scale=None, denominator=1.0):
+    """Calculates the the area of an image.
+
+    Args:
+        img (object): ee.Image
+        region (object, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+        denominator (float, optional): The denominator to use for converting size from square meters to other units. Defaults to 1.0.
+
+    Returns:
+        object: ee.Dictionary
+    """
+    if region is None:
+        region = img.geometry()
+
+    if scale is None:
+        scale = img.projection().nominalScale()
+
+    pixel_area = img.unmask().neq(ee.Image(0)).multiply(
+        ee.Image.pixelArea()).divide(denominator)
+    img_area = pixel_area.reduceRegion(**{
+        'geometry': region,
+        'reducer': ee.Reducer.sum(),
+        'scale': scale,
+        'maxPixels': 1e12
+    })
+    return img_area
+
+
+def image_max_value(img, region=None, scale=None):
+    """Retrieves the maximum value of an image.
+
+    Args:
+        img (object): The image to calculate the maximum value.
+        region (object, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+
+    Returns:
+        object: ee.Number
+    """
+    if region is None:
+        region = img.geometry()
+
+    if scale is None:
+        scale = img.projection().nominalScale()
+
+    max_value = img.reduceRegion(**{
+        'reducer': ee.Reducer.max(),
+        'geometry': region,
+        'scale': scale,
+        'maxPixels': 1e12
+    })
+    return max_value
+
+
+def image_min_value(img, region=None, scale=None):
+    """Retrieves the minimum value of an image.
+
+    Args:
+        img (object): The image to calculate the minimum value.
+        region (object, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+
+    Returns:
+        object: ee.Number
+    """
+    if region is None:
+        region = img.geometry()
+
+    if scale is None:
+        scale = img.projection().nominalScale()
+
+    min_value = img.reduceRegion(**{
+        'reducer': ee.Reducer.min(),
+        'geometry': region,
+        'scale': scale,
+        'maxPixels': 1e12
+    })
+    return min_value
+
+
+def image_mean_value(img, region=None, scale=None):
+    """Retrieves the mean value of an image.
+
+    Args:
+        img (object): The image to calculate the mean value.
+        region (object, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+
+    Returns:
+        object: ee.Number
+    """
+    if region is None:
+        region = img.geometry()
+
+    if scale is None:
+        scale = img.projection().nominalScale()
+
+    mean_value = img.reduceRegion(**{
+        'reducer': ee.Reducer.mean(),
+        'geometry': region,
+        'scale': scale,
+        'maxPixels': 1e12
+    })
+    return mean_value
+
+
+def image_std_value(img, region=None, scale=None):
+    """Retrieves the standard deviation of an image.
+
+    Args:
+        img (object): The image to calculate the standard deviation.
+        region (object, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+
+    Returns:
+        object: ee.Number
+    """
+    if region is None:
+        region = img.geometry()
+
+    if scale is None:
+        scale = img.projection().nominalScale()
+
+    std_value = img.reduceRegion(**{
+        'reducer': ee.Reducer.stdDev(),
+        'geometry': region,
+        'scale': scale,
+        'maxPixels': 1e12
+    })
+    return std_value
+
+
+def str_to_num(in_str):
+    """Converts a string to an ee.Number.
+
+    Args:
+        in_str (str): The string to convert to a number.
+
+    Returns:
+        object: ee.Number
+    """
     return ee.Number.parse(str)
 
 
-# Calculate array sum
 def array_sum(arr):
+    """Accumulates elements of an array along the given axis.
+
+    Args:
+        arr (object): Array to accumulate.
+
+    Returns:
+        object: ee.Number
+    """
     return ee.Array(arr).accum(0).get([-1])
 
 
-# Calculate array mean
 def array_mean(arr):
-    sum = ee.Array(arr).accum(0).get([-1])
+    """Calculates the mean of an array along the given axis.
+
+    Args:
+        arr (object): Array to calculate mean.
+
+    Returns:
+        object: ee.Number
+    """
+    total = ee.Array(arr).accum(0).get([-1])
     size = arr.length()
-    return ee.Number(sum.divide(size))
+    return ee.Number(total.divide(size))
 
 
-def get_annual_NAIP(year):
+def get_annual_NAIP(year, RGBN=True):
+    """Filters NAIP ImageCollection by year.
+
+    Args:
+        year (int): The year to filter the NAIP ImageCollection.
+        RGBN (bool, optional): Whether to retrieve 4-band NAIP imagery only. Defaults to True.
+
+    Returns:
+        object: ee.ImageCollection
+    """
     try:
         collection = ee.ImageCollection('USDA/NAIP/DOQQ')
         start_date = str(year) + '-01-01'
         end_date = str(year) + '-12-31'
-        naip = collection.filterDate(start_date, end_date) \
-            .filter(ee.Filter.listContains("system:band_names", "N"))
+        naip = collection.filterDate(start_date, end_date)
+        if RGBN:
+            naip = naip.filter(ee.Filter.listContains(
+                "system:band_names", "N"))
         return naip
     except Exception as e:
         print(e)
 
 
-def get_all_NAIP(start_year=2009, end_year=2018):
+def get_all_NAIP(start_year=2009, end_year=2019):
+    """Creates annual NAIP imagery mosaic.
 
+    Args:
+        start_year (int, optional): The starting year. Defaults to 2009.
+        end_year (int, optional): The ending year. Defaults to 2019.
+
+    Returns:
+        object: ee.ImageCollection
+    """
     try:
 
         def get_annual_NAIP(year):
@@ -85,19 +306,28 @@ def get_all_NAIP(start_year=2009, end_year=2018):
         print(e)
 
 
-# Create NAIP mosaic for a specified year
-def annual_NAIP(year, geometry):
+def annual_NAIP(year, region):
+    """Create an NAIP mosaic of a specified year for a specified region. 
+
+    Args:
+        year (int): The specified year to create the mosaic for. 
+        region (object): ee.Geometry
+
+    Returns:
+        object: ee.Image
+    """
+
     start_date = ee.Date.fromYMD(year, 1, 1)
     end_date = ee.Date.fromYMD(year, 12, 31)
     collection = ee.ImageCollection('USDA/NAIP/DOQQ') \
         .filterDate(start_date, end_date) \
-        .filterBounds(geometry)
+        .filterBounds(region)
 
     time_start = ee.Date(
         ee.List(collection.aggregate_array('system:time_start')).sort().get(0))
     time_end = ee.Date(
         ee.List(collection.aggregate_array('system:time_end')).sort().get(-1))
-    image = ee.Image(collection.mosaic().clip(geometry))
+    image = ee.Image(collection.mosaic().clip(region))
     NDWI = ee.Image(image).normalizedDifference(
         ['G', 'N']).select(['nd'], ['ndwi'])
     NDVI = ee.Image(image).normalizedDifference(
@@ -107,11 +337,21 @@ def annual_NAIP(year, geometry):
     return image.set({'system:time_start': time_start, 'system:time_end': time_end})
 
 
-# Find all available NAIP images for a geometry
-def find_NAIP(geometry, add_NDVI=True, add_NDWI=True):
+def find_NAIP(region, add_NDVI=True, add_NDWI=True):
+    """Create annual NAIP mosaic for a given region.
+
+    Args:
+        region (object): ee.Geometry
+        add_NDVI (bool, optional): Whether to add the NDVI band. Defaults to True.
+        add_NDWI (bool, optional): Whether to add the NDWI band. Defaults to True.
+
+    Returns:
+        object: ee.ImageCollection
+    """
+
     init_collection = ee.ImageCollection('USDA/NAIP/DOQQ') \
-        .filterBounds(geometry) \
-        .filterDate('2009-01-01', '2018-12-31') \
+        .filterBounds(region) \
+        .filterDate('2009-01-01', '2019-12-31') \
         .filter(ee.Filter.listContains("system:band_names", "N"))
 
     yearList = ee.List(init_collection.distinct(
@@ -132,17 +372,17 @@ def find_NAIP(geometry, add_NDVI=True, add_NDWI=True):
         # .filterBounds(geometry)
         # .filter(ee.Filter.listContains("system:band_names", "N"))
         time_start = ee.Date(
-            ee.List(collection.aggregate_array('system:time_start')).sort().get(0))
+            ee.List(collection.aggregate_array('system:time_start')).sort().get(0)).format('YYYY-MM-dd')
         time_end = ee.Date(
-            ee.List(collection.aggregate_array('system:time_end')).sort().get(-1))
+            ee.List(collection.aggregate_array('system:time_end')).sort().get(-1)).format('YYYY-MM-dd')
         col_size = collection.size()
-        image = ee.Image(collection.mosaic().clip(geometry))
+        image = ee.Image(collection.mosaic().clip(region))
 
         if add_NDVI:
             NDVI = ee.Image(image).normalizedDifference(
                 ['N', 'R']).select(['nd'], ['ndvi'])
             image = image.addBands(NDVI)
-        
+
         if add_NDWI:
             NDWI = ee.Image(image).normalizedDifference(
                 ['G', 'N']).select(['nd'], ['ndwi'])
@@ -171,68 +411,119 @@ def find_NAIP(geometry, add_NDVI=True, add_NDWI=True):
     return ee.ImageCollection(naip)
 
 
-# Get NWI by HUC
-def filter_NWI(HUC08_Id, geometry):
+def filter_NWI(HUC08_Id, region, exclude_riverine=True):
+    """Retrives NWI dataset for a given HUC8 watershed.
+
+    Args:
+        HUC08_Id (str): The HUC8 watershed id.
+        region (object): ee.Geometry
+        remove_riverine (bool, optional): Whether to exclude riverine wetlands. Defaults to True.
+
+    Returns:
+        object: ee.FeatureCollection
+    """
     nwi_asset_prefix = 'users/wqs/NWI-HU8/HU8_'
     nwi_asset_suffix = '_Wetlands'
     nwi_asset_path = nwi_asset_prefix + HUC08_Id + nwi_asset_suffix
-    nwi_huc = ee.FeatureCollection(nwi_asset_path).filterBounds(geometry) \
-        .filter(ee.Filter.notEquals(**{'leftField': 'WETLAND_TY', 'rightValue': 'Riverine'}))
+    nwi_huc = ee.FeatureCollection(nwi_asset_path).filterBounds(region)
+
+    if exclude_riverine:
+        nwi_huc = nwi_huc.filter(ee.Filter.notEquals(
+            **{'leftField': 'WETLAND_TY', 'rightValue': 'Riverine'}))
     return nwi_huc
 
 
-# Find HUC08 intersecting a geometry
-def filter_HUC08(geometry):
+def filter_HUC08(region):
+    """Filters HUC08 watersheds intersecting a given region.
+
+    Args:
+        region (object): ee.Geometry
+
+    Returns:
+        object: ee.FeatureCollection
+    """
+
     USGS_HUC08 = ee.FeatureCollection('USGS/WBD/2017/HUC08')   # Subbasins
-    HUC08 = USGS_HUC08.filterBounds(geometry)
+    HUC08 = USGS_HUC08.filterBounds(region)
     return HUC08
 
 
 # Find HUC10 intersecting a geometry
-def filter_HUC10(geometry):
-    USGS_HUC10 = ee.FeatureCollection('USGS/WBD/2017/HUC10')   # Watersheds
-    HUC10 = USGS_HUC10.filterBounds(geometry)
-    return HUC10
+def filter_HUC10(region):
+    """Filters HUC10 watersheds intersecting a given region.
 
-    # Find HUC08 by HUC ID
+    Args:
+        region (object): ee.Geometry
+
+    Returns:
+        object: ee.FeatureCollection
+    """
+
+    USGS_HUC10 = ee.FeatureCollection('USGS/WBD/2017/HUC10')   # Watersheds
+    HUC10 = USGS_HUC10.filterBounds(region)
+    return HUC10
 
 
 def find_HUC08(HUC08_Id):
+    """Finds a HUC08 watershed based on a given HUC08 ID
+
+    Args:
+        HUC08_Id (str): The HUC08 ID.
+
+    Returns:
+        object: ee.FeatureCollection
+    """
+
     USGS_HUC08 = ee.FeatureCollection('USGS/WBD/2017/HUC08')   # Subbasins
     HUC08 = USGS_HUC08.filter(ee.Filter.eq('huc8', HUC08_Id))
     return HUC08
 
 
-# Find HUC10 by HUC ID
 def find_HUC10(HUC10_Id):
+    """Finds a HUC10 watershed based on a given HUC08 ID
+
+    Args:
+        HUC08_Id (str): The HUC10 ID.
+
+    Returns:
+        object: ee.FeatureCollection
+    """
+
     USGS_HUC10 = ee.FeatureCollection('USGS/WBD/2017/HUC10')   # Watersheds
     HUC10 = USGS_HUC10.filter(ee.Filter.eq('huc10', HUC10_Id))
     return HUC10
 
 
 # find NWI by HUC08
-def find_NWI(HUC08_Id):
+def find_NWI(HUC08_Id, exclude_riverine=True):
+    """Finds NWI dataset for a given HUC08 watershed.
+
+    Args:
+        HUC08_Id (str): The HUC08 watershed ID.
+        remove_riverine (bool, optional): Whether to exclude riverine wetlands. Defaults to True.
+
+    Returns:
+        object: ee.FeatureCollection
+    """
+
     nwi_asset_prefix = 'users/wqs/NWI-HU8/HU8_'
     nwi_asset_suffix = '_Wetlands'
     nwi_asset_path = nwi_asset_prefix + HUC08_Id + nwi_asset_suffix
-    nwi_huc = ee.FeatureCollection(nwi_asset_path) \
-        .filter(ee.Filter.notEquals(**{'leftField': 'WETLAND_TY', 'rightValue': 'Riverine'}))
+    nwi_huc = ee.FeatureCollection(nwi_asset_path) 
+    if exclude_riverine:
+        nwi_huc = nwi_huc.filter(ee.Filter.notEquals(**{'leftField': 'WETLAND_TY', 'rightValue': 'Riverine'}))
     return nwi_huc
 
 
-# # Extract NWI by providing a geometry
-# def extractNWI(geometry):
-
-#     HUC08 = filterHUC08(geometry)
-#     HUC_list = ee.List(HUC08.aggregate_array('huc8')).getInfo()
-#     # print('Intersecting HUC08 IDs:', HUC_list)
-#     nwi = ee.FeatureCollection(HUC_list.map(findNWI)).flatten()
-#     return nwi.filterBounds(geometry)
-
-# NWI legend: https://www.fws.gov/wetlands/Data/Mapper-Wetlands-Legend.html
-
-
 def nwi_add_color(fc):
+    """Converts NWI vector dataset to image and add color to it.
+
+    Args:
+        fc (object): ee.FeatureCollection
+
+    Returns:
+        object: ee.Image
+    """    
     emergent = ee.FeatureCollection(
         fc.filter(ee.Filter.eq('WETLAND_TY', 'Freshwater Emergent Wetland')))
     emergent = emergent.map(lambda f: f.set(
@@ -260,75 +551,6 @@ def nwi_add_color(fc):
     base = ee.Image().byte()
     img = base.paint(fc, 'R') \
         .addBands(base.paint(fc, 'G')
-                .addBands(base.paint(fc, 'B')))
+                  .addBands(base.paint(fc, 'B')))
+
     return img
-
-
-# calculate total image area (unit: m2)
-def image_area(img, geometry, scale):
-    pixelArea = img.Add(ee.Image(1)).multiply(
-        ee.Image.pixelArea())
-    imgArea = pixelArea.reduceRegion(**{
-        'geometry': geometry,
-        'reducer': ee.Reducer.sum(),
-        'scale': scale,
-        'maxPixels': 1e9
-    })
-    return imgArea
-
-
-# calculate total image area (unit: ha)
-def image_area_ha(img, geometry, scale):
-    pixelArea = img.Add(ee.Image(1)).multiply(
-        ee.Image.pixelArea()).divide(10000)
-    imgArea = pixelArea.reduceRegion(**{
-        'geometry': geometry,
-        'reducer': ee.Reducer.sum(),
-        'scale': scale,
-        'maxPixels': 1e9
-    })
-    return imgArea
-
-
-# get highest value
-def max_value(img, scale=30):
-    max_value = img.reduceRegion(**{
-        'reducer': ee.Reducer.max(),
-        'geometry': img.geometry(),
-        'scale': scale,
-        'maxPixels': 1e9
-    })
-    return max_value
-
-
-# get lowest value
-def min_value(img, scale=30):
-    min_value = img.reduceRegion(**{
-        'reducer': ee.Reducer.min(),
-        'geometry': img.geometry(),
-        'scale': scale,
-        'maxPixels': 1e9
-    })
-    return min_value
-
-
-# get mean value
-def mean_value(img, scale=30):
-    mean_value = img.reduceRegion(**{
-        'reducer': ee.Reducer.mean(),
-        'geometry': img.geometry(),
-        'scale': scale,
-        'maxPixels': 1e9
-    })
-    return mean_value
-
-
-# get standard deviation
-def std_value(img, scale=30):
-    std_value = img.reduceRegion(**{
-        'reducer': ee.Reducer.stdDev(),
-        'geometry': img.geometry(),
-        'scale': scale,
-        'maxPixels': 1e9
-    })
-    return std_value
