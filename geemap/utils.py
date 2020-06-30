@@ -1,5 +1,8 @@
-import ee
 
+"""Module of various Earth Engine utility functions.
+"""
+
+import ee
 
 try:
     ee.Initialize()
@@ -212,6 +215,111 @@ def image_std_value(img, region=None, scale=None):
         'maxPixels': 1e12
     })
     return std_value
+
+
+def extract_values_to_points(in_points, img, label, scale=None):
+    """Extracts image values to points.
+
+    Args:
+        in_points (object): ee.FeatureCollection
+        img (object): ee.Image
+        label (str): The column name to keep.
+        scale (float, optional): The image resolution to use. Defaults to None.
+
+    Returns:
+        object: ee.FeatureCollection
+    """
+    if scale is None:
+        scale = img.projection().nominalScale()
+
+    out_fc = img.sampleRegions(**{
+        'collection': in_points,
+        'properties': [label],
+        'scale': scale
+    })
+
+    return out_fc
+
+
+def image_reclassify(img, in_list, out_list):
+    """Reclassify an image.
+
+    Args:
+        img (object): The image to which the remapping is applied.
+        in_list (list): The source values (numbers or EEArrays). All values in this list will be mapped to the corresponding value in 'out_list'.
+        out_list (list): The destination values (numbers or EEArrays). These are used to replace the corresponding values in 'from'. Must have the same number of values as 'in_list'.
+
+    Returns:
+        object: ee.Image
+    """
+    image = img.remap(in_list, out_list)
+    return image
+    
+
+def image_smoothing(img, reducer, kernel):
+    """Smooths an image.
+
+    Args:
+        img (object): The image to be smoothed.
+        reducer (object): ee.Reducer
+        kernel (object): ee.Kernel
+
+    Returns:
+        object: ee.Image
+    """
+    image = img.reduceNeighborhood(**{
+        'reducer': reducer,
+        'kernel': kernel,
+    })
+    return image
+
+
+def rename_bands(img, in_band_names, out_band_names):
+    """Renames image bands.
+
+    Args:
+        img (object): The image to be renamed.
+        in_band_names (list): The list of of input band names.
+        out_band_names (list): The list of output band names.
+
+    Returns:
+        object: The output image with the renamed bands.
+    """
+    return img.select(in_band_names, out_band_names)
+
+
+def bands_to_image_collection(img):
+    """Converts all bands in an image to an image collection.
+
+    Args:
+        img (object): The image to convert.
+
+    Returns:
+        object: ee.ImageCollection
+    """
+    collection = ee.ImageCollection(img.bandNames().map(lambda b: img.select([b])))
+    return collection
+
+
+def find_landsat_by_path_row(landsat_col, path_num, row_num):
+    """Finds Landsat images by WRS path number and row number.
+
+    Args:
+        landsat_col (str): The image collection id of Landsat. 
+        path_num (int): The WRS path number.
+        row_num (int): the WRS row number.
+
+    Returns:
+        object: ee.ImageCollection
+    """
+    try:
+        if isinstance(landsat_col, str):
+            landsat_col = ee.ImageCollection(landsat_col)
+            collection = landsat_col.filter(ee.Filter.eq('WRS_PATH', path_num)) \
+                .filter(ee.Filter.eq('WRS_ROW', row_num))
+            return collection
+    except Exception as e:
+        print(e)
 
 
 def str_to_num(in_str):
@@ -509,9 +617,10 @@ def find_NWI(HUC08_Id, exclude_riverine=True):
     nwi_asset_prefix = 'users/wqs/NWI-HU8/HU8_'
     nwi_asset_suffix = '_Wetlands'
     nwi_asset_path = nwi_asset_prefix + HUC08_Id + nwi_asset_suffix
-    nwi_huc = ee.FeatureCollection(nwi_asset_path) 
+    nwi_huc = ee.FeatureCollection(nwi_asset_path)
     if exclude_riverine:
-        nwi_huc = nwi_huc.filter(ee.Filter.notEquals(**{'leftField': 'WETLAND_TY', 'rightValue': 'Riverine'}))
+        nwi_huc = nwi_huc.filter(ee.Filter.notEquals(
+            **{'leftField': 'WETLAND_TY', 'rightValue': 'Riverine'}))
     return nwi_huc
 
 
@@ -523,7 +632,7 @@ def nwi_add_color(fc):
 
     Returns:
         object: ee.Image
-    """    
+    """
     emergent = ee.FeatureCollection(
         fc.filter(ee.Filter.eq('WETLAND_TY', 'Freshwater Emergent Wetland')))
     emergent = emergent.map(lambda f: f.set(
