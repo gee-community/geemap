@@ -6,7 +6,7 @@ folium>=0.11.0
 geeadd>=0.4.8
 geocoder
 ipyfilechooser
-ipyleaflet>=0.12.6
+ipyleaflet>=0.13.1
 ipynb-py-convert
 ipytree
 matplotlib
