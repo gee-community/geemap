@@ -1820,9 +1820,15 @@ class Map(ipyleaflet.Map):
             import xarray_leaflet
 
         except Exception as e:
-            print(
-                'You need to install xarray_leaflet first. See https://github.com/davidbrochart/xarray_leaflet')
-            return
+            import platform
+            if platform.system() != "Windows":
+                install_from_github(url='https://github.com/davidbrochart/xarray_leaflet')
+                import xarray_leaflet
+            else:                
+                print(
+                    'You need to install xarray_leaflet first. See https://github.com/davidbrochart/xarray_leaflet')
+                print('Try the following to install xarray_leaflet: \n\nconda install -c conda-forge xarray_leaflet')
+                return
 
         import warnings
         import numpy as np
@@ -1922,13 +1928,15 @@ def install_from_github(url):
                           out_dir=download_dir, unzip=True)
 
         pkg_dir = os.path.join(download_dir, repo_name + '-master')
+        pkg_name = os.path.basename(url)
         work_dir = os.getcwd()
         os.chdir(pkg_dir)
+        print('Installing {}...'.format(pkg_name))
         cmd = 'pip install .'
         os.system(cmd)
         os.chdir(work_dir)
-
-        print("\nPlease comment out 'install_from_github()' and restart the kernel to take effect:\nJupyter menu -> Kernel -> Restart & Clear Output")
+        print('{} has been installed successfully.'.format(pkg_name))
+        # print("\nPlease comment out 'install_from_github()' and restart the kernel to take effect:\nJupyter menu -> Kernel -> Restart & Clear Output")
 
     except Exception as e:
         print(e)

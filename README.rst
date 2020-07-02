@@ -128,9 +128,10 @@ To use **geemap**, you must first `sign up <https://earthengine.google.com/signu
 
 .. code:: python
 
-  conda create -n gee python
+  conda create -n gee python=3.7
   conda activate gee
-  conda install -c conda-forge geemap
+  conda install mamba -c conda-forge
+  mamba install geemap -c conda-forge 
 
 
 If you have installed **geemap** before and want to upgrade to the latest version, you can run the following command in your terminal:
