@@ -68,6 +68,6 @@ Various tutorials and documentation are available for using **geemap**, includin
 
 # Acknowledgements
 
-The author would like to thank the developers of ipyleaflet and ipywidgets, which empowers the interactive mapping functionality of **geemap**, including [martin Renou](https://github.com/martinRenou), [Sylvain Corlay](https://github.com/SylvainCorlay), and [David Brochart](https://github.com/davidbrochart). The author would also like to acknowledge source code contributions from [Justin Braaten](https://github.com/jdbcode), [Cesar Aybar](https://github.com/csaybar), [Oliver Burdekin](https://github.com/Ojaybee), [Diego Garcia Diaz](https://github.com/Digdgeo), and [Stephan Büttig](https://twitter.com/stephan_buettig).
+The author would like to thank the developers of ipyleaflet and ipywidgets, which empowers the interactive mapping functionality of **geemap**, including [Martin Renou](https://github.com/martinRenou), [Sylvain Corlay](https://github.com/SylvainCorlay), and [David Brochart](https://github.com/davidbrochart). The author would also like to acknowledge source code contributions from [Justin Braaten](https://github.com/jdbcode), [Cesar Aybar](https://github.com/csaybar), [Oliver Burdekin](https://github.com/Ojaybee), [Diego Garcia Diaz](https://github.com/Digdgeo), and [Stephan Büttig](https://twitter.com/stephan_buettig).
 
 # References
