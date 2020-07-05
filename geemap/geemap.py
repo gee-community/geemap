@@ -115,9 +115,9 @@ class Map(ipyleaflet.Map):
         search_button = widgets.ToggleButton(
             value=False,
             tooltip='Search location/data',
-            icon='search'
+            icon='globe'
         )
-        search_button.layout.width = '37px'
+        search_button.layout.width = '36px'
 
         search_type = widgets.ToggleButtons(
             options=['name/address', 'lat-lon', 'data'],
@@ -305,10 +305,19 @@ class Map(ipyleaflet.Map):
 
         search_widget = widgets.HBox()
         search_widget.children = [search_button]
-        search_control = WidgetControl(
+        data_control = WidgetControl(
             widget=search_widget, position='topleft')
 
-        self.add_control(control=search_control)
+        self.add_control(control=data_control)
+
+        search_marker = Marker(icon=AwesomeIcon(name="check", marker_color='green', icon_color='darkgreen'))
+        search = SearchControl(position="topleft", 
+                       url='https://nominatim.openstreetmap.org/search?format=json&q={s}', 
+                       zoom=5,
+                       property_name='display_name',
+                       marker=search_marker
+                      )
+        self.add_control(search)
 
         self.add_control(ZoomControl(position='topleft'))
 
@@ -3717,7 +3726,6 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
     Returns:
         object: Returns an ImageCollection containing annual Sentinel 2 images.
     """
-
     ################################################################################
 
     ################################################################################
