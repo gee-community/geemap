@@ -301,7 +301,6 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
 
     Returns:
         list : Python script
-
     """
     in_file = os.path.abspath(in_file)
     if out_file is None:
@@ -527,7 +526,6 @@ def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
         out_dir (str, optional): The output folder containing Earth Engine Python scripts. Defaults to None.
         use_qgis (bool, optional): Whether to add "from ee_plugin import Map \n" to the output script. Defaults to True.
         github_repo (str, optional): GitHub repo url. Defaults to None.
-
     """
     print('Converting Earth Engine JavaScripts to Python scripts...\n')
     in_dir = os.path.abspath(in_dir)
