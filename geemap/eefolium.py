@@ -176,7 +176,8 @@ class Map(folium.Map):
     def __init__(self, **kwargs):
 
         import logging
-        logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
+        logging.getLogger(
+            'googleapiclient.discovery_cache').setLevel(logging.ERROR)
         ee_initialize()
 
         # Default map center location and zoom level
@@ -416,20 +417,23 @@ class Map(folium.Map):
         except:
             print("Failed to add the specified TileLayer.")
 
-    def publish(self, name=None, headline='Untitled', visibility='PUBLIC', open=True):
+    def publish(self, name=None, headline='Untitled', visibility='PUBLIC', overwrite=True, open=True):
         """Publish the map to datapane.com
 
         Args:
             name (str, optional): The URL of the map. Defaults to None.
             headline (str, optional): Title of the map. Defaults to 'Untitled'.
             visibility (str, optional): Visibility of the map. It can be one of the following: PUBLIC, PRIVATE, ORG. Defaults to 'PUBLIC'.
+            overwrite (bool, optional): Whether to overwrite the existing map with the same name. Defaults to True.
             open (bool, optional): Whether to open the map. Defaults to True.
         """
+        import webbrowser
         try:
             import datapane as dp
         except Exception as e:
-            print('The datapane package is not installed.')
-            print(e)
+            print('The datapane Python package is not installed. You need to install and authenticate datapane first.')
+            webbrowser.open_new_tab(
+                'https://docs.datapane.com/tutorials/tut-getting-started')
             return
 
         import datapane as dp
@@ -443,9 +447,51 @@ class Map(folium.Map):
         if visibility not in ['PUBLIC', 'PRIVATE', 'ORG']:
             visibility = 'PRIVATE'
 
+        if overwrite:
+            delete_dp_report(name)
+
         report = dp.Report(dp.Plot(self))
         report.publish(name=name, headline=headline,
                        visibility=visibility, open=open)
+
+
+def delete_dp_report(name):
+    """Deletes a datapane report.
+
+    Args:
+        name (str): Name of the report to delete.
+    """
+    try:
+        import datapane as dp
+
+        reports = dp.Report.list()
+        items = list(reports)
+        names = list(map(lambda item: item['name'], items))
+        if name in names:
+            report = dp.Report.get(name)
+            url = report.blocks[0]['url']
+            # print('Deleting {}...'.format(url))
+            dp.Report.delete(dp.Report.by_id(url))
+    except Exception as e:
+        print(e)
+        return
+
+
+def delete_dp_reports():
+    """Deletes all datapane reports.
+    """
+    try:
+        import datapane as dp
+        reports = dp.Report.list()
+        for item in reports:
+            print(item['name'])
+            report = dp.Report.get(item['name'])
+            url = report.blocks[0]['url']
+            print('Deleting {}...'.format(url))
+            dp.Report.delete(dp.Report.by_id(url))
+    except Exception as e:
+        print(e)
+        return
 
 
 def install_from_github(url):
@@ -1168,7 +1214,7 @@ def check_install(package):
 
     try:
         __import__(package)
-        print('{} is already installed.'.format(package))
+        # print('{} is already installed.'.format(package))
     except ImportError:
         print('{} is not installed. Installing ...'.format(package))
         try:
