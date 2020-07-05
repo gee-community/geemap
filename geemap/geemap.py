@@ -101,6 +101,7 @@ class Map(ipyleaflet.Map):
         self.ee_layer_names = []
         self.ee_raster_layers = []
         self.ee_raster_layer_names = []
+        self.ee_layer_dict = {}
 
         self.search_locations = None
         self.search_loc_marker = None
@@ -393,19 +394,19 @@ class Map(ipyleaflet.Map):
         # Adds Inspector widget
         inspector_checkbox = widgets.Checkbox(
             value=False,
-            description='Use Inspector',
+            description='Inspector',
             indent=False,
             layout=widgets.Layout(height='18px')
         )
-        inspector_checkbox.layout.width = '18ex'
+        inspector_checkbox.layout.width = '13ex'
 
         # Adds Plot widget
         plot_checkbox = widgets.Checkbox(
             value=False,
-            description='Use Plotting',
+            description='Plotting',
             indent=False,
         )
-        plot_checkbox.layout.width = '18ex'
+        plot_checkbox.layout.width = '13ex'
         self.plot_checkbox = plot_checkbox
 
         vb = widgets.VBox(children=[inspector_checkbox, plot_checkbox])
@@ -791,8 +792,27 @@ class Map(ipyleaflet.Map):
             visible=True
             # visible=shown
         )
+
+        layer = self.find_layer(name=name)
+        if layer is not None:
+
+            existing_object = self.ee_layer_dict[name]['ee_object']
+
+            if isinstance(existing_object, ee.Image) or isinstance(existing_object, ee.ImageCollection):
+                self.ee_raster_layers.remove(existing_object)
+                self.ee_raster_layer_names.remove(name)
+                if self.plot_dropdown_widget is not None:
+                    self.plot_dropdown_widget.options = list(
+                        self.ee_raster_layer_names)
+
+            self.ee_layers.remove(existing_object)
+            self.ee_layer_names.remove(name)
+            self.remove_layer(layer)
+
         self.ee_layers.append(ee_object)
         self.ee_layer_names.append(name)
+        self.ee_layer_dict[name] = {
+            'ee_object': ee_object, 'ee_layer': tile_layer}
 
         self.add_layer(tile_layer)
 
@@ -884,6 +904,38 @@ class Map(ipyleaflet.Map):
             print(e)
             print('Basemap can only be one of the following:\n  {}'.format(
                 '\n  '.join(ee_basemaps.keys())))
+
+    def find_layer(self, name):
+        """Finds layer by name
+
+        Args:
+            name (str): Name of the layer to find.
+
+        Returns:
+            object: ipyleaflet layer object.
+        """
+        layers = self.layers
+
+        for layer in layers:
+            if layer.name == name:
+                return layer
+
+        return None
+
+    def layer_opacity(self, name, value=1.0):
+        """Changes layer opacity.
+
+        Args:
+            name (str): The name of the layer to change opacity.
+            value (float, optional): The opacity value to set. Defaults to 1.0.
+        """
+        layer = self.find_layer(name)
+        try:
+            layer.opacity = value
+            # layer.interact(opacity=(0, 1, 0.1))  # to change layer opacity interactively
+        except Exception as e:
+            print(e)
+            return
 
     def add_wms_layer(self, url, layers, name=None, attribution='', format='image/jpeg', transparent=False, opacity=1.0, shown=True):
         """Add a WMS layer to the map.
@@ -1822,12 +1874,14 @@ class Map(ipyleaflet.Map):
         except Exception as e:
             import platform
             if platform.system() != "Windows":
-                install_from_github(url='https://github.com/davidbrochart/xarray_leaflet')
+                install_from_github(
+                    url='https://github.com/davidbrochart/xarray_leaflet')
                 import xarray_leaflet
-            else:                
+            else:
                 print(
                     'You need to install xarray_leaflet first. See https://github.com/davidbrochart/xarray_leaflet')
-                print('Try the following to install xarray_leaflet: \n\nconda install -c conda-forge xarray_leaflet')
+                print(
+                    'Try the following to install xarray_leaflet: \n\nconda install -c conda-forge xarray_leaflet')
                 return
 
         import warnings
@@ -1865,9 +1919,9 @@ class Map(ipyleaflet.Map):
         nan = da.attrs['nodatavals'][0]
         da = da.sel(band=bands)
         # da = da / da.max()
-        if multi_band:
-            da = xr.where(da == nan, np.nan, da)
-            da = da.rio.write_nodata(0)
+        # if multi_band:
+        da = xr.where(da == nan, np.nan, da)
+        da = da.rio.write_nodata(0)
         da = da.rio.write_crs(crs)
 
         if multi_band:
