@@ -20,6 +20,7 @@ def ee_initialize():
         ee.Authenticate()
         ee.Initialize()
 
+
 # More WMS basemaps can be found at https://viewer.nationalmap.gov/services/
 ee_basemaps = {
     'ROADMAP': folium.TileLayer(
@@ -116,7 +117,7 @@ ee_basemaps = {
         name='Esri National Geographic',
         overlay=True,
         control=True
-    ),     
+    ),
 
     'Esri Shaded Relief': folium.TileLayer(
         tiles='https://services.arcgisonline.com/arcgis/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
@@ -124,7 +125,7 @@ ee_basemaps = {
         name='Esri Shaded Relief',
         overlay=True,
         control=True
-    ),   
+    ),
 
     'Esri Physical Map': folium.TileLayer(
         tiles='https://services.arcgisonline.com/arcgis/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}',
@@ -132,7 +133,7 @@ ee_basemaps = {
         name='Esri Physical Map',
         overlay=True,
         control=True
-    ),   
+    ),
 
     'Bing VirtualEarth': folium.TileLayer(
         tiles='http://ecn.t3.tiles.virtualearth.net/tiles/a{q}.jpeg?g=1',
@@ -144,34 +145,39 @@ ee_basemaps = {
 
     '3DEP Elevation': folium.WmsTileLayer(
         url='https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WMSServer?',
-        layers = '3DEPElevation:None',
+        layers='3DEPElevation:None',
         attr='USGS',
         name='3DEP Elevation',
         overlay=True,
         control=True
-    ),    
+    ),
 
     'NAIP Imagery': folium.WmsTileLayer(
         url='https://services.nationalmap.gov/arcgis/services/USGSNAIPImagery/ImageServer/WMSServer?',
-        layers = '0',
+        layers='0',
         attr='USGS',
         name='NAIP Imagery',
         overlay=True,
         control=True
-    ),           
+    ),
 }
 
 
 class Map(folium.Map):
     """The Map class inherits from folium.Map. By default, the Map will add Google Maps as the basemap. Set add_google_map = False to use OpenStreetMap as the basemap.
-    
+
     Args:
         folium (object): An folium map instance.
 
     Returns:
         object: folium map object.
-    """    
+    """
+
     def __init__(self, **kwargs):
+
+        import logging
+        logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
+        ee_initialize()
 
         # Default map center location and zoom level
         latlon = [40, -100]
@@ -192,10 +198,10 @@ class Map(folium.Map):
         if 'zoom_start' in kwargs.keys():
             zoom = kwargs['zoom_start']
         else:
-            kwargs['zoom_start'] = zoom 
+            kwargs['zoom_start'] = zoom
 
         if 'add_google_map' not in kwargs.keys():
-            kwargs['add_google_map'] = True              
+            kwargs['add_google_map'] = True
 
         super().__init__(**kwargs)
 
@@ -205,7 +211,6 @@ class Map(folium.Map):
         # plugins.Fullscreen().add_to(self)
 
         self.fit_bounds([latlon, latlon], max_zoom=zoom)
- 
 
     def setOptions(self, mapTypeId='HYBRID', styles={}, types=[]):
         """Adds Google basemap to the map.
@@ -214,30 +219,30 @@ class Map(folium.Map):
             mapTypeId (str, optional): A mapTypeId to set the basemap to. Can be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN" to select one of the standard Google Maps API map types. Defaults to 'HYBRID'.
             styles ([type], optional): A dictionary of custom MapTypeStyle objects keyed with a name that will appear in the map's Map Type Controls. Defaults to None.
             types ([type], optional): A list of mapTypeIds to make available. If omitted, but opt_styles is specified, appends all of the style keys to the standard Google Maps API map types.. Defaults to None.
-        """        
+        """
         try:
             ee_basemaps[mapTypeId].add_to(self)
         except:
-            print('Basemap can only be one of the following: {}'.format(', '.join(ee_basemaps.keys())))
+            print('Basemap can only be one of the following: {}'.format(
+                ', '.join(ee_basemaps.keys())))
 
     set_options = setOptions
-    
 
     def add_basemap(self, basemap='HYBRID'):
         """Adds a basemap to the map.
-        
+
         Args:
             basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'HYBRID'.
-        """        
+        """
         try:
             ee_basemaps[basemap].add_to(self)
         except:
-            print('Basemap can only be one of the following: {}'.format(', '.join(ee_basemaps.keys())))
-
+            print('Basemap can only be one of the following: {}'.format(
+                ', '.join(ee_basemaps.keys())))
 
     def add_layer(self, ee_object, vis_params={}, name='Layer untitled', shown=True, opacity=1.0):
         """Adds a given EE object to the map as a layer.
-        
+
         Args:
             ee_object (Collection|Feature|Image|MapId): The object to add to the map.
             vis_params (dict, optional): The visualization parameters. Defaults to {}.
@@ -288,23 +293,21 @@ class Map(folium.Map):
 
     addLayer = add_layer
 
-
     def set_center(self, lon, lat, zoom=10):
         """Centers the map view at a given coordinates with the given zoom level.
-        
+
         Args:
             lon (float): The longitude of the center, in degrees.
             lat (float): The latitude of the center, in degrees.
             zoom (int, optional): The zoom level, from 1 to 24. Defaults to 10.
-        """    
+        """
         self.fit_bounds([[lat, lon], [lat, lon]], max_zoom=zoom)
 
     setCenter = set_center
 
-
     def center_object(self, ee_object, zoom=10):
         """Centers the map view on a given object.
-        
+
         Args:
             ee_object (Element|Geometry): An Earth Engine object to center on - a geometry, image or feature.
             zoom (int, optional): The zoom level, from 1 to 24. Defaults to 10.
@@ -335,15 +338,14 @@ class Map(folium.Map):
 
     centerObject = center_object
 
-
     def set_control_visibility(self, layerControl=True, fullscreenControl=True, latLngPopup=True):
         """Sets the visibility of the controls on the map.
-        
+
         Args:
             layerControl (bool, optional): Whether to show the control that allows the user to toggle layers on/off. Defaults to True.
             fullscreenControl (bool, optional): Whether to show the control that allows the user to make the map full-screen. Defaults to True.
             latLngPopup (bool, optional): Whether to show the control that pops up the Lat/lon when the user clicks on the map. Defaults to True.
-        """        
+        """
         if layerControl:
             folium.LayerControl().add_to(self)
         if fullscreenControl:
@@ -353,18 +355,16 @@ class Map(folium.Map):
 
     setControlVisibility = set_control_visibility
 
-
     def add_layer_control(self):
         """Adds layer basemap to the map.
-        """        
+        """
         folium.LayerControl().add_to(self)
 
     addLayerControl = add_layer_control
 
-
     def add_wms_layer(self, url, layers, name=None, attribution='', overlay=True, control=True, shown=True, format='image/png'):
         """Add a WMS layer to the map.
-        
+
         Args:
             url (str): The URL of the WMS web service.
             layers (str): Comma-separated list of WMS layers to show. 
@@ -388,10 +388,9 @@ class Map(folium.Map):
         except:
             print("Failed to add the specified WMS TileLayer.")
 
-
     def add_tile_layer(self, tiles='OpenStreetMap', name=None, attribution='', overlay=True, control=True, shown=True, opacity=1.0, API_key=None):
         """Add a XYZ tile layer to the map.
-        
+
         Args:
             tiles (str): The URL of the XYZ tile service.
             name (str, optional): The layer name to use on the layer control. Defaults to None.
@@ -401,8 +400,8 @@ class Map(folium.Map):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             opacity (float, optional): Sets the opacity for the layer.
             API_key (str, optional) – API key for Cloudmade or Mapbox tiles. Defaults to True.
-        """        
-        
+        """
+
         try:
             folium.raster_layers.TileLayer(
                 tiles=tiles,
@@ -417,6 +416,36 @@ class Map(folium.Map):
         except:
             print("Failed to add the specified TileLayer.")
 
+    def publish(self, name=None, headline='Untitled', visibility='PUBLIC', open=True):
+        """Publish the map to datapane.com
+
+        Args:
+            name (str, optional): The URL of the map. Defaults to None.
+            headline (str, optional): Title of the map. Defaults to 'Untitled'.
+            visibility (str, optional): Visibility of the map. It can be one of the following: PUBLIC, PRIVATE, ORG. Defaults to 'PUBLIC'.
+            open (bool, optional): Whether to open the map. Defaults to True.
+        """
+        try:
+            import datapane as dp
+        except Exception as e:
+            print('The datapane package is not installed.')
+            print(e)
+            return
+
+        import datapane as dp
+        # import logging
+        # logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
+
+        if name is None:
+            name = 'folium_' + random_string(6)
+
+        visibility = visibility.upper()
+        if visibility not in ['PUBLIC', 'PRIVATE', 'ORG']:
+            visibility = 'PRIVATE'
+
+        report = dp.Report(dp.Plot(self))
+        report.publish(name=name, headline=headline,
+                       visibility=visibility, open=open)
 
 
 def install_from_github(url):
@@ -2045,7 +2074,6 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
     Returns:
         object: Returns an ImageCollection containing annual Sentinel 2 images.
     """
-
     ################################################################################
 
     ################################################################################

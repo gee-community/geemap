@@ -1,7 +1,6 @@
 
 """Module of various Earth Engine utility functions.
 """
-
 import ee
 
 try:
