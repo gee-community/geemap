@@ -26,6 +26,14 @@ def ee_initialize():
 
     """
     try:
+        ee_token = os.environ.get('EARTHENGINE_TOKEN')
+        if ee_token is not None:
+            credential = '{"refresh_token":"%s"}' % ee_token
+            credential_file_path = os.path.expanduser("~/.config/earthengine/")
+            os.makedirs(credential_file_path, exist_ok=True)
+            with open(credential_file_path + 'credentials', 'w') as file:
+                file.write(credential)
+
         ee.Initialize()
     except:
         ee.Authenticate()
@@ -1873,25 +1881,26 @@ class Map(ipyleaflet.Map):
             image (str): The image file path.
             bands (int or list, optional): The image bands to use. It can be either a nubmer (e.g., 1) or a list (e.g., [3, 2, 1]). Defaults to None.
             layer_name (str, optional): The layer name to use for the raster. Defaults to None.
-            colormap (str, optional): The name of the colormap to use for the raster. Defaults to None.
+            colormap (str, optional): The name of the colormap to use for the raster, such as 'gray' and 'terrain'. More can be found at https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html. Defaults to None.
             x_dim (str, optional): The x dimension. Defaults to 'x'.
             y_dim (str, optional): The y dimension. Defaults to 'y'.
         """
         try:
             import xarray_leaflet
 
-        except Exception as e:
-            import platform
-            if platform.system() != "Windows":
-                install_from_github(
-                    url='https://github.com/davidbrochart/xarray_leaflet')
-                import xarray_leaflet
-            else:
-                print(
-                    'You need to install xarray_leaflet first. See https://github.com/davidbrochart/xarray_leaflet')
-                print(
-                    'Try the following to install xarray_leaflet: \n\nconda install -c conda-forge xarray_leaflet')
-                return
+        except:
+            # import platform
+            # if platform.system() != "Windows":
+            #     # install_from_github(
+            #     #     url='https://github.com/davidbrochart/xarray_leaflet')
+            #     check_install('xarray_leaflet')
+            #     import xarray_leaflet
+            # else:
+            print(
+                'You need to install xarray_leaflet first. See https://github.com/davidbrochart/xarray_leaflet')
+            print(
+                'Try the following to install xarray_leaflet: \n\nconda install -c conda-forge xarray_leaflet')
+            return
 
         import warnings
         import numpy as np
@@ -1914,7 +1923,9 @@ class Map(ipyleaflet.Map):
         if isinstance(colormap, str):
             colormap = plt.cm.get_cmap(name=colormap)
 
-        da = xr.open_rasterio(image)
+        da = rioxarray.open_rasterio(image, masked=True)
+
+        # print(da.rio.nodata)
 
         multi_band = False
         if len(da.band) > 1:
@@ -1924,14 +1935,19 @@ class Map(ipyleaflet.Map):
         else:
             bands = 1
 
-        crs = da.rio.crs
-        nan = da.attrs['nodatavals'][0]
+        if multi_band:
+            da = da.rio.write_nodata(0)
+        else:
+            da = da.rio.write_nodata(np.nan)
         da = da.sel(band=bands)
+
+        # crs = da.rio.crs
+        # nan = da.attrs['nodatavals'][0]
         # da = da / da.max()
-        # if multi_band:
-        da = xr.where(da == nan, np.nan, da)
-        da = da.rio.write_nodata(0)
-        da = da.rio.write_crs(crs)
+        # # if multi_band:
+        # da = xr.where(da == nan, np.nan, da)
+        # da = da.rio.write_nodata(0)
+        # da = da.rio.write_crs(crs)
 
         if multi_band:
             layer = da.leaflet.plot(
@@ -2703,7 +2719,7 @@ def check_install(package):
 
     try:
         __import__(package)
-        print('{} is already installed.'.format(package))
+        # print('{} is already installed.'.format(package))
     except ImportError:
         print('{} is not installed. Installing ...'.format(package))
         try:
