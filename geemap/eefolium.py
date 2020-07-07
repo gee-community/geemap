@@ -15,6 +15,14 @@ def ee_initialize():
 
     """
     try:
+        ee_token = os.environ.get('EARTHENGINE_TOKEN')
+        if ee_token is not None:
+            credential = '{"refresh_token":"%s"}' % ee_token
+            credential_file_path = os.path.expanduser("~/.config/earthengine/")
+            os.makedirs(credential_file_path, exist_ok=True)
+            with open(credential_file_path + 'credentials', 'w') as file:
+                file.write(credential)
+
         ee.Initialize()
     except:
         ee.Authenticate()

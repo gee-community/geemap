@@ -107,7 +107,7 @@ Below is a partial list of features available for the geemap package. Please che
 * Exporting Earth Engine maps as HTML files and PNG images.
 * Searching Earth Engine API documentation within Jupyter notebooks.
 * Importing Earth Engine assets from personal account.
-# Publishing interactive GEE maps directly within Jupyter notebook.
+* Publishing interactive GEE maps directly within Jupyter notebook.
 
 
 Installation
