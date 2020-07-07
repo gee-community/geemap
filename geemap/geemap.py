@@ -21,12 +21,12 @@ from .conversion import *
 from .legends import builtin_legends
 
 
-def ee_initialize():
+def ee_initialize(token_name='EARTHENGINE_TOKEN'):
     """Authenticates Earth Engine and initialize an Earth Engine session
 
     """
     try:
-        ee_token = os.environ.get('EARTHENGINE_TOKEN')
+        ee_token = os.environ.get(token_name)
         if ee_token is not None:
             credential = '{"refresh_token":"%s"}' % ee_token
             credential_file_path = os.path.expanduser("~/.config/earthengine/")
@@ -79,6 +79,9 @@ class Map(ipyleaflet.Map):
 
         if 'add_google_map' not in kwargs.keys():
             kwargs['add_google_map'] = True
+
+        if 'show_attribution' not in kwargs.keys():
+            kwargs['show_attribution'] = True           
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -351,6 +354,9 @@ class Map(ipyleaflet.Map):
 
         if kwargs.get('add_google_map'):
             self.add_layer(ee_basemaps['ROADMAP'])
+
+        if kwargs.get('show_attribution'):
+            self.add_control(AttributionControl(position='bottomright'))
 
         draw_control = DrawControl(marker={'shapeOptions': {'color': '#0000FF'}},
                                    rectangle={'shapeOptions': {
