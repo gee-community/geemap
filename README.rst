@@ -78,6 +78,11 @@ can greatly reduce the time needed to convert existing GEE JavaScripts to Python
 
 For video tutorials and notebook examples, please visit `<https://github.com/giswqs/geemap/tree/master/examples>`__. For complete documentation on geemap modules and methods, please visit `<https://geemap.readthedocs.io/en/latest/source/geemap.html>`_.
 
+If you find geemap useful in your research, please consider citing the following papers to support my work. Thank you for your support.
+
+- Wu, Q., (2020). geemap: A Python package for interactive mapping with Google Earth Engine. *The Journal of Open Source Software*, 5(51), 2305. `<https://doi.org/10.21105/joss.02305>`__ 
+- Wu, Q., Lane, C. R., Li, X., Zhao, K., Zhou, Y., Clinton, N., DeVries, B., Golden, H. E., & Lang, M. W. (2019). Integrating LiDAR data and multi-temporal aerial imagery to map wetland inundation dynamics using Google Earth Engine. *Remote Sensing of Environment*, 228, 1-13. https://doi.org/10.1016/j.rse.2019.04.015 (`pdf <https://gishub.org/2019_rse>`_ | `source code <https://doi.org/10.6084/m9.figshare.8864921>`_)
+
 
 Features
 --------
@@ -108,6 +113,7 @@ Below is a partial list of features available for the geemap package. Please che
 * Searching Earth Engine API documentation within Jupyter notebooks.
 * Importing Earth Engine assets from personal account.
 * Publishing interactive GEE maps directly within Jupyter notebook.
+* Adding local raster datasets (e.g., GeoTIFF) to the map.
 
 
 Installation
@@ -431,6 +437,12 @@ To publish an interactive GEE map with Jupyter notebooks:
   Map.publish(name, headline, visibility)
 
 
+To add a local raster dataset to the map:  
+
+.. code:: python
+
+  Map.add_raster(image, bands, colormap, layer_name)
+  
 
 Examples
 --------
@@ -560,6 +572,7 @@ Dependencies
 * `mss <https://github.com/BoboTiG/python-mss>`__
 * `pillow <https://github.com/python-pillow/Pillow>`__
 * `pyshp <https://github.com/GeospatialPython/pyshp>`__
+* `xarray-leaflet <https://github.com/davidbrochart/xarray_leaflet>`__
 
 
 
@@ -692,7 +705,7 @@ References
 
 To support my work, please consider citing the following articles:
 
-- **Wu, Q.** (2020). geemap: A Python package for interactive mapping with Google Earth Engine. *The Journal of Open Source Software*. https://doi.org/10.21105/joss.02305 
+- **Wu, Q.**, (2020). geemap: A Python package for interactive mapping with Google Earth Engine. *The Journal of Open Source Software*, 5(51), 2305. https://doi.org/10.21105/joss.02305 
 - **Wu, Q.**, Lane, C. R., Li, X., Zhao, K., Zhou, Y., Clinton, N., DeVries, B., Golden, H. E., & Lang, M. W. (2019). Integrating LiDAR data and multi-temporal aerial imagery to map wetland inundation dynamics using Google Earth Engine. *Remote Sensing of Environment*, 228, 1-13. https://doi.org/10.1016/j.rse.2019.04.015 (`pdf <https://gishub.org/2019_rse>`_ | `source code <https://doi.org/10.6084/m9.figshare.8864921>`_)
 
 

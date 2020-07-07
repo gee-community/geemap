@@ -1,4 +1,3 @@
-
 # geemap
 
 [![image](https://colab.research.google.com/assets/colab-badge.svg)](https://gishub.org/geemap-colab)
@@ -21,7 +20,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 ## Tutorials
 
 1. [Introducing the geemap Python package for interactive mapping with Google Earth Engine](#1-introducing-the-geemap-python-package-for-interactive-mapping-with-google-earth-engine) ([video](https://youtu.be/h0pz3S6Tvx0) | [gif](https://i.imgur.com/pI39k7v.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/01_geemap_intro.ipynb))
-2. [Using basemaps in geemap and ipyleaflet for interactive mapping with Google Earth Engine](#2-using-basemaps-in-geemap-and-ipyleaflet-for-interactive-mapping-with-google-earth-engine) ([video](https://youtu.be/6J5ZCIUPXfI) | [gif](https://i.imgur.com/P5B2f7p.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/02_using_basemaps.ipynb)) 
+2. [Using basemaps in geemap and ipyleaflet for interactive mapping with Google Earth Engine](#2-using-basemaps-in-geemap-and-ipyleaflet-for-interactive-mapping-with-google-earth-engine) ([video](https://youtu.be/6J5ZCIUPXfI) | [gif](https://i.imgur.com/P5B2f7p.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/02_using_basemaps.ipynb))
 3. [Introducing the Inspector tool for Earth Engine Python API](#3-introducing-the-inspector-tool-for-earth-engine-python-api) ([video](https://youtu.be/k477ksjkaXw) | [gif](https://i.imgur.com/8d77gtI.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/03_inspector_tool.ipynb))
 4. [Creating a split-panel map for visualizing Earth Engine data](#4-creating-a-split-panel-map-for-visualizing-earth-engine-data) ([video](https://youtu.be/9EUTX8j-YVM) | [gif](https://i.imgur.com/kql7pC3.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/04_split_panel_map.ipynb))
 5. [Using drawing tools to interact with Earth Engine data](#5-using-drawing-tools-to-interact-with-earth-engine-data) ([video](https://youtu.be/N7rK2aV1R4c) | [gif](https://i.imgur.com/Lm5pDUr.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/05_drawing_tools.ipynb))
@@ -43,6 +42,8 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 21. [Exporting Earth Engine maps as HTML files and PNG images](#21-exporting-earth-engine-maps-as-html-files-and-png-images) ([video](https://youtu.be/GWMvaNQz3kY) | [gif](https://i.imgur.com/rJuXH4a.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/21_export_map_to_html_png.ipynb))
 22. [How to import Earth Engine Python scripts into Jupyter notebook?](#22-how-to-import-earth-engine-python-scripts-into-jupyter-notebook) ([video](https://youtu.be/V7CbB9W41w8) | [gif](https://i.imgur.com/WwJoBHF.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/22_import_scripts.ipynb))
 23. [How to search Earth Engine API and import assets from GEE personal account?](#23-how-to-search-earth-engine-api-and-import-assets-from-gee-personal-account) ([video](https://youtu.be/c9VJ_uRYSkw) | [gif](https://i.imgur.com/b1auzkr.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/22_import_assets.ipynb))
+24. [How to publish interactive Earth Engine maps?](#24-how-to-publish-interactive-earth-engine-maps) ([video](https://youtu.be/NNrrLBIqroY) | [gif](https://i.imgur.com/Hpfzazk.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/24_publish_maps.ipynb))
+25. [How to load local raster datasets with geemap?](#25-how-to-load-local-raster-datasets-with-geemap) ([video](https://youtu.be/6XIehAnoazk) | [gif](https://i.imgur.com/nsqEt2O.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/21_export_map_to_html_png.ipynb))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
@@ -135,3 +136,11 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 ### 23. How to search Earth Engine API and import assets from GEE personal account?
 
 ![import assets](https://i.imgur.com/b1auzkr.gif)
+
+### 24. How to publish interactive Earth Engine maps?
+
+![publish maps](https://i.imgur.com/Hpfzazk.gif)
+
+### 25. How to load local raster datasets with geemap? 
+
+![load rasters](https://i.imgur.com/nsqEt2O.gif)

@@ -10,12 +10,12 @@ from folium import plugins
 from .conversion import *
 
 
-def ee_initialize():
+def ee_initialize(token_name='EARTHENGINE_TOKEN'):
     """Authenticates Earth Engine and initialize an Earth Engine session
 
     """
     try:
-        ee_token = os.environ.get('EARTHENGINE_TOKEN')
+        ee_token = os.environ.get(token_name)
         if ee_token is not None:
             credential = '{"refresh_token":"%s"}' % ee_token
             credential_file_path = os.path.expanduser("~/.config/earthengine/")
