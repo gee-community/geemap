@@ -81,7 +81,7 @@ class Map(ipyleaflet.Map):
             kwargs['add_google_map'] = True
 
         if 'show_attribution' not in kwargs.keys():
-            kwargs['show_attribution'] = True           
+            kwargs['show_attribution'] = True
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -321,13 +321,14 @@ class Map(ipyleaflet.Map):
 
         self.add_control(control=data_control)
 
-        search_marker = Marker(icon=AwesomeIcon(name="check", marker_color='green', icon_color='darkgreen'))
-        search = SearchControl(position="topleft", 
-                       url='https://nominatim.openstreetmap.org/search?format=json&q={s}', 
-                       zoom=5,
-                       property_name='display_name',
-                       marker=search_marker
-                      )
+        search_marker = Marker(icon=AwesomeIcon(
+            name="check", marker_color='green', icon_color='darkgreen'))
+        search = SearchControl(position="topleft",
+                               url='https://nominatim.openstreetmap.org/search?format=json&q={s}',
+                               zoom=5,
+                               property_name='display_name',
+                               marker=search_marker
+                               )
         self.add_control(search)
 
         self.add_control(ZoomControl(position='topleft'))
@@ -1731,7 +1732,7 @@ class Map(ipyleaflet.Map):
             print(e)
             return
 
-    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='black', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, out_gif=None):
+    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='black', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, out_gif=None, upload=False):
         """Adds a Landsat timelapse to the map.
 
         Args:
@@ -1751,7 +1752,8 @@ class Map(ipyleaflet.Map):
             add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
             progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
             progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
-            out_gif ([type], optional): File path to the output animated GIF. Defaults to None.
+            out_gif (str, optional): File path to the output animated GIF. Defaults to None.
+            upload (bool, optional): Whether to upload the gif to imgur.com. Defaults to False.
 
         """
         try:
@@ -1788,14 +1790,19 @@ class Map(ipyleaflet.Map):
                 add_text_to_gif(in_gif, in_gif, xy=('2%', '90%'), text_sequence=label,
                                 font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
 
+            reduce_gif_size(in_gif)
+
             bounds = minimum_bounding_box(geojson)
             # bounds = ((35.892718, -115.471773), (36.409454, -114.271283))
             lat = (bounds[0][0] + bounds[1][0]) / 2.0
             lon = (bounds[0][1] + bounds[1][1]) / 2.0
 
             print('Adding GIF to the map ...')
-
             self.image_overlay(url=in_gif, bounds=bounds, name=layer_name)
+            print('The timelapse has been added to the map.')
+
+            if upload:
+                upload_to_imgur(in_gif)
 
         except Exception as e:
             print(e)
@@ -4212,9 +4219,9 @@ def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start
     elif not out_gif.endswith('.gif'):
         print('The output file must end with .gif')
         return
-    elif not os.path.isfile(out_gif):
-        print('The output file must be a file')
-        return
+    # elif not os.path.isfile(out_gif):
+    #     print('The output file must be a file')
+    #     return
     else:
         out_gif = os.path.abspath(out_gif)
         out_dir = os.path.dirname(out_gif)
@@ -5537,3 +5544,82 @@ def clone_google_repo(url, out_dir=None):
 
         cmd = 'git clone "{}" "{}"'.format(url, out_dir)
         os.popen(cmd).read()
+
+
+def reduce_gif_size(in_gif, out_gif=None):
+    """Reduces a GIF image using ffmpeg.
+
+    Args:
+        in_gif (str): The input file path to the GIF image.
+        out_gif (str, optional): The output file path to the GIF image. Defaults to None.
+    """
+    import ffmpeg
+    import shutil
+
+    if not os.path.exists(in_gif):
+        print('The input gif file does not exist.')
+        return
+
+    if out_gif is None:
+        out_gif = in_gif
+    elif not os.path.exists(os.path.dirname(out_gif)):
+        os.makedirs(os.path.dirname(out_gif))
+
+    if in_gif == out_gif:
+        tmp_gif = in_gif.replace('.gif', '_tmp.gif')
+        shutil.copyfile(in_gif, tmp_gif)
+        stream = ffmpeg.input(tmp_gif)
+        stream = ffmpeg.output(stream, in_gif).overwrite_output()
+        ffmpeg.run(stream)
+        os.remove(tmp_gif)
+
+    else:
+        stream = ffmpeg.input(in_gif)
+        stream = ffmpeg.output(stream, out_gif).overwrite_output()
+        ffmpeg.run(stream)
+
+
+def upload_to_imgur(in_gif):
+    """Uploads an image to imgur.com
+
+    Args:
+        in_gif (str): The file path to the image.
+    """
+    import subprocess
+
+    pkg_name = 'imgur-uploader'
+    if not is_tool(pkg_name):
+        check_install(pkg_name)
+
+    try:
+        IMGUR_API_ID = os.environ.get('IMGUR_API_ID', None)
+        IMGUR_API_SECRET = os.environ.get('IMGUR_API_SECRET', None)
+        credentials_path = os.path.join(os.path.expanduser(
+            '~'), '.config/imgur_uploader/uploader.cfg')
+
+        if ((IMGUR_API_ID is not None) and (IMGUR_API_SECRET is not None)) or os.path.exists(credentials_path):
+
+            proc = subprocess.Popen(
+                ['imgur-uploader', in_gif], stdout=subprocess.PIPE)
+            for i in range(0, 2):
+                line = proc.stdout.readline()
+                print(line.rstrip().decode("utf-8"))
+            # while True:
+            #     line = proc.stdout.readline()
+            #     if not line:
+            #         break
+            #     print(line.rstrip().decode("utf-8"))
+        else:
+            print('Imgur API credentials could not be found. Please check https://pypi.org/project/imgur-uploader/ for instructions on how to get Imgur API credentials')
+            return
+
+    except Exception as e:
+        print(e)
+
+
+def is_tool(name):
+    """Check whether `name` is on PATH and marked as executable."""
+
+    from shutil import which
+
+    return which(name) is not None
