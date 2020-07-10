@@ -2,6 +2,7 @@ bqplot
 click
 colour
 earthengine-api>=0.1.226
+ffmpeg-python
 folium>=0.11.0
 geeadd>=0.4.8
 geocoder
