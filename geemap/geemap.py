@@ -1790,7 +1790,8 @@ class Map(ipyleaflet.Map):
                 add_text_to_gif(in_gif, in_gif, xy=('2%', '90%'), text_sequence=label,
                                 font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
 
-            reduce_gif_size(in_gif)
+            if is_tool('ffmpeg'):
+                reduce_gif_size(in_gif)
 
             bounds = minimum_bounding_box(geojson)
             # bounds = ((35.892718, -115.471773), (36.409454, -114.271283))
@@ -5555,6 +5556,10 @@ def reduce_gif_size(in_gif, out_gif=None):
     """
     import ffmpeg
     import shutil
+
+    if not is_tool('ffmpeg'):
+        print('ffmpeg is not installed on your computer.')
+        return
 
     if not os.path.exists(in_gif):
         print('The input gif file does not exist.')
