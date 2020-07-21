@@ -2871,12 +2871,12 @@ def ee_export_vector(ee_object, filename, selectors=None):
         print('The ee_object must be an ee.FeatureCollection.')
         return
 
-    allowed_formats = ['csv', 'json', 'kml', 'kmz', 'shp']
+    # allowed_formats = ['csv', 'json', 'kml', 'kmz', 'shp']
+    allowed_formats = ['csv', 'kml', 'kmz']
     filename = os.path.abspath(filename)
     basename = os.path.basename(filename)
     name = os.path.splitext(basename)[0]
     filetype = os.path.splitext(basename)[1][1:].lower()
-    filename_shp = filename
 
     if filetype == 'shp':
         filename = filename.replace('.shp', '.zip')
@@ -2884,6 +2884,7 @@ def ee_export_vector(ee_object, filename, selectors=None):
     if not (filetype.lower() in allowed_formats):
         print('The file type must be one of the following: {}'.format(
             ', '.join(allowed_formats)))
+        print('Earth Engine no longer supports downloading featureCollection as shapefile or json. \nPlease use geemap.ee_export_vector_to_drive() to export featureCollection to Google Drive.')
         return
 
     if selectors is None:
