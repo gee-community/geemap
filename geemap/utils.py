@@ -4,6 +4,7 @@
 import os
 import ee
 
+
 def ee_initialize(token_name='EARTHENGINE_TOKEN'):
     """Authenticates Earth Engine and initialize an Earth Engine session
 
@@ -69,6 +70,18 @@ def vec_area_ha(fc):
         object: ee.FeatureCollection
     """
     return fc.map(lambda f: f.set({'area_ha': f.area(1).divide(1e4).round()}))
+
+
+def remove_geometry(fc):
+    """Remove .geo coordinate field from a FeatureCollection
+
+    Args:
+        fc (object): The input FeatureCollection.
+
+    Returns:
+        object: The output FeatureCollection without the geometry field.
+    """
+    return fc.select([".*"], None, False)
 
 
 def image_cell_size(img):
@@ -266,7 +279,7 @@ def image_reclassify(img, in_list, out_list):
     """
     image = img.remap(in_list, out_list)
     return image
-    
+
 
 def image_smoothing(img, reducer, kernel):
     """Smooths an image.
@@ -309,7 +322,8 @@ def bands_to_image_collection(img):
     Returns:
         object: ee.ImageCollection
     """
-    collection = ee.ImageCollection(img.bandNames().map(lambda b: img.select([b])))
+    collection = ee.ImageCollection(
+        img.bandNames().map(lambda b: img.select([b])))
     return collection
 
 
@@ -675,3 +689,150 @@ def nwi_add_color(fc):
                   .addBands(base.paint(fc, 'B')))
 
     return img
+
+
+def nwi_rename(names):
+
+    name_dict = ee.Dictionary({
+        'Freshwater Emergent Wetland': 'Emergent',
+        'Freshwater Forested/Shrub Wetland': 'Forested',
+        'Estuarine and Marine Wetland': 'Estuarine',
+        'Freshwater Pond': 'Pond',
+        'Lake': 'Lake',
+        'Riverine': 'Riverine',
+        'Estuarine and Marine Deepwater': 'Deepwater',
+        'Other': 'Other'
+    })
+
+    new_names = ee.List(names).map(lambda name: name_dict.get(name))
+    return new_names
+
+
+def summarize_by_group(collection, column, group, group_name, stats_type, return_dict=True):
+    """Calculates summary statistics by group.
+
+    Args:
+        collection (object): The input feature collection
+        column (str): The value column to calculate summary statistics.
+        group (str): The name of the group column.
+        group_name (str): The new group name to use.
+        stats_type (str): The type of summary statistics.
+        return_dict (bool): Whether to return the result as a dictionary.
+
+    Returns:
+        object: ee.Dictionary or ee.List
+    """
+    stats_type = stats_type.lower()
+    allowed_stats = ['min', 'max', 'mean',
+                     'median', 'sum', 'stdDev', 'variance']
+    if stats_type not in allowed_stats:
+        print('The stats type must be one of the following: {}'.format(
+            ','.join(allowed_stats)))
+        return
+
+    stats_dict = {
+        'min': ee.Reducer.min(),
+        'max': ee.Reducer.max(),
+        'mean': ee.Reducer.mean(),
+        'median': ee.Reducer.median(),
+        'sum': ee.Reducer.sum(),
+        'stdDev': ee.Reducer.stdDev(),
+        'variance': ee.Reducer.variance()
+    }
+
+    selectors = [column, group]
+    stats = collection.reduceColumns(**{
+        'selectors': selectors,
+        'reducer': stats_dict[stats_type].group(**{
+            'groupField': 1,
+            'groupName': group_name
+        })
+    })
+    results = ee.List(ee.Dictionary(stats).get('groups'))
+    if return_dict:
+        keys = results.map(lambda k: ee.Dictionary(k).get(group_name))
+        values = results.map(lambda v: ee.Dictionary(v).get(stats_type))
+        results = ee.Dictionary.fromLists(keys, values)
+
+    return results
+
+
+def summary_stats(collection, column):
+    """Aggregates over a given property of the objects in a collection, calculating the sum, min, max, mean, 
+    sample standard deviation, sample variance, total standard deviation and total variance of the selected property.
+
+    Args:
+        collection (FeatureCollection): The input feature collection to calculate summary statistics.
+        column (str): The name of the column to calculate summary statistics.
+
+    Returns:
+        dict: The dictionary containing information about the summary statistics.
+    """
+    stats = collection.aggregate_stats(column).getInfo()
+    return eval(str(stats)).get('values')
+
+
+def column_stats(collection, column, stats_type):
+    """Aggregates over a given property of the objects in a collection, calculating the sum, min, max, mean, 
+    sample standard deviation, sample variance, total standard deviation and total variance of the selected property.
+
+    Args:
+        collection (FeatureCollection): The input feature collection to calculate statistics.
+        column (str): The name of the column to calculate statistics.
+        stats_type (str): The type of statistics to calculate.
+
+    Returns:
+        dict: The dictionary containing information about the requested statistics.
+    """
+    stats_type = stats_type.lower()
+    allowed_stats = ['min', 'max', 'mean',
+                     'median', 'sum', 'stdDev', 'variance']
+    if stats_type not in allowed_stats:
+        print('The stats type must be one of the following: {}'.format(
+            ','.join(allowed_stats)))
+        return
+
+    stats_dict = {
+        'min': ee.Reducer.min(),
+        'max': ee.Reducer.max(),
+        'mean': ee.Reducer.mean(),
+        'median': ee.Reducer.median(),
+        'sum': ee.Reducer.sum(),
+        'stdDev': ee.Reducer.stdDev(),
+        'variance': ee.Reducer.variance()
+    }
+
+    selectors = [column]
+    stats = collection.reduceColumns(**{
+        'selectors': selectors,
+        'reducer': stats_dict[stats_type]
+    })
+
+    return stats
+
+
+def ee_num_round(num, decimal=2):
+    """Rounds a number to a specified number of decimal places.
+
+    Args:
+        num (ee.Number): The number to round.
+        decimal (int, optional): The number of decimal places to round. Defaults to 2.
+
+    Returns:
+        ee.Number: The number with the specified decimal places rounded.
+    """
+    format_str = '%.{}f'.format(decimal)
+    return ee.Number.parse(ee.Number(num).format(format_str))
+
+
+def num_round(num, decimal=2):
+    """Rounds a number to a specified number of decimal places.
+
+    Args:
+        num (float): The number to round.
+        decimal (int, optional): The number of decimal places to round. Defaults to 2.
+
+    Returns:
+        float: The number with the specified decimal places rounded.
+    """
+    return round(num, decimal)

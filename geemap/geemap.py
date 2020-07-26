@@ -2889,6 +2889,9 @@ def ee_export_vector(ee_object, filename, selectors=None):
 
     if selectors is None:
         selectors = ee_object.first().propertyNames().getInfo()
+        if filetype == 'csv':
+            ee_object = ee_object.select([".*"], None, False)   # remove .geo coordinate field
+
     elif not isinstance(selectors, list):
         print("selectors must be a list, such as ['attribute1', 'attribute2']")
         return
@@ -2966,6 +2969,8 @@ def ee_export_vector_to_drive(ee_object, description, folder, file_format='shp',
 
     if selectors is not None:
         task_config['selectors'] = selectors
+    elif (selectors is None) and (file_format.lower() == 'csv'):
+        ee_object = ee_object.select([".*"], None, False)   # remove .geo coordinate field
 
     print('Exporting {}...'.format(description))
     task = ee.batch.Export.table.toDrive(ee_object, description, **task_config)
