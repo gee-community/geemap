@@ -836,3 +836,31 @@ def num_round(num, decimal=2):
         float: The number with the specified decimal places rounded.
     """
     return round(num, decimal)
+
+
+def dict_to_csv(data_dict, out_csv, by_row=False):
+    """Downloads an ee.Dictionary as a CSV file.
+
+    Args:
+        data_dict (ee.Dictionary): The input ee.Dictionary.
+        out_csv (str): The output file path to the CSV file.
+        by_row (bool, optional): Whether to use by row or by column. Defaults to False.
+    """
+    import geemap
+
+    out_dir = os.path.dirname(out_csv)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    if not by_row:
+        csv_feature = ee.Feature(None, data_dict)
+        csv_feat_col = ee.FeatureCollection([csv_feature])
+    else:
+        keys = data_dict.keys()
+        data = keys.map(lambda k: ee.Dictionary({'name': k, 'value': data_dict.get(k)}))
+        csv_feature = data.map(lambda f: ee.Feature(None, f))
+        csv_feat_col = ee.FeatureCollection(csv_feature)
+
+    geemap.ee_export_vector(csv_feat_col, out_csv)
+  
+        
