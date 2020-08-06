@@ -2890,7 +2890,8 @@ def ee_export_vector(ee_object, filename, selectors=None):
     if selectors is None:
         selectors = ee_object.first().propertyNames().getInfo()
         if filetype == 'csv':
-            ee_object = ee_object.select([".*"], None, False)   # remove .geo coordinate field
+            # remove .geo coordinate field
+            ee_object = ee_object.select([".*"], None, False)
 
     elif not isinstance(selectors, list):
         print("selectors must be a list, such as ['attribute1', 'attribute2']")
@@ -2970,7 +2971,8 @@ def ee_export_vector_to_drive(ee_object, description, folder, file_format='shp',
     if selectors is not None:
         task_config['selectors'] = selectors
     elif (selectors is None) and (file_format.lower() == 'csv'):
-        ee_object = ee_object.select([".*"], None, False)   # remove .geo coordinate field
+        # remove .geo coordinate field
+        ee_object = ee_object.select([".*"], None, False)
 
     print('Exporting {}...'.format(description))
     task = ee.batch.Export.table.toDrive(ee_object, description, **task_config)
@@ -5634,3 +5636,72 @@ def is_tool(name):
     from shutil import which
 
     return which(name) is not None
+
+
+def image_props(img, date_format='YYYY-MM-dd'):
+    """Gets image properties.
+
+    Args:
+        img (ee.Image): The input image.
+        date_format (str, optional): The output date format. Defaults to 'YYYY-MM-dd HH:mm:ss'.
+
+    Returns:
+        dd.Dictionary: The dictionary containing image properties.
+    """
+    if not isinstance(img, ee.Image):
+        print('The input object must be an ee.Image')
+        return
+
+    keys = img.propertyNames().remove('system:footprint').remove('system:bands')
+    values = keys.map(lambda p: img.get(p))
+
+    bands = img.bandNames()
+    scales = bands.map(lambda b: img.select([b]).projection().nominalScale())
+    scale = ee.Algorithms.If(scales.distinct().size().gt(
+        1), ee.Dictionary.fromLists(bands.getInfo(), scales), scales.get(0))
+    image_date = ee.Date(img.get('system:time_start')).format(date_format)
+    time_start = ee.Date(img.get('system:time_start')).format('YYYY-MM-dd HH:mm:ss')
+    time_end = ee.Date(img.get('system:time_end')).format('YYYY-MM-dd HH:mm:ss')
+    asset_size = ee.Number(img.get('system:asset_size')).divide(
+        1e6).format().cat(ee.String(' MB'))
+
+    props = ee.Dictionary.fromLists(keys, values)
+    props = props.set('system:time_start', time_start)
+    props = props.set('system:time_end', time_end)
+    props = props.set('system:asset_size', asset_size)
+    props = props.set('NOMINAL_SCALE', scale)
+    props = props.set('IMAGE_DATE', image_date)
+
+    return props
+
+
+def image_stats(img, region=None, scale=None):
+    """Gets image descriptive statistics.
+
+    Args:
+        img (ee.Image): The input image to calculate descriptive statistics.
+        region (object, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+
+    Returns:
+        ee.Dictionary: A dictionary containing the description statistics of the input image.
+    """
+    import geemap.utils as utils
+
+    if not isinstance(img, ee.Image):
+        print('The input object must be an ee.Image')
+        return
+    
+    stat_types = ['min', 'max', 'mean', 'std', 'sum']
+
+    image_min = utils.image_min_value(img, region, scale)
+    image_max = utils.image_max_value(img, region, scale)
+    image_mean = utils.image_mean_value(img, region, scale)
+    image_std = utils.image_std_value(img, region, scale)
+    image_sum = utils.image_sum_value(img, region, scale)
+
+    stat_results = ee.List([image_min, image_max, image_mean, image_std, image_sum])
+
+    stats = ee.Dictionary.fromLists(stat_types, stat_results)
+
+    return stats

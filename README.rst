@@ -444,6 +444,20 @@ To add a local raster dataset to the map:
   Map.add_raster(image, bands, colormap, layer_name)
   
 
+To get image basic properties:
+
+.. code:: python
+
+  geemap.image_props(image).getInfo()
+
+
+To get image descriptive statistics:
+
+.. code:: python
+
+  geemap.image_stats(image, region, scale)
+
+
 Examples
 --------
 
