@@ -47,6 +47,8 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 26. How to create and deploy Earth Engine Apps using Python? ([video](https://youtu.be/nsIjfD83ggA) | [gif](https://i.imgur.com/Hpfzazk.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/26_heroku.ipynb))
 27. How to create an interactive Earth Engine App for creating Landsat timelapse? ([video](https://youtu.be/whIXudC6r_s) | [gif](https://i.imgur.com/doHfnKp.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/27_timelapse_app.ipynb))
 28. How to use your local computer as a web server for hosting Earth Engine Apps? ([video](https://youtu.be/eRDZBVJcNCk) | [gif](https://i.imgur.com/q0sJSyi.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/28_voila.ipynb))
+29. How to use pydeck for rendering Earth Engine data ([video](https://youtu.be/EIkEH4okFF4) | [gif](https://i.imgur.com/HjFB95l.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/29_pydeck.ipynb))
+30. How to get image basic properties and descriptive statistics (video | [gif](https://i.imgur.com/3B6YhkI.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/30_image_props_stats.ipynb))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
