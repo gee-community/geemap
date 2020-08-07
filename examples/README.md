@@ -49,6 +49,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 28. How to use your local computer as a web server for hosting Earth Engine Apps? ([video](https://youtu.be/eRDZBVJcNCk) | [gif](https://i.imgur.com/q0sJSyi.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/28_voila.ipynb))
 29. How to use pydeck for rendering Earth Engine data ([video](https://youtu.be/EIkEH4okFF4) | [gif](https://i.imgur.com/HjFB95l.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/29_pydeck.ipynb))
 30. How to get image basic properties and descriptive statistics (video | [gif](https://i.imgur.com/3B6YhkI.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/30_image_props_stats.ipynb))
+31. Machine Learning with Earth Engine - Unsupervised Classification (video | gif | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/31_unsupervised_classification.ipynb))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
