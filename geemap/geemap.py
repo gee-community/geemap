@@ -5661,7 +5661,8 @@ def image_props(img, date_format='YYYY-MM-dd'):
         1), ee.Dictionary.fromLists(bands.getInfo(), scales), scales.get(0))
     image_date = ee.Date(img.get('system:time_start')).format(date_format)
     time_start = ee.Date(img.get('system:time_start')).format('YYYY-MM-dd HH:mm:ss')
-    time_end = ee.Date(img.get('system:time_end')).format('YYYY-MM-dd HH:mm:ss')
+    # time_end = ee.Date(img.get('system:time_end')).format('YYYY-MM-dd HH:mm:ss')
+    time_end = ee.Algorithms.If(ee.List(img.propertyNames()).contains('system:time_end'), ee.Date(img.get('system:time_end')).format('YYYY-MM-dd HH:mm:ss'), time_start)
     asset_size = ee.Number(img.get('system:asset_size')).divide(
         1e6).format().cat(ee.String(' MB'))
 
