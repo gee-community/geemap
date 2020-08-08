@@ -501,6 +501,8 @@ def js_snippet_to_py(in_js_snippet, add_new_cell=True, import_ee=True, import_ge
                         continue
                     else:
                         out_lines.append(line)
+                elif index == (len(lines) - 1) and lines[index].strip() != '':
+                    out_lines.append(line)
 
         if show_map:
             out_lines.append('Map\n')
