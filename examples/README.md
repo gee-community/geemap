@@ -50,7 +50,9 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 29. [How to use pydeck for rendering Earth Engine data](https://i.imgur.com/HjFB95l.gif) ([video](https://youtu.be/EIkEH4okFF4) | [gif](https://i.imgur.com/HjFB95l.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/29_pydeck.ipynb))
 30. [How to get image basic properties and descriptive statistics](https://i.imgur.com/3B6YhkI.gif) ([video](https://youtu.be/eixBPPWgWs8) | [gif](https://i.imgur.com/3B6YhkI.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/30_image_props_stats.ipynb))
 31. [Machine Learning with Earth Engine - Unsupervised Classification](https://i.imgur.com/uNQfrFx.gif) ([video](https://youtu.be/k9MEy2awVJQ) | [gif](https://i.imgur.com/uNQfrFx.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/31_unsupervised_classification.ipynb))
-32. Machine Learning with Earth Engine - Supervised Classification (video | gif | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/32_supervised_classification.ipynb))
+32. [Machine Learning with Earth Engine - Supervised Classification](https://i.imgur.com/jJ2Xiu6.gif) ([video](https://youtu.be/qWaEfgWi21o) | [gif](https://i.imgur.com/jJ2Xiu6.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/32_supervised_classification.ipynb))
+33. Machine Learning with Earth Engine - Performing Accuracy Assessment for Image Classification ([video](https://youtu.be/JYptiw-I8dc) | [gif](https://i.imgur.com/1JkIrF3.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/33_accuracy_assessment.ipynb))
+
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
