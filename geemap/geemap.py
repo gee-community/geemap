@@ -396,7 +396,7 @@ class Map(ipyleaflet.Map):
                 collection = ee.FeatureCollection(self.draw_features)
                 self.user_rois = collection
                 ee_draw_layer = ee_tile_layer(
-                    collection, {'color': 'blue'}, 'Drawing Features', True, 0.5)
+                    collection, {'color': 'blue'}, 'Drawn Features', True, 0.5)
 
                 if self.draw_count == 1:
                     self.add_layer(ee_draw_layer)
@@ -2004,6 +2004,20 @@ class Map(ipyleaflet.Map):
                 self, x_dim=x_dim, y_dim=y_dim, colormap=colormap)
 
         layer.name = layer_name
+
+    def remove_drawn_features(self):
+        """Removes user-drawn geometries from the map
+        """
+        if self.draw_layer is not None:
+            self.remove_layer(self.draw_layer)
+            self.draw_count = 0 
+            self.draw_features = []
+            self.draw_last_feature = None
+            self.draw_layer = None
+            self.draw_last_json = None
+            self.draw_last_bounds = None
+            self.user_roi = None
+            self.user_rois = None
 
 
 # The functions below are outside the Map class.
