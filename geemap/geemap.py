@@ -101,6 +101,11 @@ class Map(ipyleaflet.Map):
         self.user_roi = None
         self.user_rois = None
 
+        self.roi_start = False
+        self.roi_end = False
+        self.roi_reducer = ee.Reducer.mean()
+        self.roi_reducer_scale = None
+
         self.plot_widget = None  # The plot widget for plotting Earth Engine data
         self.plot_control = None  # The plot control for interacting plotting
         self.random_marker = None
@@ -367,9 +372,19 @@ class Map(ipyleaflet.Map):
                                    circlemarker={},
                                    )
 
+        draw_control_lite = DrawControl(marker={},
+                                   rectangle={'shapeOptions': {
+                                       'color': '#0000FF'}},
+                                   circle={'shapeOptions': {
+                                       'color': '#0000FF'}},
+                                   circlemarker={},
+                                    polyline = {},
+                                    polygon = {}
+                                   )
         # Handles draw events
         def handle_draw(target, action, geo_json):
             try:
+                self.roi_start = True
                 self.draw_count += 1
                 geom = geojson_to_ee(geo_json, False)
                 self.user_roi = geom
@@ -391,6 +406,9 @@ class Map(ipyleaflet.Map):
                     self.draw_layer = ee_draw_layer
 
                 draw_control.clear()
+                
+                self.roi_end = True
+                self.roi_start = False
             except Exception as e:
                 print(e)
                 print("There was an error creating Earth Engine Feature.")
@@ -399,10 +417,13 @@ class Map(ipyleaflet.Map):
                 self.draw_last_feature = None
                 self.draw_layer = None
                 self.user_roi = None
+                self.roi_start = False
+                self.roi_end = False
 
         draw_control.on_draw(handle_draw)
         self.add_control(draw_control)
         self.draw_control = draw_control
+        self.draw_control_lite = draw_control_lite
 
         # Dropdown widget for plotting
         self.plot_dropdown_control = None
@@ -465,6 +486,8 @@ class Map(ipyleaflet.Map):
                     widget=plot_dropdown_widget, position='topright')
                 self.plot_dropdown_control = plot_dropdown_control
                 self.add_control(plot_dropdown_control)
+                self.remove_control(self.draw_control)
+                self.add_control(self.draw_control_lite)
             elif button['name'] == 'value' and (not button['new']):
                 self.plot_checked = False
                 plot_dropdown_widget = self.plot_dropdown_widget
@@ -482,6 +505,8 @@ class Map(ipyleaflet.Map):
                     del plot_widget
                 if self.plot_marker_cluster is not None and self.plot_marker_cluster in self.layers:
                     self.remove_layer(self.plot_marker_cluster)
+                self.remove_control(self.draw_control_lite)
+                self.add_control(self.draw_control)
 
         plot_checkbox.observe(plot_chk_changed)
 
@@ -628,7 +653,6 @@ class Map(ipyleaflet.Map):
         self.add_control(tool_output_control)
 
         def handle_interaction(**kwargs):
-
             latlon = kwargs.get('coordinates')
             if kwargs.get('type') == 'click' and self.inspector_checked:
                 self.default_style = {'cursor': 'wait'}
@@ -712,14 +736,23 @@ class Map(ipyleaflet.Map):
                         self.plot_marker_cluster = marker_cluster
 
                     band_names = ee_object.bandNames().getInfo()
-                    xy = ee.Geometry.Point(latlon[::-1])
-                    dict_values = ee_object.sample(
-                        xy, scale=sample_scale).first().toDictionary().getInfo()
+
+                    if self.roi_end:
+                        if self.roi_reducer_scale is None:
+                            scale = ee_object.select(0).projection().nominalScale()
+                        else:
+                            scale = self.roi_reducer_scale
+                        dict_values = ee_object.reduceRegion(reducer=self.roi_reducer, geometry=self.user_roi, scale=scale, bestEffort=True).getInfo()
+                    else:
+                        xy = ee.Geometry.Point(latlon[::-1])
+                        dict_values = ee_object.sample(
+                            xy, scale=sample_scale).first().toDictionary().getInfo()
                     band_values = list(dict_values.values())
                     self.plot(band_names, band_values, **plot_options)
                     if plot_options['title'] == plot_layer_name:
                         del plot_options['title']
                     self.default_style = {'cursor': 'crosshair'}
+                    self.roi_end = False
                 except Exception as e:
                     if self.plot_widget is not None:
                         with self.plot_widget:
