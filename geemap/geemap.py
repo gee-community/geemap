@@ -106,6 +106,11 @@ class Map(ipyleaflet.Map):
         self.roi_reducer = ee.Reducer.mean()
         self.roi_reducer_scale = None
 
+        # List for storing pixel values and locations based on user-drawn geometries.
+        self.chart_points = []
+        self.chart_values = []
+        self.chart_labels = None
+
         self.plot_widget = None  # The plot widget for plotting Earth Engine data
         self.plot_control = None  # The plot control for interacting plotting
         self.random_marker = None
@@ -373,15 +378,16 @@ class Map(ipyleaflet.Map):
                                    )
 
         draw_control_lite = DrawControl(marker={},
-                                   rectangle={'shapeOptions': {
-                                       'color': '#0000FF'}},
-                                   circle={'shapeOptions': {
-                                       'color': '#0000FF'}},
-                                   circlemarker={},
-                                    polyline = {},
-                                    polygon = {}
-                                   )
+                                        rectangle={'shapeOptions': {
+                                            'color': '#0000FF'}},
+                                        circle={'shapeOptions': {
+                                            'color': '#0000FF'}},
+                                        circlemarker={},
+                                        polyline={},
+                                        polygon={}
+                                        )
         # Handles draw events
+
         def handle_draw(target, action, geo_json):
             try:
                 self.roi_start = True
@@ -406,7 +412,7 @@ class Map(ipyleaflet.Map):
                     self.draw_layer = ee_draw_layer
 
                 draw_control.clear()
-                
+
                 self.roi_end = True
                 self.roi_start = False
             except Exception as e:
@@ -736,18 +742,25 @@ class Map(ipyleaflet.Map):
                         self.plot_marker_cluster = marker_cluster
 
                     band_names = ee_object.bandNames().getInfo()
+                    self.chart_labels = band_names
 
                     if self.roi_end:
                         if self.roi_reducer_scale is None:
-                            scale = ee_object.select(0).projection().nominalScale()
+                            scale = ee_object.select(
+                                0).projection().nominalScale()
                         else:
                             scale = self.roi_reducer_scale
-                        dict_values = ee_object.reduceRegion(reducer=self.roi_reducer, geometry=self.user_roi, scale=scale, bestEffort=True).getInfo()
+                        dict_values = ee_object.reduceRegion(
+                            reducer=self.roi_reducer, geometry=self.user_roi, scale=scale, bestEffort=True).getInfo()
+                        self.chart_points.append(
+                            self.user_roi.centroid(1).coordinates().getInfo())
                     else:
                         xy = ee.Geometry.Point(latlon[::-1])
                         dict_values = ee_object.sample(
                             xy, scale=sample_scale).first().toDictionary().getInfo()
+                        self.chart_points.append(xy.coordinates().getInfo())
                     band_values = list(dict_values.values())
+                    self.chart_values.append(band_values)
                     self.plot(band_names, band_values, **plot_options)
                     if plot_options['title'] == plot_layer_name:
                         del plot_options['title']
@@ -761,7 +774,7 @@ class Map(ipyleaflet.Map):
                     else:
                         print(e)
                     self.default_style = {'cursor': 'crosshair'}
-
+                    self.roi_end = False
         self.on_interaction(handle_interaction)
 
     def set_options(self, mapTypeId='HYBRID', styles=None, types=None):
@@ -2010,7 +2023,7 @@ class Map(ipyleaflet.Map):
         """
         if self.draw_layer is not None:
             self.remove_layer(self.draw_layer)
-            self.draw_count = 0 
+            self.draw_count = 0
             self.draw_features = []
             self.draw_last_feature = None
             self.draw_layer = None
@@ -2018,6 +2031,52 @@ class Map(ipyleaflet.Map):
             self.draw_last_bounds = None
             self.user_roi = None
             self.user_rois = None
+            self.chart_values = []
+            self.chart_points = []
+            self.chart_labels = None
+
+    def extract_values_to_points(self, filename):
+        """Exports pixel values to a csv file based on user-drawn geometries.
+
+        Args:
+            filename (str): The output file path to the csv file or shapefile.
+        """
+        import csv
+
+        allowed_formats = ['csv', 'shp']
+        ext = filename[-3:]
+
+        if ext not in allowed_formats:
+            print('The output file must be one of the following: {}'.format(
+                ', '.join(allowed_formats)))
+            return
+
+        out_dir = os.path.dirname(filename)
+        out_csv = filename[:-3] + 'csv'
+        out_shp = filename[:-3] + 'shp'
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+
+        count = len(self.chart_points)
+        out_list = []
+        if count > 0:
+            header = ['id', 'longitude', 'latitude'] + self.chart_labels
+            out_list.append(header)
+
+            for i in range(0, count):
+                id = i + 1
+                line = [id] + self.chart_points[i] + self.chart_values[i]
+                out_list.append(line)
+
+            with open(out_csv, "w", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerows(out_list)
+
+            if ext == 'csv':
+                print('The csv file has been saved to: {}'.format(out_csv))
+            else:
+                csv_to_shp(out_csv, out_shp)
+                print('The shapefile has been saved to: {}'.format(out_shp))
 
 
 # The functions below are outside the Map class.
@@ -2810,6 +2869,49 @@ def update_package():
         os.chdir(work_dir)
 
         print("\nPlease comment out 'geemap.update_package()' and restart the kernel to take effect:\nJupyter menu -> Kernel -> Restart & Clear Output")
+
+    except Exception as e:
+        print(e)
+
+
+def csv_to_shp(in_csv, out_shp, longitude='longitude', latitude='latitude'):
+    """Converts a csv file with latlon info to a point shapefile.
+
+    Args:
+        in_csv (str): The input csv file containing longitude and latitude columns.
+        out_shp (str): The file path to the output shapefile.
+        longitude (str, optional): The column name of the longitude column. Defaults to 'longitude'.
+        latitude (str, optional): The column name of the latitude column. Defaults to 'latitude'.
+    """
+    import csv
+    import shapefile as shp
+
+    if not os.path.exists(in_csv):
+        print('The provided CSV file does not exist.')
+        return
+
+    if not in_csv.endswith('.csv'):
+        print('The input file must end with .csv')
+        return
+
+    out_dir = os.path.dirname(out_shp)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    try:
+        points = shp.Writer(out_shp, shapeType=shp.POINT)
+        with open(in_csv) as csvfile:
+            csvreader = csv.DictReader(csvfile)
+            header = csvreader.fieldnames
+            [points.field(field) for field in header]
+            for row in csvreader:
+                points.point((float(row[longitude])), (float(row[latitude])))
+                points.record(*tuple([row[f] for f in header]))
+
+        out_prj = out_shp.replace('.shp', '.prj')
+        with open(out_prj, 'w') as f:
+            prj_str = 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]] '
+            f.write(prj_str)
 
     except Exception as e:
         print(e)
@@ -5707,9 +5809,11 @@ def image_props(img, date_format='YYYY-MM-dd'):
     scale = ee.Algorithms.If(scales.distinct().size().gt(
         1), ee.Dictionary.fromLists(bands.getInfo(), scales), scales.get(0))
     image_date = ee.Date(img.get('system:time_start')).format(date_format)
-    time_start = ee.Date(img.get('system:time_start')).format('YYYY-MM-dd HH:mm:ss')
+    time_start = ee.Date(img.get('system:time_start')
+                         ).format('YYYY-MM-dd HH:mm:ss')
     # time_end = ee.Date(img.get('system:time_end')).format('YYYY-MM-dd HH:mm:ss')
-    time_end = ee.Algorithms.If(ee.List(img.propertyNames()).contains('system:time_end'), ee.Date(img.get('system:time_end')).format('YYYY-MM-dd HH:mm:ss'), time_start)
+    time_end = ee.Algorithms.If(ee.List(img.propertyNames()).contains('system:time_end'), ee.Date(
+        img.get('system:time_end')).format('YYYY-MM-dd HH:mm:ss'), time_start)
     asset_size = ee.Number(img.get('system:asset_size')).divide(
         1e6).format().cat(ee.String(' MB'))
 
@@ -5739,7 +5843,7 @@ def image_stats(img, region=None, scale=None):
     if not isinstance(img, ee.Image):
         print('The input object must be an ee.Image')
         return
-    
+
     stat_types = ['min', 'max', 'mean', 'std', 'sum']
 
     image_min = utils.image_min_value(img, region, scale)
@@ -5748,7 +5852,8 @@ def image_stats(img, region=None, scale=None):
     image_std = utils.image_std_value(img, region, scale)
     image_sum = utils.image_sum_value(img, region, scale)
 
-    stat_results = ee.List([image_min, image_max, image_mean, image_std, image_sum])
+    stat_results = ee.List(
+        [image_min, image_max, image_mean, image_std, image_sum])
 
     stats = ee.Dictionary.fromLists(stat_types, stat_results)
 
