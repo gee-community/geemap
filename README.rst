@@ -114,6 +114,8 @@ Below is a partial list of features available for the geemap package. Please che
 * Importing Earth Engine assets from personal account.
 * Publishing interactive GEE maps directly within Jupyter notebook.
 * Adding local raster datasets (e.g., GeoTIFF) to the map.
+* Performing image classification and accuracy assessment.
+* Extracting pixel values interactively.
 
 
 Installation
@@ -456,6 +458,20 @@ To get image descriptive statistics:
 .. code:: python
 
   geemap.image_stats(image, region, scale)
+
+
+To remove all user-drawn geometries:
+
+.. code:: python
+
+  geemap.remove_drawn_features()
+
+
+To extract pixel values based on user-drawn geometries:
+
+.. code:: python
+
+  geemap.extract_values_to_points(out_shp)
 
 
 Examples
