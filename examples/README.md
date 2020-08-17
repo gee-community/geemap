@@ -52,7 +52,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 31. [Machine Learning with Earth Engine - Unsupervised Classification](https://i.imgur.com/uNQfrFx.gif) ([video](https://youtu.be/k9MEy2awVJQ) | [gif](https://i.imgur.com/uNQfrFx.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/31_unsupervised_classification.ipynb))
 32. [Machine Learning with Earth Engine - Supervised Classification](https://i.imgur.com/jJ2Xiu6.gif) ([video](https://youtu.be/qWaEfgWi21o) | [gif](https://i.imgur.com/jJ2Xiu6.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/32_supervised_classification.ipynb))
 33. [Machine Learning with Earth Engine - Performing Accuracy Assessment for Image Classification](https://i.imgur.com/1JkIrF3.gif) ([video](https://youtu.be/JYptiw-I8dc) | [gif](https://i.imgur.com/1JkIrF3.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/33_accuracy_assessment.ipynb))
-34. [Interactive extraction of pixel values and interactive region reduction](https://i.imgur.com/aZa42GV.gif) (video | [gif](https://i.imgur.com/aZa42GV.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/34_extract_values.ipynb))
+34. [Interactive extraction of pixel values and interactive region reduction](https://i.imgur.com/LXRqSTu.gif) ([video](https://t.co/D0NC63KgF3) | [gif](https://i.imgur.com/LXRqSTu.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/34_extract_values.ipynb))
 
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
