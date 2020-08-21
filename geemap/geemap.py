@@ -2043,6 +2043,7 @@ class Map(ipyleaflet.Map):
         """
         import csv
 
+        filename = os.path.abspath(filename)
         allowed_formats = ['csv', 'shp']
         ext = filename[-3:]
 
@@ -3020,8 +3021,8 @@ def ee_export_vector(ee_object, filename, selectors=None):
         print('The ee_object must be an ee.FeatureCollection.')
         return
 
-    # allowed_formats = ['csv', 'json', 'kml', 'kmz', 'shp']
-    allowed_formats = ['csv', 'kml', 'kmz']
+    allowed_formats = ['csv', 'geojson', 'kml', 'kmz', 'shp']
+    # allowed_formats = ['csv', 'kml', 'kmz']
     filename = os.path.abspath(filename)
     basename = os.path.basename(filename)
     name = os.path.splitext(basename)[0]
@@ -3041,6 +3042,9 @@ def ee_export_vector(ee_object, filename, selectors=None):
         if filetype == 'csv':
             # remove .geo coordinate field
             ee_object = ee_object.select([".*"], None, False)
+
+    if filetype == 'geojson':
+        selectors = ['.geo'] + selectors
 
     elif not isinstance(selectors, list):
         print("selectors must be a list, such as ['attribute1', 'attribute2']")
@@ -3126,6 +3130,84 @@ def ee_export_vector_to_drive(ee_object, description, folder, file_format='shp',
     print('Exporting {}...'.format(description))
     task = ee.batch.Export.table.toDrive(ee_object, description, **task_config)
     task.start()
+
+
+def ee_export_geojson(ee_object, filename=None, selectors=None):
+    """Exports Earth Engine FeatureCollection to geojson.
+
+    Args:
+        ee_object (object): ee.FeatureCollection to export.
+        filename (str): Output file name. Defaults to None.
+        selectors (list, optional): A list of attributes to export. Defaults to None.
+    """
+    import requests
+    import zipfile
+    ee_initialize()
+
+    if not isinstance(ee_object, ee.FeatureCollection):
+        print('The ee_object must be an ee.FeatureCollection.')
+        return
+
+    if filename is None:
+        out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+        filename = os.path.join(out_dir, random_string(6) + '.geojson')
+
+    allowed_formats = ['geojson']
+    filename = os.path.abspath(filename)
+    basename = os.path.basename(filename)
+    name = os.path.splitext(basename)[0]
+    filetype = os.path.splitext(basename)[1][1:].lower()
+
+    if not (filetype.lower() in allowed_formats):
+        print('The output file type must be geojson.')
+        return
+
+    if selectors is None:
+        selectors = ee_object.first().propertyNames().getInfo()
+        selectors = ['.geo'] + selectors
+
+    elif not isinstance(selectors, list):
+        print("selectors must be a list, such as ['attribute1', 'attribute2']")
+        return
+    else:
+        allowed_attributes = ee_object.first().propertyNames().getInfo()
+        for attribute in selectors:
+            if not (attribute in allowed_attributes):
+                print('Attributes must be one chosen from: {} '.format(
+                    ', '.join(allowed_attributes)))
+                return
+
+    try:
+        # print('Generating URL ...')
+        url = ee_object.getDownloadURL(
+            filetype=filetype, selectors=selectors, filename=name)
+        # print('Downloading data from {}\nPlease wait ...'.format(url))
+        r = requests.get(url, stream=True)
+
+        if r.status_code != 200:
+            print('An error occurred while downloading. \n Retrying ...')
+            try:
+                new_ee_object = ee_object.map(filter_polygons)
+                print('Generating URL ...')
+                url = new_ee_object.getDownloadURL(
+                    filetype=filetype, selectors=selectors, filename=name)
+                print('Downloading data from {}\nPlease wait ...'.format(url))
+                r = requests.get(url, stream=True)
+            except Exception as e:
+                print(e)
+
+        with open(filename, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size=1024):
+                fd.write(chunk)
+    except Exception as e:
+        print('An error occurred while downloading.')
+        print(e)
+        return
+
+    with open(filename) as f:
+        geojson = f.read()
+    
+    return geojson
 
 
 def ee_to_shp(ee_object, filename, selectors=None):
@@ -5858,3 +5940,25 @@ def image_stats(img, region=None, scale=None):
     stats = ee.Dictionary.fromLists(stat_types, stat_results)
 
     return stats
+
+
+def date_sequence(start, end, unit, date_format='YYYY-MM-dd'):
+    """Creates a date sequence.
+
+    Args:
+        start (str): The start date, e.g., '2000-01-01'.
+        end (str): The end date, e.g., '2000-12-31'.
+        unit (str): One of 'year', 'month' 'week', 'day', 'hour', 'minute', or 'second'.
+        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
+
+    Returns:
+        ee.List: A list of date sequence.
+    """
+    start_date = ee.Date(start)
+    end_date = ee.Date(end)
+    count = ee.Number(end_date.difference(start_date, unit)).toInt()
+    num_seq = ee.List.sequence(0, count)
+    date_seq = num_seq.map(lambda d: start_date.advance(d, unit).format(date_format))
+    return date_seq
+
+
