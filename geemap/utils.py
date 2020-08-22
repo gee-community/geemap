@@ -607,7 +607,7 @@ def filter_NWI(HUC08_Id, region, exclude_riverine=True):
     Args:
         HUC08_Id (str): The HUC8 watershed id.
         region (object): ee.Geometry
-        remove_riverine (bool, optional): Whether to exclude riverine wetlands. Defaults to True.
+        exclude_riverine (bool, optional): Whether to exclude riverine wetlands. Defaults to True.
 
     Returns:
         object: ee.FeatureCollection
@@ -673,7 +673,7 @@ def find_HUC10(HUC10_Id):
     """Finds a HUC10 watershed based on a given HUC08 ID
 
     Args:
-        HUC08_Id (str): The HUC10 ID.
+        HUC10_Id (str): The HUC10 ID.
 
     Returns:
         object: ee.FeatureCollection
@@ -690,7 +690,7 @@ def find_NWI(HUC08_Id, exclude_riverine=True):
 
     Args:
         HUC08_Id (str): The HUC08 watershed ID.
-        remove_riverine (bool, optional): Whether to exclude riverine wetlands. Defaults to True.
+        exclude_riverine (bool, optional): Whether to exclude riverine wetlands. Defaults to True.
 
     Returns:
         object: ee.FeatureCollection

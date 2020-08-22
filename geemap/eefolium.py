@@ -174,9 +174,6 @@ ee_basemaps = {
 class Map(folium.Map):
     """The Map class inherits from folium.Map. By default, the Map will add Google Maps as the basemap. Set add_google_map = False to use OpenStreetMap as the basemap.
 
-    Args:
-        folium (object): An folium map instance.
-
     Returns:
         object: folium map object.
     """
@@ -408,7 +405,7 @@ class Map(folium.Map):
             control (str, optional): Adds the layer to the layer control. Defaults to True.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             opacity (float, optional): Sets the opacity for the layer.
-            API_key (str, optional) – API key for Cloudmade or Mapbox tiles. Defaults to True.
+            API_key (str, optional): – API key for Cloudmade or Mapbox tiles. Defaults to True.
         """
 
         try:

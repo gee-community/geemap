@@ -41,11 +41,7 @@ def ee_initialize(token_name='EARTHENGINE_TOKEN'):
 
 
 class Map(ipyleaflet.Map):
-    """The Map class inherits from ipyleaflet.Map
-
-    Args:
-        ipyleaflet (object): An ipyleaflet map instance. The arguments you can pass to the Map can be found at https://ipyleaflet.readthedocs.io/en/latest/api_reference/map.html
-        By default, the Map will add Google Maps as the basemap. Set add_google_map = False to use OpenStreetMap as the basemap.
+    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map can be found at https://ipyleaflet.readthedocs.io/en/latest/api_reference/map.html. By default, the Map will add Google Maps as the basemap. Set add_google_map = False to use OpenStreetMap as the basemap.
 
     Returns:
         object: ipyleaflet map object.
@@ -1562,7 +1558,7 @@ class Map(ipyleaflet.Map):
         """Adds a customized basemap to the map.
 
         Args:
-            legend_tile (str, optional): Title of the legend. Defaults to 'Legend'.
+            legend_title (str, optional): Title of the legend. Defaults to 'Legend'.
             legend_dict (dict, optional): A dictionary containing legend items as keys and color as values. If provided, legend_keys and legend_colors will be ignored. Defaults to None.
             legend_keys (list, optional): A list of legend keys. Defaults to None.
             legend_colors (list, optional): A list of legend colors. Defaults to None.
