@@ -1,0 +1,3 @@
+# utilities module
+
+::: geemap.utils
