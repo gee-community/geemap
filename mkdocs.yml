@@ -1,5 +1,7 @@
 site_name: geemap
 
+site_url: http://giswqs.github.io/geemap
+
 theme:
   name: material
 
