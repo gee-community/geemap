@@ -2,12 +2,25 @@ site_name: geemap
 
 site_url: http://giswqs.github.io/geemap
 
+repo_url: https://github.com/giswqs/geemap
+
 theme:
   name: material
+  icon:
+    repo: fontawesome/brands/github
+    features:
+      - instant
+      - navigation.expand
+      - tabs
+      - search.highlight
 
 plugins:
   - search
   - mkdocstrings
+  - git-revision-date
+
+markdown_extensions:
+  - attr_list
 
 nav:
   - Home: index.md
@@ -15,7 +28,12 @@ nav:
   - Get Started: get-started.md
   - Usage: usage.md
   - Tutorials: tutorials.md
+  - Contributing: contributing.md
+  - Citations: citations.md
   - FAQ: faq.md
+  - Blog: https://blog.gishub.org
+  - YouTube Channel: https://www.youtube.com/c/QiushengWu
+  - Report Issues: https://github.com/giswqs/geemap/issues
   - API Reference:
       - geemap module: geemap.md
       - basemaps module: basemaps.md
