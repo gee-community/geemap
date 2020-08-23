@@ -1,7 +1,6 @@
 # Welcome to geemap
 
 [![image](https://colab.research.google.com/assets/colab-badge.svg)](https://gishub.org/geemap-colab)
-[![image](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/giswqs/geemap/master)
 [![image](https://binder.pangeo.io/badge_logo.svg)](https://binder.pangeo.io/v2/gh/giswqs/geemap/master)
 [![image](https://img.shields.io/pypi/v/geemap.svg)](https://pypi.python.org/pypi/geemap)
 [![image](https://img.shields.io/conda/vn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
@@ -66,3 +65,9 @@ Below is a partial list of features available for the geemap package. Please che
 * Add local raster datasets (e.g., GeoTIFF) to the map.
 * Perform image classification and accuracy assessment.
 * Extract pixel values interactively and export as shapefile and csv.
+
+## YouTube Channel
+
+I have created a [YouTube Channel](https://www.youtube.com/c/QiushengWu) for sharing **geemap** tutorials. You can subscribe to my channel for regular updates. If there is any specific tutorial you would like to see, please submit a feature request [here](https://github.com/giswqs/geemap/issues). 
+
+[![Earth Engine Tutorials on YouTube](https://wetlands.io/file/images/youtube.png)](https://www.youtube.com/c/QiushengWu)

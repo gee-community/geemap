@@ -19,14 +19,14 @@ the [Earth Engine Code Editor](https://code.earthengine.google.com/) to get fami
 **geemap** is also available on [conda-forge](https://anaconda.org/conda-forge/geemap). If you have
 [Anaconda](https://www.anaconda.com/distribution/#download-section) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed on your computer, you can create a conda Python environment to install geemap:
 
-    conda create -n gee python=3.7
+    conda create -n gee python=3.8
     conda activate gee
     conda install mamba -c conda-forge
     mamba install geemap -c conda-forge
 
-Optionally, you can install [Jupyter notebook extensions](https://github.com/ipython-contrib/jupyter_contrib_nbextensions), which can improve your productivity in the notebook environment. Some useful extensions include Table of Contents, Gist-it, Autopep8, Variable Inspector, etc. See this [post](https://towardsdatascience.com/jupyter-notebook-extensions-517fa69d2231) for more information.
+Optionally, you can install some [Jupyter notebook extensions](https://github.com/ipython-contrib/jupyter_contrib_nbextensions), which can improve your productivity in the notebook environment. Some useful extensions include Table of Contents, Gist-it, Autopep8, Variable Inspector, etc. See this [post](https://towardsdatascience.com/jupyter-notebook-extensions-517fa69d2231) for more information.
 
-    mamba install jupyter_contrib_nbextensions -c conda-forge
+    conda install jupyter_contrib_nbextensions -c conda-forge
 
 Check the **YouTube** video below on how to install geemap using conda.
 

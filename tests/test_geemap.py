@@ -67,12 +67,12 @@ class TestGeemap(unittest.TestCase):
         self.assertRaises(Exception, geemap.sentinel2_timeseries(start_date = start_date, end_date = end_date))
 
 
-    def test_command_line_interface(self):
-        """Test the CLI."""
-        runner = CliRunner()
-        result = runner.invoke(cli.main)
-        assert result.exit_code == 0
-        assert 'geemap.cli.main' in result.output
-        help_result = runner.invoke(cli.main, ['--help'])
-        assert help_result.exit_code == 0
-        assert '--help  Show this message and exit.' in help_result.output
+    # def test_command_line_interface(self):
+    #     """Test the CLI."""
+    #     runner = CliRunner()
+    #     result = runner.invoke(cli.main)
+    #     assert result.exit_code == 0
+    #     assert 'geemap.cli.main' in result.output
+    #     help_result = runner.invoke(cli.main, ['--help'])
+    #     assert help_result.exit_code == 0
+    #     assert '--help  Show this message and exit.' in help_result.output
