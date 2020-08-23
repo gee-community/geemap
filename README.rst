@@ -20,11 +20,11 @@ geemap
 .. image:: https://pepy.tech/badge/geemap
         :target: https://pepy.tech/project/geemap
 
-.. image:: https://readthedocs.org/projects/geemap/badge/?version=latest
-        :target: https://geemap.readthedocs.io/en/latest/?badge=latest
+.. image:: https://github.com/giswqs/geemap/workflows/docs/badge.svg
+        :target: https://giswqs.github.io/geemap
 
-.. image:: https://img.shields.io/badge/YouTube-GEE%20Tutorials-red   
-        :target: https://gishub.org/geemap
+.. image:: https://img.shields.io/badge/YouTube-Channel-red   
+        :target: https://www.youtube.com/c/QiushengWu
 
 .. image:: https://img.shields.io/twitter/follow/giswqs?style=social   	
         :target: https://twitter.com/giswqs
@@ -47,7 +47,7 @@ Lead authors: Dr. Qiusheng Wu (https://wetlands.io)
 * PyPI: https://pypi.org/project/geemap/
 * Conda-forge: https://anaconda.org/conda-forge/geemap
 * 360+ GEE notebook examples: https://github.com/giswqs/earthengine-py-notebooks
-* GEE Tutorials on YouTube: https://gishub.org/geemap
+* GEE Tutorials on YouTube: https://www.youtube.com/c/QiushengWu
 * Free software: MIT license
 
 
@@ -89,33 +89,33 @@ Features
 
 Below is a partial list of features available for the geemap package. Please check the `examples <https://github.com/giswqs/geemap/tree/master/examples>`__ page for notebook examples, GIF animations, and video tutorials.
 
-* Automated conversion from Earth Engine JavaScripts to Python scripts and Jupyter notebooks.
-* Displaying Earth Engine data layers for interactive mapping.
-* Supporting Earth Engine JavaScript API-styled functions in Python, such as ``Map.addLayer()``, ``Map.setCenter()``, ``Map.centerObject()``, ``Map.setOptions()``.
-* Creating split-panel maps with Earth Engine data.
-* Retrieving Earth Engine data interactively using the Inspector Tool.
+* Convert Earth Engine JavaScripts to Python scripts and Jupyter notebooks.
+* Display Earth Engine data layers for interactive mapping.
+* Support Earth Engine JavaScript API-styled functions in Python, such as `Map.addLayer()`, `Map.setCenter()`, `Map.centerObject()`, `Map.setOptions()`.
+* Create split-panel maps with Earth Engine data.
+* Retrieve Earth Engine data interactively using the Inspector Tool.
 * Interactive plotting of Earth Engine data by simply clicking on the map.
-* Converting data format between GeoJSON and Earth Engine.
-* Using drawing tools to interact with Earth Engine data.
-* Using shapefiles with Earth Engine without having to upload data to one's GEE account.
-* Exporting Earth Engine FeatureCollection to other formats (i.e., shp, csv, json, kml, kmz) using only one line of code.
-* Exporting Earth Engine Image and ImageCollection as GeoTIFF.
-* Extracting pixels from an Earth Engine Image into a 3D numpy array.
-* Calculating zonal statistics by group (e.g., calculating land over composition of each state/country).
-* Adding a customized legend for Earth Engine data.
-* Converting Earth Engine JavaScripts to Python code directly within Jupyter notebook.
-* Adding animated text to GIF images generated from Earth Engine data.
-* Adding colorbar and images to GIF animations generated from Earth Engine data.
-* Creating Landsat timelapse animations with animated text using Earth Engine.
-* Searching places and datasets from Earth Engine Data Catalog.
-* Using timeseries inspector to visualize landscape changes over time.
-* Exporting Earth Engine maps as HTML files and PNG images.
-* Searching Earth Engine API documentation within Jupyter notebooks.
-* Importing Earth Engine assets from personal account.
-* Publishing interactive GEE maps directly within Jupyter notebook.
-* Adding local raster datasets (e.g., GeoTIFF) to the map.
-* Performing image classification and accuracy assessment.
-* Extracting pixel values interactively.
+* Convert data format between GeoJSON and Earth Engine.
+* Use drawing tools to interact with Earth Engine data.
+* Use shapefiles with Earth Engine without having to upload data to one's GEE account.
+* Export Earth Engine FeatureCollection to other formats (i.e., shp, csv, json, kml, kmz).
+* Export Earth Engine Image and ImageCollection as GeoTIFF.
+* Extract pixels from an Earth Engine Image into a 3D numpy array.
+* Calculate zonal statistics by group.
+* Add a customized legend for Earth Engine data.
+* Convert Earth Engine JavaScripts to Python code directly within Jupyter notebook.
+* Add animated text to GIF images generated from Earth Engine data.
+* Add colorbar and images to GIF animations generated from Earth Engine data.
+* Create Landsat timelapse animations with animated text using Earth Engine.
+* Search places and datasets from Earth Engine Data Catalog.
+* Use timeseries inspector to visualize landscape changes over time.
+* Export Earth Engine maps as HTML files and PNG images.
+* Search Earth Engine API documentation within Jupyter notebooks.
+* Import Earth Engine assets from personal account.
+* Publish interactive GEE maps directly within Jupyter notebook.
+* Add local raster datasets (e.g., GeoTIFF) to the map.
+* Perform image classification and accuracy assessment.
+* Extract pixel values interactively and export as shapefile and csv.
 
 
 Installation
@@ -213,8 +213,8 @@ To create a folium-based interactive map:
 
 .. code:: python
 
-  import geemap.eefolium as emap
-  Map = emap.Map(center=[40,-100], zoom=4)
+  import geemap.eefolium as geemap
+  Map = geemap.Map(center=[40,-100], zoom=4)
   Map
 
 
