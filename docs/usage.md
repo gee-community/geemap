@@ -1,5 +1,7 @@
 # Usage
 
+Below is a list of some commonly used functions available in the **geemap** Python package. Please check the [API Reference](https://giswqs.github.io/geemap/geemap) for a complete list of all available functions.
+
 To create an ipyleaflet-based interactive map:
 
     import geemap

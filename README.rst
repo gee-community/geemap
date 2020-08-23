@@ -4,9 +4,6 @@ geemap
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
         :target: https://gishub.org/geemap-colab
-        
-.. image:: https://mybinder.org/badge_logo.svg
-        :target: https://mybinder.org/v2/gh/giswqs/geemap/master
 
 .. image:: https://binder.pangeo.io/badge_logo.svg
         :target: https://binder.pangeo.io/v2/gh/giswqs/geemap/master
