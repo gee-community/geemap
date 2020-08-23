@@ -8,6 +8,3 @@ coverage
 Sphinx
 twine
 Click
-mkdocstrings
-mkdocs-material
-mkdocs-git-revision-date-plugin
