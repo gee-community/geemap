@@ -7,7 +7,7 @@
 [![image](https://img.shields.io/conda/vn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
 [![image](https://pepy.tech/badge/geemap)](https://pepy.tech/project/geemap)
 [![image](https://github.com/giswqs/geemap/workflows/docs/badge.svg)](https://giswqs.github.io/geemap)
-[![image](https://github.com/giswqs/geemap/workflows/build/badge.svg)](https://github.com/giswqs/geemap/actions?query=workflow%3Apy-check)
+[![image](https://github.com/giswqs/geemap/workflows/build/badge.svg)](https://github.com/giswqs/geemap/actions?query=workflow%3Abuild)
 [![image](https://img.shields.io/badge/YouTube-Channel-red)](https://www.youtube.com/c/QiushengWu)
 [![image](https://img.shields.io/twitter/follow/giswqs?style=social)](https://twitter.com/giswqs)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
