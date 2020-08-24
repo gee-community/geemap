@@ -386,6 +386,9 @@ class Map(ipyleaflet.Map):
 
         def handle_draw(target, action, geo_json):
             try:
+                # print(geo_json)
+                # geo_json = adjust_longitude(geo_json)
+                # print(geo_json)
                 self.roi_start = True
                 self.draw_count += 1
                 geom = geojson_to_ee(geo_json, False)
@@ -1820,6 +1823,9 @@ class Map(ipyleaflet.Map):
                 return
 
             geojson = ee_to_geojson(roi)
+            bounds = minimum_bounding_box(geojson)
+            geojson = adjust_longitude(geojson)
+            roi = ee.Geometry(geojson)
 
             in_gif = landsat_ts_gif(roi=roi, out_gif=out_gif, start_year=start_year, end_year=end_year, start_date=start_date,
                                     end_date=end_date, bands=bands, vis_params=vis_params, dimensions=dimensions, frames_per_second=frames_per_second)
@@ -1835,7 +1841,7 @@ class Map(ipyleaflet.Map):
             if is_tool('ffmpeg'):
                 reduce_gif_size(in_gif)
 
-            bounds = minimum_bounding_box(geojson)
+            # bounds = minimum_bounding_box(geojson)
             # bounds = ((35.892718, -115.471773), (36.409454, -114.271283))
             lat = (bounds[0][0] + bounds[1][0]) / 2.0
             lon = (bounds[0][1] + bounds[1][1]) / 2.0
@@ -4023,6 +4029,11 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
             print(e)
             return
 
+    # Adjusts longitudes less than -180 degrees or greater than 180 degrees.
+    geojson = ee_to_geojson(roi)
+    geojson = adjust_longitude(geojson)
+    roi = ee.Geometry(geojson)
+
     ################################################################################
     # Setup vars to get dates.
     if isinstance(start_year, int) and (start_year >= 2015) and (start_year <= 2020):
@@ -5956,5 +5967,87 @@ def date_sequence(start, end, unit, date_format='YYYY-MM-dd'):
     num_seq = ee.List.sequence(0, count)
     date_seq = num_seq.map(lambda d: start_date.advance(d, unit).format(date_format))
     return date_seq
+
+
+def adjust_longitude(in_fc):
+    """Adjusts longitude if it is less than -180 or greater than 180.
+
+    Args:
+        in_fc (dict): The input dictionary containing coordinates.
+
+    Returns:
+        dict: A dictionary containing the converted longitudes
+    """
+    try:
+
+        keys = in_fc.keys()
+
+        if 'geometry' in keys:
+
+            coordinates = in_fc['geometry']['coordinates']
+
+            if in_fc['geometry']['type'] == 'Point':
+                longitude = coordinates[0]
+                if longitude < - 180:
+                    longitude = 360 + longitude
+                elif longitude > 180:
+                    longitude = longitude - 360
+                in_fc['geometry']['coordinates'][0] = longitude          
+            
+            elif in_fc['geometry']['type'] == 'Polygon':
+                for index1, item in enumerate(coordinates):
+                    for index2, element in enumerate(item):
+                        longitude = element[0]
+                        if longitude < - 180:
+                            longitude = 360 + longitude
+                        elif longitude > 180:
+                            longitude = longitude - 360                    
+                        in_fc['geometry']['coordinates'][index1][index2][0] = longitude
+
+            elif in_fc['geometry']['type'] == 'LineString':
+                for index, element in enumerate(coordinates):
+                    longitude = element[0]
+                    if longitude < - 180:
+                        longitude = 360 + longitude
+                    elif longitude > 180:
+                        longitude = longitude - 360
+                    in_fc['geometry']['coordinates'][index][0] = longitude
+
+        elif 'type' in keys:
+
+            coordinates = in_fc['coordinates']
+
+            if in_fc['type'] == 'Point':
+                longitude = coordinates[0]
+                if longitude < - 180:
+                    longitude = 360 + longitude
+                elif longitude > 180:
+                    longitude = longitude - 360
+                in_fc['coordinates'][0] = longitude          
+            
+            elif in_fc['type'] == 'Polygon':
+                for index1, item in enumerate(coordinates):
+                    for index2, element in enumerate(item):
+                        longitude = element[0]
+                        if longitude < - 180:
+                            longitude = 360 + longitude
+                        elif longitude > 180:
+                            longitude = longitude - 360                    
+                        in_fc['coordinates'][index1][index2][0] = longitude
+
+            elif in_fc['type'] == 'LineString':
+                for index, element in enumerate(coordinates):
+                    longitude = element[0]
+                    if longitude < - 180:
+                        longitude = 360 + longitude
+                    elif longitude > 180:
+                        longitude = longitude - 360
+                    in_fc['coordinates'][index][0] = longitude
+
+        return in_fc
+        
+    except Exception as e:
+        print(e)
+        return None
 
 
