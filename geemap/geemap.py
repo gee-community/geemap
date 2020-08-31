@@ -6051,3 +6051,19 @@ def adjust_longitude(in_fc):
         return None
 
 
+def set_proxy(port=1080):
+    """Sets proxy if needed. This is only needed for countries where Google services are not available.
+
+    Args:
+        port (int, optional): The proxy port number. Defaults to 1080.
+    """
+    import os
+    import requests
+
+    os.environ['HTTP_PROXY'] = 'http://127.0.0.1:{}'.format(str(port))
+    os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:{}'.format(str(port))
+
+    a = requests.get('https://earthengine.google.com/')
+
+    if a.status_code != 200:
+        print('Failed to connect to Earth Engine. Please double check the port number.')
