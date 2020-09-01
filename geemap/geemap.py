@@ -2858,6 +2858,7 @@ def update_package():
         In this way, I don't have to keep updating pypi and conda-forge with every minor update of the package.
 
     """
+    import shutil
     try:
         download_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
         if not os.path.exists(download_dir):
@@ -2867,7 +2868,12 @@ def update_package():
         pkg_dir = os.path.join(download_dir, 'geemap-master')
         work_dir = os.getcwd()
         os.chdir(pkg_dir)
-        cmd = 'pip install .'
+
+        if shutil.which('pip') is None:
+            cmd = 'pip3 install .'
+        else:
+            cmd = 'pip install .'
+
         os.system(cmd)
         os.chdir(work_dir)
 
@@ -6051,19 +6057,29 @@ def adjust_longitude(in_fc):
         return None
 
 
-def set_proxy(port=1080):
+def set_proxy(port=1080, ip='http://127.0.0.1'):
     """Sets proxy if needed. This is only needed for countries where Google services are not available.
 
     Args:
         port (int, optional): The proxy port number. Defaults to 1080.
+        ip (str, optional): The IP address. Defaults to 'http://127.0.0.1'.
     """
     import os
     import requests
 
-    os.environ['HTTP_PROXY'] = 'http://127.0.0.1:{}'.format(str(port))
-    os.environ['HTTPS_PROXY'] = 'http://127.0.0.1:{}'.format(str(port))
+    try:
 
-    a = requests.get('https://earthengine.google.com/')
+        if not ip.startswith('http'):
+            ip = 'http://' + ip
+        proxy = '{}:{}'.format(ip, port)
 
-    if a.status_code != 200:
-        print('Failed to connect to Earth Engine. Please double check the port number.')
+        os.environ['HTTP_PROXY'] = proxy
+        os.environ['HTTPS_PROXY'] = proxy
+
+        a = requests.get('https://earthengine.google.com/')
+
+        if a.status_code != 200:
+            print('Failed to connect to Earth Engine. Please double check the port number and ip address.')
+
+    except Exception as e:
+        print(e)
