@@ -16,6 +16,7 @@ class TestGeemap(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures, if any."""
+        geemap.ee_initialize()
 
     def tearDown(self):
         """Tear down test fixtures, if any."""
