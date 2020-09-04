@@ -2642,7 +2642,7 @@ def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, o
         shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
         opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
     """
-    ee_initialize()
+    # ee_initialize()
 
     image = None
 
@@ -2695,7 +2695,7 @@ def geojson_to_ee(geo_json, geodesic=True):
     Returns:
         ee_object: An ee.Geometry object
     """
-    ee_initialize()
+    # ee_initialize()
 
     try:
 
@@ -2741,7 +2741,7 @@ def ee_to_geojson(ee_object, out_json=None):
         object: GeoJSON object.
     """
     from json import dumps
-    ee_initialize()
+    # ee_initialize()
 
     try:
         if isinstance(ee_object, ee.geometry.Geometry) or isinstance(ee_object, ee.feature.Feature) or isinstance(ee_object, ee.featurecollection.FeatureCollection):
@@ -2937,7 +2937,7 @@ def shp_to_geojson(in_shp, out_json=None):
         object: The json object representing the shapefile.
     """
     # check_install('pyshp')
-    ee_initialize()
+    # ee_initialize()
     try:
         import json
         import shapefile
@@ -2985,7 +2985,7 @@ def shp_to_ee(in_shp):
     Returns:
         object: Earth Engine objects representing the shapefile.
     """
-    ee_initialize()
+    # ee_initialize()
     try:
         json_data = shp_to_geojson(in_shp)
         ee_object = geojson_to_ee(json_data)
@@ -3003,7 +3003,7 @@ def filter_polygons(ftr):
     Returns:
         object: ee.Feature
     """
-    ee_initialize()
+    # ee_initialize()
     geometries = ftr.geometry().geometries()
     geometries = geometries.map(lambda geo: ee.Feature(
         ee.Geometry(geo)).set('geoType',  ee.Geometry(geo).type()))
@@ -3023,11 +3023,10 @@ def ee_export_vector(ee_object, filename, selectors=None):
     """
     import requests
     import zipfile
-    ee_initialize()
+    # ee_initialize()
 
     if not isinstance(ee_object, ee.FeatureCollection):
-        print('The ee_object must be an ee.FeatureCollection.')
-        return
+        raise ValueError('ee_object must be an ee.FeatureCollection')
 
     allowed_formats = ['csv', 'geojson', 'kml', 'kmz', 'shp']
     # allowed_formats = ['csv', 'kml', 'kmz']
@@ -3043,7 +3042,7 @@ def ee_export_vector(ee_object, filename, selectors=None):
         print('The file type must be one of the following: {}'.format(
             ', '.join(allowed_formats)))
         print('Earth Engine no longer supports downloading featureCollection as shapefile or json. \nPlease use geemap.ee_export_vector_to_drive() to export featureCollection to Google Drive.')
-        return
+        raise ValueError
 
     if selectors is None:
         selectors = ee_object.first().propertyNames().getInfo()
@@ -3055,15 +3054,13 @@ def ee_export_vector(ee_object, filename, selectors=None):
         selectors = ['.geo'] + selectors
 
     elif not isinstance(selectors, list):
-        print("selectors must be a list, such as ['attribute1', 'attribute2']")
-        return
+        raise ValueError("selectors must be a list, such as ['attribute1', 'attribute2']")
     else:
         allowed_attributes = ee_object.first().propertyNames().getInfo()
         for attribute in selectors:
             if not (attribute in allowed_attributes):
-                print('Attributes must be one chosen from: {} '.format(
-                    ', '.join(allowed_attributes)))
-                return
+                raise ValueError('Attributes must be one chosen from: {} '.format(
+                    ', '.join(allowed_attributes)))                
 
     try:
         print('Generating URL ...')
@@ -3083,14 +3080,14 @@ def ee_export_vector(ee_object, filename, selectors=None):
                 r = requests.get(url, stream=True)
             except Exception as e:
                 print(e)
+                raise ValueError
 
         with open(filename, 'wb') as fd:
             for chunk in r.iter_content(chunk_size=1024):
                 fd.write(chunk)
     except Exception as e:
         print('An error occurred while downloading.')
-        print(e)
-        return
+        raise ValueError(e)
 
     try:
         if filetype == 'shp':
@@ -3101,7 +3098,8 @@ def ee_export_vector(ee_object, filename, selectors=None):
 
         print('Data downloaded to {}'.format(filename))
     except Exception as e:
-        print(e)
+        raise ValueError(e)
+
 
 
 def ee_export_vector_to_drive(ee_object, description, folder, file_format='shp', selectors=None):
@@ -3150,7 +3148,7 @@ def ee_export_geojson(ee_object, filename=None, selectors=None):
     """
     import requests
     import zipfile
-    ee_initialize()
+    # ee_initialize()
 
     if not isinstance(ee_object, ee.FeatureCollection):
         print('The ee_object must be an ee.FeatureCollection.')
@@ -3226,7 +3224,7 @@ def ee_to_shp(ee_object, filename, selectors=None):
         filename (str): The output filepath of the shapefile.
         selectors (list, optional): A list of attributes to export. Defaults to None.
     """
-    ee_initialize()
+    # ee_initialize()
     try:
         if filename.lower().endswith('.shp'):
             ee_export_vector(ee_object=ee_object,
@@ -3246,7 +3244,7 @@ def ee_to_csv(ee_object, filename, selectors=None):
         filename (str): The output filepath of the CSV file.
         selectors (list, optional): A list of attributes to export. Defaults to None.
     """
-    ee_initialize()
+    # ee_initialize()
     try:
         if filename.lower().endswith('.csv'):
             ee_export_vector(ee_object=ee_object,
@@ -3271,7 +3269,7 @@ def ee_export_image(ee_object, filename, scale=None, crs=None, region=None, file
     """
     import requests
     import zipfile
-    ee_initialize()
+    # ee_initialize()
 
     if not isinstance(ee_object, ee.Image):
         print('The ee_object must be an ee.Image.')
@@ -3343,7 +3341,7 @@ def ee_export_image_collection(ee_object, out_dir, scale=None, crs=None, region=
 
     import requests
     import zipfile
-    ee_initialize()
+    # ee_initialize()
 
     if not isinstance(ee_object, ee.ImageCollection):
         print('The ee_object must be an ee.ImageCollection.')
@@ -3383,7 +3381,7 @@ def ee_export_image_to_drive(ee_object, description, folder=None, region=None, s
         max_pixels (int, optional): Restrict the number of pixels in the export. Defaults to 1.0E13.
         file_format (str, optional): The string file format to which the image is exported. Currently only 'GeoTIFF' and 'TFRecord' are supported. Defaults to 'GeoTIFF'.
     """
-    ee_initialize()
+    # ee_initialize()
 
     if not isinstance(ee_object, ee.Image):
         print('The ee_object must be an ee.Image.')
@@ -3426,7 +3424,7 @@ def ee_export_image_collection_to_drive(ee_object, descriptions=None, folder=Non
         max_pixels (int, optional): Restrict the number of pixels in the export. Defaults to 1.0E13.
         file_format (str, optional): The string file format to which the image is exported. Currently only 'GeoTIFF' and 'TFRecord' are supported. Defaults to 'GeoTIFF'.
     """
-    ee_initialize()
+    # ee_initialize()
 
     if not isinstance(ee_object, ee.ImageCollection):
         print('The ee_object must be an ee.ImageCollection.')
@@ -3965,7 +3963,7 @@ def naip_timeseries(roi=None, start_year=2009, end_year=2018):
     Returns:
         object: An ee.ImageCollection representing annual NAIP imagery.
     """
-    ee_initialize()
+    # ee_initialize()
     try:
 
         def get_annual_NAIP(year):
@@ -4010,7 +4008,7 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
     import re
     import datetime
 
-    ee_initialize()
+    # ee_initialize()
 
     if roi is None:
         # roi = ee.Geometry.Polygon(
@@ -4213,7 +4211,7 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     import re
     import datetime
 
-    ee_initialize()
+    # ee_initialize()
 
     if roi is None:
         # roi = ee.Geometry.Polygon(
@@ -4448,7 +4446,7 @@ def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start
         str: File path to the output GIF image.
     """
 
-    ee_initialize()
+    # ee_initialize()
 
     if roi is None:
         roi = ee.Geometry.Polygon(
@@ -5243,7 +5241,7 @@ def ee_user_id():
     Returns:
         str: A string containing the user id.
     """
-    ee_initialize()
+    # ee_initialize()
     roots = ee.data.getAssetRoots()
     if len(roots) == 0:
         return None
@@ -5259,7 +5257,7 @@ def build_asset_tree(limit=100):
     import geeadd.ee_report as geeadd
     warnings.filterwarnings('ignore')
 
-    ee_initialize()
+    # ee_initialize()
 
     tree = Tree(multiple_selection=False)
     tree_dict = {}
