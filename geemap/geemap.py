@@ -5717,7 +5717,8 @@ def clone_github_repo(url, out_dir):
     import zipfile
 
     repo_name = os.path.basename(url)
-    url_zip = os.path.join(url, 'archive/master.zip')
+    # url_zip = os.path.join(url, 'archive/master.zip')
+    url_zip = url + '/archive/master.zip'
 
     if os.path.exists(out_dir):
         print(
