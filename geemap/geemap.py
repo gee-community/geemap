@@ -33,6 +33,16 @@ def ee_initialize(token_name='EARTHENGINE_TOKEN'):
             os.makedirs(credential_file_path, exist_ok=True)
             with open(credential_file_path + 'credentials', 'w') as file:
                 file.write(credential)
+        elif in_colab_shell():
+            if credentials_in_drive() and (not credentials_in_colab()):
+                copy_credentials_to_colab()
+            elif not credentials_in_colab:
+                ee.Authenticate()
+                if is_drive_mounted() and (not credentials_in_drive()):
+                    copy_credentials_to_drive()
+            else:
+                if is_drive_mounted():
+                    copy_credentials_to_drive()
 
         ee.Initialize()
     except:
@@ -79,9 +89,14 @@ class Map(ipyleaflet.Map):
         if 'show_attribution' not in kwargs.keys():
             kwargs['show_attribution'] = True
 
+        if 'scroll_wheel_zoom' not in kwargs.keys():
+            kwargs['scroll_wheel_zoom'] = True
+
+        if 'zoom_control' not in kwargs.keys():
+            kwargs['zoom_control'] = True
+
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
-        self.scroll_wheel_zoom = True
         self.layout.height = '550px'
 
         self.clear_controls()
@@ -337,7 +352,8 @@ class Map(ipyleaflet.Map):
                                )
         self.add_control(search)
 
-        self.add_control(ZoomControl(position='topleft'))
+        if kwargs['zoom_control']:
+            self.add_control(ZoomControl(position='topleft'))
 
         layer_control = LayersControl(position='topright')
         self.add_control(layer_control)
@@ -3054,13 +3070,14 @@ def ee_export_vector(ee_object, filename, selectors=None):
         selectors = ['.geo'] + selectors
 
     elif not isinstance(selectors, list):
-        raise ValueError("selectors must be a list, such as ['attribute1', 'attribute2']")
+        raise ValueError(
+            "selectors must be a list, such as ['attribute1', 'attribute2']")
     else:
         allowed_attributes = ee_object.first().propertyNames().getInfo()
         for attribute in selectors:
             if not (attribute in allowed_attributes):
                 raise ValueError('Attributes must be one chosen from: {} '.format(
-                    ', '.join(allowed_attributes)))                
+                    ', '.join(allowed_attributes)))
 
     try:
         print('Generating URL ...')
@@ -3099,7 +3116,6 @@ def ee_export_vector(ee_object, filename, selectors=None):
         print('Data downloaded to {}'.format(filename))
     except Exception as e:
         raise ValueError(e)
-
 
 
 def ee_export_vector_to_drive(ee_object, description, folder, file_format='shp', selectors=None):
@@ -3212,7 +3228,7 @@ def ee_export_geojson(ee_object, filename=None, selectors=None):
 
     with open(filename) as f:
         geojson = f.read()
-    
+
     return geojson
 
 
@@ -5970,7 +5986,8 @@ def date_sequence(start, end, unit, date_format='YYYY-MM-dd'):
     end_date = ee.Date(end)
     count = ee.Number(end_date.difference(start_date, unit)).toInt()
     num_seq = ee.List.sequence(0, count)
-    date_seq = num_seq.map(lambda d: start_date.advance(d, unit).format(date_format))
+    date_seq = num_seq.map(
+        lambda d: start_date.advance(d, unit).format(date_format))
     return date_seq
 
 
@@ -5997,8 +6014,8 @@ def adjust_longitude(in_fc):
                     longitude = 360 + longitude
                 elif longitude > 180:
                     longitude = longitude - 360
-                in_fc['geometry']['coordinates'][0] = longitude          
-            
+                in_fc['geometry']['coordinates'][0] = longitude
+
             elif in_fc['geometry']['type'] == 'Polygon':
                 for index1, item in enumerate(coordinates):
                     for index2, element in enumerate(item):
@@ -6006,7 +6023,7 @@ def adjust_longitude(in_fc):
                         if longitude < - 180:
                             longitude = 360 + longitude
                         elif longitude > 180:
-                            longitude = longitude - 360                    
+                            longitude = longitude - 360
                         in_fc['geometry']['coordinates'][index1][index2][0] = longitude
 
             elif in_fc['geometry']['type'] == 'LineString':
@@ -6028,8 +6045,8 @@ def adjust_longitude(in_fc):
                     longitude = 360 + longitude
                 elif longitude > 180:
                     longitude = longitude - 360
-                in_fc['coordinates'][0] = longitude          
-            
+                in_fc['coordinates'][0] = longitude
+
             elif in_fc['type'] == 'Polygon':
                 for index1, item in enumerate(coordinates):
                     for index2, element in enumerate(item):
@@ -6037,7 +6054,7 @@ def adjust_longitude(in_fc):
                         if longitude < - 180:
                             longitude = 360 + longitude
                         elif longitude > 180:
-                            longitude = longitude - 360                    
+                            longitude = longitude - 360
                         in_fc['coordinates'][index1][index2][0] = longitude
 
             elif in_fc['type'] == 'LineString':
@@ -6050,7 +6067,7 @@ def adjust_longitude(in_fc):
                     in_fc['coordinates'][index][0] = longitude
 
         return in_fc
-        
+
     except Exception as e:
         print(e)
         return None
@@ -6078,7 +6095,84 @@ def set_proxy(port=1080, ip='http://127.0.0.1'):
         a = requests.get('https://earthengine.google.com/')
 
         if a.status_code != 200:
-            print('Failed to connect to Earth Engine. Please double check the port number and ip address.')
+            print(
+                'Failed to connect to Earth Engine. Please double check the port number and ip address.')
 
     except Exception as e:
         print(e)
+
+
+def in_colab_shell():
+    """Tests if the code is being executed within Google Colab."""
+    try:
+        import google.colab  # pylint: disable=unused-variable
+        return True
+    except ImportError:
+        return False
+
+
+def is_drive_mounted():
+    """Checks whether Google Drive is mounted in Google Colab.
+
+    Returns:
+        bool: Returns True if Google Drive is mounted, False otherwise.
+    """
+    drive_path = '/content/drive/My Drive'
+    if os.path.exists(drive_path):
+        return True
+    else:
+        return False
+
+
+def credentials_in_drive():
+    """Checks if the ee credentials file exists in Google Drive.
+
+    Returns:
+        bool: Returns True if Google Drive is mounted, False otherwise.
+    """
+    credentials_path = '/content/drive/My Drive/.config/earthengine/credentials'
+    if os.path.exists(credentials_path):
+        return True
+    else:
+        return False
+
+
+def credentials_in_colab():
+    """Checks if the ee credentials file exists in Google Colab.
+
+    Returns:
+        bool: Returns True if Google Drive is mounted, False otherwise.
+    """
+    credentials_path = '/root/.config/earthengine/credentials'
+    if os.path.exists(credentials_path):
+        return True
+    else:
+        return False
+
+
+def copy_credentials_to_drive():
+    """Copies ee credentials from Google Colab to Google Drive.
+    """
+    import shutil
+    src = '/root/.config/earthengine/credentials'
+    dst = '/content/drive/My Drive/.config/earthengine/credentials'
+
+    wd = os.path.dirname(dst)
+    if not os.path.exists(wd):
+        os.makedirs(wd)
+
+    shutil.copyfile(src, dst)
+
+
+def copy_credentials_to_colab():
+    """Copies ee credentials from Google Drive to Google Colab.
+    """
+    import shutil
+    src = '/content/drive/My Drive/.config/earthengine/credentials'
+    dst = '/root/.config/earthengine/credentials'
+
+    wd = os.path.dirname(dst)
+    if not os.path.exists(wd):
+        os.makedirs(wd)
+
+    shutil.copyfile(src, dst)

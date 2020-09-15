@@ -22,6 +22,16 @@ def ee_initialize(token_name='EARTHENGINE_TOKEN'):
             os.makedirs(credential_file_path, exist_ok=True)
             with open(credential_file_path + 'credentials', 'w') as file:
                 file.write(credential)
+        elif in_colab_shell():
+            if credentials_in_drive() and (not credentials_in_colab()):
+                copy_credentials_to_colab()
+            elif not credentials_in_colab:
+                ee.Authenticate()
+                if is_drive_mounted() and (not credentials_in_drive()):
+                    copy_credentials_to_drive() 
+            else:
+                if is_drive_mounted():
+                    copy_credentials_to_drive()       
 
         ee.Initialize()
     except:
@@ -2930,3 +2940,79 @@ def create_code_cell(code='', where='below'):
         var code = IPython.notebook.insert_cell_{0}('code');
         code.set_text(atob("{1}"));
     """.format(where, encoded_code)))
+
+
+def in_colab_shell():
+    """Tests if the code is being executed within Google Colab."""
+    try:
+        import google.colab  # pylint: disable=unused-variable
+        return True
+    except ImportError:
+        return False
+
+
+def is_drive_mounted():
+    """Checks whether Google Drive is mounted in Google Colab.
+
+    Returns:
+        bool: Returns True if Google Drive is mounted, False otherwise.
+    """
+    drive_path = '/content/drive/My Drive'
+    if os.path.exists(drive_path):
+        return True
+    else:
+        return False
+
+
+def credentials_in_drive():
+    """Checks if the ee credentials file exists in Google Drive.
+
+    Returns:
+        bool: Returns True if Google Drive is mounted, False otherwise.
+    """
+    credentials_path = '/content/drive/My Drive/.config/earthengine/credentials'
+    if os.path.exists(credentials_path):
+        return True
+    else:
+        return False
+
+
+def credentials_in_colab():
+    """Checks if the ee credentials file exists in Google Colab.
+
+    Returns:
+        bool: Returns True if Google Drive is mounted, False otherwise.
+    """
+    credentials_path = '/root/.config/earthengine/credentials'
+    if os.path.exists(credentials_path):
+        return True
+    else:
+        return False
+
+
+def copy_credentials_to_drive():
+    """Copies ee credentials from Google Colab to Google Drive.
+    """
+    import shutil
+    src = '/root/.config/earthengine/credentials'
+    dst = '/content/drive/My Drive/.config/earthengine/credentials'
+
+    wd = os.path.dirname(dst)
+    if not os.path.exists(wd):
+        os.makedirs(wd)
+
+    shutil.copyfile(src, dst)
+
+
+def copy_credentials_to_colab():
+    """Copies ee credentials from Google Drive to Google Colab.
+    """
+    import shutil
+    src = '/content/drive/My Drive/.config/earthengine/credentials'
+    dst = '/root/.config/earthengine/credentials'
+
+    wd = os.path.dirname(dst)
+    if not os.path.exists(wd):
+        os.makedirs(wd)
+
+    shutil.copyfile(src, dst)
