@@ -2,7 +2,7 @@
 
 __author__ = """Qiusheng Wu"""
 __email__ = 'giswqs@gmail.com'
-__version__ = '0.7.12'
+__version__ = '0.7.13'
 
 from .geemap import *
 from .basemaps import ee_basemaps
