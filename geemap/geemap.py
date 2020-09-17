@@ -95,9 +95,12 @@ class Map(ipyleaflet.Map):
         if 'zoom_control' not in kwargs.keys():
             kwargs['zoom_control'] = True
 
+        if 'height' not in kwargs.keys():
+            kwargs['height'] = '550px'
+
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
-        self.layout.height = '550px'
+        self.layout.height = kwargs['height']
 
         self.clear_controls()
 
