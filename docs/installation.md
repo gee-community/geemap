@@ -19,7 +19,7 @@ the [Earth Engine Code Editor](https://code.earthengine.google.com/) to get fami
 **geemap** is also available on [conda-forge](https://anaconda.org/conda-forge/geemap). If you have
 [Anaconda](https://www.anaconda.com/distribution/#download-section) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed on your computer, you can create a conda Python environment to install geemap:
 
-    conda create -n gee python=3.8
+    conda create -n gee python
     conda activate gee
     conda install mamba -c conda-forge
     mamba install geemap -c conda-forge
