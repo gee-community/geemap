@@ -1796,7 +1796,7 @@ class Map(ipyleaflet.Map):
             print(e)
             return
 
-    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='black', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, out_gif=None, upload=False):
+    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='black', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, out_gif=None, download=False):
         """Adds a Landsat timelapse to the map.
 
         Args:
@@ -1817,7 +1817,7 @@ class Map(ipyleaflet.Map):
             progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
             progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
             out_gif (str, optional): File path to the output animated GIF. Defaults to None.
-            upload (bool, optional): Whether to upload the gif to imgur.com. Defaults to False.
+            download (bool, optional): Whether to download the gif. Defaults to False.
 
         """
         try:
@@ -1862,15 +1862,17 @@ class Map(ipyleaflet.Map):
 
             # bounds = minimum_bounding_box(geojson)
             # bounds = ((35.892718, -115.471773), (36.409454, -114.271283))
-            lat = (bounds[0][0] + bounds[1][0]) / 2.0
-            lon = (bounds[0][1] + bounds[1][1]) / 2.0
+            # lat = (bounds[0][0] + bounds[1][0]) / 2.0
+            # lon = (bounds[0][1] + bounds[1][1]) / 2.0
 
             print('Adding GIF to the map ...')
             self.image_overlay(url=in_gif, bounds=bounds, name=layer_name)
             print('The timelapse has been added to the map.')
 
-            if upload:
-                upload_to_imgur(in_gif)
+            if download:
+                # upload_to_imgur(in_gif)
+                link = create_download_link(in_gif, title = "Click here to download the timelapse: ")
+                display(link)
 
         except Exception as e:
             print(e)
@@ -6179,3 +6181,52 @@ def copy_credentials_to_colab():
         os.makedirs(wd)
 
     shutil.copyfile(src, dst)
+
+
+def create_download_link(filename, title = "Click here to download: "):  
+    """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578
+
+    Args:
+        filename (str): The file path to the file to download
+        title (str, optional): str. Defaults to "Click here to download: ".
+
+    Returns:
+        str: HTML download URL.
+    """
+    import base64
+    from IPython.display import HTML
+    data = open(filename, "rb").read()
+    b64 = base64.b64encode(data)
+    payload = b64.decode()
+    html = '<a download="{filename}" href="data:text/csv;base64,{payload}" target="_blank">{title}</a>'
+    html = html.format(payload=payload,title=title+f' {filename}',filename=filename)
+    return HTML(html)
+
+
+def edit_download_html(htmlWidget, filename, title = "Click here to download: "):    
+    """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578#issuecomment-617668058
+
+    Args:
+        htmlWidget (object): The HTML widget to display the URL.
+        filename (str): File path to download. 
+        title (str, optional): Download description. Defaults to "Click here to download: ".
+    """
+
+    from IPython.display import HTML
+    import ipywidgets as widgets
+    import base64
+
+    # Change widget html temperarily to a font-awesome spinner
+    htmlWidget.value = "<i class=\"fa fa-spinner fa-spin fa-2x fa-fw\"></i><span class=\"sr-only\">Loading...</span>"
+    
+    # Process raw data
+    data = open(filename, "rb").read()
+    b64 = base64.b64encode(data)
+    payload = b64.decode()
+    
+    # Create and assign html to widget
+    html = '<a download="{filename}" href="data:text/csv;base64,{payload}" target="_blank">{title}</a>'
+    htmlWidget.value = html.format(payload = payload, title = title+filename, filename = filename)
+    
+    # htmlWidget = widgets.HTML(value = '')
+    # htmlWidget

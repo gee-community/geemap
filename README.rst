@@ -134,7 +134,7 @@ To use **geemap**, you must first `sign up <https://earthengine.google.com/signu
 
 .. code:: python
 
-  conda create -n gee python=3.7
+  conda create -n gee python
   conda activate gee
   conda install mamba -c conda-forge
   mamba install geemap -c conda-forge 
