@@ -55,6 +55,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 34. [Interactive extraction of pixel values and interactive region reduction](https://i.imgur.com/LXRqSTu.gif) ([video](https://t.co/D0NC63KgF3) | [gif](https://i.imgur.com/LXRqSTu.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/34_extract_values.ipynb))
 35. How to use geemap and Earth Engine in Google Colab ([video](https://youtu.be/fG6kx9vq7hs) | [gif](https://i.imgur.com/OJCasMe.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/35_geemap_colab.ipynb))
 36. How to find out the greenest day of the year ([video](https://youtu.be/9KEaW4Ks5fQ) | [gif](https://i.imgur.com/eLDeb4t.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/36_quality_mosaic.ipynb))
+37. How to use Earth Engine with pydeck for 3D terrain visualization (video | [gif](https://i.imgur.com/Gx7Y015.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/37_pydeck_3d.ipynb))
 
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
