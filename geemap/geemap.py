@@ -6198,8 +6198,9 @@ def create_download_link(filename, title = "Click here to download: "):
     data = open(filename, "rb").read()
     b64 = base64.b64encode(data)
     payload = b64.decode()
-    html = '<a download="{filename}" href="data:text/csv;base64,{payload}" target="_blank">{title}</a>'
-    html = html.format(payload=payload,title=title+f' {filename}',filename=filename)
+    basename = os.path.basename(filename)
+    html = '<a download="{filename}" href="data:text/csv;base64,{payload}" style="color:#0000FF;" target="_blank">{title}</a>'
+    html = html.format(payload=payload,title=title+f' {basename}',filename=basename)
     return HTML(html)
 
 
@@ -6223,10 +6224,12 @@ def edit_download_html(htmlWidget, filename, title = "Click here to download: ")
     data = open(filename, "rb").read()
     b64 = base64.b64encode(data)
     payload = b64.decode()
+
+    basename = os.path.basename(filename)
     
     # Create and assign html to widget
     html = '<a download="{filename}" href="data:text/csv;base64,{payload}" target="_blank">{title}</a>'
-    htmlWidget.value = html.format(payload = payload, title = title+filename, filename = filename)
+    htmlWidget.value = html.format(payload = payload, title = title+basename, filename = basename)
     
     # htmlWidget = widgets.HTML(value = '')
     # htmlWidget
