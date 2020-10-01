@@ -2829,7 +2829,7 @@ def api_docs():
     """
     import webbrowser
 
-    url = 'https://geemap.readthedocs.io/en/latest/source/geemap.html#geemap-package'
+    url = 'https://giswqs.github.io/geemap/geemap'
     webbrowser.open_new_tab(url)
 
 
@@ -3338,6 +3338,7 @@ def ee_export_image(ee_object, filename, scale=None, crs=None, region=None, file
     try:
         z = zipfile.ZipFile(filename_zip)
         z.extractall(os.path.dirname(filename))
+        z.close()
         os.remove(filename_zip)
 
         if file_per_band:
