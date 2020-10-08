@@ -1796,7 +1796,7 @@ class Map(ipyleaflet.Map):
             print(e)
             return
 
-    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='black', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, out_gif=None, download=False):
+    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='black', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, out_gif=None, download=False, apply_fmask=True):
         """Adds a Landsat timelapse to the map.
 
         Args:
@@ -1818,6 +1818,7 @@ class Map(ipyleaflet.Map):
             progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
             out_gif (str, optional): File path to the output animated GIF. Defaults to None.
             download (bool, optional): Whether to download the gif. Defaults to False.
+            apply_mask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
 
         """
         try:
@@ -1847,7 +1848,7 @@ class Map(ipyleaflet.Map):
             roi = ee.Geometry(geojson)
 
             in_gif = landsat_ts_gif(roi=roi, out_gif=out_gif, start_year=start_year, end_year=end_year, start_date=start_date,
-                                    end_date=end_date, bands=bands, vis_params=vis_params, dimensions=dimensions, frames_per_second=frames_per_second)
+                                    end_date=end_date, bands=bands, vis_params=vis_params, dimensions=dimensions, frames_per_second=frames_per_second, apply_fmask=apply_fmask)
 
             print('Adding animated text to GIF ...')
             add_text_to_gif(in_gif, in_gif, xy=('2%', '2%'), text_sequence=start_year,
@@ -1871,7 +1872,8 @@ class Map(ipyleaflet.Map):
 
             if download:
                 # upload_to_imgur(in_gif)
-                link = create_download_link(in_gif, title = "Click here to download the timelapse: ")
+                link = create_download_link(
+                    in_gif, title="Click here to download the timelapse: ")
                 display(link)
 
         except Exception as e:
@@ -4209,7 +4211,7 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
     return imgCol
 
 
-def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20'):
+def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', apply_fmask=True):
     """Generates an annual Landsat ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
 
     Args:
@@ -4224,6 +4226,7 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
         end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+        apply_mask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
     Returns:
         object: Returns an ImageCollection containing annual Landsat images.
     """
@@ -4350,7 +4353,8 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     def prepOli(img):
         orig = img
         img = renameOli(img)
-        img = fmask(img)
+        if apply_fmask:
+            img = fmask(img)
         return (ee.Image(img.copyProperties(orig, orig.propertyNames()))
                 .resample('bicubic'))
 
@@ -4358,7 +4362,8 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     def prepEtm(img):
         orig = img
         img = renameEtm(img)
-        img = fmask(img)
+        if apply_fmask:
+            img = fmask(img)
         return(ee.Image(img.copyProperties(orig, orig.propertyNames()))
                .resample('bicubic'))
 
@@ -4449,7 +4454,7 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     #     task.start()
 
 
-def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10):
+def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, apply_fmask=True):
     """Generates a Landsat timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
 
     Args:
@@ -4463,6 +4468,7 @@ def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start
         vis_params (dict, optional): Visualization parameters. Defaults to None.
         dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
+        apply_mask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
 
     Returns:
         str: File path to the output GIF image.
@@ -4514,7 +4520,7 @@ def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start
 
     try:
         col = landsat_timeseries(
-            roi, start_year, end_year, start_date, end_date)
+            roi, start_year, end_year, start_date, end_date, apply_fmask)
 
         if vis_params is None:
             vis_params = {}
@@ -6184,7 +6190,7 @@ def copy_credentials_to_colab():
     shutil.copyfile(src, dst)
 
 
-def create_download_link(filename, title = "Click here to download: "):  
+def create_download_link(filename, title="Click here to download: "):
     """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578
 
     Args:
@@ -6201,11 +6207,12 @@ def create_download_link(filename, title = "Click here to download: "):
     payload = b64.decode()
     basename = os.path.basename(filename)
     html = '<a download="{filename}" href="data:text/csv;base64,{payload}" style="color:#0000FF;" target="_blank">{title}</a>'
-    html = html.format(payload=payload,title=title+f' {basename}',filename=basename)
+    html = html.format(payload=payload, title=title +
+                       f' {basename}', filename=basename)
     return HTML(html)
 
 
-def edit_download_html(htmlWidget, filename, title = "Click here to download: "):    
+def edit_download_html(htmlWidget, filename, title="Click here to download: "):
     """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578#issuecomment-617668058
 
     Args:
@@ -6220,17 +6227,86 @@ def edit_download_html(htmlWidget, filename, title = "Click here to download: ")
 
     # Change widget html temperarily to a font-awesome spinner
     htmlWidget.value = "<i class=\"fa fa-spinner fa-spin fa-2x fa-fw\"></i><span class=\"sr-only\">Loading...</span>"
-    
+
     # Process raw data
     data = open(filename, "rb").read()
     b64 = base64.b64encode(data)
     payload = b64.decode()
 
     basename = os.path.basename(filename)
-    
+
     # Create and assign html to widget
     html = '<a download="{filename}" href="data:text/csv;base64,{payload}" target="_blank">{title}</a>'
-    htmlWidget.value = html.format(payload = payload, title = title+basename, filename = basename)
-    
+    htmlWidget.value = html.format(
+        payload=payload, title=title+basename, filename=basename)
+
     # htmlWidget = widgets.HTML(value = '')
     # htmlWidget
+
+
+def load_GeoTIFF(URL):
+    """Loads a Cloud Optimized GeoTIFF (COG) as an Image. Only Google Cloud Storage is supported. The URL can be one of the following formats:
+    Option 1: gs://pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
+    Option 2: https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
+    Option 3: https://storage.cloud.google.com/gcp-public-data-landsat/LC08/01/044/034/LC08_L1TP_044034_20131228_20170307_01_T1/LC08_L1TP_044034_20131228_20170307_01_T1_B5.TIF
+    
+    Args:
+        URL (str): The Cloud Storage URL of the GeoTIFF to load.
+
+    Returns:
+        ee.Image: an Earth Engine image.
+    """
+
+    uri = URL.strip()
+
+    if uri.startswith('https://storage.googleapis.com/'):
+        uri = uri.replace('https://storage.googleapis.com/', 'gs://')
+    elif uri.startswith('https://storage.cloud.google.com/'):
+        uri = uri.replace('https://storage.cloud.google.com/', 'gs://')
+
+    if not uri.startswith('gs://'):
+        raise Exception('Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
+
+    if not uri.lower().endswith('.tif'):
+        raise Exception('Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
+
+    cloud_image = ee.Image.loadGeoTIFF(uri)
+    return cloud_image
+
+
+def load_GeoTIFFs(URLs):
+    """Loads a list of Cloud Optimized GeoTIFFs (COG) as an ImageCollection. URLs is a list of URL, which can be one of the following formats:
+    Option 1: gs://pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
+    Option 2: https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
+    Option 3: https://storage.cloud.google.com/gcp-public-data-landsat/LC08/01/044/034/LC08_L1TP_044034_20131228_20170307_01_T1/LC08_L1TP_044034_20131228_20170307_01_T1_B5.TIF
+    
+    Args:
+        URLs (list): A list of Cloud Storage URL of the GeoTIFF to load.
+
+    Returns:
+        ee.ImageCollection: An Earth Engine ImageCollection.
+    """
+
+    if not isinstance(URLs, list):
+        raise Exception('The URLs argument must be a list.')
+
+    URIs = []
+    for URL in URLs:
+        uri = URL.strip()
+
+        if uri.startswith('https://storage.googleapis.com/'):
+            uri = uri.replace('https://storage.googleapis.com/', 'gs://')
+        elif uri.startswith('https://storage.cloud.google.com/'):
+            uri = uri.replace('https://storage.cloud.google.com/', 'gs://')
+
+        if not uri.startswith('gs://'):
+            raise Exception('Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
+
+        if not uri.lower().endswith('.tif'):
+            raise Exception('Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
+
+        URIs.append(uri)
+
+    URIs = ee.List(URIs)
+    collection = URIs.map(lambda uri: ee.Image.loadGeoTIFF(uri))
+    return ee.ImageCollection(collection)
