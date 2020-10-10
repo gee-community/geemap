@@ -800,8 +800,8 @@ class Map(ipyleaflet.Map):
 
         Args:
             mapTypeId (str, optional): A mapTypeId to set the basemap to. Can be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN" to select one of the standard Google Maps API map types. Defaults to 'HYBRID'.
-            styles ([type], optional): A dictionary of custom MapTypeStyle objects keyed with a name that will appear in the map's Map Type Controls. Defaults to None.
-            types ([type], optional): A list of mapTypeIds to make available. If omitted, but opt_styles is specified, appends all of the style keys to the standard Google Maps API map types.. Defaults to None.
+            styles (object, optional): A dictionary of custom MapTypeStyle objects keyed with a name that will appear in the map's Map Type Controls. Defaults to None.
+            types (list, optional): A list of mapTypeIds to make available. If omitted, but opt_styles is specified, appends all of the style keys to the standard Google Maps API map types.. Defaults to None.
         """
         self.clear_layers()
         self.clear_controls()
@@ -1796,7 +1796,7 @@ class Map(ipyleaflet.Map):
             print(e)
             return
 
-    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='black', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, out_gif=None, download=False, apply_fmask=True):
+    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='white', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, out_gif=None, download=False, apply_fmask=True, nd_bands=None, nd_threshold=0, nd_palette=['black', 'blue']):
         """Adds a Landsat timelapse to the map.
 
         Args:
@@ -1818,7 +1818,10 @@ class Map(ipyleaflet.Map):
             progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
             out_gif (str, optional): File path to the output animated GIF. Defaults to None.
             download (bool, optional): Whether to download the gif. Defaults to False.
-            apply_mask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+            apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+            nd_bands (list, optional): A list of names specifying the bands to use, e.g., ['Green', 'SWIR1']. The normalized difference is computed as (first − second) / (first + second). Note that negative input values are forced to 0 so that the result is confined to the range (-1, 1).  
+            nd_threshold (float, optional): The threshold for extacting pixels from the normalized difference band. 
+            nd_palette (str, optional): The color palette to use for displaying the normalized difference band. 
 
         """
         try:
@@ -1848,26 +1851,33 @@ class Map(ipyleaflet.Map):
             roi = ee.Geometry(geojson)
 
             in_gif = landsat_ts_gif(roi=roi, out_gif=out_gif, start_year=start_year, end_year=end_year, start_date=start_date,
-                                    end_date=end_date, bands=bands, vis_params=vis_params, dimensions=dimensions, frames_per_second=frames_per_second, apply_fmask=apply_fmask)
+                                    end_date=end_date, bands=bands, vis_params=vis_params, dimensions=dimensions, frames_per_second=frames_per_second, apply_fmask=apply_fmask, nd_bands=nd_bands, nd_threshold=nd_threshold, nd_palette=nd_palette)
+            in_nd_gif = in_gif.replace('.gif', '_nd.gif')
 
             print('Adding animated text to GIF ...')
             add_text_to_gif(in_gif, in_gif, xy=('2%', '2%'), text_sequence=start_year,
                             font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
+            if nd_bands is not None:
+                add_text_to_gif(in_nd_gif, in_nd_gif, xy=('2%', '2%'), text_sequence=start_year,
+                                font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
 
             if label is not None:
                 add_text_to_gif(in_gif, in_gif, xy=('2%', '90%'), text_sequence=label,
                                 font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
+                # if nd_bands is not None:
+                #     add_text_to_gif(in_nd_gif, in_nd_gif, xy=('2%', '90%'), text_sequence=label,
+                #                     font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
 
             if is_tool('ffmpeg'):
                 reduce_gif_size(in_gif)
-
-            # bounds = minimum_bounding_box(geojson)
-            # bounds = ((35.892718, -115.471773), (36.409454, -114.271283))
-            # lat = (bounds[0][0] + bounds[1][0]) / 2.0
-            # lon = (bounds[0][1] + bounds[1][1]) / 2.0
+                if nd_bands is not None:
+                    reduce_gif_size(in_nd_gif)
 
             print('Adding GIF to the map ...')
             self.image_overlay(url=in_gif, bounds=bounds, name=layer_name)
+            if nd_bands is not None:
+                self.image_overlay(
+                    url=in_nd_gif, bounds=bounds, name=layer_name+' ND')
             print('The timelapse has been added to the map.')
 
             if download:
@@ -3527,7 +3537,7 @@ def download_ee_video(collection, video_args, out_gif):
 
     Args:
         collection (object): An ee.ImageCollection.
-        video_args ([type]): Parameters for expring the video thumbnail.
+        video_args (object): Parameters for expring the video thumbnail.
         out_gif (str): File path to the output GIF.
     """
     import requests
@@ -4211,22 +4221,16 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
     return imgCol
 
 
-def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', apply_fmask=True):
+def landsat_timeseries(roi=None, start_year=1984, end_year=2020, start_date='06-10', end_date='09-20', apply_fmask=True):
     """Generates an annual Landsat ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
 
     Args:
-        roi ([type], optional): [description]. Defaults to None.
-        start_year (int, optional): [description]. Defaults to 1984.
-        end_year (int, optional): [description]. Defaults to 2019.
-        start_date (str, optional): [description]. Defaults to '06-10'.
-        end_date (str, optional): [description]. Defaults to '09-20'.
-
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
+        end_year (int, optional): Ending year for the timelapse. Defaults to 2020.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
-        apply_mask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+        apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
     Returns:
         object: Returns an ImageCollection containing annual Landsat images.
     """
@@ -4236,15 +4240,7 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     import re
     import datetime
 
-    # ee_initialize()
-
     if roi is None:
-        # roi = ee.Geometry.Polygon(
-        #     [[[-180, -80],
-        #       [-180, 80],
-        #         [180, 80],
-        #         [180, -80],
-        #         [-180, -80]]], None, False)
         roi = ee.Geometry.Polygon(
             [[[-115.471773, 35.892718],
               [-115.471773, 36.409454],
@@ -4411,7 +4407,8 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     # Convert image composite list to collection
     imgCol = ee.ImageCollection.fromImages(imgList)
 
-    imgCol = imgCol.map(lambda img: img.clip(roi))
+    imgCol = imgCol.map(lambda img: img.clip(
+        roi).set({'coordinates': roi.coordinates()}))
 
     return imgCol
 
@@ -4454,12 +4451,12 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     #     task.start()
 
 
-def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, apply_fmask=True):
+def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, apply_fmask=True, nd_bands=None, nd_threshold=0, nd_palette=['black', 'blue']):
     """Generates a Landsat timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
 
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
-        out_gif ([type], optional): File path to the output animated GIF. Defaults to None.
+        out_gif (str, optional): File path to the output animated GIF. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
         end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
@@ -4468,7 +4465,10 @@ def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start
         vis_params (dict, optional): Visualization parameters. Defaults to None.
         dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
-        apply_mask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+        apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+        nd_bands (list, optional): A list of names specifying the bands to use, e.g., ['Green', 'SWIR1']. The normalized difference is computed as (first − second) / (first + second). Note that negative input values are forced to 0 so that the result is confined to the range (-1, 1).  
+        nd_threshold (float, optional): The threshold for extacting pixels from the normalized difference band. 
+        nd_palette (list, optional): The color palette to use for displaying the normalized difference band. 
 
     Returns:
         str: File path to the output GIF image.
@@ -4514,9 +4514,15 @@ def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start
     if len(bands) == 3 and all(x in allowed_bands for x in bands):
         pass
     else:
-        print('You can only select 3 bands from the following: {}'.format(
+        raise Exception('You can only select 3 bands from the following: {}'.format(
             ', '.join(allowed_bands)))
-        return
+
+    if nd_bands is not None:
+        if len(nd_bands) == 2 and all(x in allowed_bands[:-1] for x in nd_bands):
+            pass
+        else:
+            raise Exception('You can only select two bands from the following: {}'.format(
+                ', '.join(allowed_bands[:-1])))
 
     try:
         col = landsat_timeseries(
@@ -4548,6 +4554,13 @@ def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start
             video_args['gamma'] = [1, 1, 1]
 
         download_ee_video(col, video_args, out_gif)
+
+        if nd_bands is not None:
+            nd_images = landsat_ts_norm_diff(
+                col, bands=nd_bands, threshold=nd_threshold)
+            out_nd_gif = out_gif.replace('.gif', '_nd.gif')
+            landsat_ts_norm_diff_gif(nd_images, out_gif=out_nd_gif, vis_params=None,
+                                     palette=nd_palette, dimensions=dimensions, frames_per_second=frames_per_second)
 
         return out_gif
 
@@ -6249,7 +6262,7 @@ def load_GeoTIFF(URL):
     Option 1: gs://pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
     Option 2: https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
     Option 3: https://storage.cloud.google.com/gcp-public-data-landsat/LC08/01/044/034/LC08_L1TP_044034_20131228_20170307_01_T1/LC08_L1TP_044034_20131228_20170307_01_T1_B5.TIF
-    
+
     Args:
         URL (str): The Cloud Storage URL of the GeoTIFF to load.
 
@@ -6265,10 +6278,12 @@ def load_GeoTIFF(URL):
         uri = uri.replace('https://storage.cloud.google.com/', 'gs://')
 
     if not uri.startswith('gs://'):
-        raise Exception('Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
+        raise Exception(
+            'Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
 
     if not uri.lower().endswith('.tif'):
-        raise Exception('Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
+        raise Exception(
+            'Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
 
     cloud_image = ee.Image.loadGeoTIFF(uri)
     return cloud_image
@@ -6279,7 +6294,7 @@ def load_GeoTIFFs(URLs):
     Option 1: gs://pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
     Option 2: https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
     Option 3: https://storage.cloud.google.com/gcp-public-data-landsat/LC08/01/044/034/LC08_L1TP_044034_20131228_20170307_01_T1/LC08_L1TP_044034_20131228_20170307_01_T1_B5.TIF
-    
+
     Args:
         URLs (list): A list of Cloud Storage URL of the GeoTIFF to load.
 
@@ -6300,13 +6315,75 @@ def load_GeoTIFFs(URLs):
             uri = uri.replace('https://storage.cloud.google.com/', 'gs://')
 
         if not uri.startswith('gs://'):
-            raise Exception('Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
+            raise Exception(
+                'Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
 
         if not uri.lower().endswith('.tif'):
-            raise Exception('Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
+            raise Exception(
+                'Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
 
         URIs.append(uri)
 
     URIs = ee.List(URIs)
     collection = URIs.map(lambda uri: ee.Image.loadGeoTIFF(uri))
     return ee.ImageCollection(collection)
+
+
+def landsat_ts_norm_diff(collection, bands=['Green', 'SWIR1'], threshold=0):
+    """Computes a normalized difference index based on a Landsat timeseries.
+
+    Args:
+        collection (ee.ImageCollection): A Landsat timeseries.
+        bands (list, optional): The bands to use for computing normalized difference. Defaults to ['Green', 'SWIR1'].
+        threshold (float, optional): The threshold to extract features. Defaults to 0.
+
+    Returns:
+        ee.ImageCollection: An ImageCollection containing images with values greater than the specified threshold. 
+    """
+    nd_images = collection.map(lambda img: img.normalizedDifference(
+        bands).gt(threshold).copyProperties(img, img.propertyNames()))
+    return nd_images
+
+
+def landsat_ts_norm_diff_gif(collection, out_gif=None, vis_params=None, palette=['black', 'blue'], dimensions=768, frames_per_second=10):
+    """[summary]
+
+    Args:
+        collection (ee.ImageCollection): The normalized difference Landsat timeseires.
+        out_gif (str, optional): File path to the output animated GIF. Defaults to None.
+        vis_params (dict, optional): Visualization parameters. Defaults to None.
+        palette (list, optional): The palette to use for visualizing the timelapse. Defaults to ['black', 'blue']. The first color in the list is the background color.
+        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+
+    Returns:
+        str: File path to the output animated GIF.
+    """
+    coordinates = ee.Image(collection.first()).get('coordinates')
+    roi = ee.Geometry.Polygon(coordinates, None, False)
+
+    if out_gif is None:
+        out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+        filename = 'landsat_ts_nd_' + random_string() + '.gif'
+        out_gif = os.path.join(out_dir, filename)
+    elif not out_gif.endswith('.gif'):
+        raise Exception('The output file must end with .gif')
+
+    bands = ['nd']
+    if vis_params is None:
+        vis_params = {}
+        vis_params['bands'] = bands
+        vis_params['palette'] = palette
+
+    video_args = vis_params.copy()
+    video_args['dimensions'] = dimensions
+    video_args['region'] = roi
+    video_args['framesPerSecond'] = frames_per_second
+    video_args['crs'] = 'EPSG:3857'
+
+    if 'bands' not in video_args.keys():
+        video_args['bands'] = bands
+
+    download_ee_video(collection, video_args, out_gif)
+
+    return out_gif
