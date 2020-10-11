@@ -6,7 +6,7 @@
 [![image](https://img.shields.io/pypi/v/geemap.svg)](https://pypi.python.org/pypi/geemap)
 [![image](https://img.shields.io/conda/vn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
 [![image](https://pepy.tech/badge/geemap)](https://pepy.tech/project/geemap)
-[![image](https://readthedocs.org/projects/geemap/badge/?version=latest)](https://geemap.readthedocs.io/en/latest/?badge=latest)
+[![image](https://readthedocs.org/projects/geemap/badge/?version=latest)](https://giswqs.github.io/geemap/geemap)
 [![image](https://img.shields.io/badge/YouTube-GEE%20Tutorials-red)](https://gishub.org/geemap)
 [![image](https://img.shields.io/twitter/follow/giswqs?style=social)](https://twitter.com/giswqs)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -56,6 +56,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 35. How to use geemap and Earth Engine in Google Colab ([video](https://youtu.be/fG6kx9vq7hs) | [gif](https://i.imgur.com/OJCasMe.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/35_geemap_colab.ipynb))
 36. How to find out the greenest day of the year ([video](https://youtu.be/9KEaW4Ks5fQ) | [gif](https://i.imgur.com/eLDeb4t.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/36_quality_mosaic.ipynb))
 37. How to use Earth Engine with pydeck for 3D terrain visualization ([video](https://youtu.be/4E3zOP3-md8) | [gif](https://i.imgur.com/Gx7Y015.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/37_pydeck_3d.ipynb))
+38. How to use Cloud Optimized GeoTIFF with Earth Engine (video | gif | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/38_cloud_geotiff))
 
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
