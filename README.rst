@@ -35,12 +35,10 @@ geemap
 .. image:: https://joss.theoj.org/papers/91af8757c56e3fed2535fcd165137116/status.svg
         :target: https://joss.theoj.org/papers/91af8757c56e3fed2535fcd165137116
 
-Lead authors: Dr. Qiusheng Wu (https://wetlands.io)
-
 **A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.**
 
 * GitHub repo: https://github.com/giswqs/geemap
-* Documentation: https://geemap.readthedocs.io
+* Documentation: https://giswqs.github.io/geemap
 * PyPI: https://pypi.org/project/geemap/
 * Conda-forge: https://anaconda.org/conda-forge/geemap
 * 360+ GEE notebook examples: https://github.com/giswqs/earthengine-py-notebooks
@@ -73,7 +71,7 @@ analyze and visualize Earth Engine datasets interactively within a Jupyter-based
 **geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python `conversion module <https://github.com/giswqs/geemap/blob/master/geemap/conversion.py>`__ of the **geemap** package
 can greatly reduce the time needed to convert existing GEE JavaScripts to Python scripts and Jupyter notebooks.
 
-For video tutorials and notebook examples, please visit `<https://github.com/giswqs/geemap/tree/master/examples>`__. For complete documentation on geemap modules and methods, please visit `<https://geemap.readthedocs.io/en/latest/source/geemap.html>`_.
+For video tutorials and notebook examples, please visit `<https://github.com/giswqs/geemap/tree/master/examples>`__. For complete documentation on geemap modules and methods, please visit `<https://giswqs.github.io/geemap/geemap>`_.
 
 If you find geemap useful in your research, please consider citing the following papers to support my work. Thank you for your support.
 
@@ -175,7 +173,7 @@ To install the development version from GitHub directly within Jupyter notebook 
   geemap.update_package()
   
 
-To use geemap in a Docker container, check out this `page <https://hub.docker.com/r/bkavlak/geemap>`__.
+To use geemap in a Docker container, check out `ee-jupyter-contrib <https://github.com/gee-community/ee-jupyter-contrib/tree/master/docker/gcp_ai_deep_learning_platform>`__ or this `page <https://hub.docker.com/r/bkavlak/geemap>`__.
 
 
 Usage
@@ -469,6 +467,20 @@ To extract pixel values based on user-drawn geometries:
 .. code:: python
 
   geemap.extract_values_to_points(out_shp)
+
+
+To load a Cloud Optimized GeoTIFF as an ee.Image:
+
+.. code:: python
+
+  image = geemap.load_GeoTIFF(URL)
+
+
+To load a list of Cloud Optimized GeoTIFFs as an ee.ImageCollection:
+
+.. code:: python
+
+  collection = geemap.load_GeoTIFFs(URLs)
 
 
 Examples

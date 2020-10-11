@@ -1023,7 +1023,6 @@ class Map(ipyleaflet.Map):
             # layer.interact(opacity=(0, 1, 0.1))  # to change layer opacity interactively
         except Exception as e:
             print(e)
-            return
 
     def add_wms_layer(self, url, layers, name=None, attribution='', format='image/jpeg', transparent=False, opacity=1.0, shown=True):
         """Add a WMS layer to the map.
@@ -1779,8 +1778,7 @@ class Map(ipyleaflet.Map):
             self.add_layer(img)
         except Exception as e:
             print(e)
-            return
-
+            
     def video_overlay(self, url, bounds, name):
         """Overlays a video from the Internet on the map.
 
@@ -1794,7 +1792,6 @@ class Map(ipyleaflet.Map):
             self.add_layer(video)
         except Exception as e:
             print(e)
-            return
 
     def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='white', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, out_gif=None, download=False, apply_fmask=True, nd_bands=None, nd_threshold=0, nd_palette=['black', 'blue']):
         """Adds a Landsat timelapse to the map.
@@ -1881,14 +1878,12 @@ class Map(ipyleaflet.Map):
             print('The timelapse has been added to the map.')
 
             if download:
-                # upload_to_imgur(in_gif)
                 link = create_download_link(
                     in_gif, title="Click here to download the timelapse: ")
                 display(link)
 
         except Exception as e:
             print(e)
-            return
 
     def to_html(self, outfile, title='My Map', width='100%', height='880px'):
         """Saves the map as a HTML file.
@@ -2141,7 +2136,6 @@ def screen_capture(outfile, monitor=1):
 
     except Exception as e:
         print(e)
-        return None
 
 
 def install_from_github(url):
@@ -2409,7 +2403,6 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
                        append_images=frames[1:], duration=duration, loop=loop, optimize=True)
     except Exception as e:
         print(e)
-        return
 
 
 def open_image_from_url(url):
@@ -2580,7 +2573,6 @@ def add_image_to_gif(in_gif, out_gif, in_image, xy=None, image_size=(80, 80), ci
         frames[0].save(out_gif, save_all=True, append_images=frames[1:])
     except Exception as e:
         print(e)
-        return
 
 
 def show_image(img_path, width=None, height=None):
@@ -4566,7 +4558,6 @@ def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start
 
     except Exception as e:
         print(e)
-        return
 
 
 def minimum_bounding_box(geojson):
@@ -4755,8 +4746,7 @@ def search_ee_data(keywords):
 
     except Exception as e:
         print(e)
-        return
-
+        
 
 def ee_data_thumbnail(asset_id):
     """Retrieves the thumbnail URL of an Earth Engine asset.
@@ -4792,7 +4782,6 @@ def ee_data_thumbnail(asset_id):
         return thumbnail_url
     except Exception as e:
         print(e)
-        return
 
 
 def ee_data_html(asset):
@@ -4834,7 +4823,6 @@ def ee_data_html(asset):
 
     except Exception as e:
         print(e)
-        return
 
 
 def create_code_cell(code='', where='below'):
