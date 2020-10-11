@@ -1879,8 +1879,12 @@ class Map(ipyleaflet.Map):
 
             if download:
                 link = create_download_link(
-                    in_gif, title="Click here to download the timelapse: ")
+                    in_gif, title="Click here to download the Landsat timelapse: ")
                 display(link)
+                if nd_bands is not None:
+                    link2 = create_download_link(
+                        in_nd_gif, title="Click here to download the Normalized Difference Index timelapse: ")
+                    display(link2)
 
         except Exception as e:
             print(e)
