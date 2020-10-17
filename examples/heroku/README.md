@@ -22,6 +22,7 @@ Python scripts for deploying Earth Engine Apps to heroku, try it out: <https://g
 - To specify a name for your app, use `heroku apps:create example`
 - To preview your app locally, use `heroku local web`
 - To hide code cells from your app, you can edit the `Procfile` file and set `--strip_sources=True`
+- To periodically check for idle kernels, you can edit the `Procfile` file and set `--MappingKernelManager.cull_interval=60 --MappingKernelManager.cull_idle_timeout=120`
 - To view information about your running app, use `heroku logs --tail`
 - To set an environment variable on heroku, use `heroku config:set NAME=VALUE`
 - To view environment variables for your app, use `heroku config`

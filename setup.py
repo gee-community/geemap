@@ -17,6 +17,8 @@ here = op.abspath(op.dirname(__file__))
 # get the dependencies and installs
 with io.open(op.join(here, 'requirements.txt'), encoding='utf-8') as f:
     all_reqs = f.read().split('\n')
+    if platform.system() == 'Windows':
+        all_reqs.append('pywin32')
 
 install_requires = [x.strip() for x in all_reqs if 'git+' not in x]
 dependency_links = [x.strip().replace('git+', '') for x in all_reqs if 'git+' not in x]
