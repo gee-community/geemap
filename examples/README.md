@@ -56,8 +56,8 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 35. How to use geemap and Earth Engine in Google Colab ([video](https://youtu.be/fG6kx9vq7hs) | [gif](https://i.imgur.com/OJCasMe.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/35_geemap_colab.ipynb))
 36. How to find out the greenest day of the year ([video](https://youtu.be/9KEaW4Ks5fQ) | [gif](https://i.imgur.com/eLDeb4t.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/36_quality_mosaic.ipynb))
 37. How to use Earth Engine with pydeck for 3D terrain visualization ([video](https://youtu.be/4E3zOP3-md8) | [gif](https://i.imgur.com/Gx7Y015.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/37_pydeck_3d.ipynb))
-38. How to use Cloud Optimized GeoTIFF with Earth Engine ([video](https://youtu.be/2P2PGSMj-wM) | [gif](https://i.imgur.com/z2mfrrZ.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/38_cloud_geotiff))
-39. How to create Landsat timelapse animations without coding (video | [gif](https://i.imgur.com/7eyMcZQ.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/39_timelapse))
+38. How to use Cloud Optimized GeoTIFF with Earth Engine ([video](https://youtu.be/2P2PGSMj-wM) | [gif](https://i.imgur.com/z2mfrrZ.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/38_cloud_geotiff.ipynb))
+39. How to create Landsat timelapse animations without coding (video | [gif](https://i.imgur.com/7eyMcZQ.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/39_timelapse.ipynb))
 
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine

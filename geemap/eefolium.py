@@ -193,7 +193,12 @@ class Map(folium.Map):
         import logging
         logging.getLogger(
             'googleapiclient.discovery_cache').setLevel(logging.ERROR)
-        ee_initialize()
+
+        if 'use_ee' not in kwargs.keys():
+            kwargs['use_ee'] = True
+
+        if kwargs['use_ee']:
+            ee_initialize()
 
         # Default map center location and zoom level
         latlon = [40, -100]
