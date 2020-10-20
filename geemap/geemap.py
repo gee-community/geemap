@@ -60,7 +60,11 @@ class Map(ipyleaflet.Map):
     def __init__(self, **kwargs):
 
         # Authenticates Earth Engine and initializes an Earth Engine session
-        ee_initialize()
+        if 'ee_initialize' not in kwargs.keys():
+            kwargs['ee_initialize'] = True
+
+        if kwargs['ee_initialize']:
+            ee_initialize()
 
         # Default map center location and zoom level
         latlon = [40, -100]
