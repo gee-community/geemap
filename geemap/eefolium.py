@@ -199,6 +199,12 @@ class Map(folium.Map):
 
         if kwargs['use_ee']:
             ee_initialize()
+            
+        if 'ee_initialize' not in kwargs.keys():
+            kwargs['ee_initialize'] = True
+
+        if kwargs['ee_initialize']:
+            ee_initialize()
 
         # Default map center location and zoom level
         latlon = [40, -100]
