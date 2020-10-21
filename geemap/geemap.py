@@ -33,6 +33,16 @@ def ee_initialize(token_name='EARTHENGINE_TOKEN'):
             os.makedirs(credential_file_path, exist_ok=True)
             with open(credential_file_path + 'credentials', 'w') as file:
                 file.write(credential)
+        elif in_colab_shell():
+            if credentials_in_drive() and (not credentials_in_colab()):
+                copy_credentials_to_colab()
+            elif not credentials_in_colab:
+                ee.Authenticate()
+                if is_drive_mounted() and (not credentials_in_drive()):
+                    copy_credentials_to_drive()
+            else:
+                if is_drive_mounted():
+                    copy_credentials_to_drive()
 
         ee.Initialize()
     except:
@@ -41,11 +51,7 @@ def ee_initialize(token_name='EARTHENGINE_TOKEN'):
 
 
 class Map(ipyleaflet.Map):
-    """The Map class inherits from ipyleaflet.Map
-
-    Args:
-        ipyleaflet (object): An ipyleaflet map instance. The arguments you can pass to the Map can be found at https://ipyleaflet.readthedocs.io/en/latest/api_reference/map.html
-        By default, the Map will add Google Maps as the basemap. Set add_google_map = False to use OpenStreetMap as the basemap.
+    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map can be found at https://ipyleaflet.readthedocs.io/en/latest/api_reference/map.html. By default, the Map will add Google Maps as the basemap. Set add_google_map = False to use OpenStreetMap as the basemap.
 
     Returns:
         object: ipyleaflet map object.
@@ -54,7 +60,11 @@ class Map(ipyleaflet.Map):
     def __init__(self, **kwargs):
 
         # Authenticates Earth Engine and initializes an Earth Engine session
-        ee_initialize()
+        if 'ee_initialize' not in kwargs.keys():
+            kwargs['ee_initialize'] = True
+
+        if kwargs['ee_initialize']:
+            ee_initialize()
 
         # Default map center location and zoom level
         latlon = [40, -100]
@@ -83,10 +93,18 @@ class Map(ipyleaflet.Map):
         if 'show_attribution' not in kwargs.keys():
             kwargs['show_attribution'] = True
 
+        if 'scroll_wheel_zoom' not in kwargs.keys():
+            kwargs['scroll_wheel_zoom'] = True
+
+        if 'zoom_control' not in kwargs.keys():
+            kwargs['zoom_control'] = True
+
+        if 'height' not in kwargs.keys():
+            kwargs['height'] = '550px'
+
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
-        self.scroll_wheel_zoom = True
-        self.layout.height = '550px'
+        self.layout.height = kwargs['height']
 
         self.clear_controls()
 
@@ -100,6 +118,16 @@ class Map(ipyleaflet.Map):
         self.draw_last_bounds = None
         self.user_roi = None
         self.user_rois = None
+
+        self.roi_start = False
+        self.roi_end = False
+        self.roi_reducer = ee.Reducer.mean()
+        self.roi_reducer_scale = None
+
+        # List for storing pixel values and locations based on user-drawn geometries.
+        self.chart_points = []
+        self.chart_values = []
+        self.chart_labels = None
 
         self.plot_widget = None  # The plot widget for plotting Earth Engine data
         self.plot_control = None  # The plot control for interacting plotting
@@ -331,7 +359,8 @@ class Map(ipyleaflet.Map):
                                )
         self.add_control(search)
 
-        self.add_control(ZoomControl(position='topleft'))
+        if kwargs['zoom_control']:
+            self.add_control(ZoomControl(position='topleft'))
 
         layer_control = LayersControl(position='topright')
         self.add_control(layer_control)
@@ -367,9 +396,23 @@ class Map(ipyleaflet.Map):
                                    circlemarker={},
                                    )
 
+        draw_control_lite = DrawControl(marker={},
+                                        rectangle={'shapeOptions': {
+                                            'color': '#0000FF'}},
+                                        circle={'shapeOptions': {
+                                            'color': '#0000FF'}},
+                                        circlemarker={},
+                                        polyline={},
+                                        polygon={}
+                                        )
         # Handles draw events
+
         def handle_draw(target, action, geo_json):
             try:
+                # print(geo_json)
+                # geo_json = adjust_longitude(geo_json)
+                # print(geo_json)
+                self.roi_start = True
                 self.draw_count += 1
                 geom = geojson_to_ee(geo_json, False)
                 self.user_roi = geom
@@ -381,7 +424,7 @@ class Map(ipyleaflet.Map):
                 collection = ee.FeatureCollection(self.draw_features)
                 self.user_rois = collection
                 ee_draw_layer = ee_tile_layer(
-                    collection, {'color': 'blue'}, 'Drawing Features', True, 0.5)
+                    collection, {'color': 'blue'}, 'Drawn Features', True, 0.5)
 
                 if self.draw_count == 1:
                     self.add_layer(ee_draw_layer)
@@ -391,6 +434,9 @@ class Map(ipyleaflet.Map):
                     self.draw_layer = ee_draw_layer
 
                 draw_control.clear()
+
+                self.roi_end = True
+                self.roi_start = False
             except Exception as e:
                 print(e)
                 print("There was an error creating Earth Engine Feature.")
@@ -399,10 +445,13 @@ class Map(ipyleaflet.Map):
                 self.draw_last_feature = None
                 self.draw_layer = None
                 self.user_roi = None
+                self.roi_start = False
+                self.roi_end = False
 
         draw_control.on_draw(handle_draw)
         self.add_control(draw_control)
         self.draw_control = draw_control
+        self.draw_control_lite = draw_control_lite
 
         # Dropdown widget for plotting
         self.plot_dropdown_control = None
@@ -465,6 +514,8 @@ class Map(ipyleaflet.Map):
                     widget=plot_dropdown_widget, position='topright')
                 self.plot_dropdown_control = plot_dropdown_control
                 self.add_control(plot_dropdown_control)
+                self.remove_control(self.draw_control)
+                self.add_control(self.draw_control_lite)
             elif button['name'] == 'value' and (not button['new']):
                 self.plot_checked = False
                 plot_dropdown_widget = self.plot_dropdown_widget
@@ -482,6 +533,8 @@ class Map(ipyleaflet.Map):
                     del plot_widget
                 if self.plot_marker_cluster is not None and self.plot_marker_cluster in self.layers:
                     self.remove_layer(self.plot_marker_cluster)
+                self.remove_control(self.draw_control_lite)
+                self.add_control(self.draw_control)
 
         plot_checkbox.observe(plot_chk_changed)
 
@@ -628,7 +681,6 @@ class Map(ipyleaflet.Map):
         self.add_control(tool_output_control)
 
         def handle_interaction(**kwargs):
-
             latlon = kwargs.get('coordinates')
             if kwargs.get('type') == 'click' and self.inspector_checked:
                 self.default_style = {'cursor': 'wait'}
@@ -712,14 +764,30 @@ class Map(ipyleaflet.Map):
                         self.plot_marker_cluster = marker_cluster
 
                     band_names = ee_object.bandNames().getInfo()
-                    xy = ee.Geometry.Point(latlon[::-1])
-                    dict_values = ee_object.sample(
-                        xy, scale=sample_scale).first().toDictionary().getInfo()
+                    self.chart_labels = band_names
+
+                    if self.roi_end:
+                        if self.roi_reducer_scale is None:
+                            scale = ee_object.select(
+                                0).projection().nominalScale()
+                        else:
+                            scale = self.roi_reducer_scale
+                        dict_values = ee_object.reduceRegion(
+                            reducer=self.roi_reducer, geometry=self.user_roi, scale=scale, bestEffort=True).getInfo()
+                        self.chart_points.append(
+                            self.user_roi.centroid(1).coordinates().getInfo())
+                    else:
+                        xy = ee.Geometry.Point(latlon[::-1])
+                        dict_values = ee_object.sample(
+                            xy, scale=sample_scale).first().toDictionary().getInfo()
+                        self.chart_points.append(xy.coordinates().getInfo())
                     band_values = list(dict_values.values())
+                    self.chart_values.append(band_values)
                     self.plot(band_names, band_values, **plot_options)
                     if plot_options['title'] == plot_layer_name:
                         del plot_options['title']
                     self.default_style = {'cursor': 'crosshair'}
+                    self.roi_end = False
                 except Exception as e:
                     if self.plot_widget is not None:
                         with self.plot_widget:
@@ -728,7 +796,7 @@ class Map(ipyleaflet.Map):
                     else:
                         print(e)
                     self.default_style = {'cursor': 'crosshair'}
-
+                    self.roi_end = False
         self.on_interaction(handle_interaction)
 
     def set_options(self, mapTypeId='HYBRID', styles=None, types=None):
@@ -736,8 +804,8 @@ class Map(ipyleaflet.Map):
 
         Args:
             mapTypeId (str, optional): A mapTypeId to set the basemap to. Can be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN" to select one of the standard Google Maps API map types. Defaults to 'HYBRID'.
-            styles ([type], optional): A dictionary of custom MapTypeStyle objects keyed with a name that will appear in the map's Map Type Controls. Defaults to None.
-            types ([type], optional): A list of mapTypeIds to make available. If omitted, but opt_styles is specified, appends all of the style keys to the standard Google Maps API map types.. Defaults to None.
+            styles (object, optional): A dictionary of custom MapTypeStyle objects keyed with a name that will appear in the map's Map Type Controls. Defaults to None.
+            types (list, optional): A list of mapTypeIds to make available. If omitted, but opt_styles is specified, appends all of the style keys to the standard Google Maps API map types.. Defaults to None.
         """
         self.clear_layers()
         self.clear_controls()
@@ -959,7 +1027,6 @@ class Map(ipyleaflet.Map):
             # layer.interact(opacity=(0, 1, 0.1))  # to change layer opacity interactively
         except Exception as e:
             print(e)
-            return
 
     def add_wms_layer(self, url, layers, name=None, attribution='', format='image/jpeg', transparent=False, opacity=1.0, shown=True):
         """Add a WMS layer to the map.
@@ -1516,7 +1583,7 @@ class Map(ipyleaflet.Map):
         """Adds a customized basemap to the map.
 
         Args:
-            legend_tile (str, optional): Title of the legend. Defaults to 'Legend'.
+            legend_title (str, optional): Title of the legend. Defaults to 'Legend'.
             legend_dict (dict, optional): A dictionary containing legend items as keys and color as values. If provided, legend_keys and legend_colors will be ignored. Defaults to None.
             legend_keys (list, optional): A list of legend keys. Defaults to None.
             legend_colors (list, optional): A list of legend colors. Defaults to None.
@@ -1715,8 +1782,7 @@ class Map(ipyleaflet.Map):
             self.add_layer(img)
         except Exception as e:
             print(e)
-            return
-
+            
     def video_overlay(self, url, bounds, name):
         """Overlays a video from the Internet on the map.
 
@@ -1730,9 +1796,8 @@ class Map(ipyleaflet.Map):
             self.add_layer(video)
         except Exception as e:
             print(e)
-            return
 
-    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='black', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, out_gif=None, upload=False):
+    def add_landsat_ts_gif(self, layer_name='Timelapse', roi=None, label=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, font_size=30, font_color='white', add_progress_bar=True, progress_bar_color='white', progress_bar_height=5, out_gif=None, download=False, apply_fmask=True, nd_bands=None, nd_threshold=0, nd_palette=['black', 'blue']):
         """Adds a Landsat timelapse to the map.
 
         Args:
@@ -1753,7 +1818,11 @@ class Map(ipyleaflet.Map):
             progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
             progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
             out_gif (str, optional): File path to the output animated GIF. Defaults to None.
-            upload (bool, optional): Whether to upload the gif to imgur.com. Defaults to False.
+            download (bool, optional): Whether to download the gif. Defaults to False.
+            apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+            nd_bands (list, optional): A list of names specifying the bands to use, e.g., ['Green', 'SWIR1']. The normalized difference is computed as (first − second) / (first + second). Note that negative input values are forced to 0 so that the result is confined to the range (-1, 1).  
+            nd_threshold (float, optional): The threshold for extacting pixels from the normalized difference band. 
+            nd_palette (str, optional): The color palette to use for displaying the normalized difference band. 
 
         """
         try:
@@ -1778,36 +1847,51 @@ class Map(ipyleaflet.Map):
                 return
 
             geojson = ee_to_geojson(roi)
+            bounds = minimum_bounding_box(geojson)
+            geojson = adjust_longitude(geojson)
+            roi = ee.Geometry(geojson)
 
             in_gif = landsat_ts_gif(roi=roi, out_gif=out_gif, start_year=start_year, end_year=end_year, start_date=start_date,
-                                    end_date=end_date, bands=bands, vis_params=vis_params, dimensions=dimensions, frames_per_second=frames_per_second)
+                                    end_date=end_date, bands=bands, vis_params=vis_params, dimensions=dimensions, frames_per_second=frames_per_second, apply_fmask=apply_fmask, nd_bands=nd_bands, nd_threshold=nd_threshold, nd_palette=nd_palette)
+            in_nd_gif = in_gif.replace('.gif', '_nd.gif')
 
             print('Adding animated text to GIF ...')
             add_text_to_gif(in_gif, in_gif, xy=('2%', '2%'), text_sequence=start_year,
                             font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
+            if nd_bands is not None:
+                add_text_to_gif(in_nd_gif, in_nd_gif, xy=('2%', '2%'), text_sequence=start_year,
+                                font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
 
             if label is not None:
                 add_text_to_gif(in_gif, in_gif, xy=('2%', '90%'), text_sequence=label,
                                 font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
+                # if nd_bands is not None:
+                #     add_text_to_gif(in_nd_gif, in_nd_gif, xy=('2%', '90%'), text_sequence=label,
+                #                     font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
 
             if is_tool('ffmpeg'):
                 reduce_gif_size(in_gif)
-
-            bounds = minimum_bounding_box(geojson)
-            # bounds = ((35.892718, -115.471773), (36.409454, -114.271283))
-            lat = (bounds[0][0] + bounds[1][0]) / 2.0
-            lon = (bounds[0][1] + bounds[1][1]) / 2.0
+                if nd_bands is not None:
+                    reduce_gif_size(in_nd_gif)
 
             print('Adding GIF to the map ...')
             self.image_overlay(url=in_gif, bounds=bounds, name=layer_name)
+            if nd_bands is not None:
+                self.image_overlay(
+                    url=in_nd_gif, bounds=bounds, name=layer_name+' ND')
             print('The timelapse has been added to the map.')
 
-            if upload:
-                upload_to_imgur(in_gif)
+            if download:
+                link = create_download_link(
+                    in_gif, title="Click here to download the Landsat timelapse: ")
+                display(link)
+                if nd_bands is not None:
+                    link2 = create_download_link(
+                        in_nd_gif, title="Click here to download the Normalized Difference Index timelapse: ")
+                    display(link2)
 
         except Exception as e:
             print(e)
-            return
 
     def to_html(self, outfile, title='My Map', width='100%', height='880px'):
         """Saves the map as a HTML file.
@@ -1972,6 +2056,67 @@ class Map(ipyleaflet.Map):
 
         layer.name = layer_name
 
+    def remove_drawn_features(self):
+        """Removes user-drawn geometries from the map
+        """
+        if self.draw_layer is not None:
+            self.remove_layer(self.draw_layer)
+            self.draw_count = 0
+            self.draw_features = []
+            self.draw_last_feature = None
+            self.draw_layer = None
+            self.draw_last_json = None
+            self.draw_last_bounds = None
+            self.user_roi = None
+            self.user_rois = None
+            self.chart_values = []
+            self.chart_points = []
+            self.chart_labels = None
+
+    def extract_values_to_points(self, filename):
+        """Exports pixel values to a csv file based on user-drawn geometries.
+
+        Args:
+            filename (str): The output file path to the csv file or shapefile.
+        """
+        import csv
+
+        filename = os.path.abspath(filename)
+        allowed_formats = ['csv', 'shp']
+        ext = filename[-3:]
+
+        if ext not in allowed_formats:
+            print('The output file must be one of the following: {}'.format(
+                ', '.join(allowed_formats)))
+            return
+
+        out_dir = os.path.dirname(filename)
+        out_csv = filename[:-3] + 'csv'
+        out_shp = filename[:-3] + 'shp'
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+
+        count = len(self.chart_points)
+        out_list = []
+        if count > 0:
+            header = ['id', 'longitude', 'latitude'] + self.chart_labels
+            out_list.append(header)
+
+            for i in range(0, count):
+                id = i + 1
+                line = [id] + self.chart_points[i] + self.chart_values[i]
+                out_list.append(line)
+
+            with open(out_csv, "w", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerows(out_list)
+
+            if ext == 'csv':
+                print('The csv file has been saved to: {}'.format(out_csv))
+            else:
+                csv_to_shp(out_csv, out_shp)
+                print('The shapefile has been saved to: {}'.format(out_shp))
+
 
 # The functions below are outside the Map class.
 
@@ -1999,7 +2144,6 @@ def screen_capture(outfile, monitor=1):
 
     except Exception as e:
         print(e)
-        return None
 
 
 def install_from_github(url):
@@ -2267,7 +2411,6 @@ def add_text_to_gif(in_gif, out_gif, xy=None, text_sequence=None, font_type="ari
                        append_images=frames[1:], duration=duration, loop=loop, optimize=True)
     except Exception as e:
         print(e)
-        return
 
 
 def open_image_from_url(url):
@@ -2438,7 +2581,6 @@ def add_image_to_gif(in_gif, out_gif, in_image, xy=None, image_size=(80, 80), ci
         frames[0].save(out_gif, save_all=True, append_images=frames[1:])
     except Exception as e:
         print(e)
-        return
 
 
 def show_image(img_path, width=None, height=None):
@@ -2533,7 +2675,7 @@ def ee_tile_layer(ee_object, vis_params={}, name='Layer untitled', shown=True, o
         shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
         opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
     """
-    ee_initialize()
+    # ee_initialize()
 
     image = None
 
@@ -2586,7 +2728,7 @@ def geojson_to_ee(geo_json, geodesic=True):
     Returns:
         ee_object: An ee.Geometry object
     """
-    ee_initialize()
+    # ee_initialize()
 
     try:
 
@@ -2632,7 +2774,7 @@ def ee_to_geojson(ee_object, out_json=None):
         object: GeoJSON object.
     """
     from json import dumps
-    ee_initialize()
+    # ee_initialize()
 
     try:
         if isinstance(ee_object, ee.geometry.Geometry) or isinstance(ee_object, ee.feature.Feature) or isinstance(ee_object, ee.featurecollection.FeatureCollection):
@@ -2699,7 +2841,7 @@ def api_docs():
     """
     import webbrowser
 
-    url = 'https://geemap.readthedocs.io/en/latest/source/geemap.html#geemap-package'
+    url = 'https://giswqs.github.io/geemap/geemap'
     webbrowser.open_new_tab(url)
 
 
@@ -2749,6 +2891,7 @@ def update_package():
         In this way, I don't have to keep updating pypi and conda-forge with every minor update of the package.
 
     """
+    import shutil
     try:
         download_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
         if not os.path.exists(download_dir):
@@ -2758,11 +2901,59 @@ def update_package():
         pkg_dir = os.path.join(download_dir, 'geemap-master')
         work_dir = os.getcwd()
         os.chdir(pkg_dir)
-        cmd = 'pip install .'
+
+        if shutil.which('pip') is None:
+            cmd = 'pip3 install .'
+        else:
+            cmd = 'pip install .'
+
         os.system(cmd)
         os.chdir(work_dir)
 
         print("\nPlease comment out 'geemap.update_package()' and restart the kernel to take effect:\nJupyter menu -> Kernel -> Restart & Clear Output")
+
+    except Exception as e:
+        print(e)
+
+
+def csv_to_shp(in_csv, out_shp, longitude='longitude', latitude='latitude'):
+    """Converts a csv file with latlon info to a point shapefile.
+
+    Args:
+        in_csv (str): The input csv file containing longitude and latitude columns.
+        out_shp (str): The file path to the output shapefile.
+        longitude (str, optional): The column name of the longitude column. Defaults to 'longitude'.
+        latitude (str, optional): The column name of the latitude column. Defaults to 'latitude'.
+    """
+    import csv
+    import shapefile as shp
+
+    if not os.path.exists(in_csv):
+        print('The provided CSV file does not exist.')
+        return
+
+    if not in_csv.endswith('.csv'):
+        print('The input file must end with .csv')
+        return
+
+    out_dir = os.path.dirname(out_shp)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    try:
+        points = shp.Writer(out_shp, shapeType=shp.POINT)
+        with open(in_csv) as csvfile:
+            csvreader = csv.DictReader(csvfile)
+            header = csvreader.fieldnames
+            [points.field(field) for field in header]
+            for row in csvreader:
+                points.point((float(row[longitude])), (float(row[latitude])))
+                points.record(*tuple([row[f] for f in header]))
+
+        out_prj = out_shp.replace('.shp', '.prj')
+        with open(out_prj, 'w') as f:
+            prj_str = 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]] '
+            f.write(prj_str)
 
     except Exception as e:
         print(e)
@@ -2779,7 +2970,7 @@ def shp_to_geojson(in_shp, out_json=None):
         object: The json object representing the shapefile.
     """
     # check_install('pyshp')
-    ee_initialize()
+    # ee_initialize()
     try:
         import json
         import shapefile
@@ -2827,7 +3018,7 @@ def shp_to_ee(in_shp):
     Returns:
         object: Earth Engine objects representing the shapefile.
     """
-    ee_initialize()
+    # ee_initialize()
     try:
         json_data = shp_to_geojson(in_shp)
         ee_object = geojson_to_ee(json_data)
@@ -2845,7 +3036,7 @@ def filter_polygons(ftr):
     Returns:
         object: ee.Feature
     """
-    ee_initialize()
+    # ee_initialize()
     geometries = ftr.geometry().geometries()
     geometries = geometries.map(lambda geo: ee.Feature(
         ee.Geometry(geo)).set('geoType',  ee.Geometry(geo).type()))
@@ -2865,14 +3056,13 @@ def ee_export_vector(ee_object, filename, selectors=None):
     """
     import requests
     import zipfile
-    ee_initialize()
+    # ee_initialize()
 
     if not isinstance(ee_object, ee.FeatureCollection):
-        print('The ee_object must be an ee.FeatureCollection.')
-        return
+        raise ValueError('ee_object must be an ee.FeatureCollection')
 
-    # allowed_formats = ['csv', 'json', 'kml', 'kmz', 'shp']
-    allowed_formats = ['csv', 'kml', 'kmz']
+    allowed_formats = ['csv', 'geojson', 'kml', 'kmz', 'shp']
+    # allowed_formats = ['csv', 'kml', 'kmz']
     filename = os.path.abspath(filename)
     basename = os.path.basename(filename)
     name = os.path.splitext(basename)[0]
@@ -2885,23 +3075,26 @@ def ee_export_vector(ee_object, filename, selectors=None):
         print('The file type must be one of the following: {}'.format(
             ', '.join(allowed_formats)))
         print('Earth Engine no longer supports downloading featureCollection as shapefile or json. \nPlease use geemap.ee_export_vector_to_drive() to export featureCollection to Google Drive.')
-        return
+        raise ValueError
 
     if selectors is None:
         selectors = ee_object.first().propertyNames().getInfo()
         if filetype == 'csv':
-            ee_object = ee_object.select([".*"], None, False)   # remove .geo coordinate field
+            # remove .geo coordinate field
+            ee_object = ee_object.select([".*"], None, False)
+
+    if filetype == 'geojson':
+        selectors = ['.geo'] + selectors
 
     elif not isinstance(selectors, list):
-        print("selectors must be a list, such as ['attribute1', 'attribute2']")
-        return
+        raise ValueError(
+            "selectors must be a list, such as ['attribute1', 'attribute2']")
     else:
         allowed_attributes = ee_object.first().propertyNames().getInfo()
         for attribute in selectors:
             if not (attribute in allowed_attributes):
-                print('Attributes must be one chosen from: {} '.format(
+                raise ValueError('Attributes must be one chosen from: {} '.format(
                     ', '.join(allowed_attributes)))
-                return
 
     try:
         print('Generating URL ...')
@@ -2921,14 +3114,14 @@ def ee_export_vector(ee_object, filename, selectors=None):
                 r = requests.get(url, stream=True)
             except Exception as e:
                 print(e)
+                raise ValueError
 
         with open(filename, 'wb') as fd:
             for chunk in r.iter_content(chunk_size=1024):
                 fd.write(chunk)
     except Exception as e:
         print('An error occurred while downloading.')
-        print(e)
-        return
+        raise ValueError(e)
 
     try:
         if filetype == 'shp':
@@ -2939,7 +3132,7 @@ def ee_export_vector(ee_object, filename, selectors=None):
 
         print('Data downloaded to {}'.format(filename))
     except Exception as e:
-        print(e)
+        raise ValueError(e)
 
 
 def ee_export_vector_to_drive(ee_object, description, folder, file_format='shp', selectors=None):
@@ -2970,11 +3163,90 @@ def ee_export_vector_to_drive(ee_object, description, folder, file_format='shp',
     if selectors is not None:
         task_config['selectors'] = selectors
     elif (selectors is None) and (file_format.lower() == 'csv'):
-        ee_object = ee_object.select([".*"], None, False)   # remove .geo coordinate field
+        # remove .geo coordinate field
+        ee_object = ee_object.select([".*"], None, False)
 
     print('Exporting {}...'.format(description))
     task = ee.batch.Export.table.toDrive(ee_object, description, **task_config)
     task.start()
+
+
+def ee_export_geojson(ee_object, filename=None, selectors=None):
+    """Exports Earth Engine FeatureCollection to geojson.
+
+    Args:
+        ee_object (object): ee.FeatureCollection to export.
+        filename (str): Output file name. Defaults to None.
+        selectors (list, optional): A list of attributes to export. Defaults to None.
+    """
+    import requests
+    import zipfile
+    # ee_initialize()
+
+    if not isinstance(ee_object, ee.FeatureCollection):
+        print('The ee_object must be an ee.FeatureCollection.')
+        return
+
+    if filename is None:
+        out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+        filename = os.path.join(out_dir, random_string(6) + '.geojson')
+
+    allowed_formats = ['geojson']
+    filename = os.path.abspath(filename)
+    basename = os.path.basename(filename)
+    name = os.path.splitext(basename)[0]
+    filetype = os.path.splitext(basename)[1][1:].lower()
+
+    if not (filetype.lower() in allowed_formats):
+        print('The output file type must be geojson.')
+        return
+
+    if selectors is None:
+        selectors = ee_object.first().propertyNames().getInfo()
+        selectors = ['.geo'] + selectors
+
+    elif not isinstance(selectors, list):
+        print("selectors must be a list, such as ['attribute1', 'attribute2']")
+        return
+    else:
+        allowed_attributes = ee_object.first().propertyNames().getInfo()
+        for attribute in selectors:
+            if not (attribute in allowed_attributes):
+                print('Attributes must be one chosen from: {} '.format(
+                    ', '.join(allowed_attributes)))
+                return
+
+    try:
+        # print('Generating URL ...')
+        url = ee_object.getDownloadURL(
+            filetype=filetype, selectors=selectors, filename=name)
+        # print('Downloading data from {}\nPlease wait ...'.format(url))
+        r = requests.get(url, stream=True)
+
+        if r.status_code != 200:
+            print('An error occurred while downloading. \n Retrying ...')
+            try:
+                new_ee_object = ee_object.map(filter_polygons)
+                print('Generating URL ...')
+                url = new_ee_object.getDownloadURL(
+                    filetype=filetype, selectors=selectors, filename=name)
+                print('Downloading data from {}\nPlease wait ...'.format(url))
+                r = requests.get(url, stream=True)
+            except Exception as e:
+                print(e)
+
+        with open(filename, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size=1024):
+                fd.write(chunk)
+    except Exception as e:
+        print('An error occurred while downloading.')
+        print(e)
+        return
+
+    with open(filename) as f:
+        geojson = f.read()
+
+    return geojson
 
 
 def ee_to_shp(ee_object, filename, selectors=None):
@@ -2985,7 +3257,7 @@ def ee_to_shp(ee_object, filename, selectors=None):
         filename (str): The output filepath of the shapefile.
         selectors (list, optional): A list of attributes to export. Defaults to None.
     """
-    ee_initialize()
+    # ee_initialize()
     try:
         if filename.lower().endswith('.shp'):
             ee_export_vector(ee_object=ee_object,
@@ -3005,7 +3277,7 @@ def ee_to_csv(ee_object, filename, selectors=None):
         filename (str): The output filepath of the CSV file.
         selectors (list, optional): A list of attributes to export. Defaults to None.
     """
-    ee_initialize()
+    # ee_initialize()
     try:
         if filename.lower().endswith('.csv'):
             ee_export_vector(ee_object=ee_object,
@@ -3030,7 +3302,7 @@ def ee_export_image(ee_object, filename, scale=None, crs=None, region=None, file
     """
     import requests
     import zipfile
-    ee_initialize()
+    # ee_initialize()
 
     if not isinstance(ee_object, ee.Image):
         print('The ee_object must be an ee.Image.')
@@ -3078,6 +3350,7 @@ def ee_export_image(ee_object, filename, scale=None, crs=None, region=None, file
     try:
         z = zipfile.ZipFile(filename_zip)
         z.extractall(os.path.dirname(filename))
+        z.close()
         os.remove(filename_zip)
 
         if file_per_band:
@@ -3102,7 +3375,7 @@ def ee_export_image_collection(ee_object, out_dir, scale=None, crs=None, region=
 
     import requests
     import zipfile
-    ee_initialize()
+    # ee_initialize()
 
     if not isinstance(ee_object, ee.ImageCollection):
         print('The ee_object must be an ee.ImageCollection.')
@@ -3142,7 +3415,7 @@ def ee_export_image_to_drive(ee_object, description, folder=None, region=None, s
         max_pixels (int, optional): Restrict the number of pixels in the export. Defaults to 1.0E13.
         file_format (str, optional): The string file format to which the image is exported. Currently only 'GeoTIFF' and 'TFRecord' are supported. Defaults to 'GeoTIFF'.
     """
-    ee_initialize()
+    # ee_initialize()
 
     if not isinstance(ee_object, ee.Image):
         print('The ee_object must be an ee.Image.')
@@ -3185,7 +3458,7 @@ def ee_export_image_collection_to_drive(ee_object, descriptions=None, folder=Non
         max_pixels (int, optional): Restrict the number of pixels in the export. Defaults to 1.0E13.
         file_format (str, optional): The string file format to which the image is exported. Currently only 'GeoTIFF' and 'TFRecord' are supported. Defaults to 'GeoTIFF'.
     """
-    ee_initialize()
+    # ee_initialize()
 
     if not isinstance(ee_object, ee.ImageCollection):
         print('The ee_object must be an ee.ImageCollection.')
@@ -3264,7 +3537,7 @@ def download_ee_video(collection, video_args, out_gif):
 
     Args:
         collection (object): An ee.ImageCollection.
-        video_args ([type]): Parameters for expring the video thumbnail.
+        video_args (object): Parameters for expring the video thumbnail.
         out_gif (str): File path to the output GIF.
     """
     import requests
@@ -3724,7 +3997,7 @@ def naip_timeseries(roi=None, start_year=2009, end_year=2018):
     Returns:
         object: An ee.ImageCollection representing annual NAIP imagery.
     """
-    ee_initialize()
+    # ee_initialize()
     try:
 
         def get_annual_NAIP(year):
@@ -3769,7 +4042,7 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
     import re
     import datetime
 
-    ee_initialize()
+    # ee_initialize()
 
     if roi is None:
         # roi = ee.Geometry.Polygon(
@@ -3793,6 +4066,11 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
             print('Could not convert the provided roi to ee.Geometry')
             print(e)
             return
+
+    # Adjusts longitudes less than -180 degrees or greater than 180 degrees.
+    geojson = ee_to_geojson(roi)
+    geojson = adjust_longitude(geojson)
+    roi = ee.Geometry(geojson)
 
     ################################################################################
     # Setup vars to get dates.
@@ -3943,21 +4221,16 @@ def sentinel2_timeseries(roi=None, start_year=2015, end_year=2019, start_date='0
     return imgCol
 
 
-def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20'):
+def landsat_timeseries(roi=None, start_year=1984, end_year=2020, start_date='06-10', end_date='09-20', apply_fmask=True):
     """Generates an annual Landsat ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
 
     Args:
-        roi ([type], optional): [description]. Defaults to None.
-        start_year (int, optional): [description]. Defaults to 1984.
-        end_year (int, optional): [description]. Defaults to 2019.
-        start_date (str, optional): [description]. Defaults to '06-10'.
-        end_date (str, optional): [description]. Defaults to '09-20'.
-
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
+        end_year (int, optional): Ending year for the timelapse. Defaults to 2020.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+        apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
     Returns:
         object: Returns an ImageCollection containing annual Landsat images.
     """
@@ -3967,15 +4240,7 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     import re
     import datetime
 
-    ee_initialize()
-
     if roi is None:
-        # roi = ee.Geometry.Polygon(
-        #     [[[-180, -80],
-        #       [-180, 80],
-        #         [180, 80],
-        #         [180, -80],
-        #         [-180, -80]]], None, False)
         roi = ee.Geometry.Polygon(
             [[[-115.471773, 35.892718],
               [-115.471773, 36.409454],
@@ -4084,7 +4349,8 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     def prepOli(img):
         orig = img
         img = renameOli(img)
-        img = fmask(img)
+        if apply_fmask:
+            img = fmask(img)
         return (ee.Image(img.copyProperties(orig, orig.propertyNames()))
                 .resample('bicubic'))
 
@@ -4092,7 +4358,8 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     def prepEtm(img):
         orig = img
         img = renameEtm(img)
-        img = fmask(img)
+        if apply_fmask:
+            img = fmask(img)
         return(ee.Image(img.copyProperties(orig, orig.propertyNames()))
                .resample('bicubic'))
 
@@ -4140,7 +4407,8 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     # Convert image composite list to collection
     imgCol = ee.ImageCollection.fromImages(imgList)
 
-    imgCol = imgCol.map(lambda img: img.clip(roi))
+    imgCol = imgCol.map(lambda img: img.clip(
+        roi).set({'coordinates': roi.coordinates()}))
 
     return imgCol
 
@@ -4183,12 +4451,12 @@ def landsat_timeseries(roi=None, start_year=1984, end_year=2019, start_date='06-
     #     task.start()
 
 
-def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10):
+def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start_date='06-10', end_date='09-20', bands=['NIR', 'Red', 'Green'], vis_params=None, dimensions=768, frames_per_second=10, apply_fmask=True, nd_bands=None, nd_threshold=0, nd_palette=['black', 'blue']):
     """Generates a Landsat timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
 
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
-        out_gif ([type], optional): File path to the output animated GIF. Defaults to None.
+        out_gif (str, optional): File path to the output animated GIF. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
         end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
@@ -4197,12 +4465,16 @@ def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start
         vis_params (dict, optional): Visualization parameters. Defaults to None.
         dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
+        apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+        nd_bands (list, optional): A list of names specifying the bands to use, e.g., ['Green', 'SWIR1']. The normalized difference is computed as (first − second) / (first + second). Note that negative input values are forced to 0 so that the result is confined to the range (-1, 1).  
+        nd_threshold (float, optional): The threshold for extacting pixels from the normalized difference band. 
+        nd_palette (list, optional): The color palette to use for displaying the normalized difference band. 
 
     Returns:
         str: File path to the output GIF image.
     """
 
-    ee_initialize()
+    # ee_initialize()
 
     if roi is None:
         roi = ee.Geometry.Polygon(
@@ -4242,13 +4514,19 @@ def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start
     if len(bands) == 3 and all(x in allowed_bands for x in bands):
         pass
     else:
-        print('You can only select 3 bands from the following: {}'.format(
+        raise Exception('You can only select 3 bands from the following: {}'.format(
             ', '.join(allowed_bands)))
-        return
+
+    if nd_bands is not None:
+        if len(nd_bands) == 2 and all(x in allowed_bands[:-1] for x in nd_bands):
+            pass
+        else:
+            raise Exception('You can only select two bands from the following: {}'.format(
+                ', '.join(allowed_bands[:-1])))
 
     try:
         col = landsat_timeseries(
-            roi, start_year, end_year, start_date, end_date)
+            roi, start_year, end_year, start_date, end_date, apply_fmask)
 
         if vis_params is None:
             vis_params = {}
@@ -4277,11 +4555,17 @@ def landsat_ts_gif(roi=None, out_gif=None, start_year=1984, end_year=2019, start
 
         download_ee_video(col, video_args, out_gif)
 
+        if nd_bands is not None:
+            nd_images = landsat_ts_norm_diff(
+                col, bands=nd_bands, threshold=nd_threshold)
+            out_nd_gif = out_gif.replace('.gif', '_nd.gif')
+            landsat_ts_norm_diff_gif(nd_images, out_gif=out_nd_gif, vis_params=None,
+                                     palette=nd_palette, dimensions=dimensions, frames_per_second=frames_per_second)
+
         return out_gif
 
     except Exception as e:
         print(e)
-        return
 
 
 def minimum_bounding_box(geojson):
@@ -4470,8 +4754,7 @@ def search_ee_data(keywords):
 
     except Exception as e:
         print(e)
-        return
-
+        
 
 def ee_data_thumbnail(asset_id):
     """Retrieves the thumbnail URL of an Earth Engine asset.
@@ -4507,7 +4790,6 @@ def ee_data_thumbnail(asset_id):
         return thumbnail_url
     except Exception as e:
         print(e)
-        return
 
 
 def ee_data_html(asset):
@@ -4549,7 +4831,6 @@ def ee_data_html(asset):
 
     except Exception as e:
         print(e)
-        return
 
 
 def create_code_cell(code='', where='below'):
@@ -4997,7 +5278,7 @@ def ee_user_id():
     Returns:
         str: A string containing the user id.
     """
-    ee_initialize()
+    # ee_initialize()
     roots = ee.data.getAssetRoots()
     if len(roots) == 0:
         return None
@@ -5013,7 +5294,7 @@ def build_asset_tree(limit=100):
     import geeadd.ee_report as geeadd
     warnings.filterwarnings('ignore')
 
-    ee_initialize()
+    # ee_initialize()
 
     tree = Tree(multiple_selection=False)
     tree_dict = {}
@@ -5473,7 +5754,8 @@ def clone_github_repo(url, out_dir):
     import zipfile
 
     repo_name = os.path.basename(url)
-    url_zip = os.path.join(url, 'archive/master.zip')
+    # url_zip = os.path.join(url, 'archive/master.zip')
+    url_zip = url + '/archive/master.zip'
 
     if os.path.exists(out_dir):
         print(
@@ -5634,3 +5916,470 @@ def is_tool(name):
     from shutil import which
 
     return which(name) is not None
+
+
+def image_props(img, date_format='YYYY-MM-dd'):
+    """Gets image properties.
+
+    Args:
+        img (ee.Image): The input image.
+        date_format (str, optional): The output date format. Defaults to 'YYYY-MM-dd HH:mm:ss'.
+
+    Returns:
+        dd.Dictionary: The dictionary containing image properties.
+    """
+    if not isinstance(img, ee.Image):
+        print('The input object must be an ee.Image')
+        return
+
+    keys = img.propertyNames().remove('system:footprint').remove('system:bands')
+    values = keys.map(lambda p: img.get(p))
+
+    bands = img.bandNames()
+    scales = bands.map(lambda b: img.select([b]).projection().nominalScale())
+    scale = ee.Algorithms.If(scales.distinct().size().gt(
+        1), ee.Dictionary.fromLists(bands.getInfo(), scales), scales.get(0))
+    image_date = ee.Date(img.get('system:time_start')).format(date_format)
+    time_start = ee.Date(img.get('system:time_start')
+                         ).format('YYYY-MM-dd HH:mm:ss')
+    # time_end = ee.Date(img.get('system:time_end')).format('YYYY-MM-dd HH:mm:ss')
+    time_end = ee.Algorithms.If(ee.List(img.propertyNames()).contains('system:time_end'), ee.Date(
+        img.get('system:time_end')).format('YYYY-MM-dd HH:mm:ss'), time_start)
+    asset_size = ee.Number(img.get('system:asset_size')).divide(
+        1e6).format().cat(ee.String(' MB'))
+
+    props = ee.Dictionary.fromLists(keys, values)
+    props = props.set('system:time_start', time_start)
+    props = props.set('system:time_end', time_end)
+    props = props.set('system:asset_size', asset_size)
+    props = props.set('NOMINAL_SCALE', scale)
+    props = props.set('IMAGE_DATE', image_date)
+
+    return props
+
+
+def image_stats(img, region=None, scale=None):
+    """Gets image descriptive statistics.
+
+    Args:
+        img (ee.Image): The input image to calculate descriptive statistics.
+        region (object, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+
+    Returns:
+        ee.Dictionary: A dictionary containing the description statistics of the input image.
+    """
+    import geemap.utils as utils
+
+    if not isinstance(img, ee.Image):
+        print('The input object must be an ee.Image')
+        return
+
+    stat_types = ['min', 'max', 'mean', 'std', 'sum']
+
+    image_min = utils.image_min_value(img, region, scale)
+    image_max = utils.image_max_value(img, region, scale)
+    image_mean = utils.image_mean_value(img, region, scale)
+    image_std = utils.image_std_value(img, region, scale)
+    image_sum = utils.image_sum_value(img, region, scale)
+
+    stat_results = ee.List(
+        [image_min, image_max, image_mean, image_std, image_sum])
+
+    stats = ee.Dictionary.fromLists(stat_types, stat_results)
+
+    return stats
+
+
+def date_sequence(start, end, unit, date_format='YYYY-MM-dd'):
+    """Creates a date sequence.
+
+    Args:
+        start (str): The start date, e.g., '2000-01-01'.
+        end (str): The end date, e.g., '2000-12-31'.
+        unit (str): One of 'year', 'month' 'week', 'day', 'hour', 'minute', or 'second'.
+        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
+
+    Returns:
+        ee.List: A list of date sequence.
+    """
+    start_date = ee.Date(start)
+    end_date = ee.Date(end)
+    count = ee.Number(end_date.difference(start_date, unit)).toInt()
+    num_seq = ee.List.sequence(0, count)
+    date_seq = num_seq.map(
+        lambda d: start_date.advance(d, unit).format(date_format))
+    return date_seq
+
+
+def adjust_longitude(in_fc):
+    """Adjusts longitude if it is less than -180 or greater than 180.
+
+    Args:
+        in_fc (dict): The input dictionary containing coordinates.
+
+    Returns:
+        dict: A dictionary containing the converted longitudes
+    """
+    try:
+
+        keys = in_fc.keys()
+
+        if 'geometry' in keys:
+
+            coordinates = in_fc['geometry']['coordinates']
+
+            if in_fc['geometry']['type'] == 'Point':
+                longitude = coordinates[0]
+                if longitude < - 180:
+                    longitude = 360 + longitude
+                elif longitude > 180:
+                    longitude = longitude - 360
+                in_fc['geometry']['coordinates'][0] = longitude
+
+            elif in_fc['geometry']['type'] == 'Polygon':
+                for index1, item in enumerate(coordinates):
+                    for index2, element in enumerate(item):
+                        longitude = element[0]
+                        if longitude < - 180:
+                            longitude = 360 + longitude
+                        elif longitude > 180:
+                            longitude = longitude - 360
+                        in_fc['geometry']['coordinates'][index1][index2][0] = longitude
+
+            elif in_fc['geometry']['type'] == 'LineString':
+                for index, element in enumerate(coordinates):
+                    longitude = element[0]
+                    if longitude < - 180:
+                        longitude = 360 + longitude
+                    elif longitude > 180:
+                        longitude = longitude - 360
+                    in_fc['geometry']['coordinates'][index][0] = longitude
+
+        elif 'type' in keys:
+
+            coordinates = in_fc['coordinates']
+
+            if in_fc['type'] == 'Point':
+                longitude = coordinates[0]
+                if longitude < - 180:
+                    longitude = 360 + longitude
+                elif longitude > 180:
+                    longitude = longitude - 360
+                in_fc['coordinates'][0] = longitude
+
+            elif in_fc['type'] == 'Polygon':
+                for index1, item in enumerate(coordinates):
+                    for index2, element in enumerate(item):
+                        longitude = element[0]
+                        if longitude < - 180:
+                            longitude = 360 + longitude
+                        elif longitude > 180:
+                            longitude = longitude - 360
+                        in_fc['coordinates'][index1][index2][0] = longitude
+
+            elif in_fc['type'] == 'LineString':
+                for index, element in enumerate(coordinates):
+                    longitude = element[0]
+                    if longitude < - 180:
+                        longitude = 360 + longitude
+                    elif longitude > 180:
+                        longitude = longitude - 360
+                    in_fc['coordinates'][index][0] = longitude
+
+        return in_fc
+
+    except Exception as e:
+        print(e)
+        return None
+
+
+def set_proxy(port=1080, ip='http://127.0.0.1'):
+    """Sets proxy if needed. This is only needed for countries where Google services are not available.
+
+    Args:
+        port (int, optional): The proxy port number. Defaults to 1080.
+        ip (str, optional): The IP address. Defaults to 'http://127.0.0.1'.
+    """
+    import os
+    import requests
+
+    try:
+
+        if not ip.startswith('http'):
+            ip = 'http://' + ip
+        proxy = '{}:{}'.format(ip, port)
+
+        os.environ['HTTP_PROXY'] = proxy
+        os.environ['HTTPS_PROXY'] = proxy
+
+        a = requests.get('https://earthengine.google.com/')
+
+        if a.status_code != 200:
+            print(
+                'Failed to connect to Earth Engine. Please double check the port number and ip address.')
+
+    except Exception as e:
+        print(e)
+
+
+def in_colab_shell():
+    """Tests if the code is being executed within Google Colab."""
+    try:
+        import google.colab  # pylint: disable=unused-variable
+        return True
+    except ImportError:
+        return False
+
+
+def is_drive_mounted():
+    """Checks whether Google Drive is mounted in Google Colab.
+
+    Returns:
+        bool: Returns True if Google Drive is mounted, False otherwise.
+    """
+    drive_path = '/content/drive/My Drive'
+    if os.path.exists(drive_path):
+        return True
+    else:
+        return False
+
+
+def credentials_in_drive():
+    """Checks if the ee credentials file exists in Google Drive.
+
+    Returns:
+        bool: Returns True if Google Drive is mounted, False otherwise.
+    """
+    credentials_path = '/content/drive/My Drive/.config/earthengine/credentials'
+    if os.path.exists(credentials_path):
+        return True
+    else:
+        return False
+
+
+def credentials_in_colab():
+    """Checks if the ee credentials file exists in Google Colab.
+
+    Returns:
+        bool: Returns True if Google Drive is mounted, False otherwise.
+    """
+    credentials_path = '/root/.config/earthengine/credentials'
+    if os.path.exists(credentials_path):
+        return True
+    else:
+        return False
+
+
+def copy_credentials_to_drive():
+    """Copies ee credentials from Google Colab to Google Drive.
+    """
+    import shutil
+    src = '/root/.config/earthengine/credentials'
+    dst = '/content/drive/My Drive/.config/earthengine/credentials'
+
+    wd = os.path.dirname(dst)
+    if not os.path.exists(wd):
+        os.makedirs(wd)
+
+    shutil.copyfile(src, dst)
+
+
+def copy_credentials_to_colab():
+    """Copies ee credentials from Google Drive to Google Colab.
+    """
+    import shutil
+    src = '/content/drive/My Drive/.config/earthengine/credentials'
+    dst = '/root/.config/earthengine/credentials'
+
+    wd = os.path.dirname(dst)
+    if not os.path.exists(wd):
+        os.makedirs(wd)
+
+    shutil.copyfile(src, dst)
+
+
+def create_download_link(filename, title="Click here to download: "):
+    """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578
+
+    Args:
+        filename (str): The file path to the file to download
+        title (str, optional): str. Defaults to "Click here to download: ".
+
+    Returns:
+        str: HTML download URL.
+    """
+    import base64
+    from IPython.display import HTML
+    data = open(filename, "rb").read()
+    b64 = base64.b64encode(data)
+    payload = b64.decode()
+    basename = os.path.basename(filename)
+    html = '<a download="{filename}" href="data:text/csv;base64,{payload}" style="color:#0000FF;" target="_blank">{title}</a>'
+    html = html.format(payload=payload, title=title +
+                       f' {basename}', filename=basename)
+    return HTML(html)
+
+
+def edit_download_html(htmlWidget, filename, title="Click here to download: "):
+    """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578#issuecomment-617668058
+
+    Args:
+        htmlWidget (object): The HTML widget to display the URL.
+        filename (str): File path to download. 
+        title (str, optional): Download description. Defaults to "Click here to download: ".
+    """
+
+    from IPython.display import HTML
+    import ipywidgets as widgets
+    import base64
+
+    # Change widget html temperarily to a font-awesome spinner
+    htmlWidget.value = "<i class=\"fa fa-spinner fa-spin fa-2x fa-fw\"></i><span class=\"sr-only\">Loading...</span>"
+
+    # Process raw data
+    data = open(filename, "rb").read()
+    b64 = base64.b64encode(data)
+    payload = b64.decode()
+
+    basename = os.path.basename(filename)
+
+    # Create and assign html to widget
+    html = '<a download="{filename}" href="data:text/csv;base64,{payload}" target="_blank">{title}</a>'
+    htmlWidget.value = html.format(
+        payload=payload, title=title+basename, filename=basename)
+
+    # htmlWidget = widgets.HTML(value = '')
+    # htmlWidget
+
+
+def load_GeoTIFF(URL):
+    """Loads a Cloud Optimized GeoTIFF (COG) as an Image. Only Google Cloud Storage is supported. The URL can be one of the following formats:
+    Option 1: gs://pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
+    Option 2: https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
+    Option 3: https://storage.cloud.google.com/gcp-public-data-landsat/LC08/01/044/034/LC08_L1TP_044034_20131228_20170307_01_T1/LC08_L1TP_044034_20131228_20170307_01_T1_B5.TIF
+
+    Args:
+        URL (str): The Cloud Storage URL of the GeoTIFF to load.
+
+    Returns:
+        ee.Image: an Earth Engine image.
+    """
+
+    uri = URL.strip()
+
+    if uri.startswith('https://storage.googleapis.com/'):
+        uri = uri.replace('https://storage.googleapis.com/', 'gs://')
+    elif uri.startswith('https://storage.cloud.google.com/'):
+        uri = uri.replace('https://storage.cloud.google.com/', 'gs://')
+
+    if not uri.startswith('gs://'):
+        raise Exception(
+            'Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
+
+    if not uri.lower().endswith('.tif'):
+        raise Exception(
+            'Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
+
+    cloud_image = ee.Image.loadGeoTIFF(uri)
+    return cloud_image
+
+
+def load_GeoTIFFs(URLs):
+    """Loads a list of Cloud Optimized GeoTIFFs (COG) as an ImageCollection. URLs is a list of URL, which can be one of the following formats:
+    Option 1: gs://pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
+    Option 2: https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
+    Option 3: https://storage.cloud.google.com/gcp-public-data-landsat/LC08/01/044/034/LC08_L1TP_044034_20131228_20170307_01_T1/LC08_L1TP_044034_20131228_20170307_01_T1_B5.TIF
+
+    Args:
+        URLs (list): A list of Cloud Storage URL of the GeoTIFF to load.
+
+    Returns:
+        ee.ImageCollection: An Earth Engine ImageCollection.
+    """
+
+    if not isinstance(URLs, list):
+        raise Exception('The URLs argument must be a list.')
+
+    URIs = []
+    for URL in URLs:
+        uri = URL.strip()
+
+        if uri.startswith('https://storage.googleapis.com/'):
+            uri = uri.replace('https://storage.googleapis.com/', 'gs://')
+        elif uri.startswith('https://storage.cloud.google.com/'):
+            uri = uri.replace('https://storage.cloud.google.com/', 'gs://')
+
+        if not uri.startswith('gs://'):
+            raise Exception(
+                'Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
+
+        if not uri.lower().endswith('.tif'):
+            raise Exception(
+                'Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(uri))
+
+        URIs.append(uri)
+
+    URIs = ee.List(URIs)
+    collection = URIs.map(lambda uri: ee.Image.loadGeoTIFF(uri))
+    return ee.ImageCollection(collection)
+
+
+def landsat_ts_norm_diff(collection, bands=['Green', 'SWIR1'], threshold=0):
+    """Computes a normalized difference index based on a Landsat timeseries.
+
+    Args:
+        collection (ee.ImageCollection): A Landsat timeseries.
+        bands (list, optional): The bands to use for computing normalized difference. Defaults to ['Green', 'SWIR1'].
+        threshold (float, optional): The threshold to extract features. Defaults to 0.
+
+    Returns:
+        ee.ImageCollection: An ImageCollection containing images with values greater than the specified threshold. 
+    """
+    nd_images = collection.map(lambda img: img.normalizedDifference(
+        bands).gt(threshold).copyProperties(img, img.propertyNames()))
+    return nd_images
+
+
+def landsat_ts_norm_diff_gif(collection, out_gif=None, vis_params=None, palette=['black', 'blue'], dimensions=768, frames_per_second=10):
+    """[summary]
+
+    Args:
+        collection (ee.ImageCollection): The normalized difference Landsat timeseires.
+        out_gif (str, optional): File path to the output animated GIF. Defaults to None.
+        vis_params (dict, optional): Visualization parameters. Defaults to None.
+        palette (list, optional): The palette to use for visualizing the timelapse. Defaults to ['black', 'blue']. The first color in the list is the background color.
+        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+
+    Returns:
+        str: File path to the output animated GIF.
+    """
+    coordinates = ee.Image(collection.first()).get('coordinates')
+    roi = ee.Geometry.Polygon(coordinates, None, False)
+
+    if out_gif is None:
+        out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+        filename = 'landsat_ts_nd_' + random_string() + '.gif'
+        out_gif = os.path.join(out_dir, filename)
+    elif not out_gif.endswith('.gif'):
+        raise Exception('The output file must end with .gif')
+
+    bands = ['nd']
+    if vis_params is None:
+        vis_params = {}
+        vis_params['bands'] = bands
+        vis_params['palette'] = palette
+
+    video_args = vis_params.copy()
+    video_args['dimensions'] = dimensions
+    video_args['region'] = roi
+    video_args['framesPerSecond'] = frames_per_second
+    video_args['crs'] = 'EPSG:3857'
+
+    if 'bands' not in video_args.keys():
+        video_args['bands'] = bands
+
+    download_ee_video(collection, video_args, out_gif)
+
+    return out_gif

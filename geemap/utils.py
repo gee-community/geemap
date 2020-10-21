@@ -93,7 +93,37 @@ def image_cell_size(img):
     Returns:
         float: The nominal scale in meters.
     """
-    return img.projection().nominalScale().getInfo()
+    bands = img.bandNames()
+    scales = bands.map(lambda b: img.select([b]).projection().nominalScale())
+    scale = ee.Algorithms.If(scales.distinct().size().gt(1), ee.Dictionary.fromLists(bands.getInfo(), scales), scales.get(0))
+    return scale
+
+
+def image_scale(img):
+    """Retrieves the image cell size (e.g., spatial resolution)
+
+    Args:
+        img (object): ee.Image
+
+    Returns:
+        float: The nominal scale in meters.
+    """
+    # bands = img.bandNames()
+    # scales = bands.map(lambda b: img.select([b]).projection().nominalScale())
+    # scale = ee.Algorithms.If(scales.distinct().size().gt(1), ee.Dictionary.fromLists(bands.getInfo(), scales), scales.get(0))
+    return img.select(0).projection().nominalScale()
+
+
+def image_band_names(img):
+    """Gets image band names.
+
+    Args:
+        img (ee.Image): The input image.
+
+    Returns:
+        ee.List: The returned list of image band names.
+    """
+    return img.bandNames()
 
 
 def image_date(img, date_format='YYYY-MM-dd'):
@@ -106,7 +136,7 @@ def image_date(img, date_format='YYYY-MM-dd'):
     Returns:
         str: A string representing the acquisition of the image.
     """
-    return ee.Date(img.get('system:time_start')).format(date_format).getInfo()
+    return ee.Date(img.get('system:time_start')).format(date_format)
 
 
 def image_area(img, region=None, scale=None, denominator=1.0):
@@ -125,7 +155,7 @@ def image_area(img, region=None, scale=None, denominator=1.0):
         region = img.geometry()
 
     if scale is None:
-        scale = img.projection().nominalScale()
+        scale = image_scale(img)
 
     pixel_area = img.unmask().neq(ee.Image(0)).multiply(
         ee.Image.pixelArea()).divide(denominator)
@@ -153,7 +183,7 @@ def image_max_value(img, region=None, scale=None):
         region = img.geometry()
 
     if scale is None:
-        scale = img.projection().nominalScale()
+        scale = image_scale(img)
 
     max_value = img.reduceRegion(**{
         'reducer': ee.Reducer.max(),
@@ -179,7 +209,7 @@ def image_min_value(img, region=None, scale=None):
         region = img.geometry()
 
     if scale is None:
-        scale = img.projection().nominalScale()
+        scale = image_scale(img)
 
     min_value = img.reduceRegion(**{
         'reducer': ee.Reducer.min(),
@@ -205,7 +235,7 @@ def image_mean_value(img, region=None, scale=None):
         region = img.geometry()
 
     if scale is None:
-        scale = img.projection().nominalScale()
+        scale = image_scale(img)
 
     mean_value = img.reduceRegion(**{
         'reducer': ee.Reducer.mean(),
@@ -231,7 +261,7 @@ def image_std_value(img, region=None, scale=None):
         region = img.geometry()
 
     if scale is None:
-        scale = img.projection().nominalScale()
+        scale = image_scale(img)
 
     std_value = img.reduceRegion(**{
         'reducer': ee.Reducer.stdDev(),
@@ -240,6 +270,32 @@ def image_std_value(img, region=None, scale=None):
         'maxPixels': 1e12
     })
     return std_value
+
+
+def image_sum_value(img, region=None, scale=None):
+    """Retrieves the sum of an image.
+
+    Args:
+        img (object): The image to calculate the standard deviation.
+        region (object, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+
+    Returns:
+        object: ee.Number
+    """
+    if region is None:
+        region = img.geometry()
+
+    if scale is None:
+        scale = image_scale(img)
+
+    sum_value = img.reduceRegion(**{
+        'reducer': ee.Reducer.sum(),
+        'geometry': region,
+        'scale': scale,
+        'maxPixels': 1e12
+    })
+    return sum_value
 
 
 def extract_values_to_points(in_points, img, label, scale=None):
@@ -255,7 +311,7 @@ def extract_values_to_points(in_points, img, label, scale=None):
         object: ee.FeatureCollection
     """
     if scale is None:
-        scale = img.projection().nominalScale()
+        scale = image_scale(img)
 
     out_fc = img.sampleRegions(**{
         'collection': in_points,
@@ -551,7 +607,7 @@ def filter_NWI(HUC08_Id, region, exclude_riverine=True):
     Args:
         HUC08_Id (str): The HUC8 watershed id.
         region (object): ee.Geometry
-        remove_riverine (bool, optional): Whether to exclude riverine wetlands. Defaults to True.
+        exclude_riverine (bool, optional): Whether to exclude riverine wetlands. Defaults to True.
 
     Returns:
         object: ee.FeatureCollection
@@ -617,7 +673,7 @@ def find_HUC10(HUC10_Id):
     """Finds a HUC10 watershed based on a given HUC08 ID
 
     Args:
-        HUC08_Id (str): The HUC10 ID.
+        HUC10_Id (str): The HUC10 ID.
 
     Returns:
         object: ee.FeatureCollection
@@ -634,7 +690,7 @@ def find_NWI(HUC08_Id, exclude_riverine=True):
 
     Args:
         HUC08_Id (str): The HUC08 watershed ID.
-        remove_riverine (bool, optional): Whether to exclude riverine wetlands. Defaults to True.
+        exclude_riverine (bool, optional): Whether to exclude riverine wetlands. Defaults to True.
 
     Returns:
         object: ee.FeatureCollection
@@ -836,3 +892,31 @@ def num_round(num, decimal=2):
         float: The number with the specified decimal places rounded.
     """
     return round(num, decimal)
+
+
+def dict_to_csv(data_dict, out_csv, by_row=False):
+    """Downloads an ee.Dictionary as a CSV file.
+
+    Args:
+        data_dict (ee.Dictionary): The input ee.Dictionary.
+        out_csv (str): The output file path to the CSV file.
+        by_row (bool, optional): Whether to use by row or by column. Defaults to False.
+    """
+    import geemap
+
+    out_dir = os.path.dirname(out_csv)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    if not by_row:
+        csv_feature = ee.Feature(None, data_dict)
+        csv_feat_col = ee.FeatureCollection([csv_feature])
+    else:
+        keys = data_dict.keys()
+        data = keys.map(lambda k: ee.Dictionary({'name': k, 'value': data_dict.get(k)}))
+        csv_feature = data.map(lambda f: ee.Feature(None, f))
+        csv_feat_col = ee.FeatureCollection(csv_feature)
+
+    geemap.ee_export_vector(csv_feat_col, out_csv)
+  
+        

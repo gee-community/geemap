@@ -1,0 +1,3 @@
+# basemaps module
+
+::: geemap.basemaps

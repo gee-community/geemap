@@ -6,9 +6,9 @@
 [![image](https://img.shields.io/pypi/v/geemap.svg)](https://pypi.python.org/pypi/geemap)
 [![image](https://img.shields.io/conda/vn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
 [![image](https://pepy.tech/badge/geemap)](https://pepy.tech/project/geemap)
-[![image](https://readthedocs.org/projects/geemap/badge/?version=latest)](https://geemap.readthedocs.io/en/latest/?badge=latest)
+[![image](https://readthedocs.org/projects/geemap/badge/?version=latest)](https://giswqs.github.io/geemap/geemap)
 [![image](https://img.shields.io/badge/YouTube-GEE%20Tutorials-red)](https://gishub.org/geemap)
-[![image](https://img.shields.io/twitter/follow/giswqs?style=social%20%20%20%20..%20image::%20https://readthedocs.org/projects/geemap/badge/?version=latest)](https://twitter.com/giswqs)
+[![image](https://img.shields.io/twitter/follow/giswqs?style=social)](https://twitter.com/giswqs)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## YouTube Channel
@@ -44,9 +44,21 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 23. [How to search Earth Engine API and import assets from GEE personal account?](#23-how-to-search-earth-engine-api-and-import-assets-from-gee-personal-account) ([video](https://youtu.be/c9VJ_uRYSkw) | [gif](https://i.imgur.com/b1auzkr.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/22_import_assets.ipynb))
 24. [How to publish interactive Earth Engine maps?](#24-how-to-publish-interactive-earth-engine-maps) ([video](https://youtu.be/NNrrLBIqroY) | [gif](https://i.imgur.com/Hpfzazk.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/24_publish_maps.ipynb))
 25. [How to load local raster datasets with geemap?](#25-how-to-load-local-raster-datasets-with-geemap) ([video](https://youtu.be/6XIehAnoazk) | [gif](https://i.imgur.com/nsqEt2O.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/21_export_map_to_html_png.ipynb))
-26. How to create and deploy Earth Engine Apps using Python? ([video](https://youtu.be/nsIjfD83ggA) | [gif](https://i.imgur.com/Hpfzazk.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/26_heroku.ipynb))
-27. How to create an interactive Earth Engine App for creating Landsat timelapse? ([video](https://youtu.be/whIXudC6r_s) | [gif](https://i.imgur.com/doHfnKp.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/27_timelapse_app.ipynb))
-28. How to use your local computer as a web server for hosting Earth Engine Apps? ([video](https://youtu.be/eRDZBVJcNCk) | [gif](https://i.imgur.com/q0sJSyi.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/28_voila.ipynb))
+26. [How to create and deploy Earth Engine Apps using Python?](https://i.imgur.com/Hpfzazk.gif) ([video](https://youtu.be/nsIjfD83ggA) | [gif](https://i.imgur.com/Hpfzazk.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/26_heroku.ipynb))
+27. [How to create an interactive Earth Engine App for creating Landsat timelapse?](https://i.imgur.com/doHfnKp.gif) ([video](https://youtu.be/whIXudC6r_s) | [gif](https://i.imgur.com/doHfnKp.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/27_timelapse_app.ipynb))
+28. [How to use your local computer as a web server for hosting Earth Engine Apps?](https://i.imgur.com/q0sJSyi.gif) ([video](https://youtu.be/eRDZBVJcNCk) | [gif](https://i.imgur.com/q0sJSyi.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/28_voila.ipynb))
+29. [How to use pydeck for rendering Earth Engine data](https://i.imgur.com/HjFB95l.gif) ([video](https://youtu.be/EIkEH4okFF4) | [gif](https://i.imgur.com/HjFB95l.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/29_pydeck.ipynb))
+30. [How to get image basic properties and descriptive statistics](https://i.imgur.com/3B6YhkI.gif) ([video](https://youtu.be/eixBPPWgWs8) | [gif](https://i.imgur.com/3B6YhkI.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/30_image_props_stats.ipynb))
+31. [Machine Learning with Earth Engine - Unsupervised Classification](https://i.imgur.com/uNQfrFx.gif) ([video](https://youtu.be/k9MEy2awVJQ) | [gif](https://i.imgur.com/uNQfrFx.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/31_unsupervised_classification.ipynb))
+32. [Machine Learning with Earth Engine - Supervised Classification](https://i.imgur.com/jJ2Xiu6.gif) ([video](https://youtu.be/qWaEfgWi21o) | [gif](https://i.imgur.com/jJ2Xiu6.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/32_supervised_classification.ipynb))
+33. [Machine Learning with Earth Engine - Performing Accuracy Assessment for Image Classification](https://i.imgur.com/1JkIrF3.gif) ([video](https://youtu.be/JYptiw-I8dc) | [gif](https://i.imgur.com/1JkIrF3.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/33_accuracy_assessment.ipynb))
+34. [Interactive extraction of pixel values and interactive region reduction](https://i.imgur.com/LXRqSTu.gif) ([video](https://t.co/D0NC63KgF3) | [gif](https://i.imgur.com/LXRqSTu.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/34_extract_values.ipynb))
+35. How to use geemap and Earth Engine in Google Colab ([video](https://youtu.be/fG6kx9vq7hs) | [gif](https://i.imgur.com/OJCasMe.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/35_geemap_colab.ipynb))
+36. How to find out the greenest day of the year ([video](https://youtu.be/9KEaW4Ks5fQ) | [gif](https://i.imgur.com/eLDeb4t.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/36_quality_mosaic.ipynb))
+37. How to use Earth Engine with pydeck for 3D terrain visualization ([video](https://youtu.be/4E3zOP3-md8) | [gif](https://i.imgur.com/Gx7Y015.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/37_pydeck_3d.ipynb))
+38. How to use Cloud Optimized GeoTIFF with Earth Engine ([video](https://youtu.be/2P2PGSMj-wM) | [gif](https://i.imgur.com/z2mfrrZ.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/38_cloud_geotiff.ipynb))
+39. How to create Landsat timelapse animations without coding (video | [gif](https://i.imgur.com/7eyMcZQ.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/39_timelapse.ipynb))
+
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 

@@ -377,8 +377,13 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
 
                     line = line.replace(" = function", "").replace(
                         "=function", '').replace("function ", '')
-                    line = " " * (len(line) - len(line.lstrip())
-                                  ) + "def " + line.strip() + ":"
+                    if line.lstrip().startswith('//'):
+                        line = line.replace('//', '').lstrip()                    
+                        line = " " * (len(line) - len(line.lstrip())
+                                    ) + "# def " + line.strip() + ":"
+                    else:
+                        line = " " * (len(line) - len(line.lstrip())
+                                    ) + "def " + line.strip() + ":"                        
                 elif "{" in line:
                     bracket_index = line.index("{")
                     matching_line_index, matching_char_index = find_matching_bracket(
@@ -501,6 +506,8 @@ def js_snippet_to_py(in_js_snippet, add_new_cell=True, import_ee=True, import_ge
                         continue
                     else:
                         out_lines.append(line)
+                elif index == (len(lines) - 1) and lines[index].strip() != '':
+                    out_lines.append(line)
 
         if show_map:
             out_lines.append('Map\n')
