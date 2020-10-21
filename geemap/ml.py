@@ -11,6 +11,9 @@ def tree_to_string(estimator, feature_names):
         estimator (sklearn.tree.estimator): An estimator consisting of multiple decision tree classifiers. Expects object to contain estimators_ attribute
         feature_names (list[str]): List of strings that define the name of feautres (i.e. bands) used to create the model
 
+    returns:
+        tree_str (str): string representation of decision tree estimator
+
     raises:
         RuntimeError: raises run time error when function cannot determine if the estimator is for regression or classification problem
     """
@@ -181,7 +184,10 @@ def rf_to_strings(estimator,feature_names,processes=2):
         feature_names (list[str]): List of strings that define the name of feautres (i.e. bands) used to create the model
     
     kwargs:
-        pcocessess (int): number of cpu processes to spawn. Increasing processes will improve speed for large models. default = 2
+        processess (int): number of cpu processes to spawn. Increasing processes will improve speed for large models. default = 2
+
+    returns:
+        trees (list[str]): list of strings where each string represents a decision tree estimator and collectively represent an ensemble decision tree estimator (i.e. RandomForest)
 
     raises:
         None
@@ -211,6 +217,9 @@ def strings_to_classifier(trees):
     args:
         trees (list[str]): list of string representaion of the decision trees
 
+    returns:
+        classifier (ee.Classifier): ee classifier object representing an ensemble decision tree 
+
     raises:
         None
     """
@@ -229,6 +238,9 @@ def fc_to_classifier(fc):
 
     args:
         fc (ee.FeatureCollection): feature collection that has trees property for each feature that represents the decision tree
+
+    returns:
+        classifier (ee.Classifier): ee classifier object representing an ensemble decision tree 
 
     raises:
         None
@@ -253,6 +265,9 @@ def export_trees_to_fc(trees,asset_id,description="geemap_rf_export"):
     
     kwargs:
         description (str): optional description to provide export information. default = "geemap_rf_export" 
+
+    returns:
+        None
 
     raises:
         None
