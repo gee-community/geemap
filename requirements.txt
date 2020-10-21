@@ -1,13 +1,13 @@
 bqplot
 click
 colour
-earthengine-api>=0.1.226
+earthengine-api>=0.1.230
 ffmpeg-python
 folium>=0.11.0
-geeadd>=0.4.8
+geeadd>=0.5.1
 geocoder
 ipyfilechooser
-ipyleaflet>=0.13.1
+ipyleaflet>=0.13.3
 ipynb-py-convert
 ipytree
 matplotlib

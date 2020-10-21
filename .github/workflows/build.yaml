@@ -6,7 +6,7 @@ on:
     branches:
       - master
 
-name: py-check
+name: build
 jobs:
   py-check:
     runs-on: ${{ matrix.config.os }}
