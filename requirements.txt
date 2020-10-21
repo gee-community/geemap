@@ -15,3 +15,5 @@ mss
 pillow
 pyshp
 voila
+numpy
+pandas
