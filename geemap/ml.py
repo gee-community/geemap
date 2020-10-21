@@ -9,7 +9,7 @@ def tree_to_string(estimator, feature_names):
 
     args:
         estimator (sklearn.tree.estimator): An estimator consisting of multiple decision tree classifiers. Expects object to contain estimators_ attribute
-        feature_names (list[str]): List of strings that define the name of feautres (i.e. bands) used to create the model
+        feature_names (list[str]): List of strings that define the name of features (i.e. bands) used to create the model
 
     returns:
         tree_str (str): string representation of decision tree estimator
@@ -181,7 +181,7 @@ def rf_to_strings(estimator,feature_names,processes=2):
 
     args:
         estimator (sklearn.ensemble.estimator): A decision tree classifier or regressor object created using sklearn
-        feature_names (list[str]): List of strings that define the name of feautres (i.e. bands) used to create the model
+        feature_names (list[str]): List of strings that define the name of features (i.e. bands) used to create the model
     
     kwargs:
         processess (int): number of cpu processes to spawn. Increasing processes will improve speed for large models. default = 2
@@ -189,8 +189,6 @@ def rf_to_strings(estimator,feature_names,processes=2):
     returns:
         trees (list[str]): list of strings where each string represents a decision tree estimator and collectively represent an ensemble decision tree estimator (i.e. RandomForest)
 
-    raises:
-        None
     """
 
     # extract out the estimator trees
@@ -215,13 +213,11 @@ def strings_to_classifier(trees):
     """Function that takes string representation of decision trees and creates a ee.Classifier that can be used with ee objects
 
     args:
-        trees (list[str]): list of string representaion of the decision trees
+        trees (list[str]): list of string representation of the decision trees
 
     returns:
         classifier (ee.Classifier): ee classifier object representing an ensemble decision tree 
 
-    raises:
-        None
     """
 
     # convert strings to ee.String objects
@@ -242,8 +238,6 @@ def fc_to_classifier(fc):
     returns:
         classifier (ee.Classifier): ee classifier object representing an ensemble decision tree 
 
-    raises:
-        None
     """
 
     # get a list of tree strings from feature collection
@@ -260,17 +254,12 @@ def export_trees_to_fc(trees,asset_id,description="geemap_rf_export"):
     """Function that creates a feature collection with a property tree which contains the string representation of decision trees and exports to ee asset for later use
 
     args:
-        trees (list[str]): list of string representaion of the decision trees
-        asset_id (str): ee asset id path to export the feature collectio to
+        trees (list[str]): list of string representation of the decision trees
+        asset_id (str): ee asset id path to export the feature collection to
     
     kwargs:
         description (str): optional description to provide export information. default = "geemap_rf_export" 
 
-    returns:
-        None
-
-    raises:
-        None
     """
     # create a null geometry point. This is needed to properly export the feature collection
     null_island = ee.Geometry.Point([0,0])
@@ -290,4 +279,4 @@ def export_trees_to_fc(trees,asset_id,description="geemap_rf_export"):
     )
     task.start()
 
-    return
+    
