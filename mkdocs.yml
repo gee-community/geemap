@@ -35,9 +35,10 @@ nav:
   - YouTube Channel: https://www.youtube.com/c/QiushengWu
   - Report Issues: https://github.com/giswqs/geemap/issues
   - API Reference:
-      - geemap module: geemap.md
       - basemaps module: basemaps.md
       - conversion module: conversion.md
       - eefolium module: eefolium.md
+      - geemap module: geemap.md
       - legends module: legends.md
+      - ml module: ml.md
       - utilities module: utils.md
