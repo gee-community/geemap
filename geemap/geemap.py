@@ -3402,7 +3402,7 @@ def ee_export_image_collection(ee_object, out_dir, scale=None, crs=None, region=
         print(e)
 
 
-def ee_export_image_to_drive(ee_object, description, folder=None, region=None, scale=None, crs=None, max_pixels=1.0E13, file_format='GeoTIFF'):
+def ee_export_image_to_drive(ee_object, description, folder=None, region=None, scale=None, crs=None, max_pixels=1.0E13, file_format='GeoTIFF', format_options={}):
     """Creates a batch task to export an Image as a raster to Google Drive.
 
     Args:
@@ -3414,6 +3414,7 @@ def ee_export_image_to_drive(ee_object, description, folder=None, region=None, s
         crs (str, optional): CRS to use for the exported image.. Defaults to None.
         max_pixels (int, optional): Restrict the number of pixels in the export. Defaults to 1.0E13.
         file_format (str, optional): The string file format to which the image is exported. Currently only 'GeoTIFF' and 'TFRecord' are supported. Defaults to 'GeoTIFF'.
+        format_options (dict, optional): A dictionary of string keys to format specific options, e.g., {'compressed': True, 'cloudOptimized': True}
     """
     # ee_initialize()
 
@@ -3435,6 +3436,7 @@ def ee_export_image_to_drive(ee_object, description, folder=None, region=None, s
             params['crs'] = crs
         params['maxPixels'] = max_pixels
         params['fileFormat'] = file_format
+        params['formatOptions'] = format_options
 
         task = ee.batch.Export.image(ee_object, description, params)
         task.start()
@@ -3445,7 +3447,7 @@ def ee_export_image_to_drive(ee_object, description, folder=None, region=None, s
         print(e)
 
 
-def ee_export_image_collection_to_drive(ee_object, descriptions=None, folder=None, region=None, scale=None, crs=None, max_pixels=1.0E13, file_format='GeoTIFF'):
+def ee_export_image_collection_to_drive(ee_object, descriptions=None, folder=None, region=None, scale=None, crs=None, max_pixels=1.0E13, file_format='GeoTIFF', format_options={}):
     """Creates a batch task to export an ImageCollection as raster images to Google Drive.
 
     Args:
@@ -3457,6 +3459,7 @@ def ee_export_image_collection_to_drive(ee_object, descriptions=None, folder=Non
         crs (str, optional): CRS to use for the exported image.. Defaults to None.
         max_pixels (int, optional): Restrict the number of pixels in the export. Defaults to 1.0E13.
         file_format (str, optional): The string file format to which the image is exported. Currently only 'GeoTIFF' and 'TFRecord' are supported. Defaults to 'GeoTIFF'.
+        format_options (dict, optional): A dictionary of string keys to format specific options, e.g., {'compressed': True, 'cloudOptimized': True}
     """
     # ee_initialize()
 
@@ -3481,7 +3484,7 @@ def ee_export_image_collection_to_drive(ee_object, descriptions=None, folder=Non
             image = ee.Image(images.get(i))
             name = descriptions[i]
             ee_export_image_to_drive(
-                image, name, folder, region, scale, crs, max_pixels, file_format)
+                image, name, folder, region, scale, crs, max_pixels, file_format, format_options)
 
     except Exception as e:
         print(e)
