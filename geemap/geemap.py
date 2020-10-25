@@ -425,7 +425,6 @@ class Map(ipyleaflet.Map):
                 self.user_rois = collection
                 ee_draw_layer = ee_tile_layer(
                     collection, {'color': 'blue'}, 'Drawn Features', True, 0.5)
-
                 if self.draw_count == 1:
                     self.add_layer(ee_draw_layer)
                     self.draw_layer = ee_draw_layer
