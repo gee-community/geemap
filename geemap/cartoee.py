@@ -20,6 +20,10 @@ def check_dependencies():
 
     args:
         verbose (bool, optional): boolean keyword to print info during installs
+
+    raises:
+        Exception: when conda is not found in path
+        Exception: when auto install fails to install/import packages 
     """
 
     import importlib
