@@ -3009,7 +3009,7 @@ def shp_to_geojson(in_shp, out_json=None):
 
 
 def shp_to_ee(in_shp):
-    """Converts a shapefile to Earth Engine objects.
+    """Converts a shapefile to Earth Engine objects. Note that the CRS of the shapefile must be EPSG:4326
 
     Args:
         in_shp (str): File path to a shapefile.
