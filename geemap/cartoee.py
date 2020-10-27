@@ -9,17 +9,27 @@ import subprocess
 import numpy as np
 from io import BytesIO
 import matplotlib as mpl
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from matplotlib import cm, colors
 from collections.abc import Iterable
+
+
+try:
+
+    from PIL import Image
+    import cartopy.crs as ccrs
+    from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
+    from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
+
+except ImportError:
+
+    print("cartopy is not installed. Please see https://scitools.org.uk/cartopy/docs/latest/installing.html#installing for instructions on how to install cartopy.\n")
+    print('The easiest way to install cartopy is using conda: conda install -c conda-forge cartopy')
 
 
 def check_dependencies():
     """Helper function to check dependencies used for cartoee
     Dependencies not included in main geemap are: cartopy, PIL, and scipys
-
-    args:
-        verbose (bool, optional): boolean keyword to print info during installs
 
     raises:
         Exception: when conda is not found in path
@@ -39,7 +49,7 @@ def check_dependencies():
 
     # list of dependencies to check, ordered in decreasing complexity
     # i.e. cartopy install should install PIL
-    dependencies = ["cartopy", "PIL", "scipy"]
+    dependencies = ["cartopy", "pillow", "scipy"]
 
     # loop through dependency list and check if we can import module
     # if not try to install
@@ -52,7 +62,7 @@ def check_dependencies():
         except ImportError:
             # change the dependency name if it is PIL
             # import vs install names are different for PIL...
-            dependency = dependency if dependency is not "PIL" else "pillow"
+            # dependency = dependency if dependency is not "PIL" else "pillow"
 
             # print info if not installed
             logging.info(f"The {dependency} package is not installed. Trying install...")
@@ -91,18 +101,10 @@ def check_dependencies():
     return
 
 
-check_dependencies()
+# check_dependencies()
 
 
-from PIL import Image
-import cartopy.crs as ccrs
-from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
-from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
-
-# REQUIRES ee, matplotlib, cartopy, pillow
-
-
-def get_map(img_obj, proj=ccrs.PlateCarree(), **kwargs):
+def get_map(img_obj, proj=None, **kwargs):
     """
     Wrapper function to create a new cartopy plot with project and adds Earth
     Engine image results
@@ -113,8 +115,10 @@ def get_map(img_obj, proj=ccrs.PlateCarree(), **kwargs):
     Returns:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot): cartopy GeoAxesSubplot object with Earth Engine results displayed
     """
+    if proj is None:
+        proj = ccrs.PlateCarree()
 
-    ax = plt.axes(projection=proj)
+    ax = mpl.pyplot.axes(projection=proj)
     add_layer(ax, img_obj, **kwargs)
 
     return ax
@@ -129,7 +133,7 @@ def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None):
         dims (list | tuple | int, optional): dimensions to request earth engine result as [WIDTH,HEIGHT]. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Default None and infers dimesions
         region (list | tuple, optional): geospatial region of the image to render in format [E,S,W,N]. By default, the whole image
         cmap (str, optional): string specifying matplotlib colormap to colorize image. If cmap is specified visParams cannot contain 'palette' key
-        visParams (dict, optional): visualization parameters as a dictionary. See https://developers.google.com/earth-engine/image_visualization for options
+        vis_params (dict, optional): visualization parameters as a dictionary. See https://developers.google.com/earth-engine/image_visualization for options
 
     returns:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot): cartopy GeoAxesSubplot object with Earth Engine results displayed
@@ -260,9 +264,9 @@ def add_colorbar(
             cax = ax.figure.add_axes(posOpts[loc])
 
             if loc == "left":
-                plt.subplots_adjust(left=0.18)
+                mpl.pyplot.subplots_adjust(left=0.18)
             elif loc == "right":
-                plt.subplots_adjust(right=0.85)
+                mpl.pyplot.subplots_adjust(right=0.85)
             else:
                 pass
 
@@ -312,7 +316,7 @@ def add_colorbar(
                     "colorbar..."
                 )
 
-            cmap = plt.get_cmap(cmap)
+            cmap = mpl.pyplot.get_cmap(cmap)
             norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
         if "palette" in vis_keys:
@@ -340,7 +344,7 @@ def add_colorbar(
                     "colorbar..."
                 )
 
-            cmap = plt.get_cmap(cmap)
+            cmap = mpl.pyplot.get_cmap(cmap)
             norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
         else:
