@@ -1,24 +1,104 @@
 import ee
+import os
+import sys
 import json
+import logging
+import requests
 import warnings
+import subprocess
 import numpy as np
+from io import BytesIO
 import matplotlib as mpl
-from matplotlib import cm, colors
 import matplotlib.pyplot as plt
+from matplotlib import cm, colors
 from collections.abc import Iterable
 
-import requests
-from PIL import Image
-from io import BytesIO
 
+def check_dependencies():
+    """Helper function to check dependencies used for cartoee
+    Dependencies not included in main geemap are: cartopy, PIL, and scipys
+
+    args:
+        verbose (bool, optional): boolean keyword to print info during installs
+    """
+
+    import importlib
+
+    # check if conda in in path and available to use
+    is_conda = os.path.exists(os.path.join(sys.prefix, "conda-meta"))
+
+    # raise error if conda not found
+    if not is_conda:
+        raise Exception(
+            "Auto installation requires `conda`. Please install conda using the following instructions before use: https://docs.conda.io/projects/conda/en/latest/user-guide/install/"
+        )
+
+    # list of dependencies to check, ordered in decreasing complexity
+    # i.e. cartopy install should install PIL
+    dependencies = ["cartopy", "PIL", "scipy"]
+
+    # loop through dependency list and check if we can import module
+    # if not try to install
+    # install fail will be silent to continue through others if there is a failure
+    # correct install will be checked later
+    for dependency in dependencies:
+        try:
+            # see if we can import
+            mod = importlib.import_module(dependency)
+        except ImportError:
+            # change the dependency name if it is PIL
+            # import vs install names are different for PIL...
+            dependency = dependency if dependency is not "PIL" else "pillow"
+
+            # print info if not installed
+            logging.info(f"The {dependency} package is not installed. Trying install...")
+
+            logging.info(f"Installing {dependency} ...")
+
+            # run the command
+            cmd = f"conda install -c conda-forge {dependency} -y"
+            proc = subprocess.Popen(
+                cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+            )
+            # send command
+            out, err = proc.communicate()
+
+            logging.info(out.decode())
+
+    # second pass through dependencies to check if everything was installed correctly
+    failed = []
+
+    for dependency in dependencies:
+        try:
+            mod = importlib.import_module(dependency)
+        except ImportError:
+            # append failed imports
+            failed.append(dependency)
+
+    # check if there were any failed imports after trying install
+    if len(failed) > 0:
+        failed_str = ",".join(failed)
+        raise Exception(
+            f"Auto installation failed...the following dependencies were not installed '{failed_str}'"
+        )
+    else:
+        logging.info("All dependencies are successfully imported/installed!")
+
+    return
+
+
+check_dependencies()
+
+
+from PIL import Image
 import cartopy.crs as ccrs
-from cartopy.mpl.geoaxes import GeoAxes,GeoAxesSubplot
+from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
 from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
 
 # REQUIRES ee, matplotlib, cartopy, pillow
 
 
-def get_map(img_obj,proj=ccrs.PlateCarree(),**kwargs):
+def get_map(img_obj, proj=ccrs.PlateCarree(), **kwargs):
     """
     Wrapper function to create a new cartopy plot with project and adds Earth
     Engine image results
@@ -31,12 +111,12 @@ def get_map(img_obj,proj=ccrs.PlateCarree(),**kwargs):
     """
 
     ax = plt.axes(projection=proj)
-    add_layer(ax,img_obj,**kwargs)
+    add_layer(ax, img_obj, **kwargs)
 
     return ax
 
 
-def add_layer(ax,img_obj,dims=1000,region=None,cmap=None,vis_params=None):
+def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None):
     """Add an Earth Engine image to a cartopy plot.
 
     args:
@@ -60,55 +140,66 @@ def add_layer(ax,img_obj,dims=1000,region=None,cmap=None,vis_params=None):
         raise ValueError("provided `img_obj` is not of type ee.Image")
 
     if region is not None:
-        map_region = ee.Geometry.Rectangle(region).getInfo()['coordinates']
-        view_extent = (region[0],region[2],region[1],region[3])
+        map_region = ee.Geometry.Rectangle(region).getInfo()["coordinates"]
+        view_extent = (region[0], region[2], region[1], region[3])
     else:
-        map_region = img_obj.geometry(100).bounds().getInfo()['coordinates']
-        # get the image bounds 
-        x,y = list(zip(*map_region[0]))
-        view_extent = [min(x),max(x),min(y),max(y)]
+        map_region = img_obj.geometry(100).bounds().getInfo()["coordinates"]
+        # get the image bounds
+        x, y = list(zip(*map_region[0]))
+        view_extent = [min(x), max(x), min(y), max(y)]
 
-    if type(dims) not in [list,tuple,int]:
-        raise ValueError('provided dims not of type list, tuple, or int')
+    if type(dims) not in [list, tuple, int]:
+        raise ValueError("provided dims not of type list, tuple, or int")
 
-    if type(ax) not in [GeoAxes,GeoAxesSubplot]:
-        raise ValueError('provided axes not of type cartopy.mpl.geoaxes.GeoAxes '
-                         'or cartopy.mpl.geoaxes.GeoAxesSubplot')
+    if type(ax) not in [GeoAxes, GeoAxesSubplot]:
+        raise ValueError(
+            "provided axes not of type cartopy.mpl.geoaxes.GeoAxes "
+            "or cartopy.mpl.geoaxes.GeoAxesSubplot"
+        )
 
-    args = {'format':'png'}
+    args = {"format": "png"}
     if region:
-        args['region'] = map_region
+        args["region"] = map_region
     if dims:
-        args['dimensions'] = dims
+        args["dimensions"] = dims
 
     if vis_params:
         keys = list(vis_params.keys())
-        if cmap and ('palette' in keys):
-            raise KeyError('cannot provide `palette` in vis_params if `cmap` is specified')
+        if cmap and ("palette" in keys):
+            raise KeyError(
+                "cannot provide `palette` in vis_params if `cmap` is specified"
+            )
         elif cmap:
-            args['palette'] = ','.join(build_palette(cmap))
+            args["palette"] = ",".join(build_palette(cmap))
         else:
             pass
 
-        args = {**args,**vis_params}
+        args = {**args, **vis_params}
 
     url = img_obj.getThumbUrl(args)
     response = requests.get(url)
     if response.status_code != 200:
-        error = eval(response.content)['error']
+        error = eval(response.content)["error"]
         raise requests.exceptions.HTTPError(f"{error}")
 
     image = np.array(Image.open(BytesIO(response.content)))
 
     if image.shape[-1] == 2:
-        image = np.concatenate([np.repeat(image[:,:,0:1], 3,axis=2),image[:,:,-1:]],axis=2)
+        image = np.concatenate(
+            [np.repeat(image[:, :, 0:1], 3, axis=2), image[:, :, -1:]], axis=2
+        )
 
-    ax.imshow(np.squeeze(image), extent=view_extent,origin='upper',transform=ccrs.PlateCarree())
+    ax.imshow(
+        np.squeeze(image),
+        extent=view_extent,
+        origin="upper",
+        transform=ccrs.PlateCarree(),
+    )
 
     return
 
 
-def build_palette(cmap,n=256):
+def build_palette(cmap, n=256):
     """Creates hex color code palette from a matplotlib colormap
 
     args:
@@ -120,13 +211,15 @@ def build_palette(cmap,n=256):
     """
 
     colormap = cm.get_cmap(cmap, n)
-    vals = np.linspace(0,1,n)
-    palette = list(map(lambda x: colors.rgb2hex(colormap(x)[:3]),vals))
+    vals = np.linspace(0, 1, n)
+    palette = list(map(lambda x: colors.rgb2hex(colormap(x)[:3]), vals))
 
     return palette
 
 
-def add_colorbar(ax, vis_params,loc=None,cmap="gray",discrete=False,label=None,**kwargs):
+def add_colorbar(
+    ax, vis_params, loc=None, cmap="gray", discrete=False, label=None, **kwargs
+):
     """
     Add a colorbar tp the map based on visualization parameters provided
     args:
@@ -145,109 +238,123 @@ def add_colorbar(ax, vis_params,loc=None,cmap="gray",discrete=False,label=None,*
         ValueError: If 'loc' is not of type str or does not equal available options
     """
 
-    if type(ax) not in [GeoAxes,GeoAxesSubplot]:
-        raise ValueError('provided axes not of type cartopy.mpl.geoaxes.GeoAxes '
-                         'or cartopy.mpl.geoaxes.GeoAxesSubplot')
+    if type(ax) not in [GeoAxes, GeoAxesSubplot]:
+        raise ValueError(
+            "provided axes not of type cartopy.mpl.geoaxes.GeoAxes "
+            "or cartopy.mpl.geoaxes.GeoAxesSubplot"
+        )
 
     if loc:
-        if (type(loc) == str) and (loc in ['left','right','bottom','top']):
-            posOpts = {'left':   [0.01, 0.25, 0.02, 0.5],
-                       'right':  [0.88, 0.25, 0.02, 0.5],
-                       'bottom': [0.25, 0.15, 0.5, 0.02],
-                       'top':    [0.25, 0.88, 0.5, 0.02]}
+        if (type(loc) == str) and (loc in ["left", "right", "bottom", "top"]):
+            posOpts = {
+                "left": [0.01, 0.25, 0.02, 0.5],
+                "right": [0.88, 0.25, 0.02, 0.5],
+                "bottom": [0.25, 0.15, 0.5, 0.02],
+                "top": [0.25, 0.88, 0.5, 0.02],
+            }
 
             cax = ax.figure.add_axes(posOpts[loc])
 
-            if loc == 'left':
+            if loc == "left":
                 plt.subplots_adjust(left=0.18)
-            elif loc == 'right':
+            elif loc == "right":
                 plt.subplots_adjust(right=0.85)
             else:
                 pass
 
         else:
-            raise ValueError('provided loc not of type str. options are "left", '
-                             '"top", "right", or "bottom"')
+            raise ValueError(
+                'provided loc not of type str. options are "left", '
+                '"top", "right", or "bottom"'
+            )
 
-    elif 'cax' in kwargs:
-        cax = kwargs['cax']
-        kwargs = {key:kwargs[key] for key in kwargs.keys() if key != 'cax'}
+    elif "cax" in kwargs:
+        cax = kwargs["cax"]
+        kwargs = {key: kwargs[key] for key in kwargs.keys() if key != "cax"}
 
     else:
-        raise ValueError('loc or cax keywords must be specified')
+        raise ValueError("loc or cax keywords must be specified")
 
     vis_keys = list(vis_params.keys())
     if vis_params:
-        if 'min' in vis_params:
-            vmin = vis_params['min']
-            if type(vmin) not in (int,float):
-                raise ValueError('provided min value not of scalar type')
+        if "min" in vis_params:
+            vmin = vis_params["min"]
+            if type(vmin) not in (int, float):
+                raise ValueError("provided min value not of scalar type")
         else:
             vmin = 0
 
-        if 'max' in vis_params:
-            vmax = vis_params['max']
-            if type(vmax) not in (int,float):
-                raise ValueError('provided max value not of scalar type')
+        if "max" in vis_params:
+            vmax = vis_params["max"]
+            if type(vmax) not in (int, float):
+                raise ValueError("provided max value not of scalar type")
         else:
             vmax = 1
 
-        if 'opacity' in vis_params:
-            alpha = vis_params['opacity']
-            if type(alpha) not in (int,float):
-                raise ValueError('provided opacity value of not type scalar')
-        elif 'alpha' in kwargs:
-            alpha = kwargs['alpha']
+        if "opacity" in vis_params:
+            alpha = vis_params["opacity"]
+            if type(alpha) not in (int, float):
+                raise ValueError("provided opacity value of not type scalar")
+        elif "alpha" in kwargs:
+            alpha = kwargs["alpha"]
         else:
             alpha = 1
 
         if cmap is not None:
             if discrete:
-                warnings.warn('discrete keyword used when "palette" key is '
-                              'supplied with visParams, creating a continuous '
-                              'colorbar...')
+                warnings.warn(
+                    'discrete keyword used when "palette" key is '
+                    "supplied with visParams, creating a continuous "
+                    "colorbar..."
+                )
 
             cmap = plt.get_cmap(cmap)
             norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
-        if 'palette' in vis_keys:
-            hexcodes = vis_params['palette'].split(',')
-            hexcodes = [i if i[0]=='#' else '#'+i for i in hexcodes]
+        if "palette" in vis_keys:
+            hexcodes = vis_params["palette"].split(",")
+            hexcodes = [i if i[0] == "#" else "#" + i for i in hexcodes]
 
             if discrete:
                 cmap = mpl.colors.ListedColormap(hexcodes)
-                vals = np.linspace(vmin,vmax,cmap.N+1)
+                vals = np.linspace(vmin, vmax, cmap.N + 1)
                 norm = mpl.colors.BoundaryNorm(vals, cmap.N)
 
             else:
-                cmap = mpl.colors.LinearSegmentedColormap.from_list('custom', hexcodes, N=256)
+                cmap = mpl.colors.LinearSegmentedColormap.from_list(
+                    "custom", hexcodes, N=256
+                )
                 norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
             cmap = cmap
 
         elif cmap is not None:
             if discrete:
-                warnings.warn('discrete keyword used when "palette" key is '
-                              'supplied with visParams, creating a continuous '
-                              'colorbar...')
+                warnings.warn(
+                    'discrete keyword used when "palette" key is '
+                    "supplied with visParams, creating a continuous "
+                    "colorbar..."
+                )
 
             cmap = plt.get_cmap(cmap)
             norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
         else:
-            raise ValueError('cmap keyword or "palette" key in visParams must be provided')
+            raise ValueError(
+                'cmap keyword or "palette" key in visParams must be provided'
+            )
 
-    cb = mpl.colorbar.ColorbarBase(cax,norm=norm,alpha=alpha,cmap=cmap,**kwargs)
+    cb = mpl.colorbar.ColorbarBase(cax, norm=norm, alpha=alpha, cmap=cmap, **kwargs)
 
-    if 'bands' in vis_keys:
-        cb.set_label(vis_params['bands'])
+    if "bands" in vis_keys:
+        cb.set_label(vis_params["bands"])
     elif label is not None:
         cb.set_label(label)
 
     return
 
 
-def _buffer_box(bbox,interval):
+def _buffer_box(bbox, interval):
     """Helper function to buffer a bounding box to the nearest multiple of interval
 
     args:
@@ -278,7 +385,7 @@ def _buffer_box(bbox,interval):
     else:
         ymax = bbox[3]
 
-    return (xmin,xmax,ymin,ymax)
+    return (xmin, xmax, ymin, ymax)
 
 
 def bbox_to_extent(bbox):
@@ -290,10 +397,20 @@ def bbox_to_extent(bbox):
     returns:
         extent (tuple[float]): tuple of coordinates in the order of [W,E,S,N]
     """
-    return (bbox[0],bbox[2],bbox[1],bbox[3])
+    return (bbox[0], bbox[2], bbox[1], bbox[3])
 
 
-def add_gridlines(ax, interval=None, n_ticks=None, xs=None,ys=None, buffer_out=True,xtick_rotation="horizontal",ytick_rotation="horizontal", **kwargs):
+def add_gridlines(
+    ax,
+    interval=None,
+    n_ticks=None,
+    xs=None,
+    ys=None,
+    buffer_out=True,
+    xtick_rotation="horizontal",
+    ytick_rotation="horizontal",
+    **kwargs,
+):
     """Helper function to add gridlines and format ticks to map
 
     args:
@@ -304,7 +421,7 @@ def add_gridlines(ax, interval=None, n_ticks=None, xs=None,ys=None, buffer_out=T
         ys (list, optional): list of y coordinates to create gridlines. default = None
         buffer_out (boolean, optional): boolean option to buffer out the extent to insure coordinates created cover map extent. default=true
         xtick_rotation (str | float, optional):
-        ytick_rotation (str | float, optional): 
+        ytick_rotation (str | float, optional):
         **kwargs: remaining keyword arguments are passed to gridlines()
 
     raises:
@@ -313,7 +430,7 @@ def add_gridlines(ax, interval=None, n_ticks=None, xs=None,ys=None, buffer_out=T
     """
 
     view_extent = ax.get_extent()
-    extent= view_extent
+    extent = view_extent
 
     if xs is not None:
         xmain = xs
@@ -325,9 +442,9 @@ def add_gridlines(ax, interval=None, n_ticks=None, xs=None,ys=None, buffer_out=T
             xspace = interval
 
         if buffer_out:
-            extent = _buffer_box(extent,xspace)
+            extent = _buffer_box(extent, xspace)
 
-        xmain = np.arange(extent[0],extent[1]+xspace,xspace)
+        xmain = np.arange(extent[0], extent[1] + xspace, xspace)
 
     elif n_ticks is not None:
         if isinstance(n_ticks, Iterable):
@@ -335,9 +452,11 @@ def add_gridlines(ax, interval=None, n_ticks=None, xs=None,ys=None, buffer_out=T
         else:
             n_x = n_ticks
 
-        xmain = np.linspace(extent[0],extent[1],n_x)
+        xmain = np.linspace(extent[0], extent[1], n_x)
     else:
-        raise ValueError("one of variables interval, n_ticks, or xs must be defined. If you would like default gridlines, please use `ax.gridlines()`")        
+        raise ValueError(
+            "one of variables interval, n_ticks, or xs must be defined. If you would like default gridlines, please use `ax.gridlines()`"
+        )
 
     if ys is not None:
         ymain = ys
@@ -347,11 +466,11 @@ def add_gridlines(ax, interval=None, n_ticks=None, xs=None,ys=None, buffer_out=T
             yspace = interval[1]
         else:
             yspace = interval
-        
-        if buffer_out:
-            extent = _buffer_box(extent,yspace)
 
-        ymain = np.arange(extent[2],extent[3]+yspace,yspace)
+        if buffer_out:
+            extent = _buffer_box(extent, yspace)
+
+        ymain = np.arange(extent[2], extent[3] + yspace, yspace)
 
     elif n_ticks is not None:
         if isinstance(n_ticks, Iterable):
@@ -359,27 +478,27 @@ def add_gridlines(ax, interval=None, n_ticks=None, xs=None,ys=None, buffer_out=T
         else:
             n_y = n_ticks
 
-        ymain = np.linspace(extent[2],extent[3],n_y)
+        ymain = np.linspace(extent[2], extent[3], n_y)
 
     else:
-        raise ValueError("one of variables interval, n_ticks, or ys must be defined. If you would like default gridlines, please use `ax.gridlines()`")
-
-
+        raise ValueError(
+            "one of variables interval, n_ticks, or ys must be defined. If you would like default gridlines, please use `ax.gridlines()`"
+        )
 
     gl = ax.gridlines(xlocs=xmain, ylocs=ymain, **kwargs)
 
-    xin = xmain[(xmain>=view_extent[0]) & (xmain<=view_extent[1])]
-    yin = ymain[(ymain>=view_extent[2]) & (ymain<=view_extent[3])]
-            
+    xin = xmain[(xmain >= view_extent[0]) & (xmain <= view_extent[1])]
+    yin = ymain[(ymain >= view_extent[2]) & (ymain <= view_extent[3])]
+
     # set tick labels
     ax.set_xticks(xin, crs=ccrs.PlateCarree())
     ax.set_yticks(yin, crs=ccrs.PlateCarree())
 
-    ax.set_xticklabels(xin,rotation=xtick_rotation,ha="center")
-    ax.set_yticklabels(yin,rotation=ytick_rotation,va="center") 
+    ax.set_xticklabels(xin, rotation=xtick_rotation, ha="center")
+    ax.set_yticklabels(yin, rotation=ytick_rotation, va="center")
 
     ax.xaxis.set_major_formatter(LONGITUDE_FORMATTER)
-    ax.yaxis.set_major_formatter(LATITUDE_FORMATTER)   
+    ax.yaxis.set_major_formatter(LATITUDE_FORMATTER)
 
     return
 
@@ -396,19 +515,19 @@ def pad_view(ax, factor=0.05):
     view_extent = ax.get_extent()
 
     if isinstance(factor, Iterable):
-        xfactor,yfactor = factor
+        xfactor, yfactor = factor
     else:
-        xfactor,yfactor = factor,factor
+        xfactor, yfactor = factor, factor
 
     x_diff = view_extent[1] - view_extent[0]
     y_diff = view_extent[3] - view_extent[2]
-    
-    xmin = view_extent[0] - (x_diff*xfactor)
-    xmax = view_extent[1] + (x_diff*xfactor)
-    ymin = view_extent[2] - (y_diff*yfactor)
-    ymax = view_extent[3] + (y_diff*yfactor)
 
-    ax.set_ylim(ymin,ymax)
-    ax.set_xlim(xmin,xmax)
+    xmin = view_extent[0] - (x_diff * xfactor)
+    xmax = view_extent[1] + (x_diff * xfactor)
+    ymin = view_extent[2] - (y_diff * yfactor)
+    ymax = view_extent[3] + (y_diff * yfactor)
+
+    ax.set_ylim(ymin, ymax)
+    ax.set_xlim(xmin, xmax)
 
     return
