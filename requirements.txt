@@ -12,8 +12,9 @@ ipynb-py-convert
 ipytree
 matplotlib
 mss
+numpy
+pandas
 pillow
 pyshp
 voila
-numpy
-pandas
+whitebox
