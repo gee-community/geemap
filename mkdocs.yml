@@ -37,6 +37,7 @@ nav:
   - API Reference:
       - basemaps module: basemaps.md
       - cartoee module: cartoee.md
+      - common module: common.md
       - conversion module: conversion.md
       - eefolium module: eefolium.md
       - geemap module: geemap.md
