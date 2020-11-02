@@ -5,7 +5,7 @@
 [![image](https://img.shields.io/pypi/v/geemap.svg)](https://pypi.python.org/pypi/geemap)
 [![image](https://img.shields.io/conda/vn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
 [![image](https://pepy.tech/badge/geemap)](https://pepy.tech/project/geemap)
-[![image](https://github.com/giswqs/geemap/workflows/docs/badge.svg)](https://giswqs.github.io/geemap)
+[![image](https://github.com/giswqs/geemap/workflows/docs/badge.svg)](https://geemap.org)
 [![image](https://github.com/giswqs/geemap/workflows/build/badge.svg)](https://github.com/giswqs/geemap/actions?query=workflow%3Abuild)
 [![image](https://img.shields.io/badge/YouTube-Channel-red)](https://www.youtube.com/c/QiushengWu)
 [![image](https://img.shields.io/twitter/follow/giswqs?style=social)](https://twitter.com/giswqs)
@@ -14,7 +14,7 @@
 **A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.**
 
 * GitHub repo: <https://github.com/giswqs/geemap>
-* Documentation: <https://giswqs.github.io/geemap>
+* Documentation: <https://geemap.org>
 * PyPI: <https://pypi.org/project/geemap>
 * Conda-forge: <https://anaconda.org/conda-forge/geemap>
 * 360+ GEE notebook examples: <https://github.com/giswqs/earthengine-py-notebooks>
@@ -27,7 +27,7 @@
 
 **geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python [conversion module](https://github.com/giswqs/geemap/blob/master/geemap/conversion.py) of the geemap package can greatly reduce the time needed to convert existing GEE JavaScripts to Python scripts and Jupyter notebooks.
 
-For video tutorials and notebook examples, please visit the [examples page](https://github.com/giswqs/geemap/tree/master/examples). For complete documentation on geemap modules and methods, please visit the [API Reference](https://giswqs.github.io/geemap/geemap/).
+For video tutorials and notebook examples, please visit the [examples page](https://github.com/giswqs/geemap/tree/master/examples). For complete documentation on geemap modules and methods, please visit the [API Reference](https://geemap.org/geemap/).
 
 If you find geemap useful in your research, please consider citing the following papers to support my work. Thank you for your support.
 

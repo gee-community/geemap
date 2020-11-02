@@ -1222,7 +1222,7 @@ class Map(ipyleaflet.Map):
             image, {'bands': ['B4', 'B3', 'B2'], 'gamma': 1.4}, "LE7_TOA_5YEAR/1999_2003")
         self.setCenter(-50.078877, 25.190030, 3)
         band_names = image.bandNames().getInfo()
-        band_count = len(band_names)
+        # band_count = len(band_names)
 
         latitudes = np.random.uniform(30, 48, size=iterations)
         longitudes = np.random.uniform(-121, -76, size=iterations)
