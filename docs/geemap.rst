@@ -52,13 +52,6 @@ geemap.legends module
    :undoc-members:
    :show-inheritance:
 
-geemap.utils module
--------------------
-
-.. automodule:: geemap.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Module contents
