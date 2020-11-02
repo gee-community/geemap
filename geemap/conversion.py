@@ -17,34 +17,13 @@ To execute all Jupyter notebooks in a folder recursively:                       
 # Authors: Dr. Qiusheng Wu (https://wetlands.io)
 # License: MIT
 
-import argparse
-import glob
 import os
 import pkg_resources
-import random
 import shutil
-import string
-import subprocess
-import tarfile
 import urllib.request
-import zipfile
 from collections import deque
 from pathlib import Path
-from .common import download_from_url, download_from_gdrive
-
-
-def random_string(string_length=3):
-    """Generates a random string of fixed length. 
-
-    Args:
-        string_length (int, optional): Fixed length. Defaults to 3.
-
-    Returns:
-        str: A random string
-    """
-    # random.seed(1001)
-    letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for i in range(string_length))
+from .common import *
 
 
 def find_matching_bracket(lines, start_line_index, start_char_index, matching_char='{'):
