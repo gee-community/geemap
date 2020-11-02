@@ -47,6 +47,10 @@ def ee_initialize(token_name='EARTHENGINE_TOKEN'):
         ee.Authenticate()
         ee.Initialize()
 
+    out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
 
 def set_proxy(port=1080, ip='http://127.0.0.1'):
     """Sets proxy if needed. This is only needed for countries where Google services are not available.
