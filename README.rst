@@ -18,7 +18,7 @@ geemap
         :target: https://pepy.tech/project/geemap
 
 .. image:: https://github.com/giswqs/geemap/workflows/docs/badge.svg
-        :target: https://giswqs.github.io/geemap
+        :target: https://geemap.org
 
 .. image:: https://img.shields.io/badge/YouTube-Channel-red   
         :target: https://www.youtube.com/c/QiushengWu
@@ -38,7 +38,7 @@ geemap
 **A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.**
 
 * GitHub repo: https://github.com/giswqs/geemap
-* Documentation: https://giswqs.github.io/geemap
+* Documentation: https://geemap.org
 * PyPI: https://pypi.org/project/geemap/
 * Conda-forge: https://anaconda.org/conda-forge/geemap
 * 360+ GEE notebook examples: https://github.com/giswqs/earthengine-py-notebooks
@@ -71,7 +71,7 @@ analyze and visualize Earth Engine datasets interactively within a Jupyter-based
 **geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python `conversion module <https://github.com/giswqs/geemap/blob/master/geemap/conversion.py>`__ of the **geemap** package
 can greatly reduce the time needed to convert existing GEE JavaScripts to Python scripts and Jupyter notebooks.
 
-For video tutorials and notebook examples, please visit `<https://github.com/giswqs/geemap/tree/master/examples>`__. For complete documentation on geemap modules and methods, please visit `<https://giswqs.github.io/geemap/geemap>`_.
+For video tutorials and notebook examples, please visit `<https://github.com/giswqs/geemap/tree/master/examples>`__. For complete documentation on geemap modules and methods, please visit `<https://geemap.org/geemap>`_.
 
 If you find geemap useful in your research, please consider citing the following papers to support my work. Thank you for your support.
 
@@ -598,7 +598,6 @@ Dependencies
 
 * `bqplot <https://github.com/bloomberg/bqplot>`__
 * `colour <https://github.com/vaab/colour>`__
-* `dulwich <https://github.com/dulwich/dulwich>`__
 * `earthengine-api <https://github.com/google/earthengine-api>`__
 * `folium <https://github.com/python-visualization/folium>`__
 * `geeadd <https://github.com/samapriya/gee_asset_manager_addon>`__

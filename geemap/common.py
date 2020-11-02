@@ -2561,7 +2561,7 @@ def api_docs():
     """
     import webbrowser
 
-    url = 'https://giswqs.github.io/geemap/geemap'
+    url = 'https://geemap.org/geemap'
     webbrowser.open_new_tab(url)
 
 
