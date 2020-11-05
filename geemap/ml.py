@@ -4,6 +4,7 @@ import pandas as pd
 import multiprocessing as mp
 from functools import partial
 
+
 def tree_to_string(estimator, feature_names):
     """Function to convert a sklearn decision tree object to a string format that EE can interpret
 
@@ -36,7 +37,9 @@ def tree_to_string(estimator, feature_names):
         # take values and drop un needed axis
         values = np.squeeze(raw_vals)
     else:
-        raise RuntimeError("could not understand estimator type and parse out the values")
+        raise RuntimeError(
+            "could not understand estimator type and parse out the values"
+        )
 
     # use iterative pre-order search to extract node depth and leaf information
     node_ids = np.zeros(shape=n_nodes, dtype=np.int64)
@@ -176,13 +179,13 @@ def tree_to_string(estimator, feature_names):
     return tree_str
 
 
-def rf_to_strings(estimator,feature_names,processes=2):
+def rf_to_strings(estimator, feature_names, processes=2):
     """Function to convert a ensemble of decision trees into a list of strings. Wraps `tree_to_string`
 
     args:
         estimator (sklearn.ensemble.estimator): A decision tree classifier or regressor object created using sklearn
         feature_names (list[str]): List of strings that define the name of features (i.e. bands) used to create the model
-    
+
     kwargs:
         processess (int): number of cpu processes to spawn. Increasing processes will improve speed for large models. default = 2
 
@@ -197,7 +200,7 @@ def rf_to_strings(estimator,feature_names,processes=2):
     # check that number of processors set to use is not more than available
     if processes >= mp.cpu_count():
         # if so, force to use only cpu count - 1
-        processes = mp.cpu_count() -1 
+        processes = mp.cpu_count() - 1
 
     # run the tree extraction process in parallel
     with mp.Pool(processes) as pool:
@@ -216,7 +219,7 @@ def strings_to_classifier(trees):
         trees (list[str]): list of string representation of the decision trees
 
     returns:
-        classifier (ee.Classifier): ee classifier object representing an ensemble decision tree 
+        classifier (ee.Classifier): ee classifier object representing an ensemble decision tree
 
     """
 
@@ -236,13 +239,15 @@ def fc_to_classifier(fc):
         fc (ee.FeatureCollection): feature collection that has trees property for each feature that represents the decision tree
 
     returns:
-        classifier (ee.Classifier): ee classifier object representing an ensemble decision tree 
+        classifier (ee.Classifier): ee classifier object representing an ensemble decision tree
 
     """
 
     # get a list of tree strings from feature collection
     tree_strings = fc.aggregate_array("tree").map(
-        lambda x: ee.String(x).replace("#","\n","g") # expects that # is ecoded to be a return
+        lambda x: ee.String(x).replace(
+            "#", "\n", "g"
+        )  # expects that # is ecoded to be a return
     )
     # pass list of ee.Strings to an ensemble decision tree classifier (i.e. RandomForest)
     classifier = ee.Classifier.decisionTreeEnsemble(tree_strings)
@@ -250,33 +255,31 @@ def fc_to_classifier(fc):
     return classifier
 
 
-def export_trees_to_fc(trees,asset_id,description="geemap_rf_export"):
+def export_trees_to_fc(trees, asset_id, description="geemap_rf_export"):
     """Function that creates a feature collection with a property tree which contains the string representation of decision trees and exports to ee asset for later use
 
     args:
         trees (list[str]): list of string representation of the decision trees
         asset_id (str): ee asset id path to export the feature collection to
-    
+
     kwargs:
-        description (str): optional description to provide export information. default = "geemap_rf_export" 
+        description (str): optional description to provide export information. default = "geemap_rf_export"
 
     """
     # create a null geometry point. This is needed to properly export the feature collection
-    null_island = ee.Geometry.Point([0,0])
+    null_island = ee.Geometry.Point([0, 0])
 
     # create a list of feature over null island
     # set the tree property as the tree string
     # encode return values (\n) as #, use to parse later
-    features = [ee.Feature(null_island,{"tree":tree.replace("\n","#")}) for tree in trees]
+    features = [
+        ee.Feature(null_island, {"tree": tree.replace("\n", "#")}) for tree in trees
+    ]
     # cast as feature collection
     fc = ee.FeatureCollection(features)
 
     # get export task and start
     task = ee.batch.Export.table.toAsset(
-        collection=fc,
-        description=description,
-        assetId=asset_id
+        collection=fc, description=description, assetId=asset_id
     )
     task.start()
-
-    
