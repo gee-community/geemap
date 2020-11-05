@@ -9,7 +9,6 @@ import subprocess
 import numpy as np
 from io import BytesIO
 import matplotlib as mpl
-# import matplotlib.pyplot as plt
 from matplotlib import cm, colors
 from collections.abc import Iterable
 
@@ -23,8 +22,12 @@ try:
 
 except ImportError:
 
-    print("cartopy is not installed. Please see https://scitools.org.uk/cartopy/docs/latest/installing.html#installing for instructions on how to install cartopy.\n")
-    print('The easiest way to install cartopy is using conda: conda install -c conda-forge cartopy')
+    print(
+        "cartopy is not installed. Please see https://scitools.org.uk/cartopy/docs/latest/installing.html#installing for instructions on how to install cartopy.\n"
+    )
+    print(
+        "The easiest way to install cartopy is using conda: conda install -c conda-forge cartopy"
+    )
 
 
 def check_dependencies():
@@ -33,7 +36,7 @@ def check_dependencies():
 
     raises:
         Exception: when conda is not found in path
-        Exception: when auto install fails to install/import packages 
+        Exception: when auto install fails to install/import packages
     """
 
     import importlib
@@ -65,7 +68,9 @@ def check_dependencies():
             # dependency = dependency if dependency is not "PIL" else "pillow"
 
             # print info if not installed
-            logging.info(f"The {dependency} package is not installed. Trying install...")
+            logging.info(
+                f"The {dependency} package is not installed. Trying install..."
+            )
 
             logging.info(f"Installing {dependency} ...")
 
