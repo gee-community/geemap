@@ -185,13 +185,33 @@ class Map(folium.Map):
 
         if "add_google_map" not in kwargs.keys():
             kwargs["add_google_map"] = True
+        if "plugin_LatLngPopup" not in kwargs.keys():
+            kwargs["plugin_LatLngPopup"] = True
+        if "plugin_Fullscreen" not in kwargs.keys():
+            kwargs["plugin_Fullscreen"] = True
+        if "plugin_Draw" not in kwargs.keys():
+            kwargs["plugin_Draw"] = False
+        if "Draw_export" not in kwargs.keys():
+            kwargs["Draw_export"] = True
+        if "plugin_MiniMap" not in kwargs.keys():
+            kwargs["plugin_MiniMap"] = False
+        if "plugin_LayerControl" not in kwargs.keys():
+            kwargs["plugin_LayerControl"] = False
 
         super().__init__(**kwargs)
 
         if kwargs.get("add_google_map"):
             ee_basemaps["ROADMAP"].add_to(self)
-        folium.LatLngPopup().add_to(self)
-        # plugins.Fullscreen().add_to(self)
+        if kwargs.get("plugin_LatLngPopup"):
+            folium.LatLngPopup().add_to(self)
+        if kwargs.get("plugin_Fullscreen"):
+            plugins.Fullscreen().add_to(self)
+        if kwargs.get("plugin_Draw"):
+            plugins.Draw(export=kwargs.get("Draw_export")).add_to(self)
+        if kwargs.get("plugin_MiniMap"):
+            plugins.MiniMap().add_to(self)
+        if kwargs.get("plugin_LayerControl"):
+            folium.LayerControl().add_to(self)
 
         self.fit_bounds([latlon, latlon], max_zoom=zoom)
 
