@@ -2792,7 +2792,6 @@ def minimum_bounding_box(geojson):
             coordinates = geojson['geometry']['coordinates'][0]
         else:
             coordinates = geojson['coordinates'][0]
-
         lower_left = min([x[1] for x in coordinates]), min(
             [x[0] for x in coordinates])  # (lat, lon)
         upper_right = max([x[1] for x in coordinates]), max([x[0]
