@@ -436,7 +436,7 @@ class Map(ipyleaflet.Map):
                 self.user_roi = geom
                 feature = ee.Feature(geom)
                 self.draw_last_json = geo_json
-                self.draw_last_bounds = minimum_bounding_box(geo_json)
+                # self.draw_last_bounds = minimum_bounding_box(geo_json)
                 self.draw_last_feature = feature
                 self.draw_features.append(feature)
                 collection = ee.FeatureCollection(self.draw_features)
