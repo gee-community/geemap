@@ -40,6 +40,9 @@ class Map(ipyleaflet.Map):
         zoom = 4
 
         # Interchangeable parameters between ipyleaflet and folium
+
+        if "height" not in kwargs.keys():
+            kwargs["height"] = "550px"
         if "location" in kwargs.keys():
             kwargs["center"] = kwargs["location"]
             kwargs.pop("location")
@@ -58,18 +61,47 @@ class Map(ipyleaflet.Map):
 
         if "add_google_map" not in kwargs.keys():
             kwargs["add_google_map"] = True
-
-        if "show_attribution" not in kwargs.keys():
-            kwargs["show_attribution"] = True
-
         if "scroll_wheel_zoom" not in kwargs.keys():
             kwargs["scroll_wheel_zoom"] = True
 
-        if "zoom_control" not in kwargs.keys():
-            kwargs["zoom_control"] = True
+        if "lite_mode" not in kwargs.keys():
+            kwargs["lite_mode"] = False
 
-        if "height" not in kwargs.keys():
-            kwargs["height"] = "550px"
+        if kwargs["lite_mode"]:
+            kwargs["data_ctrl"] = False
+            kwargs["zoom_ctrl"] = True
+            kwargs["fullscreen_ctrl"] = False
+            kwargs["draw_ctrl"] = False
+            kwargs["search_ctrl"] = False
+            kwargs["measure_ctrl"] = False
+            kwargs["scale_ctrl"] = False
+            kwargs["layer_ctrl"] = False
+            kwargs["inspector_ctrl"] = False
+            kwargs["toolbar_ctrl"] = False
+            kwargs["attribution_ctrl"] = False
+
+        if "data_ctrl" not in kwargs.keys():
+            kwargs["data_ctrl"] = True
+        if "zoom_ctrl" not in kwargs.keys():
+            kwargs["zoom_ctrl"] = True
+        if "fullscreen_ctrl" not in kwargs.keys():
+            kwargs["fullscreen_ctrl"] = True
+        if "draw_ctrl" not in kwargs.keys():
+            kwargs["draw_ctrl"] = True
+        if "search_ctrl" not in kwargs.keys():
+            kwargs["search_ctrl"] = True
+        if "measure_ctrl" not in kwargs.keys():
+            kwargs["measure_ctrl"] = True
+        if "scale_ctrl" not in kwargs.keys():
+            kwargs["scale_ctrl"] = True
+        if "layer_ctrl" not in kwargs.keys():
+            kwargs["layer_ctrl"] = True
+        if "inspector_ctrl" not in kwargs.keys():
+            kwargs["inspector_ctrl"] = True
+        if "toolbar_ctrl" not in kwargs.keys():
+            kwargs["toolbar_ctrl"] = False
+        if "attribution_ctrl" not in kwargs.keys():
+            kwargs["attribution_ctrl"] = True
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -323,7 +355,8 @@ class Map(ipyleaflet.Map):
         search_widget.children = [search_button]
         data_control = WidgetControl(widget=search_widget, position="topleft")
 
-        self.add_control(control=data_control)
+        if kwargs.get("data_ctrl"):
+            self.add_control(control=data_control)
 
         search_marker = Marker(
             icon=AwesomeIcon(name="check", marker_color="green", icon_color="darkgreen")
@@ -335,35 +368,40 @@ class Map(ipyleaflet.Map):
             property_name="display_name",
             marker=search_marker,
         )
-        self.add_control(search)
+        if kwargs.get("search_ctrl"):
+            self.add_control(search)
 
-        if kwargs["zoom_control"]:
+        if kwargs.get("zoom_ctrl"):
             self.add_control(ZoomControl(position="topleft"))
 
-        layer_control = LayersControl(position="topright")
-        self.add_control(layer_control)
-        self.layer_control = layer_control
+        if kwargs.get("layer_ctrl"):
+            layer_control = LayersControl(position="topright")
+            self.layer_control = layer_control
+            self.add_control(layer_control)
 
-        scale = ScaleControl(position="bottomleft")
-        self.add_control(scale)
-        self.scale_control = scale
+        if kwargs.get("scale_ctrl"):
+            scale = ScaleControl(position="bottomleft")
+            self.scale_control = scale
+            self.add_control(scale)
 
-        fullscreen = FullScreenControl()
-        self.add_control(fullscreen)
-        self.fullscreen_control = fullscreen
+        if kwargs.get("fullscreen_ctrl"):
+            fullscreen = FullScreenControl()
+            self.fullscreen_control = fullscreen
+            self.add_control(fullscreen)
 
-        measure = MeasureControl(
-            position="bottomleft",
-            active_color="orange",
-            primary_length_unit="kilometers",
-        )
-        self.add_control(measure)
-        self.measure_control = measure
+        if kwargs.get("measure_ctrl"):
+            measure = MeasureControl(
+                position="bottomleft",
+                active_color="orange",
+                primary_length_unit="kilometers",
+            )
+            self.measure_control = measure
+            self.add_control(measure)
 
         if kwargs.get("add_google_map"):
             self.add_layer(ee_basemaps["ROADMAP"])
 
-        if kwargs.get("show_attribution"):
+        if kwargs.get("attribution_ctrl"):
             self.add_control(AttributionControl(position="bottomright"))
 
         draw_control = DrawControl(
@@ -371,6 +409,8 @@ class Map(ipyleaflet.Map):
             rectangle={"shapeOptions": {"color": "#0000FF"}},
             circle={"shapeOptions": {"color": "#0000FF"}},
             circlemarker={},
+            edit=False,
+            remove=False,
         )
 
         draw_control_lite = DrawControl(
@@ -380,6 +420,8 @@ class Map(ipyleaflet.Map):
             circlemarker={},
             polyline={},
             polygon={},
+            edit=False,
+            remove=False,
         )
         # Handles draw events
 
@@ -425,7 +467,8 @@ class Map(ipyleaflet.Map):
                 self.roi_end = False
 
         draw_control.on_draw(handle_draw)
-        self.add_control(draw_control)
+        if kwargs.get("draw_ctrl"):
+            self.add_control(draw_control)
         self.draw_control = draw_control
         self.draw_control_lite = draw_control_lite
 
@@ -461,7 +504,8 @@ class Map(ipyleaflet.Map):
         vb = widgets.VBox(children=[inspector_checkbox, plot_checkbox])
 
         chk_control = WidgetControl(widget=vb, position="topright")
-        self.add_control(chk_control)
+        if kwargs.get("inspector_ctrl"):
+            self.add_control(chk_control)
         self.inspector_control = chk_control
 
         self.inspector_checked = inspector_checkbox.value
@@ -667,7 +711,8 @@ class Map(ipyleaflet.Map):
         toolbar_widget = widgets.VBox()
         toolbar_widget.children = [toolbar_button]
         toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
-        self.add_control(toolbar_control)
+        if kwargs.get("toolbar_ctrl"):
+            self.add_control(toolbar_control)
 
         tool_output_control = WidgetControl(widget=tool_output, position="topright")
         self.add_control(tool_output_control)
