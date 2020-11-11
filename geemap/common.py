@@ -1102,6 +1102,7 @@ def ee_export_vector(ee_object, filename, selectors=None):
         if filetype == 'shp':
             z = zipfile.ZipFile(filename)
             z.extractall(os.path.dirname(filename))
+            z.close()
             os.remove(filename)
             filename = filename.replace('.zip', '.shp')
 
@@ -5251,7 +5252,7 @@ def summary_stats(collection, column):
         dict: The dictionary containing information about the summary statistics.
     """
     stats = collection.aggregate_stats(column).getInfo()
-    return eval(str(stats)).get('values')
+    return eval(str(stats))
 
 
 def column_stats(collection, column, stats_type):
