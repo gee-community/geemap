@@ -4009,6 +4009,98 @@ def legend_from_ee(ee_class_table):
     except Exception as e:
         print(e)
 
+
+def vis_to_qml(ee_class_table, out_qml):
+    """Create a QGIS Layer Style (.qml) based on an Earth Engine class table from the Earth Engine Data Catalog page
+    such as https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1
+
+    Value	Color	Description
+    0	1c0dff	Water
+    1	05450a	Evergreen needleleaf forest
+    2	086a10	Evergreen broadleaf forest
+    3	54a708	Deciduous needleleaf forest
+    4	78d203	Deciduous broadleaf forest
+    5	009900	Mixed forest
+    6	c6b044	Closed shrublands
+    7	dcd159	Open shrublands
+    8	dade48	Woody savannas
+    9	fbff13	Savannas
+    10	b6ff05	Grasslands
+    11	27ff87	Permanent wetlands
+    12	c24f44	Croplands
+    13	a5a5a5	Urban and built-up
+    14	ff6d4c	Cropland/natural vegetation mosaic
+    15	69fff8	Snow and ice
+    16	f9ffa4	Barren or sparsely vegetated
+    254	ffffff	Unclassified
+
+    Args:
+        ee_class_table (str): An Earth Engine class table with triple quotes.
+        out_qml (str): File path to the output QGIS Layer Style (.qml).
+    """
+    import pkg_resources
+
+    pkg_dir = os.path.dirname(
+        pkg_resources.resource_filename("geemap", "geemap.py"))
+    data_dir = os.path.join(pkg_dir, 'data')
+    template_dir = os.path.join(data_dir, 'template')
+    qml_template = os.path.join(template_dir, 'NLCD.qml')
+
+    out_dir = os.path.dirname(out_qml)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    with open(qml_template) as f:
+        lines = f.readlines()
+        header = lines[:31]
+        footer = lines[51:]
+
+    entries = []
+    try:
+        ee_class_table = ee_class_table.strip()
+        lines = ee_class_table.split('\n')[1:]
+
+        if lines[0] == 'Value\tColor\tDescription':
+            lines = lines[1:]
+
+        for line in lines:
+            items = line.split("\t")
+            items = [item.strip() for item in items]
+            value = items[0]
+            color = items[1]
+            label = items[2]
+            entry = '        <paletteEntry alpha="255" color="#{}" value="{}" label="{}"/>\n'.format(color, value, label)
+            entries.append(entry)
+
+        out_lines = header + entries + footer
+        with open(out_qml, "w") as f:
+            f.writelines(out_lines)        
+
+    except Exception as e:
+        print(e)
+
+
+def create_nlcd_qml(out_qml):
+    """Create a QGIS Layer Style (.qml) for NLCD data
+
+    Args:
+        out_qml (str): File path to the ouput qml.  
+    """
+    import pkg_resources
+    import shutil
+
+    pkg_dir = os.path.dirname(
+        pkg_resources.resource_filename("geemap", "geemap.py"))
+    data_dir = os.path.join(pkg_dir, 'data')
+    template_dir = os.path.join(data_dir, 'template')
+    qml_template = os.path.join(template_dir, 'NLCD.qml')
+
+    out_dir = os.path.dirname(out_qml)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    shutil.copyfile(qml_template, out_qml)
+
         
 def load_GeoTIFF(URL):
     """Loads a Cloud Optimized GeoTIFF (COG) as an Image. Only Google Cloud Storage is supported. The URL can be one of the following formats:
