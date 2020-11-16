@@ -1,11 +1,8 @@
 """ This module extends the folium Map class. It is designed to be used in Google Colab, as Google Colab currently does not support ipyleaflet.
 """
 
-import colour
 import ee
 import folium
-import os
-import ipywidgets as widgets
 from folium import plugins
 from .common import *
 from .conversion import *
