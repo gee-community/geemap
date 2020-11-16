@@ -2377,6 +2377,34 @@ class Map(ipyleaflet.Map):
             self.chart_points = []
             self.chart_labels = None
 
+    def remove_last_drawn(self):
+        """Removes user-drawn geometries from the map"""
+        if self.draw_layer is not None:
+            collection = ee.FeatureCollection(self.draw_features[:-1])
+            ee_draw_layer = ee_tile_layer(
+                collection, {"color": "blue"}, "Drawn Features", True, 0.5
+            )
+            if self.draw_count == 1:
+                self.remove_drawn_features()
+            else:
+                self.substitute_layer(self.draw_layer, ee_draw_layer)
+                self.draw_layer = ee_draw_layer
+                self.draw_count -= 1
+                self.draw_features = self.draw_features[:-1]
+                self.draw_last_feature = self.draw_features[-1]
+                self.draw_layer = ee_draw_layer
+                self.draw_last_json = None
+                self.draw_last_bounds = None
+                self.user_roi = ee.Feature(
+                    collection.toList(collection.size()).get(
+                        collection.size().subtract(1)
+                    )
+                ).geometry()
+                self.user_rois = collection
+                self.chart_values = self.chart_values[:-1]
+                self.chart_points = self.chart_points[:-1]
+                # self.chart_labels = None
+
     def extract_values_to_points(self, filename):
         """Exports pixel values to a csv file based on user-drawn geometries.
 
