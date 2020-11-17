@@ -940,11 +940,10 @@ def shp_to_geojson(in_shp, out_json=None):
     Returns:
         object: The json object representing the shapefile.
     """
-    # check_install('pyshp')
-    # ee_initialize()
     try:
         import json
         import shapefile
+        from datetime import date
         in_shp = os.path.abspath(in_shp)
 
         if out_json is None:
@@ -959,9 +958,21 @@ def shp_to_geojson(in_shp, out_json=None):
         reader = shapefile.Reader(in_shp)
         fields = reader.fields[1:]
         field_names = [field[0] for field in fields]
+        # pyShp returns dates as `datetime.date` or as `bytes` when they are empty
+        # This is not JSON compatible, so we keep track of them to convert them to str
+        date_fields_names = [field[0] for field in fields if field[1] == 'D']
         buffer = []
         for sr in reader.shapeRecords():
             atr = dict(zip(field_names, sr.record))
+            for date_field in date_fields_names:
+                value = atr[date_field]
+                # convert date to string, similar to pyShp writing
+                # https://github.com/GeospatialPython/pyshp/blob/69c60f6d07c329f7d3ac2cba79bc03643bd424d8/shapefile.py#L1814
+                if isinstance(value, date):
+                    value = '{:04d}{:02d}{:02d}'.format(value.year, value.month, value.day)
+                elif not value: # empty bytes string
+                    value = '0' * 8 # QGIS NULL for date type
+                atr[date_field] = value
             geom = sr.shape.__geo_interface__
             buffer.append(dict(type="Feature", geometry=geom, properties=atr))
 
