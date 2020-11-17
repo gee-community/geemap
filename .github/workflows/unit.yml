@@ -1,0 +1,14 @@
+# Run unit tests on any branch/fork pull request
+on:
+  pull_request
+
+name: Unit tests
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+
+    # <insert integration tests needing secrets>
+
+    - run: echo "Unit tests... success! ;-)"
