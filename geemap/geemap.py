@@ -994,6 +994,16 @@ class Map(ipyleaflet.Map):
             if self.plot_dropdown_widget is not None:
                 self.plot_dropdown_widget.options = list(self.ee_raster_layer_names)
 
+        draw_layer_index = self.find_layer_index(name="Drawn Features")
+        if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
+            layers = list(self.layers)
+            layers = (
+                layers[0:draw_layer_index]
+                + layers[(draw_layer_index + 1) :]
+                + [layers[draw_layer_index]]
+            )
+            self.layers = layers
+
     addLayer = add_ee_layer
 
     def set_center(self, lon, lat, zoom=None):
@@ -1071,6 +1081,17 @@ class Map(ipyleaflet.Map):
         """
         try:
             self.add_layer(ee_basemaps[basemap])
+
+            draw_layer_index = self.find_layer_index(name="Drawn Features")
+            if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
+                layers = list(self.layers)
+                layers = (
+                    layers[0:draw_layer_index]
+                    + layers[(draw_layer_index + 1) :]
+                    + [layers[draw_layer_index]]
+                )
+                self.layers = layers
+
         except Exception as e:
             print(e)
             print(
@@ -1095,6 +1116,23 @@ class Map(ipyleaflet.Map):
                 return layer
 
         return None
+
+    def find_layer_index(self, name):
+        """Finds layer index by name
+
+        Args:
+            name (str): Name of the layer to find.
+
+        Returns:
+            int: Index of the layer with the specified name
+        """
+        layers = self.layers
+
+        for index, layer in enumerate(layers):
+            if layer.name == name:
+                return index
+
+        return -1
 
     def layer_opacity(self, name, value=1.0):
         """Changes layer opacity.
@@ -1150,6 +1188,17 @@ class Map(ipyleaflet.Map):
                 # visible=shown
             )
             self.add_layer(wms_layer)
+
+            draw_layer_index = self.find_layer_index(name="Drawn Features")
+            if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
+                layers = list(self.layers)
+                layers = (
+                    layers[0:draw_layer_index]
+                    + layers[(draw_layer_index + 1) :]
+                    + [layers[draw_layer_index]]
+                )
+                self.layers = layers
+
         except Exception as e:
             print(e)
             print("Failed to add the specified WMS TileLayer.")
@@ -1181,6 +1230,17 @@ class Map(ipyleaflet.Map):
                 # visible=shown
             )
             self.add_layer(tile_layer)
+
+            draw_layer_index = self.find_layer_index(name="Drawn Features")
+            if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
+                layers = list(self.layers)
+                layers = (
+                    layers[0:draw_layer_index]
+                    + layers[(draw_layer_index + 1) :]
+                    + [layers[draw_layer_index]]
+                )
+                self.layers = layers
+
         except Exception as e:
             print(e)
             print("Failed to add the specified TileLayer.")
