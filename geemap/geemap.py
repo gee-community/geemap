@@ -79,6 +79,7 @@ class Map(ipyleaflet.Map):
             kwargs["inspector_ctrl"] = False
             kwargs["toolbar_ctrl"] = False
             kwargs["attribution_ctrl"] = False
+            kwargs["remove_ctrl"] = False
 
         if "data_ctrl" not in kwargs.keys():
             kwargs["data_ctrl"] = True
@@ -102,6 +103,8 @@ class Map(ipyleaflet.Map):
             kwargs["toolbar_ctrl"] = False
         if "attribution_ctrl" not in kwargs.keys():
             kwargs["attribution_ctrl"] = True
+        if "remove_ctrl" not in kwargs.keys():
+            kwargs["remove_ctrl"] = True
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -471,6 +474,22 @@ class Map(ipyleaflet.Map):
             self.add_control(draw_control)
         self.draw_control = draw_control
         self.draw_control_lite = draw_control_lite
+
+        remove_btn = widgets.Button(
+            description="",
+            tooltip="Click to clear all drawn features",
+            icon="eraser",
+        )
+        remove_btn.layout.width = "36px"
+        remove_ctrl = WidgetControl(widget=remove_btn, position="bottomleft")
+
+        def remove_btn_clicked(b):
+            self.remove_drawn_features()
+
+        remove_btn.on_click(remove_btn_clicked)
+
+        if kwargs.get("remove_ctrl"):
+            self.add_control(remove_ctrl)
 
         # Dropdown widget for plotting
         self.plot_dropdown_control = None
