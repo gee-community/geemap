@@ -5,42 +5,93 @@ site_url: https://geemap.org
 repo_url: https://github.com/giswqs/geemap
 
 theme:
-  name: material
-  icon:
-    repo: fontawesome/brands/github
-    features:
-      - instant
-      - navigation.expand
-      - tabs
-      - search.highlight
+    # palette:
+    #     scheme: slate
+    name: material
+    icon:
+        repo: fontawesome/brands/github
+        features:
+            - instant
+            - navigation.expand
+            - tabs
+            - search.highlight
 
 plugins:
-  - search
-  - mkdocstrings
-  - git-revision-date
+    - search
+    - mkdocstrings
+    - git-revision-date
+    # - pdf-export
+    - mkdocs-jupyter:
+          include_source: True
+          # execute: True
 
 markdown_extensions:
-  - attr_list
+    - attr_list
 
 nav:
-  - Home: index.md
-  - Installation: installation.md
-  - Get Started: get-started.md
-  - Usage: usage.md
-  - Tutorials: tutorials.md
-  - Contributing: contributing.md
-  - Citations: citations.md
-  - FAQ: faq.md
-  - Voilà App: https://geemap-tutorials.herokuapp.com
-  - Blog: https://blog.gishub.org
-  - YouTube Channel: https://www.youtube.com/c/QiushengWu
-  - Report Issues: https://github.com/giswqs/geemap/issues
-  - API Reference:
-      - basemaps module: basemaps.md
-      - cartoee module: cartoee.md
-      - common module: common.md
-      - conversion module: conversion.md
-      - eefolium module: eefolium.md
-      - geemap module: geemap.md
-      - legends module: legends.md
-      - ml module: ml.md
+    - Home: index.md
+    - Installation: installation.md
+    - Get Started: get-started.md
+    - Usage: usage.md
+    - Tutorials: tutorials.md
+    - Contributing: contributing.md
+    - Citations: citations.md
+    - FAQ: faq.md
+    - Voilà App: https://geemap-tutorials.herokuapp.com
+    - Blog: https://blog.gishub.org
+    - YouTube Channel: https://www.youtube.com/c/QiushengWu
+    - Report Issues: https://github.com/giswqs/geemap/issues
+    - API Reference:
+          - basemaps module: basemaps.md
+          - cartoee module: cartoee.md
+          - common module: common.md
+          - conversion module: conversion.md
+          - eefolium module: eefolium.md
+          - geemap module: geemap.md
+          - legends module: legends.md
+          - ml module: ml.md
+    - Notebooks:
+          - notebooks/00_geemap_key_features.ipynb
+          - notebooks/01_geemap_intro.ipynb
+          - notebooks/02_using_basemaps.ipynb
+          - notebooks/03_inspector_tool.ipynb
+          - notebooks/04_split_panel_map.ipynb
+          - notebooks/05_drawing_tools.ipynb
+          - notebooks/06_marker_cluster.ipynb
+          - notebooks/07_geojson.ipynb
+          - notebooks/08_ee_js_to_ipynb.ipynb
+          - notebooks/09_plotting.ipynb
+          - notebooks/10_shapefiles.ipynb
+          - notebooks/11_export_image.ipynb
+          - notebooks/12_zonal_statistics.ipynb
+          - notebooks/13_zonal_statistics_by_group.ipynb
+          - notebooks/14_legends.ipynb
+          - notebooks/15_convert_js_to_py.ipynb
+          - notebooks/16_add_animated_text.ipynb
+          - notebooks/17_add_colorbar_to_gif.ipynb
+          - notebooks/18_create_landsat_timelapse.ipynb
+          - notebooks/19_search_places_and_datasets.ipynb
+          - notebooks/20_timeseries_inspector.ipynb
+          - notebooks/21_export_map_to_html_png.ipynb
+          - notebooks/22_import_scripts.ipynb
+          - notebooks/23_import_assets.ipynb
+          - notebooks/24_publish_maps.ipynb
+          - notebooks/25_load_rasters.ipynb
+          - notebooks/26_heroku.ipynb
+          - notebooks/27_timelapse_app.ipynb
+          - notebooks/28_voila.ipynb
+          - notebooks/29_pydeck.ipynb
+          - notebooks/30_image_props_stats.ipynb
+          - notebooks/31_unsupervised_classification.ipynb
+          - notebooks/32_supervised_classification.ipynb
+          - notebooks/33_accuracy_assessment.ipynb
+          - notebooks/34_extract_values.ipynb
+          - notebooks/35_geemap_colab.ipynb
+          - notebooks/36_quality_mosaic.ipynb
+          - notebooks/37_pydeck_3d.ipynb
+          - notebooks/38_cloud_geotiff.ipynb
+          - notebooks/39_timelapse.ipynb
+          - notebooks/40_ipywidgets.ipynb
+          - notebooks/41_water_app.ipynb
+          - notebooks/42_upload_data.ipynb
+          - notebooks/43_extract_values_to_points.ipynb
