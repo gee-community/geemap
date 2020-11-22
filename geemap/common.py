@@ -4828,28 +4828,46 @@ def image_sum_value(img, region=None, scale=None):
     return sum_value
 
 
-def extract_values_to_points(in_points, img, label, scale=None):
+def extract_values_to_points(in_fc, image, out_fc=None, properties=None, scale=None, projection=None, tile_scale=1, geometries=True):
     """Extracts image values to points.
 
     Args:
-        in_points (object): ee.FeatureCollection
-        img (object): ee.Image
-        label (str): The column name to keep.
-        scale (float, optional): The image resolution to use. Defaults to None.
+        in_fc (object): ee.FeatureCollection
+        image (object): The ee.Image to extract pixel values
+        properties (list, optional): The list of properties to copy from each input feature. Defaults to all non-system properties.
+        scale (float, optional): A nominal scale in meters of the projection to sample in. If unspecified,the scale of the image's first band is used.
+        projection (str, optional): The projection in which to sample. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale.
+        tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default.
+        geometries (bool, optional): If true, the results will include a geometry per sampled pixel. Otherwise, geometries will be omitted (saving memory).
 
     Returns:
         object: ee.FeatureCollection
     """
-    if scale is None:
-        scale = image_scale(img)
 
-    out_fc = img.sampleRegions(**{
-        'collection': in_points,
-        'properties': [label],
-        'scale': scale
-    })
+    if not isinstance(in_fc, ee.FeatureCollection):
+        try:
+            in_fc = shp_to_ee(in_fc)
+        except Exception as e:
+            print(e)
+            return
 
-    return out_fc
+    if not isinstance(image, ee.Image):
+        print('The image must be an instance of ee.Image.')
+        return
+   
+    result = image.sampleRegions(**{
+        'collection': in_fc,
+        'properties': properties,
+        'scale': scale,
+        'projection': projection,
+        'tileScale': tile_scale,
+        'geometries': geometries
+    })    
+
+    if out_fc is not None:
+        ee_export_vector(result, out_fc)
+    else:
+        return result
 
 
 def image_reclassify(img, in_list, out_list):
