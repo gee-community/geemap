@@ -60,8 +60,8 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 39. How to create Landsat timelapse animations without coding ([video](https://youtu.be/ab0oUhnd_7U) | [gif](https://i.imgur.com/7eyMcZQ.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/39_timelapse.ipynb))
 40. How to add interactive widgets to the map ([video](https://youtu.be/KsIxGq6cHtw) | [gif](https://i.imgur.com/peRZZjj.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/40_ipywidgets.ipynb))
 41. How to develop an Earth Engine app for mapping surface water dynamics ([video](https://youtu.be/fHdwV3LEMYo) | [gif](https://i.imgur.com/GUWSVZs.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/41_water_app.ipynb))
-42. How to upload data to Earth Engine Apps (video | gif | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/42_upload_data.ipynb))
-
+42. How to upload data to Earth Engine Apps using ipywidgets ([video](https://youtu.be/4-WeaiObj84) | [gif](https://i.imgur.com/INLzqdw.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/42_upload_data.ipynb))
+43. How to extract pixel values to points (video | gif | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/43_extract_values_to_points.ipynb))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
@@ -159,6 +159,6 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 
 ![publish maps](https://i.imgur.com/Hpfzazk.gif)
 
-### 25. How to load local raster datasets with geemap? 
+### 25. How to load local raster datasets with geemap?
 
 ![load rasters](https://i.imgur.com/nsqEt2O.gif)
