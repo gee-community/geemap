@@ -129,7 +129,7 @@ def get_map(img_obj, proj=None, **kwargs):
     return ax
 
 
-def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None,crs="EPSG:4326"):
+def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None):
     """Add an Earth Engine image to a cartopy plot.
 
     args:
@@ -171,7 +171,7 @@ def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None,cr
             "or cartopy.mpl.geoaxes.GeoAxesSubplot"
         )
 
-    args = {"format": "png","crs":crs}
+    args = {"format": "png","crs":"EPSG:4326"}
     if region:
         args["region"] = map_region
     if dims:
