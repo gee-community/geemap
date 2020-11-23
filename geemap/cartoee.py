@@ -129,7 +129,7 @@ def get_map(img_obj, proj=None, **kwargs):
     return ax
 
 
-def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None):
+def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None,crs="EPSG:4326"):
     """Add an Earth Engine image to a cartopy plot.
 
     args:
@@ -139,6 +139,7 @@ def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None):
         region (list | tuple, optional): geospatial region of the image to render in format [E,S,W,N]. By default, the whole image
         cmap (str, optional): string specifying matplotlib colormap to colorize image. If cmap is specified visParams cannot contain 'palette' key
         vis_params (dict, optional): visualization parameters as a dictionary. See https://developers.google.com/earth-engine/image_visualization for options
+        crs (str, optional): The projection to request the processed data in.
 
     returns:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot): cartopy GeoAxesSubplot object with Earth Engine results displayed
@@ -170,7 +171,7 @@ def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None):
             "or cartopy.mpl.geoaxes.GeoAxesSubplot"
         )
 
-    args = {"format": "png"}
+    args = {"format": "png","crs":crs}
     if region:
         args["region"] = map_region
     if dims:
