@@ -10,11 +10,11 @@ theme:
     name: material
     icon:
         repo: fontawesome/brands/github
-        features:
-            - instant
-            - navigation.expand
-            - tabs
-            - search.highlight
+    features:
+        - instant
+        - navigation.expand
+        - tabs
+        - search.highlight
 
 plugins:
     - search

@@ -23,33 +23,35 @@ def ee_initialize(token_name='EARTHENGINE_TOKEN'):
     """Authenticates Earth Engine and initialize an Earth Engine session
 
     """
-    try:
-        ee_token = os.environ.get(token_name)
-        if ee_token is not None:
-            credential = '{"refresh_token":"%s"}' % ee_token
-            credential_file_path = os.path.expanduser("~/.config/earthengine/")
-            os.makedirs(credential_file_path, exist_ok=True)
-            with open(credential_file_path + 'credentials', 'w') as file:
-                file.write(credential)
-        elif in_colab_shell():
-            if credentials_in_drive() and (not credentials_in_colab()):
-                copy_credentials_to_colab()
-            elif not credentials_in_colab:
-                ee.Authenticate()
-                if is_drive_mounted() and (not credentials_in_drive()):
-                    copy_credentials_to_drive()
-            else:
-                if is_drive_mounted():
-                    copy_credentials_to_drive()
+    if ee.data._credentials is None:
+        try:
+            ee_token = os.environ.get(token_name)
+            if ee_token is not None:
+                credential_file_path = os.path.expanduser("~/.config/earthengine/")
+                if not os.path.exists(credential_file_path):
+                    credential = '{"refresh_token":"%s"}' % ee_token
+                    os.makedirs(credential_file_path, exist_ok=True)
+                    with open(credential_file_path + 'credentials', 'w') as file:
+                        file.write(credential)
+            elif in_colab_shell():
+                if credentials_in_drive() and (not credentials_in_colab()):
+                    copy_credentials_to_colab()
+                elif not credentials_in_colab:
+                    ee.Authenticate()
+                    if is_drive_mounted() and (not credentials_in_drive()):
+                        copy_credentials_to_drive()
+                else:
+                    if is_drive_mounted():
+                        copy_credentials_to_drive()
 
-        ee.Initialize()
-    except:
-        ee.Authenticate()
-        ee.Initialize()
+            ee.Initialize()
+        except:
+            ee.Authenticate()
+            ee.Initialize()
 
-    out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
+    # out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+    # if not os.path.exists(out_dir):
+    #     os.makedirs(out_dir)
 
 
 def set_proxy(port=1080, ip='http://127.0.0.1'):
