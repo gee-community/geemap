@@ -4187,6 +4187,47 @@ def load_GeoTIFFs(URLs):
     return ee.ImageCollection(collection)
 
 
+def get_COG_tile(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get a tile layer from a Cloud Optimized GeoTIFF (COG).
+        Source code adapted from https://developmentseed.org/titiler/examples/Working_with_CloudOptimizedGeoTIFF_simple/
+
+    Args:
+        url (str): HTTP URL to a COG, e.g., "https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif"
+        titiler_endpoint (str, optional): The . Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        tuple: Returns the COG Tile layer URL and bounds. 
+    """
+    import json
+    import requests
+    # Fetch File Metadata to get min/max rescaling values (because the file is stored as float32)
+    r = requests.get(
+        f"{titiler_endpoint}/cog/info",
+        params = {
+            "url": url,
+        }
+    ).json()
+
+    bounds = r["bounds"]
+
+    # Fetch File Metadata to get min/max rescaling values (because the file is stored as float32)
+    r = requests.get(
+        f"{titiler_endpoint}/cog/metadata",
+        params = {
+            "url": url,
+        }
+    ).json()
+
+    r = requests.get(
+        f"{titiler_endpoint}/cog/tilejson.json",
+        params = {
+            "url": url,
+        }
+    ).json()
+
+    return r["tiles"][0], bounds
+
+
 def image_props(img, date_format='YYYY-MM-dd'):
     """Gets image properties.
 
