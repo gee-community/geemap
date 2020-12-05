@@ -1285,7 +1285,7 @@ class Map(ipyleaflet.Map):
         shown=True,
         titiler_endpoint = "https://api.cogeo.xyz/"
     ):
-        """Adds a TileLayer to the map.
+        """Adds a COG TileLayer to the map.
 
         Args:
             url (str): The URL of the COG tile layer. 
@@ -1296,6 +1296,31 @@ class Map(ipyleaflet.Map):
             titiler_endpoint (str, optional): [description]. Defaults to "https://api.cogeo.xyz/".
         """
         tile_url, bounds = get_COG_tile(url, titiler_endpoint)
+        center=((bounds[1] + bounds[3]) / 2,(bounds[0] + bounds[2]) / 2)  # (lat, lon)
+        self.add_tile_layer(tile_url, name, attribution, opacity, shown)
+        self.set_center(lon=center[1], lat=center[0], zoom=10)
+
+    def add_STAC_layer(
+        self,
+        url,
+        bands=None,
+        name=None,
+        attribution="",
+        opacity=1.0,
+        shown=True,
+        titiler_endpoint = "https://api.cogeo.xyz/"
+    ):
+        """Adds a STAC TileLayer to the map.
+
+        Args:
+            url (str): The URL of the COG tile layer. 
+            name (str, optional): The layer name to use for the layer. Defaults to None.
+            attribution (str, optional): The attribution to use. Defaults to ''.
+            opacity (float, optional): The opacity of the layer. Defaults to 1.
+            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            titiler_endpoint (str, optional): [description]. Defaults to "https://api.cogeo.xyz/".
+        """
+        tile_url, bounds = get_STAC_tile(url, bands, titiler_endpoint)
         center=((bounds[1] + bounds[3]) / 2,(bounds[0] + bounds[2]) / 2)  # (lat, lon)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
         self.set_center(lon=center[1], lat=center[0], zoom=10)
