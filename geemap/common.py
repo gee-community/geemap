@@ -4228,6 +4228,157 @@ def get_COG_tile(url, titiler_endpoint="https://api.cogeo.xyz/"):
     return r["tiles"][0], bounds
 
 
+def get_STAC_bands(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    import requests
+    bands = requests.get(
+        f"{titiler_endpoint}/stac/info",
+        params = {
+            "url": url,
+        }
+    ).json()
+    return bands
+    
+
+def get_STAC_tile(url, bands=None, titiler_endpoint="https://api.cogeo.xyz/"):
+    import requests
+
+    try:
+
+        stac_item = url
+        item = requests.get(stac_item).json()
+        # print(item)
+        # print(list(item["assets"]))
+        # for it, asset in item["assets"].items():
+        #     print(asset["type"])
+
+        # Get Tile URL
+        allowed_bands = requests.get(
+            f"{titiler_endpoint}/stac/info",
+            params = {
+                "url": stac_item,
+            }
+        ).json()
+
+        if bands is None:
+            bands = [allowed_bands[0]]
+            # if len(allowed_bands) < 3:
+            #     bands = allowed_bands[0]
+            # else:
+            #     bands = allowed_bands[:3]
+        elif len(bands) <= 3 and all(x in allowed_bands for x in bands):
+            pass
+        else:
+            raise Exception('You can only select 3 bands from the following: {}'.format(
+                ', '.join(allowed_bands))) 
+            
+        bands = ','.join(bands)
+
+        r = requests.get(
+            f"{titiler_endpoint}/stac/tilejson.json",
+            params = {
+                "url": stac_item,
+                "assets": bands,
+                # "minzoom": 8,  # By default titiler will use 0
+                # "maxzoom": 14, # By default titiler will use 24
+            }
+        ).json()
+
+        bounds = get_bounds(item)
+
+        return r["tiles"][0], bounds
+
+    except Exception as e:
+        print(e)
+
+
+def explode(coords):
+    """Explode a GeoJSON geometry's coordinates object and yield
+    coordinate tuples. As long as the input is conforming, the type of
+    the geometry doesn't matter.  From Fiona 1.4.8"""
+    for e in coords:
+        if isinstance(e, (float, int)):
+            yield coords
+            break
+        else:
+            for f in explode(e):
+                yield f
+
+
+def get_bounds(geometry, north_up=True, transform=None):
+    """Bounding box of a GeoJSON geometry, GeometryCollection, or FeatureCollection.
+    left, bottom, right, top
+    *not* xmin, ymin, xmax, ymax
+    If not north_up, y will be switched to guarantee the above.
+    Source code adapted from https://github.com/mapbox/rasterio/blob/master/rasterio/features.py#L361
+    """
+
+    if 'bbox' in geometry:
+        return tuple(geometry['bbox'])
+
+    geometry = geometry.get('geometry') or geometry  
+
+    # geometry must be a geometry, GeometryCollection, or FeatureCollection
+    if not ('coordinates' in geometry or 'geometries' in geometry or 'features' in geometry):
+        raise ValueError(
+            "geometry must be a GeoJSON-like geometry, GeometryCollection, "
+            "or FeatureCollection"
+        )
+
+    if 'features' in geometry:
+        # Input is a FeatureCollection
+        xmins = []
+        ymins = []
+        xmaxs = []
+        ymaxs = []
+        for feature in geometry['features']:
+            xmin, ymin, xmax, ymax = get_bounds(feature['geometry'])
+            xmins.append(xmin)
+            ymins.append(ymin)
+            xmaxs.append(xmax)
+            ymaxs.append(ymax)
+        if north_up:
+            return min(xmins), min(ymins), max(xmaxs), max(ymaxs)
+        else:
+            return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
+
+    elif 'geometries' in geometry:
+        # Input is a geometry collection
+        xmins = []
+        ymins = []
+        xmaxs = []
+        ymaxs = []
+        for geometry in geometry['geometries']:
+            xmin, ymin, xmax, ymax = get_bounds(geometry)
+            xmins.append(xmin)
+            ymins.append(ymin)
+            xmaxs.append(xmax)
+            ymaxs.append(ymax)
+        if north_up:
+            return min(xmins), min(ymins), max(xmaxs), max(ymaxs)
+        else:
+            return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
+
+    elif 'coordinates' in geometry:
+        # Input is a singular geometry object
+        if transform is not None:
+            xyz = list(explode(geometry['coordinates']))
+            xyz_px = [transform * point for point in xyz]
+            xyz = tuple(zip(*xyz_px))
+            return min(xyz[0]), max(xyz[1]), max(xyz[0]), min(xyz[1])
+        else:
+            xyz = tuple(zip(*list(explode(geometry['coordinates']))))
+            if north_up:
+                return min(xyz[0]), min(xyz[1]), max(xyz[0]), max(xyz[1])
+            else:
+                return min(xyz[0]), max(xyz[1]), max(xyz[0]), min(xyz[1])
+
+    # all valid inputs returned above, so whatever falls through is an error
+    raise ValueError(
+            "geometry must be a GeoJSON-like geometry, GeometryCollection, "
+            "or FeatureCollection"
+        )
+
+
 def image_props(img, date_format='YYYY-MM-dd'):
     """Gets image properties.
 
