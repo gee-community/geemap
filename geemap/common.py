@@ -4187,20 +4187,91 @@ def load_GeoTIFFs(URLs):
     return ee.ImageCollection(collection)
 
 
-def get_COG_tile(url, titiler_endpoint="https://api.cogeo.xyz/"):
+def get_COG_tile(url, titiler_endpoint="https://api.cogeo.xyz/", **kwargs):
     """Get a tile layer from a Cloud Optimized GeoTIFF (COG).
         Source code adapted from https://developmentseed.org/titiler/examples/Working_with_CloudOptimizedGeoTIFF_simple/
 
     Args:
-        url (str): HTTP URL to a COG, e.g., "https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif"
-        titiler_endpoint (str, optional): The . Defaults to "https://api.cogeo.xyz/".
+        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
 
     Returns:
         tuple: Returns the COG Tile layer URL and bounds. 
     """
-    import json
     import requests
-    # Fetch File Metadata to get min/max rescaling values (because the file is stored as float32)
+
+    params = {"url": url}
+
+    TileMatrixSetId='WebMercatorQuad'
+    if "TileMatrixSetId" in kwargs.keys():
+        TileMatrixSetId = kwargs["TileMatrixSetId"]
+    if "tile_format" in kwargs.keys():
+        params["tile_format"] = kwargs["tile_format"]
+    if "tile_scale" in kwargs.keys():
+        params["tile_scale"] = kwargs["tile_scale"]
+    if "minzoom" in kwargs.keys():
+        params["minzoom"] = kwargs["minzoom"]
+    if "maxzoom" in kwargs.keys():
+        params["maxzoom"] = kwargs["maxzoom"]
+
+    r = requests.get(
+        f"{titiler_endpoint}/cog/{TileMatrixSetId}/tilejson.json",
+        params = params
+    ).json()
+
+    return r["tiles"][0]
+
+
+def get_COG_bounds(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get the bounding box of a Cloud Optimized GeoTIFF (COG).
+
+    Args:
+        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        list: A list of values representing [left, bottom, right, top]
+    """    
+    import requests
+
+    r = requests.get(
+        f"{titiler_endpoint}/cog/bounds",
+        params = {
+            "url": url
+        }
+    ).json()   
+
+    bounds = r["bounds"] 
+    return bounds
+
+
+def get_COG_center(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get the centroid of a Cloud Optimized GeoTIFF (COG).
+
+    Args:
+        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        tuple: A tuple representing (longitude, latitude)
+    """    
+    bounds = get_COG_bounds(url, titiler_endpoint)
+    center=((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2)  # (lat, lon)
+    return center
+
+
+def get_COG_bands(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get band names of a Cloud Optimized GeoTIFF (COG).
+
+    Args:
+        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        list: A list of band names
+    """    
+    import requests
+
     r = requests.get(
         f"{titiler_endpoint}/cog/info",
         params = {
@@ -4208,87 +4279,117 @@ def get_COG_tile(url, titiler_endpoint="https://api.cogeo.xyz/"):
         }
     ).json()
 
-    bounds = r["bounds"]
+    bands = [b[1] for b in r['band_descriptions']]
+    return bands
+ 
 
-    # Fetch File Metadata to get min/max rescaling values (because the file is stored as float32)
+def get_STAC_tile(url, bands=None, titiler_endpoint="https://api.cogeo.xyz/", **kwargs):
+    """Get a tile layer from a single SpatialTemporal Asset Catalog (STAC) item.
+
+    Args:
+        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        tuple: Returns the COG Tile layer URL and bounds. 
+    """
+    import requests
+
+    params = {"url": url}
+
+    TileMatrixSetId='WebMercatorQuad'
+    if "TileMatrixSetId" in kwargs.keys():
+        TileMatrixSetId = kwargs["TileMatrixSetId"]
+    if "expression" in kwargs.keys():
+        params["expression"] = kwargs["expression"]
+    if "tile_format" in kwargs.keys():
+        params["tile_format"] = kwargs["tile_format"]
+    if "tile_scale" in kwargs.keys():
+        params["tile_scale"] = kwargs["tile_scale"]
+    if "minzoom" in kwargs.keys():
+        params["minzoom"] = kwargs["minzoom"]
+    if "maxzoom" in kwargs.keys():
+        params["maxzoom"] = kwargs["maxzoom"]
+
+    allowed_bands = get_STAC_bands(url, titiler_endpoint)
+
+    if bands is None:
+        bands = [allowed_bands[0]]
+    elif len(bands) <= 3 and all(x in allowed_bands for x in bands):
+        pass
+    else:
+        raise Exception('You can only select 3 bands from the following: {}'.format(
+            ', '.join(allowed_bands))) 
+        
+    assets = ','.join(bands)
+    params["assets"] = assets
+
     r = requests.get(
-        f"{titiler_endpoint}/cog/metadata",
-        params = {
-            "url": url,
-        }
+        f"{titiler_endpoint}/stac/{TileMatrixSetId}/tilejson.json",
+        params = params
     ).json()
 
-    r = requests.get(
-        f"{titiler_endpoint}/cog/tilejson.json",
-        params = {
-            "url": url,
-        }
-    ).json()
+    return r["tiles"][0]
 
-    return r["tiles"][0], bounds
+
+def get_STAC_bounds(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get the bounding box of a single SpatialTemporal Asset Catalog (STAC) item.
+
+    Args:
+        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        list: A list of values representing [left, bottom, right, top]
+    """    
+    import requests
+
+    r = requests.get(
+        f"{titiler_endpoint}/stac/bounds",
+        params = {
+            "url": url
+        }
+    ).json()   
+
+    bounds = r["bounds"] 
+    return bounds
+
+
+def get_STAC_center(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get the centroid of a single SpatialTemporal Asset Catalog (STAC) item.
+
+    Args:
+        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        tuple: A tuple representing (longitude, latitude)
+    """    
+    bounds = get_STAC_bounds(url, titiler_endpoint)
+    center=((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2)  # (lat, lon)
+    return center
 
 
 def get_STAC_bands(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get band names of a single SpatialTemporal Asset Catalog (STAC) item.
+
+    Args:
+        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        list: A list of band names
+    """    
     import requests
-    bands = requests.get(
+
+    r = requests.get(
         f"{titiler_endpoint}/stac/info",
         params = {
             "url": url,
         }
     ).json()
-    return bands
-    
 
-def get_STAC_tile(url, bands=None, titiler_endpoint="https://api.cogeo.xyz/"):
-    import requests
-
-    try:
-
-        stac_item = url
-        item = requests.get(stac_item).json()
-        # print(item)
-        # print(list(item["assets"]))
-        # for it, asset in item["assets"].items():
-        #     print(asset["type"])
-
-        # Get Tile URL
-        allowed_bands = requests.get(
-            f"{titiler_endpoint}/stac/info",
-            params = {
-                "url": stac_item,
-            }
-        ).json()
-
-        if bands is None:
-            bands = [allowed_bands[0]]
-            # if len(allowed_bands) < 3:
-            #     bands = allowed_bands[0]
-            # else:
-            #     bands = allowed_bands[:3]
-        elif len(bands) <= 3 and all(x in allowed_bands for x in bands):
-            pass
-        else:
-            raise Exception('You can only select 3 bands from the following: {}'.format(
-                ', '.join(allowed_bands))) 
-            
-        bands = ','.join(bands)
-
-        r = requests.get(
-            f"{titiler_endpoint}/stac/tilejson.json",
-            params = {
-                "url": stac_item,
-                "assets": bands,
-                # "minzoom": 8,  # By default titiler will use 0
-                # "maxzoom": 14, # By default titiler will use 24
-            }
-        ).json()
-
-        bounds = get_bounds(item)
-
-        return r["tiles"][0], bounds
-
-    except Exception as e:
-        print(e)
+    return r
 
 
 def explode(coords):
