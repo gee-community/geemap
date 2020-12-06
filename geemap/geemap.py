@@ -1237,7 +1237,7 @@ class Map(ipyleaflet.Map):
     def add_tile_layer(
         self,
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        name=None,
+        name='Untitled',
         attribution="",
         opacity=1.0,
         shown=True,
@@ -1246,7 +1246,7 @@ class Map(ipyleaflet.Map):
 
         Args:
             url (str, optional): The URL of the tile layer. Defaults to 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'.
-            name (str, optional): The layer name to use for the layer. Defaults to None.
+            name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
@@ -1279,51 +1279,53 @@ class Map(ipyleaflet.Map):
     def add_COG_layer(
         self,
         url,
-        name=None,
+        name='Untitled',
         attribution="",
         opacity=1.0,
         shown=True,
-        titiler_endpoint = "https://api.cogeo.xyz/"
+        titiler_endpoint = "https://api.cogeo.xyz/",
+        **kwargs
     ):
         """Adds a COG TileLayer to the map.
 
         Args:
             url (str): The URL of the COG tile layer. 
-            name (str, optional): The layer name to use for the layer. Defaults to None.
+            name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            titiler_endpoint (str, optional): [description]. Defaults to "https://api.cogeo.xyz/".
+            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
         """
-        tile_url, bounds = get_COG_tile(url, titiler_endpoint)
-        center=((bounds[1] + bounds[3]) / 2,(bounds[0] + bounds[2]) / 2)  # (lat, lon)
+        tile_url = get_COG_tile(url, titiler_endpoint, **kwargs)
+        center= get_COG_center(url, titiler_endpoint)  # (lon, lat)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
-        self.set_center(lon=center[1], lat=center[0], zoom=10)
+        self.set_center(lon=center[0], lat=center[1], zoom=10)
 
     def add_STAC_layer(
         self,
         url,
         bands=None,
-        name=None,
+        name='Untitled',
         attribution="",
         opacity=1.0,
         shown=True,
-        titiler_endpoint = "https://api.cogeo.xyz/"
+        titiler_endpoint = "https://api.cogeo.xyz/",
+        **kwargs
     ):
         """Adds a STAC TileLayer to the map.
 
         Args:
             url (str): The URL of the COG tile layer. 
-            name (str, optional): The layer name to use for the layer. Defaults to None.
+            name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            titiler_endpoint (str, optional): [description]. Defaults to "https://api.cogeo.xyz/".
+            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
         """
-        tile_url, bounds = get_STAC_tile(url, bands, titiler_endpoint)
-        center=((bounds[1] + bounds[3]) / 2,(bounds[0] + bounds[2]) / 2)  # (lat, lon)
+        tile_url = get_STAC_tile(url, bands, titiler_endpoint, **kwargs)
+        center= get_STAC_center(url, titiler_endpoint)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
-        self.set_center(lon=center[1], lat=center[0], zoom=10)
+        self.set_center(lon=center[0], lat=center[1], zoom=10)
 
     def add_minimap(self, zoom=5, position="bottomright"):
         """Adds a minimap (overview) to the ipyleaflet map.
