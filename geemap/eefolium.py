@@ -147,12 +147,6 @@ class Map(folium.Map):
 
         logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
-        if "use_ee" not in kwargs.keys():
-            kwargs["use_ee"] = True
-
-        if kwargs["use_ee"]:
-            ee_initialize()
-
         if "ee_initialize" not in kwargs.keys():
             kwargs["ee_initialize"] = True
 

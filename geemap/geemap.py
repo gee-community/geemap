@@ -781,6 +781,15 @@ class Map(ipyleaflet.Map):
                                 for key in keys:
                                     print("  {}: {}".format(key, item[key]))
                             elif isinstance(ee_object, ee.FeatureCollection):
+                                
+                                # Check geometry type
+                                geom_type = ee.Feature(ee_object.first()).geometry().type() 
+                                lat, lon = latlon
+                                delta = 0.005
+                                bbox = ee.Geometry.BBox(lon - delta, lat - delta, lon + delta, lat + delta)
+                                # Create a bounding box to filter points
+                                xy = ee.Algorithms.If(geom_type.compareTo(ee.String('Point')), xy, bbox)
+
                                 filtered = ee_object.filterBounds(xy)
                                 size = filtered.size().getInfo()
                                 if size > 0:

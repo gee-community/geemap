@@ -95,3 +95,4 @@ nav:
           - notebooks/41_water_app.ipynb
           - notebooks/42_upload_data.ipynb
           - notebooks/43_extract_values_to_points.ipynb
+          - notebooks/44_cog_stac.ipynb
