@@ -79,6 +79,7 @@ class Map(ipyleaflet.Map):
             kwargs["inspector_ctrl"] = False
             kwargs["toolbar_ctrl"] = False
             kwargs["attribution_ctrl"] = False
+            kwargs["remove_ctrl"] = False
 
         if "data_ctrl" not in kwargs.keys():
             kwargs["data_ctrl"] = True
@@ -102,6 +103,8 @@ class Map(ipyleaflet.Map):
             kwargs["toolbar_ctrl"] = False
         if "attribution_ctrl" not in kwargs.keys():
             kwargs["attribution_ctrl"] = True
+        if "remove_ctrl" not in kwargs.keys():
+            kwargs["remove_ctrl"] = True
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -471,6 +474,22 @@ class Map(ipyleaflet.Map):
             self.add_control(draw_control)
         self.draw_control = draw_control
         self.draw_control_lite = draw_control_lite
+
+        remove_btn = widgets.Button(
+            description="",
+            tooltip="Click to clear all drawn features",
+            icon="eraser",
+        )
+        remove_btn.layout.width = "36px"
+        remove_ctrl = WidgetControl(widget=remove_btn, position="bottomleft")
+
+        def remove_btn_clicked(b):
+            self.remove_drawn_features()
+
+        remove_btn.on_click(remove_btn_clicked)
+
+        if kwargs.get("remove_ctrl"):
+            self.add_control(remove_ctrl)
 
         # Dropdown widget for plotting
         self.plot_dropdown_control = None
@@ -994,7 +1013,29 @@ class Map(ipyleaflet.Map):
             if self.plot_dropdown_widget is not None:
                 self.plot_dropdown_widget.options = list(self.ee_raster_layer_names)
 
+        # draw_layer_index = self.find_layer_index(name="Drawn Features")
+        # if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
+        #     layers = list(self.layers)
+        #     layers = (
+        #         layers[0:draw_layer_index]
+        #         + layers[(draw_layer_index + 1) :]
+        #         + [layers[draw_layer_index]]
+        #     )
+        #     self.layers = layers
+
     addLayer = add_ee_layer
+
+    def draw_layer_on_top(self):
+
+        draw_layer_index = self.find_layer_index(name="Drawn Features")
+        if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
+            layers = list(self.layers)
+            layers = (
+                layers[0:draw_layer_index]
+                + layers[(draw_layer_index + 1) :]
+                + [layers[draw_layer_index]]
+            )
+            self.layers = layers
 
     def set_center(self, lon, lat, zoom=None):
         """Centers the map view at a given coordinates with the given zoom level.
@@ -1071,6 +1112,17 @@ class Map(ipyleaflet.Map):
         """
         try:
             self.add_layer(ee_basemaps[basemap])
+
+            # draw_layer_index = self.find_layer_index(name="Drawn Features")
+            # if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
+            #     layers = list(self.layers)
+            #     layers = (
+            #         layers[0:draw_layer_index]
+            #         + layers[(draw_layer_index + 1) :]
+            #         + [layers[draw_layer_index]]
+            #     )
+            #     self.layers = layers
+
         except Exception as e:
             print(e)
             print(
@@ -1095,6 +1147,23 @@ class Map(ipyleaflet.Map):
                 return layer
 
         return None
+
+    def find_layer_index(self, name):
+        """Finds layer index by name
+
+        Args:
+            name (str): Name of the layer to find.
+
+        Returns:
+            int: Index of the layer with the specified name
+        """
+        layers = self.layers
+
+        for index, layer in enumerate(layers):
+            if layer.name == name:
+                return index
+
+        return -1
 
     def layer_opacity(self, name, value=1.0):
         """Changes layer opacity.
@@ -1150,6 +1219,17 @@ class Map(ipyleaflet.Map):
                 # visible=shown
             )
             self.add_layer(wms_layer)
+
+            # draw_layer_index = self.find_layer_index(name="Drawn Features")
+            # if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
+            #     layers = list(self.layers)
+            #     layers = (
+            #         layers[0:draw_layer_index]
+            #         + layers[(draw_layer_index + 1) :]
+            #         + [layers[draw_layer_index]]
+            #     )
+            #     self.layers = layers
+
         except Exception as e:
             print(e)
             print("Failed to add the specified WMS TileLayer.")
@@ -1157,7 +1237,7 @@ class Map(ipyleaflet.Map):
     def add_tile_layer(
         self,
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        name=None,
+        name='Untitled',
         attribution="",
         opacity=1.0,
         shown=True,
@@ -1166,7 +1246,7 @@ class Map(ipyleaflet.Map):
 
         Args:
             url (str, optional): The URL of the tile layer. Defaults to 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'.
-            name (str, optional): The layer name to use for the layer. Defaults to None.
+            name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
@@ -1181,9 +1261,71 @@ class Map(ipyleaflet.Map):
                 # visible=shown
             )
             self.add_layer(tile_layer)
+
+            # draw_layer_index = self.find_layer_index(name="Drawn Features")
+            # if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
+            #     layers = list(self.layers)
+            #     layers = (
+            #         layers[0:draw_layer_index]
+            #         + layers[(draw_layer_index + 1) :]
+            #         + [layers[draw_layer_index]]
+            #     )
+            #     self.layers = layers
+
         except Exception as e:
             print(e)
             print("Failed to add the specified TileLayer.")
+
+    def add_COG_layer(
+        self,
+        url,
+        name='Untitled',
+        attribution="",
+        opacity=1.0,
+        shown=True,
+        titiler_endpoint = "https://api.cogeo.xyz/",
+        **kwargs
+    ):
+        """Adds a COG TileLayer to the map.
+
+        Args:
+            url (str): The URL of the COG tile layer. 
+            name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
+            attribution (str, optional): The attribution to use. Defaults to ''.
+            opacity (float, optional): The opacity of the layer. Defaults to 1.
+            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+        """
+        tile_url = get_COG_tile(url, titiler_endpoint, **kwargs)
+        center= get_COG_center(url, titiler_endpoint)  # (lon, lat)
+        self.add_tile_layer(tile_url, name, attribution, opacity, shown)
+        self.set_center(lon=center[0], lat=center[1], zoom=10)
+
+    def add_STAC_layer(
+        self,
+        url,
+        bands=None,
+        name='Untitled',
+        attribution="",
+        opacity=1.0,
+        shown=True,
+        titiler_endpoint = "https://api.cogeo.xyz/",
+        **kwargs
+    ):
+        """Adds a STAC TileLayer to the map.
+
+        Args:
+            url (str): The URL of the COG tile layer. 
+            name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
+            attribution (str, optional): The attribution to use. Defaults to ''.
+            opacity (float, optional): The opacity of the layer. Defaults to 1.
+            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+        """
+        tile_url = get_STAC_tile(url, bands, titiler_endpoint, **kwargs)
+        center= get_STAC_center(url, titiler_endpoint)
+        self.add_tile_layer(tile_url, name, attribution, opacity, shown)
+        self.set_center(lon=center[0], lat=center[1], zoom=10)
 
     def add_minimap(self, zoom=5, position="bottomright"):
         """Adds a minimap (overview) to the ipyleaflet map.

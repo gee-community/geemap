@@ -170,7 +170,7 @@ def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None):
             "or cartopy.mpl.geoaxes.GeoAxesSubplot"
         )
 
-    args = {"format": "png"}
+    args = {"format": "png","crs":"EPSG:4326"}
     if region:
         args["region"] = map_region
     if dims:

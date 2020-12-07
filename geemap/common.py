@@ -23,33 +23,35 @@ def ee_initialize(token_name='EARTHENGINE_TOKEN'):
     """Authenticates Earth Engine and initialize an Earth Engine session
 
     """
-    try:
-        ee_token = os.environ.get(token_name)
-        if ee_token is not None:
-            credential = '{"refresh_token":"%s"}' % ee_token
-            credential_file_path = os.path.expanduser("~/.config/earthengine/")
-            os.makedirs(credential_file_path, exist_ok=True)
-            with open(credential_file_path + 'credentials', 'w') as file:
-                file.write(credential)
-        elif in_colab_shell():
-            if credentials_in_drive() and (not credentials_in_colab()):
-                copy_credentials_to_colab()
-            elif not credentials_in_colab:
-                ee.Authenticate()
-                if is_drive_mounted() and (not credentials_in_drive()):
-                    copy_credentials_to_drive()
-            else:
-                if is_drive_mounted():
-                    copy_credentials_to_drive()
+    if ee.data._credentials is None:
+        try:
+            ee_token = os.environ.get(token_name)
+            if ee_token is not None:
+                credential_file_path = os.path.expanduser("~/.config/earthengine/")
+                if not os.path.exists(credential_file_path):
+                    credential = '{"refresh_token":"%s"}' % ee_token
+                    os.makedirs(credential_file_path, exist_ok=True)
+                    with open(credential_file_path + 'credentials', 'w') as file:
+                        file.write(credential)
+            elif in_colab_shell():
+                if credentials_in_drive() and (not credentials_in_colab()):
+                    copy_credentials_to_colab()
+                elif not credentials_in_colab:
+                    ee.Authenticate()
+                    if is_drive_mounted() and (not credentials_in_drive()):
+                        copy_credentials_to_drive()
+                else:
+                    if is_drive_mounted():
+                        copy_credentials_to_drive()
 
-        ee.Initialize()
-    except:
-        ee.Authenticate()
-        ee.Initialize()
+            ee.Initialize()
+        except:
+            ee.Authenticate()
+            ee.Initialize()
 
-    out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
+    # out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+    # if not os.path.exists(out_dir):
+    #     os.makedirs(out_dir)
 
 
 def set_proxy(port=1080, ip='http://127.0.0.1'):
@@ -4185,6 +4187,299 @@ def load_GeoTIFFs(URLs):
     return ee.ImageCollection(collection)
 
 
+def get_COG_tile(url, titiler_endpoint="https://api.cogeo.xyz/", **kwargs):
+    """Get a tile layer from a Cloud Optimized GeoTIFF (COG).
+        Source code adapted from https://developmentseed.org/titiler/examples/Working_with_CloudOptimizedGeoTIFF_simple/
+
+    Args:
+        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        tuple: Returns the COG Tile layer URL and bounds. 
+    """
+    import requests
+
+    params = {"url": url}
+
+    TileMatrixSetId='WebMercatorQuad'
+    if "TileMatrixSetId" in kwargs.keys():
+        TileMatrixSetId = kwargs["TileMatrixSetId"]
+    if "tile_format" in kwargs.keys():
+        params["tile_format"] = kwargs["tile_format"]
+    if "tile_scale" in kwargs.keys():
+        params["tile_scale"] = kwargs["tile_scale"]
+    if "minzoom" in kwargs.keys():
+        params["minzoom"] = kwargs["minzoom"]
+    if "maxzoom" in kwargs.keys():
+        params["maxzoom"] = kwargs["maxzoom"]
+
+    r = requests.get(
+        f"{titiler_endpoint}/cog/{TileMatrixSetId}/tilejson.json",
+        params = params
+    ).json()
+
+    return r["tiles"][0]
+
+
+def get_COG_bounds(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get the bounding box of a Cloud Optimized GeoTIFF (COG).
+
+    Args:
+        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        list: A list of values representing [left, bottom, right, top]
+    """    
+    import requests
+
+    r = requests.get(
+        f"{titiler_endpoint}/cog/bounds",
+        params = {
+            "url": url
+        }
+    ).json()   
+
+    bounds = r["bounds"] 
+    return bounds
+
+
+def get_COG_center(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get the centroid of a Cloud Optimized GeoTIFF (COG).
+
+    Args:
+        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        tuple: A tuple representing (longitude, latitude)
+    """    
+    bounds = get_COG_bounds(url, titiler_endpoint)
+    center=((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2)  # (lat, lon)
+    return center
+
+
+def get_COG_bands(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get band names of a Cloud Optimized GeoTIFF (COG).
+
+    Args:
+        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        list: A list of band names
+    """    
+    import requests
+
+    r = requests.get(
+        f"{titiler_endpoint}/cog/info",
+        params = {
+            "url": url,
+        }
+    ).json()
+
+    bands = [b[1] for b in r['band_descriptions']]
+    return bands
+ 
+
+def get_STAC_tile(url, bands=None, titiler_endpoint="https://api.cogeo.xyz/", **kwargs):
+    """Get a tile layer from a single SpatialTemporal Asset Catalog (STAC) item.
+
+    Args:
+        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        tuple: Returns the COG Tile layer URL and bounds. 
+    """
+    import requests
+
+    params = {"url": url}
+
+    TileMatrixSetId='WebMercatorQuad'
+    if "TileMatrixSetId" in kwargs.keys():
+        TileMatrixSetId = kwargs["TileMatrixSetId"]
+    if "expression" in kwargs.keys():
+        params["expression"] = kwargs["expression"]
+    if "tile_format" in kwargs.keys():
+        params["tile_format"] = kwargs["tile_format"]
+    if "tile_scale" in kwargs.keys():
+        params["tile_scale"] = kwargs["tile_scale"]
+    if "minzoom" in kwargs.keys():
+        params["minzoom"] = kwargs["minzoom"]
+    if "maxzoom" in kwargs.keys():
+        params["maxzoom"] = kwargs["maxzoom"]
+
+    allowed_bands = get_STAC_bands(url, titiler_endpoint)
+
+    if bands is None:
+        bands = [allowed_bands[0]]
+    elif len(bands) <= 3 and all(x in allowed_bands for x in bands):
+        pass
+    else:
+        raise Exception('You can only select 3 bands from the following: {}'.format(
+            ', '.join(allowed_bands))) 
+        
+    assets = ','.join(bands)
+    params["assets"] = assets
+
+    r = requests.get(
+        f"{titiler_endpoint}/stac/{TileMatrixSetId}/tilejson.json",
+        params = params
+    ).json()
+
+    return r["tiles"][0]
+
+
+def get_STAC_bounds(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get the bounding box of a single SpatialTemporal Asset Catalog (STAC) item.
+
+    Args:
+        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        list: A list of values representing [left, bottom, right, top]
+    """    
+    import requests
+
+    r = requests.get(
+        f"{titiler_endpoint}/stac/bounds",
+        params = {
+            "url": url
+        }
+    ).json()   
+
+    bounds = r["bounds"] 
+    return bounds
+
+
+def get_STAC_center(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get the centroid of a single SpatialTemporal Asset Catalog (STAC) item.
+
+    Args:
+        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        tuple: A tuple representing (longitude, latitude)
+    """    
+    bounds = get_STAC_bounds(url, titiler_endpoint)
+    center=((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2)  # (lat, lon)
+    return center
+
+
+def get_STAC_bands(url, titiler_endpoint="https://api.cogeo.xyz/"):
+    """Get band names of a single SpatialTemporal Asset Catalog (STAC) item.
+
+    Args:
+        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+
+    Returns:
+        list: A list of band names
+    """    
+    import requests
+
+    r = requests.get(
+        f"{titiler_endpoint}/stac/info",
+        params = {
+            "url": url,
+        }
+    ).json()
+
+    return r
+
+
+def explode(coords):
+    """Explode a GeoJSON geometry's coordinates object and yield
+    coordinate tuples. As long as the input is conforming, the type of
+    the geometry doesn't matter.  From Fiona 1.4.8"""
+    for e in coords:
+        if isinstance(e, (float, int)):
+            yield coords
+            break
+        else:
+            for f in explode(e):
+                yield f
+
+
+def get_bounds(geometry, north_up=True, transform=None):
+    """Bounding box of a GeoJSON geometry, GeometryCollection, or FeatureCollection.
+    left, bottom, right, top
+    *not* xmin, ymin, xmax, ymax
+    If not north_up, y will be switched to guarantee the above.
+    Source code adapted from https://github.com/mapbox/rasterio/blob/master/rasterio/features.py#L361
+    """
+
+    if 'bbox' in geometry:
+        return tuple(geometry['bbox'])
+
+    geometry = geometry.get('geometry') or geometry  
+
+    # geometry must be a geometry, GeometryCollection, or FeatureCollection
+    if not ('coordinates' in geometry or 'geometries' in geometry or 'features' in geometry):
+        raise ValueError(
+            "geometry must be a GeoJSON-like geometry, GeometryCollection, "
+            "or FeatureCollection"
+        )
+
+    if 'features' in geometry:
+        # Input is a FeatureCollection
+        xmins = []
+        ymins = []
+        xmaxs = []
+        ymaxs = []
+        for feature in geometry['features']:
+            xmin, ymin, xmax, ymax = get_bounds(feature['geometry'])
+            xmins.append(xmin)
+            ymins.append(ymin)
+            xmaxs.append(xmax)
+            ymaxs.append(ymax)
+        if north_up:
+            return min(xmins), min(ymins), max(xmaxs), max(ymaxs)
+        else:
+            return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
+
+    elif 'geometries' in geometry:
+        # Input is a geometry collection
+        xmins = []
+        ymins = []
+        xmaxs = []
+        ymaxs = []
+        for geometry in geometry['geometries']:
+            xmin, ymin, xmax, ymax = get_bounds(geometry)
+            xmins.append(xmin)
+            ymins.append(ymin)
+            xmaxs.append(xmax)
+            ymaxs.append(ymax)
+        if north_up:
+            return min(xmins), min(ymins), max(xmaxs), max(ymaxs)
+        else:
+            return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
+
+    elif 'coordinates' in geometry:
+        # Input is a singular geometry object
+        if transform is not None:
+            xyz = list(explode(geometry['coordinates']))
+            xyz_px = [transform * point for point in xyz]
+            xyz = tuple(zip(*xyz_px))
+            return min(xyz[0]), max(xyz[1]), max(xyz[0]), min(xyz[1])
+        else:
+            xyz = tuple(zip(*list(explode(geometry['coordinates']))))
+            if north_up:
+                return min(xyz[0]), min(xyz[1]), max(xyz[0]), max(xyz[1])
+            else:
+                return min(xyz[0]), max(xyz[1]), max(xyz[0]), min(xyz[1])
+
+    # all valid inputs returned above, so whatever falls through is an error
+    raise ValueError(
+            "geometry must be a GeoJSON-like geometry, GeometryCollection, "
+            "or FeatureCollection"
+        )
+
+
 def image_props(img, date_format='YYYY-MM-dd'):
     """Gets image properties.
 
@@ -4828,28 +5123,46 @@ def image_sum_value(img, region=None, scale=None):
     return sum_value
 
 
-def extract_values_to_points(in_points, img, label, scale=None):
+def extract_values_to_points(in_fc, image, out_fc=None, properties=None, scale=None, projection=None, tile_scale=1, geometries=True):
     """Extracts image values to points.
 
     Args:
-        in_points (object): ee.FeatureCollection
-        img (object): ee.Image
-        label (str): The column name to keep.
-        scale (float, optional): The image resolution to use. Defaults to None.
+        in_fc (object): ee.FeatureCollection
+        image (object): The ee.Image to extract pixel values
+        properties (list, optional): The list of properties to copy from each input feature. Defaults to all non-system properties.
+        scale (float, optional): A nominal scale in meters of the projection to sample in. If unspecified,the scale of the image's first band is used.
+        projection (str, optional): The projection in which to sample. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale.
+        tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default.
+        geometries (bool, optional): If true, the results will include a geometry per sampled pixel. Otherwise, geometries will be omitted (saving memory).
 
     Returns:
         object: ee.FeatureCollection
     """
-    if scale is None:
-        scale = image_scale(img)
 
-    out_fc = img.sampleRegions(**{
-        'collection': in_points,
-        'properties': [label],
-        'scale': scale
-    })
+    if not isinstance(in_fc, ee.FeatureCollection):
+        try:
+            in_fc = shp_to_ee(in_fc)
+        except Exception as e:
+            print(e)
+            return
 
-    return out_fc
+    if not isinstance(image, ee.Image):
+        print('The image must be an instance of ee.Image.')
+        return
+   
+    result = image.sampleRegions(**{
+        'collection': in_fc,
+        'properties': properties,
+        'scale': scale,
+        'projection': projection,
+        'tileScale': tile_scale,
+        'geometries': geometries
+    })    
+
+    if out_fc is not None:
+        ee_export_vector(result, out_fc)
+    else:
+        return result
 
 
 def image_reclassify(img, in_list, out_list):
