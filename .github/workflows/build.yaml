@@ -1,12 +1,16 @@
+# on:
+#     push:
+#         branches:
+#             - master
+# pull_request:
+#   branches:
+#     - master
+
+name: build
 on:
     push:
         branches:
             - master
-    # pull_request:
-    #   branches:
-    #     - master
-
-name: build
 jobs:
     py-check:
         runs-on: ${{ matrix.config.os }}
