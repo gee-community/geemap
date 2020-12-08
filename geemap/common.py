@@ -611,7 +611,7 @@ def system_fonts(show_full_path=False):
 #           Data Download              #
 ########################################
 
-def download_from_url(url, out_file_name=None, out_dir='.', unzip=True):
+def download_from_url(url, out_file_name=None, out_dir='.', unzip=True, verbose=True):
     """Download a file from a URL (e.g., https://github.com/giswqs/whitebox/raw/master/examples/testdata.zip)
 
     Args:
@@ -619,6 +619,7 @@ def download_from_url(url, out_file_name=None, out_dir='.', unzip=True):
         out_file_name (str, optional): The output file name to use. Defaults to None.
         out_dir (str, optional): The output directory to use. Defaults to '.'.
         unzip (bool, optional): Whether to unzip the downloaded file if it is a zip file. Defaults to True.
+        verbose (bool, optional): Whether to display or not the output of the function
     """
     in_file_name = os.path.basename(url)
 
@@ -626,7 +627,8 @@ def download_from_url(url, out_file_name=None, out_dir='.', unzip=True):
         out_file_name = in_file_name
     out_file_path = os.path.join(os.path.abspath(out_dir), out_file_name)
 
-    print('Downloading {} ...'.format(url))
+    if verbose :
+        print('Downloading {} ...'.format(url))
 
     try:
         urllib.request.urlretrieve(url, out_file_path)
@@ -639,7 +641,8 @@ def download_from_url(url, out_file_name=None, out_dir='.', unzip=True):
     if unzip:
         # if it is a zip file
         if '.zip' in out_file_name:
-            print("Unzipping {} ...".format(out_file_name))
+            if verbose:
+                print("Unzipping {} ...".format(out_file_name))
             with zipfile.ZipFile(out_file_path, "r") as zip_ref:
                 zip_ref.extractall(out_dir)
             final_path = os.path.join(os.path.abspath(
@@ -647,16 +650,19 @@ def download_from_url(url, out_file_name=None, out_dir='.', unzip=True):
 
         # if it is a tar file
         if '.tar' in out_file_name:
-            print("Unzipping {} ...".format(out_file_name))
+            if verbose:
+                print("Unzipping {} ...".format(out_file_name))
             with tarfile.open(out_file_path, "r") as tar_ref:
                 tar_ref.extractall(out_dir)
             final_path = os.path.join(os.path.abspath(
                 out_dir), out_file_name.replace('.tart', ''))
 
-    print('Data downloaded to: {}'.format(final_path))
+    if verbose:
+        print('Data downloaded to: {}'.format(final_path))
+        
+    return
 
-
-def download_from_gdrive(gfile_url, file_name, out_dir='.', unzip=True):
+def download_from_gdrive(gfile_url, file_name, out_dir='.', unzip=True, verbose=True):
     """Download a file shared via Google Drive 
        (e.g., https://drive.google.com/file/d/18SUo_HcDGltuWYZs1s7PpOmOq_FvFn04/view?usp=sharing)
 
@@ -665,6 +671,7 @@ def download_from_gdrive(gfile_url, file_name, out_dir='.', unzip=True):
         file_name (str): The output file name to use.
         out_dir (str, optional): The output directory. Defaults to '.'.
         unzip (bool, optional): Whether to unzip the output file if it is a zip file. Defaults to True.
+        verbose (bool, optional): Whether to display or not the output of the function
     """
     try:
         from google_drive_downloader import GoogleDriveDownloader as gdd
@@ -675,11 +682,13 @@ def download_from_gdrive(gfile_url, file_name, out_dir='.', unzip=True):
         from google_drive_downloader import GoogleDriveDownloader as gdd
 
     file_id = gfile_url.split('/')[5]
-    print('Google Drive file id: {}'.format(file_id))
+    if verbose:
+        print('Google Drive file id: {}'.format(file_id))
 
     dest_path = os.path.join(out_dir, file_name)
     gdd.download_file_from_google_drive(file_id, dest_path, True, unzip)
-
+    
+    return
 
 def create_download_link(filename, title="Click here to download: "):
     """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578
