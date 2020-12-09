@@ -416,7 +416,7 @@ class Map(folium.Map):
     def add_tile_layer(
         self,
         tiles="OpenStreetMap",
-        name='Untitled',
+        name="Untitled",
         attribution=".",
         overlay=True,
         control=True,
@@ -454,17 +454,17 @@ class Map(folium.Map):
     def add_COG_layer(
         self,
         url,
-        name='Untitled',
+        name="Untitled",
         attribution=".",
         opacity=1.0,
         shown=True,
-        titiler_endpoint = "https://api.cogeo.xyz/",
-        **kwargs
+        titiler_endpoint="https://api.cogeo.xyz/",
+        **kwargs,
     ):
         """Adds a COG TileLayer to the map.
 
         Args:
-            url (str): The URL of the COG tile layer. 
+            url (str): The URL of the COG tile layer.
             name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
             attribution (str, optional): The attribution to use. Defaults to '.'.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
@@ -472,23 +472,29 @@ class Map(folium.Map):
             titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
         """
         tile_url = get_COG_tile(url, titiler_endpoint, **kwargs)
-        center= get_COG_center(url, titiler_endpoint)  # (lon, lat)
-        self.add_tile_layer(tiles=tile_url, name=name, attribution=attribution, opacity=opacity, shown=shown)
+        center = get_COG_center(url, titiler_endpoint)  # (lon, lat)
+        self.add_tile_layer(
+            tiles=tile_url,
+            name=name,
+            attribution=attribution,
+            opacity=opacity,
+            shown=shown,
+        )
         self.set_center(lon=center[0], lat=center[1], zoom=10)
 
     def add_COG_mosaic(
         self,
         links,
-        name='Untitled',
+        name="Untitled",
         attribution=".",
         opacity=1.0,
         shown=True,
-        titiler_endpoint = "https://api.cogeo.xyz/",
-        username='anonymous', 
+        titiler_endpoint="https://api.cogeo.xyz/",
+        username="anonymous",
         overwrite=False,
         show_footprints=False,
         verbose=True,
-        **kwargs
+        **kwargs,
     ):
         """Add a virtual mosaic of COGs to the map.
 
@@ -504,13 +510,22 @@ class Map(folium.Map):
             show_footprints (bool, optional): Whether or not to show footprints of COGs. Defaults to False.
             verbose (bool, optional): Whether or not to print descriptions. Defaults to True.
         """
-        layername = name.replace(" ", "_")  
-        tile = get_COG_mosaic(links, titiler_endpoint=titiler_endpoint, username=username, layername=layername, overwrite=overwrite, verbose=verbose)
+        layername = name.replace(" ", "_")
+        tile = get_COG_mosaic(
+            links,
+            titiler_endpoint=titiler_endpoint,
+            username=username,
+            layername=layername,
+            overwrite=overwrite,
+            verbose=verbose,
+        )
         self.add_tile_layer(tile, name, attribution, opacity, shown)
 
         if show_footprints:
             if verbose:
-                print(f"Generating footprints of {len(links)} COGs. This might take a while ...")
+                print(
+                    f"Generating footprints of {len(links)} COGs. This might take a while ..."
+                )
             coords = []
             for link in links:
                 coord = get_COG_bounds(link)
@@ -523,7 +538,7 @@ class Map(folium.Map):
             folium.GeoJson(
                 data=fc,
                 # style_function=style_function,
-                name="Footprints"
+                name="Footprints",
             ).add_to(self)
 
             center = get_center(fc)
@@ -538,17 +553,17 @@ class Map(folium.Map):
         self,
         url,
         bands=None,
-        name='Untitled',
+        name="Untitled",
         attribution=".",
         opacity=1.0,
         shown=True,
-        titiler_endpoint = "https://api.cogeo.xyz/",
-        **kwargs
+        titiler_endpoint="https://api.cogeo.xyz/",
+        **kwargs,
     ):
         """Adds a STAC TileLayer to the map.
 
         Args:
-            url (str): The URL of the COG tile layer. 
+            url (str): The URL of the COG tile layer.
             name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
             attribution (str, optional): The attribution to use. Defaults to '.'.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
@@ -556,8 +571,14 @@ class Map(folium.Map):
             titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
         """
         tile_url = get_STAC_tile(url, bands, titiler_endpoint, **kwargs)
-        center= get_STAC_center(url, titiler_endpoint)
-        self.add_tile_layer(tiles=tile_url, name=name, attribution=attribution, opacity=opacity, shown=shown)
+        center = get_STAC_center(url, titiler_endpoint)
+        self.add_tile_layer(
+            tiles=tile_url,
+            name=name,
+            attribution=attribution,
+            opacity=opacity,
+            shown=shown,
+        )
         self.set_center(lon=center[0], lat=center[1], zoom=10)
 
     def publish(

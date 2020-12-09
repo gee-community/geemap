@@ -14,8 +14,6 @@ To execute all Jupyter notebooks in a folder recursively:                       
 
 """
 
-# Authors: Dr. Qiusheng Wu (https://wetlands.io)
-# License: MIT
 
 import os
 import pkg_resources
