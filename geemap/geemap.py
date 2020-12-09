@@ -782,14 +782,20 @@ class Map(ipyleaflet.Map):
                                 for key in keys:
                                     print("  {}: {}".format(key, item[key]))
                             elif isinstance(ee_object, ee.FeatureCollection):
-                                
+
                                 # Check geometry type
-                                geom_type = ee.Feature(ee_object.first()).geometry().type() 
+                                geom_type = (
+                                    ee.Feature(ee_object.first()).geometry().type()
+                                )
                                 lat, lon = latlon
                                 delta = 0.005
-                                bbox = ee.Geometry.BBox(lon - delta, lat - delta, lon + delta, lat + delta)
+                                bbox = ee.Geometry.BBox(
+                                    lon - delta, lat - delta, lon + delta, lat + delta
+                                )
                                 # Create a bounding box to filter points
-                                xy = ee.Algorithms.If(geom_type.compareTo(ee.String('Point')), xy, bbox)
+                                xy = ee.Algorithms.If(
+                                    geom_type.compareTo(ee.String("Point")), xy, bbox
+                                )
 
                                 filtered = ee_object.filterBounds(xy)
                                 size = filtered.size().getInfo()
@@ -1247,7 +1253,7 @@ class Map(ipyleaflet.Map):
     def add_tile_layer(
         self,
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        name='Untitled',
+        name="Untitled",
         attribution="",
         opacity=1.0,
         shown=True,
@@ -1289,17 +1295,17 @@ class Map(ipyleaflet.Map):
     def add_COG_layer(
         self,
         url,
-        name='Untitled',
+        name="Untitled",
         attribution="",
         opacity=1.0,
         shown=True,
-        titiler_endpoint = "https://api.cogeo.xyz/",
-        **kwargs
+        titiler_endpoint="https://api.cogeo.xyz/",
+        **kwargs,
     ):
         """Adds a COG TileLayer to the map.
 
         Args:
-            url (str): The URL of the COG tile layer. 
+            url (str): The URL of the COG tile layer.
             name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
@@ -1307,23 +1313,23 @@ class Map(ipyleaflet.Map):
             titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
         """
         tile_url = get_COG_tile(url, titiler_endpoint, **kwargs)
-        center= get_COG_center(url, titiler_endpoint)  # (lon, lat)
+        center = get_COG_center(url, titiler_endpoint)  # (lon, lat)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
         self.set_center(lon=center[0], lat=center[1], zoom=10)
 
     def add_COG_mosaic(
         self,
         links,
-        name='Untitled',
+        name="Untitled",
         attribution="",
         opacity=1.0,
         shown=True,
-        titiler_endpoint = "https://api.cogeo.xyz/",
-        username='anonymous', 
+        titiler_endpoint="https://api.cogeo.xyz/",
+        username="anonymous",
         overwrite=False,
         show_footprints=False,
         verbose=True,
-        **kwargs
+        **kwargs,
     ):
         """Add a virtual mosaic of COGs to the map.
 
@@ -1339,13 +1345,22 @@ class Map(ipyleaflet.Map):
             show_footprints (bool, optional): Whether or not to show footprints of COGs. Defaults to False.
             verbose (bool, optional): Whether or not to print descriptions. Defaults to True.
         """
-        layername = name.replace(" ", "_")  
-        tile = get_COG_mosaic(links, titiler_endpoint=titiler_endpoint, username=username, layername=layername, overwrite=overwrite, verbose=verbose)
+        layername = name.replace(" ", "_")
+        tile = get_COG_mosaic(
+            links,
+            titiler_endpoint=titiler_endpoint,
+            username=username,
+            layername=layername,
+            overwrite=overwrite,
+            verbose=verbose,
+        )
         self.add_tile_layer(tile, name, attribution, opacity, shown)
 
         if show_footprints:
             if verbose:
-                print(f"Generating footprints of {len(links)} COGs. This might take a while ...")
+                print(
+                    f"Generating footprints of {len(links)} COGs. This might take a while ..."
+                )
             coords = []
             for link in links:
                 coord = get_COG_bounds(link)
@@ -1355,10 +1370,8 @@ class Map(ipyleaflet.Map):
 
             geo_json = ipyleaflet.GeoJSON(
                 data=fc,
-                style={
-                    'opacity': 1, 'dashArray': '1', 'fillOpacity': 0, 'weight': 1
-                },
-                name="Footprints"
+                style={"opacity": 1, "dashArray": "1", "fillOpacity": 0, "weight": 1},
+                name="Footprints",
             )
 
             self.add_layer(geo_json)
@@ -1374,17 +1387,17 @@ class Map(ipyleaflet.Map):
         self,
         url,
         bands=None,
-        name='Untitled',
+        name="Untitled",
         attribution="",
         opacity=1.0,
         shown=True,
-        titiler_endpoint = "https://api.cogeo.xyz/",
-        **kwargs
+        titiler_endpoint="https://api.cogeo.xyz/",
+        **kwargs,
     ):
         """Adds a STAC TileLayer to the map.
 
         Args:
-            url (str): The URL of the COG tile layer. 
+            url (str): The URL of the COG tile layer.
             name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
@@ -1392,7 +1405,7 @@ class Map(ipyleaflet.Map):
             titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
         """
         tile_url = get_STAC_tile(url, bands, titiler_endpoint, **kwargs)
-        center= get_STAC_center(url, titiler_endpoint)
+        center = get_STAC_center(url, titiler_endpoint)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
         self.set_center(lon=center[0], lat=center[1], zoom=10)
 
@@ -1459,7 +1472,7 @@ class Map(ipyleaflet.Map):
         max_width=None,
         min_height=None,
         max_height=None,
-        **kwargs
+        **kwargs,
     ):
         """Sets plotting options.
 
@@ -1505,7 +1518,7 @@ class Map(ipyleaflet.Map):
         max_width=None,
         min_height=None,
         max_height=None,
-        **kwargs
+        **kwargs,
     ):
         """Creates a plot based on x-array and y-array data.
 
@@ -1583,7 +1596,7 @@ class Map(ipyleaflet.Map):
         max_width=None,
         min_height=None,
         max_height=None,
-        **kwargs
+        **kwargs,
     ):
         """A demo of interactive plotting using random pixel coordinates.
 
@@ -1640,7 +1653,7 @@ class Map(ipyleaflet.Map):
                     min_height=min_height,
                     max_height=max_height,
                     title=title,
-                    **kwargs
+                    **kwargs,
                 )
                 time.sleep(0.3)
             except Exception as e:
@@ -1657,7 +1670,7 @@ class Map(ipyleaflet.Map):
         max_width=None,
         min_height=None,
         max_height=None,
-        **kwargs
+        **kwargs,
     ):
         """Interactive plotting of Earth Engine data by clicking on the map.
 
@@ -1748,7 +1761,7 @@ class Map(ipyleaflet.Map):
                         max_width=max_width,
                         min_height=min_height,
                         max_height=max_height,
-                        **kwargs
+                        **kwargs,
                     )
                     self.default_style = {"cursor": "crosshair"}
                 except Exception as e:
@@ -1993,7 +2006,7 @@ class Map(ipyleaflet.Map):
         legend_colors=None,
         position="bottomright",
         builtin_legend=None,
-        **kwargs
+        **kwargs,
     ):
         """Adds a customized basemap to the map.
 
