@@ -4231,6 +4231,52 @@ def get_COG_tile(url, titiler_endpoint="https://api.cogeo.xyz/", **kwargs):
     return r["tiles"][0]
 
 
+def get_COG_mosaic(links, titiler_endpoint="https://api.cogeo.xyz/", username='anonymous', layername=None, overwrite=False, verbose=True, **kwargs):
+
+    import requests
+
+    if layername is None:
+        layername = 'layer_' + random_string(5)
+
+    try:
+        if verbose:
+            print("Creating COG masaic ...")
+
+        # Create token
+        r = requests.post(
+            f"{titiler_endpoint}/tokens/create",
+            json={
+                "username": username,
+                "scope": ["mosaic:read", "mosaic:create"]
+            }
+        ).json()
+        token = r["token"]
+
+        # Create mosaic
+        r = requests.post(
+            f"{titiler_endpoint}/mosaicjson/create",
+            json={
+                "username": username,
+                "layername": layername,
+                "files": links,
+                # "overwrite": overwrite
+            },
+            params={
+                "access_token": token,
+
+            }
+        ).json()
+
+        r = requests.get(
+            f"{titiler_endpoint}/mosaicjson/{username}.{layername}/tilejson.json",
+        ).json()
+
+        return r["tiles"][0]
+
+    except Exception as e:
+        print(e)
+
+
 def get_COG_bounds(url, titiler_endpoint="https://api.cogeo.xyz/"):
     """Get the bounding box of a Cloud Optimized GeoTIFF (COG).
 
@@ -4250,7 +4296,10 @@ def get_COG_bounds(url, titiler_endpoint="https://api.cogeo.xyz/"):
         }
     ).json()   
 
-    bounds = r["bounds"] 
+    if "bounds" in r.keys():
+        bounds = r["bounds"] 
+    else:
+        bounds = None
     return bounds
 
 
@@ -4401,10 +4450,60 @@ def get_STAC_bands(url, titiler_endpoint="https://api.cogeo.xyz/"):
     return r
 
 
+def bbox_to_geojson(bounds):
+    """Convert coordinates of a bounding box to a geojson.
+
+    Args:
+        bounds (list): A list of coordinates representing [left, bottom, right, top].
+
+    Returns:
+        dict: A geojson feature.
+    """
+    return {
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [bounds[0], bounds[3]],
+                    [bounds[0], bounds[1]],
+                    [bounds[2], bounds[1]],
+                    [bounds[2], bounds[3]],
+                    [bounds[0], bounds[3]]
+                ]
+            ]
+        },
+        "type": "Feature"
+    }
+
+
+def coords_to_geojson(coords):
+    """Convert a list of bbox coordinates representing [left, bottom, right, top] to geojson FeatureCollection.
+
+    Args:
+        coords (list): A list of bbox coordinates representing [left, bottom, right, top].
+
+    Returns:
+        dict: A geojson FeatureCollection.
+    """
+
+    features = []
+    for bbox in coords:
+        features.append(bbox_to_geojson(bbox))
+    return {'type': 'FeatureCollection', 'features': features}
+    
+
 def explode(coords):
     """Explode a GeoJSON geometry's coordinates object and yield
     coordinate tuples. As long as the input is conforming, the type of
-    the geometry doesn't matter.  From Fiona 1.4.8"""
+    the geometry doesn't matter.  From Fiona 1.4.8
+
+    Args:
+        coords (list): A list of coordinates.
+
+    Yields:
+        [type]: [description]
+    """
+
     for e in coords:
         if isinstance(e, (float, int)):
             yield coords
@@ -4420,7 +4519,15 @@ def get_bounds(geometry, north_up=True, transform=None):
     *not* xmin, ymin, xmax, ymax
     If not north_up, y will be switched to guarantee the above.
     Source code adapted from https://github.com/mapbox/rasterio/blob/master/rasterio/features.py#L361
-    """
+
+    Args:
+        geometry (dict): A GeoJSON dict.
+        north_up (bool, optional): . Defaults to True.
+        transform ([type], optional): . Defaults to None.
+
+    Returns:
+        list: A list of coordinates representing [left, bottom, right, top]
+    """    
 
     if 'bbox' in geometry:
         return tuple(geometry['bbox'])
@@ -4487,6 +4594,22 @@ def get_bounds(geometry, north_up=True, transform=None):
             "geometry must be a GeoJSON-like geometry, GeometryCollection, "
             "or FeatureCollection"
         )
+
+
+def get_center(geometry, north_up=True, transform=None):
+    """Get the centroid of a GeoJSON.
+
+    Args:
+        geometry (dict): A GeoJSON dict.
+        north_up (bool, optional): . Defaults to True.
+        transform ([type], optional): . Defaults to None.
+
+    Returns:
+        list: [lon, lat]
+    """
+    bounds = get_bounds(geometry, north_up, transform)
+    center=((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2)  # (lat, lon)
+    return center
 
 
 def image_props(img, date_format='YYYY-MM-dd'):

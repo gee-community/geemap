@@ -476,6 +476,64 @@ class Map(folium.Map):
         self.add_tile_layer(tiles=tile_url, name=name, attribution=attribution, opacity=opacity, shown=shown)
         self.set_center(lon=center[0], lat=center[1], zoom=10)
 
+    def add_COG_mosaic(
+        self,
+        links,
+        name='Untitled',
+        attribution=".",
+        opacity=1.0,
+        shown=True,
+        titiler_endpoint = "https://api.cogeo.xyz/",
+        username='anonymous', 
+        overwrite=False,
+        show_footprints=False,
+        verbose=True,
+        **kwargs
+    ):
+        """Add a virtual mosaic of COGs to the map.
+
+        Args:
+            links (list): A list of links pointing to COGs.
+            name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
+            attribution (str, optional): The attribution to use. Defaults to '.'.
+            opacity (float, optional): The opacity of the layer. Defaults to 1.
+            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+            username (str, optional): The username to create mosaic using the titiler endpoint. Defaults to 'anonymous'.
+            overwrite (bool, optional): Whether or not to replace existing layer with the same layer name. Defaults to False.
+            show_footprints (bool, optional): Whether or not to show footprints of COGs. Defaults to False.
+            verbose (bool, optional): Whether or not to print descriptions. Defaults to True.
+        """
+        layername = name.replace(" ", "_")  
+        tile = get_COG_mosaic(links, titiler_endpoint=titiler_endpoint, username=username, layername=layername, overwrite=overwrite, verbose=verbose)
+        self.add_tile_layer(tile, name, attribution, opacity, shown)
+
+        if show_footprints:
+            if verbose:
+                print(f"Generating footprints of {len(links)} COGs. This might take a while ...")
+            coords = []
+            for link in links:
+                coord = get_COG_bounds(link)
+                if coord is not None:
+                    coords.append(coord)
+            fc = coords_to_geojson(coords)
+
+            # style_function = lambda x: {'opacity': 1, 'dashArray': '1', 'fillOpacity': 0, 'weight': 1}
+
+            folium.GeoJson(
+                data=fc,
+                # style_function=style_function,
+                name="Footprints"
+            ).add_to(self)
+
+            center = get_center(fc)
+            if verbose:
+                print("The footprint layer has been added.")
+        else:
+            center = get_COG_center(links[0], titiler_endpoint)
+
+        self.set_center(center[0], center[1], zoom=6)
+
     def add_STAC_layer(
         self,
         url,
