@@ -511,8 +511,8 @@ def js_snippet_to_py(
         if import_geemap:
             out_lines.append("import geemap\n\n")
             out_lines.append("Map = geemap.Map()\n")
-        if import_ee:
-            out_lines.append("ee.Initialize()\n")
+        # if import_ee:
+        #     out_lines.append("ee.Initialize()\n")
         with open(out_py) as f:
             lines = f.readlines()
             for index, line in enumerate(lines):
