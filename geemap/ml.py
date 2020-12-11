@@ -1,3 +1,4 @@
+import os
 import ee
 import numpy as np
 import pandas as pd
@@ -283,3 +284,41 @@ def export_trees_to_fc(trees, asset_id, description="geemap_rf_export"):
         collection=fc, description=description, assetId=asset_id
     )
     task.start()
+
+
+def trees_to_csv(trees, out_csv):
+    """Save a list of strings (an ensemble of decision trees) to a CSV file.
+
+    Args:
+        trees (list): A list of strings (an ensemble of decision trees).
+        out_csv (str): File path to the output csv
+    """
+    out_csv = os.path.abspath(out_csv)
+    with open(out_csv, "w") as f:
+        f.writelines([tree.replace("\n", "#") + "\n" for tree in trees])
+
+
+def csv_to_classifier(in_csv):
+    """Convert a CSV file containing a list of strings (an ensemble of decision trees) to an ee.Classifier.
+
+    Args:
+        in_csv (str): File path to the input CSV.
+    Returns:
+        object: ee.Classifier.
+    """
+
+    in_csv = os.path.join(in_csv)
+
+    try:
+        with open(in_csv) as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        print(f"{in_csv} could not be found.")
+        return None
+
+    null_island = ee.Geometry.Point([0, 0])
+    features = [ee.Feature(null_island, {"tree": line.strip()}) for line in lines]
+    rf_fc = ee.FeatureCollection(features)
+    classifier = fc_to_classifier(rf_fc)
+
+    return classifier

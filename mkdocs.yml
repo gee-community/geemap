@@ -97,3 +97,4 @@ nav:
           - notebooks/43_extract_values_to_points.ipynb
           - notebooks/44_cog_stac.ipynb
           - notebooks/45_cog_mosaic.ipynb
+          - notebooks/46_local_rf_training.ipynb
