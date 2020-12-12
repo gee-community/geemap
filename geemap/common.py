@@ -1514,6 +1514,90 @@ def ee_export_image_collection_to_drive(ee_object, descriptions=None, folder=Non
         print(e)
 
 
+def get_image_thumbnail(ee_object, out_png, vis_params, dimensions=500, region=None): 
+    """Download a thumbnail for an ee.Image.
+
+    Args:
+        ee_object (object): The ee.Image instance.
+        out_png (str): The output file path to the png thumbnail.
+        vis_params (dict): The visualization parameters. 
+        dimensions (int, optional):(a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 500.
+        region (object, optional): Geospatial region of the image to render, it may be an ee.Geometry, GeoJSON, or an array of lat/lon points (E,S,W,N). If not set the default is the bounds image. Defaults to None.
+    """
+    import requests
+
+    if not isinstance(ee_object, ee.Image):
+        print('The ee_object must be an ee.Image.')
+        return
+
+    out_image = os.path.abspath(out_png)
+    out_dir = os.path.dirname(out_image)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    if region is not None:
+        vis_params["region"] = region
+
+    vis_params["dimensions"] = dimensions
+    url = ee_object.getThumbURL(vis_params)
+
+    r = requests.get(url, stream=True)
+    if r.status_code != 200:
+        print('An error occurred while downloading.')
+    else:
+        with open(out_png, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size=1024):
+                fd.write(chunk)
+
+
+def get_image_collection_thumbnails(ee_object, out_dir, vis_params, dimensions=500, region=None, names=None, verbose=True):
+    """Download thumbnails for all images in an ImageCollection.
+
+    Args:
+        ee_object (object): The ee.ImageCollection instance.
+        out_dir ([str): The output directory to store thumbnails.
+        vis_params (dict): The visualization parameters.
+        dimensions (int, optional):(a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 500.
+        region (object, optional): Geospatial region of the image to render, it may be an ee.Geometry, GeoJSON, or an array of lat/lon points (E,S,W,N). If not set the default is the bounds image. Defaults to None.
+        names (list, optional): The list of output file names. Defaults to None.
+        verbose (bool, optional): Whether or not to print hints. Defaults to True.
+    """
+    if not isinstance(ee_object, ee.ImageCollection):
+        print('The ee_object must be an ee.ImageCollection.')
+        return
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)     
+
+    try:
+        count = int(ee_object.size().getInfo())
+        if verbose:
+            print("Total number of images: {}\n".format(count))
+
+        if (names is not None) and (len(names) != count):
+            print('The number of names is not equal to the number of images.')
+            return
+
+        if names is None:
+            names = ee_object.aggregate_array('system:index').getInfo()
+
+        images = ee_object.toList(count)
+
+        for i in range(0, count):
+            image = ee.Image(images.get(i))
+            name = str( names[i])
+            if not name.endswith(".png"):
+                name = name + ".png"
+            out_png = os.path.join(out_dir, name)
+            if verbose:
+                print(f"Downloading {i+1}/{count}: {name} ...")
+            
+            get_image_thumbnail(image, out_png, vis_params, dimensions, region)
+
+    except Exception as e:
+        print(e)
+
+
 def ee_to_numpy(ee_object, bands=None, region=None, properties=None, default_value=None):
     """Extracts a rectangular region of pixels from an image into a 2D numpy array per band.
 
