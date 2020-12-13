@@ -544,3 +544,153 @@ def pad_view(ax, factor=0.05):
     ax.set_xlim(xmin, xmax)
 
     return
+
+
+def add_north_arrow(
+    ax,
+    text="N",
+    xy=(0.1, 0.1),
+    arrow_length=0.1,
+    text_color="black",
+    arrow_color="black",
+    fontsize=20,
+    width=5,
+    headwidth=15,
+    ha="center",
+    va="center",
+):
+    """Add a north arrow to the map.
+
+    Args:
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object.
+        text (str, optional): Text for north arrow. Defaults to "N".
+        xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor. Defaults to (0.1, 0.1).
+        arrow_length (float, optional): Length of the north arrow. Defaults to 0.1 (10% length of the map).
+        text_color (str, optional): Text color. Defaults to "black".
+        arrow_color (str, optional): North arrow color. Defaults to "black".
+        fontsize (int, optional): Text font size. Defaults to 20.
+        width (int, optional): Width of the north arrow. Defaults to 5.
+        headwidth (int, optional): head width of the north arrow. Defaults to 15.
+        ha (str, optional): Horizontal alignment. Defaults to "center".
+        va (str, optional): Vertical alignment. Defaults to "center".
+    """
+    ax.annotate(
+        text,
+        xy=xy,
+        xytext=(xy[0], xy[1] - arrow_length),
+        color=text_color,
+        arrowprops=dict(facecolor=arrow_color, width=width, headwidth=headwidth),
+        ha=ha,
+        va=va,
+        fontsize=20,
+        xycoords=ax.transAxes,
+    )
+
+    return
+
+
+def convert_SI(val, unit_in, unit_out):
+    """Unit converter.
+
+    Args:
+        val (float): The value to convert.
+        unit_in (str): The input unit.
+        unit_out (str): The output unit.
+
+    Returns:
+        float: The value after unit conversion.
+    """
+    SI = {
+        "cm": 0.01,
+        "m": 1.0,
+        "km": 1000.0,
+        "inch": 0.0254,
+        "foot": 0.3048,
+        "mile": 1609.34,
+    }
+    return val * SI[unit_in] / SI[unit_out]
+
+
+def add_scale_bar(
+    ax,
+    length=None,
+    xy=(0.5, 0.05),
+    linewidth=3,
+    fontsize=20,
+    color="black",
+    unit="km",
+    ha="center",
+    va="bottom",
+):
+    """Add a scale bar to the map. Reference: https://stackoverflow.com/a/50674451/2676166
+
+    Args:
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object.
+        length ([type], optional): Length of the scale car. Defaults to None.
+        xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor. Defaults to (0.1, 0.1).
+        linewidth (int, optional): Line width of the scale bar. Defaults to 3.
+        fontsize (int, optional): Text font size. Defaults to 20.
+        color (str, optional): Color for the scale bar. Defaults to "black".
+        unit (str, optional): Length unit for the scale bar. Defaults to "km".
+        ha (str, optional): Horizontal alignment. Defaults to "center".
+        va (str, optional): Vertical alignment. Defaults to "bottom".
+
+    """
+
+    allow_units = ["cm", "m", "km", "inch", "foot", "mile"]
+    if unit not in allow_units:
+        print(
+            "The unit must be one of the following: {}".format(", ".join(allow_units))
+        )
+        return
+
+    num = length
+
+    # Get the limits of the axis in lat long
+    llx0, llx1, lly0, lly1 = ax.get_extent(ccrs.PlateCarree())
+    # Make tmc horizontally centred on the middle of the map,
+    # vertically at scale bar location
+    sbllx = (llx1 + llx0) / 2
+    sblly = lly0 + (lly1 - lly0) * xy[1]
+    tmc = ccrs.TransverseMercator(sbllx, sblly)
+    # Get the extent of the plotted area in coordinates in metres
+    x0, x1, y0, y1 = ax.get_extent(tmc)
+    # Turn the specified scalebar location into coordinates in metres
+    sbx = x0 + (x1 - x0) * xy[0]
+    sby = y0 + (y1 - y0) * xy[1]
+
+    # Calculate a scale bar length if none has been given
+    # (Theres probably a more pythonic way of rounding the number but this works)
+    if not length:
+        length = (x1 - x0) / 5000  # in km
+        ndim = int(np.floor(np.log10(length)))  # number of digits in number
+        length = round(length, -ndim)  # round to 1sf
+        # Returns numbers starting with the list
+        def scale_number(x):
+            if str(x)[0] in ["1", "2", "5"]:
+                return int(x)
+            else:
+                return scale_number(x - 10 ** ndim)
+
+        length = scale_number(length)
+        num = length
+    else:
+        length = convert_SI(length, unit, "km")
+
+    # Generate the x coordinate for the ends of the scalebar
+    bar_xs = [sbx - length * 500, sbx + length * 500]
+    # Plot the scalebar
+    ax.plot(bar_xs, [sby, sby], transform=tmc, color=color, linewidth=linewidth)
+    # Plot the scalebar label
+    ax.text(
+        sbx,
+        sby,
+        str(num) + " " + unit,
+        transform=tmc,
+        horizontalalignment=ha,
+        verticalalignment=va,
+        color=color,
+        fontsize=fontsize,
+    )
+
+    return
