@@ -5180,6 +5180,21 @@ def image_date(img, date_format='YYYY-MM-dd'):
     return ee.Date(img.get('system:time_start')).format(date_format)
 
 
+def image_dates(img_col, date_format='YYYY-MM-dd'):
+    """Get image dates of all images in an ImageCollection.
+
+    Args:
+        img_col (object): ee.ImageCollection
+        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html; if omitted will use ISO standard date formatting. Defaults to 'YYYY-MM-dd'.
+
+    Returns:
+        object: ee.List
+    """
+    dates = img_col.aggregate_array('system:time_start')
+    new_dates = dates.map(lambda d: ee.Date(d).format(date_format))
+    return new_dates
+    
+
 def image_area(img, region=None, scale=None, denominator=1.0):
     """Calculates the the area of an image.
 

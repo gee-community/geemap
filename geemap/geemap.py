@@ -98,9 +98,9 @@ class Map(ipyleaflet.Map):
         if "layer_ctrl" not in kwargs.keys():
             kwargs["layer_ctrl"] = True
         if "inspector_ctrl" not in kwargs.keys():
-            kwargs["inspector_ctrl"] = True
+            kwargs["inspector_ctrl"] = False
         if "toolbar_ctrl" not in kwargs.keys():
-            kwargs["toolbar_ctrl"] = False
+            kwargs["toolbar_ctrl"] = True
         if "attribution_ctrl" not in kwargs.keys():
             kwargs["attribution_ctrl"] = True
         if "remove_ctrl" not in kwargs.keys():
@@ -521,9 +521,9 @@ class Map(ipyleaflet.Map):
         plot_checkbox.layout.width = "13ex"
         self.plot_checkbox = plot_checkbox
 
-        vb = widgets.VBox(children=[inspector_checkbox, plot_checkbox])
+        chk_widget = widgets.VBox(children=[inspector_checkbox, plot_checkbox])
 
-        chk_control = WidgetControl(widget=vb, position="topright")
+        chk_control = WidgetControl(widget=chk_widget, position="topright")
         if kwargs.get("inspector_ctrl"):
             self.add_control(chk_control)
         self.inspector_control = chk_control
@@ -720,7 +720,12 @@ class Map(ipyleaflet.Map):
 
         def toolbar_btn_click(change):
             if change["new"]:
-                toolbar_widget.children = [toolbar_button, toolbar_grid]
+                toolbar_widget.children = [
+                    toolbar_button,
+                    inspector_checkbox,
+                    plot_checkbox,
+                    toolbar_grid,
+                ]
             else:
                 toolbar_widget.children = [toolbar_button]
                 tool_output.clear_output()
