@@ -1514,7 +1514,7 @@ def ee_export_image_collection_to_drive(ee_object, descriptions=None, folder=Non
         print(e)
 
 
-def get_image_thumbnail(ee_object, out_png, vis_params, dimensions=500, region=None): 
+def get_image_thumbnail(ee_object, out_img, vis_params, dimensions=500, region=None, format="png"): 
     """Download a thumbnail for an ee.Image.
 
     Args:
@@ -1523,14 +1523,20 @@ def get_image_thumbnail(ee_object, out_png, vis_params, dimensions=500, region=N
         vis_params (dict): The visualization parameters. 
         dimensions (int, optional):(a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 500.
         region (object, optional): Geospatial region of the image to render, it may be an ee.Geometry, GeoJSON, or an array of lat/lon points (E,S,W,N). If not set the default is the bounds image. Defaults to None.
+        format (str, optional): Either 'png' or 'jpg'. Default to 'png'.
     """
     import requests
 
     if not isinstance(ee_object, ee.Image):
-        print('The ee_object must be an ee.Image.')
-        return
+        raise TypeError('The ee_object must be an ee.Image.')
 
-    out_image = os.path.abspath(out_png)
+    ext = os.path.splitext(out_img)[1][1:]      
+    if ext not in ["png", "jpg"]:
+        raise ValueError("The output image format must be png or jpg.")
+    else:
+        format = ext
+
+    out_image = os.path.abspath(out_img)
     out_dir = os.path.dirname(out_image)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
@@ -1539,18 +1545,19 @@ def get_image_thumbnail(ee_object, out_png, vis_params, dimensions=500, region=N
         vis_params["region"] = region
 
     vis_params["dimensions"] = dimensions
+    vis_params["format"] = format
     url = ee_object.getThumbURL(vis_params)
 
     r = requests.get(url, stream=True)
     if r.status_code != 200:
         print('An error occurred while downloading.')
     else:
-        with open(out_png, 'wb') as fd:
+        with open(out_img, 'wb') as fd:
             for chunk in r.iter_content(chunk_size=1024):
                 fd.write(chunk)
 
 
-def get_image_collection_thumbnails(ee_object, out_dir, vis_params, dimensions=500, region=None, names=None, verbose=True):
+def get_image_collection_thumbnails(ee_object, out_dir, vis_params, dimensions=500, region=None, format="png", names=None, verbose=True):
     """Download thumbnails for all images in an ImageCollection.
 
     Args:
@@ -1559,12 +1566,16 @@ def get_image_collection_thumbnails(ee_object, out_dir, vis_params, dimensions=5
         vis_params (dict): The visualization parameters.
         dimensions (int, optional):(a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 500.
         region (object, optional): Geospatial region of the image to render, it may be an ee.Geometry, GeoJSON, or an array of lat/lon points (E,S,W,N). If not set the default is the bounds image. Defaults to None.
+        format (str, optional): Either 'png' or 'jpg'. Default to 'png'.
         names (list, optional): The list of output file names. Defaults to None.
         verbose (bool, optional): Whether or not to print hints. Defaults to True.
     """
     if not isinstance(ee_object, ee.ImageCollection):
         print('The ee_object must be an ee.ImageCollection.')
-        return
+        raise TypeError('The ee_object must be an ee.Image.')
+
+    if format not in ["png", "jpg"]:
+        raise ValueError("The output image format must be png or jpg.")
 
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)     
@@ -1586,13 +1597,14 @@ def get_image_collection_thumbnails(ee_object, out_dir, vis_params, dimensions=5
         for i in range(0, count):
             image = ee.Image(images.get(i))
             name = str( names[i])
-            if not name.endswith(".png"):
-                name = name + ".png"
-            out_png = os.path.join(out_dir, name)
+            ext = os.path.splitext(name)[0][1:]
+            if ext != format:
+                name = name + "." + format
+            out_img = os.path.join(out_dir, name)
             if verbose:
                 print(f"Downloading {i+1}/{count}: {name} ...")
             
-            get_image_thumbnail(image, out_png, vis_params, dimensions, region)
+            get_image_thumbnail(image, out_img, vis_params, dimensions, region, format)
 
     except Exception as e:
         print(e)
