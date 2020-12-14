@@ -104,7 +104,7 @@ class Map(ipyleaflet.Map):
         if "attribution_ctrl" not in kwargs.keys():
             kwargs["attribution_ctrl"] = True
         if "remove_ctrl" not in kwargs.keys():
-            kwargs["remove_ctrl"] = True
+            kwargs["remove_ctrl"] = False
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -480,8 +480,10 @@ class Map(ipyleaflet.Map):
             description="",
             tooltip="Click to clear all drawn features",
             icon="eraser",
+            button_style="primary",
         )
-        remove_btn.layout.width = "36px"
+        remove_btn.layout.width = "37px"
+        remove_btn.layout.height = "37px"
         remove_ctrl = WidgetControl(widget=remove_btn, position="bottomleft")
 
         def remove_btn_clicked(b):
@@ -725,6 +727,7 @@ class Map(ipyleaflet.Map):
                     inspector_checkbox,
                     plot_checkbox,
                     toolbar_grid,
+                    remove_btn,
                 ]
             else:
                 toolbar_widget.children = [toolbar_button]

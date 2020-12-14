@@ -64,7 +64,8 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 43. How to extract pixel values from an Earth Engine image using a point shapefile ([video](https://youtu.be/UbQ8jyc4VP4) | [gif](https://i.imgur.com/pbt6neQ.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/43_extract_values_to_points.ipynb))
 44. How to use Cloud Optimized GeoTIFF (COG) and SpatioTemporal Asset Catalog (STAC) ([video](https://youtu.be/yLlYoy01RxA) | [gif](https://i.imgur.com/XjG3zYq.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/44_cog_stac.ipynb))
 45. How to load a virtual mosaic of Cloud Optimized GeoTIFFs (COG) ([video](https://youtu.be/jDUaopr0Dhg) | [gif](https://i.imgur.com/My8Ksh7.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/45_cog_mosaic.ipynb))
-46. How to use locally trained machine learning models with Earth Engine (video | [gif](https://i.imgur.com/muwDfkC.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/46_local_rf_training.ipynb))
+46. How to use locally trained machine learning models with Earth Engine ([video](https://youtu.be/nq_Ro7E0b6E) | [gif](https://i.imgur.com/muwDfkC.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/46_local_rf_training.ipynb))
+47. How to download image thumbnails from Earth Engine ([video](https://youtu.be/qwXZDSbfyE8) | [gif](https://i.imgur.com/gqr7CNz.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/47_image_thumbnails.ipynb))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
