@@ -558,13 +558,15 @@ class Map(ipyleaflet.Map):
                 )
                 self.plot_dropdown_control = plot_dropdown_control
                 self.add_control(plot_dropdown_control)
-                self.remove_control(self.draw_control)
+                if self.draw_control in self.controls:
+                    self.remove_control(self.draw_control)
                 self.add_control(self.draw_control_lite)
             elif button["name"] == "value" and (not button["new"]):
                 self.plot_checked = False
                 plot_dropdown_widget = self.plot_dropdown_widget
                 plot_dropdown_control = self.plot_dropdown_control
-                self.remove_control(plot_dropdown_control)
+                if plot_dropdown_control in self.controls:
+                    self.remove_control(plot_dropdown_control)
                 del plot_dropdown_widget
                 del plot_dropdown_control
                 if self.plot_control in self.controls:
@@ -580,7 +582,8 @@ class Map(ipyleaflet.Map):
                     and self.plot_marker_cluster in self.layers
                 ):
                     self.remove_layer(self.plot_marker_cluster)
-                self.remove_control(self.draw_control_lite)
+                if self.draw_control_lite in self.controls:
+                    self.remove_control(self.draw_control_lite)
                 self.add_control(self.draw_control)
 
         plot_checkbox.observe(plot_chk_changed)
@@ -1696,7 +1699,8 @@ class Map(ipyleaflet.Map):
         """
         if self.plot_control is not None:
             del self.plot_widget
-            self.remove_control(self.plot_control)
+            if self.plot_control in self.controls:
+                self.remove_control(self.plot_control)
 
         if self.random_marker is not None:
             self.remove_layer(self.random_marker)
@@ -1846,8 +1850,10 @@ class Map(ipyleaflet.Map):
             right_layer (str, optional): The right tile layer. Defaults to 'ESRI'.
         """
         try:
-            self.remove_control(self.layer_control)
-            self.remove_control(self.inspector_control)
+            if self.layer_control in self.controls:
+                self.remove_control(self.layer_control)
+            if self.inspector_control in self.controls:
+                self.remove_control(self.inspector_control)
             if left_layer in ee_basemaps.keys():
                 left_layer = ee_basemaps[left_layer]
 
@@ -2002,7 +2008,8 @@ class Map(ipyleaflet.Map):
 
         dropdown.observe(on_click, "value")
         basemap_control = WidgetControl(widget=dropdown, position="topright")
-        self.remove_control(self.inspector_control)
+        if self.inspector_control in self.controls:
+            self.remove_control(self.inspector_control)
         # self.remove_control(self.layer_control)
         self.add_control(basemap_control)
 
@@ -2166,7 +2173,8 @@ class Map(ipyleaflet.Map):
             if self.legend_control is not None:
                 legend_widget = self.legend_widget
                 legend_widget.close()
-                self.remove_control(self.legend_control)
+                if self.legend_control in self.controls:
+                    self.remove_control(self.legend_control)
 
             legend_output_widget = widgets.Output(
                 layout={
