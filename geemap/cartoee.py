@@ -582,7 +582,7 @@ def add_north_arrow(
         arrowprops=dict(facecolor=arrow_color, width=width, headwidth=headwidth),
         ha=ha,
         va=va,
-        fontsize=20,
+        fontsize=fontsize,
         xycoords=ax.transAxes,
     )
 
