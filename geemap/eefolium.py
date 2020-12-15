@@ -6,6 +6,7 @@ import folium
 from folium import plugins
 from .common import *
 from .conversion import *
+from .legends import builtin_legends
 
 
 # More WMS basemaps can be found at https://viewer.nationalmap.gov/services/
@@ -580,6 +581,124 @@ class Map(folium.Map):
             shown=shown,
         )
         self.set_center(lon=center[0], lat=center[1], zoom=10)
+
+    def add_legend(
+        self,
+        title="Legend",
+        colors=None,
+        labels=None,
+        legend_dict=None,
+        builtin_legend=None,
+        opacity=1.0,
+    ):
+        """Adds a customized basemap to the map. Reference: https://bit.ly/3oV6vnH
+
+        Args:
+            title (str, optional): Title of the legend. Defaults to 'Legend'. Defaults to "Legend".
+            colors ([type], optional): A list of legend colors. Defaults to None.
+            labels ([type], optional): A list of legend labels. Defaults to None.
+            legend_dict ([type], optional): A dictionary containing legend items as keys and color as values. If provided, legend_keys and legend_colors will be ignored. Defaults to None.
+            builtin_legend ([type], optional): Name of the builtin legend to add to the map. Defaults to None.
+            opacity (float, optional): The opacity of the legend. Defaults to 1.0.
+
+        """
+
+        import pkg_resources
+        from branca.element import Template, MacroElement
+
+        pkg_dir = os.path.dirname(
+            pkg_resources.resource_filename("geemap", "geemap.py")
+        )
+        legend_template = os.path.join(pkg_dir, "data/template/legend.txt")
+
+        if not os.path.exists(legend_template):
+            raise FileNotFoundError("The legend template does not exist.")
+
+        if labels is not None:
+            if not isinstance(labels, list):
+                raise ValueError("The legend labels must be a list.")
+        else:
+            labels = ["One", "Two", "Three", "Four", "ect"]
+
+        if colors is not None:
+            if not isinstance(colors, list):
+                raise ValueError("The legend colors must be a list.")
+            elif all(isinstance(item, tuple) for item in colors):
+                try:
+                    colors = ["#" + rgb_to_hex(x) for x in colors]
+                except Exception as e:
+                    raise Exception(e)
+            elif all((item.startswith("#") and len(item) == 7) for item in colors):
+                pass
+            elif all((len(item) == 6) for item in colors):
+                pass
+            else:
+                raise ValueError("The legend colors must be a list of tuples.")
+        else:
+            colors = ["#8DD3C7", "#FFFFB3", "#BEBADA", "#FB8072", "#80B1D3"]
+
+        if len(labels) != len(colors):
+            raise ValueError("The legend keys and values must be the same length.")
+
+        allowed_builtin_legends = builtin_legends.keys()
+        if builtin_legend is not None:
+            if builtin_legend not in allowed_builtin_legends:
+                raise ValueError(
+                    "The builtin legend must be one of the following: {}".format(
+                        ", ".join(allowed_builtin_legends)
+                    )
+                )
+            else:
+                legend_dict = builtin_legends[builtin_legend]
+                labels = list(legend_dict.keys())
+                colors = list(legend_dict.values())
+                if all(isinstance(item, tuple) for item in colors):
+                    try:
+                        colors = [rgb_to_hex(x) for x in colors]
+                    except Exception as e:
+                        raise Exception(e)
+                elif all(isinstance(item, str) for item in colors):
+                    colors = ["#" + color for color in colors]
+
+        if legend_dict is not None:
+            if not isinstance(legend_dict, dict):
+                raise ValueError("The legend dict must be a dictionary.")
+            else:
+                labels = list(legend_dict.keys())
+                colors = list(legend_dict.values())
+
+                if all(isinstance(item, tuple) for item in colors):
+                    try:
+                        colors = [rgb_to_hex(x) for x in colors]
+                    except Exception as e:
+                        raise Exception(e)
+                elif all(isinstance(item, str) for item in colors):
+                    colors = ["#" + color for color in colors]
+
+        content = []
+
+        with open(legend_template) as f:
+            lines = f.readlines()
+            for index, line in enumerate(lines):
+                if index < 36:
+                    content.append(line)
+                elif index == 36:
+                    line = lines[index].replace("Legend", title)
+                    content.append(line)
+                elif index < 39:
+                    content.append(line)
+                elif index == 39:
+                    for i, color in enumerate(colors):
+                        item = f"    <li><span style='background:{check_color(color)};opacity:{opacity};'></span>{labels[i]}</li>\n"
+                        content.append(item)
+                elif index > 41:
+                    content.append(line)
+
+        template = "".join(content)
+        macro = MacroElement()
+        macro._template = Template(template)
+
+        self.get_root().add_child(macro)
 
     def publish(
         self,
