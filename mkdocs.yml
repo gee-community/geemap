@@ -102,3 +102,4 @@ nav:
           - notebooks/48_folium_legend.ipynb
           - notebooks/49_cartoee_quickstart.ipynb
           - notebooks/50_cartoee_projections.ipynb
+          - notebooks/51_colorbar.ipynb
