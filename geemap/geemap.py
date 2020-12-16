@@ -142,6 +142,7 @@ class Map(ipyleaflet.Map):
 
         self.legend_widget = None
         self.legend_control = None
+        self.colorbar = None
 
         self.ee_layers = []
         self.ee_layer_names = []
@@ -2201,6 +2202,75 @@ class Map(ipyleaflet.Map):
 
         except Exception as e:
             print(e)
+
+    def add_colorbar(
+        self,
+        colors,
+        vmin=0,
+        vmax=1.0,
+        index=None,
+        caption="",
+        categorical=False,
+        step=None,
+        height="45px",
+        transparent_bg=True,
+        position="bottomright",
+        **kwargs,
+    ):
+        """Add a colorbar to the map.
+
+        Args:
+            colors (list): The set of colors to be used for interpolation. Colors can be provided in the form: * tuples of RGBA ints between 0 and 255 (e.g: (255, 255, 0) or (255, 255, 0, 255)) * tuples of RGBA floats between 0. and 1. (e.g: (1.,1.,0.) or (1., 1., 0., 1.)) * HTML-like string (e.g: “#ffff00) * a color name or shortcut (e.g: “y” or “yellow”)
+            vmin (int, optional): The minimal value for the colormap. Values lower than vmin will be bound directly to colors[0].. Defaults to 0.
+            vmax (float, optional): The maximal value for the colormap. Values higher than vmax will be bound directly to colors[-1]. Defaults to 1.0.
+            index (list, optional):The values corresponding to each color. It has to be sorted, and have the same length as colors. If None, a regular grid between vmin and vmax is created.. Defaults to None.
+            caption (str, optional): The caption for the colormap. Defaults to "".
+            categorical (bool, optional): Whether or not to create a categorical colormap. Defaults to False.
+            step (int, optional): The step to split the LinearColormap into a StepColormap. Defaults to None.
+            height (str, optional): The height of the colormap widget. Defaults to "45px".
+            transparent_bg (bool, optional): Whether to use transparent background for the colormap widget. Defaults to True.
+            position (str, optional): The position for the colormap widget. Defaults to "bottomright".
+        """
+        from branca.colormap import LinearColormap
+
+        output = widgets.Output()
+        output.layout.height = height
+
+        if "width" in kwargs.keys():
+            output.layout.width = kwargs["width"]
+
+        if all(len(color) == 6 for color in colors):
+            colors = ["#" + color for color in colors]
+
+        colormap = LinearColormap(
+            colors=colors, index=index, vmin=vmin, vmax=vmax, caption=caption
+        )
+
+        if categorical:
+            if step is not None:
+                colormap = colormap.to_step(step)
+            elif index is not None:
+                colormap = colormap.to_step(len(index) - 1)
+            else:
+                colormap = colormap.to_step(3)
+
+        colormap_ctrl = WidgetControl(
+            widget=output,
+            position=position,
+            transparent_bg=transparent_bg,
+            **kwargs,
+        )
+        with output:
+            output.clear_output()
+            display(colormap)
+
+        self.colorbar = colormap_ctrl
+        self.add_control(colormap_ctrl)
+
+    def remove_colorbar(self):
+        """Remove colorbar from the map."""
+        if self.colorbar is not None:
+            self.remove_control(self.colorbar)
 
     def image_overlay(self, url, bounds, name):
         """Overlays an image from the Internet or locally on the map.
