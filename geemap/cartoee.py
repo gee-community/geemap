@@ -9,6 +9,7 @@ import subprocess
 import numpy as np
 from io import BytesIO
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 from matplotlib import cm, colors
 from collections.abc import Iterable
 
@@ -17,6 +18,7 @@ try:
 
     from PIL import Image
     import cartopy.crs as ccrs
+    import cv2
     from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
     from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
 
@@ -28,6 +30,8 @@ except ImportError:
     print(
         "The easiest way to install cartopy is using conda: conda install -c conda-forge cartopy"
     )
+    print('Installing opencv-python ...')
+    subprocess.check_call(["python", '-m', 'pip', 'install', 'opencv-python'])
 
 
 def check_dependencies():
@@ -700,67 +704,67 @@ def add_scale_bar(
 def get_image_collection_video(
     ee_ic,
     out_dir,
+    video_filename,
     vis_params,
     show_region,
+    fps,
     grid_interval,
     plot_title,
-    date_format,
-    fig_size,
-    dpi_plot,
-    file_format,
-    north_arrow_color,
-    north_arrow_xy,
-    north_arrow_length,
     scale_bar_length,
-    scale_bar_color,
-    scale_bar_unit,
-    scale_bar_xy,
-    scale_bar_linewidth,
-    scale_bar_fontsize,
-    video_filename,
-    fps,
+    date_format = "YYYY-MM-dd",
+    fig_size = (10.8, 10.8),
+    dpi_plot = 100,
+    file_format = "png",
+    north_arrow_color = "black",
+    north_arrow_xy = (0.1, 0.1),
+    north_arrow_length = 0.1,
+    scale_bar_color = "black",
+    scale_bar_unit = "km",
+    scale_bar_xy = (0.5, 0.05),
+    scale_bar_linewidth = 3,
+    scale_bar_fontsize = 20
 ):
     """Download all the images in an image collection and use them to generate a video
-
     Args:
-
         ee_ic (object): ee.ImageCollection
         out_dir (str): The output directory of images and video.
+        video_filename (str): The name of the video file.
         vis_params (dict): Visualization parameters as a dictionary.
         show_region (list | tuple): Geospatial region of the image to render in format [E,S,W,N].
+        fps (int): Video frames per second
         grid_interval (float | list[float]): Float specifying an interval at which to create gridlines, units are decimal degrees. lists will be interpreted a [x_interval, y_interval].
         plot_title (str): Plot title.
-        date_format (str): The format of the date that will be located to the right of the plot title.
-        fig_size (tuple): Resize image.
-        dpi_plot (int): The resolution in dots per inch of the plot.
-        file_format (str): Either 'png' or 'jpg'.
-        north_arrow_color (str): North arrow color.
-        north_arrow_xy (tuple): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor.
-        north_arrow_length (float): Length of the north arrow.
         scale_bar_length (int): Length of the scale bar.
-        scale_bar_color (str): Color for the scale bar.
-        scale_bar_unit (str): Length unit for the scale bar.
-        scale_bar_xy (tuple): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor.
-        scale_bar_linewidth (int): Line width of the scale bar.
-        scale_bar_fontsize (int): Text font size.
-        video_filename (str): The name of the video file.
-        fps (int): Video frames per second
+        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html.
+        fig_size (tuple, optional): Resize image.
+        dpi_plot (int, optional): The resolution in dots per inch of the plot.
+        file_format (str, optional): Either 'png' or 'jpg'.
+        north_arrow_color (st, optional): North arrow color.
+        north_arrow_xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor.
+        north_arrow_length (float, optional): Length of the north arrow.
+        scale_bar_color (str, optional): Color for the scale bar.
+        scale_bar_unit (str, optional): Length unit for the scale bar.
+        scale_bar_xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor.
+        scale_bar_linewidth (int, optional): Line width of the scale bar.
+        scale_bar_fontsize (int, optional): Text font size.
 
     """
 
+    out_dir = os.path.abspath(out_dir)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
-
-    out_dir = os.path.join(os.getcwd(), out_dir)
 
     count = int(ee_ic.size().getInfo())
     names = ee_ic.aggregate_array('system:index').getInfo()
     images = ee_ic.toList(count)
 
+    dates = ee_ic.aggregate_array('system:time_start')
+    dates = dates.map(lambda d: ee.Date(d).format(date_format)).getInfo()
+
     # list of file name
     img_list = []
 
-    for i in range(0, count):
+    for (i, date) in zip(range(0, count), dates):
         image = ee.Image(images.get(i))
         name = str(names[i])
         name = name + "." + file_format
@@ -778,8 +782,8 @@ def get_image_collection_video(
 
         # Add title
         ax.set_title(
-            label = plot_title + " " + image.date().format(date_format).getInfo() +  " UTC"+ "\n",
-            fontsize = 15
+            label=plot_title + " " + date + "\n",
+            fontsize=15
         )
 
         # Add scale bar
@@ -802,7 +806,7 @@ def get_image_collection_video(
 
 
     # Video file name
-    output_video_file_name = os.path.join(os.getcwd(), out_dir, video_filename)
+    output_video_file_name = os.path.join(out_dir, video_filename)
 
     frame = cv2.imread(img_list[0])
     height, width, channels = frame.shape
