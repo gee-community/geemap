@@ -242,7 +242,13 @@ class Map(folium.Map):
             )
 
     def add_layer(
-        self, ee_object, vis_params={}, name="Layer untitled", shown=True, opacity=1.0
+        self,
+        ee_object,
+        vis_params={},
+        name="Layer untitled",
+        shown=True,
+        opacity=1.0,
+        **kwargs,
     ):
         """Adds a given EE object to the map as a layer.
 
@@ -304,6 +310,7 @@ class Map(folium.Map):
             control=True,
             show=shown,
             opacity=opacity,
+            **kwargs,
         ).add_to(self)
 
     addLayer = add_layer
@@ -388,6 +395,7 @@ class Map(folium.Map):
         control=True,
         shown=True,
         format="image/png",
+        **kwargs,
     ):
         """Add a WMS layer to the map.
 
@@ -410,6 +418,7 @@ class Map(folium.Map):
                 overlay=overlay,
                 control=control,
                 show=shown,
+                **kwargs,
             ).add_to(self)
         except:
             print("Failed to add the specified WMS TileLayer.")
@@ -424,6 +433,7 @@ class Map(folium.Map):
         shown=True,
         opacity=1.0,
         API_key=None,
+        **kwargs,
     ):
         """Add a XYZ tile layer to the map.
 
@@ -448,6 +458,7 @@ class Map(folium.Map):
                 show=shown,
                 opacity=opacity,
                 API_key=API_key,
+                **kwargs,
             ).add_to(self)
         except:
             print("Failed to add the specified TileLayer.")

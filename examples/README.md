@@ -69,6 +69,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 48. How to add a draggable legend to folium maps (video | [gif](https://i.imgur.com/i2Bye9X.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/48_folium_legend.ipynb))
 49. How to create publication quality maps using cartoee (video | gif | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/49_cartoee_quickstart.ipynb))
 50. How to create publication quality maps with customized projections (video | gif | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/50_cartoee_projections.ipynb))
+51. How to add a colorbar to the map (video | [gif](https://i.imgur.com/VpMq8M9.gif) | [notebook](https://github.com/giswqs/geemap/blob/master/examples/notebooks/51_colorbar.ipynb))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 

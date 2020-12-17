@@ -1217,6 +1217,7 @@ class Map(ipyleaflet.Map):
         transparent=False,
         opacity=1.0,
         shown=True,
+        **kwargs,
     ):
         """Add a WMS layer to the map.
 
@@ -1243,7 +1244,8 @@ class Map(ipyleaflet.Map):
                 format=format,
                 transparent=transparent,
                 opacity=opacity,
-                visible=True
+                visible=True,
+                **kwargs
                 # visible=shown
             )
             self.add_layer(wms_layer)
@@ -1259,8 +1261,8 @@ class Map(ipyleaflet.Map):
             #     self.layers = layers
 
         except Exception as e:
-            print(e)
             print("Failed to add the specified WMS TileLayer.")
+            raise Exception(e)
 
     def add_tile_layer(
         self,
@@ -1269,6 +1271,7 @@ class Map(ipyleaflet.Map):
         attribution="",
         opacity=1.0,
         shown=True,
+        **kwargs,
     ):
         """Adds a TileLayer to the map.
 
@@ -1285,7 +1288,8 @@ class Map(ipyleaflet.Map):
                 name=name,
                 attribution=attribution,
                 opacity=opacity,
-                visible=True
+                visible=True,
+                **kwargs
                 # visible=shown
             )
             self.add_layer(tile_layer)
@@ -1301,8 +1305,8 @@ class Map(ipyleaflet.Map):
             #     self.layers = layers
 
         except Exception as e:
-            print(e)
             print("Failed to add the specified TileLayer.")
+            raise Exception(e)
 
     def add_COG_layer(
         self,
