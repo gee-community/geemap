@@ -5978,3 +5978,46 @@ def num_round(num, decimal=2):
         float: The number with the specified decimal places rounded.
     """
     return round(num, decimal)
+
+
+def png_to_gif(in_dir, out_gif, fps=10, loop=0):
+    """Convert a list of png images to gif. 
+
+    Args:
+        in_dir (str): The input directory containing png images.
+        out_gif (str): The output file path to the gif.
+        fps (int, optional): Frames per second. Defaults to 10.
+        loop (bool, optional): controls how many times the animation repeats. 1 means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+
+    Raises:
+        FileNotFoundError: No png images could be found.
+    """
+    from PIL import Image
+    import glob
+
+    if not out_gif.endswith(".gif"):
+        raise ValueError("The out_gif must be a gif file.")
+    
+    out_gif = os.path.abspath(out_gif)
+
+    out_dir = os.path.dirname(out_gif)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    # Create the frames
+    frames = []
+    imgs = list(glob.glob(os.path.join(in_dir, "*.png")))
+    imgs.sort()
+
+    if len(imgs) == 0:
+        raise FileNotFoundError(f"No png could be found in {in_dir}.")
+
+    for i in imgs:
+        new_frame = Image.open(i)
+        frames.append(new_frame)
+    
+    # Save into a GIF file that loops forever
+    frames[0].save(out_gif, format='GIF',
+                append_images=frames[1:],
+                save_all=True,
+                duration=1000/fps, loop=loop)

@@ -9,7 +9,6 @@ import subprocess
 import numpy as np
 from io import BytesIO
 import matplotlib as mpl
-import matplotlib.pyplot as plt
 from matplotlib import cm, colors
 from collections.abc import Iterable
 
@@ -18,7 +17,6 @@ try:
 
     from PIL import Image
     import cartopy.crs as ccrs
-    import cv2
     from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
     from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
 
@@ -30,8 +28,6 @@ except ImportError:
     print(
         "The easiest way to install cartopy is using conda: conda install -c conda-forge cartopy"
     )
-    print('Installing opencv-python ...')
-    subprocess.check_call(["python", '-m', 'pip', 'install', 'opencv-python'])
 
 
 def check_dependencies():
@@ -656,7 +652,7 @@ def add_scale_bar(
     # vertically at scale bar location
     sbllx = (llx1 + llx0) / 2
     sblly = lly0 + (lly1 - lly0) * xy[1]
-    tmc = ccrs.TransverseMercator(sbllx, sblly)
+    tmc = ccrs.TransverseMercator(sbllx, sblly, approx=True)
     # Get the extent of the plotted area in coordinates in metres
     x0, x1, y0, y1 = ax.get_extent(tmc)
     # Turn the specified scalebar location into coordinates in metres
@@ -700,131 +696,185 @@ def add_scale_bar(
     return
 
 
-
-def get_image_collection_video(
+def get_image_collection_gif(
     ee_ic,
     out_dir,
-    video_filename,
+    out_gif,
     vis_params,
-    show_region,
-    fps,
-    grid_interval,
-    plot_title,
-    scale_bar_length,
-    date_format = "YYYY-MM-dd",
-    fig_size = (10.8, 10.8),
-    dpi_plot = 100,
-    file_format = "png",
-    north_arrow_color = "black",
-    north_arrow_xy = (0.1, 0.1),
-    north_arrow_length = 0.1,
-    scale_bar_color = "black",
-    scale_bar_unit = "km",
-    scale_bar_xy = (0.5, 0.05),
-    scale_bar_linewidth = 3,
-    scale_bar_fontsize = 20
+    region,
+    cmap=None,
+    proj=None,
+    fps=10,
+    mp4=False,
+    grid_interval=(0.1, 0.1),
+    plot_title="Timelapse",
+    date_format="YYYY-MM-dd",
+    fig_size=(10, 10),
+    dpi_plot=100,
+    file_format="png",
+    north_arrow_text="N",
+    north_arrow_xy=(0.1, 0.1),
+    north_arrow_length=0.1,
+    north_arrow_text_color="black",
+    north_arrow_color="black",
+    north_arrow_fontsize=20,
+    north_arrow_width=5,
+    north_arrow_headwidth=15,
+    north_arrow_ha="center",
+    north_arrow_va="center",
+    scale_bar_length=None,
+    scale_bar_xy=(0.5, 0.05),
+    scale_bar_linewidth=3,
+    scale_bar_fontsize=20,
+    scale_bar_color="black",
+    scale_bar_unit="km",
+    scale_bar_ha="center",
+    scale_bar_va="bottom",
+    verbose=True,
 ):
     """Download all the images in an image collection and use them to generate a video
     Args:
         ee_ic (object): ee.ImageCollection
         out_dir (str): The output directory of images and video.
-        video_filename (str): The name of the video file.
+        out_gif (str): The name of the gif file.
         vis_params (dict): Visualization parameters as a dictionary.
-        show_region (list | tuple): Geospatial region of the image to render in format [E,S,W,N].
-        fps (int): Video frames per second
+        region (list | tuple): Geospatial region of the image to render in format [E,S,W,N].
+        fps (int, optional): Video frames per second. Defaults to 10.
+        mp4 (bool, optional): Whether to create mp4 video.
         grid_interval (float | list[float]): Float specifying an interval at which to create gridlines, units are decimal degrees. lists will be interpreted a [x_interval, y_interval].
         plot_title (str): Plot title.
-        scale_bar_length (int): Length of the scale bar.
         date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html.
         fig_size (tuple, optional): Resize image.
         dpi_plot (int, optional): The resolution in dots per inch of the plot.
         file_format (str, optional): Either 'png' or 'jpg'.
-        north_arrow_color (st, optional): North arrow color.
-        north_arrow_xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor.
-        north_arrow_length (float, optional): Length of the north arrow.
-        scale_bar_color (str, optional): Color for the scale bar.
-        scale_bar_unit (str, optional): Length unit for the scale bar.
-        scale_bar_xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor.
-        scale_bar_linewidth (int, optional): Line width of the scale bar.
-        scale_bar_fontsize (int, optional): Text font size.
-
+        north_arrow_text (str, optional): Text for north arrow. Defaults to "N".
+        north_arrow_xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor. Defaults to (0.1, 0.1).
+        north_arrow__length (float, optional): Length of the north arrow. Defaults to 0.1 (10% length of the map).
+        north_arrow_text_color (str, optional): Text color. Defaults to "black".
+        north_arrow__color (str, optional): North arrow color. Defaults to "black".
+        north_arrow_fontsize (int, optional): Text font size. Defaults to 20.
+        north_arrow_width (int, optional): Width of the north arrow. Defaults to 5.
+        north_arrow_headwidth (int, optional): head width of the north arrow. Defaults to 15.
+        north_arrow_ha (str, optional): Horizontal alignment. Defaults to "center".
+        north_arrow_va (str, optional): Vertical alignment. Defaults to "center".
+        scale_bar_length ([type], optional): Length of the scale car. Defaults to None.
+        scale_bar_xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor. Defaults to (0.1, 0.1).
+        scale_bar_linewidth (int, optional): Line width of the scale bar. Defaults to 3.
+        scale_bar_fontsize (int, optional): Text font size. Defaults to 20.
+        scale_bar_color (str, optional): Color for the scale bar. Defaults to "black".
+        scale_bar_unit (str, optional): Length unit for the scale bar. Defaults to "km".
+        scale_bar_ha (str, optional): Horizontal alignment. Defaults to "center".
+        scale_bar_va (str, optional): Vertical alignment. Defaults to "bottom".
     """
+
+    from .geemap import png_to_gif
+
+    import matplotlib.pyplot as plt
 
     out_dir = os.path.abspath(out_dir)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
+    out_gif = os.path.join(out_dir, out_gif)
+
     count = int(ee_ic.size().getInfo())
-    names = ee_ic.aggregate_array('system:index').getInfo()
+    names = ee_ic.aggregate_array("system:index").getInfo()
     images = ee_ic.toList(count)
 
-    dates = ee_ic.aggregate_array('system:time_start')
+    dates = ee_ic.aggregate_array("system:time_start")
     dates = dates.map(lambda d: ee.Date(d).format(date_format)).getInfo()
 
     # list of file name
     img_list = []
 
-    for (i, date) in zip(range(0, count), dates):
+    for i, date in enumerate(dates):
         image = ee.Image(images.get(i))
         name = str(names[i])
         name = name + "." + file_format
         out_img = os.path.join(out_dir, name)
         img_list.append(out_img)
 
+        if verbose:
+            print(f"Downloading {i+1}/{count}: {name} ...")
+
         # Size plot
-        plt.figure(figsize = fig_size)
+        plt.figure(figsize=fig_size)
 
         # Plot image
-        ax = get_map(image, region=show_region, vis_params = vis_params)
+        ax = get_map(image, region=region, vis_params=vis_params, cmap=cmap, proj=proj)
 
         # Add grid
-        add_gridlines(ax, interval = grid_interval, linestyle=":")
+        add_gridlines(ax, interval=grid_interval, linestyle=":")
 
         # Add title
-        ax.set_title(
-            label=plot_title + " " + date + "\n",
-            fontsize=15
-        )
+        ax.set_title(label=plot_title + " " + date + "\n", fontsize=15)
 
         # Add scale bar
         add_scale_bar(
-            ax, scale_bar_length, xy=scale_bar_xy, linewidth = scale_bar_linewidth,
-            color=scale_bar_color, unit=scale_bar_unit, fontsize = scale_bar_fontsize
+            ax,
+            scale_bar_length,
+            scale_bar_xy,
+            scale_bar_linewidth,
+            scale_bar_fontsize,
+            scale_bar_color,
+            scale_bar_unit,
+            scale_bar_ha,
+            scale_bar_va,
         )
         # Add north arrow
         add_north_arrow(
-            ax, 'N', xy=north_arrow_xy, arrow_length= north_arrow_length,
-            text_color = north_arrow_color, arrow_color = north_arrow_color
+            ax,
+            north_arrow_text,
+            north_arrow_xy,
+            north_arrow_length,
+            north_arrow_text_color,
+            north_arrow_color,
+            north_arrow_fontsize,
+            north_arrow_width,
+            north_arrow_headwidth,
+            north_arrow_ha,
+            north_arrow_va,
         )
 
         # Save plot
-        plt.savefig(fname = out_img, dpi = dpi_plot)
-
+        plt.savefig(fname=out_img, dpi=dpi_plot)
 
         plt.clf()
         plt.close()
 
+    out_gif = os.path.abspath(out_gif)
+    png_to_gif(out_dir, out_gif, fps)
+    if verbose:
+        print(f"GIF saved to {out_gif}")
 
-    # Video file name
-    output_video_file_name = os.path.join(out_dir, video_filename)
+    if mp4:
 
-    frame = cv2.imread(img_list[0])
-    height, width, channels = frame.shape
-    frame_size = (width,height)
-    fps_video = fps
+        video_filename = out_gif.replace(".gif", ".mp4")
 
-    # Make mp4
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        try:
+            import cv2
+        except ImportError:
+            print("Installing opencv-python ...")
+            subprocess.check_call(["python", "-m", "pip", "install", "opencv-python"])
+            import cv2
 
-    # Function
-    def convert_frames_to_video(
-        input_list,
-        output_video_file_name,
-        fps_video,
-        frame_size
-    ):
+        # Video file name
+        output_video_file_name = os.path.join(out_dir, video_filename)
 
-        """Convert frames to video
+        frame = cv2.imread(img_list[0])
+        height, width, _ = frame.shape
+        frame_size = (width, height)
+        fps_video = fps
+
+        # Make mp4
+        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+
+        # Function
+        def convert_frames_to_video(
+            input_list, output_video_file_name, fps_video, frame_size
+        ):
+
+            """Convert frames to video
 
             Args:
 
@@ -832,23 +882,25 @@ def get_image_collection_video(
                 output_video_file_name (str): The name of the video file in the image directory.
                 fps_video (int): Video frames per second.
                 frame_size (tuple): Frame size.
-        """
-        out = cv2.VideoWriter(output_video_file_name, fourcc, fps_video, frame_size)
-        num_frames = len(input_list)
+            """
+            out = cv2.VideoWriter(output_video_file_name, fourcc, fps_video, frame_size)
+            num_frames = len(input_list)
 
-        for i in range(num_frames):
-            img_path = input_list[i]
-            img = cv2.imread(img_path)
-            out.write(img)
+            for i in range(num_frames):
+                img_path = input_list[i]
+                img = cv2.imread(img_path)
+                out.write(img)
 
-        out.release()
-        cv2.destroyAllWindows()
+            out.release()
+            cv2.destroyAllWindows()
 
-    # Use function
-    convert_frames_to_video(
-        input_list = img_list,
-        output_video_file_name = output_video_file_name,
-        fps_video= fps_video,
-        frame_size = frame_size
-    )
+        # Use function
+        convert_frames_to_video(
+            input_list=img_list,
+            output_video_file_name=output_video_file_name,
+            fps_video=fps_video,
+            frame_size=frame_size,
+        )
 
+        if verbose:
+            print(f"MP4 saved to {output_video_file_name}")
