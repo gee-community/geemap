@@ -706,33 +706,17 @@ def get_image_collection_gif(
     proj=None,
     fps=10,
     mp4=False,
-    grid_interval=(0.1, 0.1),
-    plot_title="Timelapse",
+    grid_interval=None,
+    plot_title="",
     date_format="YYYY-MM-dd",
     fig_size=(10, 10),
     dpi_plot=100,
     file_format="png",
-    north_arrow_text="N",
-    north_arrow_xy=(0.1, 0.1),
-    north_arrow_length=0.1,
-    north_arrow_text_color="black",
-    north_arrow_color="black",
-    north_arrow_fontsize=20,
-    north_arrow_width=5,
-    north_arrow_headwidth=15,
-    north_arrow_ha="center",
-    north_arrow_va="center",
-    scale_bar_length=None,
-    scale_bar_xy=(0.5, 0.05),
-    scale_bar_linewidth=3,
-    scale_bar_fontsize=20,
-    scale_bar_color="black",
-    scale_bar_unit="km",
-    scale_bar_ha="center",
-    scale_bar_va="bottom",
+    north_arrow_dict={},
+    scale_bar_dict={},
     verbose=True,
 ):
-    """Download all the images in an image collection and use them to generate a video
+    """Download all the images in an image collection and use them to generate a gif/video.
     Args:
         ee_ic (object): ee.ImageCollection
         out_dir (str): The output directory of images and video.
@@ -741,30 +725,15 @@ def get_image_collection_gif(
         region (list | tuple): Geospatial region of the image to render in format [E,S,W,N].
         fps (int, optional): Video frames per second. Defaults to 10.
         mp4 (bool, optional): Whether to create mp4 video.
-        grid_interval (float | list[float]): Float specifying an interval at which to create gridlines, units are decimal degrees. lists will be interpreted a [x_interval, y_interval].
-        plot_title (str): Plot title.
-        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html.
-        fig_size (tuple, optional): Resize image.
+        grid_interval (float | tuple[float]): Float specifying an interval at which to create gridlines, units are decimal degrees. lists will be interpreted a (x_interval, y_interval), such as (0.1, 0.1). Defaults to None.
+        plot_title (str): Plot title. Defaults to "".
+        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to "YYYY-MM-dd".
+        fig_size (tuple, optional): Size of the figure.
         dpi_plot (int, optional): The resolution in dots per inch of the plot.
         file_format (str, optional): Either 'png' or 'jpg'.
-        north_arrow_text (str, optional): Text for north arrow. Defaults to "N".
-        north_arrow_xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor. Defaults to (0.1, 0.1).
-        north_arrow__length (float, optional): Length of the north arrow. Defaults to 0.1 (10% length of the map).
-        north_arrow_text_color (str, optional): Text color. Defaults to "black".
-        north_arrow__color (str, optional): North arrow color. Defaults to "black".
-        north_arrow_fontsize (int, optional): Text font size. Defaults to 20.
-        north_arrow_width (int, optional): Width of the north arrow. Defaults to 5.
-        north_arrow_headwidth (int, optional): head width of the north arrow. Defaults to 15.
-        north_arrow_ha (str, optional): Horizontal alignment. Defaults to "center".
-        north_arrow_va (str, optional): Vertical alignment. Defaults to "center".
-        scale_bar_length ([type], optional): Length of the scale car. Defaults to None.
-        scale_bar_xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor. Defaults to (0.1, 0.1).
-        scale_bar_linewidth (int, optional): Line width of the scale bar. Defaults to 3.
-        scale_bar_fontsize (int, optional): Text font size. Defaults to 20.
-        scale_bar_color (str, optional): Color for the scale bar. Defaults to "black".
-        scale_bar_unit (str, optional): Length unit for the scale bar. Defaults to "km".
-        scale_bar_ha (str, optional): Horizontal alignment. Defaults to "center".
-        scale_bar_va (str, optional): Vertical alignment. Defaults to "bottom".
+        north_arrow_dict (dict, optional). Parameters for the north arrow. See https://geemap.org/cartoee/#geemap.cartoee.add_north_arrow. Defaults to {}.
+        scale_bar_dict (dict, optional): Parameters for the scale bar. See https://geemap.org/cartoee/#geemap.cartoee.add_scale_bar. Defaults. to {}.
+        verbose (bool, optional): Whether or not to print text when the program is running. Defaults to True.
     """
 
     from .geemap import png_to_gif
@@ -804,37 +773,19 @@ def get_image_collection_gif(
         ax = get_map(image, region=region, vis_params=vis_params, cmap=cmap, proj=proj)
 
         # Add grid
-        add_gridlines(ax, interval=grid_interval, linestyle=":")
+        if grid_interval is not None:
+            add_gridlines(ax, interval=grid_interval, linestyle=":")
 
         # Add title
-        ax.set_title(label=plot_title + " " + date + "\n", fontsize=15)
+        if len(plot_title) > 0:
+            ax.set_title(label=plot_title + " " + date + "\n", fontsize=15)
 
         # Add scale bar
-        add_scale_bar(
-            ax,
-            scale_bar_length,
-            scale_bar_xy,
-            scale_bar_linewidth,
-            scale_bar_fontsize,
-            scale_bar_color,
-            scale_bar_unit,
-            scale_bar_ha,
-            scale_bar_va,
-        )
+        if len(scale_bar_dict) > 0:
+            add_scale_bar(ax, **scale_bar_dict)
         # Add north arrow
-        add_north_arrow(
-            ax,
-            north_arrow_text,
-            north_arrow_xy,
-            north_arrow_length,
-            north_arrow_text_color,
-            north_arrow_color,
-            north_arrow_fontsize,
-            north_arrow_width,
-            north_arrow_headwidth,
-            north_arrow_ha,
-            north_arrow_va,
-        )
+        if len(north_arrow_dict) > 0:
+            add_north_arrow(ax, **north_arrow_dict)
 
         # Save plot
         plt.savefig(fname=out_img, dpi=dpi_plot)

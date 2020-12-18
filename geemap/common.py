@@ -1519,7 +1519,7 @@ def get_image_thumbnail(ee_object, out_img, vis_params, dimensions=500, region=N
 
     Args:
         ee_object (object): The ee.Image instance.
-        out_png (str): The output file path to the png thumbnail.
+        out_img (str): The output file path to the png thumbnail.
         vis_params (dict): The visualization parameters. 
         dimensions (int, optional):(a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 500.
         region (object, optional): Geospatial region of the image to render, it may be an ee.Geometry, GeoJSON, or an array of lat/lon points (E,S,W,N). If not set the default is the bounds image. Defaults to None.
