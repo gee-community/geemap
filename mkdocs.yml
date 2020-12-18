@@ -100,6 +100,7 @@ nav:
           - notebooks/46_local_rf_training.ipynb
           - notebooks/47_image_thumbnails.ipynb
           - notebooks/48_folium_legend.ipynb
-          - notebooks/49_cartoee_quickstart.ipynb
-          - notebooks/50_cartoee_projections.ipynb
-          - notebooks/51_colorbar.ipynb
+          - notebooks/49_colorbar.ipynb
+          - notebooks/50_cartoee_quickstart.ipynb
+          - notebooks/51_cartoee_projections.ipynb
+          - notebooks/52_cartoee_gif.ipynb
