@@ -1,0 +1,10 @@
+contact_links:
+    - name: Ask questions
+      url: https://github.com/giswqs/geemap/discussions/categories/q-a
+      about: Please ask and answer questions here.
+    - name: Ideas
+      url: https://github.com/giswqs/geemap/discussions/categories/ideas
+      about: Please share your ideas here.
+    - name: Ask questions from the GEE community
+      url: https://gis.stackexchange.com/questions/tagged/google-earth-engine
+      about: To get answers from questions in the GEE commminuty, please ask and answer questions here.

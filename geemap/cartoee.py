@@ -731,7 +731,7 @@ def get_image_collection_gif(
         fig_size (tuple, optional): Size of the figure.
         dpi_plot (int, optional): The resolution in dots per inch of the plot.
         file_format (str, optional): Either 'png' or 'jpg'.
-        north_arrow_dict (dict, optional). Parameters for the north arrow. See https://geemap.org/cartoee/#geemap.cartoee.add_north_arrow. Defaults to {}.
+        north_arrow_dict (dict, optional): Parameters for the north arrow. See https://geemap.org/cartoee/#geemap.cartoee.add_north_arrow. Defaults to {}.
         scale_bar_dict (dict, optional): Parameters for the scale bar. See https://geemap.org/cartoee/#geemap.cartoee.add_scale_bar. Defaults. to {}.
         verbose (bool, optional): Whether or not to print text when the program is running. Defaults to True.
     """
