@@ -91,7 +91,7 @@ class Map(ipyleaflet.Map):
         if "draw_ctrl" not in kwargs.keys():
             kwargs["draw_ctrl"] = True
         if "search_ctrl" not in kwargs.keys():
-            kwargs["search_ctrl"] = True
+            kwargs["search_ctrl"] = False
         if "measure_ctrl" not in kwargs.keys():
             kwargs["measure_ctrl"] = True
         if "scale_ctrl" not in kwargs.keys():
@@ -559,7 +559,7 @@ class Map(ipyleaflet.Map):
 
         output = widgets.Output(layout={"border": "1px solid black"})
         output_control = WidgetControl(widget=output, position="topright")
-        self.add_control(output_control)
+        # self.add_control(output_control)
 
         def plot_chk_changed(button):
 
@@ -790,6 +790,9 @@ class Map(ipyleaflet.Map):
             latlon = kwargs.get("coordinates")
             if kwargs.get("type") == "click" and self.inspector_checked:
                 self.default_style = {"cursor": "wait"}
+
+                if output_control not in self.controls:
+                    self.add_control(output_control)
 
                 sample_scale = self.getScale()
                 layers = self.ee_layers
