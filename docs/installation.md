@@ -2,8 +2,8 @@
 
 ## Earth Engine Account
 
-To use **geemap**, you must first [sign up](https://earthengine.google.com/signup/) for a [Google Earth Engine](https://earthengine.google.com/) account. 
-You cannot use Google Earth Engine unless your application has been approved. Once you receive the application approval email, you can log in to 
+To use **geemap**, you must first [sign up](https://earthengine.google.com/signup/) for a [Google Earth Engine](https://earthengine.google.com/) account.
+You cannot use Google Earth Engine unless your application has been approved. Once you receive the application approval email, you can log in to
 the [Earth Engine Code Editor](https://code.earthengine.google.com/) to get familiar with the JavaScript API.
 
 ![signup](https://i.imgur.com/ng0FzUT.png)
@@ -55,4 +55,8 @@ To install the development version from GitHub directly within Jupyter notebook 
 
 ## Use Docker
 
-To use geemap in a Docker container, check out this [page](https://hub.docker.com/r/bkavlak/geemap).
+To use geemap in a Docker container, check out the following docker containers with geemap installed.
+
+-   [gee-community/ee-jupyter-contrib](https://github.com/gee-community/ee-jupyter-contrib/tree/master/docker/gcp_ai_deep_learning_platform)
+-   [bkavlak/geemap](https://hub.docker.com/r/bkavlak/geemap)
+-   [giswqs/geemap](https://hub.docker.com/r/giswqs/geemap)
