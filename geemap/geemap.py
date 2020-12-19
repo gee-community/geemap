@@ -7,6 +7,7 @@ import math
 import os
 import time
 import ee
+import ipyevents
 import ipyleaflet
 import ipywidgets as widgets
 from bqplot import pyplot as plt
@@ -243,14 +244,14 @@ class Map(ipyleaflet.Map):
 
         search_results.observe(search_result_change, names="value")
 
-        def search_btn_click(change):
-            if change["new"]:
-                search_widget.children = [search_button, search_result_widget]
-            else:
-                search_widget.children = [search_button]
-                search_result_widget.children = [search_type, search_box]
+        # def search_btn_click(change):
+        #     if change["new"]:
+        #         search_widget.children = [search_button, search_result_widget]
+        #     else:
+        #         search_widget.children = [search_button]
+        #         search_result_widget.children = [search_type, search_box]
 
-        search_button.observe(search_btn_click, "value")
+        # search_button.observe(search_btn_click, "value")
 
         def search_type_changed(change):
             search_box.value = ""
@@ -358,6 +359,21 @@ class Map(ipyleaflet.Map):
 
         search_widget = widgets.HBox()
         search_widget.children = [search_button]
+
+        search_event = ipyevents.Event(
+            source=search_widget, watched_events=["mouseenter", "mouseleave"]
+        )
+
+        def handle_search_event(event):
+
+            if event["type"] == "mouseenter":
+                search_widget.children = [search_button, search_result_widget]
+            elif event["type"] == "mouseleave":
+                search_widget.children = [search_button]
+                search_result_widget.children = [search_type, search_box]
+
+        search_event.on_dom_event(handle_search_event)
+
         data_control = WidgetControl(widget=search_widget, position="topleft")
 
         if kwargs.get("data_ctrl"):
@@ -724,8 +740,32 @@ class Map(ipyleaflet.Map):
         toolbar_button.layout.width = "37px"
         self.toolbar_button = toolbar_button
 
-        def toolbar_btn_click(change):
-            if change["new"]:
+        # def toolbar_btn_click(change):
+        #     if change["new"]:
+        #         toolbar_widget.children = [
+        #             toolbar_button,
+        #             inspector_checkbox,
+        #             plot_checkbox,
+        #             toolbar_grid,
+        #             remove_btn,
+        #         ]
+        #     else:
+        #         toolbar_widget.children = [toolbar_button]
+        #         tool_output.clear_output()
+        #         self.toolbar_reset()
+
+        # toolbar_button.observe(toolbar_btn_click, "value")
+
+        toolbar_widget = widgets.VBox()
+        toolbar_widget.children = [toolbar_button]
+
+        toolbar_event = ipyevents.Event(
+            source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
+        )
+
+        def handle_toolbar_event(event):
+
+            if event["type"] == "mouseenter":
                 toolbar_widget.children = [
                     toolbar_button,
                     inspector_checkbox,
@@ -733,16 +773,13 @@ class Map(ipyleaflet.Map):
                     toolbar_grid,
                     remove_btn,
                 ]
-            else:
+            elif event["type"] == "mouseleave":
                 toolbar_widget.children = [toolbar_button]
-                tool_output.clear_output()
-                self.toolbar_reset()
 
-        toolbar_button.observe(toolbar_btn_click, "value")
+        toolbar_event.on_dom_event(handle_toolbar_event)
 
-        toolbar_widget = widgets.VBox()
-        toolbar_widget.children = [toolbar_button]
         toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
+
         if kwargs.get("toolbar_ctrl"):
             self.add_control(toolbar_control)
 
