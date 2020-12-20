@@ -97,7 +97,7 @@ class Map(ipyleaflet.Map):
         if "scale_ctrl" not in kwargs.keys():
             kwargs["scale_ctrl"] = True
         if "layer_ctrl" not in kwargs.keys():
-            kwargs["layer_ctrl"] = True
+            kwargs["layer_ctrl"] = False
         if "inspector_ctrl" not in kwargs.keys():
             kwargs["inspector_ctrl"] = False
         if "toolbar_ctrl" not in kwargs.keys():
@@ -160,10 +160,13 @@ class Map(ipyleaflet.Map):
         self.toolbar_button = None
 
         # Adds search button and search box
-        search_button = widgets.ToggleButton(
-            value=False, tooltip="Search location/data", icon="globe"
+        search_button = widgets.Button(
+            value=False,
+            tooltip="Search location/data",
+            icon="globe",
+            layout=widgets.Layout(width="28px", height="28px", padding="0px"),
         )
-        search_button.layout.width = "36px"
+        # search_button.layout.width = "36px"
 
         search_type = widgets.ToggleButtons(
             options=["name/address", "lat-lon", "data"],
@@ -683,9 +686,9 @@ class Map(ipyleaflet.Map):
             "mouse-pointer": "pointer",
             "camera": "to_image",
             "info": "identify",
-            "map-marker": "plotting",
+            "signal": "plotting",
         }
-        icons = ["mouse-pointer", "camera", "info", "map-marker"]
+        icons = ["mouse-pointer", "camera", "info", "signal"]
         tooltips = [
             "Default pointer",
             "Save map as HTML or image",
@@ -735,9 +738,12 @@ class Map(ipyleaflet.Map):
             tool.observe(tool_callback, "value")
 
         toolbar_button = widgets.ToggleButton(
-            value=False, tooltip="Toolbar", icon="wrench"
+            value=False,
+            tooltip="Toolbar",
+            icon="wrench",
+            layout=widgets.Layout(width="28px", height="28px", padding="0px"),
         )
-        toolbar_button.layout.width = "37px"
+        # toolbar_button.layout.width = "37px"
         self.toolbar_button = toolbar_button
 
         # def toolbar_btn_click(change):
@@ -756,8 +762,27 @@ class Map(ipyleaflet.Map):
 
         # toolbar_button.observe(toolbar_btn_click, "value")
 
+        layers_button = widgets.ToggleButton(
+            value=False,
+            tooltip="Layers",
+            icon="server",
+            layout=widgets.Layout(height="28px", width="50px"),
+        )
+        # layers_button.layout.width = "40px"
+
         toolbar_widget = widgets.VBox()
         toolbar_widget.children = [toolbar_button]
+
+        toolbar_header = widgets.HBox()
+        toolbar_header.children = [layers_button, toolbar_button]
+
+        toolbar_footer = widgets.VBox()
+        toolbar_footer.children = [
+            inspector_checkbox,
+            plot_checkbox,
+            toolbar_grid,
+            remove_btn,
+        ]
 
         toolbar_event = ipyevents.Event(
             source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
@@ -767,16 +792,109 @@ class Map(ipyleaflet.Map):
 
             if event["type"] == "mouseenter":
                 toolbar_widget.children = [
-                    toolbar_button,
+                    # widgets.HBox([layers_button, toolbar_button]),
+                    toolbar_header,
+                    toolbar_footer,
+                ]
+            elif event["type"] == "mouseleave":
+                toolbar_widget.children = [toolbar_button]
+                toolbar_button.value = False
+                layers_button.value = False
+
+        toolbar_event.on_dom_event(handle_toolbar_event)
+
+        def toolbar_btn_click(change):
+            if change["new"]:
+                # toolbar_footer.children = [inspector_checkbox]
+                # else:
+                toolbar_footer.children = [
                     inspector_checkbox,
                     plot_checkbox,
                     toolbar_grid,
                     remove_btn,
                 ]
-            elif event["type"] == "mouseleave":
-                toolbar_widget.children = [toolbar_button]
+                layers_button.value = False
 
-        toolbar_event.on_dom_event(handle_toolbar_event)
+        toolbar_button.observe(toolbar_btn_click, "value")
+
+        def layers_btn_click(change):
+            if change["new"]:
+
+                layers_hbox = []
+                for layer in self.layers[1:]:
+                    layer_chk = widgets.Checkbox(
+                        value=layer.visible,
+                        description=layer.name,
+                        indent=False,
+                        layout=widgets.Layout(height="18px"),
+                    )
+                    layer_chk.layout.width = "30ex"
+                    layer_opacity = widgets.FloatSlider(
+                        value=layer.opacity,
+                        min=0,
+                        max=1,
+                        step=0.1,
+                        readout=False,
+                        layout=widgets.Layout(width="80px"),
+                    )
+                    layer_settings = widgets.Button(
+                        icon="gear",
+                        layout=widgets.Layout(
+                            width="25px", height="25px", padding="0px"
+                        ),
+                    )
+                    # layer_opacity.layout.width = "80px"
+                    # layer_chk.layout.max_wdith = "15ex"
+                    widgets.jslink((layer_chk, "value"), (layer, "visible"))
+                    widgets.jsdlink((layer_opacity, "value"), (layer, "opacity"))
+                    hbox = widgets.HBox([layer_chk, layer_settings, layer_opacity])
+                    # hbox.layout.margin = "4px"
+                    # hbox.layout.height = "20px"
+                    layers_hbox.append(hbox)
+
+                toolbar_footer.children = layers_hbox
+                toolbar_button.value = False
+            else:
+                toolbar_footer.children = [
+                    inspector_checkbox,
+                    plot_checkbox,
+                    toolbar_grid,
+                    remove_btn,
+                ]
+
+        layers_button.observe(layers_btn_click, "value")
+        # layer_event = ipyevents.Event(
+        #     source=layers_button, watched_events=["mouseenter", "mouseleave"]
+        # )
+
+        # chk = widgets.Checkbox(description="Layer")
+
+        # def handle_layer_event(event):
+
+        #     if event["type"] == "mouseenter":
+        #         toolbar_footer.children = [inspector_checkbox]
+
+        #         # layers_chk = []
+        #         # for layer in self.layers:
+        #         #     layers_chk.append(widgets.Checkbox(description=layer.name))
+
+        #         # toolbar_footer.children = layers_chk
+
+        #         # toolbar_widget.children = [
+        #         #     # widgets.HBox([layers_button, toolbar_button]),
+        #         #     toolbar_header,
+        #         #     toolbar_footer,
+        #         # ]
+        #     elif event["type"] == "mouseleave":
+        #         toolbar_footer.children = [
+        #             inspector_checkbox,
+        #             plot_checkbox,
+        #             toolbar_grid,
+        #             remove_btn,
+        #         ]
+        #         toolbar_widget.children = [toolbar_header, toolbar_footer]
+
+        # layer_event.on_dom_event(handle_layer_event)
 
         toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
 
