@@ -158,6 +158,8 @@ class Map(ipyleaflet.Map):
         self.screenshot = None
         self.toolbar = None
         self.toolbar_button = None
+        self.vis_control = None
+        self.vis_widget = None
 
         # Adds search button and search box
         search_button = widgets.Button(
@@ -891,12 +893,36 @@ class Map(ipyleaflet.Map):
                         readout=False,
                         layout=widgets.Layout(width="80px"),
                     )
-                    layer_settings = widgets.Button(
+                    layer_settings = widgets.ToggleButton(
                         icon="gear",
+                        tooltip=layer.name,
                         layout=widgets.Layout(
                             width="25px", height="25px", padding="0px"
                         ),
                     )
+
+                    def layer_vis_on_click(change):
+                        if change["new"]:
+                            sel_layer = change["owner"].tooltip
+                            change["owner"].value = False
+
+                            if self.vis_widget is None:
+                                self.vis_widget = widgets.Output()
+                            if self.vis_control is None:
+                                vis_control = WidgetControl(
+                                    widget=self.vis_widget, position="topright"
+                                )
+                                self.add_control((vis_control))
+                                self.vis_control = vis_control
+
+                            vis_widget = self.vis_widget
+                            vis_widget.clear_output()
+                            if sel_layer in self.ee_layer_dict.keys():
+                                with vis_widget:
+                                    print(sel_layer)
+
+                    layer_settings.observe(layer_vis_on_click, "value")
+
                     # layer_opacity.layout.width = "80px"
                     # layer_chk.layout.max_wdith = "15ex"
                     widgets.jslink((layer_chk, "value"), (layer, "visible"))
@@ -1245,7 +1271,11 @@ class Map(ipyleaflet.Map):
 
         self.ee_layers.append(ee_object)
         self.ee_layer_names.append(name)
-        self.ee_layer_dict[name] = {"ee_object": ee_object, "ee_layer": tile_layer}
+        self.ee_layer_dict[name] = {
+            "ee_object": ee_object,
+            "ee_layer": tile_layer,
+            "vis_params": vis_params,
+        }
 
         self.add_layer(tile_layer)
 
@@ -2065,10 +2095,10 @@ class Map(ipyleaflet.Map):
             right_layer (str, optional): The right tile layer. Defaults to 'ESRI'.
         """
         try:
-            if self.layer_control in self.controls:
-                self.remove_control(self.layer_control)
-            if self.inspector_control in self.controls:
-                self.remove_control(self.inspector_control)
+            # if self.layer_control in self.controls:
+            #     self.remove_control(self.layer_control)
+            # if self.inspector_control in self.controls:
+            #     self.remove_control(self.inspector_control)
             if left_layer in ee_basemaps.keys():
                 left_layer = ee_basemaps[left_layer]
 
@@ -2223,8 +2253,8 @@ class Map(ipyleaflet.Map):
 
         dropdown.observe(on_click, "value")
         basemap_control = WidgetControl(widget=dropdown, position="topright")
-        if self.inspector_control in self.controls:
-            self.remove_control(self.inspector_control)
+        # if self.inspector_control in self.controls:
+        #     self.remove_control(self.inspector_control)
         # self.remove_control(self.layer_control)
         self.add_control(basemap_control)
 
