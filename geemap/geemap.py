@@ -77,10 +77,10 @@ class Map(ipyleaflet.Map):
             kwargs["measure_ctrl"] = False
             kwargs["scale_ctrl"] = False
             kwargs["layer_ctrl"] = False
-            kwargs["inspector_ctrl"] = False
+            # kwargs["inspector_ctrl"] = False
             kwargs["toolbar_ctrl"] = False
             kwargs["attribution_ctrl"] = False
-            kwargs["remove_ctrl"] = False
+            # kwargs["remove_ctrl"] = False
 
         if "data_ctrl" not in kwargs.keys():
             kwargs["data_ctrl"] = True
@@ -98,14 +98,14 @@ class Map(ipyleaflet.Map):
             kwargs["scale_ctrl"] = True
         if "layer_ctrl" not in kwargs.keys():
             kwargs["layer_ctrl"] = False
-        if "inspector_ctrl" not in kwargs.keys():
-            kwargs["inspector_ctrl"] = False
+        # if "inspector_ctrl" not in kwargs.keys():
+        #     kwargs["inspector_ctrl"] = False
         if "toolbar_ctrl" not in kwargs.keys():
             kwargs["toolbar_ctrl"] = True
         if "attribution_ctrl" not in kwargs.keys():
             kwargs["attribution_ctrl"] = True
-        if "remove_ctrl" not in kwargs.keys():
-            kwargs["remove_ctrl"] = False
+        # if "remove_ctrl" not in kwargs.keys():
+        #     kwargs["remove_ctrl"] = False
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -496,23 +496,23 @@ class Map(ipyleaflet.Map):
         self.draw_control = draw_control
         self.draw_control_lite = draw_control_lite
 
-        remove_btn = widgets.Button(
-            description="",
-            tooltip="Click to clear all drawn features",
-            icon="eraser",
-            button_style="primary",
-        )
-        remove_btn.layout.width = "37px"
-        remove_btn.layout.height = "37px"
-        remove_ctrl = WidgetControl(widget=remove_btn, position="bottomleft")
+        # remove_btn = widgets.Button(
+        #     description="",
+        #     tooltip="Click to clear all drawn features",
+        #     icon="eraser",
+        #     button_style="primary",
+        # )
+        # remove_btn.layout.width = "37px"
+        # remove_btn.layout.height = "37px"
+        # remove_ctrl = WidgetControl(widget=remove_btn, position="bottomleft")
 
-        def remove_btn_clicked(b):
-            self.remove_drawn_features()
+        # def remove_btn_clicked(b):
+        #     self.remove_drawn_features()
 
-        remove_btn.on_click(remove_btn_clicked)
+        # remove_btn.on_click(remove_btn_clicked)
 
-        if kwargs.get("remove_ctrl"):
-            self.add_control(remove_ctrl)
+        # if kwargs.get("remove_ctrl"):
+        #     self.add_control(remove_ctrl)
 
         # Dropdown widget for plotting
         self.plot_dropdown_control = None
@@ -524,89 +524,91 @@ class Map(ipyleaflet.Map):
         self.plot_markers = []
         self.plot_last_click = []
         self.plot_all_clicks = []
+        self.plot_checked = False
+        self.inspector_checked = False
 
-        # Adds Inspector widget
-        inspector_checkbox = widgets.Checkbox(
-            value=False,
-            description="Inspector",
-            indent=False,
-            layout=widgets.Layout(height="18px"),
-        )
-        inspector_checkbox.layout.width = "13ex"
+        # # Adds Inspector widget
+        # inspector_checkbox = widgets.Checkbox(
+        #     value=False,
+        #     description="Inspector",
+        #     indent=False,
+        #     layout=widgets.Layout(height="18px"),
+        # )
+        # inspector_checkbox.layout.width = "13ex"
 
-        # Adds Plot widget
-        plot_checkbox = widgets.Checkbox(
-            value=False,
-            description="Plotting",
-            indent=False,
-        )
-        plot_checkbox.layout.width = "13ex"
-        self.plot_checkbox = plot_checkbox
+        # # Adds Plot widget
+        # plot_checkbox = widgets.Checkbox(
+        #     value=False,
+        #     description="Plotting",
+        #     indent=False,
+        # )
+        # plot_checkbox.layout.width = "13ex"
+        # self.plot_checkbox = plot_checkbox
 
-        chk_widget = widgets.VBox(children=[inspector_checkbox, plot_checkbox])
+        # chk_widget = widgets.VBox(children=[inspector_checkbox, plot_checkbox])
 
-        chk_control = WidgetControl(widget=chk_widget, position="topright")
-        if kwargs.get("inspector_ctrl"):
-            self.add_control(chk_control)
-        self.inspector_control = chk_control
+        # chk_control = WidgetControl(widget=chk_widget, position="topright")
+        # if kwargs.get("inspector_ctrl"):
+        #     self.add_control(chk_control)
+        # self.inspector_control = chk_control
 
-        self.inspector_checked = inspector_checkbox.value
-        self.plot_checked = plot_checkbox.value
+        # self.inspector_checked = inspector_checkbox.value
+        # self.plot_checked = plot_checkbox.value
 
-        def inspect_chk_changed(b):
-            self.inspector_checked = inspector_checkbox.value
-            if not self.inspector_checked:
-                output.clear_output()
+        # def inspect_chk_changed(b):
+        #     self.inspector_checked = inspector_checkbox.value
+        #     if not self.inspector_checked:
+        #         output.clear_output()
 
-        inspector_checkbox.observe(inspect_chk_changed)
+        # inspector_checkbox.observe(inspect_chk_changed)
 
         output = widgets.Output(layout={"border": "1px solid black"})
         output_control = WidgetControl(widget=output, position="topright")
         # self.add_control(output_control)
 
-        def plot_chk_changed(button):
+        # def plot_chk_changed(button):
 
-            if button["name"] == "value" and button["new"]:
-                self.plot_checked = True
-                plot_dropdown_widget = widgets.Dropdown(
-                    options=list(self.ee_raster_layer_names),
-                )
-                plot_dropdown_widget.layout.width = "18ex"
-                self.plot_dropdown_widget = plot_dropdown_widget
-                plot_dropdown_control = WidgetControl(
-                    widget=plot_dropdown_widget, position="topright"
-                )
-                self.plot_dropdown_control = plot_dropdown_control
-                self.add_control(plot_dropdown_control)
-                if self.draw_control in self.controls:
-                    self.remove_control(self.draw_control)
-                self.add_control(self.draw_control_lite)
-            elif button["name"] == "value" and (not button["new"]):
-                self.plot_checked = False
-                plot_dropdown_widget = self.plot_dropdown_widget
-                plot_dropdown_control = self.plot_dropdown_control
-                if plot_dropdown_control in self.controls:
-                    self.remove_control(plot_dropdown_control)
-                del plot_dropdown_widget
-                del plot_dropdown_control
-                if self.plot_control in self.controls:
-                    plot_control = self.plot_control
-                    plot_widget = self.plot_widget
-                    self.remove_control(plot_control)
-                    self.plot_control = None
-                    self.plot_widget = None
-                    del plot_control
-                    del plot_widget
-                if (
-                    self.plot_marker_cluster is not None
-                    and self.plot_marker_cluster in self.layers
-                ):
-                    self.remove_layer(self.plot_marker_cluster)
-                if self.draw_control_lite in self.controls:
-                    self.remove_control(self.draw_control_lite)
-                self.add_control(self.draw_control)
+        #     if button["name"] == "value" and button["new"]:
+        #         self.plot_checked = True
+        #         plot_dropdown_widget = widgets.Dropdown(
+        #             options=list(self.ee_raster_layer_names),
+        #         )
+        #         plot_dropdown_widget.layout.width = "18ex"
+        #         self.plot_dropdown_widget = plot_dropdown_widget
+        #         plot_dropdown_control = WidgetControl(
+        #             widget=plot_dropdown_widget, position="topright"
+        #         )
+        #         self.plot_dropdown_control = plot_dropdown_control
+        #         self.add_control(plot_dropdown_control)
+        #         if self.draw_control in self.controls:
+        #             self.remove_control(self.draw_control)
+        #         self.add_control(self.draw_control_lite)
+        #     elif button["name"] == "value" and (not button["new"]):
+        #         self.plot_checked = False
+        #         plot_dropdown_widget = self.plot_dropdown_widget
+        #         plot_dropdown_control = self.plot_dropdown_control
+        #         if plot_dropdown_control in self.controls:
+        #             self.remove_control(plot_dropdown_control)
+        #         del plot_dropdown_widget
+        #         del plot_dropdown_control
+        #         if self.plot_control in self.controls:
+        #             plot_control = self.plot_control
+        #             plot_widget = self.plot_widget
+        #             self.remove_control(plot_control)
+        #             self.plot_control = None
+        #             self.plot_widget = None
+        #             del plot_control
+        #             del plot_widget
+        #         if (
+        #             self.plot_marker_cluster is not None
+        #             and self.plot_marker_cluster in self.layers
+        #         ):
+        #             self.remove_layer(self.plot_marker_cluster)
+        #         if self.draw_control_lite in self.controls:
+        #             self.remove_control(self.draw_control_lite)
+        #         self.add_control(self.draw_control)
 
-        plot_checkbox.observe(plot_chk_changed)
+        # plot_checkbox.observe(plot_chk_changed)
 
         tool_output = widgets.Output()
         tool_output.clear_output(wait=True)
@@ -683,27 +685,27 @@ class Map(ipyleaflet.Map):
         save_map_widget.children = [save_type, file_chooser]
 
         tools = {
-            "mouse-pointer": "pointer",
-            "camera": "to_image",
-            "info": "identify",
+            "info": "inspector",
             "signal": "plotting",
+            "camera": "to_image",
+            "eraser": "eraser",
         }
-        icons = ["mouse-pointer", "camera", "info", "signal"]
+        icons = ["info", "signal", "camera", "eraser"]
         tooltips = [
-            "Default pointer",
-            "Save map as HTML or image",
             "Inspector",
             "Plotting",
+            "Save map as HTML or image",
+            "Remove all drawn features",
         ]
-        icon_width = "42px"
-        icon_height = "40px"
+        icon_width = "32px"
+        icon_height = "32px"
         n_cols = 2
         n_rows = math.ceil(len(icons) / n_cols)
 
         toolbar_grid = widgets.GridBox(
             children=[
                 widgets.ToggleButton(
-                    layout=widgets.Layout(width="auto", height="auto"),
+                    layout=widgets.Layout(width="auto", height="auto", padding="0px"),
                     button_style="primary",
                     icon=icons[i],
                     tooltip=tooltips[i],
@@ -711,10 +713,11 @@ class Map(ipyleaflet.Map):
                 for i in range(len(icons))
             ],
             layout=widgets.Layout(
-                width="90px",
+                width="70px",
                 grid_template_columns=(icon_width + " ") * 2,
                 grid_template_rows=(icon_height + " ") * n_rows,
                 grid_gap="1px 1px",
+                padding="5px",
             ),
         )
         self.toolbar = toolbar_grid
@@ -730,9 +733,60 @@ class Map(ipyleaflet.Map):
                     with tool_output:
                         tool_output.clear_output()
                         display(save_map_widget)
+                if tools[tool.icon] == "eraser":
+                    self.remove_drawn_features()
+                    tool.value = False
+                if tools[tool.icon] == "inspector":
+                    self.inspector_checked = tool.value
+                    if not self.inspector_checked:
+                        output.clear_output()
+                if tools[tool.icon] == "plotting":
+                    self.plot_checked = True
+                    plot_dropdown_widget = widgets.Dropdown(
+                        options=list(self.ee_raster_layer_names),
+                    )
+                    plot_dropdown_widget.layout.width = "18ex"
+                    self.plot_dropdown_widget = plot_dropdown_widget
+                    plot_dropdown_control = WidgetControl(
+                        widget=plot_dropdown_widget, position="topright"
+                    )
+                    self.plot_dropdown_control = plot_dropdown_control
+                    self.add_control(plot_dropdown_control)
+                    if self.draw_control in self.controls:
+                        self.remove_control(self.draw_control)
+                    self.add_control(self.draw_control_lite)
             else:
-                tool_output.clear_output()
-                save_map_widget.children = [save_type, file_chooser]
+                tool = change["owner"]
+                if tools[tool.icon] == "to_image":
+                    tool_output.clear_output()
+                    save_map_widget.children = [save_type, file_chooser]
+                if tools[tool.icon] == "inspector":
+                    output.clear_output()
+                    self.inspector_checked = False
+                elif tools[tool.icon] == "plotting":
+                    self.plot_checked = False
+                    plot_dropdown_widget = self.plot_dropdown_widget
+                    plot_dropdown_control = self.plot_dropdown_control
+                    if plot_dropdown_control in self.controls:
+                        self.remove_control(plot_dropdown_control)
+                    del plot_dropdown_widget
+                    del plot_dropdown_control
+                    if self.plot_control in self.controls:
+                        plot_control = self.plot_control
+                        plot_widget = self.plot_widget
+                        self.remove_control(plot_control)
+                        self.plot_control = None
+                        self.plot_widget = None
+                        del plot_control
+                        del plot_widget
+                    if (
+                        self.plot_marker_cluster is not None
+                        and self.plot_marker_cluster in self.layers
+                    ):
+                        self.remove_layer(self.plot_marker_cluster)
+                    if self.draw_control_lite in self.controls:
+                        self.remove_control(self.draw_control_lite)
+                    self.add_control(self.draw_control)
 
         for tool in toolbar_grid.children:
             tool.observe(tool_callback, "value")
@@ -766,7 +820,7 @@ class Map(ipyleaflet.Map):
             value=False,
             tooltip="Layers",
             icon="server",
-            layout=widgets.Layout(height="28px", width="50px"),
+            layout=widgets.Layout(height="28px", width="38px"),
         )
         # layers_button.layout.width = "40px"
 
@@ -778,10 +832,10 @@ class Map(ipyleaflet.Map):
 
         toolbar_footer = widgets.VBox()
         toolbar_footer.children = [
-            inspector_checkbox,
-            plot_checkbox,
+            # inspector_checkbox,
+            # plot_checkbox,
             toolbar_grid,
-            remove_btn,
+            # remove_btn,
         ]
 
         toolbar_event = ipyevents.Event(
@@ -808,10 +862,10 @@ class Map(ipyleaflet.Map):
                 # toolbar_footer.children = [inspector_checkbox]
                 # else:
                 toolbar_footer.children = [
-                    inspector_checkbox,
-                    plot_checkbox,
+                    # inspector_checkbox,
+                    # plot_checkbox,
                     toolbar_grid,
-                    remove_btn,
+                    # remove_btn,
                 ]
                 layers_button.value = False
 
@@ -828,7 +882,7 @@ class Map(ipyleaflet.Map):
                         indent=False,
                         layout=widgets.Layout(height="18px"),
                     )
-                    layer_chk.layout.width = "30ex"
+                    layer_chk.layout.width = "25ex"
                     layer_opacity = widgets.FloatSlider(
                         value=layer.opacity,
                         min=0,
@@ -847,7 +901,10 @@ class Map(ipyleaflet.Map):
                     # layer_chk.layout.max_wdith = "15ex"
                     widgets.jslink((layer_chk, "value"), (layer, "visible"))
                     widgets.jsdlink((layer_opacity, "value"), (layer, "opacity"))
-                    hbox = widgets.HBox([layer_chk, layer_settings, layer_opacity])
+                    hbox = widgets.HBox(
+                        [layer_chk, layer_settings, layer_opacity],
+                        layout=widgets.Layout(padding="4px"),
+                    )
                     # hbox.layout.margin = "4px"
                     # hbox.layout.height = "20px"
                     layers_hbox.append(hbox)
@@ -856,10 +913,10 @@ class Map(ipyleaflet.Map):
                 toolbar_button.value = False
             else:
                 toolbar_footer.children = [
-                    inspector_checkbox,
-                    plot_checkbox,
+                    # inspector_checkbox,
+                    # plot_checkbox,
                     toolbar_grid,
-                    remove_btn,
+                    # remove_btn,
                 ]
 
         layers_button.observe(layers_btn_click, "value")
@@ -1166,8 +1223,7 @@ class Map(ipyleaflet.Map):
             attribution="Google Earth Engine",
             name=name,
             opacity=opacity,
-            visible=True
-            # visible=shown
+            visible=shown,
         )
 
         layer = self.find_layer(name=name)
@@ -1402,9 +1458,7 @@ class Map(ipyleaflet.Map):
                 format=format,
                 transparent=transparent,
                 opacity=opacity,
-                visible=True,
-                **kwargs
-                # visible=shown
+                visible=shown ** kwargs,
             )
             self.add_layer(wms_layer)
 
@@ -1446,9 +1500,7 @@ class Map(ipyleaflet.Map):
                 name=name,
                 attribution=attribution,
                 opacity=opacity,
-                visible=True,
-                **kwargs
-                # visible=shown
+                visible=shown ** kwargs,
             )
             self.add_layer(tile_layer)
 
@@ -2990,7 +3042,6 @@ def ee_tile_layer(
         attribution="Google Earth Engine",
         name=name,
         opacity=opacity,
-        visible=True
-        # visible=shown
+        visible=shown,
     )
     return tile_layer
