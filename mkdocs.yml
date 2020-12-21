@@ -105,3 +105,4 @@ nav:
           - notebooks/50_cartoee_quickstart.ipynb
           - notebooks/51_cartoee_projections.ipynb
           - notebooks/52_cartoee_gif.ipynb
+          - notebooks/53_layer_vis.ipynb

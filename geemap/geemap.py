@@ -36,12 +36,11 @@ class Map(ipyleaflet.Map):
         if kwargs["ee_initialize"]:
             ee_initialize()
 
-        # Default map center location and zoom level
+        # Default map center location (lat, lon) and zoom level
         latlon = [40, -100]
         zoom = 4
 
         # Interchangeable parameters between ipyleaflet and folium
-
         if "height" not in kwargs.keys():
             kwargs["height"] = "550px"
         if "location" in kwargs.keys():
@@ -77,10 +76,8 @@ class Map(ipyleaflet.Map):
             kwargs["measure_ctrl"] = False
             kwargs["scale_ctrl"] = False
             kwargs["layer_ctrl"] = False
-            # kwargs["inspector_ctrl"] = False
             kwargs["toolbar_ctrl"] = False
             kwargs["attribution_ctrl"] = False
-            # kwargs["remove_ctrl"] = False
 
         if "data_ctrl" not in kwargs.keys():
             kwargs["data_ctrl"] = True
@@ -98,14 +95,10 @@ class Map(ipyleaflet.Map):
             kwargs["scale_ctrl"] = True
         if "layer_ctrl" not in kwargs.keys():
             kwargs["layer_ctrl"] = False
-        # if "inspector_ctrl" not in kwargs.keys():
-        #     kwargs["inspector_ctrl"] = False
         if "toolbar_ctrl" not in kwargs.keys():
             kwargs["toolbar_ctrl"] = True
         if "attribution_ctrl" not in kwargs.keys():
             kwargs["attribution_ctrl"] = True
-        # if "remove_ctrl" not in kwargs.keys():
-        #     kwargs["remove_ctrl"] = False
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -113,9 +106,8 @@ class Map(ipyleaflet.Map):
 
         self.clear_controls()
 
-        self.draw_count = (
-            0  # The number of shapes drawn by the user using the DrawControl
-        )
+        # The number of shapes drawn by the user using the DrawControl
+        self.draw_count = 0
         # The list of Earth Engine Geometry objects converted from geojson
         self.draw_features = []
         # The Earth Engine Geometry object converted from the last drawn feature
@@ -168,7 +160,6 @@ class Map(ipyleaflet.Map):
             icon="globe",
             layout=widgets.Layout(width="28px", height="28px", padding="0px"),
         )
-        # search_button.layout.width = "36px"
 
         search_type = widgets.ToggleButtons(
             options=["name/address", "lat-lon", "data"],
@@ -183,8 +174,8 @@ class Map(ipyleaflet.Map):
         search_box = widgets.Text(
             placeholder="Search by place name or address",
             tooltip="Search location",
+            layout=widgets.Layout(width="340px"),
         )
-        search_box.layout.width = "340px"
 
         search_output = widgets.Output(
             layout={"max_width": "340px", "max_height": "250px", "overflow": "scroll"}
@@ -192,18 +183,16 @@ class Map(ipyleaflet.Map):
 
         search_results = widgets.RadioButtons()
 
-        assets_dropdown = widgets.Dropdown()
-        assets_dropdown.layout.min_width = "279px"
-        assets_dropdown.layout.max_width = "279px"
-        assets_dropdown.options = []
+        assets_dropdown = widgets.Dropdown(
+            options=[], layout=widgets.Layout(min_width="279px", max_width="279px")
+        )
 
         import_btn = widgets.Button(
             description="import",
             button_style="primary",
             tooltip="Click to import the selected asset",
+            layout=widgets.Layout(min_width="57px", max_width="57px"),
         )
-        import_btn.layout.min_width = "57px"
-        import_btn.layout.max_width = "57px"
 
         def import_btn_clicked(b):
             if assets_dropdown.value != "":
@@ -249,15 +238,6 @@ class Map(ipyleaflet.Map):
 
         search_results.observe(search_result_change, names="value")
 
-        # def search_btn_click(change):
-        #     if change["new"]:
-        #         search_widget.children = [search_button, search_result_widget]
-        #     else:
-        #         search_widget.children = [search_button]
-        #         search_result_widget.children = [search_type, search_box]
-
-        # search_button.observe(search_btn_click, "value")
-
         def search_type_changed(change):
             search_box.value = ""
             search_output.clear_output()
@@ -285,7 +265,6 @@ class Map(ipyleaflet.Map):
         def search_box_callback(text):
 
             if text.value != "":
-
                 if search_type.value == "name/address":
                     g = geocode(text.value)
                 elif search_type.value == "lat-lon":
@@ -322,7 +301,6 @@ class Map(ipyleaflet.Map):
                         html_widget.value = ee_data_html(ee_assets[0])
                     with search_output:
                         display(html_widget)
-
                     self.default_style = {"cursor": "default"}
 
                     return
@@ -359,11 +337,8 @@ class Map(ipyleaflet.Map):
 
         search_box.on_submit(search_box_callback)
 
-        search_result_widget = widgets.VBox()
-        search_result_widget.children = [search_type, search_box]
-
-        search_widget = widgets.HBox()
-        search_widget.children = [search_button]
+        search_result_widget = widgets.VBox([search_type, search_box])
+        search_widget = widgets.HBox([search_button])
 
         search_event = ipyevents.Event(
             source=search_widget, watched_events=["mouseenter", "mouseleave"]
@@ -449,13 +424,11 @@ class Map(ipyleaflet.Map):
             edit=False,
             remove=False,
         )
-        # Handles draw events
 
+        # Handles draw events
         def handle_draw(target, action, geo_json):
             try:
-                # print(geo_json)
                 # geo_json = adjust_longitude(geo_json)
-                # print(geo_json)
                 self.roi_start = True
                 self.draw_count += 1
                 geom = geojson_to_ee(geo_json, False)
@@ -476,14 +449,10 @@ class Map(ipyleaflet.Map):
                 else:
                     self.substitute_layer(self.draw_layer, ee_draw_layer)
                     self.draw_layer = ee_draw_layer
-
                 draw_control.clear()
-
                 self.roi_end = True
                 self.roi_start = False
             except Exception as e:
-                print(e)
-                print("There was an error creating Earth Engine Feature.")
                 self.draw_count = 0
                 self.draw_features = []
                 self.draw_last_feature = None
@@ -491,6 +460,8 @@ class Map(ipyleaflet.Map):
                 self.user_roi = None
                 self.roi_start = False
                 self.roi_end = False
+                print("There was an error creating Earth Engine Feature.")
+                raise Exception(e)
 
         draw_control.on_draw(handle_draw)
         if kwargs.get("draw_ctrl"):
@@ -498,29 +469,10 @@ class Map(ipyleaflet.Map):
         self.draw_control = draw_control
         self.draw_control_lite = draw_control_lite
 
-        # remove_btn = widgets.Button(
-        #     description="",
-        #     tooltip="Click to clear all drawn features",
-        #     icon="eraser",
-        #     button_style="primary",
-        # )
-        # remove_btn.layout.width = "37px"
-        # remove_btn.layout.height = "37px"
-        # remove_ctrl = WidgetControl(widget=remove_btn, position="bottomleft")
-
-        # def remove_btn_clicked(b):
-        #     self.remove_drawn_features()
-
-        # remove_btn.on_click(remove_btn_clicked)
-
-        # if kwargs.get("remove_ctrl"):
-        #     self.add_control(remove_ctrl)
-
         # Dropdown widget for plotting
         self.plot_dropdown_control = None
         self.plot_dropdown_widget = None
         self.plot_options = {}
-
         self.plot_marker_cluster = MarkerCluster(name="Marker Cluster")
         self.plot_coordinates = []
         self.plot_markers = []
@@ -529,92 +481,10 @@ class Map(ipyleaflet.Map):
         self.plot_checked = False
         self.inspector_checked = False
 
-        # # Adds Inspector widget
-        # inspector_checkbox = widgets.Checkbox(
-        #     value=False,
-        #     description="Inspector",
-        #     indent=False,
-        #     layout=widgets.Layout(height="18px"),
-        # )
-        # inspector_checkbox.layout.width = "13ex"
-
-        # # Adds Plot widget
-        # plot_checkbox = widgets.Checkbox(
-        #     value=False,
-        #     description="Plotting",
-        #     indent=False,
-        # )
-        # plot_checkbox.layout.width = "13ex"
-        # self.plot_checkbox = plot_checkbox
-
-        # chk_widget = widgets.VBox(children=[inspector_checkbox, plot_checkbox])
-
-        # chk_control = WidgetControl(widget=chk_widget, position="topright")
-        # if kwargs.get("inspector_ctrl"):
-        #     self.add_control(chk_control)
-        # self.inspector_control = chk_control
-
-        # self.inspector_checked = inspector_checkbox.value
-        # self.plot_checked = plot_checkbox.value
-
-        # def inspect_chk_changed(b):
-        #     self.inspector_checked = inspector_checkbox.value
-        #     if not self.inspector_checked:
-        #         output.clear_output()
-
-        # inspector_checkbox.observe(inspect_chk_changed)
-
         output = widgets.Output(layout={"border": "1px solid black"})
         output_control = WidgetControl(widget=output, position="topright")
-        # self.add_control(output_control)
-
-        # def plot_chk_changed(button):
-
-        #     if button["name"] == "value" and button["new"]:
-        #         self.plot_checked = True
-        #         plot_dropdown_widget = widgets.Dropdown(
-        #             options=list(self.ee_raster_layer_names),
-        #         )
-        #         plot_dropdown_widget.layout.width = "18ex"
-        #         self.plot_dropdown_widget = plot_dropdown_widget
-        #         plot_dropdown_control = WidgetControl(
-        #             widget=plot_dropdown_widget, position="topright"
-        #         )
-        #         self.plot_dropdown_control = plot_dropdown_control
-        #         self.add_control(plot_dropdown_control)
-        #         if self.draw_control in self.controls:
-        #             self.remove_control(self.draw_control)
-        #         self.add_control(self.draw_control_lite)
-        #     elif button["name"] == "value" and (not button["new"]):
-        #         self.plot_checked = False
-        #         plot_dropdown_widget = self.plot_dropdown_widget
-        #         plot_dropdown_control = self.plot_dropdown_control
-        #         if plot_dropdown_control in self.controls:
-        #             self.remove_control(plot_dropdown_control)
-        #         del plot_dropdown_widget
-        #         del plot_dropdown_control
-        #         if self.plot_control in self.controls:
-        #             plot_control = self.plot_control
-        #             plot_widget = self.plot_widget
-        #             self.remove_control(plot_control)
-        #             self.plot_control = None
-        #             self.plot_widget = None
-        #             del plot_control
-        #             del plot_widget
-        #         if (
-        #             self.plot_marker_cluster is not None
-        #             and self.plot_marker_cluster in self.layers
-        #         ):
-        #             self.remove_layer(self.plot_marker_cluster)
-        #         if self.draw_control_lite in self.controls:
-        #             self.remove_control(self.draw_control_lite)
-        #         self.add_control(self.draw_control)
-
-        # plot_checkbox.observe(plot_chk_changed)
-
         tool_output = widgets.Output()
         tool_output.clear_output(wait=True)
-
         save_map_widget = widgets.VBox()
 
         save_type = widgets.ToggleButtons(
@@ -626,15 +496,16 @@ class Map(ipyleaflet.Map):
             ],
         )
 
-        # download_dir = os.getcwd()
         file_chooser = FileChooser(os.getcwd())
         file_chooser.default_filename = "my_map.html"
         file_chooser.use_dir_icons = False
 
         ok_cancel = widgets.ToggleButtons(
-            options=["OK", "Cancel"], tooltips=["OK", "Cancel"], button_style="primary"
+            value=None,
+            options=["OK", "Cancel"],
+            tooltips=["OK", "Cancel"],
+            button_style="primary",
         )
-        ok_cancel.value = None
 
         def save_type_changed(change):
             ok_cancel.value = None
@@ -649,7 +520,6 @@ class Map(ipyleaflet.Map):
             save_map_widget.children = [save_type, file_chooser]
 
         def chooser_callback(chooser):
-            # file_chooser.default_path = os.getcwd()
             save_map_widget.children = [save_type, file_chooser, ok_cancel]
 
         def ok_cancel_clicked(change):
@@ -799,24 +669,7 @@ class Map(ipyleaflet.Map):
             icon="wrench",
             layout=widgets.Layout(width="28px", height="28px", padding="0px"),
         )
-        # toolbar_button.layout.width = "37px"
         self.toolbar_button = toolbar_button
-
-        # def toolbar_btn_click(change):
-        #     if change["new"]:
-        #         toolbar_widget.children = [
-        #             toolbar_button,
-        #             inspector_checkbox,
-        #             plot_checkbox,
-        #             toolbar_grid,
-        #             remove_btn,
-        #         ]
-        #     else:
-        #         toolbar_widget.children = [toolbar_button]
-        #         tool_output.clear_output()
-        #         self.toolbar_reset()
-
-        # toolbar_button.observe(toolbar_btn_click, "value")
 
         layers_button = widgets.ToggleButton(
             value=False,
@@ -824,21 +677,13 @@ class Map(ipyleaflet.Map):
             icon="server",
             layout=widgets.Layout(height="28px", width="38px"),
         )
-        # layers_button.layout.width = "40px"
 
         toolbar_widget = widgets.VBox()
         toolbar_widget.children = [toolbar_button]
-
         toolbar_header = widgets.HBox()
         toolbar_header.children = [layers_button, toolbar_button]
-
         toolbar_footer = widgets.VBox()
-        toolbar_footer.children = [
-            # inspector_checkbox,
-            # plot_checkbox,
-            toolbar_grid,
-            # remove_btn,
-        ]
+        toolbar_footer.children = [toolbar_grid]
 
         toolbar_event = ipyevents.Event(
             source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
@@ -847,11 +692,7 @@ class Map(ipyleaflet.Map):
         def handle_toolbar_event(event):
 
             if event["type"] == "mouseenter":
-                toolbar_widget.children = [
-                    # widgets.HBox([layers_button, toolbar_button]),
-                    toolbar_header,
-                    toolbar_footer,
-                ]
+                toolbar_widget.children = [toolbar_header, toolbar_footer]
             elif event["type"] == "mouseleave":
                 toolbar_widget.children = [toolbar_button]
                 toolbar_button.value = False
@@ -861,14 +702,7 @@ class Map(ipyleaflet.Map):
 
         def toolbar_btn_click(change):
             if change["new"]:
-                # toolbar_footer.children = [inspector_checkbox]
-                # else:
-                toolbar_footer.children = [
-                    # inspector_checkbox,
-                    # plot_checkbox,
-                    toolbar_grid,
-                    # remove_btn,
-                ]
+                toolbar_footer.children = [toolbar_grid]
                 layers_button.value = False
 
         toolbar_button.observe(toolbar_btn_click, "value")
@@ -877,7 +711,6 @@ class Map(ipyleaflet.Map):
             if change["new"]:
 
                 layers_hbox = []
-
                 all_layers_chk = widgets.Checkbox(
                     value=False,
                     description="All layers on/off",
@@ -945,73 +778,24 @@ class Map(ipyleaflet.Map):
                                     if self.vis_control in self.controls:
                                         self.remove_control(self.vis_control)
                                     self.vis_control = None
-
                             change["owner"].value = False
-
-                            # vis_widget = self.vis_widget
-                            # vis_widget.clear_output()
-                            # if layer_name in self.ee_layer_dict.keys():
-                            #     with vis_widget:
-                            #         print(layer_name)
 
                     layer_settings.observe(layer_vis_on_click, "value")
 
-                    # layer_opacity.layout.width = "80px"
-                    # layer_chk.layout.max_wdith = "15ex"
                     widgets.jslink((layer_chk, "value"), (layer, "visible"))
                     widgets.jsdlink((layer_opacity, "value"), (layer, "opacity"))
                     hbox = widgets.HBox(
                         [layer_chk, layer_settings, layer_opacity],
                         layout=widgets.Layout(padding="0px 8px 0px 8px"),
                     )
-                    # hbox.layout.margin = "4px"
-                    # hbox.layout.height = "20px"
                     layers_hbox.append(hbox)
 
                 toolbar_footer.children = layers_hbox
                 toolbar_button.value = False
             else:
-                toolbar_footer.children = [
-                    # inspector_checkbox,
-                    # plot_checkbox,
-                    toolbar_grid,
-                    # remove_btn,
-                ]
+                toolbar_footer.children = [toolbar_grid]
 
         layers_button.observe(layers_btn_click, "value")
-        # layer_event = ipyevents.Event(
-        #     source=layers_button, watched_events=["mouseenter", "mouseleave"]
-        # )
-
-        # chk = widgets.Checkbox(description="Layer")
-
-        # def handle_layer_event(event):
-
-        #     if event["type"] == "mouseenter":
-        #         toolbar_footer.children = [inspector_checkbox]
-
-        #         # layers_chk = []
-        #         # for layer in self.layers:
-        #         #     layers_chk.append(widgets.Checkbox(description=layer.name))
-
-        #         # toolbar_footer.children = layers_chk
-
-        #         # toolbar_widget.children = [
-        #         #     # widgets.HBox([layers_button, toolbar_button]),
-        #         #     toolbar_header,
-        #         #     toolbar_footer,
-        #         # ]
-        #     elif event["type"] == "mouseleave":
-        #         toolbar_footer.children = [
-        #             inspector_checkbox,
-        #             plot_checkbox,
-        #             toolbar_grid,
-        #             remove_btn,
-        #         ]
-        #         toolbar_widget.children = [toolbar_header, toolbar_footer]
-
-        # layer_event.on_dom_event(handle_layer_event)
-
         toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
 
         if kwargs.get("toolbar_ctrl"):
@@ -1024,20 +808,16 @@ class Map(ipyleaflet.Map):
             latlon = kwargs.get("coordinates")
             if kwargs.get("type") == "click" and self.inspector_checked:
                 self.default_style = {"cursor": "wait"}
-
                 if output_control not in self.controls:
                     self.add_control(output_control)
-
                 sample_scale = self.getScale()
                 layers = self.ee_layers
 
                 with output:
-
                     output.clear_output(wait=True)
                     print(
                         f"Point ({latlon[1]:.4f}, {latlon[0]:.4f}) at {int(self.get_scale())}m/px"
                     )
-
                     for index, ee_object in enumerate(layers):
                         xy = ee.Geometry.Point(latlon[::-1])
                         layer_names = self.ee_layer_names
@@ -1216,8 +996,7 @@ class Map(ipyleaflet.Map):
         try:
             self.add_layer(ee_basemaps[mapTypeId])
         except Exception as e:
-            print(e)
-            print(
+            raise ValueError(
                 'Google basemaps can only be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN".'
             )
 
@@ -1335,7 +1114,7 @@ class Map(ipyleaflet.Map):
     addLayer = add_ee_layer
 
     def draw_layer_on_top(self):
-
+        """Move user-drawn feature layer to the top of all layers."""
         draw_layer_index = self.find_layer_index(name="Drawn Features")
         if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
             layers = list(self.layers)
@@ -1433,8 +1212,7 @@ class Map(ipyleaflet.Map):
             #     self.layers = layers
 
         except Exception as e:
-            print(e)
-            print(
+            raise ValueError(
                 "Basemap can only be one of the following:\n  {}".format(
                     "\n  ".join(ee_basemaps.keys())
                 )
@@ -1484,9 +1262,8 @@ class Map(ipyleaflet.Map):
         layer = self.find_layer(name)
         try:
             layer.opacity = value
-            # layer.interact(opacity=(0, 1, 0.1))  # to change layer opacity interactively
         except Exception as e:
-            print(e)
+            raise Exception(e)
 
     def add_wms_layer(
         self,
@@ -1876,8 +1653,8 @@ class Map(ipyleaflet.Map):
                 plt.show()
 
             except Exception as e:
-                print(e)
                 print("Failed to create plot.")
+                raise Exception(e)
 
     def plot_demo(
         self,
@@ -1950,7 +1727,7 @@ class Map(ipyleaflet.Map):
                 )
                 time.sleep(0.3)
             except Exception as e:
-                print(e)
+                raise Exception(e)
 
     def plot_raster(
         self,
@@ -2132,10 +1909,6 @@ class Map(ipyleaflet.Map):
             right_layer (str, optional): The right tile layer. Defaults to 'ESRI'.
         """
         try:
-            # if self.layer_control in self.controls:
-            #     self.remove_control(self.layer_control)
-            # if self.inspector_control in self.controls:
-            #     self.remove_control(self.inspector_control)
             if left_layer in ee_basemaps.keys():
                 left_layer = ee_basemaps[left_layer]
 
@@ -2148,8 +1921,8 @@ class Map(ipyleaflet.Map):
             self.add_control(control)
 
         except Exception as e:
-            print(e)
             print("The provided layers are invalid!")
+            raise ValueError(e)
 
     def ts_inspector(
         self, left_ts, right_ts, left_names, right_names, left_vis={}, right_vis={}
@@ -2275,7 +2048,7 @@ class Map(ipyleaflet.Map):
             self.add_control(split_control)
 
         except Exception as e:
-            print(e)
+            raise Exception(e)
 
     def basemap_demo(self):
         """A demo for using geemap basemaps."""
@@ -2290,9 +2063,6 @@ class Map(ipyleaflet.Map):
 
         dropdown.observe(on_click, "value")
         basemap_control = WidgetControl(widget=dropdown, position="topright")
-        # if self.inspector_control in self.controls:
-        #     self.remove_control(self.inspector_control)
-        # self.remove_control(self.layer_control)
         self.add_control(basemap_control)
 
     def add_legend(
@@ -2323,8 +2093,6 @@ class Map(ipyleaflet.Map):
             pkg_resources.resource_filename("geemap", "geemap.py")
         )
         legend_template = os.path.join(pkg_dir, "data/template/legend.html")
-
-        # print(kwargs['min_height'])
 
         if "min_width" not in kwargs.keys():
             min_width = None
@@ -2482,7 +2250,7 @@ class Map(ipyleaflet.Map):
             self.add_control(legend_control)
 
         except Exception as e:
-            print(e)
+            raise Exception(e)
 
     def add_colorbar(
         self,
@@ -2786,7 +2554,7 @@ class Map(ipyleaflet.Map):
                     display(link2)
 
         except Exception as e:
-            print(e)
+            raise Exception(e)
 
     def to_html(self, outfile, title="My Map", width="100%", height="880px"):
         """Saves the map as a HTML file.
@@ -2835,7 +2603,7 @@ class Map(ipyleaflet.Map):
             self.layout.height = before_height
 
         except Exception as e:
-            print(e)
+            raise Exception(e)
 
     def to_image(self, outfile=None, monitor=1):
         """Saves the map as a PNG or JPG image.
@@ -2890,13 +2658,9 @@ class Map(ipyleaflet.Map):
             #     check_install('xarray_leaflet')
             #     import xarray_leaflet
             # else:
-            print(
+            raise ImportError(
                 "You need to install xarray_leaflet first. See https://github.com/davidbrochart/xarray_leaflet"
             )
-            print(
-                "Try the following to install xarray_leaflet: \n\nconda install -c conda-forge xarray_leaflet"
-            )
-            return
 
         import warnings
         import numpy as np
@@ -3044,6 +2808,14 @@ class Map(ipyleaflet.Map):
                 print("The shapefile has been saved to: {}".format(out_shp))
 
     def create_vis_widget(self, layer_dict):
+        """Create a GUI for changing layer visualization parameters interactively.
+
+        Args:
+            layer_dict (dict): A dict containning information about the layer. It is an element from Map.ee_layer_dict.
+
+        Returns:
+            object: An ipywidget.
+        """
         ee_object = layer_dict["ee_object"]
         ee_layer = layer_dict["ee_layer"]
         vis_params = layer_dict["vis_params"]
@@ -3055,11 +2827,12 @@ class Map(ipyleaflet.Map):
         band_count = 1
         min_value = 0
         max_value = 100
-        sel_min_value = 0
-        sel_max_value = 100
         sel_bands = None
         layer_palette = []
         layer_gamma = 1
+        left_value = 0
+        right_value = 10000
+        full_range = right_value - left_value
 
         if isinstance(ee_object, ee.Image):
             band_names = ee_object.bandNames().getInfo()
@@ -3067,8 +2840,12 @@ class Map(ipyleaflet.Map):
 
             if "min" in vis_params.keys():
                 min_value = vis_params["min"]
+                if min_value < left_value:
+                    left_value = min_value - 0.5 * full_range
             if "max" in vis_params.keys():
                 max_value = vis_params["max"]
+                right_value = 1.5 * max_value
+
             if "gamma" in vis_params.keys():
                 layer_gamma = vis_params["gamma"]
             if "bands" in vis_params.keys():
@@ -3096,13 +2873,11 @@ class Map(ipyleaflet.Map):
             value=band_names[0],
             layout=widgets.Layout(width=dropdown_width),
         )
-
         band2_dropdown = widgets.Dropdown(
             options=band_names,
             value=band_names[0],
             layout=widgets.Layout(width=dropdown_width),
         )
-
         band3_dropdown = widgets.Dropdown(
             options=band_names,
             value=band_names[0],
@@ -3117,19 +2892,16 @@ class Map(ipyleaflet.Map):
             layout=widgets.Layout(width="228px"),
             style={"description_width": "initial"},
         )
-
         add_color = widgets.Button(
             icon="plus",
             tooltip="Add a hex color string to the palette",
             layout=widgets.Layout(width="32px"),
         )
-
         del_color = widgets.Button(
             icon="minus",
             tooltip="Remove a hex color string from the palette",
             layout=widgets.Layout(width="32px"),
         )
-
         palette = widgets.Text(
             value=", ".join(layer_palette),
             placeholder="List of hex code (RRGGBB) separated by comma",
@@ -3147,7 +2919,6 @@ class Map(ipyleaflet.Map):
                     palette.value += ", " + color_picker.value[1:]
 
         def del_color_clicked(b):
-
             if "," in palette.value:
                 items = [item.strip() for item in palette.value.split(",")]
                 palette.value = ", ".join(items[:-1])
@@ -3202,8 +2973,8 @@ class Map(ipyleaflet.Map):
 
         value_range = widgets.FloatRangeSlider(
             value=[min_value, max_value],
-            min=0,
-            max=10000,
+            min=left_value,
+            max=right_value,
             step=0.1,
             description="Range:",
             disabled=False,
@@ -3286,12 +3057,10 @@ class Map(ipyleaflet.Map):
         def apply_btn_clicked(b):
 
             vis = {}
-
             if radio1.index == 0:
                 vis["bands"] = [band1_dropdown.value]
                 if len(palette.value) > 0:
                     vis["palette"] = palette.value.split(",")
-
             else:
                 vis["bands"] = [
                     band1_dropdown.value,
@@ -3302,9 +3071,8 @@ class Map(ipyleaflet.Map):
 
             vis["min"] = value_range.value[0]
             vis["max"] = value_range.value[1]
-            vis["opacity"] = opacity.value
 
-            self.addLayer(ee_object, vis, layer_name)
+            self.addLayer(ee_object, vis, layer_name, True, opacity.value)
 
         def close_btn_clicked(b):
             self.remove_control(self.vis_control)
@@ -3349,7 +3117,6 @@ def ee_tile_layer(
         shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
         opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
     """
-    # ee_initialize()
 
     image = None
 
