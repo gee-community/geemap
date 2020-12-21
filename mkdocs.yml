@@ -15,6 +15,7 @@ theme:
         - navigation.expand
         - tabs
         - search.highlight
+    custom_dir: "docs/overrides"
 
 plugins:
     - search
