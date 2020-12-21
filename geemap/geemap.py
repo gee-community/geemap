@@ -889,7 +889,7 @@ class Map(ipyleaflet.Map):
                         value=layer.opacity,
                         min=0,
                         max=1,
-                        step=0.1,
+                        step=0.01,
                         readout=False,
                         layout=widgets.Layout(width="80px"),
                     )
@@ -903,23 +903,36 @@ class Map(ipyleaflet.Map):
 
                     def layer_vis_on_click(change):
                         if change["new"]:
-                            sel_layer = change["owner"].tooltip
-                            change["owner"].value = False
+                            layer_name = change["owner"].tooltip
+                            if layer_name in self.ee_raster_layer_names:
+                                layer_dict = self.ee_layer_dict[layer_name]
 
-                            if self.vis_widget is None:
-                                self.vis_widget = widgets.Output()
-                            if self.vis_control is None:
+                                if self.vis_widget is not None:
+                                    self.vis_widget = None
+                                self.vis_widget = self.create_vis_widget(layer_dict)
+                                if self.vis_control in self.controls:
+                                    self.remove_control(self.vis_control)
+                                    self.vis_control = None
                                 vis_control = WidgetControl(
                                     widget=self.vis_widget, position="topright"
                                 )
                                 self.add_control((vis_control))
                                 self.vis_control = vis_control
+                            else:
+                                if self.vis_widget is not None:
+                                    self.vis_widget = None
+                                if self.vis_control is not None:
+                                    if self.vis_control in self.controls:
+                                        self.remove_control(self.vis_control)
+                                    self.vis_control = None
 
-                            vis_widget = self.vis_widget
-                            vis_widget.clear_output()
-                            if sel_layer in self.ee_layer_dict.keys():
-                                with vis_widget:
-                                    print(sel_layer)
+                            change["owner"].value = False
+
+                            # vis_widget = self.vis_widget
+                            # vis_widget.clear_output()
+                            # if layer_name in self.ee_layer_dict.keys():
+                            #     with vis_widget:
+                            #         print(layer_name)
 
                     layer_settings.observe(layer_vis_on_click, "value")
 
@@ -929,7 +942,7 @@ class Map(ipyleaflet.Map):
                     widgets.jsdlink((layer_opacity, "value"), (layer, "opacity"))
                     hbox = widgets.HBox(
                         [layer_chk, layer_settings, layer_opacity],
-                        layout=widgets.Layout(padding="4px"),
+                        layout=widgets.Layout(padding="0px 8px 0px 8px"),
                     )
                     # hbox.layout.margin = "4px"
                     # hbox.layout.height = "20px"
@@ -3005,6 +3018,296 @@ class Map(ipyleaflet.Map):
             else:
                 csv_to_shp(out_csv, out_shp)
                 print("The shapefile has been saved to: {}".format(out_shp))
+
+    def create_vis_widget(self, layer_dict):
+        ee_object = layer_dict["ee_object"]
+        ee_layer = layer_dict["ee_layer"]
+        vis_params = layer_dict["vis_params"]
+
+        layer_name = ee_layer.name
+        layer_opacity = ee_layer.opacity
+
+        band_names = None
+        band_count = 1
+        min_value = 0
+        max_value = 100
+        sel_min_value = 0
+        sel_max_value = 100
+        sel_bands = None
+        layer_palette = []
+        layer_gamma = 1
+
+        if isinstance(ee_object, ee.Image):
+            band_names = ee_object.bandNames().getInfo()
+            band_count = len(band_names)
+
+            if "min" in vis_params.keys():
+                min_value = vis_params["min"]
+            if "max" in vis_params.keys():
+                max_value = vis_params["max"]
+            if "gamma" in vis_params.keys():
+                layer_gamma = vis_params["gamma"]
+            if "bands" in vis_params.keys():
+                sel_bands = vis_params["bands"]
+            if "palette" in vis_params.keys():
+                layer_palette = vis_params["palette"]
+
+        vis_widget = widgets.VBox(
+            layout=widgets.Layout(padding="5px 5px 5px 8px", width="330px")
+        )
+        label = widgets.Label(value=f"{layer_name} visualization parameters")
+
+        radio1 = widgets.RadioButtons(
+            options=["1 band (Grayscale)"], layout={"width": "max-content"}
+        )
+        radio2 = widgets.RadioButtons(
+            options=["3 bands (RGB)"], layout={"width": "max-content"}
+        )
+        radio1.index = None
+        radio2.index = None
+
+        dropdown_width = "98px"
+        band1_dropdown = widgets.Dropdown(
+            options=band_names,
+            value=band_names[0],
+            layout=widgets.Layout(width=dropdown_width),
+        )
+
+        band2_dropdown = widgets.Dropdown(
+            options=band_names,
+            value=band_names[0],
+            layout=widgets.Layout(width=dropdown_width),
+        )
+
+        band3_dropdown = widgets.Dropdown(
+            options=band_names,
+            value=band_names[0],
+            layout=widgets.Layout(width=dropdown_width),
+        )
+
+        bands_hbox = widgets.HBox()
+
+        color_picker = widgets.ColorPicker(
+            concise=False,
+            value="#00ff00",
+            layout=widgets.Layout(width="228px"),
+            style={"description_width": "initial"},
+        )
+
+        add_color = widgets.Button(
+            icon="plus",
+            tooltip="Add a hex color string to the palette",
+            layout=widgets.Layout(width="32px"),
+        )
+
+        del_color = widgets.Button(
+            icon="minus",
+            tooltip="Remove a hex color string from the palette",
+            layout=widgets.Layout(width="32px"),
+        )
+
+        palette = widgets.Text(
+            value=", ".join(layer_palette),
+            placeholder="List of hex code (RRGGBB) separated by comma",
+            description="Palette:",
+            tooltip="Enter a list of hex code (RRGGBB) separated by comma",
+            layout=widgets.Layout(width="300px"),
+            style={"description_width": "initial"},
+        )
+
+        def add_color_clicked(b):
+            if color_picker.value is not None:
+                if len(palette.value) == 0:
+                    palette.value = color_picker.value[1:]
+                else:
+                    palette.value += ", " + color_picker.value[1:]
+
+        def del_color_clicked(b):
+
+            if "," in palette.value:
+                items = [item.strip() for item in palette.value.split(",")]
+                palette.value = ", ".join(items[:-1])
+            else:
+                palette.value = ""
+
+        add_color.on_click(add_color_clicked)
+        del_color.on_click(del_color_clicked)
+
+        def radio1_observer(sender):
+            radio2.unobserve(radio2_observer, names=["value"])
+            radio2.index = None
+            radio2.observe(radio2_observer, names=["value"])
+            band1_dropdown.layout.width = "300px"
+            bands_hbox.children = [band1_dropdown]
+            palette.value = ", ".join(layer_palette)
+            palette.disabled = False
+            color_picker.disabled = False
+            add_color.disabled = False
+            del_color.disabled = False
+
+        def radio2_observer(sender):
+            radio1.unobserve(radio1_observer, names=["value"])
+            radio1.index = None
+            radio1.observe(radio1_observer, names=["value"])
+            band1_dropdown.layout.width = dropdown_width
+            bands_hbox.children = [band1_dropdown, band2_dropdown, band3_dropdown]
+            palette.value = ""
+            palette.disabled = True
+            color_picker.disabled = True
+            add_color.disabled = True
+            del_color.disabled = True
+
+        radio1.observe(radio1_observer, names=["value"])
+        radio2.observe(radio2_observer, names=["value"])
+
+        if band_count < 3:
+            radio1.index = 0
+            bands_hbox.children = [band1_dropdown]
+        else:
+            radio2.index = 0
+            if sel_bands is None:
+                sel_bands = band_names[0:3]
+            band1_dropdown.value = sel_bands[0]
+            band2_dropdown.value = sel_bands[1]
+            band3_dropdown.value = sel_bands[2]
+            bands_hbox.children = [band1_dropdown, band2_dropdown, band3_dropdown]
+
+        spacer = widgets.Label(layout=widgets.Layout(width="5px"))
+        v_spacer = widgets.Label(layout=widgets.Layout(height="5px"))
+        radio_btn = widgets.HBox([radio1, spacer, spacer, spacer, radio2])
+
+        value_range = widgets.FloatRangeSlider(
+            value=[min_value, max_value],
+            min=0,
+            max=10000,
+            step=0.1,
+            description="Range:",
+            disabled=False,
+            continuous_update=False,
+            readout=True,
+            readout_format=".1f",
+            layout=widgets.Layout(width="300px"),
+            style={"description_width": "45px"},
+        )
+
+        range_hbox = widgets.HBox([value_range, spacer])
+
+        opacity = widgets.FloatSlider(
+            value=layer_opacity,
+            min=0,
+            max=1,
+            step=0.01,
+            description="Opacity:",
+            continuous_update=False,
+            readout=True,
+            readout_format=".2f",
+            layout=widgets.Layout(width="320px"),
+            style={"description_width": "50px"},
+        )
+
+        gamma = widgets.FloatSlider(
+            value=1,
+            min=0.1,
+            max=10,
+            step=0.01,
+            description="Gamma:",
+            continuous_update=False,
+            readout=True,
+            readout_format=".2f",
+            layout=widgets.Layout(width="320px"),
+            style={"description_width": "50px"},
+        )
+
+        btn_width = "97.5px"
+        import_btn = widgets.Button(
+            description="Import",
+            button_style="primary",
+            tooltip="Import vis params to notebook",
+            layout=widgets.Layout(width=btn_width),
+        )
+
+        apply_btn = widgets.Button(
+            description="Apply",
+            tooltip="Apply vis params to the layer",
+            layout=widgets.Layout(width=btn_width),
+        )
+
+        close_btn = widgets.Button(
+            description="Close",
+            tooltip="Close vis params diaglog",
+            layout=widgets.Layout(width=btn_width),
+        )
+
+        def import_btn_clicked(b):
+
+            vis = {}
+            if radio1.index == 0:
+                vis["bands"] = [band1_dropdown.value]
+                if len(palette.value) > 0:
+                    vis["palette"] = palette.value.split(",")
+            else:
+                vis["bands"] = [
+                    band1_dropdown.value,
+                    band2_dropdown.value,
+                    band3_dropdown.value,
+                ]
+
+            vis["min"] = value_range.value[0]
+            vis["max"] = value_range.value[1]
+            vis["opacity"] = opacity.value
+            vis["gamma"] = gamma.value
+
+            create_code_cell(f"vis_params = {str(vis)}")
+
+        def apply_btn_clicked(b):
+
+            vis = {}
+
+            if radio1.index == 0:
+                vis["bands"] = [band1_dropdown.value]
+                if len(palette.value) > 0:
+                    vis["palette"] = palette.value.split(",")
+
+            else:
+                vis["bands"] = [
+                    band1_dropdown.value,
+                    band2_dropdown.value,
+                    band3_dropdown.value,
+                ]
+                vis["gamma"] = gamma.value
+
+            vis["min"] = value_range.value[0]
+            vis["max"] = value_range.value[1]
+            vis["opacity"] = opacity.value
+
+            self.addLayer(ee_object, vis, layer_name)
+
+        def close_btn_clicked(b):
+            self.remove_control(self.vis_control)
+            self.vis_control.close()
+            self.vis_widget.close()
+
+        import_btn.on_click(import_btn_clicked)
+        apply_btn.on_click(apply_btn_clicked)
+        close_btn.on_click(close_btn_clicked)
+
+        color_hbox = widgets.HBox([color_picker, add_color, del_color])
+        btn_hbox = widgets.HBox([import_btn, apply_btn, close_btn])
+
+        vis_widget.children = [
+            label,
+            radio_btn,
+            bands_hbox,
+            v_spacer,
+            range_hbox,
+            opacity,
+            gamma,
+            palette,
+            color_hbox,
+            btn_hbox,
+        ]
+
+        return vis_widget
 
 
 # The functions below are outside the Map class.
