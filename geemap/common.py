@@ -5257,7 +5257,8 @@ def image_max_value(img, region=None, scale=None):
         'reducer': ee.Reducer.max(),
         'geometry': region,
         'scale': scale,
-        'maxPixels': 1e12
+        'maxPixels': 1e12,
+        'bestEffort': True
     })
     return max_value
 
@@ -5283,7 +5284,8 @@ def image_min_value(img, region=None, scale=None):
         'reducer': ee.Reducer.min(),
         'geometry': region,
         'scale': scale,
-        'maxPixels': 1e12
+        'maxPixels': 1e12,
+        'bestEffort': True
     })
     return min_value
 
@@ -5309,7 +5311,9 @@ def image_mean_value(img, region=None, scale=None):
         'reducer': ee.Reducer.mean(),
         'geometry': region,
         'scale': scale,
-        'maxPixels': 1e12
+        'maxPixels': 1e12,
+        'bestEffort': True
+
     })
     return mean_value
 
@@ -5335,7 +5339,9 @@ def image_std_value(img, region=None, scale=None):
         'reducer': ee.Reducer.stdDev(),
         'geometry': region,
         'scale': scale,
-        'maxPixels': 1e12
+        'maxPixels': 1e12,
+        'bestEffort': True
+
     })
     return std_value
 
@@ -5361,7 +5367,9 @@ def image_sum_value(img, region=None, scale=None):
         'reducer': ee.Reducer.sum(),
         'geometry': region,
         'scale': scale,
-        'maxPixels': 1e12
+        'maxPixels': 1e12,
+        'bestEffort': True
+
     })
     return sum_value
 
