@@ -877,6 +877,26 @@ class Map(ipyleaflet.Map):
             if change["new"]:
 
                 layers_hbox = []
+
+                all_layers_chk = widgets.Checkbox(
+                    value=False,
+                    description="All layers on/off",
+                    indent=False,
+                    layout=widgets.Layout(height="18px", padding="0px 8px 25px 8px"),
+                )
+                all_layers_chk.layout.width = "30ex"
+                layers_hbox.append(all_layers_chk)
+
+                def all_layers_chk_changed(change):
+                    if change["new"]:
+                        for layer in self.layers:
+                            layer.visible = True
+                    else:
+                        for layer in self.layers:
+                            layer.visible = False
+
+                all_layers_chk.observe(all_layers_chk_changed, "value")
+
                 for layer in self.layers[1:]:
                     layer_chk = widgets.Checkbox(
                         value=layer.visible,
@@ -1014,6 +1034,10 @@ class Map(ipyleaflet.Map):
                 with output:
 
                     output.clear_output(wait=True)
+                    print(
+                        f"Point ({latlon[1]:.4f}, {latlon[0]:.4f}) at {int(self.get_scale())}m/px"
+                    )
+
                     for index, ee_object in enumerate(layers):
                         xy = ee.Geometry.Point(latlon[::-1])
                         layer_names = self.ee_layer_names
