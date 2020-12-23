@@ -6,7 +6,7 @@
 
 -   Added GUI for changing layer visualization interactively [#215](https://github.com/giswqs/geemap/issues/215)
 -   Added a toolbar [#215](https://github.com/giswqs/geemap/issues/215)
--   Add color bar support [#223](https://github.com/giswqs/geemap/issues/223)
+-   Added color bar support [#223](https://github.com/giswqs/geemap/issues/223)
 -   Added draggable legend to folium maps [#224](https://github.com/giswqs/geemap/issues/224)
 -   Added `get_image_collection_gif()` function [#225](https://github.com/giswqs/geemap/issues/225)
 -   Added `image_dates()` function [#216 ](https://github.com/giswqs/geemap/issues/216)

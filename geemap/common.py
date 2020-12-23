@@ -6029,3 +6029,22 @@ def png_to_gif(in_dir, out_gif, fps=10, loop=0):
                 append_images=frames[1:],
                 save_all=True,
                 duration=1000/fps, loop=loop)
+
+
+def geometry_type(ee_object):
+    """Get geometry type of an Earth Engine object. 
+
+    Args:
+        ee_object (object): An Earth Engine object. 
+
+    Returns:
+        str: Returns geometry type. One of Point, MultiPoint, LineString, LinearRing, MultiLineString, BBox, Rectangle, Polygon, MultiPolygon. 
+    """
+    if isinstance(ee_object, ee.Geometry):
+        return ee_object.type().getInfo()
+    elif isinstance(ee_object, ee.Feature):
+        return ee_object.geometry().type().getInfo()
+    elif isinstance(ee_object, ee.FeatureCollection):
+        return ee.Feature(ee_object.first()).geometry().type().getInfo()
+    else:
+        raise TypeError("The ee_object must be one of ee.Geometry, ee.Feature, ee.FeatureCollection.")
