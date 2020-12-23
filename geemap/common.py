@@ -6048,3 +6048,91 @@ def geometry_type(ee_object):
         return ee.Feature(ee_object.first()).geometry().type().getInfo()
     else:
         raise TypeError("The ee_object must be one of ee.Geometry, ee.Feature, ee.FeatureCollection.")
+
+
+def vector_styling(ee_object, column, palette, **kwargs):
+    """Add a new property to each feature containing a stylying dictionary. 
+
+    Args:
+        ee_object (object): An ee.FeatureCollection.
+        column (str): The column name to use for styling.
+        palette (list): The palette (e.g., list of colors) to use for styling.
+
+    Raises:
+        ValueError: The provided column name is invalid. 
+        TypeError: The provided palette is invalid.
+        TypeError: The provided ee_object is not an ee.FeatureCollection.
+
+    Returns:
+        object: An ee.FeatureCollection containing the styling attribute.
+    """    
+    if isinstance(ee_object, ee.FeatureCollection):
+
+        prop_names = ee.Feature(ee_object.first()).propertyNames().getInfo()
+        if column not in prop_names:
+            raise ValueError(f"The column name must of one of {', '.join(prop_names)}")
+
+        if not isinstance(palette, list):
+            raise TypeError("The palette must be a list.")
+
+        color = "000000"
+        color_opacity = 1
+        point_size = 3
+        point_shape = "circle"
+        line_width = 2
+        line_type = "solid"
+        fill_color_opacity = 0.66
+
+        if "color" in kwargs.keys():
+            color = kwargs["color"]
+        if "colorOpacity" in kwargs.keys():
+            color_opacity = kwargs["colorOpacity"]
+        if "pointSize" in kwargs.keys():
+            point_size = kwargs["pointSize"]
+        if "pointShape" in kwargs.keys():
+            point_shape = kwargs["pointShape"]
+        if "width" in kwargs.keys():
+            line_width = kwargs["width"]
+        if "lineType" in kwargs.keys():
+            line_type = kwargs["lineType"]
+        if "fillColorOpacity" in kwargs.keys():
+            fill_color_opacity = kwargs["fillColorOpacity"]
+
+        colors = ee.List(
+            [
+                color.strip()
+                + str(hex(int(fill_color_opacity * 255)))[2:].zfill(2)
+                for color in palette
+            ]
+        )
+        arr = ee_object.aggregate_array(column).distinct().sort()
+        fc = ee_object.map(
+            lambda f: f.set({"styleIndex": arr.indexOf(f.get(column))})
+        )
+        step = arr.size().divide(colors.size()).ceil()
+        fc = fc.map(
+            lambda f: f.set(
+                {
+                    "style": {
+                        "color": color
+                        + str(hex(int(color_opacity * 255)))[
+                            2:
+                        ].zfill(2),
+                        "pointSize": point_size,
+                        "pointShape": point_shape,
+                        "width": line_width,
+                        "lineType": line_type,
+                        "fillColor": colors.get(
+                            ee.Number(
+                                ee.Number(f.get("styleIndex")).divide(step)
+                            ).floor()
+                        ),
+                    }
+                }
+            )
+        )
+        
+        return fc
+
+    else:
+        raise TypeError("The ee_object must be an ee.FeatureCollection.")
