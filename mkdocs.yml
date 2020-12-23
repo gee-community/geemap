@@ -107,3 +107,4 @@ nav:
           - notebooks/51_cartoee_projections.ipynb
           - notebooks/52_cartoee_gif.ipynb
           - notebooks/53_layer_vis.ipynb
+          - notebooks/54_vector_vis.ipynb
