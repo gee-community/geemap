@@ -3473,6 +3473,20 @@ class Map(ipyleaflet.Map):
 
             return vis_widget
 
+    def add_styled_vector(
+        self, ee_object, column, palette, layer_name="Untitled", **kwargs
+    ):
+        """Adds a styled vector to the map.
+
+        Args:
+            ee_object (object): An ee.FeatureCollection.
+            column (str): The column name to use for styling.
+            palette (list): The palette (e.g., list of colors) to use for styling.
+            layer_name (str, optional): The name to be used for the new layer. Defaults to "Untitled".
+        """
+        styled_vector = vector_styling(ee_object, column, palette, **kwargs)
+        self.addLayer(styled_vector.style(**{"styleProperty": "style"}), {}, layer_name)
+
 
 # The functions below are outside the Map class.
 
