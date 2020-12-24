@@ -783,6 +783,35 @@ class Map(ipyleaflet.Map):
 
                     layer_settings.observe(layer_vis_on_click, "value")
 
+                    def layer_chk_changed(change):
+
+                        layer_name = change["owner"].description
+                        if layer_name in self.ee_layer_names:
+                            if change["new"]:
+                                if "legend" in self.ee_layer_dict[layer_name].keys():
+                                    legend = self.ee_layer_dict[layer_name]["legend"]
+                                    if legend not in self.controls:
+                                        self.add_control(legend)
+                                if "colorbar" in self.ee_layer_dict[layer_name].keys():
+                                    colorbar = self.ee_layer_dict[layer_name][
+                                        "colorbar"
+                                    ]
+                                    if colorbar not in self.controls:
+                                        self.add_control(colorbar)
+                            else:
+                                if "legend" in self.ee_layer_dict[layer_name].keys():
+                                    legend = self.ee_layer_dict[layer_name]["legend"]
+                                    if legend in self.controls:
+                                        self.remove_control(legend)
+                                if "colorbar" in self.ee_layer_dict[layer_name].keys():
+                                    colorbar = self.ee_layer_dict[layer_name][
+                                        "colorbar"
+                                    ]
+                                    if colorbar in self.controls:
+                                        self.remove_control(colorbar)
+
+                    layer_chk.observe(layer_chk_changed, "value")
+
                     widgets.jslink((layer_chk, "value"), (layer, "visible"))
                     widgets.jsdlink((layer_opacity, "value"), (layer, "opacity"))
                     hbox = widgets.HBox(
@@ -2074,6 +2103,7 @@ class Map(ipyleaflet.Map):
         legend_colors=None,
         position="bottomright",
         builtin_legend=None,
+        layer_name=None,
         **kwargs,
     ):
         """Adds a customized basemap to the map.
@@ -2085,6 +2115,7 @@ class Map(ipyleaflet.Map):
             legend_colors (list, optional): A list of legend colors. Defaults to None.
             position (str, optional): Position of the legend. Defaults to 'bottomright'.
             builtin_legend (str, optional): Name of the builtin legend to add to the map. Defaults to None.
+            layer_name (str, optional): Layer name of the legend to be associated with. Defaults to None.
 
         """
         import pkg_resources
@@ -2229,7 +2260,7 @@ class Map(ipyleaflet.Map):
 
             legend_output_widget = widgets.Output(
                 layout={
-                    "border": "1px solid black",
+                    # "border": "1px solid black",
                     "max_width": max_width,
                     "min_width": min_width,
                     "max_height": max_height,
@@ -2250,6 +2281,9 @@ class Map(ipyleaflet.Map):
             self.legend_control = legend_control
             self.add_control(legend_control)
 
+            if layer_name in self.ee_layer_names:
+                self.ee_layer_dict[layer_name]["legend"] = legend_control
+
         except Exception as e:
             raise Exception(e)
 
@@ -2265,6 +2299,7 @@ class Map(ipyleaflet.Map):
         height="45px",
         transparent_bg=True,
         position="bottomright",
+        layer_name=None,
         **kwargs,
     ):
         """Add a colorbar to the map.
@@ -2280,6 +2315,8 @@ class Map(ipyleaflet.Map):
             height (str, optional): The height of the colormap widget. Defaults to "45px".
             transparent_bg (bool, optional): Whether to use transparent background for the colormap widget. Defaults to True.
             position (str, optional): The position for the colormap widget. Defaults to "bottomright".
+            layer_name (str, optional): Layer name of the colorbar to be associated with. Defaults to None.
+
         """
         from branca.colormap import LinearColormap
 
@@ -2316,6 +2353,9 @@ class Map(ipyleaflet.Map):
 
         self.colorbar = colormap_ctrl
         self.add_control(colormap_ctrl)
+
+        if layer_name in self.ee_layer_names:
+            self.ee_layer_dict[layer_name]["colorbar"] = colormap_ctrl
 
     def remove_colorbar(self):
         """Remove colorbar from the map."""
@@ -2817,6 +2857,9 @@ class Map(ipyleaflet.Map):
         Returns:
             object: An ipywidget.
         """
+
+        import branca.colormap as cmap
+
         ee_object = layer_dict["ee_object"]
         ee_layer = layer_dict["ee_layer"]
         vis_params = layer_dict["vis_params"]
@@ -3232,7 +3275,7 @@ class Map(ipyleaflet.Map):
 
             color_picker = widgets.ColorPicker(
                 concise=False,
-                value="#00ff00",
+                value="#000000",
                 layout=widgets.Layout(width="190px"),
                 style={"description_width": "initial"},
             )
@@ -3298,6 +3341,42 @@ class Map(ipyleaflet.Map):
                 style={"description_width": "initial"},
             )
 
+            classes = widgets.Dropdown(
+                options=["Any"] + [str(i) for i in range(3, 13)],
+                description="Classes:",
+                layout=widgets.Layout(width="115px"),
+                style={"description_width": "initial"},
+            )
+
+            colormap = widgets.Dropdown(
+                options=["viridis"],
+                value="viridis",
+                description="Colormap:",
+                layout=widgets.Layout(width="181px"),
+                style={"description_width": "initial"},
+            )
+
+            def classes_changed(change):
+                if change["new"]:
+                    print(colormap.value)
+
+            classes.observe(classes_changed, "value")
+
+            def colormap_changed(change):
+                if change["new"]:
+                    cmap_colors = [
+                        color[1:]
+                        for color in cmap.step.__dict__["_schemes"][colormap.value]
+                    ]
+                    palette.value = ", ".join(cmap_colors)
+                    colorbar = getattr(cmap.step, colormap.value)
+                    colorbar_output = self.colorbar_widget
+                    with colorbar_output:
+                        colorbar_output.clear_output()
+                        display(colorbar)
+
+            colormap.observe(colormap_changed, "value")
+
             btn_width = "97.5px"
             import_btn = widgets.Button(
                 description="Import",
@@ -3329,13 +3408,27 @@ class Map(ipyleaflet.Map):
 
             style_vbox = widgets.VBox([widgets.HBox([style_chk, compute_label])])
 
+            def vdir(obj):
+                return [x for x in dir(obj) if not x.startswith("_")]
+
             def style_chk_changed(change):
 
                 if change["new"]:
+
+                    self.colorbar_widget = widgets.Output(
+                        layout=widgets.Layout(height="20px")
+                    )
+                    colorbar_ctrl = WidgetControl(
+                        widget=self.colorbar_widget, position="bottomright"
+                    )
+                    self.add_control(colorbar_ctrl)
                     fill_color.disabled = True
+                    colormap.options = vdir(cmap.step)
+                    colormap.value = "viridis"
                     style_vbox.children = [
                         widgets.HBox([style_chk, compute_label]),
                         widgets.HBox([field, field_values]),
+                        widgets.HBox([classes, colormap]),
                         palette,
                         widgets.HBox([color_picker, add_color, del_color, reset_color]),
                     ]

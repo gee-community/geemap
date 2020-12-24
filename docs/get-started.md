@@ -2,7 +2,6 @@
 
 This Get Started guide is intended as a quick way to start programming with **geemap** and the Earth Engine Python API.
 
-
 ## Launch Jupyter notebook
 
     conda activate gee
@@ -34,21 +33,21 @@ This Get Started guide is intended as a quick way to start programming with **ge
     'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5']}
 
     landsat_vis = {
-        'min': 20, 
+        'min': 20,
         'max': 200,
         'bands': ['B4', 'B3', 'B2']
     }
 
 ## Display data on the map
 
-    Map.addLayer(dem, dem_vis, 'STRM DEM', True, 0.5)
+    Map.addLayer(dem, dem_vis, 'SRTM DEM', True, 0.5)
     Map.addLayer(landcover, {}, 'Land cover')
     Map.addLayer(landsat7, landsat_vis, 'Landsat 7')
     Map.addLayer(states, {}, "US States")
 
 ## Interact with the map
 
-Once data are added to the map, you can interact with data using vairous tools, such as the drawing tools, inspector tool, plotting tool. 
-Check the video below on how to use the Inspector tool to query Earth Engine interactively. 
+Once data are added to the map, you can interact with data using vairous tools, such as the drawing tools, inspector tool, plotting tool.
+Check the video below on how to use the Inspector tool to query Earth Engine interactively.
 
 [![geemap](http://img.youtube.com/vi/k477ksjkaXw/0.jpg)](http://www.youtube.com/watch?v=k477ksjkaXw "inspector")
