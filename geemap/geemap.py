@@ -42,7 +42,7 @@ class Map(ipyleaflet.Map):
 
         # Interchangeable parameters between ipyleaflet and folium
         if "height" not in kwargs.keys():
-            kwargs["height"] = "550px"
+            kwargs["height"] = "600px"
         if "location" in kwargs.keys():
             kwargs["center"] = kwargs["location"]
             kwargs.pop("location")
@@ -152,6 +152,8 @@ class Map(ipyleaflet.Map):
         self.toolbar_button = None
         self.vis_control = None
         self.vis_widget = None
+        self.colorbar_ctrl = None
+        self.colorbar_widget = None
 
         # Adds search button and search box
         search_button = widgets.Button(
@@ -3130,9 +3132,10 @@ class Map(ipyleaflet.Map):
                 self.addLayer(ee_object, vis, layer_name, True, opacity.value)
 
             def close_btn_clicked(b):
-                self.remove_control(self.vis_control)
-                self.vis_control.close()
-                self.vis_widget.close()
+                if self.vis_control in self.controls:
+                    self.remove_control(self.vis_control)
+                    self.vis_control.close()
+                    self.vis_widget.close()
 
             import_btn.on_click(import_btn_clicked)
             apply_btn.on_click(apply_btn_clicked)
@@ -3261,7 +3264,7 @@ class Map(ipyleaflet.Map):
                 continuous_update=True,
                 readout=False,
                 #             readout_format=".2f",
-                layout=widgets.Layout(width="115px"),
+                layout=widgets.Layout(width="110px"),
                 style={"description_width": "50px"},
             )
 
@@ -3276,7 +3279,7 @@ class Map(ipyleaflet.Map):
             color_picker = widgets.ColorPicker(
                 concise=False,
                 value="#000000",
-                layout=widgets.Layout(width="190px"),
+                layout=widgets.Layout(width="116px"),
                 style={"description_width": "initial"},
             )
             add_color = widgets.Button(
@@ -3300,6 +3303,22 @@ class Map(ipyleaflet.Map):
                 placeholder="List of hex code (RRGGBB) separated by comma",
                 description="Palette:",
                 tooltip="Enter a list of hex code (RRGGBB) separated by comma",
+                layout=widgets.Layout(width="300px"),
+                style={"description_width": "initial"},
+            )
+
+            legend_title = widgets.Text(
+                value="Legend",
+                description="Legend title:",
+                tooltip="Enter a title for the legend",
+                layout=widgets.Layout(width="300px"),
+                style={"description_width": "initial"},
+            )
+
+            legend_labels = widgets.Text(
+                value="Labels",
+                description="Legend labels:",
+                tooltip="Enter a a list of labels for the legend",
                 layout=widgets.Layout(width="300px"),
                 style={"description_width": "initial"},
             )
@@ -3356,9 +3375,22 @@ class Map(ipyleaflet.Map):
                 style={"description_width": "initial"},
             )
 
+            def vdir(obj):
+                return [x for x in dir(obj) if not x.startswith("_")]
+
             def classes_changed(change):
+                colormap_options = vdir(cmap.step)
                 if change["new"]:
-                    print(colormap.value)
+                    selected = change["owner"].value
+                    if selected == "Any":
+                        colormap.options = colormap_options
+                    else:
+                        sel_class = selected.zfill(2)
+                        colormap.options = [
+                            color
+                            for color in colormap_options
+                            if color[-2:] == sel_class
+                        ]
 
             classes.observe(classes_changed, "value")
 
@@ -3374,6 +3406,12 @@ class Map(ipyleaflet.Map):
                     with colorbar_output:
                         colorbar_output.clear_output()
                         display(colorbar)
+
+                    if len(palette.value) > 0 and "," in palette.value:
+                        labels = [
+                            f"Class {i+1}" for i in range(len(palette.value.split(",")))
+                        ]
+                        legend_labels.value = ", ".join(labels)
 
             colormap.observe(colormap_changed, "value")
 
@@ -3404,24 +3442,27 @@ class Map(ipyleaflet.Map):
                 layout=widgets.Layout(width="140px"),
             )
 
+            legend_chk = widgets.Checkbox(
+                value=False,
+                description="Legend",
+                indent=False,
+                layout=widgets.Layout(width="70px"),
+            )
             compute_label = widgets.Label(value="")
 
             style_vbox = widgets.VBox([widgets.HBox([style_chk, compute_label])])
-
-            def vdir(obj):
-                return [x for x in dir(obj) if not x.startswith("_")]
 
             def style_chk_changed(change):
 
                 if change["new"]:
 
                     self.colorbar_widget = widgets.Output(
-                        layout=widgets.Layout(height="20px")
+                        layout=widgets.Layout(height="45px")
                     )
-                    colorbar_ctrl = WidgetControl(
+                    self.colorbar_ctrl = WidgetControl(
                         widget=self.colorbar_widget, position="bottomright"
                     )
-                    self.add_control(colorbar_ctrl)
+                    self.add_control(self.colorbar_ctrl)
                     fill_color.disabled = True
                     colormap.options = vdir(cmap.step)
                     colormap.value = "viridis"
@@ -3430,7 +3471,15 @@ class Map(ipyleaflet.Map):
                         widgets.HBox([field, field_values]),
                         widgets.HBox([classes, colormap]),
                         palette,
-                        widgets.HBox([color_picker, add_color, del_color, reset_color]),
+                        widgets.HBox(
+                            [
+                                legend_chk,
+                                color_picker,
+                                add_color,
+                                del_color,
+                                reset_color,
+                            ]
+                        ),
                     ]
                     compute_label.value = "Computing ..."
 
@@ -3438,13 +3487,54 @@ class Map(ipyleaflet.Map):
                         ee.Feature(ee_object.first()).propertyNames().getInfo()
                     )
                     compute_label.value = ""
+                    classes.value = "Any"
+                    legend_chk.value = False
 
                 else:
                     fill_color.disabled = False
                     style_vbox.children = [widgets.HBox([style_chk, compute_label])]
                     compute_label.value = ""
+                    if (
+                        self.colorbar_ctrl is not None
+                        and self.colorbar_ctrl in self.controls
+                    ):
+                        self.remove_control(self.colorbar_ctrl)
+                        self.colorbar_ctrl = None
+                        self.colorbar_widget = None
+                    # legend_chk.value = False
 
             style_chk.observe(style_chk_changed, "value")
+
+            def legend_chk_changed(change):
+                if change["new"]:
+                    style_vbox.children = list(style_vbox.children) + [
+                        widgets.VBox([legend_title, legend_labels])
+                    ]
+
+                    if len(palette.value) > 0 and "," in palette.value:
+                        labels = [
+                            f"Class {i+1}" for i in range(len(palette.value.split(",")))
+                        ]
+                        legend_labels.value = ", ".join(labels)
+
+                else:
+                    style_vbox.children = [
+                        widgets.HBox([style_chk, compute_label]),
+                        widgets.HBox([field, field_values]),
+                        widgets.HBox([classes, colormap]),
+                        palette,
+                        widgets.HBox(
+                            [
+                                legend_chk,
+                                color_picker,
+                                add_color,
+                                del_color,
+                                reset_color,
+                            ]
+                        ),
+                    ]
+
+            legend_chk.observe(legend_chk_changed, "value")
 
             def field_changed(change):
 
@@ -3485,6 +3575,20 @@ class Map(ipyleaflet.Map):
             def apply_btn_clicked(b):
 
                 compute_label.value = "Computing ..."
+
+                if new_layer_name.value in self.ee_layer_names:
+                    old_layer = new_layer_name.value
+
+                    if "legend" in self.ee_layer_dict[old_layer].keys():
+                        legend = self.ee_layer_dict[old_layer]["legend"]
+                        if legend in self.controls:
+                            self.remove_control(legend)
+                        legend.close()
+                    if "colorbar" in self.ee_layer_dict[old_layer].keys():
+                        colorbar = self.ee_layer_dict[old_layer]["colorbar"]
+                        if colorbar in self.controls:
+                            self.remove_control(colorbar)
+                        colorbar.close()
 
                 if not style_chk.value:
                     vis = get_vis_params()
@@ -3527,11 +3631,30 @@ class Map(ipyleaflet.Map):
                             }
                         )
                     )
+
                     self.addLayer(
                         fc.style(**{"styleProperty": "style"}),
                         {},
                         f"{new_layer_name.value}",
                     )
+
+                    if (
+                        len(palette.value)
+                        and legend_chk.value
+                        and len(legend_labels.value) > 0
+                    ):
+                        legend_colors = [
+                            color.strip() for color in palette.value.split(",")
+                        ]
+                        legend_keys = [
+                            label.strip() for label in legend_labels.value.split(",")
+                        ]
+                        self.add_legend(
+                            legend_title=legend_title.value,
+                            legend_keys=legend_keys,
+                            legend_colors=legend_colors,
+                            layer_name=new_layer_name.value,
+                        )
 
                 compute_label.value = ""
 
@@ -3539,6 +3662,14 @@ class Map(ipyleaflet.Map):
                 self.remove_control(self.vis_control)
                 self.vis_control.close()
                 self.vis_widget.close()
+
+                if (
+                    self.colorbar_ctrl is not None
+                    and self.colorbar_ctrl in self.controls
+                ):
+                    self.remove_control(self.colorbar_ctrl)
+                    self.colorbar_ctrl = None
+                    self.colorbar_widget = None
 
             import_btn.on_click(import_btn_clicked)
             apply_btn.on_click(apply_btn_clicked)
