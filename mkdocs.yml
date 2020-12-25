@@ -108,3 +108,4 @@ nav:
           - notebooks/52_cartoee_gif.ipynb
           - notebooks/53_layer_vis.ipynb
           - notebooks/54_vector_vis.ipynb
+          - notebooks/55_raster_vis.ipynb
