@@ -5,15 +5,15 @@ site_url: https://geemap.org
 repo_url: https://github.com/giswqs/geemap
 
 theme:
-    # palette:
-    #     scheme: slate
+    palette:
+        scheme: preference
     name: material
     icon:
         repo: fontawesome/brands/github
     features:
-        - instant
-        - navigation.expand
-        - tabs
+        - navigation.instant
+        # - navigation.expand
+        # - navigation.tabs
         - search.highlight
     custom_dir: "docs/overrides"
 
@@ -28,7 +28,8 @@ plugins:
 
 markdown_extensions:
     - attr_list
-
+    - toc:
+          permalink: true
 nav:
     - Home: index.md
     - Installation: installation.md
