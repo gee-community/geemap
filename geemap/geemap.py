@@ -156,11 +156,13 @@ class Map(ipyleaflet.Map):
         self.colorbar_widget = None
 
         # Adds search button and search box
-        search_button = widgets.Button(
+        search_button = widgets.ToggleButton(
             value=False,
             tooltip="Search location/data",
             icon="globe",
-            layout=widgets.Layout(width="28px", height="28px", padding="0px"),
+            layout=widgets.Layout(
+                width="28px", height="28px", padding="0px 0px 0px 4px"
+            ),
         )
 
         search_type = widgets.ToggleButtons(
@@ -239,6 +241,16 @@ class Map(ipyleaflet.Map):
             self.center = latlon
 
         search_results.observe(search_result_change, names="value")
+
+        def search_btn_click(change):
+            if change["new"]:
+                search_widget.children = [search_button, search_result_widget]
+                search_type.value = "name/address"
+            else:
+                search_widget.children = [search_button]
+                search_result_widget.children = [search_type, search_box]
+
+        search_button.observe(search_btn_click, "value")
 
         def search_type_changed(change):
             search_box.value = ""
@@ -350,9 +362,11 @@ class Map(ipyleaflet.Map):
 
             if event["type"] == "mouseenter":
                 search_widget.children = [search_button, search_result_widget]
+                # search_type.value = "name/address"
             elif event["type"] == "mouseleave":
-                search_widget.children = [search_button]
-                search_result_widget.children = [search_type, search_box]
+                if not search_button.value:
+                    search_widget.children = [search_button]
+                    search_result_widget.children = [search_type, search_box]
 
         search_event.on_dom_event(handle_search_event)
 
@@ -483,8 +497,10 @@ class Map(ipyleaflet.Map):
         self.plot_checked = False
         self.inspector_checked = False
 
-        output = widgets.Output(layout={"border": "1px solid black"})
-        output_control = WidgetControl(widget=output, position="topright")
+        inspector_output = widgets.Output(layout={"border": "1px solid black"})
+        inspector_output_control = WidgetControl(
+            widget=inspector_output, position="topright"
+        )
         tool_output = widgets.Output()
         tool_output.clear_output(wait=True)
         save_map_widget = widgets.VBox()
@@ -579,7 +595,9 @@ class Map(ipyleaflet.Map):
         toolbar_grid = widgets.GridBox(
             children=[
                 widgets.ToggleButton(
-                    layout=widgets.Layout(width="auto", height="auto", padding="0px"),
+                    layout=widgets.Layout(
+                        width="auto", height="auto", padding="0px 0px 0px 4px"
+                    ),
                     button_style="primary",
                     icon=icons[i],
                     tooltip=tooltips[i],
@@ -604,6 +622,8 @@ class Map(ipyleaflet.Map):
                         tool.value = False
                 tool = change["owner"]
                 if tools[tool.icon] == "to_image":
+                    if tool_output_control not in self.controls:
+                        self.add_control(tool_output_control)
                     with tool_output:
                         tool_output.clear_output()
                         display(save_map_widget)
@@ -613,7 +633,7 @@ class Map(ipyleaflet.Map):
                 if tools[tool.icon] == "inspector":
                     self.inspector_checked = tool.value
                     if not self.inspector_checked:
-                        output.clear_output()
+                        inspector_output.clear_output()
                 if tools[tool.icon] == "plotting":
                     self.plot_checked = True
                     plot_dropdown_widget = widgets.Dropdown(
@@ -634,9 +654,13 @@ class Map(ipyleaflet.Map):
                 if tools[tool.icon] == "to_image":
                     tool_output.clear_output()
                     save_map_widget.children = [save_type, file_chooser]
+                    if tool_output_control in self.controls:
+                        self.remove_control(tool_output_control)
                 if tools[tool.icon] == "inspector":
-                    output.clear_output()
+                    inspector_output.clear_output()
                     self.inspector_checked = False
+                    if inspector_output_control in self.controls:
+                        self.remove_control(inspector_output_control)
                 elif tools[tool.icon] == "plotting":
                     self.plot_checked = False
                     plot_dropdown_widget = self.plot_dropdown_widget
@@ -669,7 +693,9 @@ class Map(ipyleaflet.Map):
             value=False,
             tooltip="Toolbar",
             icon="wrench",
-            layout=widgets.Layout(width="28px", height="28px", padding="0px"),
+            layout=widgets.Layout(
+                width="28px", height="28px", padding="0px 0px 0px 4px"
+            ),
         )
         self.toolbar_button = toolbar_button
 
@@ -696,16 +722,20 @@ class Map(ipyleaflet.Map):
             if event["type"] == "mouseenter":
                 toolbar_widget.children = [toolbar_header, toolbar_footer]
             elif event["type"] == "mouseleave":
-                toolbar_widget.children = [toolbar_button]
-                toolbar_button.value = False
-                layers_button.value = False
+                if not toolbar_button.value:
+                    toolbar_widget.children = [toolbar_button]
+                    toolbar_button.value = False
+                    layers_button.value = False
 
         toolbar_event.on_dom_event(handle_toolbar_event)
 
         def toolbar_btn_click(change):
             if change["new"]:
-                toolbar_footer.children = [toolbar_grid]
                 layers_button.value = False
+                toolbar_widget.children = [toolbar_header, toolbar_footer]
+            else:
+                if not layers_button.value:
+                    toolbar_widget.children = [toolbar_button]
 
         toolbar_button.observe(toolbar_btn_click, "value")
 
@@ -839,19 +869,19 @@ class Map(ipyleaflet.Map):
             self.add_control(toolbar_control)
 
         tool_output_control = WidgetControl(widget=tool_output, position="topright")
-        self.add_control(tool_output_control)
+        # self.add_control(tool_output_control)
 
         def handle_interaction(**kwargs):
             latlon = kwargs.get("coordinates")
             if kwargs.get("type") == "click" and self.inspector_checked:
                 self.default_style = {"cursor": "wait"}
-                if output_control not in self.controls:
-                    self.add_control(output_control)
+                if inspector_output_control not in self.controls:
+                    self.add_control(inspector_output_control)
                 sample_scale = self.getScale()
                 layers = self.ee_layers
 
-                with output:
-                    output.clear_output(wait=True)
+                with inspector_output:
+                    inspector_output.clear_output(wait=True)
                     print(
                         f"Point ({latlon[1]:.4f}, {latlon[0]:.4f}) at {int(self.get_scale())}m/px"
                     )
