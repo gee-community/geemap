@@ -3,6 +3,7 @@ Keep in mind that Earth Engine functions use both camel case and snake case, suc
 ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), add_minimap().
 """
 
+from geemap.toolbar import open_data_widget
 import math
 import os
 import time
@@ -154,6 +155,8 @@ class Map(ipyleaflet.Map):
         self.vis_widget = None
         self.colorbar_ctrl = None
         self.colorbar_widget = None
+        self.tool_output = None
+        self.tool_output_ctrl = None
 
         # Adds search button and search box
         search_button = widgets.ToggleButton(
@@ -502,6 +505,7 @@ class Map(ipyleaflet.Map):
             widget=inspector_output, position="topright"
         )
         tool_output = widgets.Output()
+        self.tool_output = tool_output
         tool_output.clear_output(wait=True)
         save_map_widget = widgets.VBox()
 
@@ -516,7 +520,7 @@ class Map(ipyleaflet.Map):
 
         file_chooser = FileChooser(os.getcwd())
         file_chooser.default_filename = "my_map.html"
-        file_chooser.use_dir_icons = False
+        file_chooser.use_dir_icons = True
 
         ok_cancel = widgets.ToggleButtons(
             value=None,
@@ -576,16 +580,28 @@ class Map(ipyleaflet.Map):
 
         tools = {
             "info": "inspector",
-            "signal": "plotting",
+            "bar-chart": "plotting",
             "camera": "to_image",
             "eraser": "eraser",
+            "folder-open": "open_data",
+            "cloud-download": "export_data",
         }
-        icons = ["info", "signal", "camera", "eraser"]
+        icons = list(tools.keys())
+        # icons = [
+        #     "info",
+        #     "bar-chart",
+        #     "camera",
+        #     "eraser",
+        #     "folder-open",
+        #     "cloud-download",
+        # ]
         tooltips = [
             "Inspector",
             "Plotting",
             "Save map as HTML or image",
             "Remove all drawn features",
+            "Open local vector/raster data",
+            "Export Earth Engine data",
         ]
         icon_width = "32px"
         icon_height = "32px"
@@ -615,6 +631,7 @@ class Map(ipyleaflet.Map):
         self.toolbar = toolbar_grid
 
         def tool_callback(change):
+
             if change["new"]:
                 current_tool = change["owner"]
                 for tool in toolbar_grid.children:
@@ -649,6 +666,11 @@ class Map(ipyleaflet.Map):
                     if self.draw_control in self.controls:
                         self.remove_control(self.draw_control)
                     self.add_control(self.draw_control_lite)
+                if tools[tool.icon] == "open_data":
+                    from .toolbar import open_data_widget
+
+                    open_data_widget(self)
+
             else:
                 tool = change["owner"]
                 if tools[tool.icon] == "to_image":
@@ -3272,6 +3294,7 @@ class Map(ipyleaflet.Map):
                 vis["max"] = value_range.value[1]
 
                 self.addLayer(ee_object, vis, layer_name, True, opacity.value)
+                ee_layer.visible = False
 
                 if legend_chk.value:
 
