@@ -100,6 +100,11 @@ class Map(ipyleaflet.Map):
             kwargs["toolbar_ctrl"] = True
         if "attribution_ctrl" not in kwargs.keys():
             kwargs["attribution_ctrl"] = True
+        if "use_voila" not in kwargs.keys():
+            kwargs["use_voila"] = False
+
+        if os.environ.get("USE_VOILA") is not None:
+            kwargs["use_voila"] = True
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -579,14 +584,29 @@ class Map(ipyleaflet.Map):
         save_map_widget.children = [save_type, file_chooser]
 
         tools = {
-            "info": "inspector",
-            "bar-chart": "plotting",
-            "camera": "to_image",
-            "eraser": "eraser",
-            "folder-open": "open_data",
-            "cloud-download": "export_data",
+            "info": {"name": "inspector", "tooltip": "Inspector"},
+            "bar-chart": {"name": "plotting", "tooltip": "Plotting"},
+            "camera": {"name": "to_image", "tooltip": "Save map as HTML or image"},
+            "eraser": {"name": "eraser", "tooltip": "Remove all drawn features"},
+            "folder-open": {
+                "name": "open_data",
+                "tooltip": "Open local vector/raster data",
+            },
+            "cloud-download": {
+                "name": "export_data",
+                "tooltip": "Export Earth Engine data",
+            },
         }
+
+        if kwargs["use_voila"]:
+            voila_tools = ["camera", "folder-open", "cloud-download"]
+
+            for item in voila_tools:
+                if item in tools.keys():
+                    del tools[item]
+
         icons = list(tools.keys())
+        tooltips = [item["tooltip"] for item in list(tools.values())]
         # icons = [
         #     "info",
         #     "bar-chart",
@@ -595,14 +615,14 @@ class Map(ipyleaflet.Map):
         #     "folder-open",
         #     "cloud-download",
         # ]
-        tooltips = [
-            "Inspector",
-            "Plotting",
-            "Save map as HTML or image",
-            "Remove all drawn features",
-            "Open local vector/raster data",
-            "Export Earth Engine data",
-        ]
+        # tooltips = [
+        #     "Inspector",
+        #     "Plotting",
+        #     "Save map as HTML or image",
+        #     "Remove all drawn features",
+        #     "Open local vector/raster data",
+        #     "Export Earth Engine data",
+        # ]
         icon_width = "32px"
         icon_height = "32px"
         n_cols = 2
@@ -638,20 +658,21 @@ class Map(ipyleaflet.Map):
                     if not tool is current_tool:
                         tool.value = False
                 tool = change["owner"]
-                if tools[tool.icon] == "to_image":
+                tool_name = tools[tool.icon]["name"]
+                if tool_name == "to_image":
                     if tool_output_control not in self.controls:
                         self.add_control(tool_output_control)
                     with tool_output:
                         tool_output.clear_output()
                         display(save_map_widget)
-                if tools[tool.icon] == "eraser":
+                if tool_name == "eraser":
                     self.remove_drawn_features()
                     tool.value = False
-                if tools[tool.icon] == "inspector":
+                if tool_name == "inspector":
                     self.inspector_checked = tool.value
                     if not self.inspector_checked:
                         inspector_output.clear_output()
-                if tools[tool.icon] == "plotting":
+                if tool_name == "plotting":
                     self.plot_checked = True
                     plot_dropdown_widget = widgets.Dropdown(
                         options=list(self.ee_raster_layer_names),
@@ -666,24 +687,25 @@ class Map(ipyleaflet.Map):
                     if self.draw_control in self.controls:
                         self.remove_control(self.draw_control)
                     self.add_control(self.draw_control_lite)
-                if tools[tool.icon] == "open_data":
+                if tool_name == "open_data":
                     from .toolbar import open_data_widget
 
                     open_data_widget(self)
 
             else:
                 tool = change["owner"]
-                if tools[tool.icon] == "to_image":
+                tool_name = tools[tool.icon]["name"]
+                if tool_name == "to_image":
                     tool_output.clear_output()
                     save_map_widget.children = [save_type, file_chooser]
                     if tool_output_control in self.controls:
                         self.remove_control(tool_output_control)
-                if tools[tool.icon] == "inspector":
+                if tool_name == "inspector":
                     inspector_output.clear_output()
                     self.inspector_checked = False
                     if inspector_output_control in self.controls:
                         self.remove_control(inspector_output_control)
-                elif tools[tool.icon] == "plotting":
+                elif tool_name == "plotting":
                     self.plot_checked = False
                     plot_dropdown_widget = self.plot_dropdown_widget
                     plot_dropdown_control = self.plot_dropdown_control

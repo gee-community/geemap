@@ -1,3 +1,5 @@
+"""Module for dealing with the toolbar.
+"""
 import os
 from os.path import splitext
 import ipywidgets as widgets
@@ -93,6 +95,15 @@ def open_data_widget(m):
     # def chooser_callback(chooser):
     #     if len(layer_name.value) == 0 and file_chooser.selected is not None:
     #         layer_name.value = os.path.splitext(file_chooser.selected_filename)[0]
+
+    def bands_changed(change):
+        if change["new"] and "," in change["owner"].value:
+            colormap.value = None
+            colormap.disabled = True
+        else:
+            colormap.disabled = False
+
+    bands.observe(bands_changed, "value")
 
     def file_type_changed(change):
         ok_cancel.value = None

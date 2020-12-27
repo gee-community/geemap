@@ -53,6 +53,7 @@ nav:
           - geemap module: geemap.md
           - legends module: legends.md
           - ml module: ml.md
+          - toolbar module: toolbar.md
     - Notebooks:
           - notebooks/00_geemap_key_features.ipynb
           - notebooks/01_geemap_intro.ipynb
@@ -110,3 +111,4 @@ nav:
           - notebooks/53_layer_vis.ipynb
           - notebooks/54_vector_vis.ipynb
           - notebooks/55_raster_vis.ipynb
+          - notebooks/56_local_data.ipynb

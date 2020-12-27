@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.8.7 - December 27, 2020
+
+**New Features**:
+
+-   Added toolbar GUI [#215](https://github.com/giswqs/geemap/issues/215)
+-   Added layer vis [#215](https://github.com/giswqs/geemap/issues/215)
+-   Added raster/vector colormap [#215](https://github.com/giswqs/geemap/issues/215)
+-   Added support for linking legend with layer [#234](https://github.com/giswqs/geemap/issues/234)
+-   Added styled vector function [#235](https://github.com/giswqs/geemap/issues/235)
+-   Added mouse click observe to toolbar [#215](https://github.com/giswqs/geemap/issues/215)
+-   Added new tool for opening local data [#239 ](https://github.com/giswqs/geemap/issues/239)
+
+**Improvement**:
+
+-   Fixed COG mosaic bug [#236](https://github.com/giswqs/geemap/issues/236) and [#237](https://github.com/giswqs/geemap/issues/237)
+
 ## v0.8.6 - December 22, 2020
 
 **New Features**:
