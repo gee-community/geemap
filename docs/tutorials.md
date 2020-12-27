@@ -63,3 +63,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 53. How to change layer visualization interactively with a GUI (video | [gif](https://i.imgur.com/VqqlMSK.gif) | [notebook](https://geemap.org/notebooks/53_layer_vis))
 54. How to visualize Earth Engine vector data interactively with a GUI (video | gif | [notebook](https://geemap.org/notebooks/54_vector_vis))
 55. How to visualize Earth Engine raster data interactively with a GUI (video | gif | [notebook](https://geemap.org/notebooks/55_raster_vis))
+56. How to add local vector and raster data to the map with a few clicks (video | gif | [notebook](https://geemap.org/notebooks/56_local_data))
