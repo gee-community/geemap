@@ -430,18 +430,18 @@ class Map(ipyleaflet.Map):
             self.add_control(AttributionControl(position="bottomright"))
 
         draw_control = DrawControl(
-            marker={"shapeOptions": {"color": "#0000FF"}},
-            rectangle={"shapeOptions": {"color": "#0000FF"}},
-            circle={"shapeOptions": {"color": "#0000FF"}},
+            marker={"shapeOptions": {"color": "#3388ff"}},
+            rectangle={"shapeOptions": {"color": "#3388ff"}},
+            circle={"shapeOptions": {"color": "#3388ff"}},
             circlemarker={},
-            edit=False,
-            remove=False,
+            edit=True,
+            remove=True,
         )
 
         draw_control_lite = DrawControl(
             marker={},
-            rectangle={"shapeOptions": {"color": "#0000FF"}},
-            circle={"shapeOptions": {"color": "#0000FF"}},
+            rectangle={"shapeOptions": {"color": "#3388ff"}},
+            circle={"shapeOptions": {"color": "#3388ff"}},
             circlemarker={},
             polyline={},
             polygon={},
@@ -454,26 +454,36 @@ class Map(ipyleaflet.Map):
             try:
                 # geo_json = adjust_longitude(geo_json)
                 self.roi_start = True
-                self.draw_count += 1
                 geom = geojson_to_ee(geo_json, False)
                 self.user_roi = geom
                 feature = ee.Feature(geom)
                 self.draw_last_json = geo_json
                 # self.draw_last_bounds = minimum_bounding_box(geo_json)
                 self.draw_last_feature = feature
-                self.draw_features.append(feature)
+                if action == "deleted" and len(self.draw_features) > 0:
+                    self.draw_features.remove(feature)
+                    self.draw_count -= 1
+                else:
+                    self.draw_features.append(feature)
+                    self.draw_count += 1
                 collection = ee.FeatureCollection(self.draw_features)
                 self.user_rois = collection
                 ee_draw_layer = ee_tile_layer(
-                    collection, {"color": "blue"}, "Drawn Features", True, 0.5
+                    collection, {"color": "blue"}, "Drawn Features", False, 0.5
                 )
-                if self.draw_count == 1:
+                draw_layer_index = self.find_layer_index("Drawn Features")
+                # if (
+                #     self.draw_count == 1
+                #     and action != "deleted"
+                #     and draw_layer_index != -1
+                # ):
+                if draw_layer_index == -1:
                     self.add_layer(ee_draw_layer)
                     self.draw_layer = ee_draw_layer
                 else:
                     self.substitute_layer(self.draw_layer, ee_draw_layer)
                     self.draw_layer = ee_draw_layer
-                draw_control.clear()
+                # draw_control.clear()
                 self.roi_end = True
                 self.roi_start = False
             except Exception as e:
@@ -2854,6 +2864,8 @@ class Map(ipyleaflet.Map):
             self.chart_values = []
             self.chart_points = []
             self.chart_labels = None
+        if self.draw_control is not None:
+            self.draw_control.clear()
 
     def remove_last_drawn(self):
         """Removes user-drawn geometries from the map"""
