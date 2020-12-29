@@ -112,3 +112,4 @@ nav:
           - notebooks/54_vector_vis.ipynb
           - notebooks/55_raster_vis.ipynb
           - notebooks/56_local_data.ipynb
+          - notebooks/57_cartoee_blend.ipynb

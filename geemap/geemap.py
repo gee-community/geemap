@@ -2389,7 +2389,7 @@ class Map(ipyleaflet.Map):
         categorical=False,
         step=None,
         height="45px",
-        transparent_bg=True,
+        transparent_bg=False,
         position="bottomright",
         layer_name=None,
         **kwargs,
