@@ -766,6 +766,45 @@ class Map(folium.Map):
         styled_vector = vector_styling(ee_object, column, palette, **kwargs)
         self.addLayer(styled_vector.style(**{"styleProperty": "style"}), {}, layer_name)
 
+    def add_shapefile(self, in_shp, name="Untitled", **kwargs):
+        """Adds a shapefile to the map. See https://python-visualization.github.io/folium/modules.html#folium.features.GeoJson for more info about setting style.
+
+        Args:
+            in_shp (str): The input file path to the shapefile.
+            name_name (str, optional): The layer name to be used. Defaults to "Untitled".
+
+        Raises:
+            FileNotFoundError: The provided shapefile could not be found.
+        """
+        if not os.path.exists(in_shp):
+            raise FileNotFoundError("The provided shapefile could not be found.")
+
+        data = shp_to_geojson(in_shp)
+
+        geo_json = folium.GeoJson(data=data, name=name, **kwargs)
+        geo_json.add_to(self)
+
+    def add_geojson(self, in_geojson, name="Untitled", **kwargs):
+        """Adds a GeoJSON file to the map.
+
+        Args:
+            in_geojson (str): The input file path to the GeoJSON.
+            name (str, optional): The layer name to be used.. Defaults to "Untitled".
+
+        Raises:
+            FileNotFoundError: The provided GeoJSON file could not be found.
+        """
+        import json
+
+        if not os.path.exists(in_geojson):
+            raise FileNotFoundError("The provided GeoJSON file could not be found.")
+
+        with open(in_geojson) as f:
+            data = json.load(f)
+
+        geo_json = folium.GeoJson(data=data, name=name, **kwargs)
+        geo_json.add_to(self)
+
     def publish(
         self,
         name=None,
