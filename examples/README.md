@@ -75,6 +75,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 54. How to visualize Earth Engine vector data interactively with a GUI (video | gif | [notebook](https://geemap.org/notebooks/54_vector_vis))
 55. How to visualize Earth Engine raster data interactively with a GUI (video | gif | [notebook](https://geemap.org/notebooks/55_raster_vis))
 56. How to add local vector and raster data to the map with a few clicks (video | gif | [notebook](https://geemap.org/notebooks/56_local_data))
+57. How to create a publication quality map with multiple Earth Engine layers (video | gif | [notebook](https://geemap.org/notebooks/57_cartoee_blend))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 

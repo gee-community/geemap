@@ -325,7 +325,7 @@ def add_colorbar(
             norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
         if "palette" in vis_keys:
-            hexcodes = vis_params["palette"].split(",")
+            hexcodes = vis_params["palette"]
             hexcodes = [i if i[0] == "#" else "#" + i for i in hexcodes]
 
             if discrete:
