@@ -162,6 +162,7 @@ class Map(ipyleaflet.Map):
         self.colorbar_widget = None
         self.tool_output = None
         self.tool_output_ctrl = None
+        self.layer_control = None
 
         # Adds search button and search box
         search_button = widgets.ToggleButton(
@@ -819,8 +820,21 @@ class Map(ipyleaflet.Map):
                 layers = [
                     lyr
                     for lyr in self.layers[1:]
-                    if not isinstance(lyr, ipyleaflet.GeoJSON)
+                    if (
+                        isinstance(lyr, ipyleaflet.TileLayer)
+                        or isinstance(lyr, ipyleaflet.WMSLayer)
+                    )
                 ]
+
+                # if the layers contain unsupported layers (e.g., GeoJSON, GeoData), adds the ipyleaflet built-in LayerControl
+                if len(layers) < (len(self.layers) - 1):
+                    if self.layer_control is None:
+                        layer_control = LayersControl(position="topright")
+                        self.layer_control = layer_control
+                    if self.layer_control not in self.controls:
+                        self.add_control(self.layer_control)
+
+                # for non-TileLayer, use layer.style={'opacity':0, 'fillOpacity': 0} to turn layer off.
                 for layer in layers:
                     layer_chk = widgets.Checkbox(
                         value=layer.visible,
@@ -1423,7 +1437,8 @@ class Map(ipyleaflet.Map):
                 format=format,
                 transparent=transparent,
                 opacity=opacity,
-                visible=shown ** kwargs,
+                visible=shown,
+                **kwargs,
             )
             self.add_layer(wms_layer)
 
