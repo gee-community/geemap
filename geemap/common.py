@@ -952,19 +952,30 @@ def shp_to_geojson(in_shp, out_json=None):
         object: The json object representing the shapefile.
     """
     try:
-        import json
         import shapefile
         from datetime import date
         in_shp = os.path.abspath(in_shp)
 
-        if out_json is None:
-            out_json = os.path.splitext(in_shp)[0] + ".json"
+        if out_json is not None:
+            ext = os.path.splitext(out_json)[1]
+            print(ext)
+            if ext.lower() not in [".json", ".geojson"]:
+                raise TypeError("The output file extension must the .json or .geojson.")
 
-            if os.path.exists(out_json):
-                out_json = out_json.replace('.json', '_bk.json')
+            if not os.path.exists(os.path.dirname(out_json)):
+                os.makedirs(os.path.dirname(out_json))
 
-        elif not os.path.exists(os.path.dirname(out_json)):
-            os.makedirs(os.path.dirname(out_json))
+        if not is_GCS(in_shp):
+            try:
+                import geopandas as gpd
+                in_gdf = gpd.read_file(in_shp)
+                out_gdf = in_gdf.to_crs(epsg='4326')
+                out_shp = in_shp.replace(".shp", "_gcs.shp")
+                out_gdf.to_file(out_shp)
+                in_shp = out_shp
+
+            except:
+                raise ImportError("Geopandas is required to perform reprojection of the data. See https://geopandas.org/install.html")            
 
         reader = shapefile.Reader(in_shp)
         fields = reader.fields[1:]
@@ -987,19 +998,18 @@ def shp_to_geojson(in_shp, out_json=None):
             geom = sr.shape.__geo_interface__
             buffer.append(dict(type="Feature", geometry=geom, properties=atr))
 
-        from json import dumps
-        geojson = open(out_json, "w")
-        geojson.write(dumps({"type": "FeatureCollection",
-                             "features": buffer}, indent=2) + "\n")
-        geojson.close()
+        out_dict = {"type": "FeatureCollection", "features": buffer}
 
-        with open(out_json) as f:
-            json_data = json.load(f)
-
-        return json_data
+        if out_json is not None:
+            from json import dumps
+            geojson = open(out_json, "w")
+            geojson.write(dumps(out_dict, indent=2) + "\n")
+            geojson.close()
+        else:
+            return out_dict
 
     except Exception as e:
-        print(e)
+        raise Exception(e)
 
 
 def shp_to_ee(in_shp):
@@ -6136,3 +6146,35 @@ def vector_styling(ee_object, column, palette, **kwargs):
 
     else:
         raise TypeError("The ee_object must be an ee.FeatureCollection.")
+
+
+def is_GCS(in_shp):
+
+    import warnings
+    import pycrs
+
+    if not os.path.exists(in_shp):
+        raise FileNotFoundError("The input shapefile could not be found.")
+
+    if not in_shp.endswith(".shp"):
+        raise TypeError("The input shapefile is invalid.")
+
+    in_prj = in_shp.replace(".shp", ".prj")
+
+    if not os.path.exists(in_prj):
+        warnings.warn(f"The projection file {in_prj} could not be found. Assuming the dataset is in a geographic coordinate system (GCS).")
+        return True
+    else:
+
+        with open(in_prj) as f:
+            esri_wkt = f.read()
+        epsg4326 = pycrs.parse.from_epsg_code(4326).to_proj4()
+        try:
+            crs = pycrs.parse.from_esri_wkt(esri_wkt).to_proj4()
+            if crs == epsg4326:
+                return True
+            else:
+                return False
+        except:
+            return False
+

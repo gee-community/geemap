@@ -4136,6 +4136,71 @@ class Map(ipyleaflet.Map):
         styled_vector = vector_styling(ee_object, column, palette, **kwargs)
         self.addLayer(styled_vector.style(**{"styleProperty": "style"}), {}, layer_name)
 
+    def add_shapefile(self, in_shp, style=None, layer_name="Untitled"):
+        """Adds a shapefile to the map
+
+        Args:
+            in_shp (str): The input file path to the shapefile.
+            style (dict, optional): A dictionary specifying the style to be used. Defaults to None.
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
+
+        Raises:
+            FileNotFoundError: The provided shapefile could not be found.
+        """
+        if not os.path.exists(in_shp):
+            raise FileNotFoundError("The provided shapefile could not be found.")
+
+        data = shp_to_geojson(in_shp)
+
+        if style is None:
+            style = {
+                "stroke": True,
+                "color": "#000000",
+                "weight": 2,
+                "opacity": 1,
+                "fill": True,
+                "fillColor": "#000000",
+                "fillOpacity": 0.4,
+                # "clickable": True,
+            }
+
+        geo_json = ipyleaflet.GeoJSON(data=data, style=style, name=layer_name)
+        self.add_layer(geo_json)
+
+    def add_geojson(self, in_geojson, style=None, layer_name="Untitled"):
+        """Adds a GeoJSON file to the map.
+
+        Args:
+            in_geojson (str): The input file path to the GeoJSON.
+            style (dict, optional): A dictionary specifying the style to be used.. Defaults to None.
+            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+
+        Raises:
+            FileNotFoundError: The provided GeoJSON file could not be found.
+        """
+        import json
+
+        if not os.path.exists(in_geojson):
+            raise FileNotFoundError("The provided GeoJSON file could not be found.")
+
+        with open(in_geojson) as f:
+            data = json.load(f)
+
+        if style is None:
+            style = {
+                "stroke": True,
+                "color": "#000000",
+                "weight": 2,
+                "opacity": 1,
+                "fill": True,
+                "fillColor": "#000000",
+                "fillOpacity": 0.4,
+                # "clickable": True,
+            }
+
+        geo_json = ipyleaflet.GeoJSON(data=data, style=style, name=layer_name)
+        self.add_layer(geo_json)
+
 
 # The functions below are outside the Map class.
 

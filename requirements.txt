@@ -16,6 +16,7 @@ mss
 numpy
 pandas
 pillow
+pycrs
 pyshp
 voila
 whitebox
