@@ -209,7 +209,15 @@ def update_package():
         print("\nPlease comment out 'geemap.update_package()' and restart the kernel to take effect:\nJupyter menu -> Kernel -> Restart & Clear Output")
 
     except Exception as e:
-        print(e)
+        raise Exception(e)
+
+
+def check_package(name, URL=''):
+
+    try:
+        __import__(name.lower())
+    except:
+        raise ImportError(f'{name} is not installed. Please install it before proceeding. {URL}')        
 
 
 def clone_repo(out_dir='.', unzip=True):
@@ -6178,3 +6186,106 @@ def is_GCS(in_shp):
         except:
             return False
 
+
+def kml_to_shp(in_kml, out_shp):
+    """Converts a KML to shapefile.
+
+    Args:
+        in_kml (str): The file path to the input KML.
+        out_shp (str): The file path to the output shapefile.
+
+    Raises:
+        FileNotFoundError: The input KML could not be found.
+        TypeError: The output must be a shapefile.
+    """
+    import warnings
+    warnings.filterwarnings("ignore")
+
+    in_kml = os.path.abspath(in_kml)
+    if not os.path.exists(in_kml):
+        raise FileNotFoundError("The input KML could not be found.")
+
+    out_shp = os.path.abspath(out_shp)
+    if not out_shp.endswith(".shp"):
+        raise TypeError("The output must be a shapefile.")
+
+    out_dir = os.path.dirname(out_shp)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    check_package(name="geopandas", URL="https://geopandas.org")
+
+    import geopandas as gpd
+
+    # import fiona
+    # print(fiona.supported_drivers)
+    gpd.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
+    df = gpd.read_file(in_kml, driver='KML')
+    df.to_file(out_shp)
+
+
+def kml_to_geojson(in_kml, out_json):
+    """Converts a KML to GeoJSON.
+
+    Args:
+        in_kml (str): The file path to the input KML.
+        out_shp (str): The file path to the output GeoJSON.
+
+    Raises:
+        FileNotFoundError: The input KML could not be found.
+        TypeError: The output must be a GeoJSON.
+    """
+    import warnings
+    warnings.filterwarnings("ignore")
+
+    in_kml = os.path.abspath(in_kml)
+    if not os.path.exists(in_kml):
+        raise FileNotFoundError("The input KML could not be found.")
+
+    out_json = os.path.abspath(out_json)
+    ext = os.path.splitext(out_json)[1].lower()
+    if ext not in [".json", ".geojson"]:
+        raise TypeError("The output file must be a GeoJSON.")
+
+    out_dir = os.path.dirname(out_json)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    check_package(name="geopandas", URL="https://geopandas.org")
+
+    import geopandas as gpd
+
+    # import fiona
+    # print(fiona.supported_drivers)
+    gpd.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
+    df = gpd.read_file(in_kml, driver='KML')
+    df.to_file(out_json, driver="GeoJSON")
+
+
+def kml_to_ee(in_kml):
+    """Converts a KML to ee.FeatureColleciton.
+
+    Args:
+        in_kml (str): The file path to the input KML.
+
+    Raises:
+        FileNotFoundError: The input KML could not be found.
+
+    Returns:
+        object: ee.FeatureCollection
+    """
+    import warnings
+    warnings.filterwarnings("ignore")
+
+    in_kml = os.path.abspath(in_kml)
+    if not os.path.exists(in_kml):
+        raise FileNotFoundError("The input KML could not be found.")
+
+    out_json = os.path.join(os.getcwd(), "tmp.geojson")
+
+    check_package(name="geopandas", URL="https://geopandas.org")   
+
+    kml_to_geojson(in_kml, out_json) 
+    ee_object = geojson_to_ee(out_json)
+    os.remove(out_json)
+    return ee_object

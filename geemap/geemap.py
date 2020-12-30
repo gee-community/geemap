@@ -4172,7 +4172,7 @@ class Map(ipyleaflet.Map):
 
         Args:
             in_geojson (str): The input file path to the GeoJSON.
-            style (dict, optional): A dictionary specifying the style to be used.. Defaults to None.
+            style (dict, optional): A dictionary specifying the style to be used. Defaults to None.
             layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
 
         Raises:
@@ -4200,6 +4200,45 @@ class Map(ipyleaflet.Map):
 
         geo_json = ipyleaflet.GeoJSON(data=data, style=style, name=layer_name)
         self.add_layer(geo_json)
+
+    def add_kml(self, in_kml, style=None, layer_name="Untitled"):
+        """Adds a GeoJSON file to the map.
+
+        Args:
+            in_kml (str): The input file path to the KML.
+            style (dict, optional): A dictionary specifying the style to be used. Defaults to None.
+            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+
+        Raises:
+            FileNotFoundError: The provided KML file could not be found.
+        """
+        import json
+
+        if not os.path.exists(in_kml):
+            raise FileNotFoundError("The provided KML file could not be found.")
+
+        out_json = os.path.join(os.getcwd(), "tmp.geojson")
+
+        kml_to_geojson(in_kml, out_json)
+
+        with open(out_json) as f:
+            data = json.load(f)
+
+        if style is None:
+            style = {
+                "stroke": True,
+                "color": "#000000",
+                "weight": 2,
+                "opacity": 1,
+                "fill": True,
+                "fillColor": "#000000",
+                "fillOpacity": 0.4,
+                # "clickable": True,
+            }
+
+        geo_json = ipyleaflet.GeoJSON(data=data, style=style, name=layer_name)
+        self.add_layer(geo_json)
+        os.remove(out_json)
 
 
 # The functions below are outside the Map class.
