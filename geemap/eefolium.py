@@ -789,7 +789,7 @@ class Map(folium.Map):
 
         Args:
             in_geojson (str): The input file path to the GeoJSON.
-            name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            name (str, optional): The layer name to be used. Defaults to "Untitled".
 
         Raises:
             FileNotFoundError: The provided GeoJSON file could not be found.
@@ -804,6 +804,32 @@ class Map(folium.Map):
 
         geo_json = folium.GeoJson(data=data, name=name, **kwargs)
         geo_json.add_to(self)
+
+    def add_kml(self, in_kml, name="Untitled", **kwargs):
+        """Adds a KML file to the map.
+
+        Args:
+            in_kml (str): The input file path to the KML.
+            name (str, optional): The layer name to be used. Defaults to "Untitled".
+
+        Raises:
+            FileNotFoundError: The provided KML file could not be found.
+        """
+        import json
+
+        if not os.path.exists(in_kml):
+            raise FileNotFoundError("The provided KML file could not be found.")
+
+        out_json = os.path.join(os.getcwd(), "tmp.geojson")
+
+        kml_to_geojson(in_kml, out_json)
+
+        with open(out_json) as f:
+            data = json.load(f)
+
+        geo_json = folium.GeoJson(data=data, name=name, **kwargs)
+        geo_json.add_to(self)
+        os.remove(out_json)
 
     def publish(
         self,
