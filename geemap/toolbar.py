@@ -1,7 +1,6 @@
 """Module for dealing with the toolbar.
 """
 import os
-from os.path import splitext
 import ipywidgets as widgets
 from ipyleaflet import WidgetControl
 from IPython.core.display import display

@@ -93,7 +93,7 @@ def format_params(line, sep=":"):
     # print(line)
     new_line = line
     prefix = ""
-    suffix = ""
+    # suffix = ""
 
     if line.strip().startswith("for"):  # skip for loop
         return line
@@ -284,7 +284,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
         github_repo (str, optional): GitHub repo url. Defaults to None.
 
     Returns:
-        list : Python script
+        list: Python script
     """
     in_file = os.path.abspath(in_file)
     if out_file is None:
@@ -297,7 +297,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
         out_file = os.path.join(root_dir, out_file)
 
     is_python = False
-    add_github_url = False
+    # add_github_url = False
     qgis_import_str = ""
     if use_qgis:
         qgis_import_str = "from ee_plugin import Map \n"
@@ -330,7 +330,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
     else:  # deal with JavaScript
 
         header = github_url + "import ee \n" + qgis_import_str + math_import_str
-        function_defs = []
+        # function_defs = []
         output = header + "\n"
 
         with open(in_file) as f:
@@ -353,9 +353,10 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
                     or line.strip().startswith("function")
                 ):
                     bracket_index = line.index("{")
-                    matching_line_index, matching_char_index = find_matching_bracket(
-                        lines, index, bracket_index
-                    )
+                    (
+                        matching_line_index,
+                        matching_char_index,
+                    ) = find_matching_bracket(lines, index, bracket_index)
 
                     line = line[:bracket_index] + line[bracket_index + 1 :]
                     if matching_line_index == index:
@@ -391,9 +392,10 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
                         )
                 elif "{" in line:
                     bracket_index = line.index("{")
-                    matching_line_index, matching_char_index = find_matching_bracket(
-                        lines, index, bracket_index
-                    )
+                    (
+                        matching_line_index,
+                        matching_char_index,
+                    ) = find_matching_bracket(lines, index, bracket_index)
                     if (matching_line_index == index) and (":" in line):
                         pass
                     elif ("for (" in line) or ("for(" in line):
@@ -482,7 +484,11 @@ def create_new_cell(contents, replace=False):
 
 
 def js_snippet_to_py(
-    in_js_snippet, add_new_cell=True, import_ee=True, import_geemap=True, show_map=True
+    in_js_snippet,
+    add_new_cell=True,
+    import_ee=True,
+    import_geemap=True,
+    show_map=True,
 ):
     """Converts an Earth Engine JavaScript snippet wrapped in triple quotes to Python directly on a Jupyter notebook.
 
@@ -727,7 +733,11 @@ def template_footer(in_template):
 
 
 def py_to_ipynb(
-    in_file, template_file, out_file=None, github_username=None, github_repo=None
+    in_file,
+    template_file,
+    out_file=None,
+    github_username=None,
+    github_repo=None,
 ):
     """Converts Earth Engine Python script to Jupyter notebook.
 
@@ -772,7 +782,7 @@ def py_to_ipynb(
             new_header.append(line)
         header = new_header
 
-    if content != None:
+    if content is not None:
         out_text = header + content + footer
     else:
         out_text = header + footer
@@ -890,7 +900,7 @@ def update_nb_header(in_file, github_username=None, github_repo=None):
         lines = f.readlines()
         start_line_index = 2
         start_char_index = lines[start_line_index].index("{")
-        matching_line_index, matching_char_index = find_matching_bracket(
+        matching_line_index, _ = find_matching_bracket(
             lines, start_line_index, start_char_index
         )
 
@@ -1017,9 +1027,8 @@ def download_gee_app(url, out_file=None):
 
     try:
         urllib.request.urlretrieve(json_url, json_path)
-    except:
-        print("The URL is invalid. Please double check the URL.")
-        return
+    except Exception:
+        raise Exception("The URL is invalid. Please double check the URL.")
 
     with open(out_file_path, "w") as f1:
 

@@ -1,7 +1,6 @@
 import ee
 import os
 import sys
-import json
 import logging
 import requests
 import warnings
@@ -61,7 +60,7 @@ def check_dependencies():
     for dependency in dependencies:
         try:
             # see if we can import
-            mod = importlib.import_module(dependency)
+            importlib.import_module(dependency)
         except ImportError:
             # change the dependency name if it is PIL
             # import vs install names are different for PIL...
@@ -77,7 +76,10 @@ def check_dependencies():
             # run the command
             cmd = f"conda install -c conda-forge {dependency} -y"
             proc = subprocess.Popen(
-                cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+                cmd,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
             )
             # send command
             out, err = proc.communicate()
@@ -89,7 +91,7 @@ def check_dependencies():
 
     for dependency in dependencies:
         try:
-            mod = importlib.import_module(dependency)
+            importlib.import_module(dependency)
         except ImportError:
             # append failed imports
             failed.append(dependency)
@@ -498,7 +500,7 @@ def add_gridlines(
             "one of variables interval, n_ticks, or ys must be defined. If you would like default gridlines, please use `ax.gridlines()`"
         )
 
-    gl = ax.gridlines(xlocs=xmain, ylocs=ymain, **kwargs)
+    ax.gridlines(xlocs=xmain, ylocs=ymain, **kwargs)
 
     xin = xmain[(xmain >= view_extent[0]) & (xmain <= view_extent[1])]
     yin = ymain[(ymain >= view_extent[2]) & (ymain <= view_extent[3])]
@@ -666,6 +668,7 @@ def add_scale_bar(
         ndim = int(np.floor(np.log10(length)))  # number of digits in number
         length = round(length, -ndim)  # round to 1sf
         # Returns numbers starting with the list
+
         def scale_number(x):
             if str(x)[0] in ["1", "2", "5"]:
                 return int(x)

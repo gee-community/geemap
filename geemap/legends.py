@@ -2,7 +2,6 @@
 """
 
 import os
-import pkg_resources
 
 
 # Land Cover datasets in Earth Engine https://developers.google.com/earth-engine/datasets/tags/landcover
@@ -422,8 +421,8 @@ def ee_table_to_legend(in_table, out_file):
         in_table (str): The input file path (*.txt) to the Earth Engine color table.
         out_file (str): The output file path (*.txt) to the legend dictionary.
     """
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
-    ee_legend_table = os.path.join(pkg_dir, "data/template/ee_legend_table.txt")
+    # pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    # ee_legend_table = os.path.join(pkg_dir, "data/template/ee_legend_table.txt")
 
     if not os.path.exists(in_table):
         print("The class table does not exist.")
