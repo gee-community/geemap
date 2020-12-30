@@ -3,7 +3,6 @@ Keep in mind that Earth Engine functions use both camel case and snake case, suc
 ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), add_minimap().
 """
 
-from geemap.toolbar import open_data_widget
 import math
 import os
 import time
@@ -191,13 +190,18 @@ class Map(ipyleaflet.Map):
         )
 
         search_output = widgets.Output(
-            layout={"max_width": "340px", "max_height": "250px", "overflow": "scroll"}
+            layout={
+                "max_width": "340px",
+                "max_height": "250px",
+                "overflow": "scroll",
+            }
         )
 
         search_results = widgets.RadioButtons()
 
         assets_dropdown = widgets.Dropdown(
-            options=[], layout=widgets.Layout(min_width="279px", max_width="279px")
+            options=[],
+            layout=widgets.Layout(min_width="279px", max_width="279px"),
         )
 
         import_btn = widgets.Button(
@@ -267,11 +271,19 @@ class Map(ipyleaflet.Map):
             if change["new"] == "name/address":
                 search_box.placeholder = "Search by place name or address, e.g., Paris"
                 assets_dropdown.options = []
-                search_result_widget.children = [search_type, search_box, search_output]
+                search_result_widget.children = [
+                    search_type,
+                    search_box,
+                    search_output,
+                ]
             elif change["new"] == "lat-lon":
                 search_box.placeholder = "Search by lat-lon, e.g., 40, -100"
                 assets_dropdown.options = []
-                search_result_widget.children = [search_type, search_box, search_output]
+                search_result_widget.children = [
+                    search_type,
+                    search_box,
+                    search_output,
+                ]
             elif change["new"] == "data":
                 search_box.placeholder = (
                     "Search GEE data catalog by keywords, e.g., elevation"
@@ -298,7 +310,9 @@ class Map(ipyleaflet.Map):
                         self.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
                         if self.search_loc_marker is None:
                             marker = Marker(
-                                location=latlon, draggable=False, name="Search location"
+                                location=latlon,
+                                draggable=False,
+                                name="Search location",
                             )
                             self.search_loc_marker = marker
                             self.add_layer(marker)
@@ -335,7 +349,9 @@ class Map(ipyleaflet.Map):
                     self.search_loc_geom = ee.Geometry.Point(top_loc.lng, top_loc.lat)
                     if self.search_loc_marker is None:
                         marker = Marker(
-                            location=latlon, draggable=False, name="Search location"
+                            location=latlon,
+                            draggable=False,
+                            name="Search location",
                         )
                         self.search_loc_marker = marker
                         self.add_layer(marker)
@@ -597,8 +613,14 @@ class Map(ipyleaflet.Map):
         tools = {
             "info": {"name": "inspector", "tooltip": "Inspector"},
             "bar-chart": {"name": "plotting", "tooltip": "Plotting"},
-            "camera": {"name": "to_image", "tooltip": "Save map as HTML or image"},
-            "eraser": {"name": "eraser", "tooltip": "Remove all drawn features"},
+            "camera": {
+                "name": "to_image",
+                "tooltip": "Save map as HTML or image",
+            },
+            "eraser": {
+                "name": "eraser",
+                "tooltip": "Remove all drawn features",
+            },
             "folder-open": {
                 "name": "open_data",
                 "tooltip": "Open local vector/raster data",
@@ -666,7 +688,7 @@ class Map(ipyleaflet.Map):
             if change["new"]:
                 current_tool = change["owner"]
                 for tool in toolbar_grid.children:
-                    if not tool is current_tool:
+                    if tool is not current_tool:
                         tool.value = False
                 tool = change["owner"]
                 tool_name = tools[tool.icon]["name"]
@@ -966,7 +988,8 @@ class Map(ipyleaflet.Map):
                                 isinstance(ee_object, ee.geometry.Geometry)
                                 or isinstance(ee_object, ee.feature.Feature)
                                 or isinstance(
-                                    ee_object, ee.featurecollection.FeatureCollection
+                                    ee_object,
+                                    ee.featurecollection.FeatureCollection,
                                 )
                             ):
                                 ee_object = ee.FeatureCollection(ee_object)
@@ -980,7 +1003,10 @@ class Map(ipyleaflet.Map):
                                     b_name = "bands"
                                 print(
                                     "{}: {} ({} {})".format(
-                                        layer_name, object_type, len(item), b_name
+                                        layer_name,
+                                        object_type,
+                                        len(item),
+                                        b_name,
                                     )
                                 )
                                 keys = item.keys()
@@ -995,11 +1021,16 @@ class Map(ipyleaflet.Map):
                                 lat, lon = latlon
                                 delta = 0.005
                                 bbox = ee.Geometry.BBox(
-                                    lon - delta, lat - delta, lon + delta, lat + delta
+                                    lon - delta,
+                                    lat - delta,
+                                    lon + delta,
+                                    lat + delta,
                                 )
                                 # Create a bounding box to filter points
                                 xy = ee.Algorithms.If(
-                                    geom_type.compareTo(ee.String("Point")), xy, bbox
+                                    geom_type.compareTo(ee.String("Point")),
+                                    xy,
+                                    bbox,
                                 )
 
                                 filtered = ee_object.filterBounds(xy)
@@ -1130,7 +1161,7 @@ class Map(ipyleaflet.Map):
 
         try:
             self.add_layer(ee_basemaps[mapTypeId])
-        except Exception as e:
+        except Exception:
             raise ValueError(
                 'Google basemaps can only be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN".'
             )
@@ -1346,7 +1377,7 @@ class Map(ipyleaflet.Map):
             #     )
             #     self.layers = layers
 
-        except Exception as e:
+        except Exception:
             raise ValueError(
                 "Basemap can only be one of the following:\n  {}".format(
                     "\n  ".join(ee_basemaps.keys())
@@ -1577,7 +1608,12 @@ class Map(ipyleaflet.Map):
 
             geo_json = ipyleaflet.GeoJSON(
                 data=fc,
-                style={"opacity": 1, "dashArray": "1", "fillOpacity": 0, "weight": 1},
+                style={
+                    "opacity": 1,
+                    "dashArray": "1",
+                    "fillOpacity": 0,
+                    "weight": 1,
+                },
                 name="Footprints",
             )
 
@@ -1847,7 +1883,10 @@ class Map(ipyleaflet.Map):
                 dict_values = image.sample(coordinate).first().toDictionary().getInfo()
                 band_values = list(dict_values.values())
                 title = "{}/{}: Spectral signature at ({}, {})".format(
-                    i + 1, iterations, round(latitudes[i], 2), round(longitudes[i], 2)
+                    i + 1,
+                    iterations,
+                    round(latitudes[i], 2),
+                    round(longitudes[i], 2),
                 )
                 marker.location = (latitudes[i], longitudes[i])
                 self.plot(
@@ -2062,7 +2101,13 @@ class Map(ipyleaflet.Map):
             raise ValueError(e)
 
     def ts_inspector(
-        self, left_ts, right_ts, left_names, right_names, left_vis={}, right_vis={}
+        self,
+        left_ts,
+        right_ts,
+        left_names,
+        right_names,
+        left_vis={},
+        right_vis={},
     ):
         """Creates a split-panel map for inspecting timeseries images.
 
@@ -2168,7 +2213,9 @@ class Map(ipyleaflet.Map):
                         right_image = ee.Image(right_image)
 
                     right_image = ee_tile_layer(
-                        right_image, right_vis, right_names[right_dropdown_index]
+                        right_image,
+                        right_vis,
+                        right_names[right_dropdown_index],
                     )
                     right_layer.url = right_image.url
                 except Exception as e:
@@ -2190,7 +2237,9 @@ class Map(ipyleaflet.Map):
     def basemap_demo(self):
         """A demo for using geemap basemaps."""
         dropdown = widgets.Dropdown(
-            options=list(ee_basemaps.keys()), value="HYBRID", description="Basemaps"
+            options=list(ee_basemaps.keys()),
+            value="HYBRID",
+            description="Basemaps",
         )
 
         def on_click(change):
@@ -2293,7 +2342,13 @@ class Map(ipyleaflet.Map):
                 print("The legend colors must be a list of tuples.")
                 return
         else:
-            legend_colors = ["#8DD3C7", "#FFFFB3", "#BEBADA", "#FB8072", "#80B1D3"]
+            legend_colors = [
+                "#8DD3C7",
+                "#FFFFB3",
+                "#BEBADA",
+                "#FB8072",
+                "#80B1D3",
+            ]
 
         if len(legend_keys) != len(legend_colors):
             print("The legend keys and values must be the same length.")
@@ -2327,7 +2382,12 @@ class Map(ipyleaflet.Map):
                     except Exception as e:
                         print(e)
 
-        allowed_positions = ["topleft", "topright", "bottomleft", "bottomright"]
+        allowed_positions = [
+            "topleft",
+            "topright",
+            "bottomleft",
+            "bottomright",
+        ]
         if position not in allowed_positions:
             print(
                 "The position must be one of the following: {}".format(
@@ -2502,7 +2562,11 @@ class Map(ipyleaflet.Map):
                         frame = Image.open(b)
                         frames.append(frame)
                     frames[0].save(
-                        f, format="GIF", save_all=True, append_images=frames[1:], loop=0
+                        f,
+                        format="GIF",
+                        save_all=True,
+                        append_images=frames[1:],
+                        loop=0,
                     )
                 else:
                     image.save(f, ext)
@@ -2691,7 +2755,8 @@ class Map(ipyleaflet.Map):
 
             if download:
                 link = create_download_link(
-                    in_gif, title="Click here to download the Landsat timelapse: "
+                    in_gif,
+                    title="Click here to download the Landsat timelapse: ",
                 )
                 display(link)
                 if nd_bands is not None:
@@ -2783,7 +2848,13 @@ class Map(ipyleaflet.Map):
             tool.value = False
 
     def add_raster(
-        self, image, bands=None, layer_name=None, colormap=None, x_dim="x", y_dim="y"
+        self,
+        image,
+        bands=None,
+        layer_name=None,
+        colormap=None,
+        x_dim="x",
+        y_dim="y",
     ):
         """Adds a local raster dataset to the map.
 
@@ -2798,7 +2869,7 @@ class Map(ipyleaflet.Map):
         try:
             import xarray_leaflet
 
-        except:
+        except Exception:
             # import platform
             # if platform.system() != "Windows":
             #     # install_from_github(
@@ -2813,7 +2884,8 @@ class Map(ipyleaflet.Map):
         import warnings
         import numpy as np
         import rioxarray
-        import xarray as xr
+
+        # import xarray as xr
         import matplotlib.pyplot as plt
 
         warnings.simplefilter("ignore")
@@ -3237,7 +3309,11 @@ class Map(ipyleaflet.Map):
 
                 if change["new"]:
                     linear_chk.value = False
-                    legend_vbox.children = [colormap_hbox, legend_title, legend_labels]
+                    legend_vbox.children = [
+                        colormap_hbox,
+                        legend_title,
+                        legend_labels,
+                    ]
                 else:
                     linear_chk.value = True
 
@@ -3512,7 +3588,11 @@ class Map(ipyleaflet.Map):
                 band1_dropdown.value = sel_bands[0]
                 band2_dropdown.value = sel_bands[1]
                 band3_dropdown.value = sel_bands[2]
-                bands_hbox.children = [band1_dropdown, band2_dropdown, band3_dropdown]
+                bands_hbox.children = [
+                    band1_dropdown,
+                    band2_dropdown,
+                    band3_dropdown,
+                ]
                 vis_widget.children = rgb_box
 
             def radio1_observer(sender):
@@ -3557,7 +3637,11 @@ class Map(ipyleaflet.Map):
                 radio1.index = None
                 radio1.observe(radio1_observer, names=["value"])
                 band1_dropdown.layout.width = dropdown_width
-                bands_hbox.children = [band1_dropdown, band2_dropdown, band3_dropdown]
+                bands_hbox.children = [
+                    band1_dropdown,
+                    band2_dropdown,
+                    band3_dropdown,
+                ]
                 palette.value = ""
                 palette.disabled = True
                 color_picker.disabled = True
@@ -3693,7 +3777,8 @@ class Map(ipyleaflet.Map):
                 layout=widgets.Layout(padding="0px"),
             )
             widgets.jslink(
-                (fill_color_opacity, "value"), (fill_color_opacity_label, "value")
+                (fill_color_opacity, "value"),
+                (fill_color_opacity_label, "value"),
             )
 
             color_picker = widgets.ColorPicker(

@@ -1,6 +1,6 @@
 """ This module extends the folium Map class. It is designed to be used in Google Colab, as Google Colab currently does not support ipyleaflet.
 """
-
+import os
 import ee
 import folium
 from folium import plugins
@@ -217,8 +217,8 @@ class Map(folium.Map):
         """
         try:
             ee_basemaps[mapTypeId].add_to(self)
-        except:
-            print(
+        except Exception:
+            raise Exception(
                 "Basemap can only be one of the following: {}".format(
                     ", ".join(ee_basemaps.keys())
                 )
@@ -234,8 +234,8 @@ class Map(folium.Map):
         """
         try:
             ee_basemaps[basemap].add_to(self)
-        except:
-            print(
+        except Exception:
+            raise Exception(
                 "Basemap can only be one of the following: {}".format(
                     ", ".join(ee_basemaps.keys())
                 )
@@ -420,8 +420,8 @@ class Map(folium.Map):
                 show=shown,
                 **kwargs,
             ).add_to(self)
-        except:
-            print("Failed to add the specified WMS TileLayer.")
+        except Exception:
+            raise Exception("Failed to add the specified WMS TileLayer.")
 
     def add_tile_layer(
         self,
@@ -460,8 +460,8 @@ class Map(folium.Map):
                 API_key=API_key,
                 **kwargs,
             ).add_to(self)
-        except:
-            print("Failed to add the specified TileLayer.")
+        except Exception:
+            raise Exception("Failed to add the specified TileLayer.")
 
     def add_COG_layer(
         self,
@@ -852,16 +852,15 @@ class Map(folium.Map):
 
         try:
             import datapane as dp
-        except Exception as e:
-            print(
-                "The datapane Python package is not installed. You need to install and authenticate datapane first."
-            )
+        except Exception:
             webbrowser.open_new_tab(
                 "https://docs.datapane.com/tutorials/tut-getting-started"
             )
-            return
+            raise ImportError(
+                "The datapane Python package is not installed. You need to install and authenticate datapane first."
+            )
 
-        import datapane as dp
+        # import datapane as dp
 
         # import logging
         # logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)

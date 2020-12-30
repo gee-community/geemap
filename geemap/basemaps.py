@@ -210,7 +210,7 @@ for item in basemaps.values():
         name = item["name"]
         basemap = "basemaps.{}".format(name)
         ee_basemaps[name] = basemap_to_tiles(eval(basemap))
-    except:
+    except Exception:
         for sub_item in item:
             name = item[sub_item]["name"]
             basemap = "basemaps.{}".format(name)

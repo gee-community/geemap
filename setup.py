@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """The setup script."""
-import os, platform
+import platform
 from os import path as op
 import io
 from setuptools import setup, find_packages
