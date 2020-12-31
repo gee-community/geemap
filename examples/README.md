@@ -68,7 +68,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 47. How to download image thumbnails from Earth Engine ([video](https://youtu.be/qwXZDSbfyE8) | [gif](https://i.imgur.com/gqr7CNz.gif) | [notebook](https://geemap.org/notebooks/47_image_thumbnails))
 48. How to add a draggable legend to folium maps ([video](https://youtu.be/-rO1MztlLMo) | [gif](https://i.imgur.com/i2Bye9X.gif) | [notebook](https://geemap.org/notebooks/48_folium_legend))
 49. How to add a colorbar to the map ([video](https://youtu.be/qiKns09X1Ao) | [gif](https://i.imgur.com/VpMq8M9.gif) | [notebook](https://geemap.org/notebooks/49_colorbar))
-50. How to create publication quality maps using cartoee (video | gif | [notebook](https://geemap.org/notebooks/50_cartoee_quickstart))
+50. How to create publication quality maps using cartoee ([video](https://youtu.be/t24_lpYA1ko) | [gif](https://i.imgur.com/fwCzZTi.gif) | [notebook](https://geemap.org/notebooks/50_cartoee_quickstart))
 51. How to create publication quality maps with customized projections (video | gif | [notebook](https://geemap.org/notebooks/50_cartoee_projections))
 52. How to create timelapse animations with customized projection, scale bar, and north arrow (video | [gif](https://i.imgur.com/MVQFyHN.gif) | [notebook](https://geemap.org/notebooks/52_cartoee_gif))
 53. How to change layer visualization interactively with a GUI (video | [gif](https://i.imgur.com/VqqlMSK.gif) | [notebook](https://geemap.org/notebooks/53_layer_vis))
