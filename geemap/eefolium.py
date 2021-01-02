@@ -395,8 +395,12 @@ class Map(folium.Map):
         control=True,
         shown=True,
         format="image/png",
+        transparent=False,
+        version="1.1.1",
+        styles="",
         **kwargs,
     ):
+
         """Add a WMS layer to the map.
 
         Args:
@@ -407,17 +411,24 @@ class Map(folium.Map):
             overlay (str, optional): Allows overlay. Defaults to True.
             control (str, optional): Adds the layer to the layer control. Defaults to True.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            format (str, optional): WMS image format (use ‘image/png’ for layers with transparency). Defaults to 'image/jpeg'.
+            format (str, optional): WMS image format (use ‘image/png’ for layers with transparency). Defaults to 'image/png'.
+            transparent (bool, optional): Whether the layer shall allow transparency. Defaults to False.
+            version (str, optional): Version of the WMS service to use. Defaults to "1.1.1".
+            styles (str, optional): Comma-separated list of WMS styles. Defaults to "".
         """
         try:
             folium.raster_layers.WmsTileLayer(
                 url=url,
                 layers=layers,
-                attr=attribution,
                 name=name,
+                attr=attribution,
                 overlay=overlay,
                 control=control,
                 show=shown,
+                styles=styles,
+                fmt=format,
+                transparent=transparent,
+                version=version,
                 **kwargs,
             ).add_to(self)
         except Exception:
