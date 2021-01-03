@@ -782,7 +782,7 @@ class Map(folium.Map):
 
         Args:
             in_shp (str): The input file path to the shapefile.
-            name_name (str, optional): The layer name to be used. Defaults to "Untitled".
+            name (str, optional): The layer name to be used. Defaults to "Untitled".
 
         Raises:
             FileNotFoundError: The provided shapefile could not be found.

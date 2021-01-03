@@ -6707,7 +6707,7 @@ def kml_to_geojson(in_kml, out_json):
 
     Args:
         in_kml (str): The file path to the input KML.
-        out_shp (str): The file path to the output GeoJSON.
+        out_json (str): The file path to the output GeoJSON.
 
     Raises:
         FileNotFoundError: The input KML could not be found.
