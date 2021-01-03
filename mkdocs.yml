@@ -30,6 +30,11 @@ markdown_extensions:
     - attr_list
     - toc:
           permalink: true
+
+google_analytics:
+    - UA-186406134-1
+    - auto
+
 nav:
     - Home: index.md
     - Installation: installation.md
