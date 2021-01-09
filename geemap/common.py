@@ -1109,13 +1109,14 @@ def filter_polygons(ftr):
     return ee.Feature(polygons).copyProperties(ftr)
 
 
-def ee_export_vector(ee_object, filename, selectors=None):
+def ee_export_vector(ee_object, filename, selectors=None, verbose=True):
     """Exports Earth Engine FeatureCollection to other formats, including shp, csv, json, kml, and kmz.
 
     Args:
         ee_object (object): ee.FeatureCollection to export.
         filename (str): Output file name.
         selectors (list, optional): A list of attributes to export. Defaults to None.
+        verbose (bool, optional): Whether to print out descriptive text.
     """
     import requests
     import zipfile
@@ -1170,11 +1171,13 @@ def ee_export_vector(ee_object, filename, selectors=None):
                 )
 
     try:
-        print("Generating URL ...")
+        if verbose:
+            print("Generating URL ...")
         url = ee_object.getDownloadURL(
             filetype=filetype, selectors=selectors, filename=name
         )
-        print("Downloading data from {}\nPlease wait ...".format(url))
+        if verbose:
+            print("Downloading data from {}\nPlease wait ...".format(url))
         r = requests.get(url, stream=True)
 
         if r.status_code != 200:
@@ -1205,8 +1208,8 @@ def ee_export_vector(ee_object, filename, selectors=None):
             z.close()
             os.remove(filename)
             filename = filename.replace(".zip", ".shp")
-
-        print("Data downloaded to {}".format(filename))
+        if verbose:
+            print("Data downloaded to {}".format(filename))
     except Exception as e:
         raise ValueError(e)
 
@@ -1337,19 +1340,24 @@ def ee_export_geojson(ee_object, filename=None, selectors=None):
     return geojson
 
 
-def ee_to_shp(ee_object, filename, selectors=None):
+def ee_to_shp(ee_object, filename, selectors=None, verbose=True):
     """Downloads an ee.FeatureCollection as a shapefile.
 
     Args:
         ee_object (object): ee.FeatureCollection
         filename (str): The output filepath of the shapefile.
         selectors (list, optional): A list of attributes to export. Defaults to None.
+        verbose (bool, optional): Whether to print out descriptive text.
+
     """
     # ee_initialize()
     try:
         if filename.lower().endswith(".shp"):
             ee_export_vector(
-                ee_object=ee_object, filename=filename, selectors=selectors
+                ee_object=ee_object,
+                filename=filename,
+                selectors=selectors,
+                verbose=verbose,
             )
         else:
             print("The filename must end with .shp")
@@ -1358,19 +1366,24 @@ def ee_to_shp(ee_object, filename, selectors=None):
         print(e)
 
 
-def ee_to_csv(ee_object, filename, selectors=None):
+def ee_to_csv(ee_object, filename, selectors=None, verbose=True):
     """Downloads an ee.FeatureCollection as a CSV file.
 
     Args:
         ee_object (object): ee.FeatureCollection
         filename (str): The output filepath of the CSV file.
         selectors (list, optional): A list of attributes to export. Defaults to None.
+        verbose (bool, optional): Whether to print out descriptive text.
+
     """
     # ee_initialize()
     try:
         if filename.lower().endswith(".csv"):
             ee_export_vector(
-                ee_object=ee_object, filename=filename, selectors=selectors
+                ee_object=ee_object,
+                filename=filename,
+                selectors=selectors,
+                verbose=verbose,
             )
         else:
             print("The filename must end with .csv")
@@ -4214,6 +4227,7 @@ def file_browser(
     search_description=None,
     use_import=False,
     return_sep_widgets=False,
+    node_icon="file",
 ):
     """Creates a simple file browser and text editor.
 
@@ -4420,7 +4434,7 @@ def file_browser(
             parent_node.opened = False
             for f_name in f_names:
                 node = Node(f_name)
-                node.icon = "file"
+                node.icon = node_icon
                 full_path = os.path.join(root, f_name)
                 tree_dict[full_path] = node
                 parent_node.add_node(node)
@@ -6769,3 +6783,111 @@ def kml_to_ee(in_kml):
     ee_object = geojson_to_ee(out_json)
     os.remove(out_json)
     return ee_object
+
+
+def csv_to_pandas(in_csv, **kwargs):
+    """Converts a CSV file to pandas dataframe.
+
+    Args:
+        in_csv (str): File path to the input CSV.
+
+    Returns:
+        pd.DataFrame: pandas DataFrame
+    """
+    import pandas as pd
+
+    try:
+        return pd.read_csv(in_csv, **kwargs)
+    except Exception as e:
+        raise Exception(e)
+
+
+def ee_to_pandas(ee_object, selectors=None, verbose=False, **kwargs):
+    """Converts an ee.FeatureCollection to pandas dataframe.
+
+    Args:
+        ee_object (ee.FeatureCollection): ee.FeatureCollection.
+        selectors (list, optional): A list of attributes to export. Defaults to None.
+        verbose (bool, optional): Whether to print out descriptive text. Defaults to False.
+
+    Raises:
+        TypeError: ee_object must be an ee.FeatureCollection
+
+    Returns:
+        pd.DataFrame: pandas DataFrame
+    """
+    import pandas as pd
+
+    if not isinstance(ee_object, ee.FeatureCollection):
+        raise TypeError("ee_object must be an ee.FeatureCollection")
+
+    out_csv = os.path.join(os.getcwd(), random_string(6) + ".csv")
+
+    try:
+        ee_to_csv(ee_object, out_csv, selectors=selectors, verbose=verbose)
+        df = csv_to_pandas(out_csv, **kwargs)
+        os.remove(out_csv)
+        return df
+    except Exception as e:
+        raise Exception(e)
+
+
+def shp_to_geopandas(in_shp):
+    """Converts a shapefile to Geopandas dataframe.
+
+    Args:
+        in_shp (str): File path to the input shapefile.
+
+    Raises:
+        FileNotFoundError: The provided shp could not be found.
+
+    Returns:
+        gpd.GeoDataFrame: geopandas.GeoDataFrame
+    """
+    import warnings
+
+    warnings.filterwarnings("ignore")
+
+    in_shp = os.path.abspath(in_shp)
+    if not os.path.exists(in_shp):
+        raise FileNotFoundError("The provided shp could not be found.")
+
+    check_package(name="geopandas", URL="https://geopandas.org")
+
+    import geopandas as gpd
+
+    try:
+        return gpd.read_file(in_shp)
+    except Exception as e:
+        raise Exception(e)
+
+
+def ee_to_geopandas(ee_object, selectors=None, verbose=False):
+    """Converts an ee.FeatureCollection to Geopandas dataframe.
+
+    Args:
+        ee_object (ee.FeatureCollection): ee.FeatureCollection.
+        selectors (list, optional): A list of attributes to export. Defaults to None.
+        verbose (bool, optional): Whether to print out descriptive text. Defaults to False.
+
+    Raises:
+        TypeError: ee_object must be an ee.FeatureCollection.
+
+    Returns:
+        gpd.GeoDataFrame: geopandas.GeoDataFrame
+    """
+    from pathlib import Path
+
+    if not isinstance(ee_object, ee.FeatureCollection):
+        raise TypeError("ee_object must be an ee.FeatureCollection")
+
+    out_shp = os.path.join(os.getcwd(), random_string(6) + ".shp")
+
+    ee_to_shp(ee_object, out_shp, selectors=selectors, verbose=verbose)
+    df = shp_to_geopandas(out_shp)
+
+    files = Path(os.getcwd()).rglob(os.path.basename(out_shp)[:-4] + "*")
+    for file in files:
+        os.remove(os.path.join(os.getcwd(), str(file)))
+
+    return df
