@@ -1109,7 +1109,7 @@ def filter_polygons(ftr):
     return ee.Feature(polygons).copyProperties(ftr)
 
 
-def ee_export_vector(ee_object, filename, selectors=None, verbose=True):
+def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip=False):
     """Exports Earth Engine FeatureCollection to other formats, including shp, csv, json, kml, and kmz.
 
     Args:
@@ -1117,6 +1117,7 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True):
         filename (str): Output file name.
         selectors (list, optional): A list of attributes to export. Defaults to None.
         verbose (bool, optional): Whether to print out descriptive text.
+        keep_zip (bool, optional): Whether to keep the downloaded shapefile as a zip file.
     """
     import requests
     import zipfile
@@ -1206,7 +1207,8 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True):
             z = zipfile.ZipFile(filename)
             z.extractall(os.path.dirname(filename))
             z.close()
-            os.remove(filename)
+            if not keep_zip:
+                os.remove(filename)
             filename = filename.replace(".zip", ".shp")
         if verbose:
             print("Data downloaded to {}".format(filename))
@@ -1340,7 +1342,7 @@ def ee_export_geojson(ee_object, filename=None, selectors=None):
     return geojson
 
 
-def ee_to_shp(ee_object, filename, selectors=None, verbose=True):
+def ee_to_shp(ee_object, filename, selectors=None, verbose=True, keep_zip=False):
     """Downloads an ee.FeatureCollection as a shapefile.
 
     Args:
@@ -1348,7 +1350,7 @@ def ee_to_shp(ee_object, filename, selectors=None, verbose=True):
         filename (str): The output filepath of the shapefile.
         selectors (list, optional): A list of attributes to export. Defaults to None.
         verbose (bool, optional): Whether to print out descriptive text.
-
+        keep_zip (bool, optional): Whether to keep the downloaded shapefile as a zip file.
     """
     # ee_initialize()
     try:
@@ -1358,6 +1360,7 @@ def ee_to_shp(ee_object, filename, selectors=None, verbose=True):
                 filename=filename,
                 selectors=selectors,
                 verbose=verbose,
+                keep_zip=keep_zip,
             )
         else:
             print("The filename must end with .shp")
