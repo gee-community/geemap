@@ -119,3 +119,38 @@ nav:
           - notebooks/56_local_data.ipynb
           - notebooks/57_cartoee_blend.ipynb
           - notebooks/58_shp_kml.ipynb
+          - miscellaneous:
+                - notebooks/cartoee_colab.ipynb
+                - notebooks/cartoee_projections.ipynb
+                - notebooks/cartoee_quickstart.ipynb
+                - notebooks/cartoee_scalebar.ipynb
+                - notebooks/cartoee_subplots.ipynb
+                - notebooks/file_browser.ipynb
+                - notebooks/geemap_and_earthengine.ipynb
+                - notebooks/geemap_and_folium.ipynb
+                - notebooks/geemap_and_ipyleaflet.ipynb
+                - notebooks/geemap_and_ipywidgets.ipynb
+                - notebooks/geemap_colab.ipynb
+                - notebooks/geopandas.ipynb
+                - notebooks/image_overlay.ipynb
+                - notebooks/ipyleaflet_draw_control.ipynb
+                - notebooks/ipyleaflet_tutorials.ipynb
+                - notebooks/ipywidgets_demo.ipynb
+                - notebooks/kml_kmz.ipynb
+                - notebooks/local_rf_training.ipynb
+                - notebooks/mouse_click_coordinates.ipynb
+                - notebooks/netcdf.ipynb
+                - notebooks/notebook_template.ipynb
+                - notebooks/oil_palm_and_rubber_plantation.ipynb
+                - notebooks/qgis_layer_style_file.ipynb
+                - notebooks/select_features.ipynb
+                - notebooks/select_features_old.ipynb
+                - notebooks/surface_water_mapping.ipynb
+                - notebooks/template.ipynb
+                - notebooks/tn_surface_water.ipynb
+                - notebooks/us_census_data.ipynb
+                - notebooks/usda_naip_imagery.ipynb
+                - notebooks/velocity.ipynb
+                - notebooks/video_overlay.ipynb
+                - notebooks/water_app.ipynb
+                - notebooks/xy_to_points.ipynb
