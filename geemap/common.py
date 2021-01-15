@@ -6788,6 +6788,32 @@ def kml_to_ee(in_kml):
     return ee_object
 
 
+def kmz_to_ee(in_kmz):
+    """Converts a KMZ to ee.FeatureColleciton.
+
+    Args:
+        in_kmz (str): The file path to the input KMZ.
+
+    Raises:
+        FileNotFoundError: The input KMZ could not be found.
+
+    Returns:
+        object: ee.FeatureCollection
+    """
+    in_kmz = os.path.abspath(in_kmz)
+    if not os.path.exists(in_kmz):
+        raise FileNotFoundError("The input KMZ could not be found.")
+
+    out_dir = os.path.dirname(in_kmz)
+    out_kml = os.path.join(out_dir, "doc.kml")
+    with zipfile.ZipFile(in_kmz, "r") as zip_ref:
+        zip_ref.extractall(out_dir)
+
+    fc = kml_to_ee(out_kml)
+    os.remove(out_kml)
+    return fc
+
+
 def csv_to_pandas(in_csv, **kwargs):
     """Converts a CSV file to pandas dataframe.
 
