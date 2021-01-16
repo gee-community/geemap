@@ -191,6 +191,7 @@ class Map(folium.Map):
             kwargs["plugin_LayerControl"] = False
 
         super().__init__(**kwargs)
+        self.baseclass = "folium"
 
         if kwargs.get("add_google_map"):
             ee_basemaps["ROADMAP"].add_to(self)

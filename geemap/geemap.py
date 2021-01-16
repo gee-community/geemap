@@ -107,6 +107,7 @@ class Map(ipyleaflet.Map):
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
+        self.baseclass = "ipyleaflet"
         self.layout.height = kwargs["height"]
 
         self.clear_controls()
@@ -975,11 +976,14 @@ class Map(ipyleaflet.Map):
                     print(
                         f"Point ({latlon[1]:.4f}, {latlon[0]:.4f}) at {int(self.get_scale())}m/px"
                     )
+                    xy = ee.Geometry.Point(latlon[::-1])
                     for index, ee_object in enumerate(layers):
-                        xy = ee.Geometry.Point(latlon[::-1])
                         layer_names = self.ee_layer_names
                         layer_name = layer_names[index]
                         object_type = ee_object.__class__.__name__
+
+                        if not self.ee_layer_dict[layer_name]["ee_layer"].visible:
+                            continue
 
                         try:
                             if isinstance(ee_object, ee.ImageCollection):
@@ -1252,7 +1256,8 @@ class Map(ipyleaflet.Map):
             self.remove_layer(layer)
 
         self.ee_layers.append(ee_object)
-        self.ee_layer_names.append(name)
+        if name not in self.ee_layer_names:
+            self.ee_layer_names.append(name)
         self.ee_layer_dict[name] = {
             "ee_object": ee_object,
             "ee_layer": tile_layer,

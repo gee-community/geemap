@@ -807,7 +807,7 @@ def xy_to_points(in_csv, latitude="latitude", longitude="longitude"):
         raise Exception("The provided csv file does not exist.")
 
     points = []
-    with open(in_csv) as csvfile:
+    with open(in_csv, encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             lat, lon = float(row[latitude]), float(row[longitude])
@@ -846,7 +846,7 @@ def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude
     if not os.path.exists(in_csv):
         raise Exception("The provided csv file does not exist.")
 
-    with open(in_csv) as csv_file:
+    with open(in_csv, encoding="utf-8") as csv_file:
         reader = csv.DictReader(csv_file)
         fields = reader.fieldnames
         xfield = fields.index(longitude)
@@ -6920,3 +6920,25 @@ def ee_to_geopandas(ee_object, selectors=None, verbose=False):
         os.remove(os.path.join(os.getcwd(), str(file)))
 
     return df
+
+
+def delete_shp(in_shp, verbose=True):
+    """Deletes a shapefile.
+
+    Args:
+        in_shp (str): The input shapefile to delete.
+        verbose (bool, optional): Whether to print out descriptive text. Defaults to True.
+    """
+    from pathlib import Path
+
+    in_shp = os.path.abspath(in_shp)
+    in_dir = os.path.dirname(in_shp)
+    basename = os.path.basename(in_shp).replace(".shp", "")
+
+    files = Path(in_dir).rglob(basename + ".*")
+
+    for file in files:
+        filepath = os.path.join(in_dir, str(file))
+        os.remove(filepath)
+        if verbose:
+            print(f"Deleted {filepath}")
