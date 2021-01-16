@@ -882,7 +882,7 @@ def csv_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude"):
 
     try:
         points = shp.Writer(out_shp, shapeType=shp.POINT)
-        with open(in_csv) as csvfile:
+        with open(in_csv, encoding="utf-8") as csvfile:
             csvreader = csv.DictReader(csvfile)
             header = csvreader.fieldnames
             [points.field(field) for field in header]
