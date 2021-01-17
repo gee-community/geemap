@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.8.8 - January 17, 2021
+
+**New Features**:
+
+-   Added support for converting Pandas/GeoPandas DataFrame to ee.FeatureCollection and vice versa [#268](https://github.com/giswqs/geemap/issues/268)
+-   Added KML/KMZ support [#247](https://github.com/giswqs/geemap/issues/247)
+-   Added Code of Conduct
+
+**Improvement**:
+
+-   Fixed CSV encoding bug [#267](https://github.com/giswqs/geemap/issues/267)
+-   Improved downloading shp support [#263](https://github.com/giswqs/geemap/issues/263)
+-   Fixed WMS bug [#250](https://github.com/giswqs/geemap/discussions/250)
+-   Added cartoee subplots example [#238](https://github.com/giswqs/geemap/discussions/238)
+-   Reformatted code using black formatter
+-   Improved support for shp and geojson [#244](https://github.com/giswqs/geemap/issues/244)
+-   Fixed layer control bug
+-   Added cartoee blend tutorial [#241](https://github.com/giswqs/geemap/issues/241)
+-   Improved drawing tools [#240](https://github.com/giswqs/geemap/issues/240)
+-   Improved Inspector tool
+
 ## v0.8.7 - December 27, 2020
 
 **New Features**:
