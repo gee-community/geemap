@@ -2,6 +2,7 @@
 """
 
 import csv
+from logging import exception
 import math
 import os
 import subprocess
@@ -904,7 +905,7 @@ def geojson_to_ee(geo_json, geodesic=True):
 
     Args:
         geo_json (dict): A geojson geometry dictionary or file path.
-
+        geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
     Returns:
         ee_object: An ee.Geometry object
     """
@@ -939,11 +940,11 @@ def geojson_to_ee(geo_json, geodesic=True):
                 geom = ee.Geometry(geo_json["geometry"], "", geodesic)
             return geom
         else:
-            print("Could not convert the geojson to ee.Geometry()")
+            raise Exception("Could not convert the geojson to ee.Geometry()")
 
     except Exception as e:
         print("Could not convert the geojson to ee.Geometry()")
-        print(e)
+        raise Exception(e)
 
 
 def ee_to_geojson(ee_object, out_json=None):
@@ -6942,3 +6943,60 @@ def delete_shp(in_shp, verbose=True):
         os.remove(filepath)
         if verbose:
             print(f"Deleted {filepath}")
+
+
+def pandas_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
+    """Converts a pandas DataFrame to ee.FeatureCollection.
+
+    Args:
+        df (pandas.DataFrame): An input pandas.DataFrame.
+        latitude (str, optional): Column name for the latitude column. Defaults to 'latitude'.
+        longitude (str, optional): Column name for the longitude column. Defaults to 'longitude'.
+
+    Raises:
+        TypeError: The input data type must be pandas.DataFrame.
+
+    Returns:
+        ee.FeatureCollection: The ee.FeatureCollection converted from the input pandas DataFrame.
+    """
+    import pandas as pd
+
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError("The input data type must be pandas.DataFrame.")
+
+    out_csv = os.path.join(os.getcwd(), random_string(6) + ".csv")
+    df.to_csv(out_csv, **kwargs)
+
+    fc = xy_to_points(out_csv, latitude=latitude, longitude=longitude)
+    os.remove(out_csv)
+
+    return fc
+
+
+def geopandas_to_ee(gdf, geodesic=True):
+    """Converts a GeoPandas GeoDataFrame to ee.FeatureCollection.
+
+    Args:
+        gdf (geopandas.GeoDataFrame): The input geopandas.GeoDataFrame to be converted ee.FeatureCollection.
+        geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.. Defaults to True.
+
+    Raises:
+        TypeError: The input data type must be geopandas.GeoDataFrame.
+
+    Returns:
+        ee.FeatureCollection: The output ee.FeatureCollection converted from the input geopandas.GeoDataFrame.
+    """
+    check_package(name="geopandas", URL="https://geopandas.org")
+
+    import geopandas as gpd
+
+    if not isinstance(gdf, gpd.GeoDataFrame):
+        raise TypeError("The input data type must be geopandas.GeoDataFrame.")
+
+    out_json = os.path.join(os.getcwd(), random_string(6) + ".geojson")
+    gdf.to_file(out_json, driver="GeoJSON")
+
+    fc = geojson_to_ee(out_json, geodesic=geodesic)
+    os.remove(out_json)
+
+    return fc
