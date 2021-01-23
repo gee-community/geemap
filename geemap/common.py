@@ -3831,7 +3831,7 @@ def search_api_tree(keywords, api_tree):
     sub_tree = Tree()
 
     for key in api_tree.keys():
-        if keywords in key:
+        if keywords.lower() in key.lower():
             sub_tree.add_node(api_tree[key])
 
     return sub_tree

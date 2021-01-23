@@ -8,7 +8,7 @@ geeadd>=0.5.1
 geocoder
 ipyevents
 ipyfilechooser
-ipyleaflet>=0.13.3
+ipyleaflet<=0.13.3
 ipynb-py-convert
 ipytree
 matplotlib
@@ -20,3 +20,4 @@ pycrs
 pyshp
 voila
 whitebox
+whiteboxgui
