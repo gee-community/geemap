@@ -630,10 +630,18 @@ class Map(ipyleaflet.Map):
                 "name": "export_data",
                 "tooltip": "Export Earth Engine data",
             },
+            "gears": {
+                "name": "whitebox",
+                "tooltip": "WhiteboxTools for local geoprocessing",
+            },
+            "google": {
+                "name": "geetoolbox",
+                "tooltip": "GEE Toolbox for cloud computing",
+            },
         }
 
         if kwargs["use_voila"]:
-            voila_tools = ["camera", "folder-open", "cloud-download"]
+            voila_tools = ["camera", "folder-open", "cloud-download", "gears"]
 
             for item in voila_tools:
                 if item in tools.keys():
@@ -699,14 +707,14 @@ class Map(ipyleaflet.Map):
                     with tool_output:
                         tool_output.clear_output()
                         display(save_map_widget)
-                if tool_name == "eraser":
+                elif tool_name == "eraser":
                     self.remove_drawn_features()
                     tool.value = False
-                if tool_name == "inspector":
+                elif tool_name == "inspector":
                     self.inspector_checked = tool.value
                     if not self.inspector_checked:
                         inspector_output.clear_output()
-                if tool_name == "plotting":
+                elif tool_name == "plotting":
                     self.plot_checked = True
                     plot_dropdown_widget = widgets.Dropdown(
                         options=list(self.ee_raster_layer_names),
@@ -721,10 +729,22 @@ class Map(ipyleaflet.Map):
                     if self.draw_control in self.controls:
                         self.remove_control(self.draw_control)
                     self.add_control(self.draw_control_lite)
-                if tool_name == "open_data":
+                elif tool_name == "open_data":
                     from .toolbar import open_data_widget
 
                     open_data_widget(self)
+                elif tool_name == "whitebox":
+                    import whiteboxgui.whiteboxgui as wbt
+
+                    tools_dict = wbt.get_wbt_dict()
+                    wbt_toolbox = wbt.build_toolbox(
+                        tools_dict, max_width="800px", max_height="500px"
+                    )
+                    wbt_control = ipyleaflet.WidgetControl(
+                        widget=wbt_toolbox, position="bottomright"
+                    )
+                    self.whitebox = wbt_control
+                    self.add_control(wbt_control)
 
             else:
                 tool = change["owner"]
@@ -763,6 +783,9 @@ class Map(ipyleaflet.Map):
                     if self.draw_control_lite in self.controls:
                         self.remove_control(self.draw_control_lite)
                     self.add_control(self.draw_control)
+                elif tool_name == "whitebox":
+                    if self.whitebox is not None and self.whitebox in self.controls:
+                        self.remove_control(self.whitebox)
 
         for tool in toolbar_grid.children:
             tool.observe(tool_callback, "value")
