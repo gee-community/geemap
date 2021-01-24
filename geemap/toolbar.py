@@ -39,8 +39,15 @@ def open_data_widget(m):
         description="Enter a layer name:",
         tooltip="Enter a layer name for the selected file",
         style=style,
-        layout=widgets.Layout(width="454px"),
+        layout=widgets.Layout(width="454px", padding="0px 0px 0px 5px"),
     )
+
+    convert_bool = widgets.Checkbox(
+        description="Convert to ee.FeatureCollection?",
+        indent=False,
+        layout=widgets.Layout(padding="0px 0px 0px 5px"),
+    )
+    convert_hbox = widgets.HBox([convert_bool])
 
     ok_cancel = widgets.ToggleButtons(
         value=None,
@@ -84,7 +91,7 @@ def open_data_widget(m):
     raster_options = widgets.HBox()
 
     main_widget = widgets.VBox(
-        [file_type, file_chooser, layer_name, raster_options, ok_cancel]
+        [file_type, file_chooser, layer_name, convert_hbox, raster_options, ok_cancel]
     )
 
     tool_output.clear_output()
@@ -112,9 +119,11 @@ def open_data_widget(m):
         if change["new"] == "Shapefile":
             file_chooser.filter_pattern = "*.shp"
             raster_options.children = []
+            convert_hbox.children = [convert_bool]
         elif change["new"] == "GeoJSON":
             file_chooser.filter_pattern = "*.geojson"
             raster_options.children = []
+            convert_hbox.children = [convert_bool]
         elif change["new"] == "GeoTIFF":
             import matplotlib.pyplot as plt
 
@@ -122,6 +131,7 @@ def open_data_widget(m):
             colormap.options = plt.colormaps()
             colormap.value = "terrain"
             raster_options.children = [bands, colormap, x_dim, y_dim]
+            convert_hbox.children = []
 
     def ok_cancel_clicked(change):
         if change["new"] == "Apply":
@@ -132,13 +142,23 @@ def open_data_widget(m):
                 ext = os.path.splitext(file_path)[1]
                 with tool_output:
                     if ext.lower() == ".shp":
-                        ee_object = shp_to_ee(file_path)
-                        m.addLayer(ee_object, {}, layer_name.value)
-                        m.centerObject(ee_object)
+                        if convert_bool.value:
+                            ee_object = shp_to_ee(file_path)
+                            m.addLayer(ee_object, {}, layer_name.value)
+                            m.centerObject(ee_object)
+                        else:
+                            m.add_shapefile(
+                                file_path, style=None, layer_name=layer_name.value
+                            )
                     elif ext.lower() == ".geojson":
-                        ee_object = geojson_to_ee(file_path)
-                        m.addLayer(ee_object, {}, layer_name.value)
-                        m.centerObject(ee_object)
+                        if convert_bool.value:
+                            ee_object = geojson_to_ee(file_path)
+                            m.addLayer(ee_object, {}, layer_name.value)
+                            m.centerObject(ee_object)
+                        else:
+                            m.add_geojson(
+                                file_path, style=None, layer_name=layer_name.value
+                            )
                     elif ext.lower() == ".tif":
                         sel_bands = [int(b.strip()) for b in bands.value.split(",")]
                         m.add_raster(

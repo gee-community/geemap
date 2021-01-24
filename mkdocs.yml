@@ -119,6 +119,7 @@ nav:
           - notebooks/56_local_data.ipynb
           - notebooks/57_cartoee_blend.ipynb
           - notebooks/58_shp_kml.ipynb
+          - notebooks/59_whitebox.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_projections.ipynb
