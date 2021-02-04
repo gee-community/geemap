@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.8.9 - February 4, 2021
+
+**New Features**:
+
+-   Added [whiteboxgui](https://github.com/giswqs/whiteboxgui) with 477 geoprocessing tools [#254](https://github.com/giswqs/geemap/issues/254)
+
+**Improvement**:
+
+-   Fixed file open encoding bug
+
 ## v0.8.8 - January 17, 2021
 
 **New Features**:
