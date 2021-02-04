@@ -310,7 +310,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
     math_import_str = ""
 
     lines = []
-    with open(in_file) as f:
+    with open(in_file, encoding="utf-8") as f:
         lines = f.readlines()
 
         math_import = use_math(lines)
@@ -333,7 +333,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
         # function_defs = []
         output = header + "\n"
 
-        with open(in_file) as f:
+        with open(in_file, encoding="utf-8") as f:
             lines = f.readlines()
 
             # print('Processing {}'.format(in_file))
@@ -519,7 +519,7 @@ def js_snippet_to_py(
             out_lines.append("Map = geemap.Map()\n")
         # if import_ee:
         #     out_lines.append("ee.Initialize()\n")
-        with open(out_py) as f:
+        with open(out_py, encoding="utf-8") as f:
             lines = f.readlines()
             for index, line in enumerate(lines):
                 if index < (len(lines) - 1):
@@ -606,7 +606,7 @@ def remove_qgis_import(in_file):
     """
     in_file = os.path.abspath(in_file)
     start_index = 0
-    with open(in_file) as f:
+    with open(in_file, encoding="utf-8") as f:
         lines = f.readlines()
         for index, line in enumerate(lines):
             if "from ee_plugin import Map" in line:
@@ -697,7 +697,7 @@ def template_header(in_template):
     template_lines = []
     header_end_index = 0
 
-    with open(in_template) as f:
+    with open(in_template, encoding="utf-8") as f:
         template_lines = f.readlines()
         for index, line in enumerate(template_lines):
             if "## Add Earth Engine Python script" in line:
@@ -721,7 +721,7 @@ def template_footer(in_template):
     template_lines = []
     footer_start_index = 0
 
-    with open(in_template) as f:
+    with open(in_template, encoding="utf-8") as f:
         template_lines = f.readlines()
         for index, line in enumerate(template_lines):
             if "## Display Earth Engine data layers" in line:
@@ -896,7 +896,7 @@ def update_nb_header(in_file, github_username=None, github_repo=None):
 
     output_lines = []
 
-    with open(in_file) as f:
+    with open(in_file, encoding="utf-8") as f:
         lines = f.readlines()
         start_line_index = 2
         start_char_index = lines[start_line_index].index("{")
@@ -1032,7 +1032,7 @@ def download_gee_app(url, out_file=None):
 
     with open(out_file_path, "w") as f1:
 
-        with open(json_path) as f2:
+        with open(json_path, encoding="utf-8") as f2:
             lines = f2.readlines()
             for line in lines:
                 # print(line)
