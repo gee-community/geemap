@@ -19,5 +19,4 @@ pillow
 pycrs
 pyshp
 voila
-whitebox
 whiteboxgui
