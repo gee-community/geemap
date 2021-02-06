@@ -195,3 +195,48 @@ def open_data_widget(m):
 
     m.add_control(tool_output_ctrl)
     m.tool_output_ctrl = tool_output_ctrl
+
+
+def change_basemap(m):
+    """Widget for change basemaps.
+
+    Args:
+        m (object): geemap.Map()
+    """
+    from .basemaps import ee_basemaps
+
+    dropdown = widgets.Dropdown(
+        options=list(ee_basemaps.keys()),
+        value="ROADMAP",
+        layout=widgets.Layout(width="200px")
+        # description="Basemaps",
+    )
+
+    close_btn = widgets.Button(
+        icon="times",
+        tooltip="Close the basemap widget",
+        button_style="primary",
+        layout=widgets.Layout(width="32px"),
+    )
+
+    basemap_widget = widgets.HBox([dropdown, close_btn])
+
+    def on_click(change):
+        basemap_name = change["new"]
+
+        if len(m.layers) == 1:
+            old_basemap = m.layers[0]
+        else:
+            old_basemap = old_basemap = m.layers[1]
+        m.substitute_layer(old_basemap, ee_basemaps[basemap_name])
+
+    dropdown.observe(on_click, "value")
+
+    def close_click(change):
+        m.toolbar_reset()
+        basemap_widget.close()
+
+    close_btn.on_click(close_click)
+
+    basemap_control = WidgetControl(widget=basemap_widget, position="topright")
+    m.add_control(basemap_control)
