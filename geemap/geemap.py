@@ -59,7 +59,7 @@ class Map(ipyleaflet.Map):
         else:
             kwargs["zoom"] = zoom
 
-        if "add_google_map" not in kwargs.keys():
+        if "add_google_map" not in kwargs.keys() and "basemap" not in kwargs.keys():
             kwargs["add_google_map"] = True
         if "scroll_wheel_zoom" not in kwargs.keys():
             kwargs["scroll_wheel_zoom"] = True
@@ -101,6 +101,13 @@ class Map(ipyleaflet.Map):
             kwargs["attribution_ctrl"] = True
         if "use_voila" not in kwargs.keys():
             kwargs["use_voila"] = False
+
+        if (
+            "basemap" in kwargs.keys()
+            and isinstance(kwargs["basemap"], str)
+            and kwargs["basemap"] in ee_basemaps.keys()
+        ):
+            kwargs["basemap"] = ee_basemaps[kwargs["basemap"]]
 
         if os.environ.get("USE_VOILA") is not None:
             kwargs["use_voila"] = True
@@ -1393,7 +1400,11 @@ class Map(ipyleaflet.Map):
             basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'HYBRID'.
         """
         try:
-            self.add_layer(ee_basemaps[basemap])
+            if (
+                basemap in ee_basemaps.keys()
+                and ee_basemaps[basemap] not in self.layers
+            ):
+                self.add_layer(ee_basemaps[basemap])
 
             # draw_layer_index = self.find_layer_index(name="Drawn Features")
             # if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
