@@ -645,6 +645,14 @@ class Map(ipyleaflet.Map):
                 "name": "geetoolbox",
                 "tooltip": "GEE Toolbox for cloud computing",
             },
+            "map": {
+                "name": "basemap",
+                "tooltip": "Change basemap",
+            },
+            "question": {
+                "name": "help",
+                "tooltip": "Get help",
+            },
         }
 
         if kwargs["use_voila"]:
@@ -752,7 +760,15 @@ class Map(ipyleaflet.Map):
                     )
                     self.whitebox = wbt_control
                     self.add_control(wbt_control)
+                elif tool_name == "basemap":
+                    from .toolbar import change_basemap
 
+                    change_basemap(self)
+                elif tool_name == "help":
+                    import webbrowser
+
+                    webbrowser.open_new_tab("https://geemap.org")
+                    current_tool.value = False
             else:
                 tool = change["owner"]
                 tool_name = tools[tool.icon]["name"]
