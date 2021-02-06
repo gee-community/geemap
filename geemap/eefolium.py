@@ -175,7 +175,7 @@ class Map(folium.Map):
         else:
             kwargs["zoom_start"] = zoom
 
-        if "add_google_map" not in kwargs.keys():
+        if "add_google_map" not in kwargs.keys() and "basemap" not in kwargs.keys():
             kwargs["add_google_map"] = True
         if "plugin_LatLngPopup" not in kwargs.keys():
             kwargs["plugin_LatLngPopup"] = True
@@ -195,6 +195,8 @@ class Map(folium.Map):
 
         if kwargs.get("add_google_map"):
             ee_basemaps["ROADMAP"].add_to(self)
+        if kwargs.get("basemap"):
+            ee_basemaps[kwargs.get("basemap")].add_to(self)
         if kwargs.get("plugin_LatLngPopup"):
             folium.LatLngPopup().add_to(self)
         if kwargs.get("plugin_Fullscreen"):
