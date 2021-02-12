@@ -28,6 +28,9 @@ plugins:
 
 markdown_extensions:
     - attr_list
+    - pymdownx.superfences
+    - pymdownx.highlight:
+          linenums: true
     - toc:
           permalink: true
 
@@ -40,7 +43,8 @@ nav:
     - Installation: installation.md
     - Get Started: get-started.md
     - Usage: usage.md
-    - Tutorials: tutorials.md
+    - Geemap Tutorials: tutorials.md
+    - GEE Tutorials: https://tutorials.geemap.org
     - Contributing: contributing.md
     - Citations: citations.md
     - FAQ: faq.md

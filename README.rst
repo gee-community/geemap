@@ -32,8 +32,8 @@ geemap
 .. image:: https://img.shields.io/badge/Donate-Buy%20me%20a%20coffee-yellowgreen.svg
         :target: https://www.buymeacoffee.com/giswqs
 
-.. image:: https://joss.theoj.org/papers/91af8757c56e3fed2535fcd165137116/status.svg
-        :target: https://joss.theoj.org/papers/91af8757c56e3fed2535fcd165137116
+.. image:: https://joss.theoj.org/papers/10.21105/joss.02305/status.svg
+        :target: https://joss.theoj.org/papers/10.21105/joss.02305
 
 **A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.**
 
