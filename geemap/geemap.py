@@ -170,6 +170,7 @@ class Map(ipyleaflet.Map):
         self.tool_output = None
         self.tool_output_ctrl = None
         self.layer_control = None
+        self.convert_ctrl = None
 
         # Adds search button and search box
         search_button = widgets.ToggleButton(
@@ -633,9 +634,13 @@ class Map(ipyleaflet.Map):
                 "name": "open_data",
                 "tooltip": "Open local vector/raster data",
             },
-            "cloud-download": {
-                "name": "export_data",
-                "tooltip": "Export Earth Engine data",
+            # "cloud-download": {
+            #     "name": "export_data",
+            #     "tooltip": "Export Earth Engine data",
+            # },
+            "retweet": {
+                "name": "convert_js",
+                "tooltip": "Convert Earth Engine JavaScript to Python",
             },
             "gears": {
                 "name": "whitebox",
@@ -748,6 +753,10 @@ class Map(ipyleaflet.Map):
                     from .toolbar import open_data_widget
 
                     open_data_widget(self)
+                elif tool_name == "convert_js":
+                    from .toolbar import convert_js2py
+
+                    convert_js2py(self)
                 elif tool_name == "whitebox":
                     import whiteboxgui.whiteboxgui as wbt
 
@@ -809,6 +818,12 @@ class Map(ipyleaflet.Map):
                 elif tool_name == "whitebox":
                     if self.whitebox is not None and self.whitebox in self.controls:
                         self.remove_control(self.whitebox)
+                elif tool_name == "convert_js":
+                    if (
+                        self.convert_ctrl is not None
+                        and self.convert_ctrl in self.controls
+                    ):
+                        self.remove_control(self.convert_ctrl)
 
         for tool in toolbar_grid.children:
             tool.observe(tool_callback, "value")
