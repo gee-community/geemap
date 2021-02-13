@@ -234,9 +234,68 @@ def change_basemap(m):
 
     def close_click(change):
         m.toolbar_reset()
+        if m.basemap_ctrl is not None and m.basemap_ctrl in m.controls:
+            m.remove_control(m.basemap_ctrl)
         basemap_widget.close()
 
     close_btn.on_click(close_click)
 
     basemap_control = WidgetControl(widget=basemap_widget, position="topright")
     m.add_control(basemap_control)
+    m.basemap_ctrl = basemap_control
+
+
+def convert_js2py(m):
+    """A widget for converting Earth Engine JavaScript to Python.
+
+    Args:
+        m (object): geemap.Map
+    """
+
+    full_widget = widgets.VBox(layout=widgets.Layout(width="465px", height="350px"))
+
+    text_widget = widgets.Textarea(
+        placeholder="Paste your Earth Engine JavaScript into this textbox and click the Convert button below to convert the Javascript to Python",
+        layout=widgets.Layout(width="455px", height="310px"),
+    )
+
+    buttons = widgets.ToggleButtons(
+        value=None,
+        options=["Convert", "Clear", "Close"],
+        tooltips=["Convert", "Clear", "Close"],
+        button_style="primary",
+    )
+    buttons.style.button_width = "142px"
+
+    def button_clicked(change):
+        if change["new"] == "Convert":
+            from .conversion import js_snippet_to_py, create_new_cell
+
+            if len(text_widget.value) > 0:
+                out_lines = js_snippet_to_py(
+                    text_widget.value,
+                    add_new_cell=False,
+                    import_ee=False,
+                    import_geemap=False,
+                    show_map=False,
+                )
+                if len(out_lines) > 0 and len(out_lines[0].strip()) == 0:
+                    out_lines = out_lines[1:]
+                text_widget.value = "".join(out_lines)
+                create_code_cell(text_widget.value)
+
+        elif change["new"] == "Clear":
+            text_widget.value = ""
+        elif change["new"] == "Close":
+            m.toolbar_reset()
+            if m.convert_ctrl is not None and m.convert_ctrl in m.controls:
+                m.remove_control(m.convert_ctrl)
+            full_widget.close()
+        buttons.value = None
+
+    buttons.observe(button_clicked, "value")
+
+    full_widget.children = [text_widget, buttons]
+    widget_control = WidgetControl(widget=full_widget, position="topright")
+    m.add_control(widget_control)
+    m.convert_ctrl = widget_control
