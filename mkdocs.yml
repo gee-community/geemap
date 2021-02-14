@@ -43,6 +43,7 @@ nav:
     - Installation: installation.md
     - Get Started: get-started.md
     - Usage: usage.md
+    - Cheat Sheet: cheatsheet.md
     - Geemap Tutorials: tutorials.md
     - GEE Tutorials: https://tutorials.geemap.org
     - Contributing: contributing.md
