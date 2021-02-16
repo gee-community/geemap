@@ -1375,41 +1375,57 @@ class Map(ipyleaflet.Map):
         """Centers the map view on a given object.
 
         Args:
-            ee_object (Element|Geometry): An Earth Engine object to center on - a geometry, image or feature.
+            ee_object (Element|Geometry): An Earth Engine object to center on a geometry, image or feature.
             zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.
         """
         lat = 0
         lon = 0
-        bounds = [[lat, lon], [lat, lon]]
         if isinstance(ee_object, ee.geometry.Geometry):
             centroid = ee_object.centroid(1)
             lon, lat = centroid.getInfo()["coordinates"]
-            bounds = [[lat, lon], [lat, lon]]
-        elif isinstance(ee_object, ee.feature.Feature):
-            centroid = ee_object.geometry().centroid(1)
-            lon, lat = centroid.getInfo()["coordinates"]
-            bounds = [[lat, lon], [lat, lon]]
-        elif isinstance(ee_object, ee.featurecollection.FeatureCollection):
-            centroid = ee_object.geometry().centroid()
-            lon, lat = centroid.getInfo()["coordinates"]
-            bounds = [[lat, lon], [lat, lon]]
-        elif isinstance(ee_object, ee.image.Image):
-            geometry = ee_object.geometry()
-            coordinates = geometry.getInfo()["coordinates"][0]
-            bounds = [coordinates[0][::-1], coordinates[2][::-1]]
-        elif isinstance(ee_object, ee.imagecollection.ImageCollection):
-            geometry = ee_object.geometry()
-            coordinates = geometry.getInfo()["coordinates"][0]
-            bounds = [coordinates[0][::-1], coordinates[2][::-1]]
         else:
-            bounds = [[0, 0], [0, 0]]
-
-        lat = bounds[0][0]
-        lon = bounds[0][1]
+            try:
+                centroid = ee_object.geometry().centroid(1)
+                lon, lat = centroid.getInfo()["coordinates"]
+            except Exception as e:
+                print(e)
+                raise Exception(e)
 
         self.setCenter(lon, lat, zoom)
 
     centerObject = center_object
+
+    def zoom_to_object(self, ee_object):
+        """Zoom to the full extent of an Earth Engine object.
+
+        Args:
+            ee_object (object): An Earth Engine object, such as Image, ImageCollection, Geometry, Feature, FeatureCollection.
+
+        Raises:
+            Exception: Error getting geometry.
+        """
+        coordinates = None
+        if isinstance(ee_object, ee.geometry.Geometry):
+            bounds = ee_object.bounds()
+            coordinates = bounds.getInfo()["coordinates"][0]
+
+        else:
+            try:
+                bounds = ee_object.geometry().bounds()
+                coordinates = bounds.getInfo()["coordinates"][0]
+
+            except Exception as e:
+                print(e)
+                raise Exception(e)
+
+        if coordinates is not None:
+            south = coordinates[0][1]
+            west = coordinates[0][0]
+            north = coordinates[2][1]
+            east = coordinates[2][0]
+            self.fit_bounds([[south, east], [north, west]])
+
+    zoomToObject = zoom_to_object
 
     def get_scale(self):
         """Returns the approximate pixel scale of the current map view, in meters.
