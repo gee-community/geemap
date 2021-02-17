@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.8.10 - February 16, 2021
+
+**New Features**:
+
+-   Added default basemap options when creating the Map [#293](https://github.com/giswqs/geemap/issues/293)
+-   Added GUI for change basemaps [#294](https://github.com/giswqs/geemap/issues/294)
+-   Add GUI for js2py conversion [#296](https://github.com/giswqs/geemap/issues/296)
+-   Added geemap cheat sheet [#276](https://github.com/giswqs/geemap/issues/276)
+-   Added `Map.zoomToObject()` method [#303](https://github.com/giswqs/geemap/issues/303)
+
+**Improvement**:
+
+-   Improved `Map.centerObject()` method [#303](https://github.com/giswqs/geemap/issues/303)
+
 ## v0.8.9 - February 4, 2021
 
 **New Features**:
