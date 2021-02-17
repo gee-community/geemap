@@ -1378,20 +1378,23 @@ class Map(ipyleaflet.Map):
             ee_object (Element|Geometry): An Earth Engine object to center on a geometry, image or feature.
             zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.
         """
-        lat = 0
-        lon = 0
-        if isinstance(ee_object, ee.geometry.Geometry):
-            centroid = ee_object.centroid(1)
-            lon, lat = centroid.getInfo()["coordinates"]
+        if zoom is None:
+            self.zoom_to_object(ee_object)
         else:
-            try:
-                centroid = ee_object.geometry().centroid(1)
+            lat = 0
+            lon = 0
+            if isinstance(ee_object, ee.geometry.Geometry):
+                centroid = ee_object.centroid(1)
                 lon, lat = centroid.getInfo()["coordinates"]
-            except Exception as e:
-                print(e)
-                raise Exception(e)
+            else:
+                try:
+                    centroid = ee_object.geometry().centroid(1)
+                    lon, lat = centroid.getInfo()["coordinates"]
+                except Exception as e:
+                    print(e)
+                    raise Exception(e)
 
-        self.setCenter(lon, lat, zoom)
+            self.setCenter(lon, lat, zoom)
 
     centerObject = center_object
 
