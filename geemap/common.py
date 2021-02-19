@@ -703,14 +703,7 @@ def download_from_gdrive(gfile_url, file_name, out_dir=".", unzip=True, verbose=
         unzip (bool, optional): Whether to unzip the output file if it is a zip file. Defaults to True.
         verbose (bool, optional): Whether to display or not the output of the function
     """
-    try:
-        from google_drive_downloader import GoogleDriveDownloader as gdd
-    except ImportError:
-        print("GoogleDriveDownloader package not installed. Installing ...")
-        subprocess.check_call(
-            ["python", "-m", "pip", "install", "googledrivedownloader"]
-        )
-        from google_drive_downloader import GoogleDriveDownloader as gdd
+    from google_drive_downloader import GoogleDriveDownloader as gdd
 
     file_id = gfile_url.split("/")[5]
     if verbose:
