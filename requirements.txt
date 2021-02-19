@@ -18,5 +18,6 @@ pandas
 pillow
 pycrs
 pyshp
+python-box
 voila
 whiteboxgui
