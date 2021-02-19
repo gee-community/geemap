@@ -44,7 +44,7 @@ def plot_colormap(
     Args:
         cmap (str): The name of the colormap.
         width (float, optional): The width of the colormap. Defaults to 8.0.
-        height (float, optional): The height of the colormap. Defaults to None.
+        height (float, optional): The height of the colormap. Defaults to 0.4.
         orientation (str, optional): The orientation of the colormap. Defaults to "horizontal".
         axis_off (bool, optional): Whether to turn axis off. Defaults to True.
         show_name (bool, optional): Whether to show the colormap name. Defaults to False.
