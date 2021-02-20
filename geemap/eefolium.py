@@ -305,6 +305,11 @@ class Map(folium.Map):
             image = ee_object.mosaic()
 
         map_id_dict = ee.Image(image).getMapId(vis_params)
+
+        # if a layer starts with a number, add "Layer" to name.
+        if name[0].isdigit():
+            name = "Layer " + name
+
         folium.raster_layers.TileLayer(
             tiles=map_id_dict["tile_fetcher"].url_format,
             attr="Google Earth Engine",
