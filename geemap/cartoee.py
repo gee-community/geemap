@@ -619,45 +619,42 @@ def convert_SI(val, unit_in, unit_out):
 
 def add_scale_bar(
     ax,
-    metric_distance=500,
-    unit="m",
-    at_x=(0.1, 0.4),
-    at_y= (0.05, 0.075),
+    metric_distance=4,
+    unit="km",
+    at_x=(0.05, 0.5),
+    at_y=(0.08, 0.11),
     max_stripes=5,
     ytick_label_margins=0.25,
     fontsize=8,
-    font_weight='bold',
-    rotation=45,
+    font_weight="bold",
+    rotation=0,
     zorder=999,
-    paddings = {
-        'xmin':0.05,'xmax':0.05,
-        'ymin':2.2, 'ymax':0.5
-    },
-    bbox_kwargs = {
-        'facecolor':'white',
-        'edgecolor':'black',
-        'alpha':0.7
-    }
+    paddings={"xmin": 0.05, "xmax": 0.05, "ymin": 1.5, "ymax": 0.5},
+    bbox_kwargs={"facecolor": "white", "edgecolor": "black", "alpha": 0.5},
 ):
     """
     Add a scale bar to the map.
 
     Args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object.
-        metric_distance (int | float, optional): length in meters of each region of the scale bar. Default to 500.
-        unit (str, optinal): scale bar distance unit. Default to "m"
-        at_x (float, optional): target axes X coordinates (0..1) of box (= left, right). Default to (0.1, 0.4).
-        at_y (float, optional): axes Y coordinates (0..1) of box (= lower, upper). Deafult to (0.05, 0.075).
+        metric_distance (int | float, optional): length in meters of each region of the scale bar. Default to 4.
+        unit (str, optinal): scale bar distance unit. Default to "km"
+        at_x (float, optional): target axes X coordinates (0..1) of box (= left, right). Default to (0.05, 0.2).
+        at_y (float, optional): axes Y coordinates (0..1) of box (= lower, upper). Deafult to (0.08, 0.11).
         max_stripes (int, optional): typical/maximum number of black+white regions. Default to 5.
         ytick_label_margins (float, optional): Location of distance labels on the Y axis. Default to 0.25.
         fontsize (int, optional): scale bar text size. Default to 8.
         font_weight (str, optional):font weight. Default to 'bold'.
-        rotation (int, optional): rotation of the length labels for each region of the scale bar. Default to 45.
-        zorder (float, optional).
-        paddings (dictionary, optional): boundaries of the box that contains the scale bar.
-        bbox_kwargs (dictionary, optional): style of the box containing the scale bar.
+        rotation (int, optional): rotation of the length labels for each region of the scale bar. Default to 0.
+        zorder (float, optional): z order of the text bounding box.
+        paddings (dict, optional): boundaries of the box that contains the scale bar.
+        bbox_kwargs (dict, optional): style of the box containing the scale bar.
 
     """
+
+    import warnings
+
+    warnings.filterwarnings("ignore")
 
     # --------------------------------------------------------------------------
     # Auxiliary functions
@@ -684,28 +681,30 @@ def add_scale_bar(
         ymin = min([t.get_window_extent().ymin for t in list_of_patches])
         ymax = max([t.get_window_extent().ymax for t in list_of_patches])
 
-
         xmin, ymin = ax.transData.inverted().transform((xmin, ymin))
         xmax, ymax = ax.transData.inverted().transform((xmax, ymax))
 
+        xmin = xmin - ((xmax - xmin) * paddings["xmin"])
+        ymin = ymin - ((ymax - ymin) * paddings["ymin"])
 
-        xmin = xmin - ( (xmax-xmin) * paddings['xmin'])
-        ymin = ymin - ( (ymax-ymin) * paddings['ymin'])
+        xmax = xmax + ((xmax - xmin) * paddings["xmax"])
+        ymax = ymax + ((ymax - ymin) * paddings["ymax"])
 
-        xmax = xmax + ( (xmax-xmin) * paddings['xmax'])
-        ymax = ymax + ( (ymax-ymin) * paddings['ymax'])
-
-        width = (xmax-xmin)
-        height = (ymax-ymin)
+        width = xmax - xmin
+        height = ymax - ymin
 
         # Setting xmin according to height
         rect = patches.Rectangle(
-            (xmin,ymin), width, height,
-            facecolor=bbox_kwargs['facecolor'],
-            edgecolor=bbox_kwargs['edgecolor'],
-            alpha=bbox_kwargs['alpha'],
+            (xmin, ymin),
+            width,
+            height,
+            facecolor=bbox_kwargs["facecolor"],
+            edgecolor=bbox_kwargs["edgecolor"],
+            alpha=bbox_kwargs["alpha"],
             transform=ax.projection,
-            fill=True, clip_on=False, zorder=zorder
+            fill=True,
+            clip_on=False,
+            zorder=zorder,
         )
 
         ax.add_patch(rect)
@@ -726,7 +725,9 @@ def add_scale_bar(
 
     # Second: set the planar (metric) projection centered in the centroid of the axes;
     # Centroid coordinates must be in lon/lat.
-    proj=ccrs.EquidistantConic(central_longitude=central_lon, central_latitude=central_lat)
+    proj = ccrs.EquidistantConic(
+        central_longitude=central_lon, central_latitude=central_lat
+    )
 
     # fetch axes coordinates in meters
     x0, x1, y0, y1 = ax.get_extent(proj)
@@ -742,7 +743,7 @@ def add_scale_bar(
     xcoords = []
     ycoords = []
     xlabels = []
-    for i in range(0 , 1+ max_stripes):
+    for i in range(0, 1 + max_stripes):
         dx = (converted_metric_distance * i) + x0
         xlabels.append(metric_distance * i)
         xcoords.append(dx)
@@ -753,37 +754,42 @@ def add_scale_bar(
     ycoords = np.asanyarray(ycoords)
 
     # Ensuring that the coordinate projection is in degrees:
-    x_targets, y_targets, z_targets = _crs_coord_project(ax.projection, xcoords, ycoords, proj).T
-    x_targets = [x + (axfrac_ini * (lon_1 - lon_0)) for x in  x_targets]
+    x_targets, y_targets, z_targets = _crs_coord_project(
+        ax.projection, xcoords, ycoords, proj
+    ).T
+    x_targets = [x + (axfrac_ini * (lon_1 - lon_0)) for x in x_targets]
 
     # Checking x_ticks in axes projection coordinates
-    #print('x_targets', x_targets)
+    # print('x_targets', x_targets)
 
-    #Setting transform for plotting
+    # Setting transform for plotting
     transform = ax.projection
 
     # grab min+max for limits
     xl0, xl1 = x_targets[0], x_targets[-1]
 
     # calculate Axes Y coordinates of box top+bottom
-    yl0, yl1 = [lat_0 + ay_frac * (lat_1 - lat_0) for ay_frac in [ayfrac_ini, ayfrac_final]]
+    yl0, yl1 = [
+        lat_0 + ay_frac * (lat_1 - lat_0) for ay_frac in [ayfrac_ini, ayfrac_final]
+    ]
 
     # calculate Axes Y distance of ticks + label margins
-    y_margin = (yl1-yl0)*ytick_label_margins
+    y_margin = (yl1 - yl0) * ytick_label_margins
 
     # fill black/white 'stripes' and draw their boundaries
-    fill_colors = ['black', 'white']
+    fill_colors = ["black", "white"]
     i_color = 0
 
     filled_boxs = []
-    for xi0, xi1 in zip(x_targets[:-1],x_targets[1:]):
+    for xi0, xi1 in zip(x_targets[:-1], x_targets[1:]):
         # fill region
         filled_box = plt.fill(
             (xi0, xi1, xi1, xi0, xi0),
             (yl0, yl0, yl1, yl1, yl0),
             fill_colors[i_color],
             transform=transform,
-            clip_on=False, zorder=zorder
+            clip_on=False,
+            zorder=zorder,
         )
 
         filled_boxs.append(filled_box[0])
@@ -792,69 +798,65 @@ def add_scale_bar(
         plt.plot(
             (xi0, xi1, xi1, xi0, xi0),
             (yl0, yl0, yl1, yl1, yl0),
-            'black', clip_on=False,
-            transform=transform, zorder=zorder
+            "black",
+            clip_on=False,
+            transform=transform,
+            zorder=zorder,
         )
 
         i_color = 1 - i_color
 
     # adding boxes
-    _add_bbox(
-        ax, filled_boxs,
-        bbox_kwargs = bbox_kwargs,
-        paddings =paddings
-    )
+    _add_bbox(ax, filled_boxs, bbox_kwargs=bbox_kwargs, paddings=paddings)
 
     # add short tick lines
     for x in x_targets:
         plt.plot(
-            (x, x), (yl0, yl0-y_margin), 'black',
+            (x, x),
+            (yl0, yl0 - y_margin),
+            "black",
             transform=transform,
             zorder=zorder,
-            clip_on=False
+            clip_on=False,
         )
 
     # add a scale legend unit
-    font_props = mfonts.FontProperties(
-        size=fontsize,
-        weight=font_weight
-    )
+    font_props = mfonts.FontProperties(size=fontsize, weight=font_weight)
 
     plt.text(
         0.5 * (xl0 + xl1),
         yl1 + y_margin,
         unit,
-        color='black',
-        verticalalignment='bottom',
-        horizontalalignment='center',
+        color="black",
+        verticalalignment="bottom",
+        horizontalalignment="center",
         fontproperties=font_props,
         transform=transform,
         clip_on=False,
-        zorder=zorder
+        zorder=zorder,
     )
 
     # add numeric labels
     for x, xlabel in zip(x_targets, xlabels):
-        print('Label set in: ', x, yl0 - 2 * y_margin)
+        # print("Label set in: ", x, yl0 - 2 * y_margin)
         plt.text(
             x,
             yl0 - 2 * y_margin,
-            '{:g}'.format((xlabel)),
-            verticalalignment='top',
-            horizontalalignment='center',
+            "{:g}".format((xlabel)),
+            verticalalignment="top",
+            horizontalalignment="center",
             fontproperties=font_props,
             transform=transform,
             rotation=rotation,
             clip_on=False,
-            zorder=zorder+1,
-            #bbox=dict(facecolor='red', alpha=0.5) # this would add a box only around the xticks
+            zorder=zorder + 1,
+            # bbox=dict(facecolor='red', alpha=0.5) # this would add a box only around the xticks
         )
 
     # Adjusting figure borders to ensure that the scalebar is within its limits
     ax.projection = old_proj
     ax.get_figure().canvas.draw()
-    fig.tight_layout()
-
+    # fig.tight_layout()
 
 
 def get_image_collection_gif(
