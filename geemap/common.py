@@ -5,7 +5,6 @@ import csv
 from logging import exception
 import math
 import os
-import subprocess
 import shutil
 import tarfile
 import urllib.request
@@ -6993,3 +6992,34 @@ def geopandas_to_ee(gdf, geodesic=True):
     os.remove(out_json)
 
     return fc
+
+
+def extract_pixel_values(image, region, scale=None, projection=None, tileScale=1):
+    """Samples the pixels of an image, returning them as a ee.Dictionary.
+
+    Args:
+        image (ee.Image): The image to sample.
+        region (ee.Geometry): The region to sample from. If unspecified, uses the image's whole footprint.
+        scale (float, optional): A nominal scale in meters of the projection to sample in. Defaults to None.
+        projection (str, optional): The projection in which to sample. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
+        tileScale (int, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
+
+    Raises:
+        TypeError: The image must be an instance of ee.Image.
+        TypeError: Region must be an instance of ee.Geometry.
+
+    Returns:
+        ee.Dictionary: The dictionary containing band names and pixel values.
+    """
+    if not isinstance(image, ee.Image):
+        raise TypeError("The image must be an instance of ee.Image.")
+
+    if not isinstance(region, ee.Geometry):
+        raise TypeError("Region must be an instance of ee.Geometry.")
+
+    dict_values = (
+        image.sample(region, scale, projection, tileScale=tileScale)
+        .first()
+        .toDictionary()
+    )
+    return dict_values
