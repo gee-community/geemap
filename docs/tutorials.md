@@ -66,3 +66,6 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 56. How to add local vector and raster data to the map with a few clicks (video | gif | [notebook](https://geemap.org/notebooks/56_local_data))
 57. How to create a publication quality map with multiple Earth Engine layers (video | gif | [notebook](https://geemap.org/notebooks/57_cartoee_blend))
 58. How to add a shapefile, GeoJSON, and KML to the map (video | gif | [notebook](https://geemap.org/notebooks/58_shp_kml))
+59. Accessing 477 whitebox tools for geospatial and hydrologcal analysis ([video](https://youtu.be/n8ODeZpuyCE) | gif | [notebook](https://geemap.org/notebooks/59_whitebox))
+60. Visualizing Earth Engine data with over 200 colormaps through dot notation ([video](https://youtu.be/RBCf7wgK3Cg) | gif | [notebook](https://geemap.org/notebooks/60_colormaps))
+61. Adding a scale bar to a cartoee map (video | gif | [notebook](https://geemap.org/notebooks/61_cartoee_scalebar))
