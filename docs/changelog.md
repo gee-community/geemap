@@ -9,7 +9,7 @@
 -   Added extract pixel values funciton [#315](https://github.com/giswqs/geemap/issues/315)
 -   Visualizing Earth Engine image with >200 matplotlib colormaps via dot notation ([example](https://geemap.org/notebooks/60_colormaps/))
 
--   **Improvement**:
+**Improvement**:
 
 -   Improved the basemap module accessible via dot notation [#302](https://github.com/giswqs/geemap/issues/302)
 -   Added googledrivedownloader and python-box to requirements [#310](https://github.com/giswqs/geemap/discussions/310)
