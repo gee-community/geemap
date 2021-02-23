@@ -1247,6 +1247,8 @@ class Map(ipyleaflet.Map):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
+        from box import Box
+
         image = None
         if name is None:
             layer_count = len(self.layers)
@@ -1291,6 +1293,13 @@ class Map(ipyleaflet.Map):
             image = ee_object
         elif isinstance(ee_object, ee.imagecollection.ImageCollection):
             image = ee_object.mosaic()
+
+        if "palette" in vis_params and isinstance(vis_params["palette"], Box):
+            try:
+                vis_params["palette"] = vis_params["palette"]["default"]
+            except Exception as e:
+                print("The provided palette is invalid.")
+                raise Exception(e)
 
         map_id_dict = ee.Image(image).getMapId(vis_params)
         tile_layer = TileLayer(
@@ -2576,6 +2585,7 @@ class Map(ipyleaflet.Map):
             layer_name (str, optional): Layer name of the colorbar to be associated with. Defaults to None.
 
         """
+        from box import Box
         from branca.colormap import LinearColormap
 
         output = widgets.Output()
@@ -2583,6 +2593,13 @@ class Map(ipyleaflet.Map):
 
         if "width" in kwargs.keys():
             output.layout.width = kwargs["width"]
+
+        if isinstance(colors, Box):
+            try:
+                colors = list(colors["default"])
+            except Exception as e:
+                print("The provided color list is invalid.")
+                raise Exception(e)
 
         if all(len(color) == 6 for color in colors):
             colors = ["#" + color for color in colors]
