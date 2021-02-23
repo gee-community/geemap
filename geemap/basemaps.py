@@ -12,10 +12,12 @@ More WMS basemaps can be found at the following websites:
 
 """
 
-from ipyleaflet import TileLayer, WMSLayer, basemaps, basemap_to_tiles
+from box import Box
+from ipyleaflet import TileLayer, WMSLayer, basemap_to_tiles
+import ipyleaflet.basemaps as ipybasemaps
 
 
-ee_basemaps = {
+_ee_basemaps = {
     "ROADMAP": TileLayer(
         url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
         attribution="Google",
@@ -205,14 +207,19 @@ ee_basemaps = {
 }
 
 # Adds ipyleaflet basemaps
-for item in basemaps.values():
+for item in ipybasemaps.values():
     try:
         name = item["name"]
-        basemap = "basemaps.{}".format(name)
-        ee_basemaps[name] = basemap_to_tiles(eval(basemap))
+        basemap = "ipybasemaps.{}".format(name)
+        _ee_basemaps[name] = basemap_to_tiles(eval(basemap))
     except Exception:
         for sub_item in item:
             name = item[sub_item]["name"]
-            basemap = "basemaps.{}".format(name)
+            basemap = "ipybasemaps.{}".format(name)
             basemap = basemap.replace("Mids", "Modis")
-            ee_basemaps[name] = basemap_to_tiles(eval(basemap))
+            _ee_basemaps[name] = basemap_to_tiles(eval(basemap))
+
+basemap_tiles = Box(_ee_basemaps, frozen_box=True)
+basemaps = Box(
+    dict(zip(list(_ee_basemaps.keys()), list(_ee_basemaps.keys()))), frozen_box=True
+)
