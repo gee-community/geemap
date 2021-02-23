@@ -1,12 +1,27 @@
 # Changelog
 
+## v0.8.11 - February 23, 2021
+
+**New Features**:
+
+-   Added a colormap module [#302](https://github.com/giswqs/geemap/issues/302)
+-   Added a new cartoee scale bar function [#313](https://github.com/giswqs/geemap/pull/313)
+-   Added extract pixel values funciton [#315](https://github.com/giswqs/geemap/issues/315)
+-   Visualizing Earth Engine image with >200 matplotlib colormaps via dot notation ([example](https://geemap.org/notebooks/60_colormaps/))
+
+-   **Improvement**:
+
+-   Improved the basemap module accessible via dot notation [#302](https://github.com/giswqs/geemap/issues/302)
+-   Added googledrivedownloader and python-box to requirements [#310](https://github.com/giswqs/geemap/discussions/310)
+-   Fixed folium layer name bug [#314](https://github.com/giswqs/geemap/issues/314)
+
 ## v0.8.10 - February 16, 2021
 
 **New Features**:
 
 -   Added default basemap options when creating the Map [#293](https://github.com/giswqs/geemap/issues/293)
 -   Added GUI for change basemaps [#294](https://github.com/giswqs/geemap/issues/294)
--   Add GUI for js2py conversion [#296](https://github.com/giswqs/geemap/issues/296)
+-   Added GUI for js2py conversion [#296](https://github.com/giswqs/geemap/issues/296)
 -   Added geemap cheat sheet [#276](https://github.com/giswqs/geemap/issues/276)
 -   Added `Map.zoomToObject()` method [#303](https://github.com/giswqs/geemap/issues/303)
 

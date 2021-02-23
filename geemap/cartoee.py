@@ -859,6 +859,91 @@ def add_scale_bar(
     # fig.tight_layout()
 
 
+def add_scale_bar_lite(
+    ax,
+    length=None,
+    xy=(0.5, 0.05),
+    linewidth=3,
+    fontsize=20,
+    color="black",
+    unit="km",
+    ha="center",
+    va="bottom",
+):
+    """Add a lite version of scale bar to the map. Reference: https://stackoverflow.com/a/50674451/2676166
+
+    Args:
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object.
+        length ([type], optional): Length of the scale car. Defaults to None.
+        xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor. Defaults to (0.1, 0.1).
+        linewidth (int, optional): Line width of the scale bar. Defaults to 3.
+        fontsize (int, optional): Text font size. Defaults to 20.
+        color (str, optional): Color for the scale bar. Defaults to "black".
+        unit (str, optional): Length unit for the scale bar. Defaults to "km".
+        ha (str, optional): Horizontal alignment. Defaults to "center".
+        va (str, optional): Vertical alignment. Defaults to "bottom".
+
+    """
+
+    allow_units = ["cm", "m", "km", "inch", "foot", "mile"]
+    if unit not in allow_units:
+        print(
+            "The unit must be one of the following: {}".format(", ".join(allow_units))
+        )
+        return
+
+    num = length
+
+    # Get the limits of the axis in lat long
+    llx0, llx1, lly0, lly1 = ax.get_extent(ccrs.PlateCarree())
+    # Make tmc horizontally centred on the middle of the map,
+    # vertically at scale bar location
+    sbllx = (llx1 + llx0) / 2
+    sblly = lly0 + (lly1 - lly0) * xy[1]
+    tmc = ccrs.TransverseMercator(sbllx, sblly, approx=True)
+    # Get the extent of the plotted area in coordinates in metres
+    x0, x1, y0, y1 = ax.get_extent(tmc)
+    # Turn the specified scalebar location into coordinates in metres
+    sbx = x0 + (x1 - x0) * xy[0]
+    sby = y0 + (y1 - y0) * xy[1]
+
+    # Calculate a scale bar length if none has been given
+    # (Theres probably a more pythonic way of rounding the number but this works)
+    if not length:
+        length = (x1 - x0) / 5000  # in km
+        ndim = int(np.floor(np.log10(length)))  # number of digits in number
+        length = round(length, -ndim)  # round to 1sf
+        # Returns numbers starting with the list
+        def scale_number(x):
+            if str(x)[0] in ["1", "2", "5"]:
+                return int(x)
+            else:
+                return scale_number(x - 10 ** ndim)
+
+        length = scale_number(length)
+        num = length
+    else:
+        length = convert_SI(length, unit, "km")
+
+    # Generate the x coordinate for the ends of the scalebar
+    bar_xs = [sbx - length * 500, sbx + length * 500]
+    # Plot the scalebar
+    ax.plot(bar_xs, [sby, sby], transform=tmc, color=color, linewidth=linewidth)
+    # Plot the scalebar label
+    ax.text(
+        sbx,
+        sby,
+        str(num) + " " + unit,
+        transform=tmc,
+        horizontalalignment=ha,
+        verticalalignment=va,
+        color=color,
+        fontsize=fontsize,
+    )
+
+    return
+
+
 def get_image_collection_gif(
     ee_ic,
     out_dir,
