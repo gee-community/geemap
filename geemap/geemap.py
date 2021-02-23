@@ -12,9 +12,9 @@ import ipyleaflet
 import ipywidgets as widgets
 from bqplot import pyplot as plt
 from ipyfilechooser import FileChooser
-from ipyleaflet import *
+from ipyleaflet import Marker, MarkerCluster, TileLayer, WidgetControl
 from IPython.display import display
-from .basemaps import ee_basemaps
+from .basemaps import basemaps, basemap_tiles
 from .common import *
 from .conversion import *
 from .legends import builtin_legends
@@ -105,9 +105,9 @@ class Map(ipyleaflet.Map):
         if (
             "basemap" in kwargs.keys()
             and isinstance(kwargs["basemap"], str)
-            and kwargs["basemap"] in ee_basemaps.keys()
+            and kwargs["basemap"] in basemaps.keys()
         ):
-            kwargs["basemap"] = ee_basemaps[kwargs["basemap"]]
+            kwargs["basemap"] = basemap_tiles[kwargs["basemap"]]
 
         if os.environ.get("USE_VOILA") is not None:
             kwargs["use_voila"] = True
@@ -410,9 +410,11 @@ class Map(ipyleaflet.Map):
             self.add_control(control=data_control)
 
         search_marker = Marker(
-            icon=AwesomeIcon(name="check", marker_color="green", icon_color="darkgreen")
+            icon=ipyleaflet.AwesomeIcon(
+                name="check", marker_color="green", icon_color="darkgreen"
+            )
         )
-        search = SearchControl(
+        search = ipyleaflet.SearchControl(
             position="topleft",
             url="https://nominatim.openstreetmap.org/search?format=json&q={s}",
             zoom=5,
@@ -423,25 +425,25 @@ class Map(ipyleaflet.Map):
             self.add_control(search)
 
         if kwargs.get("zoom_ctrl"):
-            self.add_control(ZoomControl(position="topleft"))
+            self.add_control(ipyleaflet.ZoomControl(position="topleft"))
 
         if kwargs.get("layer_ctrl"):
-            layer_control = LayersControl(position="topright")
+            layer_control = ipyleaflet.LayersControl(position="topright")
             self.layer_control = layer_control
             self.add_control(layer_control)
 
         if kwargs.get("scale_ctrl"):
-            scale = ScaleControl(position="bottomleft")
+            scale = ipyleaflet.ScaleControl(position="bottomleft")
             self.scale_control = scale
             self.add_control(scale)
 
         if kwargs.get("fullscreen_ctrl"):
-            fullscreen = FullScreenControl()
+            fullscreen = ipyleaflet.FullScreenControl()
             self.fullscreen_control = fullscreen
             self.add_control(fullscreen)
 
         if kwargs.get("measure_ctrl"):
-            measure = MeasureControl(
+            measure = ipyleaflet.MeasureControl(
                 position="bottomleft",
                 active_color="orange",
                 primary_length_unit="kilometers",
@@ -450,12 +452,12 @@ class Map(ipyleaflet.Map):
             self.add_control(measure)
 
         if kwargs.get("add_google_map"):
-            self.add_layer(ee_basemaps["ROADMAP"])
+            self.add_layer(basemap_tiles["ROADMAP"])
 
         if kwargs.get("attribution_ctrl"):
-            self.add_control(AttributionControl(position="bottomright"))
+            self.add_control(ipyleaflet.AttributionControl(position="bottomright"))
 
-        draw_control = DrawControl(
+        draw_control = ipyleaflet.DrawControl(
             marker={"shapeOptions": {"color": "#3388ff"}},
             rectangle={"shapeOptions": {"color": "#3388ff"}},
             circle={"shapeOptions": {"color": "#3388ff"}},
@@ -464,7 +466,7 @@ class Map(ipyleaflet.Map):
             remove=True,
         )
 
-        draw_control_lite = DrawControl(
+        draw_control_lite = ipyleaflet.DrawControl(
             marker={},
             rectangle={"shapeOptions": {"color": "#3388ff"}},
             circle={"shapeOptions": {"color": "#3388ff"}},
@@ -764,7 +766,7 @@ class Map(ipyleaflet.Map):
                     wbt_toolbox = wbt.build_toolbox(
                         tools_dict, max_width="800px", max_height="500px"
                     )
-                    wbt_control = ipyleaflet.WidgetControl(
+                    wbt_control = WidgetControl(
                         widget=wbt_toolbox, position="bottomright"
                     )
                     self.whitebox = wbt_control
@@ -905,7 +907,7 @@ class Map(ipyleaflet.Map):
                     lyr
                     for lyr in self.layers[1:]
                     if (
-                        isinstance(lyr, ipyleaflet.TileLayer)
+                        isinstance(lyr, TileLayer)
                         or isinstance(lyr, ipyleaflet.WMSLayer)
                     )
                 ]
@@ -913,7 +915,7 @@ class Map(ipyleaflet.Map):
                 # if the layers contain unsupported layers (e.g., GeoJSON, GeoData), adds the ipyleaflet built-in LayerControl
                 if len(layers) < (len(self.layers) - 1):
                     if self.layer_control is None:
-                        layer_control = LayersControl(position="topright")
+                        layer_control = ipyleaflet.LayersControl(position="topright")
                         self.layer_control = layer_control
                     if self.layer_control not in self.controls:
                         self.add_control(self.layer_control)
@@ -1211,13 +1213,13 @@ class Map(ipyleaflet.Map):
         self.clear_layers()
         self.clear_controls()
         self.scroll_wheel_zoom = True
-        self.add_control(ZoomControl(position="topleft"))
-        self.add_control(LayersControl(position="topright"))
-        self.add_control(ScaleControl(position="bottomleft"))
-        self.add_control(FullScreenControl())
-        self.add_control(DrawControl())
+        self.add_control(ipyleaflet.ZoomControl(position="topleft"))
+        self.add_control(ipyleaflet.LayersControl(position="topright"))
+        self.add_control(ipyleaflet.ScaleControl(position="bottomleft"))
+        self.add_control(ipyleaflet.FullScreenControl())
+        self.add_control(ipyleaflet.DrawControl())
 
-        measure = MeasureControl(
+        measure = ipyleaflet.MeasureControl(
             position="bottomleft",
             active_color="orange",
             primary_length_unit="kilometers",
@@ -1225,7 +1227,7 @@ class Map(ipyleaflet.Map):
         self.add_control(measure)
 
         try:
-            self.add_layer(ee_basemaps[mapTypeId])
+            self.add_layer(basemap_tiles[mapTypeId])
         except Exception:
             raise ValueError(
                 'Google basemaps can only be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN".'
@@ -1291,7 +1293,7 @@ class Map(ipyleaflet.Map):
             image = ee_object.mosaic()
 
         map_id_dict = ee.Image(image).getMapId(vis_params)
-        tile_layer = ipyleaflet.TileLayer(
+        tile_layer = TileLayer(
             url=map_id_dict["tile_fetcher"].url_format,
             attribution="Google Earth Engine",
             name=name,
@@ -1451,10 +1453,10 @@ class Map(ipyleaflet.Map):
         """
         try:
             if (
-                basemap in ee_basemaps.keys()
-                and ee_basemaps[basemap] not in self.layers
+                basemap in basemap_tiles.keys()
+                and basemap_tiles[basemap] not in self.layers
             ):
-                self.add_layer(ee_basemaps[basemap])
+                self.add_layer(basemap_tiles[basemap])
 
             # draw_layer_index = self.find_layer_index(name="Drawn Features")
             # if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
@@ -1469,7 +1471,7 @@ class Map(ipyleaflet.Map):
         except Exception:
             raise ValueError(
                 "Basemap can only be one of the following:\n  {}".format(
-                    "\n  ".join(ee_basemaps.keys())
+                    "\n  ".join(basemap_tiles.keys())
                 )
             )
 
@@ -1595,7 +1597,7 @@ class Map(ipyleaflet.Map):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
         """
         try:
-            tile_layer = ipyleaflet.TileLayer(
+            tile_layer = TileLayer(
                 url=url,
                 name=name,
                 attribution=attribution,
@@ -1753,11 +1755,11 @@ class Map(ipyleaflet.Map):
             attribution_control=False,
             zoom=5,
             center=self.center,
-            layers=[ee_basemaps["ROADMAP"]],
+            layers=[basemap_tiles["ROADMAP"]],
         )
         minimap.layout.width = "150px"
         minimap.layout.height = "150px"
-        link((minimap, "center"), (self, "center"))
+        ipyleaflet.link((minimap, "center"), (self, "center"))
         minimap_control = WidgetControl(widget=minimap, position=position)
         self.add_control(minimap_control)
 
@@ -2174,11 +2176,11 @@ class Map(ipyleaflet.Map):
             right_layer (str, optional): The right tile layer. Defaults to 'ESRI'.
         """
         try:
-            if left_layer in ee_basemaps.keys():
-                left_layer = ee_basemaps[left_layer]
+            if left_layer in basemap_tiles.keys():
+                left_layer = basemap_tiles[left_layer]
 
-            if right_layer in ee_basemaps.keys():
-                right_layer = ee_basemaps[right_layer]
+            if right_layer in basemap_tiles.keys():
+                right_layer = basemap_tiles[right_layer]
 
             control = ipyleaflet.SplitMapControl(
                 left_layer=left_layer, right_layer=right_layer
@@ -2245,9 +2247,9 @@ class Map(ipyleaflet.Map):
         self.add_control(control=left_control)
         self.add_control(control=right_control)
 
-        self.add_control(ZoomControl(position="topleft"))
-        self.add_control(ScaleControl(position="bottomleft"))
-        self.add_control(FullScreenControl())
+        self.add_control(ipyleaflet.ZoomControl(position="topleft"))
+        self.add_control(ipyleaflet.ScaleControl(position="bottomleft"))
+        self.add_control(ipyleaflet.FullScreenControl())
 
         def left_dropdown_change(change):
             left_dropdown_index = left_dropdown.index
@@ -2326,7 +2328,7 @@ class Map(ipyleaflet.Map):
     def basemap_demo(self):
         """A demo for using geemap basemaps."""
         dropdown = widgets.Dropdown(
-            options=list(ee_basemaps.keys()),
+            options=list(basemap_tiles.keys()),
             value="HYBRID",
             description="Basemaps",
         )
@@ -2334,7 +2336,7 @@ class Map(ipyleaflet.Map):
         def on_click(change):
             basemap_name = change["new"]
             old_basemap = self.layers[-1]
-            self.substitute_layer(old_basemap, ee_basemaps[basemap_name])
+            self.substitute_layer(old_basemap, basemap_tiles[basemap_name])
 
         dropdown.observe(on_click, "value")
         basemap_control = WidgetControl(widget=dropdown, position="topright")
@@ -4474,7 +4476,7 @@ def ee_tile_layer(
         image = ee_object.mosaic()
 
     map_id_dict = ee.Image(image).getMapId(vis_params)
-    tile_layer = ipyleaflet.TileLayer(
+    tile_layer = TileLayer(
         url=map_id_dict["tile_fetcher"].url_format,
         attribution="Google Earth Engine",
         name=name,

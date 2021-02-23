@@ -96,7 +96,7 @@ def plot_colormaps(width=8.0, height=0.4):
     plt.show()
 
 
-__palette_dict = {
+_palette_dict = {
     "ndvi": [
         "FFFFFF",
         "CE7E45",
@@ -136,7 +136,7 @@ for index, cmap_name in enumerate(list_colormaps()):
             name = "n" + str(i).zfill(2)
             colors = get_palette(cmap_name, i)
             color_dict[name] = colors
-        __palette_dict[cmap_name] = color_dict
+        _palette_dict[cmap_name] = color_dict
 
 
-palettes = Box(__palette_dict, frozen_box=True)
+palettes = Box(_palette_dict, frozen_box=True)
