@@ -132,6 +132,7 @@ _palette_dict = {
 for index, cmap_name in enumerate(list_colormaps()):
     if index < len(list_colormaps()):
         color_dict = {}
+        color_dict["default"] = get_palette(cmap_name)
         for i in range(3, 13):
             name = "n" + str(i).zfill(2)
             colors = get_palette(cmap_name, i)

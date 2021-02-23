@@ -262,6 +262,9 @@ class Map(folium.Map):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
+
+        from box import Box
+
         image = None
 
         if (
@@ -303,6 +306,13 @@ class Map(folium.Map):
             image = ee_object
         elif isinstance(ee_object, ee.imagecollection.ImageCollection):
             image = ee_object.mosaic()
+
+        if "palette" in vis_params and isinstance(vis_params["palette"], Box):
+            try:
+                vis_params["palette"] = vis_params["palette"]["default"]
+            except Exception as e:
+                print("The provided palette is invalid.")
+                raise Exception(e)
 
         map_id_dict = ee.Image(image).getMapId(vis_params)
 
@@ -752,7 +762,15 @@ class Map(folium.Map):
             categorical (bool, optional): Whether or not to create a categorical colormap. Defaults to False.
             step (int, optional): The step to split the LinearColormap into a StepColormap. Defaults to None.
         """
+        from box import Box
         from branca.colormap import LinearColormap
+
+        if isinstance(colors, Box):
+            try:
+                colors = list(colors["default"])
+            except Exception as e:
+                print("The provided color list is invalid.")
+                raise Exception(e)
 
         if all(len(color) == 6 for color in colors):
             colors = ["#" + color for color in colors]
