@@ -14,13 +14,6 @@ def in_colab_shell():
     else:
         return False
 
-    # try:
-    #     import google.colab
-
-    #     return True
-    # except ImportError:
-    #     return False
-
 
 if in_colab_shell():
     from .eefolium import *

@@ -333,6 +333,15 @@ class Map(folium.Map):
 
     addLayer = add_layer
 
+    def _repr_mimebundle_(self, include, exclude, **kwargs):
+        """Adds Layer control to the map. Referece: https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_
+
+        Args:
+            include ([type]): [description]
+            exclude ([type]): [description]
+        """
+        self.add_layer_control()
+
     def set_center(self, lon, lat, zoom=10):
         """Centers the map view at a given coordinates with the given zoom level.
 
@@ -398,8 +407,14 @@ class Map(folium.Map):
     setControlVisibility = set_control_visibility
 
     def add_layer_control(self):
-        """Adds layer basemap to the map."""
-        folium.LayerControl().add_to(self)
+        """Adds layer control to the map."""
+        layer_ctrl = False
+        for item in self.to_dict()["children"]:
+            if item.startswith("layer_control"):
+                layer_ctrl = True
+                break
+        if not layer_ctrl:
+            folium.LayerControl().add_to(self)
 
     addLayerControl = add_layer_control
 
