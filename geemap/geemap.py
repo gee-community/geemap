@@ -1389,7 +1389,7 @@ class Map(ipyleaflet.Map):
             ee_object (Element|Geometry): An Earth Engine object to center on a geometry, image or feature.
             zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.
         """
-        if zoom is None:
+        if zoom is None and hasattr(self, 'fit_bounds'):
             self.zoom_to_object(ee_object)
         else:
             lat = 0
