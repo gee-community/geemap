@@ -140,6 +140,7 @@ nav:
                 - notebooks/geemap_and_ipyleaflet.ipynb
                 - notebooks/geemap_and_ipywidgets.ipynb
                 - notebooks/geemap_colab.ipynb
+                - notebooks/geemap_matplotlib.ipynb
                 - notebooks/geopandas.ipynb
                 - notebooks/image_overlay.ipynb
                 - notebooks/ipyleaflet_draw_control.ipynb
