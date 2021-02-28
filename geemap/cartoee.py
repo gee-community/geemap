@@ -240,11 +240,11 @@ def add_colorbar(
     ax, vis_params, loc=None, cmap="gray", discrete=False, label=None, **kwargs
 ):
     """
-    Add a colorbar tp the map based on visualization parameters provided
+    Add a colorbar to the map based on visualization parameters provided
     args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object to add image overlay to
         loc (str, optional): string specifying the position
-        vis_params (dict, optional): visualization parameters as a dictionary. See https://developers.google.com/earth-engine/image_visualization for options
+        vis_params (dict, optional): visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.
         **kwargs: remaining keyword arguments are passed to colorbar()
 
     raises:
