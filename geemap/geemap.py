@@ -1389,7 +1389,7 @@ class Map(ipyleaflet.Map):
             ee_object (Element|Geometry): An Earth Engine object to center on a geometry, image or feature.
             zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.
         """
-        if zoom is None and hasattr(self, 'fit_bounds'):
+        if zoom is None and hasattr(self, "fit_bounds"):
             self.zoom_to_object(ee_object)
         else:
             lat = 0
@@ -2556,6 +2556,148 @@ class Map(ipyleaflet.Map):
 
     def add_colorbar(
         self,
+        vis_params,
+        cmap="gray",
+        discrete=False,
+        label=None,
+        orientation="horizontal",
+        position="bottomright",
+        transparent_bg=False,
+        layer_name=None,
+        **kwargs,
+    ):
+        """Add a matplotlib colorbar to the map
+
+        Args:
+            vis_params (dict): Visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.
+            cmap (str, optional): Matplotlib colormap. Defaults to "gray". See https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py for options.
+            discrete (bool, optional): Whether to create a discrete colorbar. Defaults to False.
+            label (str, optional): Label for the colorbar. Defaults to None.
+            orientation (str, optional): Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
+            position (str, optional): Position of the colorbar on the map. It can be one of: topleft, topright, bottomleft, and bottomright. Defaults to "bottomright".
+            transparent_bg (bool, optional): Whether to use transparent background. Defaults to False.
+            layer_name (str, optional): The layer name associated with the colorbar. Defaults to None.
+
+        Raises:
+            TypeError: If the vis_params is not a dictionary.
+            ValueError: If the orientation is not either horizontal or vertical.
+            ValueError: If the provided min value is not scalar type.
+            ValueError: If the provided max value is not scalar type.
+            ValueError: If the provided opacity value is not scalar type.
+            ValueError: If cmap or palette is not provided.
+        """
+        import matplotlib as mpl
+        import matplotlib.pyplot as plt
+        import numpy as np
+        import warnings
+
+        if not isinstance(vis_params, dict):
+            raise TypeError("The vis_params must be a dictionary.")
+
+        if orientation not in ["horizontal", "vertical"]:
+            raise ValueError("The orientation must be either horizontal or vertical.")
+
+        if orientation == "horizontal":
+            width, height = 6.0, 0.4
+        else:
+            width, height = 0.4, 4.0
+
+        if "width" in kwargs:
+            width = kwargs["width"]
+            kwargs.pop("width")
+
+        if "height" in kwargs:
+            height = kwargs["height"]
+            kwargs.pop("height")
+
+        vis_keys = list(vis_params.keys())
+
+        if "min" in vis_params:
+            vmin = vis_params["min"]
+            if type(vmin) not in (int, float):
+                raise ValueError("The provided min value must be scalar type.")
+        else:
+            vmin = 0
+
+        if "max" in vis_params:
+            vmax = vis_params["max"]
+            if type(vmax) not in (int, float):
+                raise ValueError("The provided max value must be scalar type.")
+        else:
+            vmax = 1
+
+        if "opacity" in vis_params:
+            alpha = vis_params["opacity"]
+            if type(alpha) not in (int, float):
+                raise ValueError("The provided opacity value must be type scalar.")
+        elif "alpha" in kwargs:
+            alpha = kwargs["alpha"]
+        else:
+            alpha = 1
+
+        if cmap is not None:
+
+            cmap = mpl.pyplot.get_cmap(cmap)
+            norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+
+        if "palette" in vis_keys:
+            hexcodes = vis_params["palette"]
+            hexcodes = [i if i[0] == "#" else "#" + i for i in hexcodes]
+
+            if discrete:
+                cmap = mpl.colors.ListedColormap(hexcodes)
+                vals = np.linspace(vmin, vmax, cmap.N + 1)
+                norm = mpl.colors.BoundaryNorm(vals, cmap.N)
+
+            else:
+                cmap = mpl.colors.LinearSegmentedColormap.from_list(
+                    "custom", hexcodes, N=256
+                )
+                norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+
+            cmap = cmap
+
+        elif cmap is not None:
+
+            cmap = mpl.pyplot.get_cmap(cmap)
+            norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+
+        else:
+            raise ValueError(
+                'cmap keyword or "palette" key in vis_params must be provided.'
+            )
+
+        _, ax = plt.subplots(figsize=(width, height))
+        cb = mpl.colorbar.ColorbarBase(
+            ax, norm=norm, alpha=alpha, cmap=cmap, orientation=orientation, **kwargs
+        )
+
+        if "bands" in vis_keys:
+            cb.set_label(vis_params["bands"])
+        elif label is not None:
+            cb.set_label(label)
+
+        output = widgets.Output()
+        colormap_ctrl = WidgetControl(
+            widget=output,
+            position=position,
+            transparent_bg=transparent_bg,
+        )
+        with output:
+            output.clear_output()
+            plt.show()
+
+        self.colorbar = colormap_ctrl
+
+        if layer_name in self.ee_layer_names:
+            if "colorbar" in self.ee_layer_dict[layer_name]:
+                self.remove_control(self.ee_layer_dict[layer_name]["colorbar"])
+            self.ee_layer_dict[layer_name]["colorbar"] = colormap_ctrl
+
+        self.add_control(colormap_ctrl)
+
+    def add_colorbar_branca(
+        self,
         colors,
         vmin=0,
         vmax=1.0,
@@ -2569,7 +2711,7 @@ class Map(ipyleaflet.Map):
         layer_name=None,
         **kwargs,
     ):
-        """Add a colorbar to the map.
+        """Add a branca colorbar to the map.
 
         Args:
             colors (list): The set of colors to be used for interpolation. Colors can be provided in the form: * tuples of RGBA ints between 0 and 255 (e.g: (255, 255, 0) or (255, 255, 0, 255)) * tuples of RGBA floats between 0. and 1. (e.g: (1.,1.,0.) or (1., 1., 0., 1.)) * HTML-like string (e.g: “#ffff00) * a color name or shortcut (e.g: “y” or “yellow”)

@@ -35,17 +35,21 @@ def plot_colormap(
     width=8.0,
     height=0.4,
     orientation="horizontal",
+    vmin=0,
+    vmax=1.0,
     axis_off=True,
     show_name=False,
     font_size=12,
 ):
-    """Plot a colormap.
+    """Plot a matplotlib colormap.
 
     Args:
         cmap (str): The name of the colormap.
         width (float, optional): The width of the colormap. Defaults to 8.0.
         height (float, optional): The height of the colormap. Defaults to 0.4.
         orientation (str, optional): The orientation of the colormap. Defaults to "horizontal".
+        vmin (float, optional): The minimum value range. Defaults to 0.
+        vmax (float, optional): The maximum value range. Defaults to 1.0.
         axis_off (bool, optional): Whether to turn axis off. Defaults to True.
         show_name (bool, optional): Whether to show the colormap name. Defaults to False.
         font_size (int, optional): Font size of the text. Defaults to 12.
@@ -53,7 +57,9 @@ def plot_colormap(
     fig, ax = plt.subplots(figsize=(width, height))
     col_map = plt.get_cmap(cmap)
 
-    mpl.colorbar.ColorbarBase(ax, cmap=col_map, orientation=orientation)
+    norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+
+    mpl.colorbar.ColorbarBase(ax, norm=norm, cmap=col_map, orientation=orientation)
     if axis_off:
         ax.set_axis_off()
 
