@@ -344,9 +344,9 @@ def collect_samples(m):
             if len(color.value) != 7:
                 color.value = "#3388ff"
             draw_control = DrawControl(
-                marker={"shapeOptions": {"color": color.value}},
-                rectangle={"shapeOptions": {"color": color.value}},
-                polygon={"shapeOptions": {"color": color.value}},
+                marker={"shapeOptions": {"color": color.value}, "repeatMode": True},
+                rectangle={"shapeOptions": {"color": color.value}, "repeatMode": True},
+                polygon={"shapeOptions": {"color": color.value}, "repeatMode": True},
                 circlemarker={},
                 polyline={},
                 edit=False,
