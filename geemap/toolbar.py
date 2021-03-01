@@ -2,7 +2,7 @@
 """
 import os
 import ipywidgets as widgets
-from ipyleaflet import WidgetControl
+from ipyleaflet import WidgetControl, DrawControl
 from IPython.core.display import display
 from ipyfilechooser import FileChooser
 from .common import *
@@ -299,3 +299,152 @@ def convert_js2py(m):
     widget_control = WidgetControl(widget=full_widget, position="topright")
     m.add_control(widget_control)
     m.convert_ctrl = widget_control
+
+
+def collect_samples(m):
+
+    full_widget = widgets.VBox()
+    layout = widgets.Layout(width="100px")
+    prop_label = widgets.Label(
+        value="Property",
+        layout=widgets.Layout(display="flex", justify_content="center", width="100px"),
+    )
+    value_label = widgets.Label(
+        value="Value",
+        layout=widgets.Layout(display="flex", justify_content="center", width="100px"),
+    )
+    color_label = widgets.Label(
+        value="Color",
+        layout=widgets.Layout(display="flex", justify_content="center", width="100px"),
+    )
+
+    prop_text1 = widgets.Text(layout=layout, placeholder="Required")
+    value_text1 = widgets.Text(layout=layout, placeholder="Integer")
+    prop_text2 = widgets.Text(layout=layout, placeholder="Optional")
+    value_text2 = widgets.Text(layout=layout, placeholder="String")
+
+    color = widgets.ColorPicker(
+        concise=False,
+        value="#3388ff",
+        layout=layout,
+        style={"description_width": "initial"},
+    )
+
+    buttons = widgets.ToggleButtons(
+        value=None,
+        options=["Apply", "Clear", "Close"],
+        tooltips=["Apply", "Clear", "Close"],
+        button_style="primary",
+    )
+    buttons.style.button_width = "99px"
+
+    def button_clicked(change):
+        if change["new"] == "Apply":
+
+            if len(color.value) != 7:
+                color.value = "#3388ff"
+            draw_control = DrawControl(
+                marker={"shapeOptions": {"color": color.value}},
+                rectangle={"shapeOptions": {"color": color.value}},
+                polygon={"shapeOptions": {"color": color.value}},
+                circlemarker={},
+                polyline={},
+                edit=False,
+                remove=False,
+            )
+
+            controls = []
+            old_draw_control = None
+            for control in m.controls:
+                if isinstance(control, DrawControl):
+                    controls.append(draw_control)
+                    old_draw_control = control
+
+                else:
+                    controls.append(control)
+
+            m.controls = tuple(controls)
+            old_draw_control.close()
+            m.draw_control = draw_control
+
+            train_props = {}
+
+            if prop_text1.value != "" and value_text1.value != "":
+                train_props[prop_text1.value] = int(value_text1.value)
+            if prop_text2.value != "" and value_text2.value != "":
+                train_props[prop_text2.value] = value_text2.value
+            if color.value != "":
+                train_props["color"] = color.value
+
+            # Handles draw events
+            def handle_draw(target, action, geo_json):
+                from .geemap import ee_tile_layer
+
+                try:
+                    geom = geojson_to_ee(geo_json, False)
+                    m.user_roi = geom
+
+                    if len(train_props) > 0:
+                        feature = ee.Feature(geom, train_props)
+                    else:
+                        feature = ee.Feature(geom)
+                    m.draw_last_json = geo_json
+                    m.draw_last_feature = feature
+                    if action == "deleted" and len(m.draw_features) > 0:
+                        m.draw_features.remove(feature)
+                        m.draw_count -= 1
+                    else:
+                        m.draw_features.append(feature)
+                        m.draw_count += 1
+                    collection = ee.FeatureCollection(m.draw_features)
+                    m.user_rois = collection
+                    ee_draw_layer = ee_tile_layer(
+                        collection, {"color": "blue"}, "Drawn Features", False, 0.5
+                    )
+                    draw_layer_index = m.find_layer_index("Drawn Features")
+
+                    if draw_layer_index == -1:
+                        m.add_layer(ee_draw_layer)
+                        m.draw_layer = ee_draw_layer
+                    else:
+                        m.substitute_layer(m.draw_layer, ee_draw_layer)
+                        m.draw_layer = ee_draw_layer
+
+                except Exception as e:
+                    m.draw_count = 0
+                    m.draw_features = []
+                    m.draw_last_feature = None
+                    m.draw_layer = None
+                    m.user_roi = None
+                    m.roi_start = False
+                    m.roi_end = False
+                    print("There was an error creating Earth Engine Feature.")
+                    raise Exception(e)
+
+            draw_control.on_draw(handle_draw)
+
+        elif change["new"] == "Clear":
+            prop_text1.value = ""
+            value_text1.value = ""
+            prop_text2.value = ""
+            value_text2.value = ""
+            color.value = "#3388ff"
+        elif change["new"] == "Close":
+            m.toolbar_reset()
+            if m.training_ctrl is not None and m.training_ctrl in m.controls:
+                m.remove_control(m.training_ctrl)
+            full_widget.close()
+        buttons.value = None
+
+    buttons.observe(button_clicked, "value")
+
+    full_widget.children = [
+        widgets.HBox([prop_label, value_label, color_label]),
+        widgets.HBox([prop_text1, value_text1, color]),
+        widgets.HBox([prop_text2, value_text2, color]),
+        buttons,
+    ]
+
+    widget_control = WidgetControl(widget=full_widget, position="topright")
+    m.add_control(widget_control)
+    m.training_ctrl = widget_control
