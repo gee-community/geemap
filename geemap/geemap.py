@@ -1771,7 +1771,7 @@ class Map(ipyleaflet.Map):
         minimap = ipyleaflet.Map(
             zoom_control=False,
             attribution_control=False,
-            zoom=5,
+            zoom=zoom,
             center=self.center,
             layers=[basemap_tiles["ROADMAP"]],
         )
