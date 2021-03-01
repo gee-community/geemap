@@ -648,13 +648,17 @@ class Map(ipyleaflet.Map):
                 "name": "whitebox",
                 "tooltip": "WhiteboxTools for local geoprocessing",
             },
-            "google": {
-                "name": "geetoolbox",
-                "tooltip": "GEE Toolbox for cloud computing",
-            },
+            # "google": {
+            #     "name": "geetoolbox",
+            #     "tooltip": "GEE Toolbox for cloud computing",
+            # },
             "map": {
                 "name": "basemap",
                 "tooltip": "Change basemap",
+            },
+            "hand-o-up": {
+                "name": "draw",
+                "tooltip": "Collect training samples",
             },
             "question": {
                 "name": "help",
@@ -775,6 +779,11 @@ class Map(ipyleaflet.Map):
                     from .toolbar import change_basemap
 
                     change_basemap(self)
+                elif tool_name == "draw":
+                    from .toolbar import collect_samples
+
+                    self.training_ctrl = None
+                    collect_samples(self)
                 elif tool_name == "help":
                     import webbrowser
 
