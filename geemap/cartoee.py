@@ -9,7 +9,6 @@ import numpy as np
 from io import BytesIO
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
 import matplotlib.patches as patches
 from matplotlib import font_manager as mfonts
 from matplotlib import cm, colors
@@ -86,7 +85,7 @@ def check_dependencies():
                 stderr=subprocess.STDOUT,
             )
             # send command
-            out, err = proc.communicate()
+            out, _ = proc.communicate()
 
             logging.info(out.decode())
 
@@ -344,8 +343,6 @@ def add_colorbar(
                     "custom", hexcodes, N=256
                 )
                 norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
-
-            cmap = cmap
 
         elif cmap is not None:
             if discrete:
@@ -652,8 +649,6 @@ def add_scale_bar(
 
     """
 
-    import warnings
-
     warnings.filterwarnings("ignore")
 
     # --------------------------------------------------------------------------
@@ -730,11 +725,11 @@ def add_scale_bar(
     )
 
     # fetch axes coordinates in meters
-    x0, x1, y0, y1 = ax.get_extent(proj)
+    x0, _, y0, y1 = ax.get_extent(proj)
     ymean = np.mean([y0, y1])
 
     # set target rectangle in-visible-area (aka 'Axes') coordinates
-    axfrac_ini, axfrac_final = at_x
+    axfrac_ini, _ = at_x
     ayfrac_ini, ayfrac_final = at_y
 
     # choose exact X points as sensible grid ticks with Axis 'ticker' helper
@@ -754,9 +749,7 @@ def add_scale_bar(
     ycoords = np.asanyarray(ycoords)
 
     # Ensuring that the coordinate projection is in degrees:
-    x_targets, y_targets, z_targets = _crs_coord_project(
-        ax.projection, xcoords, ycoords, proj
-    ).T
+    x_targets, _, _ = _crs_coord_project(ax.projection, xcoords, ycoords, proj).T
     x_targets = [x + (axfrac_ini * (lon_1 - lon_0)) for x in x_targets]
 
     # Checking x_ticks in axes projection coordinates
@@ -985,8 +978,6 @@ def get_image_collection_gif(
     """
 
     from .geemap import png_to_gif
-
-    import matplotlib.pyplot as plt
 
     out_dir = os.path.abspath(out_dir)
     if not os.path.exists(out_dir):

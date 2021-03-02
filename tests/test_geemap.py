@@ -6,7 +6,8 @@
 import unittest
 import ee
 
-from geemap import geemap
+import geemap
+from geemap.common import sentinel2_timeseries
 
 
 class TestGeemap(unittest.TestCase):
@@ -19,58 +20,54 @@ class TestGeemap(unittest.TestCase):
     def tearDown(self):
         """Tear down test fixtures, if any."""
 
-    def test_001_default_settings(self):
-        """Test the default settings returns an ImageCollection"""
-        sentCollection = geemap.sentinel2_timeseries()
-        self.assertIsInstance(sentCollection, ee.imagecollection.ImageCollection)
+    # def test_001_default_settings(self):
+    #     """Test the default settings returns an ImageCollection"""
+    #     sentCollection = sentinel2_timeseries()
+    #     self.assertIsInstance(sentCollection, ee.imagecollection.ImageCollection)
 
-    def test_002_good_years(self):
-        start_year = [*range(2015, 2020, 1)]
-        end_year = 2020
-        for year in start_year:
-            sentCollection = geemap.sentinel2_timeseries(
-                start_year=year, end_year=end_year
-            )
-            self.assertIsInstance(sentCollection, ee.imagecollection.ImageCollection)
+    # def test_002_good_years(self):
+    #     start_year = [*range(2015, 2020, 1)]
+    #     end_year = 2020
+    #     for year in start_year:
+    #         sentCollection = sentinel2_timeseries(start_year=year, end_year=end_year)
+    #         self.assertIsInstance(sentCollection, ee.imagecollection.ImageCollection)
 
-    def test_003_good_dates(self):
-        start_date = "06-01"
-        end_date = "12-01"
-        sentCollection = geemap.sentinel2_timeseries(
-            start_date=start_date, end_date=end_date
-        )
-        self.assertIsInstance(sentCollection, ee.imagecollection.ImageCollection)
+    # def test_003_good_dates(self):
+    #     start_date = "06-01"
+    #     end_date = "12-01"
+    #     sentCollection = sentinel2_timeseries(start_date=start_date, end_date=end_date)
+    #     self.assertIsInstance(sentCollection, ee.imagecollection.ImageCollection)
 
-    def test_004_bad_years(self):
-        years = [[2014, 2020], [2015, 2021], [205, 2019], [2016, 202]]
-        for start_year, end_year in years:
-            sentCollection = geemap.sentinel2_timeseries(
-                start_year=start_year, end_year=end_year
-            )
-            self.assertNotIsInstance(sentCollection, ee.imagecollection.ImageCollection)
+    # def test_004_bad_years(self):
+    #     years = [[2014, 2020], [2015, 2021], [205, 2019], [2016, 202]]
+    #     for start_year, end_year in years:
+    #         sentCollection = sentinel2_timeseries(
+    #             start_year=start_year, end_year=end_year
+    #         )
+    #         self.assertNotIsInstance(sentCollection, ee.imagecollection.ImageCollection)
 
-    def test_006_prior_years(self):
-        years = [
-            [2016, 2015],
-            [2017, 2015],
-            [2018, 2015],
-            [2019, 2015],
-            [2018, 2016],
-            [2019, 2017],
-        ]
-        for start_year, end_year in years:
-            self.assertRaises(
-                Exception,
-                geemap.sentinel2_timeseries(start_year=start_year, end_year=end_year),
-            )
+    # def test_006_prior_years(self):
+    #     years = [
+    #         [2016, 2015],
+    #         [2017, 2015],
+    #         [2018, 2015],
+    #         [2019, 2015],
+    #         [2018, 2016],
+    #         [2019, 2017],
+    #     ]
+    #     for start_year, end_year in years:
+    #         self.assertRaises(
+    #             Exception,
+    #             sentinel2_timeseries(start_year=start_year, end_year=end_year),
+    #         )
 
-    def test_007_bad_dates(self):
-        start_date = "06-01"
-        end_date = "31-12"
-        self.assertRaises(
-            Exception,
-            geemap.sentinel2_timeseries(start_date=start_date, end_date=end_date),
-        )
+    # def test_007_bad_dates(self):
+    #     start_date = "06-01"
+    #     end_date = "31-12"
+    #     self.assertRaises(
+    #         Exception,
+    #         sentinel2_timeseries(start_date=start_date, end_date=end_date),
+    #     )
 
     # def test_command_line_interface(self):
     #     """Test the CLI."""

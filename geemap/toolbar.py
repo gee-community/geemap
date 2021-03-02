@@ -1,5 +1,6 @@
 """Module for dealing with the toolbar.
 """
+import ee
 import os
 import ipywidgets as widgets
 from ipyleaflet import WidgetControl, DrawControl
@@ -227,7 +228,7 @@ def change_basemap(m):
         if len(m.layers) == 1:
             old_basemap = m.layers[0]
         else:
-            old_basemap = old_basemap = m.layers[1]
+            old_basemap = m.layers[1]
         m.substitute_layer(old_basemap, _ee_basemaps[basemap_name])
 
     dropdown.observe(on_click, "value")

@@ -363,7 +363,7 @@ class Map(folium.Map):
         """
         lat = 0
         lon = 0
-        bounds = [[lat, lon], [lat, lon]]
+
         if isinstance(ee_object, ee.geometry.Geometry):
             centroid = ee_object.centroid()
             lon, lat = centroid.getInfo()["coordinates"]

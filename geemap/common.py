@@ -2,7 +2,6 @@
 """
 
 import csv
-from logging import exception
 import math
 import os
 import shutil
@@ -13,6 +12,43 @@ import ee
 import ipywidgets as widgets
 from ipytree import Tree, Node
 from IPython.display import display
+
+__all__ = [
+    "add_text_to_gif",
+    "adjust_longitude",
+    "check_color",
+    "coords_to_geojson",
+    "create_code_cell",
+    "create_download_link",
+    "csv_to_shp",
+    "ee_data_html",
+    "ee_initialize",
+    "ee_to_geojson",
+    "geocode",
+    "geojson_to_ee",
+    "geometry_type",
+    "get_COG_bounds",
+    "get_COG_center",
+    "get_COG_mosaic",
+    "get_COG_tile",
+    "get_STAC_center",
+    "get_STAC_tile",
+    "get_center",
+    "kml_to_geojson",
+    "is_tool",
+    "landsat_ts_gif",
+    "latlon_from_text",
+    "minimum_bounding_box",
+    "random_string",
+    "reduce_gif_size",
+    "rgb_to_hex",
+    "search_ee_data",
+    "sentinel2_timeseries",
+    "screen_capture",
+    "shp_to_ee",
+    "shp_to_geojson",
+    "vector_styling",
+]
 
 
 ########################################
@@ -48,10 +84,6 @@ def ee_initialize(token_name="EARTHENGINE_TOKEN"):
             ee.Authenticate()
             ee.Initialize()
 
-    # out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
-    # if not os.path.exists(out_dir):
-    #     os.makedirs(out_dir)
-
 
 def set_proxy(port=1080, ip="http://127.0.0.1"):
     """Sets proxy if needed. This is only needed for countries where Google services are not available.
@@ -60,7 +92,6 @@ def set_proxy(port=1080, ip="http://127.0.0.1"):
         port (int, optional): The proxy port number. Defaults to 1080.
         ip (str, optional): The IP address. Defaults to 'http://127.0.0.1'.
     """
-    import os
     import requests
 
     try:
@@ -85,11 +116,11 @@ def set_proxy(port=1080, ip="http://127.0.0.1"):
 
 def in_colab_shell():
     """Tests if the code is being executed within Google Colab."""
-    try:
-        import google.colab  # pylint: disable=unused-variable
+    import sys
 
+    if "google.colab" in sys.modules:
         return True
-    except ImportError:
+    else:
         return False
 
 
@@ -187,7 +218,6 @@ def update_package():
     In this way, I don't have to keep updating pypi and conda-forge with every minor update of the package.
 
     """
-    import shutil
 
     try:
         download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
@@ -302,8 +332,6 @@ def clone_github_repo(url, out_dir):
         url (str): The link to the GitHub repository
         out_dir (str): The output directory for the cloned repository.
     """
-
-    import zipfile
 
     repo_name = os.path.basename(url)
     # url_zip = os.path.join(url, 'archive/master.zip')
@@ -604,7 +632,7 @@ def system_fonts(show_full_path=False):
 
         # Common font locations:
         # Linux: /usr/share/fonts/TTF/
-        # Windows: C:\Windows\Fonts
+        # Windows: C:/Windows/Fonts
         # macOS:  System > Library > Fonts
 
     Args:
@@ -857,7 +885,6 @@ def csv_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude"):
         latitude (str, optional): The column name of the latitude column. Defaults to 'latitude'.
         longitude (str, optional): The column name of the longitude column. Defaults to 'longitude'.
     """
-    import csv
     import shapefile as shp
 
     if in_csv.startswith("http") and in_csv.endswith(".csv"):
@@ -901,7 +928,6 @@ def geojson_to_ee(geo_json, geodesic=True):
     Returns:
         ee_object: An ee.Geometry object
     """
-    # ee_initialize()
 
     try:
 
@@ -1113,9 +1139,6 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip
         keep_zip (bool, optional): Whether to keep the downloaded shapefile as a zip file.
     """
     import requests
-    import zipfile
-
-    # ee_initialize()
 
     if not isinstance(ee_object, ee.FeatureCollection):
         raise ValueError("ee_object must be an ee.FeatureCollection")
@@ -1259,10 +1282,6 @@ def ee_export_geojson(ee_object, filename=None, selectors=None):
         selectors (list, optional): A list of attributes to export. Defaults to None.
     """
     import requests
-
-    # import zipfile
-
-    # ee_initialize()
 
     if not isinstance(ee_object, ee.FeatureCollection):
         print("The ee_object must be an ee.FeatureCollection.")
@@ -1427,9 +1446,6 @@ def ee_export_image(
         file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
     """
     import requests
-    import zipfile
-
-    # ee_initialize()
 
     if not isinstance(ee_object, ee.Image):
         print("The ee_object must be an ee.Image.")
@@ -1501,11 +1517,6 @@ def ee_export_image_collection(
         region (object, optional): A polygon specifying a region to download; ignored if crs and crs_transform is specified. Defaults to None.
         file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
     """
-
-    # import requests
-    # import zipfile
-
-    # ee_initialize()
 
     if not isinstance(ee_object, ee.ImageCollection):
         print("The ee_object must be an ee.ImageCollection.")
@@ -1951,8 +1962,6 @@ def sentinel2_timeseries(
     import re
     import datetime
 
-    # ee_initialize()
-
     if roi is None:
         # roi = ee.Geometry.Polygon(
         #     [[[-180, -80],
@@ -2014,9 +2023,7 @@ def sentinel2_timeseries(
         datetime.datetime(int(start_year), int(start_date[:2]), int(start_date[3:5]))
         datetime.datetime(int(end_year), int(end_date[:2]), int(end_date[3:5]))
     except Exception as e:
-        print("The input dates are invalid.")
-        print(e)
-        return
+        raise ValueError("The input dates are invalid.")
 
     try:
         start_test = datetime.datetime(
@@ -2028,8 +2035,7 @@ def sentinel2_timeseries(
         if start_test > end_test:
             raise ValueError("Start date must be prior to end date")
     except Exception as e:
-        print(e)
-        return
+        raise Exception(e)
 
     def days_between(d1, d2):
         d1 = datetime.datetime.strptime(d1, "%Y-%m-%d")
@@ -2680,7 +2686,6 @@ def add_text_to_gif(
                 raise Exception(
                     "The specified xy is invalid. It must be formatted like this ('10%', '10%')"
                 )
-                return
     else:
         print(
             "The specified xy is invalid. It must be formatted like this: (10, 10) or ('10%', '10%')"
@@ -2872,7 +2877,6 @@ def reduce_gif_size(in_gif, out_gif=None):
         out_gif (str, optional): The output file path to the GIF image. Defaults to None.
     """
     import ffmpeg
-    import shutil
 
     if not is_tool("ffmpeg"):
         print("ffmpeg is not installed on your computer.")
@@ -3335,7 +3339,7 @@ def is_latlon_valid(location):
 
     try:
         lat, lon = float(latlon[0]), float(latlon[1])
-        if lat >= -90 and lat <= 90 and lon >= -180 and lat <= 180:
+        if lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180:
             return True
         else:
             return False
@@ -3366,7 +3370,7 @@ def latlon_from_text(location):
             return None
 
         lat, lon = latlon[0], latlon[1]
-        if lat >= -90 and lat <= 90 and lon >= -180 and lat <= 180:
+        if lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180:
             return lat, lon
         else:
             return None
@@ -3525,7 +3529,6 @@ def ee_api_to_csv(outfile=None):
     Args:
         outfile (str, optional): The output file path to a csv file. Defaults to None.
     """
-    import csv
     import pkg_resources
     import requests
     from bs4 import BeautifulSoup
@@ -3640,7 +3643,6 @@ def read_api_csv():
         dict: The dictionary containing information about each function, including name, description, function form, return type, arguments, html.
     """
     import copy
-    import csv
     import pkg_resources
 
     pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
@@ -4199,9 +4201,9 @@ def build_repo_tree(out_dir=None, name="gee_repos"):
             try:
                 path_widget.value = "Cloning..."
                 clone_dir = os.path.join(default_dir, os.path.basename(url))
-                if "github.com" in url:
+                if url.find("github.com") != -1:
                     clone_github_repo(url, out_dir=clone_dir)
-                elif "googlesource" in url:
+                elif url.find("googlesource") != -1:
                     clone_google_repo(url, out_dir=clone_dir)
                 path_widget.value = "Cloned to {}".format(clone_dir)
                 clone_widget.disabled = True
@@ -4560,7 +4562,6 @@ def create_nlcd_qml(out_qml):
         out_qml (str): File path to the ouput qml.
     """
     import pkg_resources
-    import shutil
 
     pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
     data_dir = os.path.join(pkg_dir, "data")
@@ -4719,7 +4720,7 @@ def get_COG_mosaic(
         token = r["token"]
 
         # Create mosaic
-        r = requests.post(
+        requests.post(
             f"{titiler_endpoint}/mosaicjson/create",
             json={
                 "username": username,
@@ -4732,11 +4733,11 @@ def get_COG_mosaic(
             },
         ).json()
 
-        r = requests.get(
+        r2 = requests.get(
             f"{titiler_endpoint}/mosaicjson/{username}.{layername}/tilejson.json",
         ).json()
 
-        return r["tiles"][0]
+        return r2["tiles"][0]
 
     except Exception as e:
         print(e)
