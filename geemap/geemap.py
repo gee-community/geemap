@@ -16,7 +16,6 @@ from ipyleaflet import Marker, MarkerCluster, TileLayer, WidgetControl
 from IPython.display import display
 from .basemaps import basemaps, basemap_tiles
 from .common import *
-from .conversion import *
 from .legends import builtin_legends
 
 
@@ -46,17 +45,13 @@ class Map(ipyleaflet.Map):
         if "location" in kwargs.keys():
             kwargs["center"] = kwargs["location"]
             kwargs.pop("location")
-        if "center" in kwargs.keys():
-            latlon = kwargs["center"]
-        else:
+        if "center" not in kwargs.keys():
             kwargs["center"] = latlon
 
         if "zoom_start" in kwargs.keys():
             kwargs["zoom"] = kwargs["zoom_start"]
             kwargs.pop("zoom_start")
-        if "zoom" in kwargs.keys():
-            zoom = kwargs["zoom"]
-        else:
+        if "zoom" not in kwargs.keys():
             kwargs["zoom"] = zoom
 
         if "add_google_map" not in kwargs.keys() and "basemap" not in kwargs.keys():
@@ -480,13 +475,11 @@ class Map(ipyleaflet.Map):
         # Handles draw events
         def handle_draw(target, action, geo_json):
             try:
-                # geo_json = adjust_longitude(geo_json)
                 self.roi_start = True
                 geom = geojson_to_ee(geo_json, False)
                 self.user_roi = geom
                 feature = ee.Feature(geom)
                 self.draw_last_json = geo_json
-                # self.draw_last_bounds = minimum_bounding_box(geo_json)
                 self.draw_last_feature = feature
                 if action == "deleted" and len(self.draw_features) > 0:
                     self.draw_features.remove(feature)
@@ -500,18 +493,13 @@ class Map(ipyleaflet.Map):
                     collection, {"color": "blue"}, "Drawn Features", False, 0.5
                 )
                 draw_layer_index = self.find_layer_index("Drawn Features")
-                # if (
-                #     self.draw_count == 1
-                #     and action != "deleted"
-                #     and draw_layer_index != -1
-                # ):
+
                 if draw_layer_index == -1:
                     self.add_layer(ee_draw_layer)
                     self.draw_layer = ee_draw_layer
                 else:
                     self.substitute_layer(self.draw_layer, ee_draw_layer)
                     self.draw_layer = ee_draw_layer
-                # draw_control.clear()
                 self.roi_end = True
                 self.roi_start = False
             except Exception as e:
@@ -675,22 +663,7 @@ class Map(ipyleaflet.Map):
 
         icons = list(tools.keys())
         tooltips = [item["tooltip"] for item in list(tools.values())]
-        # icons = [
-        #     "info",
-        #     "bar-chart",
-        #     "camera",
-        #     "eraser",
-        #     "folder-open",
-        #     "cloud-download",
-        # ]
-        # tooltips = [
-        #     "Inspector",
-        #     "Plotting",
-        #     "Save map as HTML or image",
-        #     "Remove all drawn features",
-        #     "Open local vector/raster data",
-        #     "Export Earth Engine data",
-        # ]
+
         icon_width = "32px"
         icon_height = "32px"
         n_cols = 2
@@ -1353,16 +1326,6 @@ class Map(ipyleaflet.Map):
             if self.plot_dropdown_widget is not None:
                 self.plot_dropdown_widget.options = list(self.ee_raster_layer_names)
 
-        # draw_layer_index = self.find_layer_index(name="Drawn Features")
-        # if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
-        #     layers = list(self.layers)
-        #     layers = (
-        #         layers[0:draw_layer_index]
-        #         + layers[(draw_layer_index + 1) :]
-        #         + [layers[draw_layer_index]]
-        #     )
-        #     self.layers = layers
-
     addLayer = add_ee_layer
 
     def draw_layer_on_top(self):
@@ -1476,16 +1439,6 @@ class Map(ipyleaflet.Map):
             ):
                 self.add_layer(basemap_tiles[basemap])
 
-            # draw_layer_index = self.find_layer_index(name="Drawn Features")
-            # if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
-            #     layers = list(self.layers)
-            #     layers = (
-            #         layers[0:draw_layer_index]
-            #         + layers[(draw_layer_index + 1) :]
-            #         + [layers[draw_layer_index]]
-            #     )
-            #     self.layers = layers
-
         except Exception:
             raise ValueError(
                 "Basemap can only be one of the following:\n  {}".format(
@@ -1582,16 +1535,6 @@ class Map(ipyleaflet.Map):
             )
             self.add_layer(wms_layer)
 
-            # draw_layer_index = self.find_layer_index(name="Drawn Features")
-            # if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
-            #     layers = list(self.layers)
-            #     layers = (
-            #         layers[0:draw_layer_index]
-            #         + layers[(draw_layer_index + 1) :]
-            #         + [layers[draw_layer_index]]
-            #     )
-            #     self.layers = layers
-
         except Exception as e:
             print("Failed to add the specified WMS TileLayer.")
             raise Exception(e)
@@ -1624,16 +1567,6 @@ class Map(ipyleaflet.Map):
                 **kwargs,
             )
             self.add_layer(tile_layer)
-
-            # draw_layer_index = self.find_layer_index(name="Drawn Features")
-            # if draw_layer_index > -1 and draw_layer_index < (len(self.layers) - 1):
-            #     layers = list(self.layers)
-            #     layers = (
-            #         layers[0:draw_layer_index]
-            #         + layers[(draw_layer_index + 1) :]
-            #         + [layers[draw_layer_index]]
-            #     )
-            #     self.layers = layers
 
         except Exception as e:
             print("Failed to add the specified TileLayer.")
@@ -2393,8 +2326,6 @@ class Map(ipyleaflet.Map):
 
         if "min_width" not in kwargs.keys():
             min_width = None
-        else:
-            min_wdith = kwargs["min_width"]
         if "max_width" not in kwargs.keys():
             max_width = None
         else:
@@ -2465,7 +2396,6 @@ class Map(ipyleaflet.Map):
 
         allowed_builtin_legends = builtin_legends.keys()
         if builtin_legend is not None:
-            # builtin_legend = builtin_legend.upper()
             if builtin_legend not in allowed_builtin_legends:
                 print(
                     "The builtin legend must be one of the following: {}".format(
@@ -2663,8 +2593,6 @@ class Map(ipyleaflet.Map):
                     "custom", hexcodes, N=256
                 )
                 norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
-
-            cmap = cmap
 
         elif cmap is not None:
 
@@ -3712,7 +3640,7 @@ class Map(ipyleaflet.Map):
                                 for color in palette.value.split(",")
                             ]
 
-                            self.add_colorbar(
+                            self.add_colorbar_branca(
                                 colors=colors,
                                 vmin=value_range.value[0],
                                 vmax=value_range.value[1],

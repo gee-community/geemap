@@ -23,6 +23,8 @@ from collections import deque
 from pathlib import Path
 from .common import *
 
+__all__ = []
+
 
 def find_matching_bracket(lines, start_line_index, start_char_index, matching_char="{"):
     """Finds the position of the matching closing bracket from a list of lines.
@@ -798,9 +800,10 @@ def py_to_ipynb(
         command = 'ipynb-py-convert "{}" "{}"'.format(out_py_file, out_file)
         print(os.popen(command).read().rstrip())
         # os.popen(command)
-    except:
+    except Exception as e:
         print("Please install ipynb-py-convert using the following command:\n")
         print("pip install ipynb-py-convert")
+        raise Exception(e)
 
     # os.remove(out_py_file)
 
