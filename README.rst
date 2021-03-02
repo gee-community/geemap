@@ -23,6 +23,9 @@ geemap
 .. image:: https://img.shields.io/badge/YouTube-Channel-red   
         :target: https://www.youtube.com/c/QiushengWu
 
+.. image:: https://img.shields.io/lgtm/grade/python/g/giswqs/geemap.svg?logo=lgtm&logoWidth=18
+        :target: https://lgtm.com/projects/g/giswqs/geemap/context:python
+        
 .. image:: https://img.shields.io/twitter/follow/giswqs?style=social   	
         :target: https://twitter.com/giswqs
 
