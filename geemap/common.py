@@ -2047,8 +2047,8 @@ def sentinel2_timeseries(
     )
     start_month = int(start_date[:2])
     start_day = int(start_date[3:5])
-    start_date = str(start_year) + "-" + start_date
-    end_date = str(end_year) + "-" + end_date
+    # start_date = str(start_year) + "-" + start_date
+    # end_date = str(end_year) + "-" + end_date
 
     # # Define a collection filter by date, bounds, and quality.
     # def colFilter(col, aoi):  # , startDate, endDate):
@@ -2262,8 +2262,8 @@ def landsat_timeseries(
     )
     start_month = int(start_date[:2])
     start_day = int(start_date[3:5])
-    start_date = str(start_year) + "-" + start_date
-    end_date = str(end_year) + "-" + end_date
+    # start_date = str(start_year) + "-" + start_date
+    # end_date = str(end_year) + "-" + end_date
 
     # # Define a collection filter by date, bounds, and quality.
     # def colFilter(col, aoi):  # , startDate, endDate):

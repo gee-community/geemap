@@ -3236,7 +3236,7 @@ class Map(ipyleaflet.Map):
         layer_opacity = ee_layer.opacity
 
         band_names = None
-        band_count = 1
+        # band_count = 1
         min_value = 0
         max_value = 100
         sel_bands = None
