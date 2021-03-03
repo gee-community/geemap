@@ -645,6 +645,7 @@ class Map(folium.Map):
         legend_dict=None,
         builtin_legend=None,
         opacity=1.0,
+        **kwargs,
     ):
         """Adds a customized basemap to the map. Reference: https://bit.ly/3oV6vnH
 

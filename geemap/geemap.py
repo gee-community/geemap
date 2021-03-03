@@ -3270,7 +3270,9 @@ class Map(ipyleaflet.Map):
             if "bands" in vis_params.keys():
                 sel_bands = vis_params["bands"]
             if "palette" in vis_params.keys():
-                layer_palette = vis_params["palette"]
+                layer_palette = [
+                    color.replace("#", "") for color in list(vis_params["palette"])
+                ]
 
             vis_widget = widgets.VBox(
                 layout=widgets.Layout(padding="5px 5px 5px 8px", width="330px")
