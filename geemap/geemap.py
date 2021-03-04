@@ -4514,6 +4514,129 @@ class Map(ipyleaflet.Map):
         self.add_layer(geo_json)
         os.remove(out_json)
 
+    def add_time_slider(
+        self,
+        ee_object,
+        vis_params={},
+        layer_name="Time series",
+        labels=None,
+        time_interval=1,
+        position="bottomright",
+        slider_length="150px",
+    ):
+        """Adds a time slider to the map.
+
+        Args:
+            ee_object (ee.Image | ee.ImageCollection): [description]
+            vis_params (dict, optional): Visualization parameters to use for visualizing image. Defaults to {}.
+            layer_name (str, optional): The layer name to be used. Defaults to "Time series".
+            labels (list, optional): The list of labels to be used for the time series. Defaults to None.
+            time_interval (int, optional): Time interval in seconds. Defaults to 1.
+            position (str, optional): Position to place the time slider, can be any of ['topleft', 'topright', 'bottomleft', 'bottomright']. Defaults to "bottomright".
+            slider_length (str, optional): Length of the time slider. Defaults to "150px".
+
+        Raises:
+            TypeError: If the ee_object is not ee.Image | ee.ImageCollection.
+        """
+        import time
+        import threading
+
+        if isinstance(ee_object, ee.Image):
+            ee_object = ee.ImageCollection(
+                ee_object.bandNames().map(lambda b: ee_object.select([b]))
+            )
+
+        if not isinstance(ee_object, ee.ImageCollection):
+            raise TypeError("The ee_object must be an ee.Image or ee.ImageCollection")
+
+        if labels is not None:
+            size = len(labels)
+        else:
+            size = ee_object.size().getInfo()
+            labels = [str(i) for i in range(1, size + 1)]
+
+        first = ee.Image(ee_object.first())
+        self.addLayer(first, vis_params, layer_name)
+
+        slider = widgets.IntSlider(
+            min=1,
+            max=size,
+            readout=False,
+            continuous_update=False,
+            layout=widgets.Layout(width=slider_length),
+        )
+        label = widgets.Label(
+            value=labels[0], layout=widgets.Layout(padding="0px 5px 0px 5px")
+        )
+
+        play_btn = widgets.Button(
+            icon="play",
+            tooltip="Play the time slider",
+            button_style="primary",
+            layout=widgets.Layout(width="32px"),
+        )
+
+        pause_btn = widgets.Button(
+            icon="pause",
+            tooltip="Pause the time slider",
+            button_style="primary",
+            layout=widgets.Layout(width="32px"),
+        )
+
+        close_btn = widgets.Button(
+            icon="times",
+            tooltip="Close the time slider",
+            button_style="primary",
+            layout=widgets.Layout(width="32px"),
+        )
+
+        play_chk = widgets.Checkbox(value=False)
+
+        slider_widget = widgets.HBox([slider, label, play_btn, pause_btn, close_btn])
+
+        def play_click(b):
+
+            play_chk.value = True
+
+            def work(slider):
+                while play_chk.value:
+                    if slider.value < len(labels):
+                        slider.value += 1
+                    else:
+                        slider.value = 1
+                    time.sleep(time_interval)
+
+            thread = threading.Thread(target=work, args=(slider,))
+            thread.start()
+
+        def pause_click(b):
+            play_chk.value = False
+            # slider_widget.children = [slider, label, play_btn, close_btn]
+
+        play_btn.on_click(play_click)
+        pause_btn.on_click(pause_click)
+
+        def slider_changed(change):
+            index = slider.value - 1
+            label.value = labels[index]
+            image = ee.Image(ee_object.toList(ee_object.size()).get(index))
+            self.addLayer(image, vis_params, layer_name)
+
+        slider.observe(slider_changed, "value")
+
+        def close_click(b):
+            play_chk.value = False
+            self.toolbar_reset()
+            if self.slider_ctrl is not None and self.slider_ctrl in self.controls:
+                self.remove_control(self.slider_ctrl)
+            slider_widget.close()
+
+        close_btn.on_click(close_click)
+
+        slider_ctrl = WidgetControl(widget=slider_widget, position=position)
+        self.add_control(slider_ctrl)
+        self.slider_ctrl = slider_ctrl
+
 
 # The functions below are outside the Map class.
 
