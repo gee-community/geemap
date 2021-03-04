@@ -1772,7 +1772,75 @@ def get_image_collection_thumbnails(
     except Exception as e:
         print(e)
 
+        
+def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_names=None
+):
+    """
+    Creates an ee.Image from a 3D numpy array where each 2D numpy slice is added to a band, and a geospatial transform that indicates where to put the data. If the np_array is already 2D only, then it is only a one-band image. 
+    
+    Args:
+        np_array: the 3D (or 2D) numpy array to add to an image 
+        
+        crs(str): The base coordinate reference system of this Projection, given as a well-known authority code (e.g. 'EPSG:4326') or a WKT string.
+        transform(list): The transform between projected coordinates and the base coordinate system, specified as a 2x3 affine transform matrix in row-major order: [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation]. May not specify both this and 'transformWkt'.
+        transformWkt(str): The transform between projected coordinates and the base coordinate system, specified as a WKT string. May not specify both this and 'transform'.
+        band_names(str or list, optional): The list of names for the bands. The default names are 'constant', and 'constant_1', 'constant_2', etc.
+        
+        Returns:
+            image: An ee.Image 
+        
+    """
+    import numpy as np
+    
+    if not isinstance(np_array, np.ndarray):
+        print("The input must be a numpy.ndarray.")
+        return    
+    if not len(np_array.shape) in [2,3]:
+        print("The input must have 2 or 3 dimensions")
+        return
+    if band_names and not isinstance(band_names, (list,str)):
+        print("Band names must be a str or list")
+        return
+    
+    try:
+        
+        projection = ee.Projection(crs, transform, transformWkt);
+        coords = ee.Image.pixelCoordinates(projection).floor().int32(); 
+        x = coords.select('x');
+        y = coords.select('y');
+        s = np_array.shape
+        if len(s)<3:
+            dimx = s[0]
+            dimy = s[1]
+        else:
+            dimx = s[1]
+            dimy = s[2]
+            dimz = s[0]
 
+        coord_mask = x.gte(0).And(y.gte(0)).And(x.lt(dimx)).And(y.lt(dimy))
+        coords = coords.updateMask(coord_mask);
+        
+        def list_to_ee(a_list):
+            ee_data = ee.Array(a_list)
+            image = ee.Image(ee_data).arrayGet(coords)
+            return image
+            
+        if len(s)<3:
+            image = list_to_ee(np_array.tolist())
+        else:
+            image = list_to_ee(np_array[0].tolist())
+            for z in np.arange(1,dimz):
+                image = image.addBands(list_to_ee(np_array[z].tolist()))
+        
+        if band_names:
+            image = image.rename(band_names)
+            
+        return image
+
+    except Exception as e:
+        print(e)
+
+    
 def ee_to_numpy(
     ee_object, bands=None, region=None, properties=None, default_value=None
 ):
