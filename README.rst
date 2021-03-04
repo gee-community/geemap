@@ -330,6 +330,11 @@ To extract pixels from an ee.Image into a 3D numpy array:
 
   geemap.ee_to_numpy(ee_object, bands, region, properties, default_value)
 
+To import a 2D or 3D numpy array to an ee.Image using a given base coordinate reference system (crs) and transform between projected coordinates and the base:
+
+.. code:: python
+
+  geemap.numpy_to_ee(np_array, crs, transform, transformWkt, band_names)
 
 To calculate zonal statistics:
 
