@@ -7034,3 +7034,41 @@ def extract_pixel_values(
         return list(dict_values.getInfo().values())
     else:
         return dict_values
+
+
+def list_vars(var_type=None):
+    """Lists all defined avariables.
+
+    Args:
+        var_type (object, optional): The object type of variables to list. Defaults to None.
+
+    Returns:
+        list: A list of all defined variables.
+    """
+    result = []
+
+    for var in globals():
+
+        reserved_vars = [
+            "In",
+            "Out",
+            "get_ipython",
+            "exit",
+            "quit",
+            "json",
+            "getsizeof",
+            "NamespaceMagics",
+            "np",
+            "var_dic_list",
+            "list_vars",
+            "ee",
+            "geemap",
+        ]
+
+        if (not var.startswith("_")) and (var not in reserved_vars):
+            if var_type is not None and isinstance(eval(var), var_type):
+                result.append(var)
+            elif var_type is None:
+                result.append(var)
+
+    return result

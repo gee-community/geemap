@@ -128,6 +128,7 @@ nav:
           - notebooks/59_whitebox.ipynb
           - notebooks/60_colormaps.ipynb
           - notebooks/61_cartoee_scalebar.ipynb
+          - notebooks/62_time_slider.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_projections.ipynb
