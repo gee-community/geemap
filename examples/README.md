@@ -80,6 +80,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 59. Accessing 477 whitebox tools for geospatial and hydrologcal analysis ([video](https://youtu.be/n8ODeZpuyCE) | gif | [notebook](https://geemap.org/notebooks/59_whitebox))
 60. Visualizing Earth Engine data with over 200 colormaps through dot notation ([video](https://youtu.be/RBCf7wgK3Cg) | gif | [notebook](https://geemap.org/notebooks/60_colormaps))
 61. Adding a scale bar to a cartoee map (video | gif | [notebook](https://geemap.org/notebooks/61_cartoee_scalebar))
+62. Using the time slider for visualizing Earth Engine time-series images ([video](https://youtu.be/w_nWkNz8fyI) | gif | [notebook](https://geemap.org/notebooks/62_time_slider))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 

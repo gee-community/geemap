@@ -4617,10 +4617,12 @@ class Map(ipyleaflet.Map):
         pause_btn.on_click(pause_click)
 
         def slider_changed(change):
+            self.default_style = {"cursor": "wait"}
             index = slider.value - 1
             label.value = labels[index]
             image = ee.Image(ee_object.toList(ee_object.size()).get(index))
             self.addLayer(image, vis_params, layer_name)
+            self.default_style = {"cursor": "default"}
 
         slider.observe(slider_changed, "value")
 
