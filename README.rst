@@ -340,7 +340,7 @@ To import one or more variables from a netCDF file with a regular grid in EPSG:4
 
 .. code:: python
 
-  geemap.netcdf_to_ee((nc_file, var_names, band_names, lon='lon', lat='lat')
+  geemap.netcdf_to_ee(nc_file, var_names, band_names, lon='lon', lat='lat')
 
 To calculate zonal statistics:
 
