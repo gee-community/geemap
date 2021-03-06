@@ -23,8 +23,6 @@ from collections import deque
 from pathlib import Path
 from .common import *
 
-__all__ = []
-
 
 def find_matching_bracket(lines, start_line_index, start_char_index, matching_char="{"):
     """Finds the position of the matching closing bracket from a list of lines.
