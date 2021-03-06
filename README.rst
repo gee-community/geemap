@@ -336,6 +336,12 @@ To import a 2D or 3D numpy array to an ee.Image using a given base coordinate re
 
   geemap.numpy_to_ee(np_array, crs, transform, transformWkt, band_names)
 
+To import one or more variables from a netCDF file with a regular grid in EPSG:4326 to an ee.Image:
+
+.. code:: python
+
+  geemap.netcdf_to_ee(nc_file, var_names, band_names, lon='lon', lat='lat')
+
 To calculate zonal statistics:
 
 .. code:: python
