@@ -1021,7 +1021,7 @@ def get_image_collection_gif(
 
         # Add scale bar
         if len(scale_bar_dict) > 0:
-            add_scale_bar(ax, **scale_bar_dict)
+            add_scale_bar_lite(ax, **scale_bar_dict)
         # Add north arrow
         if len(north_arrow_dict) > 0:
             add_north_arrow(ax, **north_arrow_dict)

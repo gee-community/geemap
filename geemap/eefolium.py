@@ -918,18 +918,25 @@ class Map(folium.Map):
         # import logging
         # logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
 
-        if name is None:
-            name = "folium_" + random_string(6)
+        try:
 
-        visibility = visibility.upper()
-        if visibility not in ["PUBLIC", "PRIVATE", "ORG"]:
-            visibility = "PRIVATE"
+            if name is None:
+                name = "folium_" + random_string(6)
 
-        if overwrite:
-            delete_dp_report(name)
+            visibility = visibility.upper()
+            if visibility not in ["PUBLIC", "PRIVATE", "ORG"]:
+                visibility = "PRIVATE"
 
-        report = dp.Report(dp.Plot(self))
-        report.publish(name=name, headline=headline, visibility=visibility, open=open)
+            if overwrite:
+                delete_dp_report(name)
+
+            report = dp.Report(dp.Plot(self))
+            report.publish(
+                name=name, headline=headline, visibility=visibility, open=open
+            )
+
+        except Exception as e:
+            print(e)
 
 
 def delete_dp_report(name):
