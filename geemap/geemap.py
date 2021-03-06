@@ -16,6 +16,7 @@ from ipyleaflet import Marker, MarkerCluster, TileLayer, WidgetControl
 from IPython.display import display
 from .basemaps import basemaps, basemap_tiles
 from .common import *
+from .conversion import *
 from .legends import builtin_legends
 
 
