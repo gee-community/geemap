@@ -1141,6 +1141,9 @@ class Map(ipyleaflet.Map):
                         self.plot_marker_cluster = marker_cluster
 
                     band_names = ee_object.bandNames().getInfo()
+                    if any(len(name) > 3 for name in band_names):
+                        band_names = list(range(1, len(band_names) + 1))
+
                     self.chart_labels = band_names
 
                     if self.roi_end:
@@ -4543,6 +4546,8 @@ class Map(ipyleaflet.Map):
         import threading
 
         if isinstance(ee_object, ee.Image):
+            if layer_name not in self.ee_raster_layer_names:
+                self.addLayer(ee_object, {}, layer_name, False)
             ee_object = ee.ImageCollection(
                 ee_object.bandNames().map(lambda b: ee_object.select([b]))
             )
@@ -4557,7 +4562,10 @@ class Map(ipyleaflet.Map):
             labels = [str(i) for i in range(1, size + 1)]
 
         first = ee.Image(ee_object.first())
-        self.addLayer(first, vis_params, layer_name)
+
+        if layer_name not in self.ee_raster_layer_names:
+            self.addLayer(ee_object.toBands(), {}, layer_name, False)
+        self.addLayer(first, vis_params, "Image X")
 
         slider = widgets.IntSlider(
             min=1,
@@ -4612,7 +4620,6 @@ class Map(ipyleaflet.Map):
 
         def pause_click(b):
             play_chk.value = False
-            # slider_widget.children = [slider, label, play_btn, close_btn]
 
         play_btn.on_click(play_click)
         pause_btn.on_click(pause_click)
@@ -4622,7 +4629,9 @@ class Map(ipyleaflet.Map):
             index = slider.value - 1
             label.value = labels[index]
             image = ee.Image(ee_object.toList(ee_object.size()).get(index))
-            self.addLayer(image, vis_params, layer_name)
+            if layer_name not in self.ee_raster_layer_names:
+                self.addLayer(ee_object.toBands(), {}, layer_name, False)
+            self.addLayer(image, vis_params, "Image X")
             self.default_style = {"cursor": "default"}
 
         slider.observe(slider_changed, "value")
