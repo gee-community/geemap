@@ -1,0 +1,3 @@
+# chart module
+
+::: geemap.chart
