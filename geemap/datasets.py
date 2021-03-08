@@ -77,7 +77,19 @@ def get_data_list(update=False):
 
     datasets = list(df["id"])
 
-    return datasets
+    extra_ids = [
+        "countries",
+        "us_states",
+        "us_cities",
+        "chn_admin_line",
+        "chn_admin_level0",
+        "chn_admin_level1",
+        "chn_admin_level2",
+    ]
+
+    extra_datasets = ["users/giswqs/public/" + uid for uid in extra_ids]
+
+    return datasets + extra_datasets
 
 
 def merge_dict(dict1, dict2):
