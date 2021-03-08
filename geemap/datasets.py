@@ -1,10 +1,12 @@
 import os
 import pkg_resources
 import shutil
+import ipywidgets as widgets
 import pandas as pd
 from pathlib import Path
 from box import Box
-from .common import download_from_url
+from .common import download_from_url, search_ee_data, ee_data_html
+from IPython.display import display
 
 
 def get_data_csv():
@@ -128,6 +130,26 @@ def get_data_dict(update=False):
         data_dict[dataset.replace("/", "_")] = dataset
 
     return data_dict
+
+
+def get_metadata(asset_id):
+    """Gets metadata about an Earth Engine asset.
+
+    Args:
+        asset_id (str): The Earth Engine asset id.
+
+    Raises:
+        Exception: If search fails.
+    """
+    try:
+        ee_assets = search_ee_data(asset_id)
+        html = ee_data_html(ee_assets[0])
+        html_widget = widgets.HTML()
+        html_widget.value = html
+        display(html_widget)
+
+    except Exception as e:
+        raise Exception(e)
 
 
 DATA = Box(get_data_dict(), frozen_box=True)
