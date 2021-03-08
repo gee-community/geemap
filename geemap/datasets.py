@@ -99,7 +99,7 @@ def get_ee_stac_list():
     """Gets the STAC list of the Earth Engine Data Catalog.
 
     Raises:
-        Exception: If the JSON file failes to download.
+        Exception: If the JSON file fails to download.
 
     Returns:
         list: The list of Earth Engine asset IDs.
