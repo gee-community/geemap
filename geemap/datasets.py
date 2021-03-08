@@ -1,6 +1,8 @@
+import json
 import os
 import pkg_resources
 import shutil
+import urllib.request
 import ipywidgets as widgets
 import pandas as pd
 from pathlib import Path
@@ -59,24 +61,26 @@ def update_data_list(out_dir="."):
         raise Exception(e)
 
 
-def get_data_list(update=False):
+def get_data_list():
     """Gets the list of the Earth Engine datasets.
-
-    Args:
-        update (bool, optional): Whether to download the latest version from GitHub. Defaults to False.
 
     Returns:
         list: The list of datasets.
     """
-    data_csv = get_data_csv()
 
-    if update or (not os.path.exists(data_csv)):
-        update_data_list()
+    datasets = get_ee_stac_list()
 
-    df = pd.read_csv(data_csv)
+    extra_datasets = get_user_data_list()
 
-    datasets = list(df["id"])
+    return datasets + extra_datasets
 
+
+def get_user_data_list():
+    """Gets the list of the public datasets from GEE users.
+
+    Returns:
+        list: The list of public datasets from GEE users.
+    """
     extra_ids = [
         "countries",
         "us_states",
@@ -88,8 +92,34 @@ def get_data_list(update=False):
     ]
 
     extra_datasets = ["users/giswqs/public/" + uid for uid in extra_ids]
+    return extra_datasets
 
-    return datasets + extra_datasets
+
+def get_ee_stac_list():
+    """Gets the STAC list of the Earth Engine Data Catalog.
+
+    Raises:
+        Exception: If the JSON file failes to download.
+
+    Returns:
+        list: The list of Earth Engine asset IDs.
+    """
+    try:
+        stac_url = (
+            "https://earthengine-stac.storage.googleapis.com/catalog/catalog.json"
+        )
+
+        datasets = []
+        with urllib.request.urlopen(stac_url) as url:
+            data = json.loads(url.read().decode())
+            for link in data["links"]:
+                if "id" in link:
+                    datasets.append(link["id"])
+
+        return datasets
+
+    except Exception as e:
+        raise Exception(e)
 
 
 def merge_dict(dict1, dict2):
@@ -117,17 +147,14 @@ def merge_dict(dict1, dict2):
     return dict1
 
 
-def get_data_dict(update=False):
+def get_data_dict():
     """Gets the Earth Engine Data Catalog as a nested dictionary.
-
-    Args:
-        update (bool, optional): Whether to download the latest version from GitHub. Defaults to False.
 
     Returns:
         dict: The nested dictionary containing the information about the Earth Engine Data Catalog.
     """
     data_dict = {}
-    datasets = get_data_list(update=update)
+    datasets = get_data_list()
 
     for dataset in datasets:
         tree_dict = {}
