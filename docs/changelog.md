@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.8.12 - March 8, 2021
+
+**New Features**:
+
+-   Added a dataset module for accessing the Earth Engine Data Catalog via dot notation [#345](https://github.com/giswqs/geemap/issues/345)
+-   Added a chart module for creating interactive charts for Earth Engine data [#343](https://github.com/giswqs/geemap/issues/343)
+-   Added a time slider for visualizing Earth Engine time-series images [#335 ](https://github.com/giswqs/geemap/issues/335) [#344](https://github.com/giswqs/geemap/issues/344)
+-   Added a `netcdf_to_ee` function [#342](https://github.com/giswqs/geemap/pull/342)
+-   Added a `numpy_to_ee` function [#337](https://github.com/giswqs/geemap/pull/337)
+-   Added vertical colorbar support [#322](https://github.com/giswqs/geemap/issues/322)
+-   Added GUI for creating training samples [#326](https://github.com/giswqs/geemap/issues/326)
+
+**Improvement**:
+
+-   Added layer control by default to folium map [#323](https://github.com/giswqs/geemap/issues/323)
+-   Added geemap matplotlib example [#319](https://github.com/giswqs/geemap/discussions/319)
+-   Added lgtm continuous integration [#330](https://github.com/giswqs/geemap/issues/330)
+-   Fixed layer palette bug [#334](https://github.com/giswqs/geemap/issues/334)
+-   Fixed minimap zoom parameter [#329](https://github.com/giswqs/geemap/pull/329)
+-   Fixed centerObject bug
+
 ## v0.8.11 - February 23, 2021
 
 **New Features**:
