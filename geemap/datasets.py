@@ -125,6 +125,7 @@ def get_data_dict(update=False):
                 tree_dict = {key: tree_dict}
 
         data_dict = merge_dict(data_dict, tree_dict)
+        data_dict[dataset.replace("/", "_")] = dataset
 
     return data_dict
 

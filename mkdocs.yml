@@ -132,6 +132,7 @@ nav:
           - notebooks/61_cartoee_scalebar.ipynb
           - notebooks/62_time_slider.ipynb
           - notebooks/63_charts.ipynb
+          - notebooks/64_data_catalog.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_projections.ipynb
