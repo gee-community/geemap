@@ -133,6 +133,7 @@ nav:
           - notebooks/62_time_slider.ipynb
           - notebooks/63_charts.ipynb
           - notebooks/64_data_catalog.ipynb
+          - notebooks/65_vector_styling.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_projections.ipynb

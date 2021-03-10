@@ -1776,17 +1776,17 @@ def get_image_collection_thumbnails(
 def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat"):
     """
     Creates an ee.Image from netCDF variables band_names that are read from nc_file. Currently only supports variables in a regular longitude/latitude grid (EPSG:4326).
-    
+
     Args:
-        nc_file (str): the name of the netCDF file to read        
+        nc_file (str): the name of the netCDF file to read
         var_names (str or list): the name(s) of the variable(s) to read
         band_names (list, optional): if given, the bands are renamed to band_names. Defaults to the original var_names
         lon (str, optional): the name of the longitude variable in the netCDF file. Defaults to "lon"
         lat (str, optional): the name of the latitude variable in the netCDF file. Defaults to "lat"
-        
+
         Returns:
-            image: An ee.Image 
-        
+            image: An ee.Image
+
     """
     try:
         import xarray as xr
@@ -1795,71 +1795,73 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat"):
         raise ImportError(
             "You need to install xarray first. See https://github.com/pydata/xarray"
         )
-            
+
     import numpy as np
-    
+
     try:
-        
+
         if not isinstance(nc_file, str):
             print("The input file must be a string.")
-            return    
-        if band_names and not isinstance(band_names, (list,str)):
+            return
+        if band_names and not isinstance(band_names, (list, str)):
             print("Band names must be a string or list.")
             return
         if not isinstance(lon, str) or not isinstance(lat, str):
             print("The longitude and latitude variable names must be a string.")
             return
-    
+
         ds = xr.open_dataset(nc_file)
         data = ds[var_names]
-        
+
         lon_data = data[lon]
         lat_data = data[lat]
-        
+
         dim_lon = np.unique(np.ediff1d(lon_data))
         dim_lat = np.unique(np.ediff1d(lat_data))
 
-        if (len(dim_lon)!=1) or (len(dim_lat)!=1):
+        if (len(dim_lon) != 1) or (len(dim_lat) != 1):
             print("The netCDF file is not a regular longitude/latitude grid")
             return
-        
+
         try:
             data = data.to_array()
             # ^ this is only needed (and works) if we have more than 1 variable
             # axis_for_roll will be used in case we need to use np.roll
             # and should be 1 for the case with more than 1 variable
-            axis_for_roll=1
+            axis_for_roll = 1
         except Exception:
-            axis_for_roll=0
+            axis_for_roll = 0
             # .to_array() does not work (and is not needed!) if there is only 1 variable
-            # in this case, the axis_for_roll needs to be 0      
-      
+            # in this case, the axis_for_roll needs to be 0
+
         data_np = np.array(data)
-        
-        do_transpose = True # To do: figure out if we need to tranpose the data or not
+
+        do_transpose = True  # To do: figure out if we need to tranpose the data or not
         if do_transpose:
-            try: 
-                data_np = np.transpose(data_np, (0,2,1))
+            try:
+                data_np = np.transpose(data_np, (0, 2, 1))
             except Exception:
                 data_np = np.transpose(data_np)
 
-        # Figure out if we need to roll the data or not 
+        # Figure out if we need to roll the data or not
         # (see https://github.com/giswqs/geemap/issues/285#issuecomment-791385176)
-        if(np.max(lon_data)>180):
-            data_np = np.roll(data_np, 180, axis = axis_for_roll)
-            west_lon = lon_data[0]-180
+        if np.max(lon_data) > 180:
+            data_np = np.roll(data_np, 180, axis=axis_for_roll)
+            west_lon = lon_data[0] - 180
         else:
             west_lon = lon_data[0]
-        
+
         transform = [dim_lon[0], 0, float(west_lon), 0, dim_lat[0], float(lat_data[0])]
-        
+
         if band_names is None:
             band_names = var_names
-            
-        image = numpy_to_ee(data_np, 'EPSG:4326', transform=transform, band_names=band_names)
-            
+
+        image = numpy_to_ee(
+            data_np, "EPSG:4326", transform=transform, band_names=band_names
+        )
+
         return image
-    
+
     except Exception as e:
         print(e)
 
@@ -6732,11 +6734,22 @@ def vector_styling(ee_object, column, palette, **kwargs):
     Returns:
         object: An ee.FeatureCollection containing the styling attribute.
     """
+    from box import Box
+
     if isinstance(ee_object, ee.FeatureCollection):
 
         prop_names = ee.Feature(ee_object.first()).propertyNames().getInfo()
         if column not in prop_names:
             raise ValueError(f"The column name must of one of {', '.join(prop_names)}")
+
+        if isinstance(palette, Box):
+            try:
+                palette = list(palette["default"])
+            except Exception as e:
+                print("The provided palette is invalid.")
+                raise Exception(e)
+        elif isinstance(palette, tuple):
+            palette = list(palette)
 
         if not isinstance(palette, list):
             raise TypeError("The palette must be a list.")
