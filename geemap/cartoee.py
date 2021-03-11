@@ -937,6 +937,43 @@ def add_scale_bar_lite(
     return
 
 
+def add_legend(ax, legend_elements=None, loc="lower right"):
+    """Adds a legend to the map. The legend elements can be formatted as:
+    legend_elements = [Line2D([], [], color='#00ffff', lw=2, label='Coastline'),
+        Line2D([], [], marker='o', color='#A8321D', label='City', markerfacecolor='#A8321D', markersize=10, ls ='')]
+
+    Args:
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object.
+        legend_elements (list, optional): A list of legend elements. Defaults to None.
+        loc (str, optional): Location of the legend, can be any of ['upper left', 'upper right', 'lower left', 'lower right']. Defaults to "lower right".
+
+    Raises:
+        Exception: If the legend fails to add.
+    """
+    from matplotlib.lines import Line2D
+
+    try:
+        if legend_elements is None:
+            legend_elements = [
+                Line2D([], [], color="#00ffff", lw=2, label="Coastline"),
+                Line2D(
+                    [],
+                    [],
+                    marker="o",
+                    color="#A8321D",
+                    label="City",
+                    markerfacecolor="#A8321D",
+                    markersize=10,
+                    ls="",
+                ),
+            ]
+
+        ax.legend(handles=legend_elements, loc="lower right")
+        return
+    except Exception as e:
+        raise Exception(e)
+
+
 def get_image_collection_gif(
     ee_ic,
     out_dir,
