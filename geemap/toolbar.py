@@ -371,6 +371,12 @@ def collect_samples(m):
             train_props = {}
 
             if prop_text1.value != "" and value_text1.value != "":
+                try:
+                    _ = int(value_text1.value)
+                except Exception as _:
+                    value_text1.placeholder = "Integer only"
+                    value_text1.value = ""
+                    return
                 train_props[prop_text1.value] = int(value_text1.value)
             if prop_text2.value != "" and value_text2.value != "":
                 train_props[prop_text2.value] = value_text2.value
