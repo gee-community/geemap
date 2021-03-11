@@ -6998,13 +6998,11 @@ def csv_to_pandas(in_csv, **kwargs):
         raise Exception(e)
 
 
-def ee_to_pandas(ee_object, selectors=None, verbose=False, **kwargs):
+def ee_to_pandas(ee_object, **kwargs):
     """Converts an ee.FeatureCollection to pandas dataframe.
 
     Args:
         ee_object (ee.FeatureCollection): ee.FeatureCollection.
-        selectors (list, optional): A list of attributes to export. Defaults to None.
-        verbose (bool, optional): Whether to print out descriptive text. Defaults to False.
 
     Raises:
         TypeError: ee_object must be an ee.FeatureCollection
@@ -7017,12 +7015,10 @@ def ee_to_pandas(ee_object, selectors=None, verbose=False, **kwargs):
     if not isinstance(ee_object, ee.FeatureCollection):
         raise TypeError("ee_object must be an ee.FeatureCollection")
 
-    out_csv = os.path.join(os.getcwd(), random_string(6) + ".csv")
-
     try:
-        ee_to_csv(ee_object, out_csv, selectors=selectors, verbose=verbose)
-        df = csv_to_pandas(out_csv, **kwargs)
-        os.remove(out_csv)
+        data = ee_object.map(lambda f: ee.Feature(None, f.toDictionary()))
+        data = [x["properties"] for x in data.getInfo()["features"]]
+        df = pd.DataFrame(data)
         return df
     except Exception as e:
         raise Exception(e)
