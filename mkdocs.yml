@@ -135,6 +135,7 @@ nav:
           - notebooks/64_data_catalog.ipynb
           - notebooks/65_vector_styling.ipynb
           - notebooks/66_cartoee_legend.ipynb
+          - notebooks/67_training_samples.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_projections.ipynb

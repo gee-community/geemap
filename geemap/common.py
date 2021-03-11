@@ -3156,6 +3156,9 @@ def show_youtube(id="h0pz3S6Tvx0"):
     """
     from IPython.display import YouTubeVideo, display
 
+    if "/" in id:
+        id = id.split("/")[-1]
+
     try:
         out = widgets.Output(layout={"width": "815px"})
         # layout={'border': '1px solid black', 'width': '815px'})
