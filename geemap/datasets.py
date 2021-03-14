@@ -4,7 +4,6 @@ import pkg_resources
 import shutil
 import urllib.request
 import ipywidgets as widgets
-import pandas as pd
 from pathlib import Path
 from box import Box
 from .common import download_from_url, search_ee_data, ee_data_html
