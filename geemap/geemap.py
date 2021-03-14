@@ -2960,7 +2960,14 @@ class Map(ipyleaflet.Map):
         except Exception as e:
             raise Exception(e)
 
-    def to_html(self, outfile, title="My Map", width="100%", height="880px"):
+    def to_html(
+        self,
+        outfile,
+        title="My Map",
+        width="100%",
+        height="880px",
+        add_layer_control=True,
+    ):
         """Saves the map as a HTML file.
 
         Args:
@@ -2968,6 +2975,8 @@ class Map(ipyleaflet.Map):
             title (str, optional): The title of the HTML file. Defaults to 'My Map'.
             width (str, optional): The width of the map in pixels or percentage. Defaults to '100%'.
             height (str, optional): The height of the map in pixels. Defaults to '880px'.
+            add_layer_control (bool, optional): Whether to add the LayersControl. Defaults to True.
+
         """
         try:
 
@@ -2978,6 +2987,11 @@ class Map(ipyleaflet.Map):
             out_dir = os.path.dirname(outfile)
             if not os.path.exists(out_dir):
                 os.makedirs(out_dir)
+
+            if add_layer_control and self.layer_control is None:
+                layer_control = ipyleaflet.LayersControl(position="topright")
+                self.layer_control = layer_control
+                self.add_control(layer_control)
 
             before_width = self.layout.width
             before_height = self.layout.height
