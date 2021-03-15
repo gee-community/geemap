@@ -637,13 +637,17 @@ class Map(ipyleaflet.Map):
                 "name": "whitebox",
                 "tooltip": "WhiteboxTools for local geoprocessing",
             },
-            # "google": {
-            #     "name": "geetoolbox",
-            #     "tooltip": "GEE Toolbox for cloud computing",
-            # },
+            "google": {
+                "name": "geetoolbox",
+                "tooltip": "GEE Toolbox for cloud computing",
+            },
             "map": {
                 "name": "basemap",
                 "tooltip": "Change basemap",
+            },
+            "globe": {
+                "name": "timelapse",
+                "tooltip": "Create timelapse",
             },
             "hand-o-up": {
                 "name": "draw",
@@ -749,6 +753,19 @@ class Map(ipyleaflet.Map):
                     )
                     self.whitebox = wbt_control
                     self.add_control(wbt_control)
+                elif tool_name == "geetoolbox":
+                    from .toolbar import get_tools_dict, build_toolbox
+
+                    tools_dict = get_tools_dict()
+                    gee_toolbox = build_toolbox(
+                        tools_dict, max_width="800px", max_height="500px"
+                    )
+                    geetoolbox_control = WidgetControl(
+                        widget=gee_toolbox, position="bottomright"
+                    )
+                    self.geetoolbox = geetoolbox_control
+                    self.add_control(geetoolbox_control)
+
                 elif tool_name == "basemap":
                     from .toolbar import change_basemap
 

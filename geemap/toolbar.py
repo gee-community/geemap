@@ -627,3 +627,316 @@ def collect_samples(m):
     widget_control = WidgetControl(widget=full_widget, position="topright")
     m.add_control(widget_control)
     m.training_ctrl = widget_control
+
+
+def get_tools_dict():
+
+    import pkg_resources
+    import pandas as pd
+
+    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    toolbox_csv = os.path.join(pkg_dir, "data/template/toolbox.csv")
+
+    df = pd.read_csv(toolbox_csv).set_index("index")
+    tools_dict = df.to_dict("index")
+
+    return tools_dict
+
+
+def tool_gui(tool_dict, max_width="420px", max_height="600px"):
+    """Create a GUI for a tool based on the tool dictionary.
+
+    Args:
+        tool_dict (dict): The dictionary containing the tool info.
+        max_width (str, optional): The max width of the tool dialog.
+        max_height (str, optional): The max height of the tool dialog.
+
+    Returns:
+        object: An ipywidget object representing the tool interface.
+    """
+    tool_widget = widgets.VBox(
+        layout=widgets.Layout(max_width=max_width, max_height=max_height)
+    )
+    children = []
+    args = {}
+    required_inputs = []
+    style = {"description_width": "initial"}
+    max_width = str(int(max_width.replace("px", "")) - 10) + "px"
+
+    header_width = str(int(max_width.replace("px", "")) - 104) + "px"
+    header = widgets.Label(
+        value=f'Current Tool: {tool_dict["label"]}',
+        style=style,
+        layout=widgets.Layout(width=header_width),
+    )
+    code_btn = widgets.Button(
+        description="View Code", layout=widgets.Layout(width="100px")
+    )
+
+    children.append(widgets.HBox([header, code_btn]))
+
+    desc = widgets.Textarea(
+        value=f'Description: {tool_dict["description"]}',
+        layout=widgets.Layout(width="410px", max_width=max_width),
+        disabled=True,
+    )
+    children.append(desc)
+
+    params = tool_dict["parameters"]
+    # for param in params:
+    #     items = params[param]
+    #     required = ""
+    #     if items["optional"] == "false":
+    #         required = "*"
+    #         required_inputs.append(param)
+    #     label = items["name"] + required
+    #     param_type = items["parameter_type"]
+    #     default_value = None
+
+    #     if (items["default_value"] != "null") and (len(items["default_value"]) > 0):
+    #         if "false" in items["default_value"]:
+    #             default_value = False
+    #         elif "true" in items["default_value"]:
+    #             default_value = True
+    #         else:
+    #             default_value = items["default_value"].replace('"', "")
+
+    #     layout = widgets.Layout(width="500px", max_width=max_width)
+
+    #     if isinstance(param_type, str):
+    #         # display(data_types[param_type])
+
+    #         if param_type == "Boolean":
+    #             var_widget = widgets.Checkbox(
+    #                 description=label, style=style, layout=layout, value=default_value
+    #             )
+    #         elif param_type in [
+    #             "Directory",
+    #             "ExistingFile",
+    #             "ExistingFileOrFloat",
+    #             "FileList",
+    #             "NewFile",
+    #         ]:
+    #             var_widget = FileChooser(title=label)
+    #         else:
+    #             var_widget = widgets.Text(description=label, style=style, layout=layout)
+    #             if default_value is not None:
+    #                 var_widget.value = str(default_value)
+
+    #         args[param] = var_widget
+
+    #         children.append(var_widget)
+    #     elif isinstance(param_type, dict):
+
+    #         if "OptionList" in param_type:
+    #             var_widget = widgets.Dropdown(
+    #                 options=param_type["OptionList"],
+    #                 description=label,
+    #                 style=style,
+    #                 layout=layout,
+    #             )
+    #         elif list(param_type.keys())[0] in [
+    #             "Directory",
+    #             "ExistingFile",
+    #             "ExistingFileOrFloat",
+    #             "FileList",
+    #             "NewFile",
+    #         ]:
+    #             var_widget = FileChooser(title=label)
+    #         else:
+    #             var_widget = FileChooser(title=label)
+    #         args[param] = var_widget
+
+    #         children.append(var_widget)
+
+    run_btn = widgets.Button(description="Run", layout=widgets.Layout(width="100px"))
+    cancel_btn = widgets.Button(
+        description="Cancel", layout=widgets.Layout(width="100px")
+    )
+    help_btn = widgets.Button(description="Help", layout=widgets.Layout(width="100px"))
+    import_btn = widgets.Button(
+        description="Import",
+        tooltip="Import the script to a new cell",
+        layout=widgets.Layout(width="98px"),
+    )
+    tool_output = widgets.Output(layout=widgets.Layout(max_height="200px"))
+    children.append(widgets.HBox([run_btn, cancel_btn, help_btn, import_btn]))
+    children.append(tool_output)
+    tool_widget.children = children
+
+    def run_button_clicked(b):
+        tool_output.clear_output()
+
+        required_params = required_inputs.copy()
+        args2 = []
+        for arg in args:
+
+            line = ""
+            if isinstance(args[arg], FileChooser):
+                if arg in required_params and args[arg].selected is None:
+                    with tool_output:
+                        print(f"Please provide inputs for required parameters.")
+                        break
+                elif arg in required_params:
+                    required_params.remove(arg)
+                if arg == "i":
+                    line = f"-{arg}={args[arg].selected}"
+                else:
+                    line = f"--{arg}={args[arg].selected}"
+            elif isinstance(args[arg], widgets.Text):
+                if arg in required_params and len(args[arg].value) == 0:
+                    with tool_output:
+                        print(f"Please provide inputs for required parameters.")
+                        break
+                elif arg in required_params:
+                    required_params.remove(arg)
+                if args[arg].value is not None and len(args[arg].value) > 0:
+                    line = f"--{arg}={args[arg].value}"
+            elif isinstance(args[arg], widgets.Checkbox):
+                line = f"--{arg}={args[arg].value}"
+            args2.append(line)
+
+        if len(required_params) == 0:
+            with tool_output:
+                # wbt.run_tool(tool_dict["name"], args2)
+                pass
+
+    def help_button_clicked(b):
+        import webbrowser
+
+        tool_output.clear_output()
+        with tool_output:
+            html = widgets.HTML(
+                value=f'<a href={tool_dict["link"]} target="_blank">{tool_dict["link"]}</a>'
+            )
+            display(html)
+        webbrowser.open_new_tab(tool_dict["link"])
+
+    def code_button_clicked(b):
+        import webbrowser
+
+        with tool_output:
+            html = widgets.HTML(
+                value=f'<a href={tool_dict["link"]} target="_blank">{tool_dict["link"]}</a>'
+            )
+            display(html)
+        webbrowser.open_new_tab(tool_dict["link"])
+
+    def cancel_btn_clicked(b):
+        tool_output.clear_output()
+
+    def import_button_clicked(b):
+        tool_output.clear_output()
+
+        content = []
+
+        create_code_cell("\n".join(content))
+
+    import_btn.on_click(import_button_clicked)
+    run_btn.on_click(run_button_clicked)
+    help_btn.on_click(help_button_clicked)
+    code_btn.on_click(code_button_clicked)
+    cancel_btn.on_click(cancel_btn_clicked)
+
+    return tool_widget
+
+
+def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
+    """Build the GEE toolbox.
+
+    Args:
+        tools_dict (dict): A dictionary containing information for all tools.
+        max_width (str, optional): The maximum width of the widget.
+        max_height (str, optional): The maximum height of the widget.
+
+    Returns:
+        object: An ipywidget representing the toolbox.
+    """
+    left_widget = widgets.VBox(layout=widgets.Layout(min_width="175px"))
+    center_widget = widgets.VBox(
+        layout=widgets.Layout(min_width="200px", max_width="200px")
+    )
+    right_widget = widgets.Output(
+        layout=widgets.Layout(width="630px", max_height=max_height)
+    )
+    full_widget = widgets.HBox(
+        [left_widget, center_widget, right_widget],
+        layout=widgets.Layout(max_width=max_width, max_height=max_height),
+    )
+
+    search_widget = widgets.Text(
+        placeholder="Search tools ...", layout=widgets.Layout(width="170px")
+    )
+    label_widget = widgets.Label(layout=widgets.Layout(width="170px"))
+    label_widget.value = f"{len(tools_dict)} Available Tools"
+    close_btn = widgets.Button(
+        description="Close Toolbox", icon="close", layout=widgets.Layout(width="170px")
+    )
+
+    categories = {}
+    categories["All Tools"] = []
+    for key in tools_dict.keys():
+        category = tools_dict[key]["category"]
+        if category not in categories.keys():
+            categories[category] = []
+        categories[category].append(tools_dict[key]["name"])
+        categories["All Tools"].append(tools_dict[key]["name"])
+
+    options = list(categories.keys())
+    all_tools = categories["All Tools"]
+    all_tools.sort()
+    category_widget = widgets.Select(
+        options=options, layout=widgets.Layout(width="170px", height="165px")
+    )
+    tools_widget = widgets.Select(
+        options=[], layout=widgets.Layout(width="195px", height="400px")
+    )
+
+    def category_selected(change):
+        if change["new"]:
+            selected = change["owner"].value
+            options = categories[selected]
+            options.sort()
+            tools_widget.options = options
+            label_widget.value = f"{len(options)} Available Tools"
+
+    category_widget.observe(category_selected, "value")
+
+    def tool_selected(change):
+        if change["new"]:
+            selected = change["owner"].value
+            tool_dict = tools_dict[selected]
+            with right_widget:
+                right_widget.clear_output()
+                display(tool_gui(tool_dict, max_height=max_height))
+
+    tools_widget.observe(tool_selected, "value")
+
+    def search_changed(change):
+        if change["new"]:
+            keyword = change["owner"].value
+            if len(keyword) > 0:
+                selected_tools = []
+                for tool in all_tools:
+                    if keyword.lower() in tool.lower():
+                        selected_tools.append(tool)
+                if len(selected_tools) > 0:
+                    tools_widget.options = selected_tools
+                label_widget.value = f"{len(selected_tools)} Available Tools"
+        else:
+            tools_widget.options = all_tools
+            label_widget.value = f"{len(tools_dict)} Available Tools"
+
+    search_widget.observe(search_changed, "value")
+
+    def close_btn_clicked(b):
+        full_widget.close()
+
+    close_btn.on_click(close_btn_clicked)
+
+    category_widget.value = list(categories.keys())[0]
+    tools_widget.options = all_tools
+    left_widget.children = [category_widget, search_widget, label_widget, close_btn]
+    center_widget.children = [tools_widget]
+
+    return full_widget
