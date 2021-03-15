@@ -2479,11 +2479,11 @@ class Map(ipyleaflet.Map):
         legend_text = "".join(legend_html)
 
         try:
-            if self.legend_control is not None:
-                legend_widget = self.legend_widget
-                legend_widget.close()
-                if self.legend_control in self.controls:
-                    self.remove_control(self.legend_control)
+            # if self.legend_control is not None:
+            #     legend_widget = self.legend_widget
+            #     legend_widget.close()
+            #     if self.legend_control in self.controls:
+            #         self.remove_control(self.legend_control)
 
             legend_output_widget = widgets.Output(
                 layout={
