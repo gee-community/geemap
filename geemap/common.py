@@ -5404,19 +5404,26 @@ def zonal_statistics(
     scale=None,
     crs=None,
     tile_scale=1.0,
+    return_fc=False,
+    verbose=True,
     **kwargs,
 ):
     """Summarizes the values of a raster within the zones of another dataset and exports the results as a csv, shp, json, kml, or kmz.
 
     Args:
-        in_value_raster (object): An ee.Image that contains the values on which to calculate a statistic.
+        in_value_raster (object): An ee.Image or ee.ImageCollection that contains the values on which to calculate a statistic.
         in_zone_vector (object): An ee.FeatureCollection that defines the zones.
         out_file_path (str): Output file path that will contain the summary of the values in each zone. The file type can be: csv, shp, json, kml, kmz
         statistics_type (str, optional): Statistic type to be calculated. Defaults to 'MEAN'. For 'HIST', you can provide three parameters: max_buckets, min_bucket_width, and max_raw. For 'FIXED_HIST', you must provide three parameters: hist_min, hist_max, and hist_steps.
         scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
         crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
         tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
+        verbose (bool, optional): Whether to print descriptive text when the programming is running. Default to True.
+        return_fc (bool, optional): Whether to return the results as an ee.FeatureCollection. Defaults to False.
     """
+
+    if isinstance(in_value_raster, ee.ImageCollection):
+        in_value_raster = in_value_raster.toBands()
 
     if not isinstance(in_value_raster, ee.Image):
         print("The input raster must be an ee.Image.")
@@ -5500,7 +5507,8 @@ def zonal_statistics(
         scale = in_value_raster.projection().nominalScale().multiply(10)
 
     try:
-        print("Computing statistics ...")
+        if verbose:
+            print("Computing statistics ...")
         result = in_value_raster.reduceRegions(
             collection=in_zone_vector,
             reducer=allowed_statistics[statistics_type],
@@ -5508,9 +5516,12 @@ def zonal_statistics(
             crs=crs,
             tileScale=tile_scale,
         )
-        ee_export_vector(result, filename)
+        if return_fc:
+            return result
+        else:
+            ee_export_vector(result, filename)
     except Exception as e:
-        print(e)
+        raise Exception(e)
 
 
 def zonal_statistics_by_group(
@@ -5523,6 +5534,9 @@ def zonal_statistics_by_group(
     scale=None,
     crs=None,
     tile_scale=1.0,
+    return_fc=False,
+    verbose=True,
+    **kwargs,
 ):
     """Summarizes the area or percentage of a raster by group within the zones of another dataset and exports the results as a csv, shp, json, kml, or kmz.
 
@@ -5536,8 +5550,14 @@ def zonal_statistics_by_group(
         scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
         crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
         tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
+        verbose (bool, optional): Whether to print descriptive text when the programming is running. Default to True.
+        return_fc (bool, optional): Whether to return the results as an ee.FeatureCollection. Defaults to False.
 
     """
+
+    if isinstance(in_value_raster, ee.ImageCollection):
+        in_value_raster = in_value_raster.toBands()
+
     if not isinstance(in_value_raster, ee.Image):
         print("The input raster must be an ee.Image.")
         return
@@ -5593,7 +5613,8 @@ def zonal_statistics_by_group(
 
     try:
 
-        print("Computing ... ")
+        if verbose:
+            print("Computing ... ")
         geometry = in_zone_vector.geometry()
 
         hist = in_value_raster.reduceRegion(
@@ -5675,10 +5696,13 @@ def zonal_statistics_by_group(
             return f.set(attr_dict).set("groups", None)
 
         final_result = init_result.map(set_attribute)
-        ee_export_vector(final_result, filename)
+        if return_fc:
+            return final_result
+        else:
+            ee_export_vector(final_result, filename)
 
     except Exception as e:
-        print(e)
+        raise Exception(e)
 
 
 def vec_area(fc):
