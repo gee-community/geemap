@@ -114,22 +114,46 @@ def check_dependencies():
 # check_dependencies()
 
 
-def get_map(img_obj, proj=None, **kwargs):
+def get_map(ee_object, proj=None, **kwargs):
     """
     Wrapper function to create a new cartopy plot with project and adds Earth
     Engine image results
     Args:
-        img_obj (ee.Image): Earth Engine image result to plot
+        ee_object (ee.Image | ee.FeatureCollection): Earth Engine image result to plot
         proj (cartopy.crs, optional): Cartopy projection that determines the projection of the resulting plot. By default uses an equirectangular projection, PlateCarree
         **kwargs: remaining keyword arguments are passed to addLayer()
     Returns:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot): cartopy GeoAxesSubplot object with Earth Engine results displayed
     """
+
+    if (
+        isinstance(ee_object, ee.geometry.Geometry)
+        or isinstance(ee_object, ee.feature.Feature)
+        or isinstance(ee_object, ee.featurecollection.FeatureCollection)
+    ):
+        features = ee.FeatureCollection(ee_object)
+
+        if "style" in kwargs and kwargs["style"] is not None:
+            style = kwargs["style"]
+        else:
+            style = {}
+
+        props = features.first().propertyNames().getInfo()
+        if "style" in props:
+            ee_object = features.style(**{"styleProperty": "style"})
+        else:
+            ee_object = features.style(**style)
+    elif isinstance(ee_object, ee.imagecollection.ImageCollection):
+        ee_object = ee_object.mosaic()
+
     if proj is None:
         proj = ccrs.PlateCarree()
 
+    if "style" in kwargs:
+        del kwargs["style"]
+
     ax = mpl.pyplot.axes(projection=proj)
-    add_layer(ax, img_obj, **kwargs)
+    add_layer(ax, ee_object, **kwargs)
 
     return ax
 
