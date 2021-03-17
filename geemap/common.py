@@ -6785,7 +6785,7 @@ def vector_styling(ee_object, column, palette, **kwargs):
         color_opacity = 1
         point_size = 3
         point_shape = "circle"
-        line_width = 2
+        line_width = 1
         line_type = "solid"
         fill_color_opacity = 0.66
 
