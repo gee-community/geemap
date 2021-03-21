@@ -627,6 +627,22 @@ def check_color(in_color):
             return out_color
 
 
+def to_hex_colors(colors):
+    """Adds # to a list of hex color codes.
+
+    Args:
+        colors (list): A list of hex color codes.
+
+    Returns:
+        list: A list of hex color codes prefixed with #.
+    """
+    result = all([len(color.strip()) == 6 for color in colors])
+    if result:
+        return ["#" + color.strip() for color in colors]
+    else:
+        return colors
+
+
 def system_fonts(show_full_path=False):
     """Gets a list of system fonts
 
