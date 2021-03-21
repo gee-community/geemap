@@ -941,7 +941,7 @@ class Map(ipyleaflet.Map):
                         icon="gear",
                         tooltip=layer.name,
                         layout=widgets.Layout(
-                            width="25px", height="25px", padding="0px"
+                            width="25px", height="25px", padding="0px 0px 0px 5px"
                         ),
                     )
 
@@ -2479,11 +2479,6 @@ class Map(ipyleaflet.Map):
         legend_text = "".join(legend_html)
 
         try:
-            # if self.legend_control is not None:
-            #     legend_widget = self.legend_widget
-            #     legend_widget.close()
-            #     if self.legend_control in self.controls:
-            #         self.remove_control(self.legend_control)
 
             legend_output_widget = widgets.Output(
                 layout={
@@ -2549,7 +2544,6 @@ class Map(ipyleaflet.Map):
         import matplotlib as mpl
         import matplotlib.pyplot as plt
         import numpy as np
-        import warnings
 
         if not isinstance(vis_params, dict):
             raise TypeError("The vis_params must be a dictionary.")
@@ -2601,9 +2595,7 @@ class Map(ipyleaflet.Map):
             norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
         if "palette" in vis_keys:
-            hexcodes = vis_params["palette"]
-            hexcodes = [i if i[0] == "#" else "#" + i for i in hexcodes]
-
+            hexcodes = to_hex_colors(vis_params["palette"])
             if discrete:
                 cmap = mpl.colors.ListedColormap(hexcodes)
                 vals = np.linspace(vmin, vmax, cmap.N + 1)
@@ -2646,7 +2638,6 @@ class Map(ipyleaflet.Map):
             plt.show()
 
         self.colorbar = colormap_ctrl
-
         if layer_name in self.ee_layer_names:
             if "colorbar" in self.ee_layer_dict[layer_name]:
                 self.remove_control(self.ee_layer_dict[layer_name]["colorbar"])
@@ -3261,7 +3252,8 @@ class Map(ipyleaflet.Map):
             object: An ipywidget.
         """
 
-        import branca.colormap as cmap
+        import matplotlib as mpl
+        import matplotlib.pyplot as plt
 
         ee_object = layer_dict["ee_object"]
         ee_layer = layer_dict["ee_layer"]
@@ -3271,7 +3263,6 @@ class Map(ipyleaflet.Map):
         layer_opacity = ee_layer.opacity
 
         band_names = None
-        # band_count = 1
         min_value = 0
         max_value = 100
         sel_bands = None
@@ -3280,14 +3271,14 @@ class Map(ipyleaflet.Map):
         left_value = 0
         right_value = 10000
 
-        self.colorbar_widget = widgets.Output(layout=widgets.Layout(height="45px"))
+        self.colorbar_widget = widgets.Output(layout=widgets.Layout(height="60px"))
         self.colorbar_ctrl = WidgetControl(
             widget=self.colorbar_widget, position="bottomright"
         )
         self.add_control(self.colorbar_ctrl)
 
-        def vdir(obj):  # Get branca colormap list
-            return [x for x in dir(obj) if not x.startswith("_")]
+        # def vdir(obj):  # Get branca colormap list
+        #     return [x for x in dir(obj) if not x.startswith("_")]
 
         if isinstance(ee_object, ee.Image):
             band_names = ee_object.bandNames().getInfo()
@@ -3382,7 +3373,7 @@ class Map(ipyleaflet.Map):
             )
 
             colormap = widgets.Dropdown(
-                options=vdir(cmap.step),
+                options=plt.colormaps(),
                 value=None,
                 description="Colormap:",
                 layout=widgets.Layout(width="181px"),
@@ -3390,18 +3381,54 @@ class Map(ipyleaflet.Map):
             )
 
             def classes_changed(change):
-                colormap_options = vdir(cmap.step)
                 if change["new"]:
                     selected = change["owner"].value
-                    if selected == "Any":
-                        colormap.options = colormap_options
-                    else:
-                        sel_class = selected.zfill(2)
-                        colormap.options = [
-                            color
-                            for color in colormap_options
-                            if color[-2:] == sel_class
+                    if colormap.value is not None:
+
+                        n_class = None
+                        if selected != "Any":
+                            n_class = int(classes.value)
+
+                        colors = plt.cm.get_cmap(colormap.value, n_class)
+                        cmap_colors = [
+                            mpl.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
                         ]
+
+                        _, ax = plt.subplots(figsize=(6, 0.4))
+                        cmap = mpl.colors.LinearSegmentedColormap.from_list(
+                            "custom", to_hex_colors(cmap_colors), N=256
+                        )
+                        norm = mpl.colors.Normalize(
+                            vmin=value_range.value[0], vmax=value_range.value[1]
+                        )
+                        mpl.colorbar.ColorbarBase(
+                            ax, norm=norm, cmap=cmap, orientation="horizontal"
+                        )
+
+                        palette.value = ", ".join([color for color in cmap_colors])
+
+                        if self.colorbar_widget is None:
+                            self.colorbar_widget = widgets.Output(
+                                layout=widgets.Layout(height="60px")
+                            )
+
+                        if self.colorbar_ctrl is None:
+                            self.colorbar_ctrl = WidgetControl(
+                                widget=self.colorbar_widget, position="bottomright"
+                            )
+                            self.add_control(self.colorbar_ctrl)
+
+                        colorbar_output = self.colorbar_widget
+                        with colorbar_output:
+                            colorbar_output.clear_output()
+                            plt.show()
+
+                        if len(palette.value) > 0 and "," in palette.value:
+                            labels = [
+                                f"Class {i+1}"
+                                for i in range(len(palette.value.split(",")))
+                            ]
+                            legend_labels.value = ", ".join(labels)
 
             classes.observe(classes_changed, "value")
 
@@ -3533,6 +3560,13 @@ class Map(ipyleaflet.Map):
 
                 if change["new"]:
                     linear_chk.value = False
+                    if len(layer_palette) > 0:
+                        legend_labels.value = ",".join(
+                            [
+                                "Class " + str(i)
+                                for i in range(1, len(layer_palette) + 1)
+                            ]
+                        )
                     legend_vbox.children = [
                         colormap_hbox,
                         legend_title,
@@ -3546,22 +3580,32 @@ class Map(ipyleaflet.Map):
 
             def colormap_changed(change):
                 if change["new"]:
-                    cmap_colors = cmap.linear.__dict__["_schemes"][colormap.value]
 
-                    colorbar = cmap.LinearColormap(
-                        colors=cmap_colors,
-                        vmin=value_range.value[0],
-                        vmax=value_range.value[1],
+                    n_class = None
+                    if classes.value != "Any":
+                        n_class = int(classes.value)
+
+                    colors = plt.cm.get_cmap(colormap.value, n_class)
+                    cmap_colors = [
+                        mpl.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
+                    ]
+
+                    _, ax = plt.subplots(figsize=(6, 0.4))
+                    cmap = mpl.colors.LinearSegmentedColormap.from_list(
+                        "custom", to_hex_colors(cmap_colors), N=256
+                    )
+                    norm = mpl.colors.Normalize(
+                        vmin=value_range.value[0], vmax=value_range.value[1]
+                    )
+                    mpl.colorbar.ColorbarBase(
+                        ax, norm=norm, cmap=cmap, orientation="horizontal"
                     )
 
-                    if step_chk.value:
-                        colorbar = colorbar.to_step(len(cmap_colors))
-
-                    palette.value = ", ".join([color[1:] for color in cmap_colors])
+                    palette.value = ", ".join(cmap_colors)
 
                     if self.colorbar_widget is None:
                         self.colorbar_widget = widgets.Output(
-                            layout=widgets.Layout(height="45px")
+                            layout=widgets.Layout(height="60px")
                         )
 
                     if self.colorbar_ctrl is None:
@@ -3573,7 +3617,8 @@ class Map(ipyleaflet.Map):
                     colorbar_output = self.colorbar_widget
                     with colorbar_output:
                         colorbar_output.clear_output()
-                        display(colorbar)
+                        plt.show()
+                        # display(colorbar)
 
                     if len(palette.value) > 0 and "," in palette.value:
                         labels = [
@@ -3630,7 +3675,7 @@ class Map(ipyleaflet.Map):
                 if radio1.index == 0:
                     vis["bands"] = [band1_dropdown.value]
                     if len(palette.value) > 0:
-                        vis["palette"] = palette.value.split(",")
+                        vis["palette"] = [c.strip() for c in palette.value.split(",")]
                 else:
                     vis["bands"] = [
                         band1_dropdown.value,
@@ -3646,7 +3691,6 @@ class Map(ipyleaflet.Map):
                 ee_layer.visible = False
 
                 if legend_chk.value:
-
                     if (
                         self.colorbar_ctrl is not None
                         and self.colorbar_ctrl in self.controls
@@ -3663,7 +3707,6 @@ class Map(ipyleaflet.Map):
                         layer_dict["colorbar"] = None
 
                     if linear_chk.value:
-
                         if (
                             "legend" in layer_dict.keys()
                             and layer_dict["legend"] in self.controls
@@ -3677,13 +3720,14 @@ class Map(ipyleaflet.Map):
                                 for color in palette.value.split(",")
                             ]
 
-                            self.add_colorbar_branca(
-                                colors=colors,
-                                vmin=value_range.value[0],
-                                vmax=value_range.value[1],
+                            self.add_colorbar(
+                                vis_params={
+                                    "palette": colors,
+                                    "min": value_range.value[0],
+                                    "max": value_range.value[1],
+                                },
                                 layer_name=layer_name,
                             )
-
                     elif step_chk.value:
 
                         if len(palette.value) > 0 and "," in palette.value:
@@ -3703,26 +3747,34 @@ class Map(ipyleaflet.Map):
                                 layer_name=layer_name,
                             )
                 else:
+                    if radio1.index == 0 and "palette" in vis:
+                        self.colorbar_widget.clear_output()
+                        with self.colorbar_widget:
+                            _, ax = plt.subplots(figsize=(6, 0.4))
+                            colors = to_hex_colors(vis["palette"])
+                            cmap = mpl.colors.LinearSegmentedColormap.from_list(
+                                "custom", colors, N=256
+                            )
+                            norm = mpl.colors.Normalize(
+                                vmin=vis["min"], vmax=vis["max"]
+                            )
+                            mpl.colorbar.ColorbarBase(
+                                ax, norm=norm, cmap=cmap, orientation="horizontal"
+                            )
+                            plt.show()
 
-                    # if (
-                    #     self.colorbar_ctrl is not None
-                    #     and self.colorbar_ctrl in self.controls
-                    # ):
-                    #     self.remove_control(self.colorbar_ctrl)
-                    #     self.colorbar_widget.close()
-
-                    if (
-                        "colorbar" in layer_dict.keys()
-                        and layer_dict["colorbar"] in self.controls
-                    ):
-                        self.remove_control(layer_dict["colorbar"])
-                        layer_dict["colorbar"] = None
-                    if (
-                        "legend" in layer_dict.keys()
-                        and layer_dict["legend"] in self.controls
-                    ):
-                        self.remove_control(layer_dict["legend"])
-                        layer_dict["legend"] = None
+                        if (
+                            "colorbar" in layer_dict.keys()
+                            and layer_dict["colorbar"] in self.controls
+                        ):
+                            self.remove_control(layer_dict["colorbar"])
+                            layer_dict["colorbar"] = None
+                        if (
+                            "legend" in layer_dict.keys()
+                            and layer_dict["legend"] in self.controls
+                        ):
+                            self.remove_control(layer_dict["legend"])
+                            layer_dict["legend"] = None
 
             def close_btn_clicked(b):
                 if self.vis_control in self.controls:
@@ -3795,15 +3847,24 @@ class Map(ipyleaflet.Map):
                 legend_chk.value = False
 
                 if len(palette.value) > 0 and "," in palette.value:
+                    import matplotlib as mpl
+                    import matplotlib.pyplot as plt
+
                     colors = ["#" + color.strip() for color in palette.value.split(",")]
-                    colorbar = cmap.LinearColormap(
-                        colors=colors,
-                        vmin=value_range.value[0],
-                        vmax=value_range.value[1],
-                    )
+
                     self.colorbar_widget.clear_output()
                     with self.colorbar_widget:
-                        display(colorbar)
+                        _, ax = plt.subplots(figsize=(6, 0.4))
+                        cmap = mpl.colors.LinearSegmentedColormap.from_list(
+                            "custom", colors, N=256
+                        )
+                        norm = mpl.colors.Normalize(
+                            vmin=value_range.value[0], vmax=value_range.value[1]
+                        )
+                        mpl.colorbar.ColorbarBase(
+                            ax, norm=norm, cmap=cmap, orientation="horizontal"
+                        )
+                        plt.show()
 
             else:
                 radio2.index = 0
@@ -3835,26 +3896,29 @@ class Map(ipyleaflet.Map):
 
                 if len(palette.value) > 0 and "," in palette.value:
                     colors = ["#" + color.strip() for color in palette.value.split(",")]
-                    colorbar = cmap.LinearColormap(
-                        colors=colors,
-                        vmin=value_range.value[0],
-                        vmax=value_range.value[1],
+
+                    _, ax = plt.subplots(figsize=(6, 0.4))
+                    cmap = mpl.colors.LinearSegmentedColormap.from_list(
+                        "custom", to_hex_colors(colors), N=256
+                    )
+                    norm = mpl.colors.Normalize(vmin=0, vmax=1)
+                    mpl.colorbar.ColorbarBase(
+                        ax, norm=norm, cmap=cmap, orientation="horizontal"
                     )
 
-                    if self.colorbar_widget is None:
-                        self.colorbar_widget = widgets.Output(
-                            layout=widgets.Layout(height="45px")
-                        )
-                    if self.colorbar_ctrl is None:
-                        self.colorbar_ctrl = WidgetControl(
-                            widget=self.colorbar_widget, position="bottomright"
-                        )
+                    self.colorbar_widget = widgets.Output(
+                        layout=widgets.Layout(height="60px")
+                    )
+                    self.colorbar_ctrl = WidgetControl(
+                        widget=self.colorbar_widget, position="bottomright"
+                    )
+
                     if self.colorbar_ctrl not in self.controls:
                         self.add_control(self.colorbar_ctrl)
 
                     self.colorbar_widget.clear_output()
                     with self.colorbar_widget:
-                        display(colorbar)
+                        plt.show()
 
             def radio2_observer(sender):
                 radio1.unobserve(radio1_observer, names=["value"])
@@ -4105,33 +4169,94 @@ class Map(ipyleaflet.Map):
             )
 
             def classes_changed(change):
-                colormap_options = vdir(cmap.step)
                 if change["new"]:
                     selected = change["owner"].value
-                    if selected == "Any":
-                        colormap.options = colormap_options
-                    else:
-                        sel_class = selected.zfill(2)
-                        colormap.options = [
-                            color
-                            for color in colormap_options
-                            if color[-2:] == sel_class
+                    if colormap.value is not None:
+
+                        n_class = None
+                        if selected != "Any":
+                            n_class = int(classes.value)
+
+                        colors = plt.cm.get_cmap(colormap.value, n_class)
+                        cmap_colors = [
+                            mpl.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
                         ]
+
+                        _, ax = plt.subplots(figsize=(6, 0.4))
+                        cmap = mpl.colors.LinearSegmentedColormap.from_list(
+                            "custom", to_hex_colors(cmap_colors), N=256
+                        )
+                        norm = mpl.colors.Normalize(vmin=0, vmax=1)
+                        mpl.colorbar.ColorbarBase(
+                            ax, norm=norm, cmap=cmap, orientation="horizontal"
+                        )
+
+                        palette.value = ", ".join([color for color in cmap_colors])
+
+                        if self.colorbar_widget is None:
+                            self.colorbar_widget = widgets.Output(
+                                layout=widgets.Layout(height="60px")
+                            )
+
+                        if self.colorbar_ctrl is None:
+                            self.colorbar_ctrl = WidgetControl(
+                                widget=self.colorbar_widget, position="bottomright"
+                            )
+                            self.add_control(self.colorbar_ctrl)
+
+                        colorbar_output = self.colorbar_widget
+                        with colorbar_output:
+                            colorbar_output.clear_output()
+                            plt.show()
+
+                        if len(palette.value) > 0 and "," in palette.value:
+                            labels = [
+                                f"Class {i+1}"
+                                for i in range(len(palette.value.split(",")))
+                            ]
+                            legend_labels.value = ", ".join(labels)
 
             classes.observe(classes_changed, "value")
 
             def colormap_changed(change):
                 if change["new"]:
+
+                    n_class = None
+                    if classes.value != "Any":
+                        n_class = int(classes.value)
+
+                    colors = plt.cm.get_cmap(colormap.value, n_class)
                     cmap_colors = [
-                        color[1:]
-                        for color in cmap.step.__dict__["_schemes"][colormap.value]
+                        mpl.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
                     ]
+
+                    _, ax = plt.subplots(figsize=(6, 0.4))
+                    cmap = mpl.colors.LinearSegmentedColormap.from_list(
+                        "custom", to_hex_colors(cmap_colors), N=256
+                    )
+                    norm = mpl.colors.Normalize(vmin=0, vmax=1)
+                    mpl.colorbar.ColorbarBase(
+                        ax, norm=norm, cmap=cmap, orientation="horizontal"
+                    )
+
                     palette.value = ", ".join(cmap_colors)
-                    colorbar = getattr(cmap.step, colormap.value)
+
+                    if self.colorbar_widget is None:
+                        self.colorbar_widget = widgets.Output(
+                            layout=widgets.Layout(height="60px")
+                        )
+
+                    if self.colorbar_ctrl is None:
+                        self.colorbar_ctrl = WidgetControl(
+                            widget=self.colorbar_widget, position="bottomright"
+                        )
+                        self.add_control(self.colorbar_ctrl)
+
                     colorbar_output = self.colorbar_widget
                     with colorbar_output:
                         colorbar_output.clear_output()
-                        display(colorbar)
+                        plt.show()
+                        # display(colorbar)
 
                     if len(palette.value) > 0 and "," in palette.value:
                         labels = [
@@ -4191,14 +4316,14 @@ class Map(ipyleaflet.Map):
                         self.colorbar_widget.close()
 
                     self.colorbar_widget = widgets.Output(
-                        layout=widgets.Layout(height="45px")
+                        layout=widgets.Layout(height="60px")
                     )
                     self.colorbar_ctrl = WidgetControl(
                         widget=self.colorbar_widget, position="bottomright"
                     )
                     self.add_control(self.colorbar_ctrl)
                     fill_color.disabled = True
-                    colormap.options = vdir(cmap.step)
+                    colormap.options = plt.colormaps()
                     colormap.value = "viridis"
                     style_vbox.children = [
                         widgets.HBox([style_chk, compute_label]),
@@ -4327,7 +4452,7 @@ class Map(ipyleaflet.Map):
                 if not style_chk.value:
                     vis = get_vis_params()
                     self.addLayer(ee_object.style(**vis), {}, new_layer_name.value)
-                    ee_object.visible = False
+                    ee_layer.visible = False
 
                 elif (
                     style_chk.value and len(palette.value) > 0 and "," in palette.value
@@ -4389,7 +4514,7 @@ class Map(ipyleaflet.Map):
                             legend_colors=legend_colors,
                             layer_name=new_layer_name.value,
                         )
-
+                ee_layer.visible = False
                 compute_label.value = ""
 
             def close_btn_clicked(b):

@@ -21,6 +21,27 @@ def get_palette(cmap_name=None, n_class=None):
     return colors
 
 
+def get_colorbar(
+    colors, vmin=0, vmax=1, width=6.0, height=0.4, orientation="horizontal"
+):
+    """Creates a colorbar based on custom colors.
+
+    Args:
+        colors (list): A list of hex colors.
+        vmin (float, optional): The minimum value range. Defaults to 0.
+        vmax (float, optional): The maximum value range. Defaults to 1.0.
+        width (float, optional): The width of the colormap. Defaults to 6.0.
+        height (float, optional): The height of the colormap. Defaults to 0.4.
+        orientation (str, optional): The orientation of the colormap. Defaults to "horizontal".
+    """
+    hexcodes = [i if i[0] == "#" else "#" + i for i in colors]
+    _, ax = plt.subplots(figsize=(width, height))
+    cmap = mpl.colors.LinearSegmentedColormap.from_list("custom", hexcodes, N=256)
+    norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+    mpl.colorbar.ColorbarBase(ax, norm=norm, cmap=cmap, orientation=orientation)
+    plt.show()
+
+
 def list_colormaps():
     """List all available colormaps. See a complete lost of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.
 
