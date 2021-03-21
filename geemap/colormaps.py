@@ -22,7 +22,13 @@ def get_palette(cmap_name=None, n_class=None):
 
 
 def get_colorbar(
-    colors, vmin=0, vmax=1, width=6.0, height=0.4, orientation="horizontal"
+    colors,
+    vmin=0,
+    vmax=1,
+    width=6.0,
+    height=0.4,
+    orientation="horizontal",
+    discrete=False,
 ):
     """Creates a colorbar based on custom colors.
 
@@ -33,11 +39,17 @@ def get_colorbar(
         width (float, optional): The width of the colormap. Defaults to 6.0.
         height (float, optional): The height of the colormap. Defaults to 0.4.
         orientation (str, optional): The orientation of the colormap. Defaults to "horizontal".
+        discrete (bool, optional): Whether to create a discrete colormap.
     """
     hexcodes = [i if i[0] == "#" else "#" + i for i in colors]
     _, ax = plt.subplots(figsize=(width, height))
-    cmap = mpl.colors.LinearSegmentedColormap.from_list("custom", hexcodes, N=256)
-    norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+    if discrete:
+        cmap = mpl.colors.ListedColormap(hexcodes)
+        vals = np.linspace(vmin, vmax, cmap.N + 1)
+        norm = mpl.colors.BoundaryNorm(vals, cmap.N)
+    else:
+        cmap = mpl.colors.LinearSegmentedColormap.from_list("custom", hexcodes, N=256)
+        norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
     mpl.colorbar.ColorbarBase(ax, norm=norm, cmap=cmap, orientation=orientation)
     plt.show()
 
