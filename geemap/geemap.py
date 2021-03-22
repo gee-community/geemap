@@ -4885,7 +4885,25 @@ def linked_maps(
     label_position="topright",
     **kwargs,
 ):
+    """Create linked maps of Earth Engine data layers.
 
+    Args:
+        rows (int, optional): The number of rows of maps to create. Defaults to 2.
+        cols (int, optional): The number of columns of maps to ceate. Defaults to 2.
+        height (str, optional): The height of each map in pixels. Defaults to "400px".
+        ee_objects (list, optional): The list of Earth Engine objects to use for each map. Defaults to [].
+        vis_params (list, optional): The list of visualization parameters to use for each map. Defaults to [].
+        labels (list, optional): The list of labels to show on the map. Defaults to [].
+        label_position (str, optional): The position of the label, can be [topleft, topright, bottomleft, bottomright]. Defaults to "topright".
+
+    Raises:
+        ValueError: If the length of ee_objects is not equal to rows*cols.
+        ValueError: If the length of vis_params is not equal to rows*cols.
+        ValueError: If the length of labels is not equal to rows*cols.
+
+    Returns:
+        ipywidget: A GridspecLayout widget.
+    """
     grid = widgets.GridspecLayout(rows, cols, grid_gap="0px")
     count = rows * cols
 

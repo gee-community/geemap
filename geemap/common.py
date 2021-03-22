@@ -1800,8 +1800,8 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat"):
         lon (str, optional): the name of the longitude variable in the netCDF file. Defaults to "lon"
         lat (str, optional): the name of the latitude variable in the netCDF file. Defaults to "lat"
 
-        Returns:
-            image: An ee.Image
+    Returns:
+        image: An ee.Image
 
     """
     try:
@@ -1893,8 +1893,8 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
         transformWkt (str): The transform between projected coordinates and the base coordinate system, specified as a WKT string. May not specify both this and 'transform'.
         band_names (str or list, optional): The list of names for the bands. The default names are 'constant', and 'constant_1', 'constant_2', etc.
 
-        Returns:
-            image: An ee.Image
+    Returns:
+        image: An ee.Image
 
     """
     import numpy as np
