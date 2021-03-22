@@ -4873,3 +4873,70 @@ def ee_tile_layer(
         visible=shown,
     )
     return tile_layer
+
+
+def linked_maps(
+    rows=2,
+    cols=2,
+    height="400px",
+    ee_objects=[],
+    vis_params=[],
+    labels=[],
+    label_position="topright",
+    **kwargs,
+):
+
+    grid = widgets.GridspecLayout(rows, cols, grid_gap="0px")
+    count = rows * cols
+
+    maps = []
+
+    if len(ee_objects) > 0:
+        if len(ee_objects) == 1:
+            ee_objects = ee_objects * count
+        elif len(ee_objects) < count:
+            raise ValueError(f"The length of ee_objects must be equal to {count}.")
+
+    if len(vis_params) > 0:
+        if len(vis_params) == 1:
+            vis_params = vis_params * count
+        elif len(vis_params) < count:
+            raise ValueError(f"The length of vis_params must be equal to {count}.")
+
+    if len(labels) > 0:
+        if len(labels) == 1:
+            labels = labels * count
+        elif len(labels) < count:
+            raise ValueError(f"The length of labels must be equal to {count}.")
+
+    for i in range(rows):
+        for j in range(cols):
+            index = i * rows + j
+            m = Map(
+                height=height,
+                lite_mode=True,
+                add_google_map=False,
+                layout=widgets.Layout(margin="0px", padding="0px"),
+                **kwargs,
+            )
+
+            if len(ee_objects) > 0:
+                m.addLayer(ee_objects[index], vis_params[index], labels[index])
+
+            if len(labels) > 0:
+                label = widgets.Label(
+                    labels[index], layout=widgets.Layout(padding="0px 5px 0px 5px")
+                )
+                control = WidgetControl(widget=label, position=label_position)
+                m.add_control(control)
+
+            maps.append(m)
+            widgets.jslink((maps[0], "center"), (m, "center"))
+            widgets.jslink((maps[0], "zoom"), (m, "zoom"))
+
+            output = widgets.Output()
+            with output:
+                display(m)
+            grid[i, j] = output
+
+    return grid

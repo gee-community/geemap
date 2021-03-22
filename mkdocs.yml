@@ -138,6 +138,7 @@ nav:
           - notebooks/67_training_samples.ipynb
           - notebooks/68_netcdf_to_ee.ipynb
           - notebooks/69_cartoee_vector.ipynb
+          - notebooks/70_linked_maps.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_projections.ipynb

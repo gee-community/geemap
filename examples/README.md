@@ -71,7 +71,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 50. How to create publication quality maps using cartoee ([video](https://youtu.be/t24_lpYA1ko) | [gif](https://i.imgur.com/fwCzZTi.gif) | [notebook](https://geemap.org/notebooks/50_cartoee_quickstart))
 51. How to create publication quality maps with custom projections ([video](https://youtu.be/3dS2EkAuAxM) | [gif](https://i.imgur.com/vvvF94j.gif) | [notebook](https://geemap.org/notebooks/51_cartoee_projections))
 52. How to create timelapse animations with custom projection, scale bar, and north arrow ([video](https://youtu.be/ejuugljSut4) | [gif](https://i.imgur.com/MVQFyHN.gif) | [notebook](https://geemap.org/notebooks/52_cartoee_gif))
-53. How to change layer visualization interactively with a GUI (video | [gif](https://i.imgur.com/VqqlMSK.gif) | [notebook](https://geemap.org/notebooks/53_layer_vis))
+53. How to change layer visualization interactively with a GUI ([video](https://youtu.be/4E7gg6yaHBg) | [gif](https://i.imgur.com/VqqlMSK.gif) | [notebook](https://geemap.org/notebooks/53_layer_vis))
 54. How to visualize Earth Engine vector data interactively with a GUI (video | gif | [notebook](https://geemap.org/notebooks/54_vector_vis))
 55. How to visualize Earth Engine raster data interactively with a GUI (video | gif | [notebook](https://geemap.org/notebooks/55_raster_vis))
 56. How to add local vector and raster data to the map with a few clicks (video | gif | [notebook](https://geemap.org/notebooks/56_local_data))
