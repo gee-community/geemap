@@ -81,6 +81,14 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 60. Visualizing Earth Engine data with over 200 colormaps through dot notation ([video](https://youtu.be/RBCf7wgK3Cg) | gif | [notebook](https://geemap.org/notebooks/60_colormaps))
 61. Adding a scale bar to a cartoee map (video | gif | [notebook](https://geemap.org/notebooks/61_cartoee_scalebar))
 62. Using the time slider for visualizing Earth Engine time-series images ([video](https://youtu.be/w_nWkNz8fyI) | gif | [notebook](https://geemap.org/notebooks/62_time_slider))
+63. Creating interactive charts from Earth Engine data (video | [gif](https://youtu.be/e-GTdUUc8N8) | [notebook](https://geemap.org/notebooks/63_charts))
+64. Accessing the Earth Engine Data Catalog via dot notation with autocompletion (video | [gif](https://youtu.be/hGbs2cl7otk) | [notebook](https://geemap.org/notebooks/64_data_catalog))
+65. Styling Earth Engine vector data (video | gif | [notebook](https://geemap.org/notebooks/65_vector_styling))
+66. Adding a legend to publication quality maps using cartoee (video | gif | [notebook](https://geemap.org/notebooks/66_cartoee_legend))
+67. Creating training samples for machine learning and supervised image classification (video | [gif](https://youtu.be/VWh5PxXPZw0) | [notebook](https://geemap.org/notebooks/67_training_samples))
+68. Converting NetCDF to Earth Engine Image (video | gif | [notebook](https://geemap.org/notebooks/68_netcdf_to_ee))
+69. Plotting Earth Engine vector data with cartoee (video | [gif](https://youtu.be/Gr6GBuBWnnk) | [notebook](https://geemap.org/notebooks/69_cartoee_vector))
+70. Creating linked maps with a few lines of code (video | [gif](https://youtu.be/AFUGje3VWM8) | [notebook](https://geemap.org/notebooks/70_linked_maps))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 

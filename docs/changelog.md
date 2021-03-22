@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.8.13 - March 22, 2021
+
+**New Features**:
+
+-   Added linked maps [#375](https://github.com/giswqs/geemap/issues/375)
+-   Added cartoee legend [#343](https://github.com/giswqs/geemap/issues/343)
+-   Added chart by feature property [#339](https://github.com/giswqs/geemap/issues/339)
+-   Added tool gui template [#239](https://github.com/giswqs/geemap/issues/239)
+-   Added GEE Toolbox GUI [#362](https://github.com/giswqs/geemap/issues/362)
+-   Added support for multiple legends [#365](https://github.com/giswqs/geemap/discussions/365)
+
+**Improvement**:
+
+-   Improved dataset module to use GEE STAC [#346](https://github.com/giswqs/geemap/issues/346)
+-   Improved training sample tool [#326](https://github.com/giswqs/geemap/issues/326)
+-   Added netcdf_to_ee example [#285](https://github.com/giswqs/geemap/issues/285)
+-   Improved to_html function [#361](https://github.com/giswqs/geemap/discussions/361)
+-   Changed colorbar plotting backend [#372](https://github.com/giswqs/geemap/issues/372)
+-   Improved get_colorbar function [#372](https://github.com/giswqs/geemap/issues/372)
+-   Added vector styling example
+-   Improved zonal statistics
+
 ## v0.8.12 - March 8, 2021
 
 **New Features**:
