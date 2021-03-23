@@ -158,11 +158,13 @@ def get_map(ee_object, proj=None, **kwargs):
     return ax
 
 
-def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None):
+def add_layer(
+    ax, ee_object, dims=1000, region=None, cmap=None, vis_params=None, **kwargs
+):
     """Add an Earth Engine image to a cartopy plot.
 
     args:
-        img_obj (ee.image.Image): Earth Engine image result to plot.
+        ee_object (ee.Image | ee.FeatureCollection): Earth Engine image result to plot.
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object to add image overlay to
         dims (list | tuple | int, optional): dimensions to request earth engine result as [WIDTH,HEIGHT]. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Default None and infers dimesions
         region (list | tuple, optional): geospatial region of the image to render in format [E,S,W,N]. By default, the whole image
@@ -178,14 +180,34 @@ def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None):
         ValueError: If `ax` if not of type cartopy.mpl.geoaxes.GeoAxesSubplot '
     """
 
-    if type(img_obj) is not ee.image.Image:
-        raise ValueError("provided `img_obj` is not of type ee.Image")
+    if (
+        isinstance(ee_object, ee.geometry.Geometry)
+        or isinstance(ee_object, ee.feature.Feature)
+        or isinstance(ee_object, ee.featurecollection.FeatureCollection)
+    ):
+        features = ee.FeatureCollection(ee_object)
+
+        if "style" in kwargs and kwargs["style"] is not None:
+            style = kwargs["style"]
+        else:
+            style = {}
+
+        props = features.first().propertyNames().getInfo()
+        if "style" in props:
+            ee_object = features.style(**{"styleProperty": "style"})
+        else:
+            ee_object = features.style(**style)
+    elif isinstance(ee_object, ee.imagecollection.ImageCollection):
+        ee_object = ee_object.mosaic()
+
+    if type(ee_object) is not ee.image.Image:
+        raise ValueError("provided `ee_object` is not of type ee.Image")
 
     if region is not None:
         map_region = ee.Geometry.Rectangle(region).getInfo()["coordinates"]
         view_extent = (region[0], region[2], region[1], region[3])
     else:
-        map_region = img_obj.geometry(100).bounds().getInfo()["coordinates"]
+        map_region = ee_object.geometry(100).bounds().getInfo()["coordinates"]
         # get the image bounds
         x, y = list(zip(*map_region[0]))
         view_extent = [min(x), max(x), min(y), max(y)]
@@ -218,7 +240,7 @@ def add_layer(ax, img_obj, dims=1000, region=None, cmap=None, vis_params=None):
 
         args = {**args, **vis_params}
 
-    url = img_obj.getThumbUrl(args)
+    url = ee_object.getThumbUrl(args)
     response = requests.get(url)
     if response.status_code != 200:
         error = eval(response.content)["error"]
