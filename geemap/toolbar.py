@@ -1,5 +1,6 @@
 """Module for dealing with the toolbar.
 """
+from typing import Hashable
 import ee
 import os
 import ipyevents
@@ -7,10 +8,11 @@ import ipywidgets as widgets
 from ipyleaflet import WidgetControl, DrawControl
 from IPython.core.display import display
 from ipyfilechooser import FileChooser
+from ipywidgets.widgets.widget_box import HBox
 from .common import *
 
 
-def tool_template(m):
+def tool_template(m=None):
 
     widget_width = "250px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
@@ -147,10 +149,11 @@ def tool_template(m):
     def close_btn_click(change):
         if change["new"]:
             toolbar_button.value = False
-            if m.tool_control is not None and m.tool_control in m.controls:
-                m.remove_control(m.tool_control)
-                m.tool_control = None
-                toolbar_widget.close()
+            if m is not None:
+                if m.tool_control is not None and m.tool_control in m.controls:
+                    m.remove_control(m.tool_control)
+                    m.tool_control = None
+            toolbar_widget.close()
 
     close_button.observe(close_btn_click, "value")
 
@@ -163,22 +166,26 @@ def tool_template(m):
             textarea.value = ""
             output.clear_output()
         elif change["new"] == "Close":
-            m.toolbar_reset()
-            if m.tool_control is not None and m.tool_control in m.controls:
-                m.remove_control(m.tool_control)
-                m.tool_control = None
-                toolbar_widget.close()
+            if m is not None:
+                m.toolbar_reset()
+                if m.tool_control is not None and m.tool_control in m.controls:
+                    m.remove_control(m.tool_control)
+                    m.tool_control = None
+            toolbar_widget.close()
+
         buttons.value = None
 
     buttons.observe(button_clicked, "value")
 
-    toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
-
-    if toolbar_control not in m.controls:
-        m.add_control(toolbar_control)
-        m.tool_control = toolbar_control
-
     toolbar_button.value = True
+    if m is not None:
+        toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
+
+        if toolbar_control not in m.controls:
+            m.add_control(toolbar_control)
+            m.tool_control = toolbar_control
+    else:
+        return toolbar_widget
 
 
 def open_data_widget(m):
@@ -940,3 +947,432 @@ def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
     center_widget.children = [tools_widget]
 
     return full_widget
+
+
+def timelapse(m=None):
+    """Creates timelapse animations.
+
+    Args:
+        m (geemap.Map, optional): A geemap Map instance. Defaults to None.
+
+    Returns:
+        ipywidgets: The interative GUI.
+    """
+    if m is not None:
+        m.add_basemap("HYBRID")
+
+    widget_width = "350px"
+    padding = "0px 0px 0px 5px"  # upper, right, bottom, left
+    style = {"description_width": "initial"}
+
+    toolbar_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Toolbar",
+        icon="gear",
+        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+    )
+
+    close_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Close the tool",
+        icon="times",
+        button_style="primary",
+        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
+    )
+
+    collection = widgets.Dropdown(
+        options=[
+            "Landsat TM-ETM-OLI Surface Reflectance",
+            "Sentinel-2AB Surface Reflectance",
+            "MODIS",
+        ],
+        value="Landsat TM-ETM-OLI Surface Reflectance",
+        description="Collection:",
+        layout=widgets.Layout(width=widget_width, padding=padding),
+        style=style,
+    )
+
+    title = widgets.Text(
+        value="Timelapse",
+        description="Title:",
+        style=style,
+        layout=widgets.Layout(width="181px", padding=padding),
+    )
+
+    bands = widgets.Dropdown(
+        description="RGB:",
+        options=[
+            "Red/Green/Blue",
+            "NIR/Red/Green",
+            "SWIR2/SWIR1/NIR",
+            "NIR/SWIR1/Red",
+            "SWIR2/NIR/Red",
+            "SWIR2/SWIR1/Red",
+            "SWIR1/NIR/Blue",
+            "NIR/SWIR1/Blue",
+            "SWIR2/NIR/Green",
+            "SWIR1/NIR/Red",
+        ],
+        value="NIR/Red/Green",
+        style=style,
+        layout=widgets.Layout(width="165px", padding=padding),
+    )
+
+    speed = widgets.IntSlider(
+        description="Frames/sec:",
+        tooltip="Frames per second",
+        value=10,
+        min=1,
+        max=30,
+        readout=False,
+        style=style,
+        layout=widgets.Layout(width="142px", padding=padding),
+    )
+
+    speed_label = widgets.Label(
+        layout=widgets.Layout(width="20px", padding=padding),
+    )
+    widgets.jslink((speed, "value"), (speed_label, "value"))
+
+    cloud = widgets.Checkbox(
+        value=True,
+        description="Apply fmask (remove clouds, shadows, snow)",
+        tooltip="Apply fmask (remove clouds, shadows, snow)",
+        style=style,
+    )
+
+    start_year = widgets.IntSlider(
+        description="Start Year:",
+        value=1984,
+        min=1984,
+        max=2020,
+        readout=False,
+        style=style,
+        layout=widgets.Layout(width="138px", padding=padding),
+    )
+
+    start_year_label = widgets.Label()
+    widgets.jslink((start_year, "value"), (start_year_label, "value"))
+
+    end_year = widgets.IntSlider(
+        description="End Year:",
+        value=2020,
+        min=1984,
+        max=2020,
+        readout=False,
+        style=style,
+        layout=widgets.Layout(width="138px", padding=padding),
+    )
+    end_year_label = widgets.Label()
+    widgets.jslink((end_year, "value"), (end_year_label, "value"))
+
+    start_month = widgets.IntSlider(
+        description="Start Month:",
+        value=5,
+        min=1,
+        max=12,
+        readout=False,
+        style=style,
+        layout=widgets.Layout(width="145px", padding=padding),
+    )
+
+    start_month_label = widgets.Label(
+        layout=widgets.Layout(width="20px", padding=padding),
+    )
+    widgets.jslink((start_month, "value"), (start_month_label, "value"))
+
+    end_month = widgets.IntSlider(
+        description="End Month:",
+        value=10,
+        min=1,
+        max=12,
+        readout=False,
+        style=style,
+        layout=widgets.Layout(width="155px", padding=padding),
+    )
+
+    end_month_label = widgets.Label()
+    widgets.jslink((end_month, "value"), (end_month_label, "value"))
+
+    font_size = widgets.IntSlider(
+        description="Font size:",
+        value=30,
+        min=10,
+        max=50,
+        readout=False,
+        style=style,
+        layout=widgets.Layout(width="152px", padding=padding),
+    )
+
+    font_size_label = widgets.Label()
+    widgets.jslink((font_size, "value"), (font_size_label, "value"))
+
+    font_color = widgets.ColorPicker(
+        concise=False,
+        description="Font color:",
+        value="white",
+        style=style,
+        layout=widgets.Layout(width="170px", padding=padding),
+    )
+
+    progress_bar_color = widgets.ColorPicker(
+        concise=False,
+        description="Progress bar:",
+        value="blue",
+        style=style,
+        layout=widgets.Layout(width="180px", padding=padding),
+    )
+
+    # Normalized Satellite Indices: https://www.usna.edu/Users/oceano/pguth/md_help/html/norm_sat.htm
+
+    nd_options = [
+        "Vegetation Index (NDVI)",
+        "Water Index (NDWI)",
+        "Modified Water Index (MNDWI)",
+        "Snow Index (NDSI)",
+        "Soil Index (NDSI)",
+        "Burn Ratio (NBR)",
+        "Customized",
+    ]
+    nd_indices = widgets.Dropdown(
+        options=nd_options,
+        value=None,
+        description="Normalized Difference Index:",
+        style=style,
+        layout=widgets.Layout(width="347px", padding=padding),
+    )
+
+    first_band = widgets.Dropdown(
+        description="1st band:",
+        options=["Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2"],
+        value=None,
+        style=style,
+        layout=widgets.Layout(width="171px", padding=padding),
+    )
+
+    second_band = widgets.Dropdown(
+        description="2nd band:",
+        options=["Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2"],
+        value=None,
+        style=style,
+        layout=widgets.Layout(width="172px", padding=padding),
+    )
+
+    nd_threshold = widgets.FloatSlider(
+        value=0,
+        min=-1,
+        max=1,
+        step=0.01,
+        description="Threshold:",
+        orientation="horizontal",
+        readout=False,
+        style=style,
+        layout=widgets.Layout(width="159px", padding=padding),
+    )
+
+    nd_threshold_label = widgets.Label(
+        layout=widgets.Layout(width="35px", padding=padding),
+    )
+    widgets.jslink((nd_threshold, "value"), (nd_threshold_label, "value"))
+
+    nd_color = widgets.ColorPicker(
+        concise=False,
+        description="Color:",
+        value="blue",
+        style=style,
+        layout=widgets.Layout(width="145px", padding=padding),
+    )
+
+    def nd_index_change(change):
+        if nd_indices.value == "Vegetation Index (NDVI)":
+            first_band.value = "NIR"
+            second_band.value = "Red"
+        elif nd_indices.value == "Water Index (NDWI)":
+            first_band.value = "NIR"
+            second_band.value = "SWIR1"
+        elif nd_indices.value == "Modified Water Index (MNDWI)":
+            first_band.value = "Green"
+            second_band.value = "SWIR1"
+        elif nd_indices.value == "Snow Index (NDSI)":
+            first_band.value = "Green"
+            second_band.value = "SWIR1"
+        elif nd_indices.value == "Soil Index (NDSI)":
+            first_band.value = "SWIR1"
+            second_band.value = "NIR"
+        elif nd_indices.value == "Burn Ratio (NBR)":
+            first_band.value = "NIR"
+            second_band.value = "SWIR2"
+        elif nd_indices.value == "Customized":
+            first_band.value = None
+            second_band.value = None
+
+    nd_indices.observe(nd_index_change, names="value")
+
+    create_gif = widgets.Button(
+        description="Create timelapse",
+        button_style="primary",
+        tooltip="Click to create timelapse",
+        style=style,
+        layout=widgets.Layout(padding=padding),
+    )
+
+    temp_output = widgets.Output()
+
+    def submit_clicked(b):
+
+        if start_year.value > end_year.value:
+            print("The end year must be great than the start year.")
+            return
+        if start_month.value > end_month.value:
+            print("The end month must be great than the start month.")
+            return
+        if start_year.value == end_year.value:
+            add_progress_bar = False
+        else:
+            add_progress_bar = True
+
+        start_date = str(start_month.value).zfill(2) + "-01"
+        end_date = str(end_month.value).zfill(2) + "-30"
+
+        with output:
+            print("Computing... Please wait...")
+
+        nd_bands = None
+        if (first_band.value is not None) and (second_band.value is not None):
+            nd_bands = [first_band.value, second_band.value]
+
+        if m is not None:
+
+            out_dir = os.path.expanduser("~/Downloads")
+            if not os.path.exists(out_dir):
+                os.makedirs(out_dir)
+
+            out_gif = os.path.join(out_dir, "timelapse_" + random_string(3) + ".gif")
+
+            with temp_output:
+                temp_output.clear_output()
+                m.add_landsat_ts_gif(
+                    roi=m.user_roi,
+                    label=title.value,
+                    start_year=start_year.value,
+                    end_year=end_year.value,
+                    start_date=start_date,
+                    end_date=end_date,
+                    bands=bands.value.split("/"),
+                    font_color=font_color.value,
+                    frames_per_second=speed.value,
+                    font_size=font_size.value,
+                    add_progress_bar=add_progress_bar,
+                    progress_bar_color=progress_bar_color.value,
+                    out_gif=out_gif,
+                    apply_fmask=cloud.value,
+                    nd_bands=nd_bands,
+                    nd_threshold=nd_threshold.value,
+                    nd_palette=["black", nd_color.value],
+                )
+                if m.user_roi is not None:
+                    m.centerObject(m.user_roi)
+
+            with output:
+                print("The timelapse has been added to the map.")
+                link = create_download_link(
+                    out_gif,
+                    title="Click here to download: ",
+                )
+                display(link)
+
+    create_gif.on_click(submit_clicked)
+
+    buttons = widgets.ToggleButtons(
+        value=None,
+        options=["Reset", "Close"],
+        tooltips=["Reset", "Close"],
+        button_style="primary",
+    )
+    buttons.style.button_width = "95px"
+
+    output = widgets.Output(layout=widgets.Layout(width=widget_width, padding=padding))
+
+    toolbar_widget = widgets.VBox()
+    toolbar_widget.children = [toolbar_button]
+    toolbar_header = widgets.HBox()
+    toolbar_header.children = [close_button, toolbar_button]
+    toolbar_footer = widgets.VBox()
+    toolbar_footer.children = [
+        collection,
+        widgets.HBox([title, bands]),
+        widgets.HBox([speed, speed_label, progress_bar_color]),
+        widgets.HBox([start_year, start_year_label, end_year, end_year_label]),
+        widgets.HBox([start_month, start_month_label, end_month, end_month_label]),
+        widgets.HBox([font_size, font_size_label, font_color]),
+        cloud,
+        nd_indices,
+        widgets.HBox([first_band, second_band]),
+        widgets.HBox([nd_threshold, nd_threshold_label, nd_color]),
+        widgets.HBox([create_gif, buttons]),
+        output,
+    ]
+
+    toolbar_event = ipyevents.Event(
+        source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
+    )
+
+    def handle_toolbar_event(event):
+
+        if event["type"] == "mouseenter":
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        elif event["type"] == "mouseleave":
+            if not toolbar_button.value:
+                toolbar_widget.children = [toolbar_button]
+                toolbar_button.value = False
+                close_button.value = False
+
+    toolbar_event.on_dom_event(handle_toolbar_event)
+
+    def toolbar_btn_click(change):
+        if change["new"]:
+            close_button.value = False
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        else:
+            if not close_button.value:
+                toolbar_widget.children = [toolbar_button]
+
+    toolbar_button.observe(toolbar_btn_click, "value")
+
+    def close_btn_click(change):
+        if change["new"]:
+            toolbar_button.value = False
+            if m is not None:
+                if m.tool_control is not None and m.tool_control in m.controls:
+                    m.remove_control(m.tool_control)
+                    m.tool_control = None
+                m.toolbar_reset()
+            toolbar_widget.close()
+
+    close_button.observe(close_btn_click, "value")
+
+    def button_clicked(change):
+        if change["new"] == "Reset":
+            with output:
+                output.clear_output()
+        elif change["new"] == "Close":
+            if m is not None:
+                m.toolbar_reset()
+                if m.tool_control is not None and m.tool_control in m.controls:
+                    m.remove_control(m.tool_control)
+                    m.tool_control = None
+            toolbar_widget.close()
+
+        buttons.value = None
+
+    buttons.observe(button_clicked, "value")
+
+    toolbar_button.value = True
+    if m is not None:
+        toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
+
+        if toolbar_control not in m.controls:
+            m.add_control(toolbar_control)
+            m.tool_control = toolbar_control
+    else:
+        return toolbar_widget
