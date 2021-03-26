@@ -671,7 +671,7 @@ class Map(ipyleaflet.Map):
 
         icon_width = "32px"
         icon_height = "32px"
-        n_cols = 2
+        n_cols = 3
         n_rows = math.ceil(len(icons) / n_cols)
 
         toolbar_grid = widgets.GridBox(
@@ -687,8 +687,8 @@ class Map(ipyleaflet.Map):
                 for i in range(len(icons))
             ],
             layout=widgets.Layout(
-                width="70px",
-                grid_template_columns=(icon_width + " ") * 2,
+                width="107px",
+                grid_template_columns=(icon_width + " ") * n_cols,
                 grid_template_rows=(icon_height + " ") * n_rows,
                 grid_gap="1px 1px",
                 padding="5px",
@@ -770,6 +770,11 @@ class Map(ipyleaflet.Map):
                     from .toolbar import change_basemap
 
                     change_basemap(self)
+                elif tool_name == "timelapse":
+                    from .toolbar import timelapse
+
+                    timelapse(self)
+                    self.toolbar_reset()
                 elif tool_name == "draw":
                     from .toolbar import collect_samples
 
@@ -844,7 +849,7 @@ class Map(ipyleaflet.Map):
             value=False,
             tooltip="Layers",
             icon="server",
-            layout=widgets.Layout(height="28px", width="38px"),
+            layout=widgets.Layout(height="28px", width="72px"),
         )
 
         toolbar_widget = widgets.VBox()
