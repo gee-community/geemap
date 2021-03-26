@@ -1208,12 +1208,13 @@ def timelapse(m=None):
 
     nd_indices.observe(nd_index_change, names="value")
 
+    button_width = "113px"
     create_gif = widgets.Button(
         description="Create timelapse",
         button_style="primary",
         tooltip="Click to create timelapse",
         style=style,
-        layout=widgets.Layout(padding=padding),
+        layout=widgets.Layout(padding="0px", width=button_width),
     )
 
     temp_output = widgets.Output()
@@ -1283,17 +1284,38 @@ def timelapse(m=None):
 
     create_gif.on_click(submit_clicked)
 
-    buttons = widgets.ToggleButtons(
-        value=None,
-        options=["Reset", "Close"],
-        tooltips=["Reset", "Close"],
+    reset_btn = widgets.Button(
+        description="Reset",
         button_style="primary",
+        style=style,
+        layout=widgets.Layout(padding="0px", width=button_width),
     )
-    buttons.style.button_width = "95px"
+
+    def reset_btn_click(change):
+        output.clear_output()
+
+    reset_btn.on_click(reset_btn_click)
+
+    close_btn = widgets.Button(
+        description="Close",
+        button_style="primary",
+        style=style,
+        layout=widgets.Layout(padding="0px", width=button_width),
+    )
+
+    def close_click(change):
+        if m is not None:
+            m.toolbar_reset()
+            if m.tool_control is not None and m.tool_control in m.controls:
+                m.remove_control(m.tool_control)
+                m.tool_control = None
+        toolbar_widget.close()
+
+    close_btn.on_click(close_click)
 
     output = widgets.Output(layout=widgets.Layout(width=widget_width, padding=padding))
 
-    toolbar_widget = widgets.VBox()
+    toolbar_widget = widgets.VBox(layout=widgets.Layout(width="355px"))
     toolbar_widget.children = [toolbar_button]
     toolbar_header = widgets.HBox()
     toolbar_header.children = [close_button, toolbar_button]
@@ -1309,7 +1331,7 @@ def timelapse(m=None):
         nd_indices,
         widgets.HBox([first_band, second_band]),
         widgets.HBox([nd_threshold, nd_threshold_label, nd_color]),
-        widgets.HBox([create_gif, buttons]),
+        widgets.HBox([create_gif, reset_btn, close_btn]),
         output,
     ]
 
@@ -1350,22 +1372,6 @@ def timelapse(m=None):
             toolbar_widget.close()
 
     close_button.observe(close_btn_click, "value")
-
-    def button_clicked(change):
-        if change["new"] == "Reset":
-            with output:
-                output.clear_output()
-        elif change["new"] == "Close":
-            if m is not None:
-                m.toolbar_reset()
-                if m.tool_control is not None and m.tool_control in m.controls:
-                    m.remove_control(m.tool_control)
-                    m.tool_control = None
-            toolbar_widget.close()
-
-        buttons.value = None
-
-    buttons.observe(button_clicked, "value")
 
     toolbar_button.value = True
     if m is not None:
