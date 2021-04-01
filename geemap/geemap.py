@@ -1404,7 +1404,8 @@ class Map(ipyleaflet.Map):
                 self.ee_vector_layers.remove(ee_object)
             self.ee_layers.remove(ee_object)
             self.ee_layer_names.remove(name)
-            self.remove_layer(ee_layer)
+            if ee_layer in self.layers:
+                self.remove_layer(ee_layer)
 
     def draw_layer_on_top(self):
         """Move user-drawn feature layer to the top of all layers."""
