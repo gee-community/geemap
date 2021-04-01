@@ -1045,7 +1045,7 @@ def timelapse(m=None):
         description="Start Year:",
         value=1984,
         min=1984,
-        max=2020,
+        max=2021,
         readout=False,
         style=style,
         layout=widgets.Layout(width="138px", padding=padding),
@@ -1058,7 +1058,7 @@ def timelapse(m=None):
         description="End Year:",
         value=2020,
         min=1984,
-        max=2020,
+        max=2021,
         readout=False,
         style=style,
         layout=widgets.Layout(width="138px", padding=padding),
@@ -1217,8 +1217,6 @@ def timelapse(m=None):
         layout=widgets.Layout(padding="0px", width=button_width),
     )
 
-    temp_output = widgets.Output()
-
     def submit_clicked(b):
 
         if start_year.value > end_year.value:
@@ -1281,6 +1279,12 @@ def timelapse(m=None):
                     title="Click here to download: ",
                 )
                 display(link)
+                if nd_bands is not None:
+                    link_nd = create_download_link(
+                        out_gif.replace(".gif", "_nd.gif"),
+                        title="Click here to download: ",
+                    )
+                    display(link_nd)
 
     create_gif.on_click(submit_clicked)
 
@@ -1315,7 +1319,7 @@ def timelapse(m=None):
 
     output = widgets.Output(layout=widgets.Layout(width=widget_width, padding=padding))
 
-    toolbar_widget = widgets.VBox(layout=widgets.Layout(width="355px"))
+    toolbar_widget = widgets.VBox()
     toolbar_widget.children = [toolbar_button]
     toolbar_header = widgets.HBox()
     toolbar_header.children = [close_button, toolbar_button]
@@ -1370,6 +1374,908 @@ def timelapse(m=None):
                     m.tool_control = None
                 m.toolbar_reset()
             toolbar_widget.close()
+
+    close_button.observe(close_btn_click, "value")
+
+    toolbar_button.value = True
+    if m is not None:
+        toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
+
+        if toolbar_control not in m.controls:
+            m.add_control(toolbar_control)
+            m.tool_control = toolbar_control
+    else:
+        return toolbar_widget
+
+
+def time_slider(m=None):
+    """Creates timelapse animations.
+
+    Args:
+        m (geemap.Map, optional): A geemap Map instance. Defaults to None.
+
+    Returns:
+        ipywidgets: The interative GUI.
+    """
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+
+    widget_width = "350px"
+    padding = "0px 0px 0px 5px"  # upper, right, bottom, left
+    style = {"description_width": "initial"}
+
+    toolbar_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Toolbar",
+        icon="fast-forward",
+        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+    )
+
+    close_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Close the tool",
+        icon="times",
+        button_style="primary",
+        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
+    )
+
+    col_options_dict = {
+        "Landsat TM-ETM-OLI Surface Reflectance": {
+            "min": 0,
+            "max": 4000,
+            "bands": ["NIR", "Red", "Green"],
+            "start_year": 1984,
+            "end_year": 2021,
+            "bandnames": ["Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2", "pixel_qa"],
+        },
+        "MOD13A2.006 Terra Vegetation Indices": {
+            "min": 0,
+            "max": 9000,
+            "start_year": 2000,
+            "end_year": 2021,
+            "palette": [
+                "FFFFFF",
+                "CE7E45",
+                "DF923D",
+                "F1B555",
+                "FCD163",
+                "99B718",
+                "74A901",
+                "66A000",
+                "529400",
+                "3E8601",
+                "207401",
+                "056201",
+                "004C00",
+                "023B01",
+                "012E01",
+                "011D01",
+                "011301",
+            ],
+        },
+        "Sentinel-2 Surface Relectance": {
+            "min": 0,
+            "max": 4000,
+            "bands": ["NIR", "Red", "Green"],
+            "start_year": 2015,
+            "end_year": 2021,
+            "bandnames": [
+                "Blue",
+                "Green",
+                "Red",
+                "Red Edge 1",
+                "Red Edge 2",
+                "Red Edge 3",
+                "NIR",
+                "Red Edge 4",
+                "SWIR1",
+                "SWIR2",
+                "QA60",
+            ],
+        },
+        "USDA NAIP Imagery": {
+            "min": 0,
+            "max": 255,
+            "bands": ["R", "G", "B"],
+            "start_year": 2003,
+            "end_year": 2021,
+            "bandnames": ["R", "G", "B", "N"],
+        },
+    }
+
+    col_options = list(col_options_dict.keys())
+
+    if m is not None:
+        col_options += m.ee_raster_layer_names
+
+    collection = widgets.Dropdown(
+        options=col_options,
+        value=col_options[0],
+        description="Time series:",
+        layout=widgets.Layout(width=widget_width, padding=padding),
+        style=style,
+    )
+
+    region = widgets.Dropdown(
+        options=["User-drawn ROI"] + m.ee_vector_layer_names,
+        value="User-drawn ROI",
+        description="Region:",
+        layout=widgets.Layout(width=widget_width, padding=padding),
+        style=style,
+    )
+
+    dropdown_width = "97px"
+    landsat_bands = ["Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2", "pixel_qa"]
+    band1_dropdown = widgets.Dropdown(
+        options=landsat_bands,
+        value="NIR",
+        layout=widgets.Layout(width=dropdown_width),
+    )
+    band2_dropdown = widgets.Dropdown(
+        options=landsat_bands,
+        value="Red",
+        layout=widgets.Layout(width=dropdown_width),
+    )
+    band3_dropdown = widgets.Dropdown(
+        options=landsat_bands,
+        value="Green",
+        layout=widgets.Layout(width=dropdown_width),
+    )
+
+    bands_label = widgets.Label("Bands:", layout=widgets.Layout(padding=padding))
+    bands_hbox = widgets.HBox(
+        [bands_label, band1_dropdown, band2_dropdown, band3_dropdown]
+    )
+
+    vis = widgets.Text(
+        value="",
+        description="Vis min value:",
+        placeholder="{'min': 0, 'max': 1, 'palette': ['red', 'blue']}",
+        style=style,
+        layout=widgets.Layout(width=widget_width, padding=padding),
+    )
+
+    vis_min = widgets.Text(
+        value="0",
+        description="Vis min value:",
+        style=style,
+        layout=widgets.Layout(width="172px", padding=padding),
+    )
+
+    vis_max = widgets.Text(
+        value="4000",
+        description="Vis max value:",
+        style=style,
+        layout=widgets.Layout(width="172px", padding=padding),
+    )
+
+    opacity = widgets.FloatSlider(
+        value=1,
+        min=0,
+        max=1,
+        step=0.01,
+        description="Opacity:",
+        continuous_update=True,
+        readout=False,
+        readout_format=".2f",
+        layout=widgets.Layout(width="130px", padding=padding),
+        style={"description_width": "50px"},
+    )
+
+    opacity_label = widgets.Label(layout=widgets.Layout(width="40px", padding=padding))
+    widgets.jslink((opacity, "value"), (opacity_label, "value"))
+
+    gamma = widgets.FloatSlider(
+        value=1,
+        min=0.1,
+        max=10,
+        step=0.01,
+        description="Gamma:",
+        continuous_update=True,
+        readout=False,
+        readout_format=".2f",
+        layout=widgets.Layout(width="123px", padding=padding),
+        style={"description_width": "50px"},
+    )
+
+    gamma_label = widgets.Label(layout=widgets.Layout(width="40px", padding=padding))
+    widgets.jslink((gamma, "value"), (gamma_label, "value"))
+
+    color_picker = widgets.ColorPicker(
+        concise=False,
+        value="#000000",
+        layout=widgets.Layout(width="97px"),
+        style={"description_width": "initial"},
+    )
+
+    add_color = widgets.Button(
+        icon="plus",
+        tooltip="Add a hex color string to the palette",
+        layout=widgets.Layout(width="32px"),
+    )
+
+    del_color = widgets.Button(
+        icon="minus",
+        tooltip="Remove a hex color string from the palette",
+        layout=widgets.Layout(width="32px"),
+    )
+
+    reset_color = widgets.Button(
+        icon="eraser",
+        tooltip="Remove all color strings from the palette",
+        layout=widgets.Layout(width="34px"),
+    )
+
+    classes = widgets.Dropdown(
+        options=["Any"] + [str(i) for i in range(3, 13)],
+        description="Classes:",
+        layout=widgets.Layout(width="150px", padding=padding),
+        style={"description_width": "initial"},
+    )
+
+    colormap = widgets.Dropdown(
+        options=plt.colormaps(),
+        value=None,
+        description="Colormap:",
+        layout=widgets.Layout(width="195px", padding=padding),
+        style={"description_width": "initial"},
+    )
+
+    def classes_changed(change):
+        if change["new"]:
+            selected = change["owner"].value
+            if colormap.value is not None:
+
+                n_class = None
+                if selected != "Any":
+                    n_class = int(classes.value)
+
+                colors = plt.cm.get_cmap(colormap.value, n_class)
+                cmap_colors = [
+                    mpl.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
+                ]
+
+                _, ax = plt.subplots(figsize=(6, 0.4))
+                cmap = mpl.colors.LinearSegmentedColormap.from_list(
+                    "custom", to_hex_colors(cmap_colors), N=256
+                )
+
+                vmin = 0
+                vmax = 1
+                try:
+                    if vis_min.value != "":
+                        vmin = float(vis_min.value)
+                    if vis_max.value != "":
+                        vmax = float(vis_max.value)
+                except Exception as _:
+                    pass
+
+                norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+                mpl.colorbar.ColorbarBase(
+                    ax, norm=norm, cmap=cmap, orientation="horizontal"
+                )
+
+                palette.value = ", ".join([color for color in cmap_colors])
+
+                if m.colorbar_widget is None:
+                    m.colorbar_widget = widgets.Output(
+                        layout=widgets.Layout(height="60px")
+                    )
+
+                if m.colorbar_ctrl is None:
+                    m.colorbar_ctrl = WidgetControl(
+                        widget=m.colorbar_widget, position="bottomright"
+                    )
+                    m.add_control(m.colorbar_ctrl)
+
+                colorbar_output = m.colorbar_widget
+                with colorbar_output:
+                    colorbar_output.clear_output()
+                    plt.show()
+
+    classes.observe(classes_changed, "value")
+
+    palette = widgets.Text(
+        value="",
+        placeholder="",
+        description="Palette:",
+        tooltip="Enter a list of hex color code (RRGGBB)",
+        layout=widgets.Layout(width="137px", padding=padding),
+        style={"description_width": "initial"},
+    )
+
+    def add_color_clicked(b):
+        if color_picker.value is not None:
+            if len(palette.value) == 0:
+                palette.value = color_picker.value[1:]
+            else:
+                palette.value += ", " + color_picker.value[1:]
+
+    def del_color_clicked(b):
+        if "," in palette.value:
+            items = [item.strip() for item in palette.value.split(",")]
+            palette.value = ", ".join(items[:-1])
+        else:
+            palette.value = ""
+
+    def reset_color_clicked(b):
+        palette.value = ""
+
+    add_color.on_click(add_color_clicked)
+    del_color.on_click(del_color_clicked)
+    reset_color.on_click(reset_color_clicked)
+
+    def colormap_changed(change):
+        if change["new"]:
+
+            n_class = None
+            if classes.value != "Any":
+                n_class = int(classes.value)
+
+            colors = plt.cm.get_cmap(colormap.value, n_class)
+            cmap_colors = [mpl.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)]
+
+            _, ax = plt.subplots(figsize=(6, 0.4))
+            cmap = mpl.colors.LinearSegmentedColormap.from_list(
+                "custom", to_hex_colors(cmap_colors), N=256
+            )
+
+            vmin = 0
+            vmax = 1
+            try:
+                if vis_min.value != "":
+                    vmin = float(vis_min.value)
+                if vis_max.value != "":
+                    vmax = float(vis_max.value)
+            except Exception as _:
+                pass
+
+            norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+            mpl.colorbar.ColorbarBase(
+                ax, norm=norm, cmap=cmap, orientation="horizontal"
+            )
+
+            palette.value = ", ".join(cmap_colors)
+
+            if m.colorbar_widget is None:
+                m.colorbar_widget = widgets.Output(layout=widgets.Layout(height="60px"))
+
+            if m.colorbar_ctrl is None:
+                m.colorbar_ctrl = WidgetControl(
+                    widget=m.colorbar_widget, position="bottomright"
+                )
+                m.add_control(m.colorbar_ctrl)
+
+            colorbar_output = m.colorbar_widget
+            with colorbar_output:
+                colorbar_output.clear_output()
+                plt.show()
+
+    colormap.observe(colormap_changed, "value")
+
+    palette_vbox = widgets.VBox()
+
+    labels = widgets.Text(
+        value=", ".join([str(i) for i in range(1984, 2021)]),
+        description="Labels:",
+        style=style,
+        layout=widgets.Layout(width="150px", padding=padding),
+    )
+
+    speed = widgets.FloatSlider(
+        description="Speed (sec):",
+        tooltip="Time interval in seconds",
+        value=1,
+        min=0.1,
+        max=10,
+        readout=False,
+        style=style,
+        layout=widgets.Layout(width="160px", padding=padding),
+    )
+
+    speed_label = widgets.Label(
+        layout=widgets.Layout(width="25px", padding=padding),
+    )
+    widgets.jslink((speed, "value"), (speed_label, "value"))
+
+    prebuilt_options = widgets.VBox()
+
+    # bands = widgets.Dropdown(
+    #     description="RGB:",
+    #     options=[
+    #         "Red/Green/Blue",
+    #         "NIR/Red/Green",
+    #         "SWIR2/SWIR1/NIR",
+    #         "NIR/SWIR1/Red",
+    #         "SWIR2/NIR/Red",
+    #         "SWIR2/SWIR1/Red",
+    #         "SWIR1/NIR/Blue",
+    #         "NIR/SWIR1/Blue",
+    #         "SWIR2/NIR/Green",
+    #         "SWIR1/NIR/Red",
+    #     ],
+    #     value="NIR/Red/Green",
+    #     style=style,
+    #     layout=widgets.Layout(width=widget_width, padding=padding),
+    # )
+
+    cloud = widgets.Checkbox(
+        value=True,
+        description="Apply fmask (remove clouds, shadows, snow)",
+        tooltip="Apply fmask (remove clouds, shadows, snow)",
+        style=style,
+    )
+
+    start_year = widgets.IntSlider(
+        description="Start Year:",
+        value=1984,
+        min=1984,
+        max=2021,
+        readout=False,
+        style=style,
+        layout=widgets.Layout(width="138px", padding=padding),
+    )
+
+    def year_change(change):
+        if change["new"]:
+
+            if "MOD" not in collection.value:
+
+                labels.value = ", ".join(
+                    str(i)
+                    for i in range(int(start_year.value), int(end_year.value) + 1)
+                )
+            else:
+                modis_labels = []
+                for i in range(int(start_year.value), int(end_year.value) + 1):
+                    for j in range(1, 13):
+                        modis_labels.append(str(i) + "-" + str(j).zfill(2))
+                labels.value = ", ".join(modis_labels)
+
+    start_year.observe(year_change, "value")
+
+    start_year_label = widgets.Label()
+    widgets.jslink((start_year, "value"), (start_year_label, "value"))
+
+    end_year = widgets.IntSlider(
+        description="End Year:",
+        value=2020,
+        min=1984,
+        max=2021,
+        readout=False,
+        style=style,
+        layout=widgets.Layout(width="138px", padding=padding),
+    )
+
+    end_year.observe(year_change, "value")
+
+    end_year_label = widgets.Label()
+    widgets.jslink((end_year, "value"), (end_year_label, "value"))
+
+    start_month = widgets.IntSlider(
+        description="Start Month:",
+        value=1,
+        min=1,
+        max=12,
+        readout=False,
+        style=style,
+        layout=widgets.Layout(width="145px", padding=padding),
+    )
+
+    start_month_label = widgets.Label(
+        layout=widgets.Layout(width="20px", padding=padding),
+    )
+    widgets.jslink((start_month, "value"), (start_month_label, "value"))
+
+    end_month = widgets.IntSlider(
+        description="End Month:",
+        value=12,
+        min=1,
+        max=12,
+        readout=False,
+        style=style,
+        layout=widgets.Layout(width="155px", padding=padding),
+    )
+
+    end_month_label = widgets.Label()
+    widgets.jslink((end_month, "value"), (end_month_label, "value"))
+
+    prebuilt_options.children = [
+        widgets.HBox([start_year, start_year_label, end_year, end_year_label]),
+        widgets.HBox([start_month, start_month_label, end_month, end_month_label]),
+        cloud,
+    ]
+
+    button_width = "113px"
+    apply_btn = widgets.Button(
+        description="Apply",
+        button_style="primary",
+        tooltip="Apply the settings to activate the time slider",
+        style=style,
+        layout=widgets.Layout(padding="0px", width=button_width),
+    )
+
+    def submit_clicked(b):
+
+        output.clear_output()
+        with output:
+            if start_year.value > end_year.value:
+                print("The end year must be great than the start year.")
+                return
+            if start_month.value > end_month.value:
+                print("The end month must be great than the start month.")
+                return
+
+        if m is not None:
+
+            roi = None
+            if region.value == "User-drawn ROI" and (m.user_roi is not None):
+                roi = m.user_roi
+            elif region.value == "User-drawn ROI" and (m.user_roi is None):
+                with output:
+                    print("Use the Drawing tool to create an ROI.")
+                    return
+            elif region.value in m.ee_layer_dict:
+                roi = m.ee_layer_dict[region.value]["ee_object"]
+
+            with output:
+                print("Computing... Please wait...")
+
+            layer_labels = None
+            vis_params = {}
+
+            try:
+                if vis_min.value != "":
+                    vis_params["min"] = float(vis_min.value)
+
+                if vis_max.value != "":
+                    vis_params["max"] = float(vis_max.value)
+
+                vis_params["opacity"] = float(opacity.value)
+
+                if len(bands_hbox.children) > 0 and (
+                    band1_dropdown.value
+                    and band2_dropdown.value
+                    and band3_dropdown.value
+                ):
+                    vis_params["bands"] = [
+                        band1_dropdown.value,
+                        band2_dropdown.value,
+                        band3_dropdown.value,
+                    ]
+                    vis_params["gamma"] = float(gamma.value)
+
+                if len(palette_vbox.children) > 0:
+                    if "," in palette.value:
+                        vis_params["palette"] = [
+                            i.strip() for i in palette.value.split(",")
+                        ]
+                    elif len(palette.value) > 0:
+                        vis_params["palette"] = palette.value.strip()
+
+            except Exception as _:
+                with output:
+                    print("The vis parmas are invalid.")
+                    return
+
+            if labels.value != "" and "," in labels.value:
+                try:
+                    layer_labels = [i.strip() for i in labels.value.split(",")]
+                except Exception as e:
+                    raise ValueError(e)
+
+            if collection.value in m.ee_raster_layer_names:
+                layer = m.ee_layer_dict[collection.value]
+                ee_object = layer["ee_object"]
+            elif collection.value in col_options_dict:
+                start_date = str(start_month.value).zfill(2) + "-01"
+                end_date = str(end_month.value).zfill(2) + "-30"
+
+                if collection.value == "Landsat TM-ETM-OLI Surface Reflectance":
+                    ee_object = landsat_timeseries(
+                        roi,
+                        int(start_year.value),
+                        int(end_year.value),
+                        start_date,
+                        end_date,
+                        cloud.value,
+                    )
+                elif collection.value == "MOD13A2.006 Terra Vegetation Indices":
+                    ee_object = modis_timeseries(
+                        roi=roi,
+                        start_year=int(start_year.value),
+                        end_year=int(end_year.value),
+                        start_date=start_date,
+                        end_date=end_date,
+                    )
+
+                elif collection.value == "Sentinel-2 Surface Relectance":
+                    ee_object = sentinel2_timeseries(
+                        roi,
+                        int(start_year.value),
+                        int(end_year.value),
+                        start_date,
+                        end_date,
+                        cloud.value,
+                    )
+                elif collection.value == "USDA NAIP Imagery":
+
+                    if int(start_year.value) < 2009 and (
+                        band1_dropdown.value == "N"
+                        or band2_dropdown.value == "N"
+                        or band3_dropdown.value == "N"
+                    ):
+                        with output:
+                            output.clear_output()
+                            print("4-band NAIP imagery not available before 2009.")
+                            return
+
+                    ee_object = naip_timeseries(roi, start_year.value, end_year.value)
+
+            m.add_time_slider(
+                ee_object,
+                region=roi,
+                vis_params=vis_params,
+                labels=layer_labels,
+                time_interval=speed.value,
+            )
+
+            output.clear_output()
+
+            if m.colorbar_ctrl is not None:
+                m.remove_control(m.colorbar_ctrl)
+                m.colorbar_ctrl = None
+
+    apply_btn.on_click(submit_clicked)
+
+    reset_btn = widgets.Button(
+        description="Reset",
+        button_style="primary",
+        style=style,
+        layout=widgets.Layout(padding="0px", width=button_width),
+    )
+
+    def reset_btn_click(change):
+        output.clear_output()
+        collection.value = col_options[0]
+        region.value = "User-drawn ROI"
+        vis.value = ""
+        labels.value = "1, 2, 3"
+        speed.value = 1
+
+        if m.colorbar_ctrl is not None:
+            m.remove_control(m.colorbar_ctrl)
+            m.colorbar_ctrl = None
+
+    reset_btn.on_click(reset_btn_click)
+
+    close_btn = widgets.Button(
+        description="Close",
+        button_style="primary",
+        style=style,
+        layout=widgets.Layout(padding="0px", width=button_width),
+    )
+
+    def close_click(change):
+        if m is not None:
+            m.toolbar_reset()
+            if m.tool_control is not None and m.tool_control in m.controls:
+                m.remove_control(m.tool_control)
+                m.tool_control = None
+
+            if m.colorbar_ctrl is not None:
+                m.remove_control(m.colorbar_ctrl)
+                m.colorbar_ctrl = None
+        toolbar_widget.close()
+
+    close_btn.on_click(close_click)
+
+    def collection_changed(change):
+
+        if change["new"]:
+            selected = change["owner"].value
+            if selected in m.ee_layer_dict:
+                prebuilt_options.children = []
+
+                ee_object = m.ee_layer_dict[selected]["ee_object"]
+                vis_params = m.ee_layer_dict[selected]["vis_params"]
+                if isinstance(ee_object, ee.Image):
+                    palette_vbox.children = [
+                        widgets.HBox([classes, colormap]),
+                        widgets.HBox(
+                            [palette, color_picker, add_color, del_color, reset_color]
+                        ),
+                    ]
+                    bands_hbox.children = []
+
+                    count = ee_object.bandNames().size().getInfo()
+                    labels.value = ", ".join(str(i) for i in range(1, count + 1))
+
+                elif isinstance(ee_object, ee.ImageCollection):
+
+                    first = ee.Image(ee_object.first())
+                    band_count = first.bandNames().size().getInfo()
+
+                    if band_count > 1:
+
+                        palette_vbox.children = []
+                        bands_hbox.children = [
+                            bands_label,
+                            band1_dropdown,
+                            band2_dropdown,
+                            band3_dropdown,
+                        ]
+                    else:
+                        palette_vbox.children = [
+                            widgets.HBox([classes, colormap]),
+                            widgets.HBox(
+                                [
+                                    palette,
+                                    color_picker,
+                                    add_color,
+                                    del_color,
+                                    reset_color,
+                                ]
+                            ),
+                        ]
+                        bands_hbox.children = []
+
+                    count = ee_object.size().getInfo()
+                    labels.value = ", ".join(str(i) for i in range(1, count + 1))
+
+                if "min" in vis_params:
+                    vis_min.value = str(vis_params["min"])
+                if "max" in vis_params:
+                    vis_max.value = str(vis_params["max"])
+                if "opacity" in vis_params:
+                    opacity.value = str(vis_params["opacity"])
+                if "gamma" in vis_params:
+                    if isinstance(vis_params["gamma"], list):
+                        gamma.value = str(vis_params["gamma"][0])
+                    else:
+                        gamma.value = str(vis_params["gamma"])
+                if "palette" in vis_params:
+                    palette.value = ", ".join(vis_params["palette"])
+
+            else:
+                prebuilt_options.children = [
+                    widgets.HBox(
+                        [start_year, start_year_label, end_year, end_year_label]
+                    ),
+                    widgets.HBox(
+                        [start_month, start_month_label, end_month, end_month_label]
+                    ),
+                    cloud,
+                ]
+
+                if "MOD" in selected:
+                    palette_vbox.children = [
+                        widgets.HBox([classes, colormap]),
+                        widgets.HBox(
+                            [
+                                palette,
+                                color_picker,
+                                add_color,
+                                del_color,
+                                reset_color,
+                            ]
+                        ),
+                    ]
+                    bands_hbox.children = []
+
+                    palette.value = ", ".join(col_options_dict[selected]["palette"])
+                    modis_labels = []
+                    for i in range(int(start_year.value), int(end_year.value) + 1):
+                        for j in range(1, 13):
+                            modis_labels.append(str(i) + "-" + str(j).zfill(2))
+                    labels.value = ", ".join(modis_labels)
+
+                else:
+                    bands_hbox.children = [
+                        bands_label,
+                        band1_dropdown,
+                        band2_dropdown,
+                        band3_dropdown,
+                    ]
+
+                    bandnames = col_options_dict[selected]["bandnames"]
+                    band1_dropdown.options = bandnames
+                    band2_dropdown.options = bandnames
+                    band3_dropdown.options = bandnames
+
+                if ("Landsat" in selected) or ("Sentinel" in selected):
+                    band1_dropdown.value = bandnames[2]
+                    band2_dropdown.value = bandnames[1]
+                    band3_dropdown.value = bandnames[0]
+                    palette_vbox.children = []
+                elif "NAIP" in selected:
+                    band1_dropdown.value = bandnames[0]
+                    band2_dropdown.value = bandnames[1]
+                    band3_dropdown.value = bandnames[2]
+                    palette_vbox.children = []
+
+                labels.value = ", ".join(
+                    str(i)
+                    for i in range(int(start_year.value), int(end_year.value) + 1)
+                )
+
+                start_year.min = col_options_dict[selected]["start_year"]
+                start_year.max = col_options_dict[selected]["end_year"]
+                start_year.value = start_year.min
+                end_year.min = col_options_dict[selected]["start_year"]
+                end_year.max = col_options_dict[selected]["end_year"]
+                end_year.value = end_year.max
+                vis_min.value = str(col_options_dict[selected]["min"])
+                vis_max.value = str(col_options_dict[selected]["max"])
+
+                if "MOD" in selected:
+                    start_year.value = "2001"
+                    end_year.value = "2020"
+                elif "NAIP" in selected:
+                    start_year.value = "2009"
+                    end_year.value = "2019"
+
+    collection.observe(collection_changed, "value")
+
+    output = widgets.Output(layout=widgets.Layout(width=widget_width, padding=padding))
+
+    toolbar_widget = widgets.VBox()
+    toolbar_widget.children = [toolbar_button]
+    toolbar_header = widgets.HBox()
+    toolbar_header.children = [close_button, toolbar_button]
+    toolbar_footer = widgets.VBox()
+    toolbar_footer.children = [
+        collection,
+        region,
+        bands_hbox,
+        widgets.HBox([vis_min, vis_max]),
+        widgets.HBox([opacity, opacity_label, gamma, gamma_label]),
+        palette_vbox,
+        widgets.HBox([labels, speed, speed_label]),
+        prebuilt_options,
+        widgets.HBox([apply_btn, reset_btn, close_btn]),
+        output,
+    ]
+
+    toolbar_event = ipyevents.Event(
+        source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
+    )
+
+    def handle_toolbar_event(event):
+
+        if event["type"] == "mouseenter":
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        elif event["type"] == "mouseleave":
+            if not toolbar_button.value:
+                toolbar_widget.children = [toolbar_button]
+                toolbar_button.value = False
+                close_button.value = False
+
+    toolbar_event.on_dom_event(handle_toolbar_event)
+
+    def toolbar_btn_click(change):
+        if change["new"]:
+            close_button.value = False
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        else:
+            if not close_button.value:
+                toolbar_widget.children = [toolbar_button]
+
+    toolbar_button.observe(toolbar_btn_click, "value")
+
+    def close_btn_click(change):
+        if change["new"]:
+            toolbar_button.value = False
+            if m is not None:
+                if m.tool_control is not None and m.tool_control in m.controls:
+                    m.remove_control(m.tool_control)
+                    m.tool_control = None
+                m.toolbar_reset()
+            toolbar_widget.close()
+
+            if m.colorbar_ctrl is not None:
+                m.remove_control(m.colorbar_ctrl)
+                m.colorbar_ctrl = None
 
     close_button.observe(close_btn_click, "value")
 

@@ -150,6 +150,8 @@ class Map(ipyleaflet.Map):
         self.ee_layer_names = []
         self.ee_raster_layers = []
         self.ee_raster_layer_names = []
+        self.ee_vector_layers = []
+        self.ee_vector_layer_names = []
         self.ee_layer_dict = {}
 
         self.search_locations = None
@@ -649,9 +651,21 @@ class Map(ipyleaflet.Map):
                 "name": "timelapse",
                 "tooltip": "Create timelapse",
             },
+            "fast-forward": {
+                "name": "timeslider",
+                "tooltip": "Activate timeslider",
+            },
             "hand-o-up": {
                 "name": "draw",
                 "tooltip": "Collect training samples",
+            },
+            "plug": {
+                "name": "todo1",
+                "tooltip": "Placeholder",
+            },
+            "smile-o": {
+                "name": "todo2",
+                "tooltip": "Placeholder",
             },
             "question": {
                 "name": "help",
@@ -774,6 +788,11 @@ class Map(ipyleaflet.Map):
                     from .toolbar import timelapse
 
                     timelapse(self)
+                    self.toolbar_reset()
+                elif tool_name == "timeslider":
+                    from .toolbar import time_slider
+
+                    time_slider(self)
                     self.toolbar_reset()
                 elif tool_name == "draw":
                     from .toolbar import collect_samples
@@ -1330,6 +1349,13 @@ class Map(ipyleaflet.Map):
                 self.ee_raster_layer_names.remove(name)
                 if self.plot_dropdown_widget is not None:
                     self.plot_dropdown_widget.options = list(self.ee_raster_layer_names)
+            elif (
+                isinstance(ee_object, ee.Geometry)
+                or isinstance(ee_object, ee.Feature)
+                or isinstance(ee_object, ee.FeatureCollection)
+            ):
+                self.ee_vector_layers.remove(existing_object)
+                self.ee_vector_layer_names.remove(name)
 
             self.ee_layers.remove(existing_object)
             self.ee_layer_names.remove(name)
@@ -1351,8 +1377,34 @@ class Map(ipyleaflet.Map):
             self.ee_raster_layer_names.append(name)
             if self.plot_dropdown_widget is not None:
                 self.plot_dropdown_widget.options = list(self.ee_raster_layer_names)
+        elif (
+            isinstance(ee_object, ee.Geometry)
+            or isinstance(ee_object, ee.Feature)
+            or isinstance(ee_object, ee.FeatureCollection)
+        ):
+            self.ee_vector_layers.append(ee_object)
+            self.ee_vector_layer_names.append(name)
 
     addLayer = add_ee_layer
+
+    def remove_ee_layer(self, name):
+        """Removes an Earth Engine layer.
+
+        Args:
+            name (str): The name of the Earth Engine layer to remove.
+        """
+        if name in self.ee_layer_dict:
+            ee_object = self.ee_layer_dict[name]["ee_object"]
+            ee_layer = self.ee_layer_dict[name]["ee_layer"]
+            if name in self.ee_raster_layer_names:
+                self.ee_raster_layer_names.remove(name)
+                self.ee_raster_layers.remove(ee_object)
+            elif name in self.ee_vector_layer_names:
+                self.ee_vector_layer_names.remove(name)
+                self.ee_vector_layers.remove(ee_object)
+            self.ee_layers.remove(ee_object)
+            self.ee_layer_names.remove(name)
+            self.remove_layer(ee_layer)
 
     def draw_layer_on_top(self):
         """Move user-drawn feature layer to the top of all layers."""
@@ -3720,10 +3772,9 @@ class Map(ipyleaflet.Map):
                             layer_dict["legend"] = None
 
                         if len(palette.value) > 0 and "," in palette.value:
-                            colors = [
-                                "#" + color.strip()
-                                for color in palette.value.split(",")
-                            ]
+                            colors = to_hex_colors(
+                                [color.strip() for color in palette.value.split(",")]
+                            )
 
                             self.add_colorbar(
                                 vis_params={
@@ -3736,10 +3787,9 @@ class Map(ipyleaflet.Map):
                     elif step_chk.value:
 
                         if len(palette.value) > 0 and "," in palette.value:
-                            colors = [
-                                "#" + color.strip()
-                                for color in palette.value.split(",")
-                            ]
+                            colors = to_hex_colors(
+                                [color.strip() for color in palette.value.split(",")]
+                            )
                             labels = [
                                 label.strip()
                                 for label in legend_labels.value.split(",")
@@ -3855,7 +3905,9 @@ class Map(ipyleaflet.Map):
                     import matplotlib as mpl
                     import matplotlib.pyplot as plt
 
-                    colors = ["#" + color.strip() for color in palette.value.split(",")]
+                    colors = to_hex_colors(
+                        [color.strip() for color in palette.value.split(",")]
+                    )
 
                     self.colorbar_widget.clear_output()
                     with self.colorbar_widget:
@@ -3900,7 +3952,7 @@ class Map(ipyleaflet.Map):
                 vis_widget.children = gray_box
 
                 if len(palette.value) > 0 and "," in palette.value:
-                    colors = ["#" + color.strip() for color in palette.value.split(",")]
+                    colors = [color.strip() for color in palette.value.split(",")]
 
                     _, ax = plt.subplots(figsize=(6, 0.4))
                     cmap = mpl.colors.LinearSegmentedColormap.from_list(
@@ -4683,6 +4735,7 @@ class Map(ipyleaflet.Map):
         self,
         ee_object,
         vis_params={},
+        region=None,
         layer_name="Time series",
         labels=None,
         time_interval=1,
@@ -4692,8 +4745,9 @@ class Map(ipyleaflet.Map):
         """Adds a time slider to the map.
 
         Args:
-            ee_object (ee.Image | ee.ImageCollection): [description]
+            ee_object (ee.Image | ee.ImageCollection): The Image or ImageCollection to visualize.
             vis_params (dict, optional): Visualization parameters to use for visualizing image. Defaults to {}.
+            region (ee.Geometry | ee.FeatureCollection): The region to visualize.
             layer_name (str, optional): The layer name to be used. Defaults to "Time series".
             labels (list, optional): The list of labels to be used for the time series. Defaults to None.
             time_interval (int, optional): Time interval in seconds. Defaults to 1.
@@ -4707,11 +4761,22 @@ class Map(ipyleaflet.Map):
         import threading
 
         if isinstance(ee_object, ee.Image):
+            if region is not None:
+                if isinstance(region, ee.Geometry):
+                    ee_object = ee_object.clip(region)
+                elif isinstance(region, ee.FeatureCollection):
+                    ee_object = ee_object.clipToCollection(region)
             if layer_name not in self.ee_raster_layer_names:
                 self.addLayer(ee_object, {}, layer_name, False)
             ee_object = ee.ImageCollection(
                 ee_object.bandNames().map(lambda b: ee_object.select([b]))
             )
+        elif isinstance(ee_object, ee.ImageCollection):
+            if region is not None:
+                if isinstance(region, ee.Geometry):
+                    ee_object = ee_object.map(lambda img: img.clip(region))
+                elif isinstance(region, ee.FeatureCollection):
+                    ee_object = ee_object.map(lambda img: img.clipToCollection(region))
 
         if not isinstance(ee_object, ee.ImageCollection):
             raise TypeError("The ee_object must be an ee.Image or ee.ImageCollection")
@@ -4800,6 +4865,9 @@ class Map(ipyleaflet.Map):
         def close_click(b):
             play_chk.value = False
             self.toolbar_reset()
+            self.remove_ee_layer("Image X")
+            self.remove_ee_layer(layer_name)
+
             if self.slider_ctrl is not None and self.slider_ctrl in self.controls:
                 self.remove_control(self.slider_ctrl)
             slider_widget.close()

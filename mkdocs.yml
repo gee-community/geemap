@@ -140,6 +140,7 @@ nav:
           - notebooks/69_cartoee_vector.ipynb
           - notebooks/70_linked_maps.ipynb
           - notebooks/71_timelapse.ipynb
+          - notebooks/72_time_slider_gui.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_projections.ipynb
