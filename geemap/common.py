@@ -2078,18 +2078,17 @@ def screen_capture(outfile, monitor=1):
 ########################################
 
 
-def naip_timeseries(roi=None, start_year=2009, end_year=2018):
+def naip_timeseries(roi=None, start_year=2003, end_year=2021, RGBN=False):
     """Creates NAIP annual timeseries
 
     Args:
         roi (object, optional): An ee.Geometry representing the region of interest. Defaults to None.
-        start_year (int, optional): Starting year for the timeseries. Defaults to2009.
-        end_year (int, optional): Ending year for the timeseries. Defaults to 2018.
-
+        start_year (int, optional): Starting year for the timeseries. Defaults to 2003.
+        end_year (int, optional): Ending year for the timeseries. Defaults to 2021.
+        RGBN (bool, optional): Whether to retrieve 4-band NAIP imagery only.
     Returns:
         object: An ee.ImageCollection representing annual NAIP imagery.
     """
-    # ee_initialize()
     try:
 
         def get_annual_NAIP(year):
@@ -2099,24 +2098,29 @@ def naip_timeseries(roi=None, start_year=2009, end_year=2018):
                     collection = collection.filterBounds(roi)
                 start_date = ee.Date.fromYMD(year, 1, 1)
                 end_date = ee.Date.fromYMD(year, 12, 31)
-                naip = collection.filterDate(start_date, end_date).filter(
-                    ee.Filter.listContains("system:band_names", "N")
-                )
+                naip = collection.filterDate(start_date, end_date)
+                if RGBN:
+                    naip = naip.filter(ee.Filter.listContains("system:band_names", "N"))
                 naip = ee.Image(ee.ImageCollection(naip).mosaic())
                 return naip
             except Exception as e:
-                print(e)
+                raise Exception(e)
 
         years = ee.List.sequence(start_year, end_year)
-        collection = years.map(get_annual_NAIP)
+        collection = ee.ImageCollection(years.map(get_annual_NAIP))
         return collection
 
     except Exception as e:
-        print(e)
+        raise Exception(e)
 
 
 def sentinel2_timeseries(
-    roi=None, start_year=2015, end_year=2019, start_date="01-01", end_date="12-31"
+    roi=None,
+    start_year=2015,
+    end_year=2019,
+    start_date="01-01",
+    end_date="12-31",
+    apply_fmask=True,
 ):
     """Generates an annual Sentinel 2 ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
        Images include both level 1C and level 2A imagery.
@@ -2127,6 +2131,7 @@ def sentinel2_timeseries(
         end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
+        apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
     Returns:
         object: Returns an ImageCollection containing annual Sentinel 2 images.
     """
@@ -2174,16 +2179,16 @@ def sentinel2_timeseries(
 
     ################################################################################
     # Setup vars to get dates.
-    if isinstance(start_year, int) and (start_year >= 2015) and (start_year <= 2020):
+    if isinstance(start_year, int) and (start_year >= 2015) and (start_year <= 2021):
         pass
     else:
         print("The start year must be an integer >= 2015.")
         return
 
-    if isinstance(end_year, int) and (end_year >= 2015) and (end_year <= 2020):
+    if isinstance(end_year, int) and (end_year >= 2015) and (end_year <= 2021):
         pass
     else:
-        print("The end year must be an integer <= 2020.")
+        print("The end year must be an integer <= 2021.")
         return
 
     if re.match("[0-9]{2}\-[0-9]{2}", start_date) and re.match(
@@ -2284,7 +2289,8 @@ def sentinel2_timeseries(
     def prepMSI(img):
         orig = img
         img = renameMSI(img)
-        img = fmask(img)
+        if apply_fmask:
+            img = fmask(img)
         return ee.Image(img.copyProperties(orig, orig.propertyNames())).resample(
             "bicubic"
         )
@@ -2400,16 +2406,16 @@ def landsat_timeseries(
     ################################################################################
 
     # Setup vars to get dates.
-    if isinstance(start_year, int) and (start_year >= 1984) and (start_year < 2020):
+    if isinstance(start_year, int) and (start_year >= 1984) and (start_year < 2021):
         pass
     else:
         print("The start year must be an integer >= 1984.")
         return
 
-    if isinstance(end_year, int) and (end_year > 1984) and (end_year <= 2020):
+    if isinstance(end_year, int) and (end_year > 1984) and (end_year <= 2021):
         pass
     else:
-        print("The end year must be an integer <= 2020.")
+        print("The end year must be an integer <= 2021.")
         return
 
     if re.match("[0-9]{2}\-[0-9]{2}", start_date) and re.match(
@@ -2597,11 +2603,65 @@ def landsat_timeseries(
     #     task.start()
 
 
+def modis_timeseries(
+    asset_id="MODIS/006/MOD13A2",
+    band_name=None,
+    roi=None,
+    start_year=2001,
+    end_year=2021,
+    start_date="01-01",
+    end_date="12-31",
+):
+    """Generates a Monthly MODIS ImageCollection.
+    Args:
+        asset_id (str, optional): The asset id the MODIS ImageCollection.
+        band_name (str, optional): The band name of the image to use.
+        roi (object, optional): Region of interest to create the timelapse. Defaults to None.
+        start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
+        end_year (int, optional): Ending year for the timelapse. Defaults to 2020.
+        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
+        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+    Returns:
+        object: Returns an ImageCollection containing month MODIS images.
+    """
+
+    try:
+        collection = ee.ImageCollection(asset_id)
+        if band_name is None:
+            band_name = collection.first().bandNames().getInfo()[0]
+        collection = collection.select(band_name)
+        if roi is not None:
+            if isinstance(roi, ee.Geometry):
+                collection = ee.ImageCollection(
+                    collection.map(lambda img: img.clip(roi))
+                )
+            elif isinstance(roi, ee.FeatureCollection):
+                collection = ee.ImageCollection(
+                    collection.map(lambda img: img.clipToCollection(roi))
+                )
+
+        start = str(start_year) + "-" + start_date
+        end = str(end_year) + "-" + end_date
+
+        seq = date_sequence(start, end, "month")
+
+        def monthly_modis(start_d):
+
+            end_d = ee.Date(start_d).advance(1, "month")
+            return ee.Image(collection.filterDate(start_d, end_d).mean())
+
+        images = ee.ImageCollection(seq.map(monthly_modis))
+        return images
+
+    except Exception as e:
+        raise Exception(e)
+
+
 def landsat_ts_gif(
     roi=None,
     out_gif=None,
     start_year=1984,
-    end_year=2019,
+    end_year=2020,
     start_date="06-10",
     end_date="09-20",
     bands=["NIR", "Red", "Green"],
