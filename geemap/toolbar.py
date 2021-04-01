@@ -1240,6 +1240,8 @@ def timelapse(m=None):
         if (first_band.value is not None) and (second_band.value is not None):
             nd_bands = [first_band.value, second_band.value]
 
+        temp_output = widgets.Output()
+
         if m is not None:
 
             out_dir = os.path.expanduser("~/Downloads")
