@@ -1391,7 +1391,7 @@ def timelapse(m=None):
 
 
 def time_slider(m=None):
-    """Creates timelapse animations.
+    """Creates a time slider for visualizing any ee.ImageCollection.
 
     Args:
         m (geemap.Map, optional): A geemap Map instance. Defaults to None.
@@ -1782,25 +1782,6 @@ def time_slider(m=None):
 
     prebuilt_options = widgets.VBox()
 
-    # bands = widgets.Dropdown(
-    #     description="RGB:",
-    #     options=[
-    #         "Red/Green/Blue",
-    #         "NIR/Red/Green",
-    #         "SWIR2/SWIR1/NIR",
-    #         "NIR/SWIR1/Red",
-    #         "SWIR2/NIR/Red",
-    #         "SWIR2/SWIR1/Red",
-    #         "SWIR1/NIR/Blue",
-    #         "NIR/SWIR1/Blue",
-    #         "SWIR2/NIR/Green",
-    #         "SWIR1/NIR/Red",
-    #     ],
-    #     value="NIR/Red/Green",
-    #     style=style,
-    #     layout=widgets.Layout(width=widget_width, padding=padding),
-    # )
-
     cloud = widgets.Checkbox(
         value=True,
         description="Apply fmask (remove clouds, shadows, snow)",
@@ -1821,7 +1802,7 @@ def time_slider(m=None):
     def year_change(change):
         if change["new"]:
 
-            if "MOD" not in collection.value:
+            if collection.value != "MOD13A2.006 Terra Vegetation Indices":
 
                 labels.value = ", ".join(
                     str(i)
@@ -2078,6 +2059,8 @@ def time_slider(m=None):
             selected = change["owner"].value
             if selected in m.ee_layer_dict:
                 prebuilt_options.children = []
+                labels.value = ""
+                region.value = None
 
                 ee_object = m.ee_layer_dict[selected]["ee_object"]
                 vis_params = m.ee_layer_dict[selected]["vis_params"]
@@ -2090,15 +2073,20 @@ def time_slider(m=None):
                     ]
                     bands_hbox.children = []
 
-                    count = ee_object.bandNames().size().getInfo()
-                    labels.value = ", ".join(str(i) for i in range(1, count + 1))
-
                 elif isinstance(ee_object, ee.ImageCollection):
 
                     first = ee.Image(ee_object.first())
-                    band_count = first.bandNames().size().getInfo()
+                    band_names = first.bandNames().getInfo()
+                    band_count = len(band_names)
 
-                    if band_count > 1:
+                    if band_count > 2:
+                        band1_dropdown.options = band_names
+                        band2_dropdown.options = band_names
+                        band3_dropdown.options = band_names
+
+                        band1_dropdown.value = band_names[2]
+                        band2_dropdown.value = band_names[1]
+                        band3_dropdown.value = band_names[0]
 
                         palette_vbox.children = []
                         bands_hbox.children = [
@@ -2107,6 +2095,7 @@ def time_slider(m=None):
                             band2_dropdown,
                             band3_dropdown,
                         ]
+
                     else:
                         palette_vbox.children = [
                             widgets.HBox([classes, colormap]),
@@ -2121,9 +2110,6 @@ def time_slider(m=None):
                             ),
                         ]
                         bands_hbox.children = []
-
-                    count = ee_object.size().getInfo()
-                    labels.value = ", ".join(str(i) for i in range(1, count + 1))
 
                 if "min" in vis_params:
                     vis_min.value = str(vis_params["min"])
@@ -2150,7 +2136,7 @@ def time_slider(m=None):
                     cloud,
                 ]
 
-                if "MOD" in selected:
+                if selected == "MOD13A2.006 Terra Vegetation Indices":
                     palette_vbox.children = [
                         widgets.HBox([classes, colormap]),
                         widgets.HBox(
@@ -2185,12 +2171,15 @@ def time_slider(m=None):
                     band2_dropdown.options = bandnames
                     band3_dropdown.options = bandnames
 
-                if ("Landsat" in selected) or ("Sentinel" in selected):
+                if (
+                    selected == "Landsat TM-ETM-OLI Surface Reflectance"
+                    or selected == "Sentinel-2 Surface Relectance"
+                ):
                     band1_dropdown.value = bandnames[2]
                     band2_dropdown.value = bandnames[1]
                     band3_dropdown.value = bandnames[0]
                     palette_vbox.children = []
-                elif "NAIP" in selected:
+                elif selected == "USDA NAIP Imagery":
                     band1_dropdown.value = bandnames[0]
                     band2_dropdown.value = bandnames[1]
                     band3_dropdown.value = bandnames[2]
@@ -2210,10 +2199,10 @@ def time_slider(m=None):
                 vis_min.value = str(col_options_dict[selected]["min"])
                 vis_max.value = str(col_options_dict[selected]["max"])
 
-                if "MOD" in selected:
+                if selected == "MOD13A2.006 Terra Vegetation Indices":
                     start_year.value = "2001"
                     end_year.value = "2020"
-                elif "NAIP" in selected:
+                elif selected == "USDA NAIP Imagery":
                     start_year.value = "2009"
                     end_year.value = "2019"
 
