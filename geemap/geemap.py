@@ -4742,6 +4742,7 @@ class Map(ipyleaflet.Map):
         time_interval=1,
         position="bottomright",
         slider_length="150px",
+        date_format="YYYY-MM-dd",
     ):
         """Adds a time slider to the map.
 
@@ -4754,6 +4755,7 @@ class Map(ipyleaflet.Map):
             time_interval (int, optional): Time interval in seconds. Defaults to 1.
             position (str, optional): Position to place the time slider, can be any of ['topleft', 'topright', 'bottomleft', 'bottomright']. Defaults to "bottomright".
             slider_length (str, optional): Length of the time slider. Defaults to "150px".
+            date_format (str, optional): The date format to use. Defaults to 'YYYY-MM-dd'.
 
         Raises:
             TypeError: If the ee_object is not ee.Image | ee.ImageCollection.
@@ -4769,9 +4771,19 @@ class Map(ipyleaflet.Map):
                     ee_object = ee_object.clipToCollection(region)
             if layer_name not in self.ee_raster_layer_names:
                 self.addLayer(ee_object, {}, layer_name, False)
+            band_names = ee_object.bandNames()
             ee_object = ee.ImageCollection(
                 ee_object.bandNames().map(lambda b: ee_object.select([b]))
             )
+
+            if labels is not None:
+                if len(labels) != int(ee_object.size().getInfo()):
+                    raise ValueError(
+                        "The length of labels must be equal to the number of bands in the image."
+                    )
+            else:
+                labels = band_names.getInfo()
+
         elif isinstance(ee_object, ee.ImageCollection):
             if region is not None:
                 if isinstance(region, ee.Geometry):
@@ -4779,14 +4791,25 @@ class Map(ipyleaflet.Map):
                 elif isinstance(region, ee.FeatureCollection):
                     ee_object = ee_object.map(lambda img: img.clipToCollection(region))
 
-        if not isinstance(ee_object, ee.ImageCollection):
+            if labels is not None:
+                if len(labels) != int(ee_object.size().getInfo()):
+                    raise ValueError(
+                        "The length of labels must be equal to the number of images in the ImageCollection."
+                    )
+            else:
+                labels = (
+                    ee_object.aggregate_array("system:time_start")
+                    .map(lambda d: ee.Date(d).format(date_format))
+                    .getInfo()
+                )
+        else:
             raise TypeError("The ee_object must be an ee.Image or ee.ImageCollection")
 
-        if labels is not None:
-            size = len(labels)
-        else:
-            size = ee_object.size().getInfo()
-            labels = [str(i) for i in range(1, size + 1)]
+        # if labels is not None:
+        #     size = len(labels)
+        # else:
+        #     size = ee_object.size().getInfo()
+        #     labels = [str(i) for i in range(1, size + 1)]
 
         first = ee.Image(ee_object.first())
 
@@ -4796,7 +4819,7 @@ class Map(ipyleaflet.Map):
 
         slider = widgets.IntSlider(
             min=1,
-            max=size,
+            max=len(labels),
             readout=False,
             continuous_update=False,
             layout=widgets.Layout(width=slider_length),
