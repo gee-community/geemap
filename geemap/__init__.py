@@ -17,15 +17,15 @@ def in_colab_shell():
         return False
 
 
-def is_github_action():
-    """Tests if the code is being executed with GitHub Actions."""
-    if os.environ.get("RUN_GITHUB_ACTION") is not None:
+def use_folium():
+    """Whether to use the folium or ipyleaflet plotting backend."""
+    if os.environ.get("USE_FOLIUM") is not None:
         return True
     else:
         return False
 
 
-if in_colab_shell() or is_github_action():
+if in_colab_shell() or use_folium():
     from .eefolium import *
 else:
     from .geemap import *
