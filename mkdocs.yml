@@ -143,6 +143,7 @@ nav:
           - notebooks/72_time_slider_gui.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
+                - notebooks/cartoee_colorbar.ipynb
                 - notebooks/cartoee_projections.ipynb
                 - notebooks/cartoee_quickstart.ipynb
                 - notebooks/cartoee_scalebar.ipynb

@@ -310,12 +310,21 @@ def add_colorbar(
 
     if loc:
         if (type(loc) == str) and (loc in ["left", "right", "bottom", "top"]):
-            posOpts = {
-                "left": [0.01, 0.25, 0.02, 0.5],
-                "right": [0.88, 0.25, 0.02, 0.5],
-                "bottom": [0.25, 0.15, 0.5, 0.02],
-                "top": [0.25, 0.88, 0.5, 0.02],
-            }
+            if "posOpts" not in kwargs:
+                posOpts = {
+                    "left": [0.01, 0.25, 0.02, 0.5],
+                    "right": [0.88, 0.25, 0.02, 0.5],
+                    "bottom": [0.25, 0.15, 0.5, 0.02],
+                    "top": [0.25, 0.88, 0.5, 0.02],
+                }
+            else:
+                posOpts = {
+                    "left": kwargs["posOpts"],
+                    "right": kwargs["posOpts"],
+                    "bottom": kwargs["posOpts"],
+                    "top": kwargs["posOpts"],
+                }
+                del kwargs["posOpts"]
 
             cax = ax.figure.add_axes(posOpts[loc])
 
