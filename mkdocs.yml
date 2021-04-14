@@ -67,6 +67,8 @@ nav:
           - legends module: legends.md
           - ml module: ml.md
           - toolbar module: toolbar.md
+    - Workshops:
+          - workshops/GeoPython_2021.ipynb
     - Notebooks:
           - notebooks/00_geemap_key_features.ipynb
           - notebooks/01_geemap_intro.ipynb
