@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.8.14 - April 20, 2021
+
+**New Features**:
+
+-   Added timelapse GUI [#359](https://github.com/giswqs/geemap/issues/359)
+-   Added timeslider GUI [#359](https://github.com/giswqs/geemap/issues/359) [#387](https://github.com/giswqs/geemap/issues/387)
+
+**Improvement**:
+
+-   Improved add_geojson function [731e59e](https://github.com/giswqs/geemap/commit/731e59efc4a1f629db13f6b6cc4e9ef6b06cbe8f)
+-   Added GeoPython workshop notebook [6efd5e](https://geemap.org/workshops/GeoPython_2021)
+-   Improved cartoee colorbar [#413](https://github.com/giswqs/geemap/discussions/413)
+-   Improved cartoee add_layer function [#368](https://github.com/giswqs/geemap/issues/368)
+
 ## v0.8.13 - March 22, 2021
 
 **New Features**:
