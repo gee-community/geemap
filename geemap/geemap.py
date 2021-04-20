@@ -4663,7 +4663,7 @@ class Map(ipyleaflet.Map):
         """Adds a GeoJSON file to the map.
 
         Args:
-            in_geojson (str): The input file path to the GeoJSON.
+            in_geojson (str | dict): The file path to the input GeoJSON or a dictionary containing the geojson.
             style (dict, optional): A dictionary specifying the style to be used. Defaults to None.
             layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
 
@@ -4672,11 +4672,19 @@ class Map(ipyleaflet.Map):
         """
         import json
 
-        if not os.path.exists(in_geojson):
-            raise FileNotFoundError("The provided GeoJSON file could not be found.")
+        if isinstance(in_geojson, str):
 
-        with open(in_geojson) as f:
-            data = json.load(f)
+            if not os.path.exists(in_geojson):
+                raise FileNotFoundError("The provided GeoJSON file could not be found.")
+
+            with open(in_geojson) as f:
+                data = json.load(f)
+
+        elif isinstance(in_geojson, dict):
+            data = in_geojson
+
+        else:
+            raise TypeError("The input geojson must be a type of str or dict.")
 
         if style is None:
             style = {
