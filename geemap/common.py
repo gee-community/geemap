@@ -1049,16 +1049,19 @@ def shp_to_geojson(in_shp, out_json=None):
             try:
                 import geopandas as gpd
 
+            except Exception:
+                raise ImportError(
+                    "Geopandas is required to perform reprojection of the data. See https://geopandas.org/install.html"
+                )
+
+            try:
                 in_gdf = gpd.read_file(in_shp)
                 out_gdf = in_gdf.to_crs(epsg="4326")
                 out_shp = in_shp.replace(".shp", "_gcs.shp")
                 out_gdf.to_file(out_shp)
                 in_shp = out_shp
-
-            except Exception:
-                raise ImportError(
-                    "Geopandas is required to perform reprojection of the data. See https://geopandas.org/install.html"
-                )
+            except Exception as e:
+                raise Exception(e)
 
         reader = shapefile.Reader(in_shp)
         fields = reader.fields[1:]
