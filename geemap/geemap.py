@@ -4622,7 +4622,7 @@ class Map(ipyleaflet.Map):
         Args:
             ee_object (object): An ee.FeatureCollection.
             column (str): The column name to use for styling.
-            palette (list): The palette (e.g., list of colors) to use for styling.
+            palette (list | dict): The palette (e.g., list of colors or a dict containing label and color pairs) to use for styling.
             layer_name (str, optional): The name to be used for the new layer. Defaults to "Untitled".
         """
         styled_vector = vector_styling(ee_object, column, palette, **kwargs)

@@ -950,7 +950,7 @@ def geojson_to_ee(geo_json, geodesic=True):
         import json
 
         if not isinstance(geo_json, dict) and os.path.isfile(geo_json):
-            with open(os.path.abspath(geo_json)) as f:
+            with open(os.path.abspath(geo_json), encoding="utf-8") as f:
                 geo_json = json.load(f)
 
         if geo_json["type"] == "FeatureCollection":
@@ -1064,29 +1064,30 @@ def shp_to_geojson(in_shp, out_json=None):
                 raise Exception(e)
 
         reader = shapefile.Reader(in_shp)
-        fields = reader.fields[1:]
-        field_names = [field[0] for field in fields]
-        # pyShp returns dates as `datetime.date` or as `bytes` when they are empty
-        # This is not JSON compatible, so we keep track of them to convert them to str
-        date_fields_names = [field[0] for field in fields if field[1] == "D"]
-        buffer = []
-        for sr in reader.shapeRecords():
-            atr = dict(zip(field_names, sr.record))
-            for date_field in date_fields_names:
-                value = atr[date_field]
-                # convert date to string, similar to pyShp writing
-                # https://github.com/GeospatialPython/pyshp/blob/69c60f6d07c329f7d3ac2cba79bc03643bd424d8/shapefile.py#L1814
-                if isinstance(value, date):
-                    value = "{:04d}{:02d}{:02d}".format(
-                        value.year, value.month, value.day
-                    )
-                elif not value:  # empty bytes string
-                    value = "0" * 8  # QGIS NULL for date type
-                atr[date_field] = value
-            geom = sr.shape.__geo_interface__
-            buffer.append(dict(type="Feature", geometry=geom, properties=atr))
+        out_dict = reader.__geo_interface__
+        # fields = reader.fields[1:]
+        # field_names = [field[0] for field in fields]
+        # # pyShp returns dates as `datetime.date` or as `bytes` when they are empty
+        # # This is not JSON compatible, so we keep track of them to convert them to str
+        # date_fields_names = [field[0] for field in fields if field[1] == "D"]
+        # buffer = []
+        # for sr in reader.shapeRecords():
+        #     atr = dict(zip(field_names, sr.record))
+        #     for date_field in date_fields_names:
+        #         value = atr[date_field]
+        #         # convert date to string, similar to pyShp writing
+        #         # https://github.com/GeospatialPython/pyshp/blob/69c60f6d07c329f7d3ac2cba79bc03643bd424d8/shapefile.py#L1814
+        #         if isinstance(value, date):
+        #             value = "{:04d}{:02d}{:02d}".format(
+        #                 value.year, value.month, value.day
+        #             )
+        #         elif not value:  # empty bytes string
+        #             value = "0" * 8  # QGIS NULL for date type
+        #         atr[date_field] = value
+        #     geom = sr.shape.__geo_interface__
+        #     buffer.append(dict(type="Feature", geometry=geom, properties=atr))
 
-        out_dict = {"type": "FeatureCollection", "features": buffer}
+        # out_dict = {"type": "FeatureCollection", "features": buffer}
 
         if out_json is not None:
             from json import dumps
@@ -6830,7 +6831,7 @@ def vector_styling(ee_object, column, palette, **kwargs):
     Args:
         ee_object (object): An ee.FeatureCollection.
         column (str): The column name to use for styling.
-        palette (list): The palette (e.g., list of colors) to use for styling.
+        palette (list | dict): The palette (e.g., list of colors or a dict containing label and color pairs) to use for styling.
 
     Raises:
         ValueError: The provided column name is invalid.
@@ -6845,6 +6846,8 @@ def vector_styling(ee_object, column, palette, **kwargs):
     if isinstance(ee_object, ee.FeatureCollection):
 
         prop_names = ee.Feature(ee_object.first()).propertyNames().getInfo()
+        arr = ee_object.aggregate_array(column).distinct().sort()
+
         if column not in prop_names:
             raise ValueError(f"The column name must of one of {', '.join(prop_names)}")
 
@@ -6856,6 +6859,16 @@ def vector_styling(ee_object, column, palette, **kwargs):
                 raise Exception(e)
         elif isinstance(palette, tuple):
             palette = list(palette)
+        elif isinstance(palette, dict):
+            values = list(arr.getInfo())
+            labels = list(palette.keys())
+            if not all(elem in values for elem in labels):
+                raise ValueError(
+                    f"The keys of the palette must contain the following elements: {', '.join(values)}"
+                )
+            else:
+                colors = [palette[value] for value in values]
+                palette = colors
 
         if not isinstance(palette, list):
             raise TypeError("The palette must be a list.")
@@ -6889,7 +6902,6 @@ def vector_styling(ee_object, column, palette, **kwargs):
                 for color in palette
             ]
         )
-        arr = ee_object.aggregate_array(column).distinct().sort()
         fc = ee_object.map(lambda f: f.set({"styleIndex": arr.indexOf(f.get(column))}))
         step = arr.size().divide(colors.size()).ceil()
         fc = fc.map(
