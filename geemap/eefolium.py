@@ -886,57 +886,59 @@ class Map(folium.Map):
 
     def publish(
         self,
-        name=None,
-        headline="Untitled",
+        name="Folium Map",
+        description="",
+        source_url="",
         visibility="PUBLIC",
-        overwrite=True,
         open=True,
+        tags=None,
+        **kwargs,
     ):
         """Publish the map to datapane.com
 
         Args:
-            name (str, optional): The URL of the map. Defaults to None.
-            headline (str, optional): Title of the map. Defaults to 'Untitled'.
-            visibility (str, optional): Visibility of the map. It can be one of the following: PUBLIC, PRIVATE, ORG. Defaults to 'PUBLIC'.
-            overwrite (bool, optional): Whether to overwrite the existing map with the same name. Defaults to True.
+            name (str, optional): The document name - can include spaces, caps, symbols, etc., e.g. "Profit & Loss 2020". Defaults to "Folium Map".
+            description (str, optional): A high-level description for the document, this is displayed in searches and thumbnails. Defaults to ''.
+            source_url (str, optional): A URL pointing to the source code for the document, e.g. a GitHub repo or a Colab notebook. Defaults to ''.
+            visibility (str, optional): Visibility of the map. It can be one of the following: PUBLIC, PRIVATE. Defaults to 'PUBLIC'.
             open (bool, optional): Whether to open the map. Defaults to True.
+            tags (bool, optional): A list of tags (as strings) used to categorise your document. Defaults to None.
         """
         import webbrowser
 
         try:
             import datapane as dp
         except Exception:
-            webbrowser.open_new_tab(
-                "https://docs.datapane.com/tutorials/tut-getting-started"
-            )
+            webbrowser.open_new_tab("https://docs.datapane.com/tut-getting-started")
             raise ImportError(
                 "The datapane Python package is not installed. You need to install and authenticate datapane first."
             )
 
-        # import datapane as dp
-
-        # import logging
-        # logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
-
         try:
 
-            if name is None:
-                name = "folium_" + random_string(6)
-
             visibility = visibility.upper()
-            if visibility not in ["PUBLIC", "PRIVATE", "ORG"]:
-                visibility = "PRIVATE"
 
-            if overwrite:
-                delete_dp_report(name)
+            if visibility not in ["PUBLIC", "PRIVATE"]:
+                raise ValueError(
+                    "The visibility argument must be either PUBLIC or PRIVATE."
+                )
 
-            report = dp.Report(dp.Plot(self))
-            report.publish(
-                name=name, headline=headline, visibility=visibility, open=open
+            if visibility == "PUBLIC":
+                visibility = dp.Visibility.PUBLIC
+            else:
+                visibility = dp.Visibility.PRIVATE
+
+            dp.Report(dp.Plot(self)).publish(
+                name=name,
+                description=description,
+                source_url=source_url,
+                visibility=visibility,
+                open=open,
+                tags=tags,
             )
 
         except Exception as e:
-            print(e)
+            raise Exception(e)
 
 
 def delete_dp_report(name):
