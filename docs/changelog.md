@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.8.15 - April 28, 2021
+
+**Improvement**:
+
+-   Improved shp_to_geojson function [#430](https://github.com/giswqs/geemap/discussions/430)
+-   Improved add_styled_vector function [#432](https://github.com/giswqs/geemap/discussions/432)
+-   Fixed map publish bug [#445](https://github.com/giswqs/geemap/issues/445)
+-   Improved add_colorbar function [dc7e548](https://github.com/giswqs/geemap/commit/dc7e54856694a1994b6d4f4044385babe04bd086)
+
 ## v0.8.14 - April 20, 2021
 
 **New Features**:
