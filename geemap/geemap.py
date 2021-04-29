@@ -2569,7 +2569,7 @@ class Map(ipyleaflet.Map):
 
     def add_colorbar(
         self,
-        vis_params,
+        vis_params=None,
         cmap="gray",
         discrete=False,
         label=None,
@@ -2602,6 +2602,26 @@ class Map(ipyleaflet.Map):
         import matplotlib as mpl
         import matplotlib.pyplot as plt
         import numpy as np
+
+        if isinstance(vis_params, list):
+            vis_params = {"palette": vis_params}
+        elif vis_params is None:
+            vis_params = {}
+
+        if "colors" in kwargs and isinstance(kwargs["colors"], list):
+            vis_params["palette"] = kwargs["colors"]
+
+        if "vmin" in kwargs:
+            vis_params["min"] = kwargs["vmin"]
+            del kwargs["vmin"]
+
+        if "vmax" in kwargs:
+            vis_params["max"] = kwargs["vmax"]
+            del kwargs["vmax"]
+
+        if "caption" in kwargs:
+            label = kwargs["caption"]
+            del kwargs["caption"]
 
         if not isinstance(vis_params, dict):
             raise TypeError("The vis_params must be a dictionary.")
