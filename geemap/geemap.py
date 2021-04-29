@@ -2605,11 +2605,16 @@ class Map(ipyleaflet.Map):
 
         if isinstance(vis_params, list):
             vis_params = {"palette": vis_params}
+        elif isinstance(vis_params, tuple):
+            vis_params = {"palette": list(vis_params)}
         elif vis_params is None:
             vis_params = {}
 
         if "colors" in kwargs and isinstance(kwargs["colors"], list):
             vis_params["palette"] = kwargs["colors"]
+
+        if "colors" in kwargs and isinstance(kwargs["colors"], tuple):
+            vis_params["palette"] = list(kwargs["colors"])
 
         if "vmin" in kwargs:
             vis_params["min"] = kwargs["vmin"]
