@@ -74,13 +74,17 @@ analyze and visualize Earth Engine datasets interactively within a Jupyter-based
 **geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python `conversion module <https://github.com/giswqs/geemap/blob/master/geemap/conversion.py>`__ of the **geemap** package
 can greatly reduce the time needed to convert existing GEE JavaScripts to Python scripts and Jupyter notebooks.
 
-For video tutorials and notebook examples, please visit `<https://github.com/giswqs/geemap/tree/master/examples>`__. For complete documentation on geemap modules and methods, please visit `<https://geemap.org/geemap>`_.
+For video tutorials and notebook examples, please visit `<https://geemap.org/tutorials>`__. For complete documentation on geemap modules and methods, please visit `<https://geemap.org/geemap>`_.
 
 If you find geemap useful in your research, please consider citing the following papers to support my work. Thank you for your support.
 
 - Wu, Q., (2020). geemap: A Python package for interactive mapping with Google Earth Engine. *The Journal of Open Source Software*, 5(51), 2305. `<https://doi.org/10.21105/joss.02305>`__ 
 - Wu, Q., Lane, C. R., Li, X., Zhao, K., Zhou, Y., Clinton, N., DeVries, B., Golden, H. E., & Lang, M. W. (2019). Integrating LiDAR data and multi-temporal aerial imagery to map wetland inundation dynamics using Google Earth Engine. *Remote Sensing of Environment*, 228, 1-13. https://doi.org/10.1016/j.rse.2019.04.015 (`pdf <https://gishub.org/2019_rse>`_ | `source code <https://doi.org/10.6084/m9.figshare.8864921>`_)
 
+Check out the geemap workshop I presented at the GeoPython Conference 2021. This workshop gives a comprehensive introduction to the key features of geemap. 
+
+.. image:: https://img.youtube.com/vi/wGjpjh9IQ5I/0.jpg
+        :target: https://www.youtube.com/watch?v=wGjpjh9IQ5I
 
 Features
 --------
