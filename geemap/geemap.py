@@ -4765,6 +4765,53 @@ class Map(ipyleaflet.Map):
         self.add_layer(geo_json)
         os.remove(out_json)
 
+    def add_vector(
+        self,
+        filename,
+        layer_name="Untitled",
+        to_ee=False,
+        style=None,
+        bbox=None,
+        mask=None,
+        rows=None,
+        **kwargs,
+    ):
+        """Adds any geopandas-supported vector dataset to the map.
+
+        Args:
+            filename (str): Either the absolute or relative path to the file or URL to be opened, or any object with a read() method (such as an open file or StringIO).
+            layer_name (str, optional): The layer name to use. Defaults to "Untitled".
+            to_ee (bool, optional): Whether to convert the GeoJSON to ee.FeatureCollection. Defaults to False.
+            style ([type], optional): A dictionary specifying the style to be used. Defaults to None.
+            bbox (tuple | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter features by given bounding box, GeoSeries, GeoDataFrame or a shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with mask. Defaults to None.
+            mask (dict | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter for features that intersect with the given dict-like geojson geometry, GeoSeries, GeoDataFrame or shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with bbox. Defaults to None.
+            rows (int or slice, optional): Load in specific rows by passing an integer (first n rows) or a slice() object.. Defaults to None.
+        """
+        if to_ee:
+
+            fc = vector_to_ee(
+                filename,
+                bbox=bbox,
+                mask=mask,
+                rows=rows,
+                geodesic=True,
+                **kwargs,
+            )
+
+            self.addLayer(fc, {}, layer_name)
+        else:
+
+            geojson = vector_to_geojson(
+                filename,
+                bbox=bbox,
+                mask=mask,
+                rows=rows,
+                epsg="4326",
+                **kwargs,
+            )
+
+            self.add_geojson(geojson, style, layer_name)
+
     def add_time_slider(
         self,
         ee_object,
