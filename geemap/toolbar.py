@@ -201,13 +201,14 @@ def open_data_widget(m):
         m.remove_control(m.tool_output_ctrl)
 
     file_type = widgets.ToggleButtons(
-        options=["Shapefile", "GeoJSON", "GeoTIFF"],
+        options=["Shapefile", "GeoJSON", "Vector", "GeoTIFF"],
         tooltips=[
             "Open a shapefile",
             "Open a GeoJSON file",
-            "Open a GeoTIFF",
+            "Open a vector dataset" "Open a vector dataset" "Open a GeoTIFF",
         ],
     )
+    file_type.style.button_width = "110px"
 
     file_chooser = FileChooser(os.getcwd())
     file_chooser.filter_pattern = "*.shp"
@@ -235,6 +236,7 @@ def open_data_widget(m):
         tooltips=["Apply", "Reset", "Close"],
         button_style="primary",
     )
+    # ok_cancel.style.button_width = "133px"
 
     bands = widgets.Text(
         value="1",
@@ -304,6 +306,10 @@ def open_data_widget(m):
             file_chooser.filter_pattern = "*.geojson"
             raster_options.children = []
             convert_hbox.children = [convert_bool]
+        elif change["new"] == "Vector":
+            file_chooser.filter_pattern = "*.*"
+            raster_options.children = []
+            convert_hbox.children = [convert_bool]
         elif change["new"] == "GeoTIFF":
             import matplotlib.pyplot as plt
 
@@ -349,6 +355,8 @@ def open_data_widget(m):
                             x_dim=x_dim.value,
                             y_dim=y_dim.value,
                         )
+                    else:
+                        m.add_vector(file_path, style=None, layer_name=layer_name.value)
             else:
                 print("Please select a file to open.")
 
