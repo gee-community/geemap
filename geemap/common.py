@@ -7298,10 +7298,21 @@ def vector_to_geojson(
     Returns:
         dict: A dictionary containing the GeoJSON.
     """
+    import warnings
+
+    warnings.filterwarnings("ignore")
     check_package(name="geopandas", URL="https://geopandas.org")
     import geopandas as gpd
 
-    df = gpd.read_file(filename, bbox=bbox, mask=mask, rows=rows, **kwargs)
+    filename = os.path.abspath(filename)
+    ext = os.path.splitext(filename)[1].lower()
+    if ext == ".kml":
+        gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
+        df = gpd.read_file(
+            filename, bbox=bbox, mask=mask, rows=rows, driver="KML", **kwargs
+        )
+    else:
+        df = gpd.read_file(filename, bbox=bbox, mask=mask, rows=rows, **kwargs)
     gdf = df.to_crs(epsg=epsg)
 
     if out_geojson is not None:
@@ -7332,7 +7343,6 @@ def vector_to_ee(
 
     Args:
         filename (str): Either the absolute or relative path to the file or URL to be opened, or any object with a read() method (such as an open file or StringIO).
-        out_geojson (str, optional): The file path to the output GeoJSON. Defaults to None.
         bbox (tuple | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter features by given bounding box, GeoSeries, GeoDataFrame or a shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with mask. Defaults to None.
         mask (dict | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter for features that intersect with the given dict-like geojson geometry, GeoSeries, GeoDataFrame or shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with bbox. Defaults to None.
         rows (int or slice, optional): Load in specific rows by passing an integer (first n rows) or a slice() object.. Defaults to None.

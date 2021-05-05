@@ -4653,61 +4653,70 @@ class Map(ipyleaflet.Map):
         styled_vector = vector_styling(ee_object, column, palette, **kwargs)
         self.addLayer(styled_vector.style(**{"styleProperty": "style"}), {}, layer_name)
 
-    def add_shapefile(self, in_shp, style=None, layer_name="Untitled"):
-        """Adds a shapefile to the map
+    def add_shapefile(
+        self,
+        in_shp,
+        style=None,
+        layer_name="Untitled",
+        hover_style=None,
+        fill_colors=["black"],
+        info_mode="on_hover",
+    ):
+        """Adds a shapefile to the map.
 
         Args:
             in_shp (str): The input file path to the shapefile.
             style (dict, optional): A dictionary specifying the style to be used. Defaults to None.
             layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
+            hover_style (dict, optional): Hover style dictionary. Defaults to None.
+            fill_colors (list, optional): [description]. Defaults to ["black"].
+            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         Raises:
             FileNotFoundError: The provided shapefile could not be found.
         """
+        in_shp = os.path.abspath(in_shp)
         if not os.path.exists(in_shp):
             raise FileNotFoundError("The provided shapefile could not be found.")
 
-        data = shp_to_geojson(in_shp)
+        geojson = shp_to_geojson(in_shp)
+        self.add_geojson(
+            geojson, style, layer_name, hover_style, fill_colors, info_mode
+        )
 
-        if style is None:
-            style = {
-                "stroke": True,
-                "color": "#000000",
-                "weight": 2,
-                "opacity": 1,
-                "fill": True,
-                "fillColor": "#000000",
-                "fillOpacity": 0.4,
-                # "clickable": True,
-            }
-
-        geo_json = ipyleaflet.GeoJSON(data=data, style=style, name=layer_name)
-        self.add_layer(geo_json)
-
-    def add_geojson(self, in_geojson, style=None, layer_name="Untitled"):
+    def add_geojson(
+        self,
+        in_geojson,
+        style=None,
+        layer_name="Untitled",
+        hover_style=None,
+        fill_colors=["black"],
+        info_mode="on_hover",
+    ):
         """Adds a GeoJSON file to the map.
 
         Args:
             in_geojson (str | dict): The file path to the input GeoJSON or a dictionary containing the geojson.
             style (dict, optional): A dictionary specifying the style to be used. Defaults to None.
             layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
-
+            hover_style (dict, optional): Hover style dictionary. Defaults to None.
+            fill_colors (list, optional): [description]. Defaults to ["black"].
+            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
         Raises:
             FileNotFoundError: The provided GeoJSON file could not be found.
         """
         import json
+        import random
 
         if isinstance(in_geojson, str):
-
+            in_geojson = os.path.abspath(in_geojson)
             if not os.path.exists(in_geojson):
                 raise FileNotFoundError("The provided GeoJSON file could not be found.")
 
             with open(in_geojson) as f:
                 data = json.load(f)
-
         elif isinstance(in_geojson, dict):
             data = in_geojson
-
         else:
             raise TypeError("The input geojson must be a type of str or dict.")
 
@@ -4718,52 +4727,136 @@ class Map(ipyleaflet.Map):
                 "weight": 2,
                 "opacity": 1,
                 "fill": True,
-                "fillColor": "#000000",
-                "fillOpacity": 0.4,
+                # "fillColor": "#ffffff",
+                "fillOpacity": 0.1,
+                "dashArray": "9"
                 # "clickable": True,
             }
 
-        geo_json = ipyleaflet.GeoJSON(data=data, style=style, name=layer_name)
-        self.add_layer(geo_json)
+        if hover_style is None:
+            hover_style = {"color": "black", "dashArray": "0", "fillOpacity": 0.5}
 
-    def add_kml(self, in_kml, style=None, layer_name="Untitled"):
+        if "fillColor" in style and fill_colors != ["black"]:
+            fill_colors = [style["fillColor"]]
+
+        def random_color(feature):
+            return {
+                "color": "black",
+                "fillColor": random.choice(fill_colors),
+            }
+
+        toolbar_button = widgets.ToggleButton(
+            value=True,
+            tooltip="Toolbar",
+            icon="info",
+            layout=widgets.Layout(
+                width="28px", height="28px", padding="0px 0px 0px 4px"
+            ),
+        )
+
+        close_button = widgets.ToggleButton(
+            value=False,
+            tooltip="Close the tool",
+            icon="times",
+            # button_style="primary",
+            layout=widgets.Layout(
+                height="28px", width="28px", padding="0px 0px 0px 4px"
+            ),
+        )
+
+        html = widgets.HTML()
+        html.layout.margin = "0px 10px 0px 10px"
+        html.layout.max_height = "250px"
+        html.layout.max_width = "250px"
+
+        output_widget = widgets.VBox(
+            [widgets.HBox([toolbar_button, close_button]), html]
+        )
+        info_control = WidgetControl(widget=output_widget, position="bottomright")
+
+        if info_mode in ["on_hover", "on_click"]:
+            self.add_control(info_control)
+
+        def toolbar_btn_click(change):
+            if change["new"]:
+                close_button.value = False
+                output_widget.children = [
+                    widgets.VBox([widgets.HBox([toolbar_button, close_button]), html])
+                ]
+            else:
+                output_widget.children = [widgets.HBox([toolbar_button, close_button])]
+
+        toolbar_button.observe(toolbar_btn_click, "value")
+
+        def close_btn_click(change):
+            if change["new"]:
+                toolbar_button.value = False
+                if info_control in self.controls:
+                    self.remove_control(info_control)
+                output_widget.close()
+
+        close_button.observe(close_btn_click, "value")
+
+        def update_html(feature, **kwargs):
+
+            value = [
+                "<h5><b>{}: </b>{}</h5>".format(prop, feature["properties"][prop])
+                for prop in feature["properties"].keys()
+            ][:-1]
+
+            value = """{}""".format("".join(value))
+            html.value = value
+
+        geojson = ipyleaflet.GeoJSON(
+            data=data,
+            style=style,
+            hover_style=hover_style,
+            style_callback=random_color,
+            name=layer_name,
+        )
+
+        if info_mode == "on_hover":
+            geojson.on_hover(update_html)
+        elif info_mode == "on_click":
+            geojson.on_click(update_html)
+
+        self.add_layer(geojson)
+
+    def add_kml(
+        self,
+        in_kml,
+        style=None,
+        layer_name="Untitled",
+        hover_style=None,
+        fill_colors=["black"],
+        info_mode="on_hover",
+    ):
         """Adds a GeoJSON file to the map.
 
         Args:
             in_kml (str): The input file path to the KML.
             style (dict, optional): A dictionary specifying the style to be used. Defaults to None.
             layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            hover_style (dict, optional): Hover style dictionary. Defaults to None.
+            fill_colors (list, optional): [description]. Defaults to ["black"].
+            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         Raises:
             FileNotFoundError: The provided KML file could not be found.
         """
         import json
 
+        in_kml = os.path.abspath(in_kml)
         if not os.path.exists(in_kml):
             raise FileNotFoundError("The provided KML file could not be found.")
-
-        out_json = os.path.join(os.getcwd(), "tmp.geojson")
-
-        kml_to_geojson(in_kml, out_json)
-
-        with open(out_json) as f:
-            data = json.load(f)
-
-        if style is None:
-            style = {
-                "stroke": True,
-                "color": "#000000",
-                "weight": 2,
-                "opacity": 1,
-                "fill": True,
-                "fillColor": "#000000",
-                "fillOpacity": 0.4,
-                # "clickable": True,
-            }
-
-        geo_json = ipyleaflet.GeoJSON(data=data, style=style, name=layer_name)
-        self.add_layer(geo_json)
-        os.remove(out_json)
+        self.add_vector(
+            in_kml,
+            layer_name,
+            style=style,
+            hover_style=hover_style,
+            fill_colors=fill_colors,
+            info_mode=info_mode,
+        )
 
     def add_vector(
         self,
@@ -4774,6 +4867,9 @@ class Map(ipyleaflet.Map):
         bbox=None,
         mask=None,
         rows=None,
+        hover_style=None,
+        fill_colors=["black"],
+        info_mode="on_hover",
         **kwargs,
     ):
         """Adds any geopandas-supported vector dataset to the map.
@@ -4786,7 +4882,12 @@ class Map(ipyleaflet.Map):
             bbox (tuple | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter features by given bounding box, GeoSeries, GeoDataFrame or a shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with mask. Defaults to None.
             mask (dict | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter for features that intersect with the given dict-like geojson geometry, GeoSeries, GeoDataFrame or shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with bbox. Defaults to None.
             rows (int or slice, optional): Load in specific rows by passing an integer (first n rows) or a slice() object.. Defaults to None.
+            hover_style (dict, optional): Hover style dictionary. Defaults to None.
+            fill_colors (list, optional): [description]. Defaults to ["black"].
+            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
+
         """
+        filename = os.path.abspath(filename)
         if to_ee:
 
             fc = vector_to_ee(
@@ -4801,16 +4902,28 @@ class Map(ipyleaflet.Map):
             self.addLayer(fc, {}, layer_name)
         else:
 
-            geojson = vector_to_geojson(
-                filename,
-                bbox=bbox,
-                mask=mask,
-                rows=rows,
-                epsg="4326",
-                **kwargs,
-            )
+            ext = os.path.splitext(filename)[1].lower()
+            if ext == ".shp":
+                self.add_shapefile(
+                    filename, style, layer_name, hover_style, fill_colors, info_mode
+                )
+            elif ext in [".json", ".geojson"]:
+                self.add_geojson(
+                    filename, style, layer_name, hover_style, fill_colors, info_mode
+                )
+            else:
+                geojson = vector_to_geojson(
+                    filename,
+                    bbox=bbox,
+                    mask=mask,
+                    rows=rows,
+                    epsg="4326",
+                    **kwargs,
+                )
 
-            self.add_geojson(geojson, style, layer_name)
+                self.add_geojson(
+                    geojson, style, layer_name, hover_style, fill_colors, info_mode
+                )
 
     def add_time_slider(
         self,
