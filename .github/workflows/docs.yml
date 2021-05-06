@@ -24,7 +24,7 @@ jobs:
             - name: GEEMAP-TEST
               run: |
                   python -m unittest discover tests/
-            - run: pip install mkdocs-material mkdocstrings mkdocs-git-revision-date-plugin mkdocs-jupyter mkdocs-pdf-export-plugin
+            - run: pip install mkdocs-material mkdocstrings mkdocs-git-revision-date-plugin mkdocs-jupyter==0.17.1 mkdocs-pdf-export-plugin
             - run: mkdocs gh-deploy --force
               env:
                   USE_FOLIUM: ${{ secrets.USE_FOLIUM }}
