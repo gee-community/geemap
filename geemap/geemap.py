@@ -4729,12 +4729,12 @@ class Map(ipyleaflet.Map):
                 "fill": True,
                 # "fillColor": "#ffffff",
                 "fillOpacity": 0.1,
-                "dashArray": "9"
+                # "dashArray": "9"
                 # "clickable": True,
             }
 
         if hover_style is None:
-            hover_style = {"color": "black", "dashArray": "0", "fillOpacity": 0.5}
+            hover_style = {"fillOpacity": 0.5}
 
         if "fillColor" in style and fill_colors != ["black"]:
             fill_colors = [style["fillColor"]]
