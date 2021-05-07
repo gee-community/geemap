@@ -819,70 +819,89 @@ class Map(folium.Map):
         styled_vector = vector_styling(ee_object, column, palette, **kwargs)
         self.addLayer(styled_vector.style(**{"styleProperty": "style"}), {}, layer_name)
 
-    def add_shapefile(self, in_shp, name="Untitled", **kwargs):
+    def add_shapefile(self, in_shp, layer_name="Untitled", **kwargs):
         """Adds a shapefile to the map. See https://python-visualization.github.io/folium/modules.html#folium.features.GeoJson for more info about setting style.
 
         Args:
             in_shp (str): The input file path to the shapefile.
-            name (str, optional): The layer name to be used. Defaults to "Untitled".
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
 
         Raises:
             FileNotFoundError: The provided shapefile could not be found.
         """
+        in_shp = os.path.abspath(in_shp)
         if not os.path.exists(in_shp):
             raise FileNotFoundError("The provided shapefile could not be found.")
 
         data = shp_to_geojson(in_shp)
 
-        geo_json = folium.GeoJson(data=data, name=name, **kwargs)
+        geo_json = folium.GeoJson(data=data, name=layer_name, **kwargs)
         geo_json.add_to(self)
 
-    def add_geojson(self, in_geojson, name="Untitled", **kwargs):
+    def add_geojson(self, in_geojson, layer_name="Untitled", **kwargs):
         """Adds a GeoJSON file to the map.
 
         Args:
             in_geojson (str): The input file path to the GeoJSON.
-            name (str, optional): The layer name to be used. Defaults to "Untitled".
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
 
         Raises:
             FileNotFoundError: The provided GeoJSON file could not be found.
         """
         import json
+        import requests
 
-        if not os.path.exists(in_geojson):
-            raise FileNotFoundError("The provided GeoJSON file could not be found.")
+        try:
 
-        with open(in_geojson) as f:
-            data = json.load(f)
+            if isinstance(in_geojson, str):
 
-        geo_json = folium.GeoJson(data=data, name=name, **kwargs)
+                if in_geojson.startswith("http"):
+                    data = requests.get(in_geojson).json()
+                else:
+                    in_geojson = os.path.abspath(in_geojson)
+                    if not os.path.exists(in_geojson):
+                        raise FileNotFoundError(
+                            "The provided GeoJSON file could not be found."
+                        )
+
+                    with open(in_geojson) as f:
+                        data = json.load(f)
+            elif isinstance(in_geojson, dict):
+                data = in_geojson
+            else:
+                raise TypeError("The input geojson must be a type of str or dict.")
+        except Exception as e:
+            raise Exception(e)
+
+        geo_json = folium.GeoJson(data=data, name=layer_name, **kwargs)
         geo_json.add_to(self)
 
-    def add_kml(self, in_kml, name="Untitled", **kwargs):
+    def add_kml(self, in_kml, layer_name="Untitled", **kwargs):
         """Adds a KML file to the map.
 
         Args:
             in_kml (str): The input file path to the KML.
-            name (str, optional): The layer name to be used. Defaults to "Untitled".
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
 
         Raises:
             FileNotFoundError: The provided KML file could not be found.
         """
-        import json
+        # import json
 
+        in_kml = os.path.abspath(in_kml)
         if not os.path.exists(in_kml):
             raise FileNotFoundError("The provided KML file could not be found.")
 
-        out_json = os.path.join(os.getcwd(), "tmp.geojson")
+        # out_json = os.path.join(os.getcwd(), "tmp.geojson")
 
-        kml_to_geojson(in_kml, out_json)
+        data = kml_to_geojson(in_kml)
 
-        with open(out_json) as f:
-            data = json.load(f)
+        # with open(out_json) as f:
+        #     data = json.load(f)
 
-        geo_json = folium.GeoJson(data=data, name=name, **kwargs)
+        geo_json = folium.GeoJson(data=data, name=layer_name, **kwargs)
         geo_json.add_to(self)
-        os.remove(out_json)
+        # os.remove(out_json)
 
     def publish(
         self,
