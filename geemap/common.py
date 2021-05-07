@@ -7001,12 +7001,12 @@ def kml_to_shp(in_kml, out_shp):
     df.to_file(out_shp)
 
 
-def kml_to_geojson(in_kml, out_json):
+def kml_to_geojson(in_kml, out_geojson=None):
     """Converts a KML to GeoJSON.
 
     Args:
         in_kml (str): The file path to the input KML.
-        out_json (str): The file path to the output GeoJSON.
+        out_geojson (str): The file path to the output GeoJSON. Defaults to None.
 
     Raises:
         FileNotFoundError: The input KML could not be found.
@@ -7020,14 +7020,15 @@ def kml_to_geojson(in_kml, out_json):
     if not os.path.exists(in_kml):
         raise FileNotFoundError("The input KML could not be found.")
 
-    out_json = os.path.abspath(out_json)
-    ext = os.path.splitext(out_json)[1].lower()
-    if ext not in [".json", ".geojson"]:
-        raise TypeError("The output file must be a GeoJSON.")
+    if out_geojson is not None:
+        out_geojson = os.path.abspath(out_geojson)
+        ext = os.path.splitext(out_geojson)[1].lower()
+        if ext not in [".json", ".geojson"]:
+            raise TypeError("The output file must be a GeoJSON.")
 
-    out_dir = os.path.dirname(out_json)
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
+        out_dir = os.path.dirname(out_geojson)
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
 
     check_package(name="geopandas", URL="https://geopandas.org")
 
@@ -7036,8 +7037,12 @@ def kml_to_geojson(in_kml, out_json):
     # import fiona
     # print(fiona.supported_drivers)
     gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
-    df = gpd.read_file(in_kml, driver="KML")
-    df.to_file(out_json, driver="GeoJSON")
+    gdf = gpd.read_file(in_kml, driver="KML")
+
+    if out_geojson is not None:
+        gdf.to_file(out_geojson, driver="GeoJSON")
+    else:
+        return gdf.__geo_interface__
 
 
 def kml_to_ee(in_kml):
@@ -7304,7 +7309,8 @@ def vector_to_geojson(
     check_package(name="geopandas", URL="https://geopandas.org")
     import geopandas as gpd
 
-    filename = os.path.abspath(filename)
+    if not filename.startswith("http"):
+        filename = os.path.abspath(filename)
     ext = os.path.splitext(filename)[1].lower()
     if ext == ".kml":
         gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"

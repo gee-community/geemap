@@ -128,7 +128,7 @@ nav:
           - notebooks/55_raster_vis.ipynb
           - notebooks/56_local_data.ipynb
           - notebooks/57_cartoee_blend.ipynb
-          - notebooks/58_shp_kml.ipynb
+          - notebooks/58_add_vector.ipynb
           - notebooks/59_whitebox.ipynb
           - notebooks/60_colormaps.ipynb
           - notebooks/61_cartoee_scalebar.ipynb
