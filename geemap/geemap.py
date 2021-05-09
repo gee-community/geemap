@@ -5141,6 +5141,75 @@ class Map(ipyleaflet.Map):
         self.add_control(slider_ctrl)
         self.slider_ctrl = slider_ctrl
 
+    def add_xy_data(
+        self,
+        in_csv,
+        x="longitude",
+        y="latitude",
+        label=None,
+        layer_name="Marker cluster",
+        to_ee=False,
+    ):
+        """Adds points from a CSV file containing lat/lon information and display data on the map.
+
+        Args:
+            in_csv (str): The file path to the input CSV file.
+            x (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
+            y (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
+            label (str, optional): The name of the column containing label information to used for marker popup. Defaults to None.
+            layer_name (str, optional): The layer name to use. Defaults to "Marker cluster".
+            to_ee (bool, optional): Whether to convert the csv to an ee.FeatureCollection.
+
+        Raises:
+            FileNotFoundError: The specified input csv does not exist.
+            ValueError: The specified x column does not exist.
+            ValueError: The specified y column does not exist.
+            ValueError: The specified label column does not exist.
+        """
+        import pandas as pd
+
+        if not in_csv.startswith("http") and (not os.path.exists(in_csv)):
+            raise FileNotFoundError("The specified input csv does not exist.")
+
+        df = pd.read_csv(in_csv)
+        col_names = df.columns.values.tolist()
+
+        if x not in col_names:
+            raise ValueError(f"x must be one of the following: {', '.join(col_names)}")
+
+        if y not in col_names:
+            raise ValueError(f"y must be one of the following: {', '.join(col_names)}")
+
+        if label is not None and (label not in col_names):
+            raise ValueError(
+                f"label must be one of the following: {', '.join(col_names)}"
+            )
+
+        self.default_style = {"cursor": "wait"}
+
+        if to_ee:
+            fc = csv_to_ee(in_csv, latitude=y, longitude=x)
+            self.addLayer(fc, {}, layer_name)
+
+        else:
+            points = list(zip(df[y], df[x]))
+
+            if label is not None:
+                labels = df[label]
+                markers = [
+                    Marker(
+                        location=point, draggable=False, popup=widgets.HTML(labels[index])
+                    )
+                    for index, point in enumerate(points)
+                ]
+            else:
+                markers = [Marker(location=point, draggable=False) for point in points]
+
+            marker_cluster = MarkerCluster(markers=markers, name=layer_name)
+            self.add_layer(marker_cluster)
+
+        self.default_style = {"cursor": "default"}
+
 
 # The functions below are outside the Map class.
 
