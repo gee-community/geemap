@@ -836,7 +836,7 @@ def xy_to_points(in_csv, latitude="latitude", longitude="longitude"):
 
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
-        download_from_url(in_csv, out_dir=out_dir)
+        download_from_url(in_csv, out_dir=out_dir, verbose=False)
         in_csv = os.path.join(out_dir, out_name)
 
     in_csv = os.path.abspath(in_csv)
@@ -873,7 +873,7 @@ def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude
 
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
-        download_from_url(in_csv, out_dir=out_dir)
+        download_from_url(in_csv, out_dir=out_dir, verbose=False)
         in_csv = os.path.join(out_dir, out_name)
 
     wbt = whitebox.WhiteboxTools()
@@ -909,7 +909,7 @@ def csv_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude"):
 
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
-        download_from_url(in_csv, out_dir=out_dir)
+        download_from_url(in_csv, out_dir=out_dir, verbose=False)
         in_csv = os.path.join(out_dir, out_name)
 
     out_dir = os.path.dirname(out_shp)
@@ -918,7 +918,7 @@ def csv_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude"):
 
     try:
         points = shp.Writer(out_shp, shapeType=shp.POINT)
-        with open(in_csv, encoding="utf-8") as csvfile:
+        with open(in_csv, encoding="utf-8-sig") as csvfile:
             csvreader = csv.DictReader(csvfile)
             header = csvreader.fieldnames
             [points.field(field) for field in header]
@@ -932,7 +932,96 @@ def csv_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude"):
             f.write(prj_str)
 
     except Exception as e:
-        print(e)
+        raise Exception(e)
+
+
+def csv_to_geojson(
+    in_csv, out_geojson=None, latitude="latitude", longitude="longitude"
+):
+    """Creates points for a CSV file and exports data as a GeoJSON.
+
+    Args:
+        in_csv (str): The file path to the input CSV file.
+        out_geojson (str): The file path to the exported GeoJSON. Default to None.
+        latitude (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
+        longitude (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
+
+    """
+
+    import json
+    import shapefile
+
+    if out_geojson is not None:
+        out_dir = os.path.dirname(out_geojson)
+    else:
+        out_dir = os.path.expanduser("~/Downloads")
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    out_shp = os.path.join(out_dir, random_string() + ".shp")
+
+    csv_to_shp(in_csv, out_shp, latitude=latitude, longitude=longitude)
+    sf = shapefile.Reader(out_shp)
+    geojson = sf.__geo_interface__
+
+    delete_shp(out_shp, verbose=False)
+
+    if out_geojson is None:
+        return geojson
+    else:
+        with open(out_geojson, "w", encoding="utf-8") as f:
+            f.write(json.dumps(geojson))
+
+
+def csv_to_ee(in_csv, latitude="latitude", longitude="longitude", geodesic=True):
+    """Creates points for a CSV file and exports data as a GeoJSON.
+
+    Args:
+        in_csv (str): The file path to the input CSV file.
+        latitude (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
+        longitude (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
+        geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
+
+    Returns:
+        ee_object: An ee.Geometry object
+    """
+
+    geojson = csv_to_geojson(in_csv, latitude=latitude, longitude=longitude)
+    fc = geojson_to_ee(geojson, geodesic=geodesic)
+    return fc
+
+
+def csv_to_geopandas(in_csv, latitude="latitude", longitude="longitude"):
+    """Creates points for a CSV file and converts them to a GeoDataFrame.
+
+    Args:
+        in_csv (str): The file path to the input CSV file.
+        latitude (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
+        longitude (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
+
+    Returns:
+        object: GeoDataFrame.
+    """
+
+    import json
+    import shapefile
+
+    check_package(name="geopandas", URL="https://geopandas.org")
+
+    import geopandas as gpd
+
+    out_dir = os.path.expanduser("~/Downloads")
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    out_shp = os.path.join(out_dir, random_string() + ".shp")
+
+    csv_to_shp(in_csv, out_shp, latitude=latitude, longitude=longitude)
+
+    gdf = gpd.read_file(out_shp)
+    delete_shp(out_shp)
+    return gdf
 
 
 def geojson_to_ee(geo_json, geodesic=True):
@@ -941,6 +1030,7 @@ def geojson_to_ee(geo_json, geodesic=True):
     Args:
         geo_json (dict): A geojson geometry dictionary or file path.
         geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
+
     Returns:
         ee_object: An ee.Geometry object
     """
@@ -7205,12 +7295,12 @@ def ee_to_geopandas(ee_object, selectors=None, verbose=False):
     return df
 
 
-def delete_shp(in_shp, verbose=True):
+def delete_shp(in_shp, verbose=False):
     """Deletes a shapefile.
 
     Args:
         in_shp (str): The input shapefile to delete.
-        verbose (bool, optional): Whether to print out descriptive text. Defaults to True.
+        verbose (bool, optional): Whether to print out descriptive text. Defaults to False.
     """
     from pathlib import Path
 
