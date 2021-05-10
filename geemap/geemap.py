@@ -126,6 +126,8 @@ class Map(ipyleaflet.Map):
         self.draw_last_bounds = None
         self.user_roi = None
         self.user_rois = None
+        self.last_ee_data = None
+        self.last_ee_layer = None
 
         self.roi_start = False
         self.roi_end = False
@@ -801,6 +803,7 @@ class Map(ipyleaflet.Map):
                     collect_samples(self)
                 elif tool_name == "transect":
                     from .toolbar import plot_transect
+
                     plot_transect(self)
                 elif tool_name == "help":
                     import webbrowser
@@ -1374,6 +1377,8 @@ class Map(ipyleaflet.Map):
         }
 
         self.add_layer(tile_layer)
+        self.last_ee_layer = self.ee_layer_dict[name]
+        self.last_ee_data = self.ee_layer_dict[name]["ee_object"]
 
         if isinstance(ee_object, ee.Image) or isinstance(ee_object, ee.ImageCollection):
             self.ee_raster_layers.append(ee_object)

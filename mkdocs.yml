@@ -145,6 +145,7 @@ nav:
           - notebooks/71_timelapse.ipynb
           - notebooks/72_time_slider_gui.ipynb
           - notebooks/73_transect.ipynb
+          - notebooks/74_csv_to_points.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
