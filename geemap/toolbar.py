@@ -150,6 +150,7 @@ def tool_template(m=None):
         if change["new"]:
             toolbar_button.value = False
             if m is not None:
+                m.toolbar_reset()
                 if m.tool_control is not None and m.tool_control in m.controls:
                     m.remove_control(m.tool_control)
                     m.tool_control = None
@@ -2277,6 +2278,245 @@ def time_slider(m=None):
                 m.colorbar_ctrl = None
 
     close_button.observe(close_btn_click, "value")
+
+    toolbar_button.value = True
+    if m is not None:
+        toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
+
+        if toolbar_control not in m.controls:
+            m.add_control(toolbar_control)
+            m.tool_control = toolbar_control
+    else:
+        return toolbar_widget
+
+
+def plot_transect(m=None):
+
+    from bqplot import pyplot as plt
+
+    widget_width = "250px"
+    padding = "0px 0px 0px 5px"  # upper, right, bottom, left
+
+    toolbar_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Show or hide the toolbar",
+        icon="line-chart",
+        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+    )
+
+    close_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Close the tool",
+        icon="times",
+        button_style="primary",
+        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
+    )
+
+    layer = widgets.Dropdown(
+        options=["Option 1", "Option 2", "Option 3"],
+        value=None,
+        description="Image:",
+        layout=widgets.Layout(width=widget_width, padding=padding),
+        style={"description_width": "initial"},
+    )
+
+    band = widgets.Dropdown(
+        options=["Option 1", "Option 2", "Option 3"],
+        value=None,
+        description="Band:",
+        layout=widgets.Layout(width=widget_width, padding=padding),
+        style={"description_width": "initial"},
+    )
+
+    reducer = widgets.Dropdown(
+        options=["mean", "median", "min", "max", "mode", "sum", "stdDev", "variance"],
+        value="mean",
+        description="Stats:",
+        layout=widgets.Layout(width="120px", padding=padding),
+        style={"description_width": "initial"},
+    )
+
+    segments = widgets.IntText(
+        value="100",
+        description="Segments:",
+        placeholder="Number of segments",
+        style={"description_width": "initial"},
+        layout=widgets.Layout(width="126px", padding=padding),
+    )
+
+    dist_interval = widgets.Text(
+        value="",
+        description="Distance interval (m):",
+        placeholder="Optional",
+        style={"description_width": "initial"},
+        layout=widgets.Layout(width=widget_width, padding=padding),
+    )
+
+    title = widgets.Text(
+        value="",
+        description="Plot title:",
+        placeholder="Plot title",
+        style={"description_width": "initial"},
+        layout=widgets.Layout(width=widget_width, padding=padding),
+    )
+
+    xlabel = widgets.Text(
+        value="",
+        description="xlabel:",
+        placeholder="x-axis",
+        style={"description_width": "initial"},
+        layout=widgets.Layout(width="123px", padding=padding),
+    )
+
+    ylabel = widgets.Text(
+        value="",
+        description="ylabel:",
+        placeholder="y-axis",
+        style={"description_width": "initial"},
+        layout=widgets.Layout(width="123px", padding=padding),
+    )
+
+    buttons = widgets.ToggleButtons(
+        value=None,
+        options=["Plot", "Reset", "Close"],
+        tooltips=["Plot transect", "Reset", "Close"],
+        button_style="primary",
+    )
+    buttons.style.button_width = "80px"
+
+    output = widgets.Output(
+        layout=widgets.Layout(max_width="500px", max_height="265px", padding=padding)
+    )
+
+    toolbar_widget = widgets.VBox()
+    toolbar_widget.children = [toolbar_button]
+    toolbar_header = widgets.HBox()
+    toolbar_header.children = [close_button, toolbar_button]
+    toolbar_footer = widgets.VBox()
+    toolbar_footer.children = [
+        layer,
+        band,
+        widgets.HBox([reducer, segments]),
+        dist_interval,
+        title,
+        widgets.HBox([xlabel, ylabel]),
+        buttons,
+    ]
+
+    toolbar_event = ipyevents.Event(
+        source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
+    )
+
+    if m is not None:
+        layer.options = m.ee_raster_layer_names
+        if len(layer.options) > 0:
+            image = m.ee_layer_dict[layer.value]["ee_object"]
+            band.options = image.bandNames().getInfo()
+
+        transect_control = WidgetControl(widget=output, position="bottomright")
+        m.add_control(transect_control)
+        m.transect_control = transect_control
+
+    def layer_changed(change):
+        if change["new"]:
+            if m is not None:
+                image = m.ee_layer_dict[layer.value]["ee_object"]
+                band.options = image.bandNames().getInfo()
+
+    layer.observe(layer_changed, "value")
+
+    def handle_toolbar_event(event):
+
+        if event["type"] == "mouseenter":
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        elif event["type"] == "mouseleave":
+            if not toolbar_button.value:
+                toolbar_widget.children = [toolbar_button]
+                toolbar_button.value = False
+                close_button.value = False
+
+    toolbar_event.on_dom_event(handle_toolbar_event)
+
+    def toolbar_btn_click(change):
+        if change["new"]:
+            close_button.value = False
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        else:
+            if not close_button.value:
+                toolbar_widget.children = [toolbar_button]
+
+    toolbar_button.observe(toolbar_btn_click, "value")
+
+    def close_btn_click(change):
+        if change["new"]:
+            toolbar_button.value = False
+            if m is not None:
+                m.toolbar_reset()
+                if m.tool_control is not None and m.tool_control in m.controls:
+                    m.remove_control(m.tool_control)
+                    m.tool_control = None
+                if m.transect_control is not None and m.transect_control in m.controls:
+                    m.remove_control(m.transect_control)
+                    m.transect_control = None
+            toolbar_widget.close()
+
+    close_button.observe(close_btn_click, "value")
+
+    def button_clicked(change):
+        if change["new"] == "Plot":
+            with output:
+                output.clear_output()
+                if m is not None:
+                    if m.user_roi is not None:
+                        line = m.user_roi
+                        geom_type = line.type().getInfo()
+                        if geom_type != "LineString":
+                            print("Use drawing tool to draw a line")
+                        else:
+                            image = m.ee_layer_dict[layer.value]["ee_object"].select(
+                                [band.value]
+                            )
+                            if dist_interval.value == "":
+                                dist = None
+                            else:
+                                dist = float(dist_interval.value)
+
+                            print("Computing ...")
+                            df = extract_transect(
+                                image,
+                                line,
+                                reducer.value,
+                                int(segments.value),
+                                dist,
+                                to_pandas=True,
+                            )
+                            output.clear_output()
+                            fig = plt.figure(title=title.value)
+                            fig.layout.width = output.layout.max_width
+                            fig.layout.height = output.layout.max_height
+                            plt.plot(df["distance"], df[reducer.value])
+                            plt.title
+                            plt.xlabel(xlabel.value)
+                            plt.ylabel(ylabel.value)
+                            plt.show()
+                    else:
+                        print("Use drawing tool to draw a line")
+        elif change["new"] == "Reset":
+            output.clear_output()
+        elif change["new"] == "Close":
+            if m is not None:
+                m.toolbar_reset()
+                if m.tool_control is not None and m.tool_control in m.controls:
+                    m.remove_control(m.tool_control)
+                    m.tool_control = None
+                if m.transect_control is not None and m.transect_control in m.controls:
+                    m.remove_control(m.transect_control)
+                    m.transect_control = None
+            toolbar_widget.close()
+
+        buttons.value = None
+
+    buttons.observe(button_clicked, "value")
 
     toolbar_button.value = True
     if m is not None:
