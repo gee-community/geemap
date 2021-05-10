@@ -2411,6 +2411,8 @@ def plot_transect(m=None):
         layer.options = m.ee_raster_layer_names
         if len(layer.options) > 0:
             image = m.ee_layer_dict[layer.value]["ee_object"]
+            if isinstance(image, ee.ImageCollection):
+                image = image.toBands()
             band.options = image.bandNames().getInfo()
 
         transect_control = WidgetControl(widget=output, position="bottomright")
@@ -2421,6 +2423,8 @@ def plot_transect(m=None):
         if change["new"]:
             if m is not None:
                 image = m.ee_layer_dict[layer.value]["ee_object"]
+                if isinstance(image, ee.ImageCollection):
+                    image = image.toBands()
                 band.options = image.bandNames().getInfo()
 
     layer.observe(layer_changed, "value")
@@ -2473,9 +2477,10 @@ def plot_transect(m=None):
                         if geom_type != "LineString":
                             print("Use drawing tool to draw a line")
                         else:
-                            image = m.ee_layer_dict[layer.value]["ee_object"].select(
-                                [band.value]
-                            )
+                            image = m.ee_layer_dict[layer.value]["ee_object"]
+                            if isinstance(image, ee.ImageCollection):
+                                image = image.toBands()
+                            image = image.select([band.value])
                             if dist_interval.value == "":
                                 dist = None
                             else:
@@ -2495,7 +2500,6 @@ def plot_transect(m=None):
                             fig.layout.width = output.layout.max_width
                             fig.layout.height = output.layout.max_height
                             plt.plot(df["distance"], df[reducer.value])
-                            plt.title
                             plt.xlabel(xlabel.value)
                             plt.ylabel(ylabel.value)
                             plt.show()
