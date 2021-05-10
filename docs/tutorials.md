@@ -80,3 +80,5 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 70. Creating linked maps with a few lines of code (video | [gif](https://youtu.be/AFUGje3VWM8) | [notebook](https://geemap.org/notebooks/70_linked_maps))
 71. Creating Landsat timelapse animations with a few clicks (video | [gif](https://youtu.be/mA21Us_3m28) | [notebook](https://geemap.org/notebooks/71_timelapse))
 72. Creating time-series cloud-free composites with a few clicks (video | [gif](https://youtu.be/kEltQkNia6o) | [notebook](https://geemap.org/notebooks/72_time_slider_gui))
+73. Generating transects along lines with Earth Engine without coding (video | [gif](https://youtu.be/0TNXSs6fwrg) | [notebook](https://geemap.org/notebooks/73_transect))
+74. Creating points from CSV without coding (video | gif | [notebook](https://geemap.org/notebooks/74_csv_to_points))

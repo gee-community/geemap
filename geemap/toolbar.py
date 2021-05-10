@@ -202,14 +202,16 @@ def open_data_widget(m):
         m.remove_control(m.tool_output_ctrl)
 
     file_type = widgets.ToggleButtons(
-        options=["Shapefile", "GeoJSON", "Vector", "GeoTIFF"],
+        options=["Shapefile", "GeoJSON", "Vector", "CSV", "GeoTIFF"],
         tooltips=[
             "Open a shapefile",
             "Open a GeoJSON file",
-            "Open a vector dataset" "Open a vector dataset" "Open a GeoTIFF",
+            "Open a vector dataset",
+            "Create points from CSV",
+            "Open a vector dataset" "Open a GeoTIFF",
         ],
     )
-    file_type.style.button_width = "110px"
+    file_type.style.button_width = "88px"
 
     file_chooser = FileChooser(os.getcwd())
     file_chooser.filter_pattern = "*.shp"
@@ -223,6 +225,32 @@ def open_data_widget(m):
         style=style,
         layout=widgets.Layout(width="454px", padding="0px 0px 0px 5px"),
     )
+
+    longitude = widgets.Dropdown(
+        options=[],
+        value=None,
+        description="Longitude:",
+        layout=widgets.Layout(width="149px", padding="0px 0px 0px 5px"),
+        style={"description_width": "initial"},
+    )
+
+    latitude = widgets.Dropdown(
+        options=[],
+        value=None,
+        description="Latitude:",
+        layout=widgets.Layout(width="149px", padding="0px 0px 0px 5px"),
+        style={"description_width": "initial"},
+    )
+
+    label = widgets.Dropdown(
+        options=[],
+        value=None,
+        description="Label:",
+        layout=widgets.Layout(width="149px", padding="0px 0px 0px 5px"),
+        style={"description_width": "initial"},
+    )
+
+    csv_widget = widgets.HBox()
 
     convert_bool = widgets.Checkbox(
         description="Convert to ee.FeatureCollection?",
@@ -274,7 +302,15 @@ def open_data_widget(m):
     raster_options = widgets.HBox()
 
     main_widget = widgets.VBox(
-        [file_type, file_chooser, layer_name, convert_hbox, raster_options, ok_cancel]
+        [
+            file_type,
+            file_chooser,
+            csv_widget,
+            layer_name,
+            convert_hbox,
+            raster_options,
+            ok_cancel,
+        ]
     )
 
     tool_output.clear_output()
@@ -294,11 +330,32 @@ def open_data_widget(m):
 
     bands.observe(bands_changed, "value")
 
+    def chooser_callback(chooser):
+        if file_type.value == "CSV":
+            import pandas as pd
+
+            df = pd.read_csv(file_chooser.selected)
+            col_names = df.columns.values.tolist()
+            longitude.options = col_names
+            latitude.options = col_names
+            label.options = col_names
+
+            if "longitude" in col_names:
+                longitude.value = "longitude"
+            if "latitude" in col_names:
+                latitude.value = "latitude"
+            if "name" in col_names:
+                label.value = "name"
+
+    file_chooser.register_callback(chooser_callback)
+
     def file_type_changed(change):
         ok_cancel.value = None
         file_chooser.default_path = os.getcwd()
         file_chooser.reset()
         layer_name.value = file_type.value
+        csv_widget.children = []
+
         if change["new"] == "Shapefile":
             file_chooser.filter_pattern = "*.shp"
             raster_options.children = []
@@ -309,6 +366,11 @@ def open_data_widget(m):
             convert_hbox.children = [convert_bool]
         elif change["new"] == "Vector":
             file_chooser.filter_pattern = "*.*"
+            raster_options.children = []
+            convert_hbox.children = [convert_bool]
+        elif change["new"] == "CSV":
+            file_chooser.filter_pattern = ["*.csv", "*.CSV"]
+            csv_widget.children = [longitude, latitude, label]
             raster_options.children = []
             convert_hbox.children = [convert_bool]
         elif change["new"] == "GeoTIFF":
@@ -332,7 +394,6 @@ def open_data_widget(m):
                         if convert_bool.value:
                             ee_object = shp_to_ee(file_path)
                             m.addLayer(ee_object, {}, layer_name.value)
-                            m.centerObject(ee_object)
                         else:
                             m.add_shapefile(
                                 file_path, style=None, layer_name=layer_name.value
@@ -341,11 +402,26 @@ def open_data_widget(m):
                         if convert_bool.value:
                             ee_object = geojson_to_ee(file_path)
                             m.addLayer(ee_object, {}, layer_name.value)
-                            m.centerObject(ee_object)
                         else:
                             m.add_geojson(
                                 file_path, style=None, layer_name=layer_name.value
                             )
+
+                    elif ext.lower() == ".csv":
+                        if convert_bool.value:
+                            ee_object = csv_to_ee(
+                                file_path, latitude.value, longitude.value
+                            )
+                            m.addLayer(ee_object, {}, layer_name.value)
+                        else:
+                            m.add_xy_data(
+                                file_path,
+                                x=longitude.value,
+                                y=latitude.value,
+                                label=label.value,
+                                layer_name=layer_name.value,
+                            )
+
                     elif ext.lower() == ".tif":
                         sel_bands = [int(b.strip()) for b in bands.value.split(",")]
                         m.add_raster(
