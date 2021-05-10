@@ -7531,3 +7531,83 @@ def list_vars(var_type=None):
                 result.append(var)
 
     return result
+
+
+def extract_transect(
+    image,
+    line,
+    reducer="mean",
+    n_segments=100,
+    dist_interval=None,
+    scale=None,
+    crs=None,
+    crsTransform=None,
+    tileScale=1.0,
+    to_pandas=False,
+    **kwargs,
+):
+    """Extracts transect from an image. Credits to Gena for providing the JavaScript example https://code.earthengine.google.com/b09759b8ac60366ee2ae4eccdd19e615.
+
+    Args:
+        image (ee.Image): The image to extract transect from.
+        line (ee.Geometry.LineString): The LineString used to extract transect from an image.
+        reducer (str, optional): The ee.Reducer to use, e.g., 'mean', 'median', 'min', 'max', 'stdDev'. Defaults to "mean".
+        n_segments (int, optional): The number of segments that the LineString will be split into. Defaults to 100.
+        dist_interval (float, optional): The distance interval used for splitting the LineString. If specified, the n_segments parameter will be ignored. Defaults to None.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+        crs (ee.Projection, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
+        crsTransform (list, optional): The list of CRS transform values. This is a row-major ordering of the 3x2 transform matrix. This option is mutually exclusive with 'scale', and will replace any transform already set on the projection. Defaults to None.
+        tileScale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
+        to_pandas (bool, optional): Whether to convert the result to a pandas dataframe. Default to False.
+
+    Raises:
+        TypeError: If the geometry type is not LineString.
+        Exception: If the program fails to compute.
+
+    Returns:
+        ee.FeatureCollection: The FeatureCollection containing the transect with distance and reducer values.
+    """
+    try:
+
+        geom_type = line.type().getInfo()
+        if geom_type != "LineString":
+            raise TypeError("The geometry type must be LineString.")
+
+        reducer = eval("ee.Reducer." + reducer + "()")
+        maxError = image.projection().nominalScale().divide(5)
+
+        length = line.length(maxError)
+        if dist_interval is None:
+            dist_interval = length.divide(n_segments)
+
+        distances = ee.List.sequence(0, length, dist_interval)
+        lines = line.cutLines(distances, maxError).geometries()
+
+        def set_dist_attr(l):
+            l = ee.List(l)
+            geom = ee.Geometry(l.get(0))
+            distance = ee.Number(l.get(1))
+            geom = ee.Geometry.LineString(geom.coordinates())
+            return ee.Feature(geom, {"distance": distance})
+
+        lines = lines.zip(distances).map(set_dist_attr)
+        lines = ee.FeatureCollection(lines)
+
+        transect = image.reduceRegions(
+            **{
+                "collection": ee.FeatureCollection(lines),
+                "reducer": reducer,
+                "scale": scale,
+                "crs": crs,
+                "crsTransform": crsTransform,
+                "tileScale": tileScale,
+            }
+        )
+
+        if to_pandas:
+            return ee_to_pandas(transect)
+        else:
+            return transect
+
+    except Exception as e:
+        raise Exception(e)

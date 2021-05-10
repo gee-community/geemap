@@ -24,6 +24,7 @@ plugins:
     # - pdf-export
     - mkdocs-jupyter:
           include_source: True
+          ignore_h1_titles: True
           #   execute: True
 
 markdown_extensions:
@@ -143,6 +144,7 @@ nav:
           - notebooks/70_linked_maps.ipynb
           - notebooks/71_timelapse.ipynb
           - notebooks/72_time_slider_gui.ipynb
+          - notebooks/73_transect.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
