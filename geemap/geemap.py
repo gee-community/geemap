@@ -659,9 +659,9 @@ class Map(ipyleaflet.Map):
                 "name": "draw",
                 "tooltip": "Collect training samples",
             },
-            "plug": {
-                "name": "todo1",
-                "tooltip": "Placeholder",
+            "line-chart": {
+                "name": "transect",
+                "tooltip": "Creating and plotting transects",
             },
             "smile-o": {
                 "name": "todo2",
@@ -799,6 +799,9 @@ class Map(ipyleaflet.Map):
 
                     self.training_ctrl = None
                     collect_samples(self)
+                elif tool_name == "transect":
+                    from .toolbar import plot_transect
+                    plot_transect(self)
                 elif tool_name == "help":
                     import webbrowser
 
@@ -5198,7 +5201,9 @@ class Map(ipyleaflet.Map):
                 labels = df[label]
                 markers = [
                     Marker(
-                        location=point, draggable=False, popup=widgets.HTML(labels[index])
+                        location=point,
+                        draggable=False,
+                        popup=widgets.HTML(labels[index]),
                     )
                     for index, point in enumerate(points)
                 ]
