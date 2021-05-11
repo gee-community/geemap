@@ -82,3 +82,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 72. Creating time-series cloud-free composites with a few clicks (video | [gif](https://youtu.be/kEltQkNia6o) | [notebook](https://geemap.org/notebooks/72_time_slider_gui))
 73. Generating transects along lines with Earth Engine without coding (video | [gif](https://youtu.be/0TNXSs6fwrg) | [notebook](https://geemap.org/notebooks/73_transect))
 74. Creating points from CSV without coding (video | gif | [notebook](https://geemap.org/notebooks/74_csv_to_points))
+75. Visualizing land cover change with inteactive Sankey diagrams (video | gif | [notebook](https://geemap.org/notebooks/74_sankee))

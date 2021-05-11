@@ -2650,7 +2650,7 @@ def sankee_gui(m=None):
         style={"description_width": "initial"},
     )
 
-    NLCD_options = ["1992", "2001", "2004", "2006", "2008", "2011", "2013", "2016"]
+    NLCD_options = ["2001", "2004", "2006", "2008", "2011", "2013", "2016"]
     MODIS_options = [str(y) for y in range(2001, 2020)]
     CGLS_options = [str(y) for y in range(2015, 2020)]
 
@@ -2693,6 +2693,12 @@ def sankee_gui(m=None):
         "NLCD - National Land Cover Database": sankee.datasets.NLCD2016,
         "MCD12Q1 - MODIS Global Land Cover": sankee.datasets.MODIS_LC_TYPE1,
         "CGLS - Copernicus Global Land Cover": sankee.datasets.CGLS_LC100,
+    }
+
+    band_name = {
+        "NLCD - National Land Cover Database": "landcover",
+        "MCD12Q1 - MODIS Global Land Cover": "LC_Type1",
+        "CGLS - Copernicus Global Land Cover": "discrete_classification",
     }
 
     samples = widgets.IntText(
@@ -2800,21 +2806,49 @@ def sankee_gui(m=None):
             if m is not None:
 
                 if "NLCD" in dataset.value:
-                    before_img = f"USGS/NLCD/NLCD{before.value}"
-                    after_img = f"USGS/NLCD/NLCD{after.value}"
+                    before_img = ee.Image(f"USGS/NLCD/NLCD{before.value}")
+                    after_img = ee.Image(f"USGS/NLCD/NLCD{after.value}")
+                    vis_params = {}
                 elif "MODIS" in dataset.value:
-                    before_img = f"MODIS/006/MCD12Q1/{before.value}_01_01"
-                    after_img = f"MODIS/006/MCD12Q1/{after.value}_01_01"
+                    before_img = ee.Image(f"MODIS/006/MCD12Q1/{before.value}_01_01")
+                    after_img = ee.Image(f"MODIS/006/MCD12Q1/{after.value}_01_01")
+                    vis_params = {
+                        "min": 1.0,
+                        "max": 17.0,
+                        "palette": [
+                            "05450a",
+                            "086a10",
+                            "54a708",
+                            "78d203",
+                            "009900",
+                            "c6b044",
+                            "dcd159",
+                            "dade48",
+                            "fbff13",
+                            "b6ff05",
+                            "27ff87",
+                            "c24f44",
+                            "a5a5a5",
+                            "ff6d4c",
+                            "69fff8",
+                            "f9ffa4",
+                            "1c0dff",
+                        ],
+                    }
                 elif "CGLS" in dataset.value:
-                    before_img = (
+                    before_img = ee.Image(
                         f"COPERNICUS/Landcover/100m/Proba-V-C3/Global/{before.value}"
                     )
-                    after_img = (
+                    after_img = ee.Image(
                         f"COPERNICUS/Landcover/100m/Proba-V-C3/Global/{after.value}"
                     )
+                    vis_params = {}
 
-                img_list = [ee.Image(before_img), ee.Image(after_img)]
+                img_list = [before_img, after_img]
                 label_list = [before.value, after.value]
+
+                image1 = before_img.select(band_name[dataset.value])
+                image2 = after_img.select(band_name[dataset.value])
 
                 if region.value != "User-drawn ROI" or (
                     region.value == "User-drawn ROI" and m.user_roi is not None
@@ -2822,9 +2856,21 @@ def sankee_gui(m=None):
 
                     if region.value == "User-drawn ROI":
                         geom = m.user_roi
-
+                        image1 = image1.clip(geom)
+                        image2 = image2.clip(geom)
                     else:
-                        geom = m.ee_layer_dict[region.value]["ee_object"].geometry()
+                        roi_object = m.ee_layer_dict[region.value]["ee_object"]
+                        if region.value == "Las Vegas":
+                            m.centerObject(roi_object, 10)
+                        if isinstance(roi_object, ee.Geometry):
+                            geom = roi_object
+                            image1 = image1.clip(geom)
+                            image2 = image2.clip(geom)
+                        else:
+                            roi_object = ee.FeatureCollection(roi_object)
+                            image1 = image1.clipToCollection(roi_object)
+                            image2 = image2.cliptoCollection(roi_object)
+                            geom = roi_object.geometry()
 
                     if len(title.value) > 0:
                         plot_title = title.value
@@ -2842,6 +2888,9 @@ def sankee_gui(m=None):
                     )
                     output.clear_output()
                     display(plot)
+
+                    m.addLayer(image1, vis_params, before.value)
+                    m.addLayer(image2, vis_params, after.value)
                     m.default_style = {"cursor": "default"}
 
                 else:
