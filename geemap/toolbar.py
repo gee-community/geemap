@@ -1,6 +1,5 @@
 """Module for dealing with the toolbar.
 """
-from typing import Hashable
 import ee
 import os
 import ipyevents
@@ -2592,6 +2591,275 @@ def plot_transect(m=None):
                 if m.transect_control is not None and m.transect_control in m.controls:
                     m.remove_control(m.transect_control)
                     m.transect_control = None
+            toolbar_widget.close()
+
+        buttons.value = None
+
+    buttons.observe(button_clicked, "value")
+
+    toolbar_button.value = True
+    if m is not None:
+        toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
+
+        if toolbar_control not in m.controls:
+            m.add_control(toolbar_control)
+            m.tool_control = toolbar_control
+    else:
+        return toolbar_widget
+
+
+def sankee_gui(m=None):
+
+    import sankee
+
+    widget_width = "250px"
+    padding = "0px 0px 0px 5px"  # upper, right, bottom, left
+
+    toolbar_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Toolbar",
+        icon="random",
+        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+    )
+
+    close_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Close the tool",
+        icon="times",
+        button_style="primary",
+        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
+    )
+
+    region = widgets.Dropdown(
+        options=["User-drawn ROI"],
+        value="User-drawn ROI",
+        description="Region:",
+        layout=widgets.Layout(width=widget_width, padding=padding),
+        style={"description_width": "initial"},
+    )
+
+    dataset = widgets.Dropdown(
+        options=[
+            "NLCD - National Land Cover Database",
+            "MCD12Q1 - MODIS Global Land Cover",
+            "CGLS - Copernicus Global Land Cover",
+        ],
+        value="NLCD - National Land Cover Database",
+        description="Dataset:",
+        layout=widgets.Layout(width=widget_width, padding=padding),
+        style={"description_width": "initial"},
+    )
+
+    NLCD_options = ["1992", "2001", "2004", "2006", "2008", "2011", "2013", "2016"]
+    MODIS_options = [str(y) for y in range(2001, 2020)]
+    CGLS_options = [str(y) for y in range(2015, 2020)]
+
+    before = widgets.Dropdown(
+        options=NLCD_options,
+        value="2001",
+        description="Before:",
+        layout=widgets.Layout(width="123px", padding=padding),
+        style={"description_width": "initial"},
+    )
+
+    after = widgets.Dropdown(
+        options=NLCD_options,
+        value="2016",
+        description="After:",
+        layout=widgets.Layout(width="123px", padding=padding),
+        style={"description_width": "initial"},
+    )
+
+    def dataset_changed(change):
+        if change["new"] == "NLCD - National Land Cover Database":
+            before.options = NLCD_options
+            after.options = NLCD_options
+            before.value = NLCD_options[0]
+            after.value = NLCD_options[-1]
+        elif change["new"] == "MCD12Q1 - MODIS Global Land Cover":
+            before.options = MODIS_options
+            after.options = MODIS_options
+            before.value = MODIS_options[0]
+            after.value = MODIS_options[-1]
+        elif change["new"] == "CGLS - Copernicus Global Land Cover":
+            before.options = CGLS_options
+            after.options = CGLS_options
+            before.value = CGLS_options[0]
+            after.value = CGLS_options[-1]
+
+    dataset.observe(dataset_changed, "value")
+
+    dataset_template = {
+        "NLCD - National Land Cover Database": sankee.datasets.NLCD2016,
+        "MCD12Q1 - MODIS Global Land Cover": sankee.datasets.MODIS_LC_TYPE1,
+        "CGLS - Copernicus Global Land Cover": sankee.datasets.CGLS_LC100,
+    }
+
+    samples = widgets.IntText(
+        value=100,
+        description="Samples:",
+        placeholder="The number of samples points to randomly generate for characterizing all images",
+        style={"description_width": "initial"},
+        layout=widgets.Layout(width="133px", padding=padding),
+    )
+
+    classes = widgets.IntText(
+        value=6,
+        description="Classes:",
+        style={"description_width": "initial"},
+        layout=widgets.Layout(width="113px", padding=padding),
+    )
+
+    title = widgets.Text(
+        value="Land Cover Change",
+        description="Title:",
+        style={"description_width": "initial"},
+        layout=widgets.Layout(width=widget_width, padding=padding),
+    )
+
+    buttons = widgets.ToggleButtons(
+        value=None,
+        options=["Apply", "Reset", "Close"],
+        tooltips=["Apply", "Reset", "Close"],
+        button_style="primary",
+    )
+    buttons.style.button_width = "80px"
+
+    output = widgets.Output(
+        layout=widgets.Layout(max_width="500px", max_height="265px", padding=padding)
+    )
+
+    toolbar_widget = widgets.VBox()
+    toolbar_widget.children = [toolbar_button]
+    toolbar_header = widgets.HBox()
+    toolbar_header.children = [close_button, toolbar_button]
+    toolbar_footer = widgets.VBox()
+    toolbar_footer.children = [
+        region,
+        dataset,
+        widgets.HBox([before, after]),
+        widgets.HBox([samples, classes]),
+        title,
+        buttons,
+    ]
+
+    toolbar_event = ipyevents.Event(
+        source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
+    )
+
+    if m is not None:
+        region.options = ["User-drawn ROI"] + m.ee_vector_layer_names
+
+        sankee_control = WidgetControl(widget=output, position="bottomright")
+        m.add_control(sankee_control)
+        m.sankee_control = sankee_control
+
+    def handle_toolbar_event(event):
+
+        if event["type"] == "mouseenter":
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        elif event["type"] == "mouseleave":
+            if not toolbar_button.value:
+                toolbar_widget.children = [toolbar_button]
+                toolbar_button.value = False
+                close_button.value = False
+
+    toolbar_event.on_dom_event(handle_toolbar_event)
+
+    def toolbar_btn_click(change):
+        if change["new"]:
+            close_button.value = False
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        else:
+            if not close_button.value:
+                toolbar_widget.children = [toolbar_button]
+
+    toolbar_button.observe(toolbar_btn_click, "value")
+
+    def close_btn_click(change):
+        if change["new"]:
+            toolbar_button.value = False
+            if m is not None:
+                m.toolbar_reset()
+                if m.tool_control is not None and m.tool_control in m.controls:
+                    m.remove_control(m.tool_control)
+                    m.tool_control = None
+                if m.sankee_control is not None and m.sankee_control in m.controls:
+                    m.remove_control(m.sankee_control)
+                    m.sankee_control = None
+            toolbar_widget.close()
+
+    close_button.observe(close_btn_click, "value")
+
+    def button_clicked(change):
+        if change["new"] == "Apply":
+            with output:
+                output.clear_output()
+                print("Running ...")
+
+            if m is not None:
+
+                if "NLCD" in dataset.value:
+                    before_img = f"USGS/NLCD/NLCD{before.value}"
+                    after_img = f"USGS/NLCD/NLCD{after.value}"
+                elif "MODIS" in dataset.value:
+                    before_img = f"MODIS/006/MCD12Q1/{before.value}_01_01"
+                    after_img = f"MODIS/006/MCD12Q1/{after.value}_01_01"
+                elif "CGLS" in dataset.value:
+                    before_img = (
+                        f"COPERNICUS/Landcover/100m/Proba-V-C3/Global/{before.value}"
+                    )
+                    after_img = (
+                        f"COPERNICUS/Landcover/100m/Proba-V-C3/Global/{after.value}"
+                    )
+
+                img_list = [ee.Image(before_img), ee.Image(after_img)]
+                label_list = [before.value, after.value]
+
+                if region.value != "User-drawn ROI" or (
+                    region.value == "User-drawn ROI" and m.user_roi is not None
+                ):
+
+                    if region.value == "User-drawn ROI":
+                        geom = m.user_roi
+
+                    else:
+                        geom = m.ee_layer_dict[region.value]["ee_object"].geometry()
+
+                    if len(title.value) > 0:
+                        plot_title = title.value
+                    else:
+                        plot_title = None
+                    m.default_style = {"cursor": "wait"}
+                    plot = sankee.sankify(
+                        img_list,
+                        geom,
+                        label_list,
+                        dataset_template[dataset.value],
+                        max_classes=classes.value,
+                        n=int(samples.value),
+                        title=plot_title,
+                    )
+                    output.clear_output()
+                    display(plot)
+                    m.default_style = {"cursor": "default"}
+
+                else:
+                    with output:
+                        output.clear_output()
+                        print("Use the drawing tool to draw a polygon.")
+
+        elif change["new"] == "Reset":
+            output.clear_output()
+        elif change["new"] == "Close":
+            if m is not None:
+                m.toolbar_reset()
+                if m.tool_control is not None and m.tool_control in m.controls:
+                    m.remove_control(m.tool_control)
+                    m.tool_control = None
+                if m.sankee_control is not None and m.sankee_control in m.controls:
+                    m.remove_control(m.sankee_control)
+                    m.sankee_control = None
             toolbar_widget.close()
 
         buttons.value = None

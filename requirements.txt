@@ -20,5 +20,6 @@ pillow
 pycrs
 pyshp>=2.1.3
 python-box
+sankee
 voila
 whiteboxgui
