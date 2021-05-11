@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.8.16 - May 10, 2021
+
+**New Features**:
+
+-   Added csv_to_points GUI [#461](https://github.com/giswqs/geemap/issues/461)
+-   Added GUI for creating transects [#454](https://github.com/giswqs/geemap/issues/454)
+-   Added csv_to_ee and csv_to_makers [#461](https://github.com/giswqs/geemap/issues/461)
+-   Added geopandas support [#455](https://github.com/giswqs/geemap/issues/455)
+
+**Improvement**:
+
+-   Improved geojson style [#459](https://github.com/giswqs/geemap/issues/459) [#460](https://github.com/giswqs/geemap/issues/460)
+-   Improved vector support [#455](https://github.com/giswqs/geemap/issues/455)
+-   Improved add_colorbar function [#450](https://github.com/giswqs/geemap/issues/450)
+-   Improved add_raster function [#449](https://github.com/giswqs/geemap/pull/449)
+-   Updated notebooks
+
 ## v0.8.15 - April 28, 2021
 
 **Improvement**:
