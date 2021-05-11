@@ -665,9 +665,9 @@ class Map(ipyleaflet.Map):
                 "name": "transect",
                 "tooltip": "Creating and plotting transects",
             },
-            "smile-o": {
-                "name": "todo2",
-                "tooltip": "Placeholder",
+            "random": {
+                "name": "sankee",
+                "tooltip": "Sankey plots",
             },
             "question": {
                 "name": "help",
@@ -805,6 +805,10 @@ class Map(ipyleaflet.Map):
                     from .toolbar import plot_transect
 
                     plot_transect(self)
+                elif tool_name == "sankee":
+                    from .toolbar import sankee_gui
+
+                    sankee_gui(self)
                 elif tool_name == "help":
                     import webbrowser
 
