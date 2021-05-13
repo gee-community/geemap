@@ -94,7 +94,7 @@ class Map(ipyleaflet.Map):
         if "toolbar_ctrl" not in kwargs.keys():
             kwargs["toolbar_ctrl"] = True
         if "attribution_ctrl" not in kwargs.keys():
-            kwargs["attribution_ctrl"] = True
+            kwargs["attribution_ctrl"] = False
         if "use_voila" not in kwargs.keys():
             kwargs["use_voila"] = False
 
@@ -808,26 +808,6 @@ class Map(ipyleaflet.Map):
                 elif tool_name == "sankee":
                     from .toolbar import sankee_gui
 
-                    # try:
-                    #     self.add_basemap("HYBRID")
-                    # except Exception as _:
-                    #     pass
-                    sample_roi = ee.Geometry.Polygon(
-                        [
-                            [
-                                [-115.01184401606046, 36.24170785506492],
-                                [-114.98849806879484, 36.29928186470082],
-                                [-115.25628981684171, 36.35238941394592],
-                                [-115.34692702387296, 36.310348922031565],
-                                [-115.37988600824796, 36.160811202271944],
-                                [-115.30298171137296, 36.03653336474891],
-                                [-115.25628981684171, 36.05207884201088],
-                                [-115.26590285395109, 36.226199908103695],
-                                [-115.19174513910734, 36.25499793268206],
-                            ]
-                        ]
-                    )
-                    self.addLayer(sample_roi, {}, "Las Vegas")
                     sankee_gui(self)
                 elif tool_name == "help":
                     import webbrowser

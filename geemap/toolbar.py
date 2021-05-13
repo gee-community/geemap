@@ -2638,6 +2638,29 @@ def sankee_gui(m=None):
         style={"description_width": "initial"},
     )
 
+    def region_changed(change):
+        if change["new"] == "Las Vegas":
+            if m is not None:
+                las_vegas = ee.Geometry.Polygon(
+                    [
+                        [
+                            [-115.01184401606046, 36.24170785506492],
+                            [-114.98849806879484, 36.29928186470082],
+                            [-115.25628981684171, 36.35238941394592],
+                            [-115.34692702387296, 36.310348922031565],
+                            [-115.37988600824796, 36.160811202271944],
+                            [-115.30298171137296, 36.03653336474891],
+                            [-115.25628981684171, 36.05207884201088],
+                            [-115.26590285395109, 36.226199908103695],
+                            [-115.19174513910734, 36.25499793268206],
+                        ]
+                    ]
+                )
+                m.addLayer(las_vegas, {}, "Las Vegas")
+                m.centerObject(las_vegas, 10)
+
+    region.observe(region_changed, "value")
+
     dataset = widgets.Dropdown(
         options=[
             "NLCD - National Land Cover Database",
@@ -2702,7 +2725,7 @@ def sankee_gui(m=None):
     }
 
     samples = widgets.IntText(
-        value=100,
+        value=1000,
         description="Samples:",
         placeholder="The number of samples points to randomly generate for characterizing all images",
         style={"description_width": "initial"},
@@ -2731,9 +2754,7 @@ def sankee_gui(m=None):
     )
     buttons.style.button_width = "80px"
 
-    output = widgets.Output(
-        layout=widgets.Layout(max_width="500px", max_height="265px", padding=padding)
-    )
+    output = widgets.Output(layout=widgets.Layout(padding=padding))
 
     toolbar_widget = widgets.VBox()
     toolbar_widget.children = [toolbar_button]
@@ -2747,6 +2768,7 @@ def sankee_gui(m=None):
         widgets.HBox([samples, classes]),
         title,
         buttons,
+        output,
     ]
 
     toolbar_event = ipyevents.Event(
@@ -2754,9 +2776,167 @@ def sankee_gui(m=None):
     )
 
     if m is not None:
-        region.options = ["User-drawn ROI"] + m.ee_vector_layer_names
+        if "Las Vegas" not in m.ee_vector_layer_names:
+            region.options = ["User-drawn ROI", "Las Vegas"] + m.ee_vector_layer_names
+        else:
+            region.options = ["User-drawn ROI"] + m.ee_vector_layer_names
 
-        sankee_control = WidgetControl(widget=output, position="bottomright")
+        plot_close_btn = widgets.Button(
+            tooltip="Close the plot",
+            icon="times",
+            layout=widgets.Layout(
+                height="28px", width="28px", padding="0px 0px 0px 0px"
+            ),
+        )
+
+        def plot_close_btn_clicked(b):
+            plot_widget.children = []
+
+        plot_close_btn.on_click(plot_close_btn_clicked)
+
+        plot_reset_btn = widgets.Button(
+            tooltip="Reset the plot",
+            icon="home",
+            layout=widgets.Layout(
+                height="28px", width="28px", padding="0px 0px 0px 0px"
+            ),
+        )
+
+        def plot_reset_btn_clicked(b):
+
+            m.sankee_plot.update_layout(
+                width=600,
+                height=250,
+                margin=dict(l=10, r=10, b=10, t=50, pad=5),
+            )
+            with plot_output:
+                plot_output.clear_output()
+                display(m.sankee_plot)
+
+        plot_reset_btn.on_click(plot_reset_btn_clicked)
+
+        plot_fullscreen_btn = widgets.Button(
+            tooltip="Fullscreen the plot",
+            icon="arrows-alt",
+            layout=widgets.Layout(
+                height="28px", width="28px", padding="0px 0px 0px 0px"
+            ),
+        )
+
+        def plot_fullscreen_btn_clicked(b):
+
+            m.sankee_plot.update_layout(
+                width=1030,
+                height=int(m.layout.height[:-2]) - 60,
+                margin=dict(l=10, r=10, b=10, t=50, pad=5),
+            )
+            with plot_output:
+                plot_output.clear_output()
+                display(m.sankee_plot)
+
+        plot_fullscreen_btn.on_click(plot_fullscreen_btn_clicked)
+
+        width_btn = widgets.Button(
+            tooltip="Change plot width",
+            icon="arrows-h",
+            layout=widgets.Layout(
+                height="28px", width="28px", padding="0px 0px 0px 0px"
+            ),
+        )
+
+        def width_btn_clicked(b):
+            m.sankee_plot.update_layout(
+                width=1030,
+                margin=dict(l=10, r=10, b=10, t=50, pad=5),
+            )
+            with plot_output:
+                plot_output.clear_output()
+                display(m.sankee_plot)
+
+        width_btn.on_click(width_btn_clicked)
+
+        height_btn = widgets.Button(
+            tooltip="Change plot height",
+            icon="arrows-v",
+            layout=widgets.Layout(
+                height="28px", width="28px", padding="0px 0px 0px 0px"
+            ),
+        )
+
+        def height_btn_clicked(b):
+            m.sankee_plot.update_layout(
+                height=int(m.layout.height[:-2]) - 60,
+                margin=dict(l=10, r=10, b=10, t=50, pad=5),
+            )
+            with plot_output:
+                plot_output.clear_output()
+                display(m.sankee_plot)
+
+        height_btn.on_click(height_btn_clicked)
+
+        width_slider = widgets.IntSlider(
+            value=600,
+            min=400,
+            max=1030,
+            step=10,
+            description="",
+            readout=False,
+            continuous_update=False,
+            layout=widgets.Layout(width="100px", padding=padding),
+            style={"description_width": "initial"},
+        )
+
+        width_slider_label = widgets.Label(
+            layout=widgets.Layout(padding="0px 10px 0px 0px")
+        )
+        widgets.jslink((width_slider, "value"), (width_slider_label, "value"))
+
+        def width_changed(change):
+            if change["new"]:
+
+                m.sankee_plot.update_layout(
+                    width=width_slider.value,
+                    margin=dict(l=10, r=10, b=10, t=50, pad=5),
+                )
+                with plot_output:
+                    plot_output.clear_output()
+                    display(m.sankee_plot)
+
+        width_slider.observe(width_changed, "value")
+
+        height_slider = widgets.IntSlider(
+            value=250,
+            min=200,
+            max=int(m.layout.height[:-2]) - 60,
+            step=10,
+            description="",
+            readout=False,
+            continuous_update=False,
+            layout=widgets.Layout(width="100px", padding=padding),
+            style={"description_width": "initial"},
+        )
+
+        height_slider_label = widgets.Label()
+        widgets.jslink((height_slider, "value"), (height_slider_label, "value"))
+
+        def height_changed(change):
+            if change["new"]:
+
+                m.sankee_plot.update_layout(
+                    height=height_slider.value,
+                    margin=dict(l=10, r=10, b=10, t=50, pad=5),
+                )
+                with plot_output:
+                    plot_output.clear_output()
+                    display(m.sankee_plot)
+
+        height_slider.observe(height_changed, "value")
+
+        plot_output = widgets.Output()
+
+        plot_widget = widgets.VBox([plot_output])
+
+        sankee_control = WidgetControl(widget=plot_widget, position="bottomright")
         m.add_control(sankee_control)
         m.sankee_control = sankee_control
 
@@ -2801,6 +2981,7 @@ def sankee_gui(m=None):
         if change["new"] == "Apply":
             with output:
                 output.clear_output()
+                plot_output.clear_output()
                 print("Running ...")
 
             if m is not None:
@@ -2869,7 +3050,7 @@ def sankee_gui(m=None):
                         else:
                             roi_object = ee.FeatureCollection(roi_object)
                             image1 = image1.clipToCollection(roi_object)
-                            image2 = image2.cliptoCollection(roi_object)
+                            image2 = image2.clipToCollection(roi_object)
                             geom = roi_object.geometry()
 
                     if len(title.value) > 0:
@@ -2886,9 +3067,34 @@ def sankee_gui(m=None):
                         n=int(samples.value),
                         title=plot_title,
                     )
-                    output.clear_output()
-                    display(plot)
 
+                    output.clear_output()
+                    plot_output.clear_output()
+                    with plot_output:
+                        plot.update_layout(
+                            width=600,
+                            height=250,
+                            margin=dict(l=10, r=10, b=10, t=50, pad=5),
+                        )
+                        plot_widget.children = [
+                            widgets.HBox(
+                                [
+                                    plot_close_btn,
+                                    plot_reset_btn,
+                                    plot_fullscreen_btn,
+                                    width_btn,
+                                    width_slider,
+                                    width_slider_label,
+                                    height_btn,
+                                    height_slider,
+                                    height_slider_label,
+                                ]
+                            ),
+                            plot_output,
+                        ]
+                        display(plot)
+
+                    m.sankee_plot = plot
                     m.addLayer(image1, vis_params, before.value)
                     m.addLayer(image2, vis_params, after.value)
                     m.default_style = {"cursor": "default"}
@@ -2896,10 +3102,13 @@ def sankee_gui(m=None):
                 else:
                     with output:
                         output.clear_output()
-                        print("Use the drawing tool to draw a polygon.")
+                        print("Draw a polygon on the map.")
 
         elif change["new"] == "Reset":
             output.clear_output()
+            plot_output.clear_output()
+            plot_widget.children = []
+
         elif change["new"] == "Close":
             if m is not None:
                 m.toolbar_reset()

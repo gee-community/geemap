@@ -1153,8 +1153,8 @@ def shp_to_geojson(in_shp, out_json=None, **kwargs):
             except Exception as e:
                 raise Exception(e)
 
-        if 'encoding' in kwargs:
-            reader = shapefile.Reader(in_shp, encoding = kwargs.pop('encoding'))
+        if "encoding" in kwargs:
+            reader = shapefile.Reader(in_shp, encoding=kwargs.pop("encoding"))
         else:
             reader = shapefile.Reader(in_shp)
         out_dict = reader.__geo_interface__
@@ -1206,8 +1206,8 @@ def shp_to_ee(in_shp, **kwargs):
     """
     # ee_initialize()
     try:
-        if 'encoding' in kwargs:
-            json_data = shp_to_geojson(in_shp, encoding=kwargs.pop('encoding'))
+        if "encoding" in kwargs:
+            json_data = shp_to_geojson(in_shp, encoding=kwargs.pop("encoding"))
         else:
             json_data = shp_to_geojson(in_shp)
         ee_object = geojson_to_ee(json_data)
