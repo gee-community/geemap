@@ -7617,3 +7617,60 @@ def extract_transect(
 
     except Exception as e:
         raise Exception(e)
+
+
+def random_sampling(
+    image,
+    region=None,
+    scale=None,
+    projection=None,
+    factor=None,
+    numPixels=None,
+    seed=0,
+    dropNulls=True,
+    tileScale=1.0,
+    geometries=True,
+    to_pandas=False,
+):
+    """Samples the pixels of an image, returning them as a FeatureCollection. Each feature will have 1 property per band in the input image. Note that the default behavior is to drop features that intersect masked pixels, which result in null-valued properties (see dropNulls argument).
+
+    Args:
+        image (ee.Image): The image to sample.
+        region (ee.Geometry, optional): The region to sample from. If unspecified, uses the image's whole footprint. Defaults to None.
+        scale (float, optional): A nominal scale in meters of the projection to sample in.. Defaults to None.
+        projection (ee.Projection, optional): The projection in which to sample. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale.. Defaults to None.
+        factor (float, optional): A subsampling factor, within (0, 1]. If specified, 'numPixels' must not be specified. Defaults to no subsampling. Defaults to None.
+        numPixels (int, optional): The approximate number of pixels to sample. If specified, 'factor' must not be specified. Defaults to None.
+        seed (int, optional): A randomization seed to use for subsampling. Defaults to True. Defaults to 0.
+        dropNulls (bool, optional): Post filter the result to drop features that have null-valued properties. Defaults to True.
+        tileScale (float, optional): Post filter the result to drop features that have null-valued properties. Defaults to 1.
+        geometries (bool, optional): If true, adds the center of the sampled pixel as the geometry property of the output feature. Otherwise, geometries will be omitted (saving memory). Defaults to True.
+        to_pandas (bool, optional): Whether to return the result as a pandas dataframe. Defaults to False.
+
+    Raises:
+        TypeError: If the input image is not an ee.Image.
+
+    Returns:
+        ee.FeatureCollection: Random sampled points.
+    """
+    if not isinstance(image, ee.Image):
+        raise TypeError("The image must be ee.Image")
+
+    points = image.sample(
+        **{
+            "region": region,
+            "scale": scale,
+            "projection": projection,
+            "factor": factor,
+            "numPixels": numPixels,
+            "seed": seed,
+            "dropNulls": dropNulls,
+            "tileScale": tileScale,
+            "geometries": geometries,
+        }
+    )
+
+    if to_pandas:
+        return ee_to_pandas(points)
+    else:
+        return points
