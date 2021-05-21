@@ -7285,20 +7285,15 @@ def ee_to_geopandas(ee_object, selectors=None, verbose=False):
         gpd.GeoDataFrame: geopandas.GeoDataFrame
     """
     from pathlib import Path
+    import geopandas as gpd
 
     if not isinstance(ee_object, ee.FeatureCollection):
         raise TypeError("ee_object must be an ee.FeatureCollection")
+    
+    collection = ee_to_geojson(ee_object)
+    gdf = gpd.GeoDataFrame.from_features(collection['features'])
 
-    out_shp = os.path.join(os.getcwd(), random_string(6) + ".shp")
-
-    ee_to_shp(ee_object, out_shp, selectors=selectors, verbose=verbose)
-    df = shp_to_geopandas(out_shp)
-
-    files = Path(os.getcwd()).rglob(os.path.basename(out_shp)[:-4] + "*")
-    for file in files:
-        os.remove(os.path.join(os.getcwd(), str(file)))
-
-    return df
+    return gdf
 
 
 def delete_shp(in_shp, verbose=False):
