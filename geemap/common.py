@@ -1095,14 +1095,8 @@ def ee_to_geojson(ee_object, out_json=None):
                 out_json = os.path.abspath(out_json)
                 if not os.path.exists(os.path.dirname(out_json)):
                     os.makedirs(os.path.dirname(out_json))
-                geojson = open(out_json, "w")
-                geojson.write(
-                    dumps(
-                        {"type": "FeatureCollection", "features": json_object}, indent=2
-                    )
-                    + "\n"
-                )
-                geojson.close()
+                with open(out_json, "w") as geojson:
+                    geojson.write(dumps(json_object, indent=2) + "\n")
             return json_object
         else:
             print("Could not convert the Earth Engine object to geojson")
@@ -1185,9 +1179,8 @@ def shp_to_geojson(in_shp, out_json=None, **kwargs):
         if out_json is not None:
             from json import dumps
 
-            geojson = open(out_json, "w")
-            geojson.write(dumps(out_dict, indent=2) + "\n")
-            geojson.close()
+            with open(out_json, "w") as geojson:
+                geojson.write(dumps(out_dict, indent=2) + "\n")
         else:
             return out_dict
 
@@ -1336,9 +1329,8 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip
 
     try:
         if filetype == "shp":
-            z = zipfile.ZipFile(filename)
-            z.extractall(os.path.dirname(filename))
-            z.close()
+            with zipfile.ZipFile(filename) as z:
+                z.extractall(os.path.dirname(filename))
             if not keep_zip:
                 os.remove(filename)
             filename = filename.replace(".zip", ".shp")
@@ -1607,9 +1599,8 @@ def ee_export_image(
         return
 
     try:
-        z = zipfile.ZipFile(filename_zip)
-        z.extractall(os.path.dirname(filename))
-        z.close()
+        with zipfile.ZipFile(filename_zip) as z:
+            z.extractall(os.path.dirname(filename))
         os.remove(filename_zip)
 
         if file_per_band:
@@ -3940,35 +3931,33 @@ def ee_api_to_csv(outfile=None):
                 items = ""
             details.append(items)
 
-        csv_file = open(outfile, "w", encoding="utf-8")
-        csv_writer = csv.writer(csv_file, delimiter="\t")
-
-        csv_writer.writerow(
-            [
-                "name",
-                "description",
-                "function",
-                "returns",
-                "argument",
-                "type",
-                "details",
-            ]
-        )
-
-        for i in range(len(names)):
-            name = names[i]
-            description = descriptions[i]
-            function = functions[i]
-            return_type = returns[i]
-            argument = "|".join(arguments[i])
-            argu_type = "|".join(types[i])
-            detail = "|".join(details[i])
+        with open(outfile, "w", encoding="utf-8") as csv_file:
+            csv_writer = csv.writer(csv_file, delimiter="\t")
 
             csv_writer.writerow(
-                [name, description, function, return_type, argument, argu_type, detail]
+                [
+                    "name",
+                    "description",
+                    "function",
+                    "returns",
+                    "argument",
+                    "type",
+                    "details",
+                ]
             )
 
-        csv_file.close()
+            for i in range(len(names)):
+                name = names[i]
+                description = descriptions[i]
+                function = functions[i]
+                return_type = returns[i]
+                argument = "|".join(arguments[i])
+                argu_type = "|".join(types[i])
+                detail = "|".join(details[i])
+
+                csv_writer.writerow(
+                    [name, description, function, return_type, argument, argu_type, detail]
+                )
 
     except Exception as e:
         print(e)
