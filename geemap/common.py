@@ -7285,6 +7285,9 @@ def ee_to_geopandas(ee_object, selectors=None, verbose=False):
         gpd.GeoDataFrame: geopandas.GeoDataFrame
     """
     from pathlib import Path
+    
+    check_package(name="geopandas", URL="https://geopandas.org")
+    
     import geopandas as gpd
 
     if not isinstance(ee_object, ee.FeatureCollection):
