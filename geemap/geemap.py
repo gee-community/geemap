@@ -5212,7 +5212,7 @@ class Map(ipyleaflet.Map):
                     Marker(
                         location=point,
                         draggable=False,
-                        popup=widgets.HTML(labels[index]),
+                        popup=widgets.HTML(str(labels[index])),
                     )
                     for index, point in enumerate(points)
                 ]
