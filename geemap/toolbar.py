@@ -7,7 +7,6 @@ import ipywidgets as widgets
 from ipyleaflet import WidgetControl, DrawControl
 from IPython.core.display import display
 from ipyfilechooser import FileChooser
-from ipywidgets.widgets.widget_box import HBox
 from .common import *
 
 
