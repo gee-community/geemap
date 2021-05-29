@@ -1004,9 +1004,6 @@ def csv_to_geopandas(in_csv, latitude="latitude", longitude="longitude"):
         object: GeoDataFrame.
     """
 
-    import json
-    import shapefile
-
     check_package(name="geopandas", URL="https://geopandas.org")
 
     import geopandas as gpd
@@ -3956,7 +3953,15 @@ def ee_api_to_csv(outfile=None):
                 detail = "|".join(details[i])
 
                 csv_writer.writerow(
-                    [name, description, function, return_type, argument, argu_type, detail]
+                    [
+                        name,
+                        description,
+                        function,
+                        return_type,
+                        argument,
+                        argu_type,
+                        detail,
+                    ]
                 )
 
     except Exception as e:
@@ -5226,7 +5231,7 @@ def get_STAC_bands(url, titiler_endpoint="https://api.cogeo.xyz/"):
     import requests
 
     r = requests.get(
-        f"{titiler_endpoint}/stac/info",
+        f"{titiler_endpoint}/stac/assets",
         params={
             "url": url,
         },
@@ -7274,16 +7279,16 @@ def ee_to_geopandas(ee_object, selectors=None, verbose=False):
         gpd.GeoDataFrame: geopandas.GeoDataFrame
     """
     from pathlib import Path
-    
+
     check_package(name="geopandas", URL="https://geopandas.org")
-    
+
     import geopandas as gpd
 
     if not isinstance(ee_object, ee.FeatureCollection):
         raise TypeError("ee_object must be an ee.FeatureCollection")
-    
+
     collection = ee_to_geojson(ee_object)
-    gdf = gpd.GeoDataFrame.from_features(collection['features'])
+    gdf = gpd.GeoDataFrame.from_features(collection["features"])
 
     return gdf
 
@@ -7661,3 +7666,54 @@ def random_sampling(
         return ee_to_pandas(points)
     else:
         return points
+
+
+def geocode_to_gdf(
+    query,
+    which_result=None,
+    by_osmid=False,
+    buffer_dist=None,
+):
+    """Retrieves place(s) by name or ID from the Nominatim API as a GeoDataFrame.
+
+    Args:
+        query (str | dict | list): Query string(s) or structured dict(s) to geocode.
+        which_result (INT, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
+        by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
+        buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
+
+    Returns:
+        GeoDataFrame: A GeoPandas GeoDataFrame.
+    """
+    check_package(
+        "geopandas", "https://geopandas.org/getting_started.html#installation"
+    )
+    check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/")
+
+    try:
+        import osmnx as ox
+
+        gdf = ox.geocode_to_gdf(query, which_result, by_osmid, buffer_dist)
+        return gdf
+    except Exception as e:
+        raise Exception(e)
+
+
+def osm_to_ee(
+    query, which_result=None, by_osmid=False, buffer_dist=None, geodesic=True
+):
+    """Retrieves place(s) by name or ID from the Nominatim API as an ee.FeatureCollection.
+
+    Args:
+        query (str | dict | list): Query string(s) or structured dict(s) to geocode.
+        which_result (INT, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
+        by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
+        buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
+        geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
+
+    Returns:
+        ee.FeatureCollection: An Earth Engine FeatureCollection.
+    """
+    gdf = geocode_to_gdf(query, which_result, by_osmid, buffer_dist)
+    fc = geopandas_to_ee(gdf, geodesic)
+    return fc
