@@ -4983,6 +4983,61 @@ class Map(ipyleaflet.Map):
                     info_mode,
                 )
 
+    def add_osm(
+        self,
+        query,
+        layer_name="Untitled",
+        style={},
+        hover_style={},
+        style_callback=None,
+        fill_colors=["black"],
+        info_mode="on_hover",
+        which_result=None,
+        by_osmid=False,
+        buffer_dist=None,
+        to_ee=False,
+        geodesic=True,
+    ):
+        """Adds OSM data to the map.
+
+        Args:
+            query (str | dict | list): Query string(s) or structured dict(s) to geocode.
+            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            style (dict, optional): A dictionary specifying the style to be used. Defaults to {}.
+            hover_style (dict, optional): Hover style dictionary. Defaults to {}.
+            style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
+            fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
+            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
+            which_result (INT, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
+            by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
+            buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
+            to_ee (bool, optional): Whether to convert the csv to an ee.FeatureCollection.
+            geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
+
+        """
+
+        gdf = osm_to_geopandas(
+            query, which_result=which_result, by_osmid=by_osmid, buffer_dist=buffer_dist
+        )
+        geojson = gdf.__geo_interface__
+
+        if to_ee:
+            fc = geojson_to_ee(geojson, geodesic=geodesic)
+            self.addLayer(fc, {}, layer_name)
+            self.zoomToObject(fc)
+        else:
+            self.add_geojson(
+                geojson,
+                layer_name=layer_name,
+                style=style,
+                hover_style=hover_style,
+                style_callback=style_callback,
+                fill_colors=fill_colors,
+                info_mode=info_mode,
+            )
+            bounds = gdf.bounds.iloc[0]
+            self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
+
     def add_time_slider(
         self,
         ee_object,
