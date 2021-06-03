@@ -1,0 +1,14 @@
+name: geemap
+channels:
+    - conda-forge
+dependencies:
+    - nodejs=14.11
+    - ipyleaflet
+    - jupyterlab=3
+    - geemap
+    - leafmap
+    - xarray_leaflet
+    - geopandas
+    - osmnx
+    - sqlalchemy
+    - psycopg2
