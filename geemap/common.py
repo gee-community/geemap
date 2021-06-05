@@ -2115,6 +2115,8 @@ def download_ee_video(collection, video_args, out_gif):
                 return
 
         video_args["region"] = roi
+    if "dimensions" not in video_args:
+        video_args["dimensions"] = 768
 
     try:
         print("Generating URL...")
@@ -7310,10 +7312,14 @@ def delete_shp(in_shp, verbose=False):
 
     for file in files:
         filepath = os.path.join(in_dir, str(file))
-        os.remove(filepath)
-        if verbose:
-            print(f"Deleted {filepath}")
-
+        try:
+            os.remove(filepath)
+            if verbose:
+                print(f"Deleted {filepath}")
+        except Exception as e:
+            if verbose:
+                print(e)
+                
 
 def pandas_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
     """Converts a pandas DataFrame to ee.FeatureCollection.
