@@ -1202,23 +1202,27 @@ class Map(ipyleaflet.Map):
                             scale = ee_object.select(0).projection().nominalScale()
                         else:
                             scale = self.roi_reducer_scale
-                        dict_values = ee_object.reduceRegion(
+                        dict_values_tmp = ee_object.reduceRegion(
                             reducer=self.roi_reducer,
                             geometry=self.user_roi,
                             scale=scale,
                             bestEffort=True,
                         ).getInfo()
+                        b_names = ee_object.bandNames().getInfo()
+                        dict_values = dict(zip(b_names, [dict_values_tmp[b] for b in b_names]))
                         self.chart_points.append(
                             self.user_roi.centroid(1).coordinates().getInfo()
                         )
                     else:
                         xy = ee.Geometry.Point(latlon[::-1])
-                        dict_values = (
+                        dict_values_tmp = (
                             ee_object.sample(xy, scale=sample_scale)
                             .first()
                             .toDictionary()
                             .getInfo()
                         )
+                        b_names = ee_object.bandNames().getInfo()
+                        dict_values = dict(zip(b_names, [dict_values_tmp[b] for b in b_names]))
                         self.chart_points.append(xy.coordinates().getInfo())
                     band_values = list(dict_values.values())
                     self.chart_values.append(band_values)

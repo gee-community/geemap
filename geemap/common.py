@@ -7494,7 +7494,10 @@ def extract_pixel_values(
     )
 
     if getInfo:
-        return list(dict_values.getInfo().values())
+        band_names = ee_object.bandNames().getInfo()
+        values_tmp = dict_values.getInfo()
+        values = [values_tmp[i] for i in band_names]
+        return dict(zip(band_names, values))
     else:
         return dict_values
 
