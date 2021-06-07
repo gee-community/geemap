@@ -2665,6 +2665,7 @@ def sankee_gui(m=None):
             "NLCD - National Land Cover Database",
             "MCD12Q1 - MODIS Global Land Cover",
             "CGLS - Copernicus Global Land Cover",
+            "LCMS - Land Change Monitoring System"
         ],
         value="NLCD - National Land Cover Database",
         description="Dataset:",
@@ -2675,6 +2676,7 @@ def sankee_gui(m=None):
     NLCD_options = ["2001", "2004", "2006", "2008", "2011", "2013", "2016"]
     MODIS_options = [str(y) for y in range(2001, 2020)]
     CGLS_options = [str(y) for y in range(2015, 2020)]
+    LCMS_options = [str(y) for y in range(1985, 2021)]
 
     before = widgets.Dropdown(
         options=NLCD_options,
@@ -2708,6 +2710,11 @@ def sankee_gui(m=None):
             after.options = CGLS_options
             before.value = CGLS_options[0]
             after.value = CGLS_options[-1]
+        elif change["new"] == "LCMS - Land Change Monitoring System":
+            before.options = LCMS_options
+            after.options = LCMS_options
+            before.value = LCMS_options[0]
+            after.value = LCMS_options[-1]
 
     dataset.observe(dataset_changed, "value")
 
@@ -2715,12 +2722,14 @@ def sankee_gui(m=None):
         "NLCD - National Land Cover Database": sankee.datasets.NLCD2016,
         "MCD12Q1 - MODIS Global Land Cover": sankee.datasets.MODIS_LC_TYPE1,
         "CGLS - Copernicus Global Land Cover": sankee.datasets.CGLS_LC100,
+        "LCMS - Land Change Monitoring System": sankee.datasets.LCMS_LC
     }
 
     band_name = {
         "NLCD - National Land Cover Database": "landcover",
         "MCD12Q1 - MODIS Global Land Cover": "LC_Type1",
         "CGLS - Copernicus Global Land Cover": "discrete_classification",
+        "LCMS - Land Change Monitoring System": "Land_Cover",
     }
 
     samples = widgets.IntText(
@@ -2984,6 +2993,7 @@ def sankee_gui(m=None):
                 print("Running ...")
 
             if m is not None:
+                exclude_classes = []
 
                 if "NLCD" in dataset.value:
                     before_img = ee.Image(f"USGS/NLCD/NLCD{before.value}")
@@ -3023,6 +3033,16 @@ def sankee_gui(m=None):
                         f"COPERNICUS/Landcover/100m/Proba-V-C3/Global/{after.value}"
                     )
                     vis_params = {}
+                elif "LCMS" in dataset.value:
+                    before_img = ee.Image(
+                        f"USFS/GTAC/LCMS/v2020-5/LCMS_CONUS_v2020-5_{before.value}"
+                    )
+                    after_img = ee.Image(
+                        f"USFS/GTAC/LCMS/v2020-5/LCMS_CONUS_v2020-5_{after.value}"
+                    )
+                    vis_params = {}
+                    # LCMS Land Cover class 15 is a no data mask and should be excluded
+                    exclude_classes.append(15)
 
                 img_list = [before_img, after_img]
                 label_list = [before.value, after.value]
@@ -3065,6 +3085,7 @@ def sankee_gui(m=None):
                         max_classes=classes.value,
                         n=int(samples.value),
                         title=plot_title,
+                        exclude=exclude_classes
                     )
 
                     output.clear_output()
