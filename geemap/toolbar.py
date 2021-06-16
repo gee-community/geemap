@@ -3,6 +3,7 @@
 import ee
 import os
 import ipyevents
+import ipyleaflet
 import ipywidgets as widgets
 from ipyleaflet import WidgetControl, DrawControl
 from IPython.core.display import display
@@ -2665,7 +2666,7 @@ def sankee_gui(m=None):
             "NLCD - National Land Cover Database",
             "MCD12Q1 - MODIS Global Land Cover",
             "CGLS - Copernicus Global Land Cover",
-            "LCMS - Land Change Monitoring System"
+            "LCMS - Land Change Monitoring System",
         ],
         value="NLCD - National Land Cover Database",
         description="Dataset:",
@@ -2722,7 +2723,7 @@ def sankee_gui(m=None):
         "NLCD - National Land Cover Database": sankee.datasets.NLCD2016,
         "MCD12Q1 - MODIS Global Land Cover": sankee.datasets.MODIS_LC_TYPE1,
         "CGLS - Copernicus Global Land Cover": sankee.datasets.CGLS_LC100,
-        "LCMS - Land Change Monitoring System": sankee.datasets.LCMS_LC
+        "LCMS - Land Change Monitoring System": sankee.datasets.LCMS_LC,
     }
 
     band_name = {
@@ -3085,7 +3086,7 @@ def sankee_gui(m=None):
                         max_classes=classes.value,
                         n=int(samples.value),
                         title=plot_title,
-                        exclude=exclude_classes
+                        exclude=exclude_classes,
                     )
 
                     output.clear_output()
@@ -3153,3 +3154,94 @@ def sankee_gui(m=None):
             m.tool_control = toolbar_control
     else:
         return toolbar_widget
+
+
+def split_basemaps(
+    m, layers_dict=None, left_name=None, right_name=None, width="120px", **kwargs
+):
+
+    from .basemaps import basemap_tiles
+
+    controls = m.controls
+    layers = m.layers
+    m.layers = [m.layers[0]]
+    m.clear_controls()
+
+    add_zoom = True
+    add_fullscreen = True
+
+    if layers_dict is None:
+        layers_dict = {}
+        keys = dict(basemap_tiles).keys()
+        for key in keys:
+            if isinstance(basemap_tiles[key], ipyleaflet.WMSLayer):
+                pass
+            else:
+                layers_dict[key] = basemap_tiles[key]
+
+    keys = list(layers_dict.keys())
+    if left_name is None:
+        left_name = keys[0]
+    if right_name is None:
+        right_name = keys[-1]
+
+    left_layer = layers_dict[left_name]
+    right_layer = layers_dict[right_name]
+
+    control = ipyleaflet.SplitMapControl(left_layer=left_layer, right_layer=right_layer)
+    m.add_control(control)
+
+    left_dropdown = widgets.Dropdown(
+        options=keys, value=left_name, layout=widgets.Layout(width=width)
+    )
+
+    left_control = ipyleaflet.WidgetControl(widget=left_dropdown, position="topleft")
+    m.add_control(left_control)
+
+    right_dropdown = widgets.Dropdown(
+        options=keys, value=right_name, layout=widgets.Layout(width=width)
+    )
+
+    right_control = ipyleaflet.WidgetControl(widget=right_dropdown, position="topright")
+    m.add_control(right_control)
+
+    close_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Close the tool",
+        icon="times",
+        # button_style="primary",
+        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
+    )
+
+    def close_btn_click(change):
+        if change["new"]:
+            m.controls = controls
+            m.layers = layers
+
+    close_button.observe(close_btn_click, "value")
+    close_control = ipyleaflet.WidgetControl(
+        widget=close_button, position="bottomright"
+    )
+    m.add_control(close_control)
+
+    if add_zoom:
+        m.add_control(ipyleaflet.ZoomControl())
+    if add_fullscreen:
+        m.add_control(ipyleaflet.FullScreenControl())
+    m.add_control(ipyleaflet.ScaleControl(position="bottomleft"))
+
+    split_control = None
+    for ctrl in m.controls:
+        if isinstance(ctrl, ipyleaflet.SplitMapControl):
+            split_control = ctrl
+            break
+
+    def left_change(change):
+        split_control.left_layer.url = layers_dict[left_dropdown.value].url
+
+    left_dropdown.observe(left_change, "value")
+
+    def right_change(change):
+        split_control.right_layer.url = layers_dict[right_dropdown.value].url
+
+    right_dropdown.observe(right_change, "value")

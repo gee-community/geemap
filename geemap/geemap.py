@@ -669,6 +669,18 @@ class Map(ipyleaflet.Map):
                 "name": "sankee",
                 "tooltip": "Sankey plots",
             },
+            "adjust": {
+                "name": "planet",
+                "tooltip": "Planet imagery",
+            },
+            "smile-o": {
+                "name": "placehold",
+                "tooltip": "This is a placehold",
+            },
+            "spinner": {
+                "name": "placehold2",
+                "tooltip": "This is a placehold",
+            },
             "question": {
                 "name": "help",
                 "tooltip": "Get help",
@@ -809,6 +821,12 @@ class Map(ipyleaflet.Map):
                     from .toolbar import sankee_gui
 
                     sankee_gui(self)
+                elif tool_name == "planet":
+                    from .toolbar import split_basemaps
+
+                    split_basemaps(self, layers_dict=planet_tiles())
+                    self.toolbar_reset()
+
                 elif tool_name == "help":
                     import webbrowser
 
@@ -1209,7 +1227,9 @@ class Map(ipyleaflet.Map):
                             bestEffort=True,
                         ).getInfo()
                         b_names = ee_object.bandNames().getInfo()
-                        dict_values = dict(zip(b_names, [dict_values_tmp[b] for b in b_names]))
+                        dict_values = dict(
+                            zip(b_names, [dict_values_tmp[b] for b in b_names])
+                        )
                         self.chart_points.append(
                             self.user_roi.centroid(1).coordinates().getInfo()
                         )
@@ -1222,7 +1242,9 @@ class Map(ipyleaflet.Map):
                             .getInfo()
                         )
                         b_names = ee_object.bandNames().getInfo()
-                        dict_values = dict(zip(b_names, [dict_values_tmp[b] for b in b_names]))
+                        dict_values = dict(
+                            zip(b_names, [dict_values_tmp[b] for b in b_names])
+                        )
                         self.chart_points.append(xy.coordinates().getInfo())
                     band_values = list(dict_values.values())
                     self.chart_values.append(band_values)
@@ -5283,6 +5305,36 @@ class Map(ipyleaflet.Map):
 
         self.default_style = {"cursor": "default"}
 
+    def add_planet_by_month(
+        self, year=2016, month=1, name=None, api_key=None, token_name="PLANET_API_KEY"
+    ):
+        """Adds a Planet global mosaic by month to the map. To get a Planet API key, see https://developers.planet.com/quickstart/apis
+
+        Args:
+            year (int, optional): The year of Planet global mosaic, must be >=2016. Defaults to 2016.
+            month (int, optional): The month of Planet global mosaic, must be 1-12. Defaults to 1.
+            name (str, optional): The layer name to use. Defaults to None.
+            api_key (str, optional): The Planet API key. Defaults to None.
+            token_name (str, optional): The environment variable name of the API key. Defaults to "PLANET_API_KEY".
+        """
+        layer = planet_tile_by_month(year, month, name, api_key, token_name)
+        self.add_layer(layer)
+
+    def add_planet_by_quarter(
+        self, year=2016, quarter=1, name=None, api_key=None, token_name="PLANET_API_KEY"
+    ):
+        """Adds a Planet global mosaic by quarter to the map. To get a Planet API key, see https://developers.planet.com/quickstart/apis
+
+        Args:
+            year (int, optional): The year of Planet global mosaic, must be >=2016. Defaults to 2016.
+            quarter (int, optional): The quarter of Planet global mosaic, must be 1-12. Defaults to 1.
+            name (str, optional): The layer name to use. Defaults to None.
+            api_key (str, optional): The Planet API key. Defaults to None.
+            token_name (str, optional): The environment variable name of the API key. Defaults to "PLANET_API_KEY".
+        """
+        layer = planet_tile_by_quarter(year, quarter, name, api_key, token_name)
+        self.add_layer(layer)
+
 
 # The functions below are outside the Map class.
 
@@ -5436,3 +5488,95 @@ def linked_maps(
             grid[i, j] = output
 
     return grid
+
+
+def ts_inspector(
+    layers_dict=None,
+    left_name=None,
+    right_name=None,
+    width="120px",
+    center=[40, -100],
+    zoom=4,
+    **kwargs,
+):
+
+    import ipywidgets as widgets
+
+    add_zoom = True
+    add_fullscreen = True
+
+    if "data_ctrl" not in kwargs:
+        kwargs["data_ctrl"] = False
+    if "toolbar_ctrl" not in kwargs:
+        kwargs["toolbar_ctrl"] = False
+    if "draw_ctrl" not in kwargs:
+        kwargs["draw_ctrl"] = False
+    if "measure_ctrl" not in kwargs:
+        kwargs["measure_ctrl"] = False
+    if "zoom_ctrl" not in kwargs:
+        kwargs["zoom_ctrl"] = False
+    else:
+        add_zoom = kwargs["zoom_ctrl"]
+    if "fullscreen_ctrl" not in kwargs:
+        kwargs["fullscreen_ctrl"] = False
+    else:
+        add_fullscreen = kwargs["fullscreen_ctrl"]
+
+    if layers_dict is None:
+        layers_dict = {}
+        keys = dict(basemap_tiles).keys()
+        for key in keys:
+            if isinstance(basemap_tiles[key], ipyleaflet.WMSLayer):
+                pass
+            else:
+                layers_dict[key] = basemap_tiles[key]
+
+    keys = list(layers_dict.keys())
+    if left_name is None:
+        left_name = keys[0]
+    if right_name is None:
+        right_name = keys[-1]
+
+    left_layer = layers_dict[left_name]
+    right_layer = layers_dict[right_name]
+
+    m = Map(center=center, zoom=zoom, google_map=None, **kwargs)
+    control = ipyleaflet.SplitMapControl(left_layer=left_layer, right_layer=right_layer)
+    m.add_control(control)
+
+    left_dropdown = widgets.Dropdown(
+        options=keys, value=left_name, layout=widgets.Layout(width=width)
+    )
+
+    left_control = ipyleaflet.WidgetControl(widget=left_dropdown, position="topleft")
+    m.add_control(left_control)
+
+    right_dropdown = widgets.Dropdown(
+        options=keys, value=right_name, layout=widgets.Layout(width=width)
+    )
+
+    right_control = ipyleaflet.WidgetControl(widget=right_dropdown, position="topright")
+    m.add_control(right_control)
+
+    if add_zoom:
+        m.add_control(ipyleaflet.ZoomControl())
+    if add_fullscreen:
+        m.add_control(ipyleaflet.FullScreenControl())
+
+    split_control = None
+    for ctrl in m.controls:
+        if isinstance(ctrl, ipyleaflet.SplitMapControl):
+            split_control = ctrl
+            break
+
+    def left_change(change):
+        split_control.left_layer.url = layers_dict[left_dropdown.value].url
+
+    left_dropdown.observe(left_change, "value")
+
+    def right_change(change):
+        split_control.right_layer.url = layers_dict[right_dropdown.value].url
+
+    right_dropdown.observe(right_change, "value")
+
+    return m
