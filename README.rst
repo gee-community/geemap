@@ -142,16 +142,17 @@ To use **geemap**, you must first `sign up <https://earthengine.google.com/signu
 
 .. code:: python
 
-  conda create -n gee python
+  conda create -n gee python=3.8
   conda activate gee
+  conda install geopandas
   conda install mamba -c conda-forge
-  mamba install geemap -c conda-forge 
+  mamba install geemap xarray_leaflet -c conda-forge 
 
 Optionally, you can install `Jupyter notebook extensions <https://github.com/ipython-contrib/jupyter_contrib_nbextensions>`__, which can improve your productivity in the notebook environment. Some useful extensions include Table of Contents, Gist-it, Autopep8, Variable Inspector, etc. See this `post <https://towardsdatascience.com/jupyter-notebook-extensions-517fa69d2231>`__ for more information.       
 
 .. code:: python
 
-  mamba install jupyter_contrib_nbextensions -c conda-forge 
+  conda install jupyter_contrib_nbextensions -c conda-forge 
 
 
 If you have installed **geemap** before and want to upgrade to the latest version, you can run the following command in your terminal:
@@ -165,7 +166,7 @@ If you use conda, you can update geemap to the latest version by running the fol
   
 .. code:: python
 
-  mamba update -c conda-forge geemap
+  conda update -c conda-forge geemap
 
 
 To install the development version from GitHub using `Git <https://git-scm.com/>`__, run the following command in your terminal:
