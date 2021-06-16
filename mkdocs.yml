@@ -148,6 +148,8 @@ nav:
           - notebooks/74_csv_to_points.ipynb
           - notebooks/75_sankee.ipynb
           - notebooks/76_osm_to_ee.ipynb
+          - notebooks/77_planet_imagery.ipynb
+          - notebooks/78_ts_inspector.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
