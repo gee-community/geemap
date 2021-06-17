@@ -5653,6 +5653,7 @@ def zonal_statistics(
         return
 
     allowed_statistics = {
+        "COUNT": ee.Reducer.count()
         "MEAN": ee.Reducer.mean(),
         "MAXIMUM": ee.Reducer.max(),
         "MEDIAN": ee.Reducer.median(),
