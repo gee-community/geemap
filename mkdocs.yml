@@ -175,6 +175,7 @@ nav:
                 - notebooks/netcdf.ipynb
                 - notebooks/notebook_template.ipynb
                 - notebooks/oil_palm_and_rubber_plantation.ipynb
+                - notebooks/otsu.ipynb
                 - notebooks/qgis_layer_style_file.ipynb
                 - notebooks/random_sampling.ipynb
                 - notebooks/select_features.ipynb
