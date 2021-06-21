@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.8.17 - JUne 20, 2021
+
+**New Features**:
+
+-   Added Planet global mosaic [#527](https://github.com/giswqs/geemap/issues/527)
+-   Add LCMS dataset option for sankee [#517](https://github.com/giswqs/geemap/issues/517)
+-   Added add_osm function [#503](https://github.com/giswqs/geemap/discussions/503)
+
+**Improvement**:
+
+-   Added otsu example [#535](https://github.com/giswqs/geemap/discussions/535)
+-   Fixed timeseries plotting bug [#513](https://github.com/giswqs/geemap/discussions/513)
+-   Fixed shp deletion bug [#509](https://github.com/giswqs/geemap/discussions/509)
+-   Fixed csv_to_points bug [#490](https://github.com/giswqs/geemap/discussions/490)
+-   Improved ee_to_geojson [#486](https://github.com/giswqs/geemap/pull/486)
+-   Improved random sampling notebook [#479](https://github.com/giswqs/geemap/discussions/479)
+-   Fixed link bug [#480](https://github.com/giswqs/geemap/issues/480)
+-   Improved sankee notebook [#471](https://github.com/giswqs/geemap/issues/471)
+-   Updated installation docs
+-   Added binder env
+
 ## v0.8.16 - May 10, 2021
 
 **New Features**:
