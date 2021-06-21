@@ -9,7 +9,7 @@ geocoder
 googledrivedownloader
 ipyevents
 ipyfilechooser
-ipyleaflet<=0.13.3
+ipyleaflet>=0.14.0
 ipynb-py-convert
 ipytree
 matplotlib
