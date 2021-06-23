@@ -181,8 +181,98 @@ def feature_byProperty(features, xProperties, seriesProperty, **kwargs):
 
 
 def feature_groups(features, xProperty, yProperty, seriesProperty, **kwargs):
-    # TODO
-    pass
+    """Generates a Chart from a set of features.
+    Plots the value of one property for each feature.
+    Reference:
+    https://developers.google.com/earth-engine/guides/charts_feature#uichartfeaturegroups
+
+    Args:
+        features (ee.FeatureCollection): The feature collection to make a chart from.
+        xProperty (str): Features labeled by xProperty.
+        yProperty (str): Features labeled by yProperty.
+        seriesProperty (str): The property used to label each feature in the legend.
+
+    Raises:
+        Exception: Errors when creating the chart.
+    """
+
+    try:
+        df = ee_to_pandas(features)
+        df[yProperty] = pd.to_numeric(df[yProperty])
+        unique_series_values = df[seriesProperty].unique().tolist()
+        new_column_names = []
+
+        for value in unique_series_values:
+            sample_filter = (df[seriesProperty] == value).map({True: 1, False: 0})
+            column_name = str(yProperty) + "_" + str(value)
+            df[column_name] = df[yProperty] * sample_filter
+            new_column_names.append(column_name)
+
+        if "labels" in kwargs:
+            labels = kwargs["labels"]
+        else:
+            labels = [str(x) for x in unique_series_values]
+
+        if "ylim" in kwargs:
+            min_value = kwargs["ylim"][0]
+            max_value = kwargs["ylim"][1]
+        else:
+            min_value = df[yProperty].to_numpy().min()
+            max_value = df[yProperty].to_numpy().max()
+            max_value = max_value + 0.2 * (max_value - min_value)
+
+        if "title" not in kwargs:
+            title = ""
+        else:
+            title = kwargs["title"]
+        if "legend_location" not in kwargs:
+            legend_location = "top-left"
+        else:
+            legend_location = kwargs["legend_location"]
+
+        x_data = list(df[xProperty])
+        y_data = [df[x] for x in new_column_names]
+
+        plt.bar(x_data, y_data)
+        fig = plt.figure(
+            title=title,
+            legend_location=legend_location,
+        )
+
+        if "width" in kwargs:
+            fig.layout.width = kwargs["width"]
+        if "height" in kwargs:
+            fig.layout.height = kwargs["height"]
+
+        if "display_legend" not in kwargs:
+            display_legend = True
+        else:
+            display_legend = kwargs["display_legend"]
+
+        bar_chart = plt.bar(
+            x_data, y_data, labels=labels, display_legend=display_legend
+        )
+
+        if "colors" in kwargs:
+            bar_chart.colors = kwargs["colors"]
+
+        if "xlabel" in kwargs:
+            plt.xlabel(kwargs["xlabel"])
+        if "ylabel" in kwargs:
+            plt.ylabel(kwargs["ylabel"])
+        plt.ylim(min_value, max_value)
+
+        if "xlabel" in kwargs and ("ylabel" in kwargs):
+            bar_chart.tooltip = Tooltip(
+                fields=["x", "y"], labels=[kwargs["xlabel"], kwargs["ylabel"]]
+            )
+        else:
+            bar_chart.tooltip = Tooltip(fields=["x", "y"])
+
+        plt.show()
+
+    except Exception as e:
+        raise Exception(e)
 
 
 def feature_histogram(features, property, maxBuckets, minBucketWidth, maxRaw, **kwargs):
