@@ -2244,6 +2244,12 @@ class Map(ipyleaflet.Map):
             right_layer (str, optional): The right tile layer. Defaults to 'ESRI'.
         """
         try:
+            controls = self.controls
+            layers = self.layers
+            self.clear_controls()
+
+            self.add_control(ipyleaflet.ZoomControl())
+            self.add_control(ipyleaflet.FullScreenControl())
             if left_layer in basemap_tiles.keys():
                 left_layer = basemap_tiles[left_layer]
 
@@ -2253,7 +2259,29 @@ class Map(ipyleaflet.Map):
             control = ipyleaflet.SplitMapControl(
                 left_layer=left_layer, right_layer=right_layer
             )
+
+            close_button = widgets.ToggleButton(
+                value=False,
+                tooltip="Close split-panel map",
+                icon="times",
+                layout=widgets.Layout(
+                    height="28px", width="28px", padding="0px 0px 0px 4px"
+                ),
+            )
+
+            def close_btn_click(change):
+                if change["new"]:
+                    self.controls = controls
+                    self.layers = layers[:-1]
+                    self.add_layer(layers[-1])
+
+            close_button.observe(close_btn_click, "value")
+            close_control = ipyleaflet.WidgetControl(
+                widget=close_button, position="bottomright"
+            )
+
             self.add_control(control)
+            self.add_control(close_control)
 
         except Exception as e:
             print("The provided layers are invalid!")
