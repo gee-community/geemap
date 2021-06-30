@@ -67,7 +67,6 @@ def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER")
         # calculate fraction of samples of the same class in a leaf
         # currrently only supporting binary classifications
         # check if n classes == 2 (i.e. binary classes)
-        print(raw_vals.shape)
         if raw_vals.shape[-1] != 2:
             raise ValueError("shape mismatch: outputs from trees = {raw_vals.shape[-1]} classes, currently probability ouputs is support for binary classifications")
 
