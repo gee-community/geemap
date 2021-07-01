@@ -33,15 +33,15 @@ def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER")
     thresholds = estimator.tree_.threshold
     features = [feature_names[i] for i in feature_idx]
 
-    raw_vals = estimator.tree_.value
+    raw_vals = np.squeeze(estimator.tree_.value)
 
     # first check if user wants to infer output mode
     # if so, reset the output_mode variable to a valid mode
     if output_mode == "INFER":
-        if raw_vals.ndim == 3:
+        if raw_vals.ndim == 2:
             output_mode = "CLASSIFICATION"
 
-        elif raw_vals.ndim == 2:
+        elif raw_vals.ndim == 1:
             output_mode = "REGRESSION"
 
         else:
@@ -50,15 +50,46 @@ def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER")
     # second check on the output mode after the inference
     if output_mode == "CLASSIFICATION":
         # take argmax along class axis from values
-        values = np.squeeze(raw_vals.argmax(axis=-1))
+        values = raw_vals.argmax(axis=-1)
         if labels is not None:
             index_labels = np.unique(values)
             lookup = {idx:labels[i] for i,idx in enumerate(index_labels)}
             values = [lookup[v] for v in values]
 
+        out_type = int
+
     elif output_mode == "REGRESSION":
         # take values and drop un needed axis
-        values = np.squeeze(raw_vals)
+        values = np.around(raw_vals,decimals=6)
+        out_type = float
+
+    elif output_mode == "PROBABILITY":
+        # calculate fraction of samples of the same class in a leaf
+        # currrently only supporting binary classifications
+        # check if n classes == 2 (i.e. binary classes)
+        if raw_vals.shape[-1] != 2:
+            raise ValueError("shape mismatch: outputs from trees = {raw_vals.shape[-1]} classes, currently probability ouputs is support for binary classifications")
+
+        probas = np.around(
+            (raw_vals / np.sum(raw_vals,axis=1)[:,np.newaxis]),
+            decimals=6
+        )
+
+        values = probas[:,-1]
+        out_type = float
+
+    elif output_mode == "MULTIPROBABILITY":
+            # calculate fraction of samples of the same class in a leaf
+            # this is a 2-d array making the output multidimensional
+            raise NotImplementedError("Currently multiprobability output is not support, please choose one of the following output modes: ['CLASSIFIATION', 'REGRESSION', 'PROBABILITY' or 'INFER']")
+
+            probas = np.around(
+                (raw_vals / np.sum(raw_vals,axis=1)[:,np.newaxis]),
+                decimals=6
+            )
+
+            values = probas.tolist()
+            out_type = list
 
     else:
         raise RuntimeError(
@@ -97,7 +128,8 @@ def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER")
             "threshold": thresholds,
             "feature_name": features,
             "sign": ["<="] * n_nodes,
-        }
+        },
+        dtype='object'
     )
 
     # the table representation does not have lef vs right node structure
@@ -147,7 +179,7 @@ def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER")
                 cnt = cnts[row.Index - 1] + 1
 
             if node_depth == (max_depth - 1):
-                value = float(ordered_df.iloc[row.Index + 1].value)
+                value = out_type(ordered_df.iloc[row.Index + 1].value)
                 samps = int(ordered_df.iloc[row.Index + 1].n_samples)
                 criterion = float(ordered_df.iloc[row.Index + 1].criterion)
                 tail = " *\n"
@@ -164,7 +196,7 @@ def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER")
                 ):
                     rowx = ordered_df.loc[ordered_df.node_id == left].iloc[0]
                     tail = " *\n"
-                    value = float(rowx.value)
+                    value = out_type(rowx.value)
                     samps = int(rowx.n_samples)
                     criterion = float(rowx.criterion)
 
@@ -180,12 +212,12 @@ def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER")
                 ):
                     rowx = ordered_df.loc[ordered_df.node_id == right].iloc[0]
                     tail = " *\n"
-                    value = float(rowx.value)
+                    value = out_type(rowx.value)
                     samps = int(rowx.n_samples)
                     criterion = float(rowx.criterion)
 
                 else:
-                    value = float(row.value)
+                    value = out_type(row.value)
                     samps = int(row.n_samples)
                     criterion = float(row.criterion)
                     tail = "\n"
@@ -196,7 +228,7 @@ def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER")
             tresh = float(row.threshold)  # threshold
             sign = str(row.sign)
 
-            tree_str += f"{spacing}{cnt}) {fname} {sign} {tresh:.6f} {samps} {criterion:.4f} {value:.6f}{tail}"
+            tree_str += f"{spacing}{cnt}) {fname} {sign} {tresh:.6f} {samps} {criterion:.4f} {value}{tail}"
             previous_depth = node_depth
         cnts.append(cnt)
 
@@ -222,13 +254,13 @@ def rf_to_strings(estimator, feature_names, processes=2, output_mode="INFER"):
     # force output mode to be capital
     output_mode = output_mode.upper()
 
-    available_modes = ["INFER","CLASSIFICATION","REGRESSION"]
+    available_modes = ["INFER","CLASSIFICATION","REGRESSION","PROBABILITY"]
 
     if output_mode not in available_modes:
         raise ValueError(f"The provided output_mode is not available, please provide one from the following list: {available_modes}")
 
     # extract out the estimator trees
-    estimators = estimator.estimators_
+    estimators = np.squeeze(estimator.estimators_)
 
     if output_mode == "INFER":
         if estimator.criterion in ["gini","entropy"]:
