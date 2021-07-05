@@ -185,13 +185,11 @@ def feature_groups(features, xProperty, yProperty, seriesProperty, **kwargs):
     Plots the value of one property for each feature.
     Reference:
     https://developers.google.com/earth-engine/guides/charts_feature#uichartfeaturegroups
-
     Args:
         features (ee.FeatureCollection): The feature collection to make a chart from.
         xProperty (str): Features labeled by xProperty.
         yProperty (str): Features labeled by yProperty.
         seriesProperty (str): The property used to label each feature in the legend.
-
     Raises:
         Exception: Errors when creating the chart.
     """
@@ -275,9 +273,137 @@ def feature_groups(features, xProperty, yProperty, seriesProperty, **kwargs):
         raise Exception(e)
 
 
-def feature_histogram(features, property, maxBuckets, minBucketWidth, maxRaw, **kwargs):
-    # TODO
-    pass
+
+def feature_histogram(features, property, maxBuckets=None, minBucketWidth=None, **kwargs):
+    """
+    Generates a Chart from a set of features. 
+    Computes and plots a histogram of the given property.
+    - X-axis = Histogram buckets (of property value).
+    - Y-axis = Frequency
+    
+    Reference: 
+    https://developers.google.com/earth-engine/guides/charts_feature#uichartfeaturehistogram
+
+    Args:
+        features  (ee.FeatureCollection): The features to include in the chart.
+        property                   (str): The name of the property to generate the histogram for.
+        maxBuckets       (int, optional): The maximum number of buckets (bins) to use when building a histogram; 
+                                          will be rounded up to a power of 2.
+        minBucketWidth (float, optional): The minimum histogram bucket width, or null to allow any power of 2.
+
+    Raises:
+        Exception: If the provided xProperties is not a list or dict.
+        Exception: If the chart fails to create.
+    """
+    import math
+    
+    def nextPowerOf2(n):
+        return pow(2, math.ceil(math.log2(n)))
+    
+    def grow_bin(bin_size,ref):
+        while bin_size < ref:
+            bin_size *= 2
+        return bin_size
+
+    try:
+        
+        raw_data = pd.to_numeric(pd.Series(features.aggregate_array(property).getInfo()))
+        y_data = raw_data.tolist()
+        
+        if "ylim" in kwargs:
+            min_value = kwargs["ylim"][0]
+            max_value = kwargs["ylim"][1]
+        else:
+            min_value = raw_data.min()
+            max_value = raw_data.max()
+        
+        data_range = max_value - min_value
+        
+        if not maxBuckets:
+            initial_bin_size = nextPowerOf2(data_range / pow(2,8))
+            if minBucketWidth:
+                if minBucketWidth < initial_bin_size:
+                    bin_size = grow_bin(minBucketWidth,initial_bin_size)
+                else:
+                    bin_size = minBucketWidth
+            else:
+                bin_size = initial_bin_size
+        else:
+            initial_bin_size = math.ceil(data_range / nextPowerOf2(maxBuckets))
+            if minBucketWidth:
+                if minBucketWidth < initial_bin_size:
+                    bin_size = grow_bin(minBucketWidth,initial_bin_size)
+                else:
+                    bin_size = minBucketWidth
+            else:
+                bin_size = initial_bin_size
+        
+        start_bins = (math.floor(min_value / bin_size) * bin_size) - (bin_size/2)
+        end_bins = (math.ceil(max_value / bin_size) * bin_size) + (bin_size/2)
+        
+        if start_bins < min_value:
+            y_data.append(start_bins)
+        else:
+            y_data[y_data.index(min_value)] = start_bins
+        if end_bins > max_value:
+            y_data.append(end_bins)
+        else:
+            y_data[y_data.index(max_value)] = end_bins
+            
+        num_bins = math.floor((end_bins - start_bins) / bin_size)
+        
+        if "title" not in kwargs:
+            title = ""
+        else:
+            title = kwargs["title"]
+
+        fig = plt.figure(title=title)
+        
+        if "width" in kwargs:
+            fig.layout.width = kwargs["width"]
+        if "height" in kwargs:
+            fig.layout.height = kwargs["height"]
+            
+        if "xlabel" not in kwargs:
+            xlabel=""
+        else:
+            xlabel= kwargs["xlabel"]
+            
+        if "ylabel" not in kwargs:
+            ylabel=""
+        else:
+            ylabel= kwargs["ylabel"]
+
+        histogram = plt.hist(
+            sample = y_data, 
+            bins=num_bins, 
+            axes_options={
+                'count':{'label':ylabel},
+                'sample':{'label':xlabel}
+            }
+        )
+        
+        if "colors" in kwargs:
+            histogram.colors = kwargs["colors"]
+        if "stroke" in kwargs:
+            histogram.stroke = kwargs["stroke"]
+        else:
+            histogram.stroke = "#ffffff00"
+        if "stroke_width" in kwargs:
+            histogram.stroke_width = kwargs["stroke_width"]
+        else:
+            histogram.stroke_width = 0
+
+        if ("xlabel" in kwargs) and ("ylabel" in kwargs):
+            histogram.tooltip = Tooltip(
+                fields=["midpoint", "count"], labels=[kwargs["xlabel"], kwargs["ylabel"]]
+            )
+        else:
+            histogram.tooltip = Tooltip(fields=["midpoint", "count"])
+        plt.show()
+        
+    except Exception as e:
+        raise Exception(e)
 
 
 def image_byClass(
