@@ -818,7 +818,7 @@ def edit_download_html(htmlWidget, filename, title="Click here to download: "):
 ########################################
 
 
-def xy_to_points(in_csv, latitude="latitude", longitude="longitude"):
+def xy_to_points(in_csv, latitude="latitude", longitude="longitude", encoding="utf-8"):
     """Converts a csv containing points (latitude and longitude) into an ee.FeatureCollection.
 
     Args:
@@ -830,29 +830,9 @@ def xy_to_points(in_csv, latitude="latitude", longitude="longitude"):
         ee.FeatureCollection: The ee.FeatureCollection containing the points converted from the input csv.
     """
 
-    if in_csv.startswith("http") and in_csv.endswith(".csv"):
-        out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-        out_name = os.path.basename(in_csv)
-
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
-        download_from_url(in_csv, out_dir=out_dir, verbose=False)
-        in_csv = os.path.join(out_dir, out_name)
-
-    in_csv = os.path.abspath(in_csv)
-    if not os.path.exists(in_csv):
-        raise Exception("The provided csv file does not exist.")
-
-    points = []
-    with open(in_csv, encoding="utf-8") as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            lat, lon = float(row[latitude]), float(row[longitude])
-            points.append([lon, lat])
-
-    ee_list = ee.List(points)
-    ee_points = ee_list.map(lambda xy: ee.Feature(ee.Geometry.Point(xy)))
-    return ee.FeatureCollection(ee_points)
+    geojson = csv_to_geojson(in_csv, None, latitude, longitude, encoding)
+    fc = geojson_to_ee(geojson)
+    return fc
 
 
 def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude"):
@@ -936,7 +916,11 @@ def csv_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude"):
 
 
 def csv_to_geojson(
-    in_csv, out_geojson=None, latitude="latitude", longitude="longitude"
+    in_csv,
+    out_geojson=None,
+    latitude="latitude",
+    longitude="longitude",
+    encoding="utf-8",
 ):
     """Creates points for a CSV file and exports data as a GeoJSON.
 
@@ -945,60 +929,106 @@ def csv_to_geojson(
         out_geojson (str): The file path to the exported GeoJSON. Default to None.
         latitude (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
         longitude (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
+        encoding (str, optional): The encoding of characters. Defaults to "utf-8".
 
     """
 
     import json
-    import shapefile
+    import pandas as pd
 
     if out_geojson is not None:
-        out_dir = os.path.dirname(out_geojson)
-    else:
-        out_dir = os.path.expanduser("~/Downloads")
+        out_dir = os.path.dirname(os.path.abspath(out_geojson))
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
 
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
-
-    out_shp = os.path.join(out_dir, random_string() + ".shp")
-
-    csv_to_shp(in_csv, out_shp, latitude=latitude, longitude=longitude)
-    sf = shapefile.Reader(out_shp)
-    geojson = sf.__geo_interface__
-
-    delete_shp(out_shp, verbose=False)
+    df = pd.read_csv(in_csv)
+    geojson = pandas_to_geojson(
+        df, latitude=latitude, longitude=longitude, encoding=encoding
+    )
 
     if out_geojson is None:
         return geojson
     else:
-        with open(out_geojson, "w", encoding="utf-8") as f:
+        with open(out_geojson, "w", encoding=encoding) as f:
             f.write(json.dumps(geojson))
 
 
-def csv_to_ee(in_csv, latitude="latitude", longitude="longitude", geodesic=True):
+def pandas_to_geojson(
+    df,
+    out_geojson=None,
+    latitude="latitude",
+    longitude="longitude",
+    encoding="utf-8",
+):
+    """Creates points for a Pandas DataFrame and exports data as a GeoJSON.
+
+    Args:
+        df (pandas.DataFrame): The input Pandas DataFrame.
+        out_geojson (str): The file path to the exported GeoJSON. Default to None.
+        latitude (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
+        longitude (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
+        encoding (str, optional): The encoding of characters. Defaults to "utf-8".
+
+    """
+
+    import json
+    from geojson import Feature, FeatureCollection, Point
+
+    if out_geojson is not None:
+        out_dir = os.path.dirname(os.path.abspath(out_geojson))
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+
+    features = df.apply(
+        lambda row: Feature(
+            geometry=Point((float(row[longitude]), float(row[latitude]))),
+            properties=dict(row),
+        ),
+        axis=1,
+    ).tolist()
+
+    geojson = FeatureCollection(features=features)
+
+    if out_geojson is None:
+        return geojson
+    else:
+        with open(out_geojson, "w", encoding=encoding) as f:
+            f.write(json.dumps(geojson))
+
+
+def csv_to_ee(
+    in_csv, latitude="latitude", longitude="longitude", encoding="utf-8", geodesic=True
+):
     """Creates points for a CSV file and exports data as a GeoJSON.
 
     Args:
         in_csv (str): The file path to the input CSV file.
         latitude (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
         longitude (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
+        encoding (str, optional): The encoding of characters. Defaults to "utf-8".
         geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
 
     Returns:
         ee_object: An ee.Geometry object
     """
 
-    geojson = csv_to_geojson(in_csv, latitude=latitude, longitude=longitude)
+    geojson = csv_to_geojson(
+        in_csv, latitude=latitude, longitude=longitude, encoding=encoding
+    )
     fc = geojson_to_ee(geojson, geodesic=geodesic)
     return fc
 
 
-def csv_to_geopandas(in_csv, latitude="latitude", longitude="longitude"):
+def csv_to_geopandas(
+    in_csv, latitude="latitude", longitude="longitude", encoding="utf-8"
+):
     """Creates points for a CSV file and converts them to a GeoDataFrame.
 
     Args:
         in_csv (str): The file path to the input CSV file.
         latitude (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
         longitude (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
+        encoding (str, optional): The encoding of characters. Defaults to "utf-8".
 
     Returns:
         object: GeoDataFrame.
@@ -1008,16 +1038,13 @@ def csv_to_geopandas(in_csv, latitude="latitude", longitude="longitude"):
 
     import geopandas as gpd
 
-    out_dir = os.path.expanduser("~/Downloads")
-    if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
+    out_dir = os.getcwd()
 
-    out_shp = os.path.join(out_dir, random_string() + ".shp")
+    out_geojson = os.path.join(out_dir, random_string() + ".geojson")
+    csv_to_geojson(in_csv, out_geojson, latitude, longitude, encoding)
 
-    csv_to_shp(in_csv, out_shp, latitude=latitude, longitude=longitude)
-
-    gdf = gpd.read_file(out_shp)
-    delete_shp(out_shp)
+    gdf = gpd.read_file(out_geojson)
+    os.remove(out_geojson)
     return gdf
 
 
@@ -7340,11 +7367,8 @@ def pandas_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
     if not isinstance(df, pd.DataFrame):
         raise TypeError("The input data type must be pandas.DataFrame.")
 
-    out_csv = os.path.join(os.getcwd(), random_string(6) + ".csv")
-    df.to_csv(out_csv, **kwargs)
-
-    fc = xy_to_points(out_csv, latitude=latitude, longitude=longitude)
-    os.remove(out_csv)
+    geojson = pandas_to_geojson(df, latitude=latitude, longitude=longitude)
+    fc = geojson_to_ee(geojson)
 
     return fc
 

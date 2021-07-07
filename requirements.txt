@@ -6,6 +6,7 @@ ffmpeg-python
 folium>=0.11.0
 geeadd>=0.5.1
 geocoder
+geojson
 googledrivedownloader
 ipyevents
 ipyfilechooser
