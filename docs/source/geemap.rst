@@ -28,10 +28,10 @@ geemap.conversion module
    :undoc-members:
    :show-inheritance:
 
-geemap.eefolium module
+geemap.foliumap module
 ----------------------
 
-.. automodule:: geemap.eefolium
+.. automodule:: geemap.foliumap
    :members:
    :undoc-members:
    :show-inheritance:
