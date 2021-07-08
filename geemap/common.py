@@ -726,7 +726,7 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
             with tarfile.open(out_file_path, "r") as tar_ref:
                 tar_ref.extractall(out_dir)
             final_path = os.path.join(
-                os.path.abspath(out_dir), out_file_name.replace(".tart", "")
+                os.path.abspath(out_dir), out_file_name.replace(".tar", "")
             )
 
     if verbose:
