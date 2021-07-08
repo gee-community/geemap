@@ -207,7 +207,8 @@ def open_data_widget(m):
             "Open a GeoJSON file",
             "Open a vector dataset",
             "Create points from CSV",
-            "Open a vector dataset" "Open a GeoTIFF",
+            "Open a vector dataset",
+            "Open a GeoTIFF",
         ],
     )
     file_type.style.button_width = "88px"
@@ -773,7 +774,7 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
     )
     children.append(desc)
 
-    params = tool_dict["parameters"]
+    # params = tool_dict["parameters"]
     # for param in params:
     #     items = params[param]
     #     required = ""
