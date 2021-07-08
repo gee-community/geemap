@@ -204,13 +204,13 @@ def check_install(package):
         __import__(package)
         # print('{} is already installed.'.format(package))
     except ImportError:
-        print("{} is not installed. Installing ...".format(package))
+        print(f"{package} is not installed. Installing ...")
         try:
             subprocess.check_call(["python", "-m", "pip", "install", package])
         except Exception as e:
-            print("Failed to install {}".format(package))
+            print(f"Failed to install {package}")
             print(e)
-        print("{} has been installed successfully.".format(package))
+        print(f"{package} has been installed successfully.")
 
 
 def update_package():
@@ -290,11 +290,11 @@ def install_from_github(url):
         pkg_name = os.path.basename(url)
         work_dir = os.getcwd()
         os.chdir(pkg_dir)
-        print("Installing {}...".format(pkg_name))
+        print(f"Installing {pkg_name}...")
         cmd = "pip install ."
         os.system(cmd)
         os.chdir(work_dir)
-        print("{} has been installed successfully.".format(pkg_name))
+        print(f"{pkg_name} has been installed successfully.")
         # print("\nPlease comment out 'install_from_github()' and restart the kernel to take effect:\nJupyter menu -> Kernel -> Restart & Clear Output")
 
     except Exception as e:
@@ -316,11 +316,7 @@ def check_git_install():
         return True
     else:
         url = "https://git-scm.com/downloads"
-        print(
-            "Git is not installed. Please download Git from {} and install it.".format(
-                url
-            )
-        )
+        print(f"Git is not installed. Please download Git from {url} and install it.")
         webbrowser.open_new_tab(url)
         return False
 
@@ -383,7 +379,7 @@ def clone_google_repo(url, out_dir=None):
 
     if check_git_install():
 
-        cmd = 'git clone "{}" "{}"'.format(url, out_dir)
+        cmd = f'git clone "{url}" "{out_dir}"'
         os.popen(cmd).read()
 
 
@@ -699,7 +695,7 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
     out_file_path = os.path.join(os.path.abspath(out_dir), out_file_name)
 
     if verbose:
-        print("Downloading {} ...".format(url))
+        print(f"Downloading {url} ...")
 
     try:
         urllib.request.urlretrieve(url, out_file_path)
@@ -712,7 +708,7 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
         # if it is a zip file
         if ".zip" in out_file_name:
             if verbose:
-                print("Unzipping {} ...".format(out_file_name))
+                print(f"Unzipping {out_file_name} ...")
             with zipfile.ZipFile(out_file_path, "r") as zip_ref:
                 zip_ref.extractall(out_dir)
             final_path = os.path.join(
@@ -722,7 +718,7 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
         # if it is a tar file
         if ".tar" in out_file_name:
             if verbose:
-                print("Unzipping {} ...".format(out_file_name))
+                print(f"Unzipping {out_file_name} ...")
             with tarfile.open(out_file_path, "r") as tar_ref:
                 tar_ref.extractall(out_dir)
             final_path = os.path.join(
@@ -730,7 +726,7 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
             )
 
     if verbose:
-        print("Data downloaded to: {}".format(final_path))
+        print(f"Data downloaded to: {final_path}")
 
     return
 
@@ -750,7 +746,7 @@ def download_from_gdrive(gfile_url, file_name, out_dir=".", unzip=True, verbose=
 
     file_id = gfile_url.split("/")[5]
     if verbose:
-        print("Google Drive file id: {}".format(file_id))
+        print(f"Google Drive file id: {file_id}")
 
     dest_path = os.path.join(out_dir, file_name)
     gdd.download_file_from_google_drive(file_id, dest_path, True, unzip)
@@ -1327,7 +1323,7 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip
             filetype=filetype, selectors=selectors, filename=name
         )
         if verbose:
-            print("Downloading data from {}\nPlease wait ...".format(url))
+            print(f"Downloading data from {url}\nPlease wait ...")
         r = requests.get(url, stream=True)
 
         if r.status_code != 200:
@@ -1338,7 +1334,7 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip
                 url = new_ee_object.getDownloadURL(
                     filetype=filetype, selectors=selectors, filename=name
                 )
-                print("Downloading data from {}\nPlease wait ...".format(url))
+                print(f"Downloading data from {url}\nPlease wait ...")
                 r = requests.get(url, stream=True)
             except Exception as e:
                 print(e)
@@ -1359,7 +1355,7 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip
                 os.remove(filename)
             filename = filename.replace(".zip", ".shp")
         if verbose:
-            print("Data downloaded to {}".format(filename))
+            print(f"Data downloaded to {filename}")
     except Exception as e:
         raise ValueError(e)
 
@@ -1400,7 +1396,7 @@ def ee_export_vector_to_drive(
         # remove .geo coordinate field
         ee_object = ee_object.select([".*"], None, False)
 
-    print("Exporting {}...".format(description))
+    print(f"Exporting {description}...")
     task = ee.batch.Export.table.toDrive(ee_object, description, **task_config)
     task.start()
 
@@ -1467,7 +1463,7 @@ def ee_export_geojson(ee_object, filename=None, selectors=None):
                 url = new_ee_object.getDownloadURL(
                     filetype=filetype, selectors=selectors, filename=name
                 )
-                print("Downloading data from {}\nPlease wait ...".format(url))
+                print(f"Downloading data from {url}\nPlease wait ...")
                 r = requests.get(url, stream=True)
             except Exception as e:
                 print(e)
@@ -1606,7 +1602,7 @@ def ee_export_image(
             params["crs"] = crs
 
         url = ee_object.getDownloadURL(params)
-        print("Downloading data from {}\nPlease wait ...".format(url))
+        print(f"Downloading data from {url}\nPlease wait ...")
         r = requests.get(url, stream=True)
 
         if r.status_code != 200:
@@ -1628,9 +1624,9 @@ def ee_export_image(
         os.remove(filename_zip)
 
         if file_per_band:
-            print("Data downloaded to {}".format(os.path.dirname(filename)))
+            print(f"Data downloaded to {os.path.dirname(filename)}")
         else:
-            print("Data downloaded to {}".format(filename))
+            print(f"Data downloaded to {filename}")
     except Exception as e:
         print(e)
 
@@ -1659,13 +1655,13 @@ def ee_export_image_collection(
     try:
 
         count = int(ee_object.size().getInfo())
-        print("Total number of images: {}\n".format(count))
+        print(f"Total number of images: {count}\n")
 
         for i in range(0, count):
             image = ee.Image(ee_object.toList(count).get(i))
             name = image.get("system:index").getInfo() + ".tif"
             filename = os.path.join(os.path.abspath(out_dir), name)
-            print("Exporting {}/{}: {}".format(i + 1, count, name))
+            print(f"Exporting {i + 1}/{count}: {name}")
             ee_export_image(
                 image,
                 filename=filename,
@@ -1729,7 +1725,7 @@ def ee_export_image_to_drive(
         task = ee.batch.Export.image(ee_object, description, params)
         task.start()
 
-        print("Exporting {} ...".format(description))
+        print(f"Exporting {description} ...".format(description))
 
     except Exception as e:
         print(e)
@@ -1767,7 +1763,7 @@ def ee_export_image_collection_to_drive(
 
     try:
         count = int(ee_object.size().getInfo())
-        print("Total number of images: {}\n".format(count))
+        print(f"Total number of images: {count}\n")
 
         if (descriptions is not None) and (len(descriptions) != count):
             print("The number of descriptions is not equal to the number of images.")
@@ -1877,7 +1873,7 @@ def get_image_collection_thumbnails(
     try:
         count = int(ee_object.size().getInfo())
         if verbose:
-            print("Total number of images: {}\n".format(count))
+            print(f"Total number of images: {count}\n")
 
         if (names is not None) and (len(names) != count):
             print("The number of names is not equal to the number of images.")
@@ -2149,7 +2145,7 @@ def download_ee_video(collection, video_args, out_gif):
         print("Generating URL...")
         url = collection.getVideoThumbURL(video_args)
 
-        print("Downloading GIF image from {}\nPlease wait ...".format(url))
+        print(f"Downloading GIF image from {url}\nPlease wait ...")
         r = requests.get(url, stream=True)
 
         if r.status_code != 200:
@@ -3022,9 +3018,7 @@ def add_text_to_gif(
             pass
         else:
             print(
-                "xy is out of bounds. x must be within [0, {}], and y must be within [0, {}]".format(
-                    W, H
-                )
+                f"xy is out of bounds. x must be within [0, {W}], and y must be within [0, {H}]"
             )
             return
     elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
@@ -3056,9 +3050,7 @@ def add_text_to_gif(
             text = [text_sequence] * count
     elif isinstance(text_sequence, list) and len(text_sequence) != count:
         print(
-            "The length of the text sequence must be equal to the number ({}) of frames in the gif.".format(
-                count
-            )
+            f"The length of the text sequence must be equal to the number ({count}) of frames in the gif."
         )
         return
     else:
@@ -4488,7 +4480,7 @@ def build_repo_tree(out_dir=None, name="gee_repos"):
         os.makedirs(repo_dir)
 
     URLs = {
-        # 'Owner': 'https://earthengine.googlesource.com/{}/default'.format(ee_user_id()),
+        # 'Owner': 'https://earthengine.googlesource.com/{ee_user_id()}/default',
         "Writer": "",
         "Reader": "https://github.com/giswqs/geemap",
         "Examples": "https://github.com/giswqs/earthengine-py-examples",
@@ -4497,9 +4489,7 @@ def build_repo_tree(out_dir=None, name="gee_repos"):
 
     user_id = ee_user_id()
     if user_id is not None:
-        URLs["Owner"] = "https://earthengine.googlesource.com/{}/default".format(
-            ee_user_id()
-        )
+        URLs["Owner"] = f"https://earthengine.googlesource.com/{ee_user_id()}/default"
 
     path_widget = widgets.Text(placeholder="Enter the link to a Git repository here...")
     path_widget.layout.width = "475px"
@@ -4958,16 +4948,12 @@ def load_GeoTIFF(URL):
 
     if not uri.startswith("gs://"):
         raise Exception(
-            'Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(
-                uri
-            )
+            f'Invalid GCS URL: {uri}. Expected something of the form "gs://bucket/path/to/object.tif".'
         )
 
     if not uri.lower().endswith(".tif"):
         raise Exception(
-            'Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(
-                uri
-            )
+            f'Invalid GCS URL: {uri}. Expected something of the form "gs://bucket/path/to/object.tif".'
         )
 
     cloud_image = ee.Image.loadGeoTIFF(uri)
@@ -5001,16 +4987,12 @@ def load_GeoTIFFs(URLs):
 
         if not uri.startswith("gs://"):
             raise Exception(
-                'Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(
-                    uri
-                )
+                f'Invalid GCS URL: {uri}. Expected something of the form "gs://bucket/path/to/object.tif".'
             )
 
         if not uri.lower().endswith(".tif"):
             raise Exception(
-                'Invalid GCS URL: {}. Expected something of the form "gs://bucket/path/to/object.tif".'.format(
-                    uri
-                )
+                f'Invalid GCS URL: {uri}. Expected something of the form "gs://bucket/path/to/object.tif".'
             )
 
         URIs.append(uri)
