@@ -331,7 +331,7 @@ class Map(ipyleaflet.Map):
                             marker.location = latlon
                             self.center = latlon
                         with search_output:
-                            print("No address found for {}".format(latlon))
+                            print(f"No address found for {latlon}")
                         return
                 elif search_type.value == "data":
                     search_output.clear_output()
@@ -1130,7 +1130,7 @@ class Map(ipyleaflet.Map):
                                 )
                                 keys = item.keys()
                                 for key in keys:
-                                    print("  {}: {}".format(key, item[key]))
+                                    print(f"  {key}: {item[key]}")
                             elif isinstance(ee_object, ee.FeatureCollection):
 
                                 # Check geometry type
@@ -1160,14 +1160,10 @@ class Map(ipyleaflet.Map):
                                     b_name = "property"
                                     if len(props) > 1:
                                         b_name = "properties"
-                                    print(
-                                        "{}: Feature ({} {})".format(
-                                            layer_name, len(props), b_name
-                                        )
-                                    )
+                                    print(f"{layer_name}: Feature ({len(props)} {b_name})")
                                     keys = props.keys()
                                     for key in keys:
-                                        print("  {}: {}".format(key, props[key]))
+                                        print(f"  {key}: {props[key]}")
                         except Exception as e:
                             print(e)
 
@@ -1755,9 +1751,7 @@ class Map(ipyleaflet.Map):
 
         if show_footprints:
             if verbose:
-                print(
-                    f"Generating footprints of {len(links)} COGs. This might take a while ..."
-                )
+                print(f"Generating footprints of {len(links)} COGs. This might take a while ...")
             coords = []
             for link in links:
                 coord = get_COG_bounds(link)
@@ -3386,10 +3380,10 @@ class Map(ipyleaflet.Map):
                 writer.writerows(out_list)
 
             if ext == "csv":
-                print("The csv file has been saved to: {}".format(out_csv))
+                print(f"The csv file has been saved to: {out_csv}")
             else:
                 csv_to_shp(out_csv, out_shp)
-                print("The shapefile has been saved to: {}".format(out_shp))
+                print(f"The shapefile has been saved to: {out_shp}")
 
     def create_vis_widget(self, layer_dict):
         """Create a GUI for changing layer visualization parameters interactively.
