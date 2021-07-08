@@ -15,6 +15,7 @@ ipynb-py-convert
 ipytree
 matplotlib
 mss
+geopandas
 numpy
 pandas
 pillow
