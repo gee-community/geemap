@@ -1725,7 +1725,7 @@ def ee_export_image_to_drive(
         task = ee.batch.Export.image(ee_object, description, params)
         task.start()
 
-        print(f"Exporting {description} ...".format(description))
+        print(f"Exporting {description} ...")
 
     except Exception as e:
         print(e)
@@ -2155,7 +2155,7 @@ def download_ee_video(collection, video_args, out_gif):
             with open(out_gif, "wb") as fd:
                 for chunk in r.iter_content(chunk_size=1024):
                     fd.write(chunk)
-            print("The GIF image has been saved to: {}".format(out_gif))
+            print(f"The GIF image has been saved to: {out_gif}")
     except Exception as e:
         print(e)
 
@@ -3740,7 +3740,7 @@ def search_ee_data(keywords):
         list: Returns a lit of assets.
     """
     try:
-        cmd = 'geeadd search --keywords "{}"'.format(str(keywords))
+        cmd = f'geeadd search --keywords "{str(keywords)}"'
         output = os.popen(cmd).read()
         start_index = output.index("[")
         assets = eval(output[start_index:])
