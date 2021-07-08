@@ -224,9 +224,9 @@
 **New Features:**
 
 -   Add support for Cloud Optimized GeoTIFF (COG) and SpatioTemporal Asset Catalog (STAC) #192
--   Add [Map.add_COG_layer()](https://geemap.org/geemap/#geemap.geemap.Map.add_COG_layer) and [Map.add_STAC_layer()](https://geemap.org/geemap/#geemap.geemap.Map.add_STAC_layer)
--   Add new COG functions, e.g., `get_COG_tile()`, `get_COG_bounds()`, `get_COG_center()`, `get_COG_bands()`
--   Add new STAC functions, e.g., `get_STAC_tile()`, `get_STAC_bounds()`, `get_STAC_center()`, `get_STAC_bands()`
+-   Add [Map.add_cog_layer()](https://geemap.org/geemap/#geemap.geemap.Map.add_cog_layer) and [Map.add_stac_layer()](https://geemap.org/geemap/#geemap.geemap.Map.add_stac_layer)
+-   Add new COG functions, e.g., `get_cog_tile()`, `get_cog_bounds()`, `get_cog_center()`, `get_cog_bands()`
+-   Add new STAC functions, e.g., `get_stac_tile()`, `get_stac_bounds()`, `get_stac_center()`, `get_stac_bands()`
 
 **Improvements:**
 
