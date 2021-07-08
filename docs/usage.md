@@ -10,7 +10,7 @@ To create an ipyleaflet-based interactive map:
 
 To create a folium-based interactive map:
 
-    import geemap.eefolium as geemap
+    import geemap.foliumap as geemap
     Map = geemap.Map(center=[40,-100], zoom=4)
     Map
 
@@ -141,7 +141,7 @@ To execute all Jupyter notebooks in a folder recursively and save output
 cells:
 
     from geemap.conversion import *
-    execute_notebook_dir(in_dir) 
+    execute_notebook_dir(in_dir)
 
 To search Earth Engine API documentation with Jupyter notebooks:
 

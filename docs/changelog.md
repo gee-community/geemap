@@ -230,7 +230,7 @@
 
 **Improvements:**
 
--   Improve Google Colab support #193. Use `import geemap` rather than `import geemap.eefolium as geemap`
+-   Improve Google Colab support #193. Use `import geemap` rather than `import geemap.foliumap as geemap`
 -   Add `Open in Colab` button to notebooks #194
 
 ## v0.8.3 - December 2, 2020
