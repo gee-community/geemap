@@ -1687,7 +1687,7 @@ class Map(ipyleaflet.Map):
             print("Failed to add the specified TileLayer.")
             raise Exception(e)
 
-    def add_COG_layer(
+    def add_cog_layer(
         self,
         url,
         name="Untitled",
@@ -1707,12 +1707,12 @@ class Map(ipyleaflet.Map):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
         """
-        tile_url = get_COG_tile(url, titiler_endpoint, **kwargs)
-        center = get_COG_center(url, titiler_endpoint)  # (lon, lat)
+        tile_url = get_cog_tile(url, titiler_endpoint, **kwargs)
+        center = get_cog_center(url, titiler_endpoint)  # (lon, lat)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
         self.set_center(lon=center[0], lat=center[1], zoom=10)
 
-    def add_COG_mosaic(
+    def add_cog_mosaic(
         self,
         links,
         name="Untitled",
@@ -1741,7 +1741,7 @@ class Map(ipyleaflet.Map):
             verbose (bool, optional): Whether or not to print descriptions. Defaults to True.
         """
         layername = name.replace(" ", "_")
-        tile = get_COG_mosaic(
+        tile = get_cog_mosaic(
             links,
             titiler_endpoint=titiler_endpoint,
             username=username,
@@ -1758,7 +1758,7 @@ class Map(ipyleaflet.Map):
                 )
             coords = []
             for link in links:
-                coord = get_COG_bounds(link)
+                coord = get_cog_bounds(link)
                 if coord is not None:
                     coords.append(coord)
             fc = coords_to_geojson(coords)
@@ -1779,11 +1779,11 @@ class Map(ipyleaflet.Map):
             if verbose:
                 print("The footprint layer has been added.")
         else:
-            center = get_COG_center(links[0], titiler_endpoint)
+            center = get_cog_center(links[0], titiler_endpoint)
 
         self.set_center(center[0], center[1], zoom=6)
 
-    def add_STAC_layer(
+    def add_stac_layer(
         self,
         url,
         bands=None,
@@ -1804,8 +1804,8 @@ class Map(ipyleaflet.Map):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
         """
-        tile_url = get_STAC_tile(url, bands, titiler_endpoint, **kwargs)
-        center = get_STAC_center(url, titiler_endpoint)
+        tile_url = get_stac_tile(url, bands, titiler_endpoint, **kwargs)
+        center = get_stac_center(url, titiler_endpoint)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
         self.set_center(lon=center[0], lat=center[1], zoom=10)
 
