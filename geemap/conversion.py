@@ -575,7 +575,7 @@ def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
     files = list(Path(in_dir).rglob("*.js"))
 
     for index, in_file in enumerate(files):
-        print("Processing {}/{}: {}".format(index + 1, len(files), in_file))
+        print(f"Processing {index + 1}/{len(files)}: {in_file}")
         out_file = os.path.splitext(in_file)[0] + "_qgis.py"
         out_file = out_file.replace(in_dir, out_dir)
         js_to_python(in_file, out_file, use_qgis, github_repo)
@@ -676,7 +676,7 @@ def get_nb_template(download_latest=False, out_file=None):
 
     if download_latest:
         template_url = "https://raw.githubusercontent.com/giswqs/geemap/master/examples/template/template.py"
-        print("Downloading the latest notebook template from {}".format(template_url))
+        print(f"Downloading the latest notebook template from {template_url}")
         urllib.request.urlretrieve(template_url, out_file)
     elif out_file is not None:
         shutil.copyfile(template_file, out_file)
@@ -845,7 +845,7 @@ def py_to_ipynb_dir(
             .replace("_qgis", "")
             .replace(".py", ".ipynb")
         )
-        print("Processing {}/{}: {}".format(index + 1, len(files), in_file))
+        print(f"Processing {index + 1}/{len(files)}: {in_file}")
         py_to_ipynb(in_file, template_file, out_file, github_username, github_repo)
 
 
@@ -875,7 +875,7 @@ def execute_notebook_dir(in_dir):
     if files is not None:
         for index, file in enumerate(files):
             in_file = str(file)
-            print("Processing {}/{}: {} ...".format(index + 1, count, file))
+            print(f"Processing {index + 1}/{count}: {file} ...")
             execute_notebook(in_file)
 
 
@@ -950,7 +950,7 @@ def update_nb_header_dir(in_dir, github_username=None, github_repo=None):
     if files is not None:
         for index, file in enumerate(files):
             in_file = str(file)
-            print("Processing {}/{}: {} ...".format(index + 1, count, file))
+            print(f"Processing {index + 1}/{count}: {file} ...")
             update_nb_header(in_file, github_username, github_repo)
 
 
@@ -1013,7 +1013,7 @@ def download_gee_app(url, out_file=None):
     items[3] = "javascript"
     items[4] = items[4] + "-modules.json"
     json_url = "/".join(items)
-    print("The json url: {}".format(json_url))
+    print(f"The json url: {json_url}")
 
     if out_file is not None:
         out_file_path = out_file
@@ -1045,7 +1045,7 @@ def download_gee_app(url, out_file=None):
                         item = item.replace("\\r", "")
                         f1.write(item + "\n")
     os.remove(json_path)
-    print("The JavaScript is saved at: {}".format(out_file_path))
+    print(f"The JavaScript is saved at: {out_file_path}")
 
 
 # # Download file shared via Google Drive
@@ -1084,7 +1084,7 @@ if __name__ == "__main__":
 
     # Convert all Earth Engine JavaScripts in a folder recursively to Python scripts.
     js_to_python_dir(in_dir=js_dir, out_dir=js_dir, use_qgis=True)
-    print("Python scripts saved at: {}".format(js_dir))
+    print(f"Python scripts saved at: {js_dir}")
 
     # Convert all Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
     # Get the notebook template from the package folder.
