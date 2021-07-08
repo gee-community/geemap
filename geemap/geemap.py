@@ -1160,7 +1160,9 @@ class Map(ipyleaflet.Map):
                                     b_name = "property"
                                     if len(props) > 1:
                                         b_name = "properties"
-                                    print(f"{layer_name}: Feature ({len(props)} {b_name})")
+                                    print(
+                                        f"{layer_name}: Feature ({len(props)} {b_name})"
+                                    )
                                     keys = props.keys()
                                     for key in keys:
                                         print(f"  {key}: {props[key]}")
@@ -1751,7 +1753,9 @@ class Map(ipyleaflet.Map):
 
         if show_footprints:
             if verbose:
-                print(f"Generating footprints of {len(links)} COGs. This might take a while ...")
+                print(
+                    f"Generating footprints of {len(links)} COGs. This might take a while ..."
+                )
             coords = []
             for link in links:
                 coord = get_COG_bounds(link)
@@ -5521,8 +5525,6 @@ def ts_inspector(
     zoom=4,
     **kwargs,
 ):
-
-    import ipywidgets as widgets
 
     add_zoom = True
     add_fullscreen = True
