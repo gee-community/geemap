@@ -5,6 +5,7 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 
 import math
 import os
+from re import S
 import time
 import ee
 import ipyevents
@@ -12,7 +13,6 @@ import ipyleaflet
 import ipywidgets as widgets
 from bqplot import pyplot as plt
 from ipyfilechooser import FileChooser
-from ipyleaflet import Marker, MarkerCluster, TileLayer, WidgetControl
 from IPython.display import display
 from .basemaps import basemaps, basemap_tiles
 from .common import *
@@ -318,7 +318,7 @@ class Map(ipyleaflet.Map):
                         latlon = latlon_from_text(text.value)
                         self.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
                         if self.search_loc_marker is None:
-                            marker = Marker(
+                            marker = ipyleaflet.Marker(
                                 location=latlon,
                                 draggable=False,
                                 name="Search location",
@@ -357,7 +357,7 @@ class Map(ipyleaflet.Map):
                     latlon = (top_loc.lat, top_loc.lng)
                     self.search_loc_geom = ee.Geometry.Point(top_loc.lng, top_loc.lat)
                     if self.search_loc_marker is None:
-                        marker = Marker(
+                        marker = ipyleaflet.Marker(
                             location=latlon,
                             draggable=False,
                             name="Search location",
@@ -404,12 +404,12 @@ class Map(ipyleaflet.Map):
 
         search_event.on_dom_event(handle_search_event)
 
-        data_control = WidgetControl(widget=search_widget, position="topleft")
+        data_control = ipyleaflet.WidgetControl(widget=search_widget, position="topleft")
 
         if kwargs.get("data_ctrl"):
             self.add_control(control=data_control)
 
-        search_marker = Marker(
+        search_marker = ipyleaflet.Marker(
             icon=ipyleaflet.AwesomeIcon(
                 name="check", marker_color="green", icon_color="darkgreen"
             )
@@ -528,7 +528,7 @@ class Map(ipyleaflet.Map):
         self.plot_dropdown_control = None
         self.plot_dropdown_widget = None
         self.plot_options = {}
-        self.plot_marker_cluster = MarkerCluster(name="Marker Cluster")
+        self.plot_marker_cluster = ipyleaflet.MarkerCluster(name="Marker Cluster")
         self.plot_coordinates = []
         self.plot_markers = []
         self.plot_last_click = []
@@ -537,7 +537,7 @@ class Map(ipyleaflet.Map):
         self.inspector_checked = False
 
         inspector_output = widgets.Output(layout={"border": "1px solid black"})
-        inspector_output_control = WidgetControl(
+        inspector_output_control = ipyleaflet.WidgetControl(
             widget=inspector_output, position="topright"
         )
         tool_output = widgets.Output()
@@ -753,7 +753,7 @@ class Map(ipyleaflet.Map):
                     )
                     plot_dropdown_widget.layout.width = "18ex"
                     self.plot_dropdown_widget = plot_dropdown_widget
-                    plot_dropdown_control = WidgetControl(
+                    plot_dropdown_control = ipyleaflet.WidgetControl(
                         widget=plot_dropdown_widget, position="topright"
                     )
                     self.plot_dropdown_control = plot_dropdown_control
@@ -776,7 +776,7 @@ class Map(ipyleaflet.Map):
                     wbt_toolbox = wbt.build_toolbox(
                         tools_dict, max_width="800px", max_height="500px"
                     )
-                    wbt_control = WidgetControl(
+                    wbt_control = ipyleaflet.WidgetControl(
                         widget=wbt_toolbox, position="bottomright"
                     )
                     self.whitebox = wbt_control
@@ -788,7 +788,7 @@ class Map(ipyleaflet.Map):
                     gee_toolbox = build_toolbox(
                         tools_dict, max_width="800px", max_height="500px"
                     )
-                    geetoolbox_control = WidgetControl(
+                    geetoolbox_control = ipyleaflet.WidgetControl(
                         widget=gee_toolbox, position="bottomright"
                     )
                     self.geetoolbox = geetoolbox_control
@@ -959,7 +959,7 @@ class Map(ipyleaflet.Map):
                     lyr
                     for lyr in self.layers[1:]
                     if (
-                        isinstance(lyr, TileLayer)
+                        isinstance(lyr, ipyleaflet.TileLayer)
                         or isinstance(lyr, ipyleaflet.WMSLayer)
                     )
                 ]
@@ -1010,7 +1010,7 @@ class Map(ipyleaflet.Map):
                                 if self.vis_control in self.controls:
                                     self.remove_control(self.vis_control)
                                     self.vis_control = None
-                                vis_control = WidgetControl(
+                                vis_control = ipyleaflet.WidgetControl(
                                     widget=self.vis_widget, position="topright"
                                 )
                                 self.add_control((vis_control))
@@ -1069,12 +1069,12 @@ class Map(ipyleaflet.Map):
                 toolbar_footer.children = [toolbar_grid]
 
         layers_button.observe(layers_btn_click, "value")
-        toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
 
         if kwargs.get("toolbar_ctrl"):
             self.add_control(toolbar_control)
 
-        tool_output_control = WidgetControl(widget=tool_output, position="topright")
+        tool_output_control = ipyleaflet.WidgetControl(widget=tool_output, position="topright")
         # self.add_control(tool_output_control)
 
         def handle_interaction(**kwargs):
@@ -1201,7 +1201,7 @@ class Map(ipyleaflet.Map):
                         plot_coordinates.append(latlon)
                         self.plot_last_click = latlon
                         self.plot_all_clicks = plot_coordinates
-                        markers.append(Marker(location=latlon))
+                        markers.append(ipyleaflet.Marker(location=latlon))
                         marker_cluster.markers = markers
                         self.plot_marker_cluster = marker_cluster
 
@@ -1361,7 +1361,7 @@ class Map(ipyleaflet.Map):
                 raise Exception(e)
 
         map_id_dict = ee.Image(image).getMapId(vis_params)
-        tile_layer = TileLayer(
+        tile_layer = ipyleaflet.TileLayer(
             url=map_id_dict["tile_fetcher"].url_format,
             attribution="Google Earth Engine",
             name=name,
@@ -1671,7 +1671,7 @@ class Map(ipyleaflet.Map):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
         """
         try:
-            tile_layer = TileLayer(
+            tile_layer = ipyleaflet.TileLayer(
                 url=url,
                 name=name,
                 attribution=attribution,
@@ -1822,7 +1822,7 @@ class Map(ipyleaflet.Map):
         minimap.layout.width = "150px"
         minimap.layout.height = "150px"
         ipyleaflet.link((minimap, "center"), (self, "center"))
-        minimap_control = WidgetControl(widget=minimap, position=position)
+        minimap_control = ipyleaflet.WidgetControl(widget=minimap, position=position)
         self.add_control(minimap_control)
 
     def marker_cluster(self):
@@ -1833,7 +1833,7 @@ class Map(ipyleaflet.Map):
         """
         coordinates = []
         markers = []
-        marker_cluster = MarkerCluster(name="Marker Cluster")
+        marker_cluster = ipyleaflet.MarkerCluster(name="Marker Cluster")
         self.last_click = []
         self.all_clicks = []
         self.ee_markers = []
@@ -1848,7 +1848,7 @@ class Map(ipyleaflet.Map):
                 self.ee_markers.append(feature)
                 self.last_click = latlon
                 self.all_clicks = coordinates
-                markers.append(Marker(location=latlon))
+                markers.append(ipyleaflet.Marker(location=latlon))
                 marker_cluster.markers = markers
             elif kwargs.get("type") == "mousemove":
                 pass
@@ -1934,7 +1934,7 @@ class Map(ipyleaflet.Map):
             plot_widget = self.plot_widget
         else:
             plot_widget = widgets.Output(layout={"border": "1px solid black"})
-            plot_control = WidgetControl(
+            plot_control = ipyleaflet.WidgetControl(
                 widget=plot_widget,
                 position=position,
                 min_width=min_width,
@@ -2026,7 +2026,7 @@ class Map(ipyleaflet.Map):
         latitudes = np.random.uniform(30, 48, size=iterations)
         longitudes = np.random.uniform(-121, -76, size=iterations)
 
-        marker = Marker(location=(0, 0))
+        marker = ipyleaflet.Marker(location=(0, 0))
         self.random_marker = marker
         self.add_layer(marker)
 
@@ -2094,7 +2094,7 @@ class Map(ipyleaflet.Map):
             self.remove_layer(self.random_marker)
 
         plot_widget = widgets.Output(layout={"border": "1px solid black"})
-        plot_control = WidgetControl(
+        plot_control = ipyleaflet.WidgetControl(
             widget=plot_widget,
             position=position,
             min_width=min_width,
@@ -2128,7 +2128,7 @@ class Map(ipyleaflet.Map):
 
         coordinates = []
         markers = []
-        marker_cluster = MarkerCluster(name="Marker Cluster")
+        marker_cluster = ipyleaflet.MarkerCluster(name="Marker Cluster")
         self.last_click = []
         self.all_clicks = []
         self.add_layer(marker_cluster)
@@ -2141,7 +2141,7 @@ class Map(ipyleaflet.Map):
                     coordinates.append(latlon)
                     self.last_click = latlon
                     self.all_clicks = coordinates
-                    markers.append(Marker(location=latlon))
+                    markers.append(ipyleaflet.Marker(location=latlon))
                     marker_cluster.markers = markers
                     self.default_style = {"cursor": "wait"}
                     xy = ee.Geometry.Point(latlon[::-1])
@@ -2187,7 +2187,7 @@ class Map(ipyleaflet.Map):
         """
         coordinates = []
         markers = []
-        marker_cluster = MarkerCluster(name="Marker Cluster")
+        marker_cluster = ipyleaflet.MarkerCluster(name="Marker Cluster")
         self.last_click = []
         self.all_clicks = []
         if add_marker:
@@ -2201,7 +2201,7 @@ class Map(ipyleaflet.Map):
                 self.last_click = latlon
                 self.all_clicks = coordinates
                 if add_marker:
-                    markers.append(Marker(location=latlon))
+                    markers.append(ipyleaflet.Marker(location=latlon))
                     marker_cluster.markers = markers
             elif kwargs.get("type") == "mousemove":
                 pass
@@ -2314,12 +2314,12 @@ class Map(ipyleaflet.Map):
             )
             return
 
-        left_layer = TileLayer(
+        left_layer = ipyleaflet.TileLayer(
             url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
             attribution="Google",
             name="Google Maps",
         )
-        right_layer = TileLayer(
+        right_layer = ipyleaflet.TileLayer(
             url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
             attribution="Google",
             name="Google Maps",
@@ -2331,8 +2331,8 @@ class Map(ipyleaflet.Map):
         left_dropdown.layout.max_width = "130px"
         right_dropdown.layout.max_width = "130px"
 
-        left_control = WidgetControl(widget=left_dropdown, position="topleft")
-        right_control = WidgetControl(widget=right_dropdown, position="topright")
+        left_control = ipyleaflet.WidgetControl(widget=left_dropdown, position="topleft")
+        right_control = ipyleaflet.WidgetControl(widget=right_dropdown, position="topright")
 
         self.add_control(control=left_control)
         self.add_control(control=right_control)
@@ -2429,7 +2429,7 @@ class Map(ipyleaflet.Map):
             self.substitute_layer(old_basemap, basemap_tiles[basemap_name])
 
         dropdown.observe(on_click, "value")
-        basemap_control = WidgetControl(widget=dropdown, position="topright")
+        basemap_control = ipyleaflet.WidgetControl(widget=dropdown, position="topright")
         self.add_control(basemap_control)
 
     def add_legend(
@@ -2610,7 +2610,7 @@ class Map(ipyleaflet.Map):
                     "overflow": "scroll",
                 }
             )
-            legend_control = WidgetControl(
+            legend_control = ipyleaflet.WidgetControl(
                 widget=legend_output_widget, position=position
             )
             legend_widget = widgets.HTML(value=legend_text)
@@ -2771,7 +2771,7 @@ class Map(ipyleaflet.Map):
             cb.set_label(label)
 
         output = widgets.Output()
-        colormap_ctrl = WidgetControl(
+        colormap_ctrl = ipyleaflet.WidgetControl(
             widget=output,
             position=position,
             transparent_bg=transparent_bg,
@@ -2850,7 +2850,7 @@ class Map(ipyleaflet.Map):
             else:
                 colormap = colormap.to_step(3)
 
-        colormap_ctrl = WidgetControl(
+        colormap_ctrl = ipyleaflet.WidgetControl(
             widget=output,
             position=position,
             transparent_bg=transparent_bg,
@@ -3415,7 +3415,7 @@ class Map(ipyleaflet.Map):
         right_value = 10000
 
         self.colorbar_widget = widgets.Output(layout=widgets.Layout(height="60px"))
-        self.colorbar_ctrl = WidgetControl(
+        self.colorbar_ctrl = ipyleaflet.WidgetControl(
             widget=self.colorbar_widget, position="bottomright"
         )
         self.add_control(self.colorbar_ctrl)
@@ -3556,7 +3556,7 @@ class Map(ipyleaflet.Map):
                             )
 
                         if self.colorbar_ctrl is None:
-                            self.colorbar_ctrl = WidgetControl(
+                            self.colorbar_ctrl = ipyleaflet.WidgetControl(
                                 widget=self.colorbar_widget, position="bottomright"
                             )
                             self.add_control(self.colorbar_ctrl)
@@ -3752,7 +3752,7 @@ class Map(ipyleaflet.Map):
                         )
 
                     if self.colorbar_ctrl is None:
-                        self.colorbar_ctrl = WidgetControl(
+                        self.colorbar_ctrl = ipyleaflet.WidgetControl(
                             widget=self.colorbar_widget, position="bottomright"
                         )
                         self.add_control(self.colorbar_ctrl)
@@ -4052,7 +4052,7 @@ class Map(ipyleaflet.Map):
                     self.colorbar_widget = widgets.Output(
                         layout=widgets.Layout(height="60px")
                     )
-                    self.colorbar_ctrl = WidgetControl(
+                    self.colorbar_ctrl = ipyleaflet.WidgetControl(
                         widget=self.colorbar_widget, position="bottomright"
                     )
 
@@ -4342,7 +4342,7 @@ class Map(ipyleaflet.Map):
                             )
 
                         if self.colorbar_ctrl is None:
-                            self.colorbar_ctrl = WidgetControl(
+                            self.colorbar_ctrl = ipyleaflet.WidgetControl(
                                 widget=self.colorbar_widget, position="bottomright"
                             )
                             self.add_control(self.colorbar_ctrl)
@@ -4390,7 +4390,7 @@ class Map(ipyleaflet.Map):
                         )
 
                     if self.colorbar_ctrl is None:
-                        self.colorbar_ctrl = WidgetControl(
+                        self.colorbar_ctrl = ipyleaflet.WidgetControl(
                             widget=self.colorbar_widget, position="bottomright"
                         )
                         self.add_control(self.colorbar_ctrl)
@@ -4461,7 +4461,7 @@ class Map(ipyleaflet.Map):
                     self.colorbar_widget = widgets.Output(
                         layout=widgets.Layout(height="60px")
                     )
-                    self.colorbar_ctrl = WidgetControl(
+                    self.colorbar_ctrl = ipyleaflet.WidgetControl(
                         widget=self.colorbar_widget, position="bottomright"
                     )
                     self.add_control(self.colorbar_ctrl)
@@ -4852,7 +4852,7 @@ class Map(ipyleaflet.Map):
         output_widget = widgets.VBox(
             [widgets.HBox([toolbar_button, close_button]), html]
         )
-        info_control = WidgetControl(widget=output_widget, position="bottomright")
+        info_control = ipyleaflet.WidgetControl(widget=output_widget, position="bottomright")
 
         if info_mode in ["on_hover", "on_click"]:
             self.add_control(info_control)
@@ -5252,7 +5252,7 @@ class Map(ipyleaflet.Map):
 
         close_btn.on_click(close_click)
 
-        slider_ctrl = WidgetControl(widget=slider_widget, position=position)
+        slider_ctrl = ipyleaflet.WidgetControl(widget=slider_widget, position=position)
         self.add_control(slider_ctrl)
         self.slider_ctrl = slider_ctrl
 
@@ -5312,7 +5312,7 @@ class Map(ipyleaflet.Map):
             if label is not None:
                 labels = df[label]
                 markers = [
-                    Marker(
+                    ipyleaflet.Marker(
                         location=point,
                         draggable=False,
                         popup=widgets.HTML(str(labels[index])),
@@ -5320,9 +5320,9 @@ class Map(ipyleaflet.Map):
                     for index, point in enumerate(points)
                 ]
             else:
-                markers = [Marker(location=point, draggable=False) for point in points]
+                markers = [ipyleaflet.Marker(location=point, draggable=False) for point in points]
 
-            marker_cluster = MarkerCluster(markers=markers, name=layer_name)
+            marker_cluster = ipyleaflet.MarkerCluster(markers=markers, name=layer_name)
             self.add_layer(marker_cluster)
 
         self.default_style = {"cursor": "default"}
@@ -5417,7 +5417,7 @@ def ee_tile_layer(
         image = ee_object.mosaic()
 
     map_id_dict = ee.Image(image).getMapId(vis_params)
-    tile_layer = TileLayer(
+    tile_layer = ipyleaflet.TileLayer(
         url=map_id_dict["tile_fetcher"].url_format,
         attribution="Google Earth Engine",
         name=name,
@@ -5497,7 +5497,7 @@ def linked_maps(
                 label = widgets.Label(
                     labels[index], layout=widgets.Layout(padding="0px 5px 0px 5px")
                 )
-                control = WidgetControl(widget=label, position=label_position)
+                control = ipyleaflet.WidgetControl(widget=label, position=label_position)
                 m.add_control(control)
 
             maps.append(m)
@@ -5522,7 +5522,7 @@ def ts_inspector(
     **kwargs,
 ):
 
-    import ipywidgets as widgets
+    # import ipywidgets as widgets
 
     add_zoom = True
     add_fullscreen = True
