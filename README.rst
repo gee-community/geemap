@@ -200,7 +200,7 @@ communication between the front-end and the backend enabling the use of the map 
 static data only (`source <https://blog.jupyter.org/interactive-gis-in-jupyter-with-ipyleaflet-52f9657fa7a>`__).
 Note that `Google Colab <https://colab.research.google.com/>`__ currently does not support ipyleaflet
 (`source <https://github.com/googlecolab/colabtools/issues/60#issuecomment-596225619>`__). Therefore, if you are using geemap with Google Colab, you should use
-`import geemap.eefolium <https://github.com/giswqs/geemap/blob/master/geemap/eefolium.py>`__. If you are using geemap with `binder <https://mybinder.org/>`__ or a local Jupyter notebook server,
+`import geemap.foliumap <https://github.com/giswqs/geemap/blob/master/geemap/foliumap.py>`__. If you are using geemap with `binder <https://mybinder.org/>`__ or a local Jupyter notebook server,
 you can use `import geemap <https://github.com/giswqs/geemap/blob/master/geemap/geemap.py>`__, which provides more functionalities for capturing user input (e.g.,
 mouse-clicking and moving).
 
@@ -224,7 +224,7 @@ To create a folium-based interactive map:
 
 .. code:: python
 
-  import geemap.eefolium as geemap
+  import geemap.foliumap as geemap
   Map = geemap.Map(center=[40,-100], zoom=4)
   Map
 
@@ -558,7 +558,7 @@ The source code for this automated conversion module can be found at `conversion
 
 Interactive mapping using GEE Python API and geemap
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Launch an interactive notebook with **Google Colab**. Note that **Google Colab** currently does not support ipyleaflet. Therefore, you should use ``import geemap.eefolium`` instead of ``import geemap``.
+Launch an interactive notebook with **Google Colab**. Note that **Google Colab** currently does not support ipyleaflet. Therefore, you should use ``import geemap.foliumap`` instead of ``import geemap``.
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
         :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/notebooks/geemap_and_folium.ipynb
@@ -577,7 +577,7 @@ Launch an interactive notebook with **Google Colab**. Note that **Google Colab**
         # Checks whether this notebook is running on Google Colab
         try:
                 import google.colab
-                import geemap.eefolium as emap
+                import geemap.foliumap as emap
         except:
                 import geemap as emap
 
