@@ -4,6 +4,7 @@
 import csv
 import math
 import os
+import json
 import shutil
 import tarfile
 import urllib.request
@@ -929,7 +930,7 @@ def csv_to_geojson(
 
     """
 
-    import json
+    # import json
     import pandas as pd
 
     if out_geojson is not None:
@@ -967,7 +968,7 @@ def pandas_to_geojson(
 
     """
 
-    import json
+    # import json
     from geojson import Feature, FeatureCollection, Point
 
     if out_geojson is not None:
@@ -1057,7 +1058,7 @@ def geojson_to_ee(geo_json, geodesic=True):
 
     try:
 
-        import json
+        # import json
 
         if not isinstance(geo_json, dict) and os.path.isfile(geo_json):
             with open(os.path.abspath(geo_json), encoding="utf-8") as f:
@@ -1100,7 +1101,7 @@ def ee_to_geojson(ee_object, out_json=None):
     Returns:
         object: GeoJSON object.
     """
-    from json import dumps
+    # from json import dumps
 
     # ee_initialize()
 
@@ -1116,7 +1117,7 @@ def ee_to_geojson(ee_object, out_json=None):
                 if not os.path.exists(os.path.dirname(out_json)):
                     os.makedirs(os.path.dirname(out_json))
                 with open(out_json, "w") as geojson:
-                    geojson.write(dumps(json_object, indent=2) + "\n")
+                    geojson.write(json.dumps(json_object, indent=2) + "\n")
             return json_object
         else:
             print("Could not convert the Earth Engine object to geojson")
@@ -1197,10 +1198,10 @@ def shp_to_geojson(in_shp, out_json=None, **kwargs):
         # out_dict = {"type": "FeatureCollection", "features": buffer}
 
         if out_json is not None:
-            from json import dumps
+            # from json import dumps
 
             with open(out_json, "w") as geojson:
-                geojson.write(dumps(out_dict, indent=2) + "\n")
+                geojson.write(json.dumps(out_dict, indent=2) + "\n")
         else:
             return out_dict
 
