@@ -7,8 +7,10 @@ import os
 import shutil
 import tarfile
 import urllib.request
+import json
 import zipfile
 import ee
+import datetime
 import ipywidgets as widgets
 from ipytree import Tree, Node
 from IPython.display import display
@@ -418,10 +420,9 @@ def open_youtube():
 
 def is_tool(name):
     """Check whether `name` is on PATH and marked as executable."""
+    # from shutil import which
 
-    from shutil import which
-
-    return which(name) is not None
+    return shutil.which(name) is not None
 
 
 def random_string(string_length=3):
@@ -929,7 +930,7 @@ def csv_to_geojson(
 
     """
 
-    import json
+    # import json
     import pandas as pd
 
     if out_geojson is not None:
@@ -967,7 +968,7 @@ def pandas_to_geojson(
 
     """
 
-    import json
+    # import json
     from geojson import Feature, FeatureCollection, Point
 
     if out_geojson is not None:
@@ -1057,7 +1058,7 @@ def geojson_to_ee(geo_json, geodesic=True):
 
     try:
 
-        import json
+        # import json
 
         if not isinstance(geo_json, dict) and os.path.isfile(geo_json):
             with open(os.path.abspath(geo_json), encoding="utf-8") as f:
@@ -1136,7 +1137,7 @@ def shp_to_geojson(in_shp, out_json=None, **kwargs):
     """
     try:
         import shapefile
-        from datetime import date
+        # from datetime import date
 
         in_shp = os.path.abspath(in_shp)
 
@@ -2253,7 +2254,7 @@ def sentinel2_timeseries(
     ################################################################################
     # Input and output parameters.
     import re
-    import datetime
+    # import datetime
 
     if roi is None:
         # roi = ee.Geometry.Polygon(
@@ -2490,7 +2491,7 @@ def landsat_timeseries(
     ################################################################################
     # Input and output parameters.
     import re
-    import datetime
+    # import datetime
 
     if roi is None:
         roi = ee.Geometry.Polygon(
