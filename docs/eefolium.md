@@ -1,0 +1,3 @@
+# eefolium module
+
+::: geemap.eefolium
