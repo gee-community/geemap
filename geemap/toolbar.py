@@ -5,7 +5,6 @@ import os
 import ipyevents
 import ipyleaflet
 import ipywidgets as widgets
-from ipyleaflet import WidgetControl, DrawControl
 from IPython.core.display import display
 from ipyfilechooser import FileChooser
 from .common import *
@@ -179,7 +178,7 @@ def tool_template(m=None):
 
     toolbar_button.value = True
     if m is not None:
-        toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
@@ -195,7 +194,7 @@ def open_data_widget(m):
         m (object): geemap.Map
     """
     tool_output = widgets.Output()
-    tool_output_ctrl = WidgetControl(widget=tool_output, position="topright")
+    tool_output_ctrl = ipyleaflet.WidgetControl(widget=tool_output, position="topright")
 
     if m.tool_output_ctrl is not None and m.tool_output_ctrl in m.controls:
         m.remove_control(m.tool_output_ctrl)
@@ -505,7 +504,7 @@ def change_basemap(m):
 
     close_btn.on_click(close_click)
 
-    basemap_control = WidgetControl(widget=basemap_widget, position="topright")
+    basemap_control = ipyleaflet.WidgetControl(widget=basemap_widget, position="topright")
     m.add_control(basemap_control)
     m.basemap_ctrl = basemap_control
 
@@ -561,7 +560,7 @@ def convert_js2py(m):
     buttons.observe(button_clicked, "value")
 
     full_widget.children = [text_widget, buttons]
-    widget_control = WidgetControl(widget=full_widget, position="topright")
+    widget_control = ipyleaflet.WidgetControl(widget=full_widget, position="topright")
     m.add_control(widget_control)
     m.convert_ctrl = widget_control
 
@@ -608,7 +607,7 @@ def collect_samples(m):
 
             if len(color.value) != 7:
                 color.value = "#3388ff"
-            draw_control = DrawControl(
+            draw_control = ipyleaflet.DrawControl(
                 marker={"shapeOptions": {"color": color.value}, "repeatMode": True},
                 rectangle={"shapeOptions": {"color": color.value}, "repeatMode": True},
                 polygon={"shapeOptions": {"color": color.value}, "repeatMode": True},
@@ -621,7 +620,7 @@ def collect_samples(m):
             controls = []
             old_draw_control = None
             for control in m.controls:
-                if isinstance(control, DrawControl):
+                if isinstance(control, ipyleaflet.DrawControl):
                     controls.append(draw_control)
                     old_draw_control = control
 
@@ -716,7 +715,7 @@ def collect_samples(m):
         buttons,
     ]
 
-    widget_control = WidgetControl(widget=full_widget, position="topright")
+    widget_control = ipyleaflet.WidgetControl(widget=full_widget, position="topright")
     m.add_control(widget_control)
     m.training_ctrl = widget_control
 
@@ -1466,7 +1465,7 @@ def timelapse(m=None):
 
     toolbar_button.value = True
     if m is not None:
-        toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
@@ -1750,7 +1749,7 @@ def time_slider(m=None):
                     )
 
                 if m.colorbar_ctrl is None:
-                    m.colorbar_ctrl = WidgetControl(
+                    m.colorbar_ctrl = ipyleaflet.WidgetControl(
                         widget=m.colorbar_widget, position="bottomright"
                     )
                     m.add_control(m.colorbar_ctrl)
@@ -1828,7 +1827,7 @@ def time_slider(m=None):
                 m.colorbar_widget = widgets.Output(layout=widgets.Layout(height="60px"))
 
             if m.colorbar_ctrl is None:
-                m.colorbar_ctrl = WidgetControl(
+                m.colorbar_ctrl = ipyleaflet.WidgetControl(
                     widget=m.colorbar_widget, position="bottomright"
                 )
                 m.add_control(m.colorbar_ctrl)
@@ -2357,7 +2356,7 @@ def time_slider(m=None):
 
     toolbar_button.value = True
     if m is not None:
-        toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
@@ -2491,7 +2490,7 @@ def plot_transect(m=None):
                 image = image.toBands()
             band.options = image.bandNames().getInfo()
 
-        transect_control = WidgetControl(widget=output, position="bottomright")
+        transect_control = ipyleaflet.WidgetControl(widget=output, position="bottomright")
         m.add_control(transect_control)
         m.transect_control = transect_control
 
@@ -2600,7 +2599,7 @@ def plot_transect(m=None):
 
     toolbar_button.value = True
     if m is not None:
-        toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
@@ -2946,7 +2945,7 @@ def sankee_gui(m=None):
 
         plot_widget = widgets.VBox([plot_output])
 
-        sankee_control = WidgetControl(widget=plot_widget, position="bottomright")
+        sankee_control = ipyleaflet.WidgetControl(widget=plot_widget, position="bottomright")
         m.add_control(sankee_control)
         m.sankee_control = sankee_control
 
@@ -3148,7 +3147,7 @@ def sankee_gui(m=None):
 
     toolbar_button.value = True
     if m is not None:
-        toolbar_control = WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
