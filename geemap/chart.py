@@ -1,7 +1,7 @@
 """Module for creating charts for Earth Engine data.
 """
 
-import ee
+# import ee
 import pandas as pd
 from bqplot import pyplot as plt
 from bqplot import Tooltip
