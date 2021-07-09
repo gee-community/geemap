@@ -207,7 +207,8 @@ def open_data_widget(m):
             "Open a GeoJSON file",
             "Open a vector dataset",
             "Create points from CSV",
-            "Open a vector dataset" "Open a GeoTIFF",
+            "Open a vector dataset",
+            "Open a GeoTIFF",
         ],
     )
     file_type.style.button_width = "88px"
