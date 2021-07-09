@@ -5,7 +5,8 @@ import pandas as pd
 import multiprocessing as mp
 from functools import partial
 
-def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER"):
+
+def tree_to_string(estimator, feature_names, labels=None, output_mode="INFER"):
     """Function to convert a sklearn decision tree object to a string format that EE can interpret
 
     args:
@@ -45,7 +46,9 @@ def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER")
             output_mode = "REGRESSION"
 
         else:
-            raise RuntimeError("Could not infer the output type from the estimator, please explicitly provide the output_mode ")
+            raise RuntimeError(
+                "Could not infer the output type from the estimator, please explicitly provide the output_mode "
+            )
 
     # second check on the output mode after the inference
     if output_mode == "CLASSIFICATION":
@@ -53,14 +56,14 @@ def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER")
         values = raw_vals.argmax(axis=-1)
         if labels is not None:
             index_labels = np.unique(values)
-            lookup = {idx:labels[i] for i,idx in enumerate(index_labels)}
+            lookup = {idx: labels[i] for i, idx in enumerate(index_labels)}
             values = [lookup[v] for v in values]
 
         out_type = int
 
     elif output_mode == "REGRESSION":
         # take values and drop un needed axis
-        values = np.around(raw_vals,decimals=6)
+        values = np.around(raw_vals, decimals=6)
         out_type = float
 
     elif output_mode == "PROBABILITY":
@@ -68,28 +71,31 @@ def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER")
         # currrently only supporting binary classifications
         # check if n classes == 2 (i.e. binary classes)
         if raw_vals.shape[-1] != 2:
-            raise ValueError("shape mismatch: outputs from trees = {raw_vals.shape[-1]} classes, currently probability ouputs is support for binary classifications")
+            raise ValueError(
+                "shape mismatch: outputs from trees = {raw_vals.shape[-1]} classes, currently probability ouputs is support for binary classifications"
+            )
 
         probas = np.around(
-            (raw_vals / np.sum(raw_vals,axis=1)[:,np.newaxis]),
-            decimals=6
+            (raw_vals / np.sum(raw_vals, axis=1)[:, np.newaxis]), decimals=6
         )
 
-        values = probas[:,-1]
+        values = probas[:, -1]
         out_type = float
 
     elif output_mode == "MULTIPROBABILITY":
-            # calculate fraction of samples of the same class in a leaf
-            # this is a 2-d array making the output multidimensional
-            raise NotImplementedError("Currently multiprobability output is not support, please choose one of the following output modes: ['CLASSIFIATION', 'REGRESSION', 'PROBABILITY' or 'INFER']")
+        # calculate fraction of samples of the same class in a leaf
+        # this is a 2-d array making the output multidimensional
+        raise NotImplementedError(
+            "Currently multiprobability output is not support, please choose one of the following output modes: ['CLASSIFIATION', 'REGRESSION', 'PROBABILITY' or 'INFER']"
+        )
 
-            probas = np.around(
-                (raw_vals / np.sum(raw_vals,axis=1)[:,np.newaxis]),
-                decimals=6
-            )
+        # probas = np.around(
+        #     (raw_vals / np.sum(raw_vals,axis=1)[:,np.newaxis]),
+        #     decimals=6
+        # )
 
-            values = probas.tolist()
-            out_type = list
+        # values = probas.tolist()
+        # out_type = list
 
     else:
         raise RuntimeError(
@@ -129,7 +135,7 @@ def tree_to_string(estimator, feature_names, labels = None, output_mode="INFER")
             "feature_name": features,
             "sign": ["<="] * n_nodes,
         },
-        dtype='object'
+        dtype="object",
     )
 
     # the table representation does not have lef vs right node structure
@@ -254,21 +260,25 @@ def rf_to_strings(estimator, feature_names, processes=2, output_mode="INFER"):
     # force output mode to be capital
     output_mode = output_mode.upper()
 
-    available_modes = ["INFER","CLASSIFICATION","REGRESSION","PROBABILITY"]
+    available_modes = ["INFER", "CLASSIFICATION", "REGRESSION", "PROBABILITY"]
 
     if output_mode not in available_modes:
-        raise ValueError(f"The provided output_mode is not available, please provide one from the following list: {available_modes}")
+        raise ValueError(
+            f"The provided output_mode is not available, please provide one from the following list: {available_modes}"
+        )
 
     # extract out the estimator trees
     estimators = np.squeeze(estimator.estimators_)
 
     if output_mode == "INFER":
-        if estimator.criterion in ["gini","entropy"]:
+        if estimator.criterion in ["gini", "entropy"]:
             class_labels = estimator.classes_
-        elif estimator.criterion in ["mse","mae"]:
+        elif estimator.criterion in ["mse", "mae"]:
             class_labels = None
         else:
-            raise RuntimeError("Could not infer the output type from the estimator, please explicitly provide the output_mode ")
+            raise RuntimeError(
+                "Could not infer the output type from the estimator, please explicitly provide the output_mode "
+            )
 
     elif output_mode == "CLASSIFICATION":
         class_labels = estimator.classes_
@@ -284,7 +294,13 @@ def rf_to_strings(estimator, feature_names, processes=2, output_mode="INFER"):
     # run the tree extraction process in parallel
     with mp.Pool(processes) as pool:
         proc = pool.map_async(
-            partial(tree_to_string, feature_names=feature_names,labels=class_labels, output_mode=output_mode), estimators
+            partial(
+                tree_to_string,
+                feature_names=feature_names,
+                labels=class_labels,
+                output_mode=output_mode,
+            ),
+            estimators,
         )
         trees = list(proc.get())
 

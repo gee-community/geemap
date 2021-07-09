@@ -63,7 +63,7 @@ nav:
           - common module: common.md
           - conversion module: conversion.md
           - datasets module: datasets.md
-          - eefolium module: eefolium.md
+          - foliumap module: foliumap.md
           - geemap module: geemap.md
           - legends module: legends.md
           - ml module: ml.md

@@ -2,7 +2,7 @@
 
 __author__ = """Qiusheng Wu"""
 __email__ = "giswqs@gmail.com"
-__version__ = "0.8.17"
+__version__ = "0.8.18"
 
 import os
 
@@ -26,6 +26,6 @@ def use_folium():
 
 
 if in_colab_shell() or use_folium():
-    from .eefolium import *
+    from .foliumap import *
 else:
     from .geemap import *
