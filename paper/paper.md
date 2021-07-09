@@ -44,13 +44,13 @@ of the **geemap** package can greatly reduce the time needed to convert existing
 
 # geemap Functionality
 
-The interactive mapping functionality of the **geemap** package is built upon [ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet) and [folium](https://github.com/python-visualization/folium), both of which rely on Jupyter notebooks for creating interactive maps. A key difference between ipyleaflet and folium is that ipyleaflet is built upon ipywidgets and allows bidirectional communication between the frontend and the backend, enabling the use of the map to capture user input, while folium is meant for displaying static data only [@QuantStack2019]. It should be noted that [Google Colab](https://colab.research.google.com/) currently does not support ipyleaflet. Therefore, if one wants to use **geemap** on Google Colab, one should `import geemap.foliumap as geemap`, which provides limited interactive mapping functionality. To utilize the full interactive mapping functionality of **geemap**, one should `import geemap` on a local computer or secured server with Jupyter notebook installed.
+The interactive mapping functionality of the **geemap** package is built upon [ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet) and [folium](https://github.com/python-visualization/folium), both of which rely on Jupyter notebooks for creating interactive maps. A key difference between ipyleaflet and folium is that ipyleaflet is built upon ipywidgets and allows bidirectional communication between the frontend and the backend, enabling the use of the map to capture user input, while folium is meant for displaying static data only [@QuantStack2019]. It should be noted that [Google Colab](https://colab.research.google.com/) currently does not support ipyleaflet. Therefore, if one wants to use **geemap** on Google Colab, one should `import geemap.eefolium as geemap`, which provides limited interactive mapping functionality. To utilize the full interactive mapping functionality of **geemap**, one should `import geemap` on a local computer or secured server with Jupyter notebook installed.
 
 The key functionality of **geemap** is organized into several modules:
 
 -   [geemap](https://geemap.readthedocs.io/en/latest/source/geemap.html#module-geemap.geemap): the main module for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.
 
--   [foliumap](https://geemap.readthedocs.io/en/latest/source/geemap.html#module-geemap.foliumap): a module for interactive mapping with Earth Engine and folium. It is designed for users to run geemap with Google Colab.
+-   [eefolium](https://geemap.readthedocs.io/en/latest/source/geemap.html#module-geemap.eefolium): a module for interactive mapping with  Earth Engine and folium. It is designed for users to run geemap with Google Colab.
 
 -   [conversion](https://geemap.readthedocs.io/en/latest/source/geemap.html#module-geemap.conversion): utilities for automatically converting Earth Engine JavaScripts to Python scripts and Jupyter notebooks.
 

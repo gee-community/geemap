@@ -1,24 +1,6 @@
 # Changelog
 
-## v0.8.18 - July 8, 2021
-
-**New Features**:
-
--   Added pandas_to_geojson [#557](https://github.com/giswqs/geemap/discussions/557)
--   Added feature_histogram function to chart module [#553](https://github.com/giswqs/geemap/pull/553)
--   Added feature_groups function to chart module [#539](https://github.com/giswqs/geemap/pull/539)
--   Added random forest probability output [#550](https://github.com/giswqs/geemap/pull/550)
-
-**Improvement**:
-
--   Renamed eefolium module to foliumap
--   Changed COG and STAC to lowercase
--   Changed .format() to fstring [#561](https://github.com/giswqs/geemap/pull/561)
--   Fixed random forest string to label bug [#545](https://github.com/giswqs/geemap/pull/545)
--   Improved split-panel map [#543](https://github.com/giswqs/geemap/discussions/543)
--   Updated otsu example [#535](https://github.com/giswqs/geemap/discussions/535)
-
-## v0.8.17 - June 20, 2021
+## v0.8.17 - JUne 20, 2021
 
 **New Features**:
 
@@ -242,13 +224,13 @@
 **New Features:**
 
 -   Add support for Cloud Optimized GeoTIFF (COG) and SpatioTemporal Asset Catalog (STAC) #192
--   Add [Map.add_cog_layer()](https://geemap.org/geemap/#geemap.geemap.Map.add_cog_layer) and [Map.add_stac_layer()](https://geemap.org/geemap/#geemap.geemap.Map.add_stac_layer)
--   Add new COG functions, e.g., `get_cog_tile()`, `get_cog_bounds()`, `get_cog_center()`, `get_cog_bands()`
--   Add new STAC functions, e.g., `get_stac_tile()`, `get_stac_bounds()`, `get_stac_center()`, `get_stac_bands()`
+-   Add [Map.add_COG_layer()](https://geemap.org/geemap/#geemap.geemap.Map.add_COG_layer) and [Map.add_STAC_layer()](https://geemap.org/geemap/#geemap.geemap.Map.add_STAC_layer)
+-   Add new COG functions, e.g., `get_COG_tile()`, `get_COG_bounds()`, `get_COG_center()`, `get_COG_bands()`
+-   Add new STAC functions, e.g., `get_STAC_tile()`, `get_STAC_bounds()`, `get_STAC_center()`, `get_STAC_bands()`
 
 **Improvements:**
 
--   Improve Google Colab support #193. Use `import geemap` rather than `import geemap.foliumap as geemap`
+-   Improve Google Colab support #193. Use `import geemap` rather than `import geemap.eefolium as geemap`
 -   Add `Open in Colab` button to notebooks #194
 
 ## v0.8.3 - December 2, 2020

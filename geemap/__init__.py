@@ -26,6 +26,6 @@ def use_folium():
 
 
 if in_colab_shell() or use_folium():
-    from .foliumap import *
+    from .eefolium import *
 else:
     from .geemap import *
