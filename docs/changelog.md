@@ -1,6 +1,24 @@
 # Changelog
 
-## v0.8.17 - JUne 20, 2021
+## v0.8.18 - July 8, 2021
+
+**New Features**:
+
+-   Added pandas_to_geojson [#557](https://github.com/giswqs/geemap/discussions/557)
+-   Added feature_histogram function to chart module [#553](https://github.com/giswqs/geemap/pull/553)
+-   Added feature_groups function to chart module [#539](https://github.com/giswqs/geemap/pull/539)
+-   Added random forest probability output [#550](https://github.com/giswqs/geemap/pull/550)
+
+**Improvement**:
+
+-   Renamed eefolium module to foliumap
+-   Changed COG and STAC to lowercase
+-   Changed .format() to fstring [#561](https://github.com/giswqs/geemap/pull/561)
+-   Fixed random forest string to label bug [#545](https://github.com/giswqs/geemap/pull/545)
+-   Improved split-panel map [#543](https://github.com/giswqs/geemap/discussions/543)
+-   Updated otsu example [#535](https://github.com/giswqs/geemap/discussions/535)
+
+## v0.8.17 - June 20, 2021
 
 **New Features**:
 
