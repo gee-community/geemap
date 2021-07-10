@@ -68,11 +68,11 @@ def tree_to_string(estimator, feature_names, labels=None, output_mode="INFER"):
 
     elif output_mode == "PROBABILITY":
         # calculate fraction of samples of the same class in a leaf
-        # currrently only supporting binary classifications
+        # currently only supporting binary classifications
         # check if n classes == 2 (i.e. binary classes)
         if raw_vals.shape[-1] != 2:
             raise ValueError(
-                "shape mismatch: outputs from trees = {raw_vals.shape[-1]} classes, currently probability ouputs is support for binary classifications"
+                "shape mismatch: outputs from trees = {raw_vals.shape[-1]} classes, currently probability outputs is support for binary classifications"
             )
 
         probas = np.around(
@@ -249,7 +249,7 @@ def rf_to_strings(estimator, feature_names, processes=2, output_mode="INFER"):
         feature_names (list[str]): List of strings that define the name of features (i.e. bands) used to create the model
 
     kwargs:
-        processess (int): number of cpu processes to spawn. Increasing processes will improve speed for large models. default = 2
+        processes (int): number of cpu processes to spawn. Increasing processes will improve speed for large models. default = 2
         output_mode (str): the output mode of the estimator. Options are "INFER", "CLASSIFIATION", or "REGRESSION" (capitalization does not matter). default = "INFER"
 
     returns:

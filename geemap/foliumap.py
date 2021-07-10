@@ -274,7 +274,7 @@ class Map(folium.Map):
             and not isinstance(ee_object, ee.Feature)
             and not isinstance(ee_object, ee.Geometry)
         ):
-            err_str = "\n\nThe image argument in 'addLayer' function must be an instace of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
+            err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
             raise AttributeError(err_str)
 
         if (
@@ -334,7 +334,7 @@ class Map(folium.Map):
     addLayer = add_layer
 
     def _repr_mimebundle_(self, include, exclude, **kwargs):
-        """Adds Layer control to the map. Referece: https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_
+        """Adds Layer control to the map. Reference: https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_
 
         Args:
             include ([type]): [description]
@@ -674,7 +674,7 @@ class Map(folium.Map):
             if not isinstance(labels, list):
                 raise ValueError("The legend labels must be a list.")
         else:
-            labels = ["One", "Two", "Three", "Four", "ect"]
+            labels = ["One", "Two", "Three", "Four", "etc"]
 
         if colors is not None:
             if not isinstance(colors, list):
