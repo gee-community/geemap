@@ -42,4 +42,3 @@ jobs:
             - name: GEEMAP-TEST
               run: |
                   python -m unittest discover tests/
-              #   pytest
