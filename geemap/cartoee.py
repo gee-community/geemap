@@ -166,7 +166,7 @@ def add_layer(
     args:
         ee_object (ee.Image | ee.FeatureCollection): Earth Engine image result to plot.
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object to add image overlay to
-        dims (list | tuple | int, optional): dimensions to request earth engine result as [WIDTH,HEIGHT]. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Default None and infers dimesions
+        dims (list | tuple | int, optional): dimensions to request earth engine result as [WIDTH,HEIGHT]. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Default None and infers dimensions
         region (list | tuple, optional): geospatial region of the image to render in format [E,S,W,N]. By default, the whole image
         cmap (str, optional): string specifying matplotlib colormap to colorize image. If cmap is specified visParams cannot contain 'palette' key
         vis_params (dict, optional): visualization parameters as a dictionary. See https://developers.google.com/earth-engine/image_visualization for options
@@ -690,9 +690,9 @@ def add_scale_bar(
     Args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object.
         metric_distance (int | float, optional): length in meters of each region of the scale bar. Default to 4.
-        unit (str, optinal): scale bar distance unit. Default to "km"
+        unit (str, optional): scale bar distance unit. Default to "km"
         at_x (float, optional): target axes X coordinates (0..1) of box (= left, right). Default to (0.05, 0.2).
-        at_y (float, optional): axes Y coordinates (0..1) of box (= lower, upper). Deafult to (0.08, 0.11).
+        at_y (float, optional): axes Y coordinates (0..1) of box (= lower, upper). Default to (0.08, 0.11).
         max_stripes (int, optional): typical/maximum number of black+white regions. Default to 5.
         ytick_label_margins (float, optional): Location of distance labels on the Y axis. Default to 0.25.
         fontsize (int, optional): scale bar text size. Default to 8.
@@ -956,7 +956,7 @@ def add_scale_bar_lite(
     sby = y0 + (y1 - y0) * xy[1]
 
     # Calculate a scale bar length if none has been given
-    # (Theres probably a more pythonic way of rounding the number but this works)
+    # (There's probably a more pythonic way of rounding the number but this works)
     if not length:
         length = (x1 - x0) / 5000  # in km
         ndim = int(np.floor(np.log10(length)))  # number of digits in number

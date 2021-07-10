@@ -4911,7 +4911,7 @@ def create_nlcd_qml(out_qml):
     """Create a QGIS Layer Style (.qml) for NLCD data
 
     Args:
-        out_qml (str): File path to the ouput qml.
+        out_qml (str): File path to the output qml.
     """
     import pkg_resources
 
@@ -5728,7 +5728,7 @@ def zonal_statistics_by_group(
         out_file_path (str): Output file path that will contain the summary of the values in each zone. The file type can be: csv, shp, json, kml, kmz
         statistics_type (str, optional): Can be either 'SUM' or 'PERCENTAGE' . Defaults to 'SUM'.
         decimal_places (int, optional): The number of decimal places to use. Defaults to 0.
-        denominator (float, optional): To covert area units (e.g., from square meters to square kilometers). Defaults to 1.0.
+        denominator (float, optional): To convert area units (e.g., from square meters to square kilometers). Defaults to 1.0.
         scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
         crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
         tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
@@ -6556,7 +6556,7 @@ def find_NAIP(region, add_NDVI=True, add_NDWI=True):
 
 
 def filter_NWI(HUC08_Id, region, exclude_riverine=True):
-    """Retrives NWI dataset for a given HUC8 watershed.
+    """Retrieves NWI dataset for a given HUC8 watershed.
 
     Args:
         HUC08_Id (str): The HUC8 watershed id.
@@ -8236,7 +8236,7 @@ def planet_by_quarter(
         ValueError: The Planet API key is not provided.
         ValueError: The year is invalid.
         ValueError: The quarter is invalid.
-        ValueError: The quater is invalid.
+        ValueError: The quarter is invalid.
 
     Returns:
         str: A Planet global mosaic tile url.

@@ -1040,7 +1040,7 @@ def timelapse(m=None):
         m (geemap.Map, optional): A geemap Map instance. Defaults to None.
 
     Returns:
-        ipywidgets: The interative GUI.
+        ipywidgets: The interactive GUI.
     """
     if m is not None:
         m.add_basemap("HYBRID")
@@ -1481,7 +1481,7 @@ def time_slider(m=None):
         m (geemap.Map, optional): A geemap Map instance. Defaults to None.
 
     Returns:
-        ipywidgets: The interative GUI.
+        ipywidgets: The interactive GUI.
     """
     import matplotlib as mpl
     import matplotlib.pyplot as plt
