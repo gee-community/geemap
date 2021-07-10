@@ -2,6 +2,7 @@
 """
 
 import csv
+from datetime import datetime
 import math
 import os
 import json
@@ -10,6 +11,7 @@ import tarfile
 import urllib.request
 import zipfile
 import ee
+import io
 import ipywidgets as widgets
 from ipytree import Tree, Node
 from IPython.display import display
@@ -420,9 +422,9 @@ def open_youtube():
 def is_tool(name):
     """Check whether `name` is on PATH and marked as executable."""
 
-    from shutil import which
+    # from shutil import which
 
-    return which(name) is not None
+    return shutil.which(name) is not None
 
 
 def random_string(string_length=3):
@@ -1137,7 +1139,7 @@ def shp_to_geojson(in_shp, out_json=None, **kwargs):
     """
     try:
         import shapefile
-        from datetime import date
+        # from datetime import date
 
         in_shp = os.path.abspath(in_shp)
 
@@ -2954,7 +2956,7 @@ def add_text_to_gif(
         loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
 
     """
-    import io
+    # import io
     import pkg_resources
     import warnings
     from PIL import Image, ImageDraw, ImageSequence, ImageFont
@@ -3104,7 +3106,7 @@ def add_image_to_gif(
         image_size (tuple, optional): Resize image. Defaults to (80, 80).
         circle_mask (bool, optional): Whether to apply a circle mask to the image. This only works with non-png images. Defaults to False.
     """
-    import io
+    # import io
     import warnings
     from PIL import Image, ImageDraw, ImageSequence
 
@@ -7794,18 +7796,18 @@ def planet_monthly_tropical(api_key=None, token_name="PLANET_API_KEY"):
     Returns:
         list: A list of tile URLs.
     """
-    from datetime import date
+    # from datetime import date
 
     if api_key is None:
         api_key = os.environ.get(token_name)
         if api_key is None:
             raise ValueError("The Planet API Key must be provided.")
 
-    today = date.today()
+    today = datetime.date.today()
     year_now = int(today.strftime("%Y"))
     month_now = int(today.strftime("%m"))
 
-    links = []
+    links = []  
     prefix = "https://tiles.planet.com/basemaps/v1/planet-tiles/planet_medres_normalized_analytic_"
     subfix = "_mosaic/gmap/{z}/{x}/{y}.png?api_key="
 
@@ -8013,14 +8015,14 @@ def planet_monthly(api_key=None, token_name="PLANET_API_KEY"):
     Returns:
         list: A list of tile URLs.
     """
-    from datetime import date
+    # from datetime import date
 
     if api_key is None:
         api_key = os.environ.get(token_name)
         if api_key is None:
             raise ValueError("The Planet API Key must be provided.")
 
-    today = date.today()
+    today = datetime.date.today()
     year_now = int(today.strftime("%Y"))
     month_now = int(today.strftime("%m"))
 
@@ -8055,14 +8057,14 @@ def planet_quarterly(api_key=None, token_name="PLANET_API_KEY"):
     Returns:
         list: A list of tile URLs.
     """
-    from datetime import date
+    # from datetime import date
 
     if api_key is None:
         api_key = os.environ.get(token_name)
         if api_key is None:
             raise ValueError("The Planet API Key must be provided.")
 
-    today = date.today()
+    today = datetime.date.today()
     year_now = int(today.strftime("%Y"))
     month_now = int(today.strftime("%m"))
     quarter_now = (month_now - 1) // 3 + 1
@@ -8241,14 +8243,14 @@ def planet_by_quarter(
     Returns:
         str: A Planet global mosaic tile url.
     """
-    from datetime import date
+    # from datetime import date
 
     if api_key is None:
         api_key = os.environ.get(token_name)
         if api_key is None:
             raise ValueError("The Planet API Key must be provided.")
 
-    today = date.today()
+    today = datetime.date.today()
     year_now = int(today.strftime("%Y"))
     month_now = int(today.strftime("%m"))
     quarter_now = (month_now - 1) // 3 + 1
@@ -8293,14 +8295,14 @@ def planet_by_month(
     Returns:
         str: A Planet global mosaic tile url.
     """
-    from datetime import date
+    # from datetime import date
 
     if api_key is None:
         api_key = os.environ.get(token_name)
         if api_key is None:
             raise ValueError("The Planet API Key must be provided.")
 
-    today = date.today()
+    today = datetime.date.today()
     year_now = int(today.strftime("%Y"))
     month_now = int(today.strftime("%m"))
     # quarter_now = (month_now - 1) // 3 + 1
