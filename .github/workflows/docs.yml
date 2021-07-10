@@ -3,22 +3,24 @@ on:
     push:
         branches:
             - master
-    # pull_request:
-    #     branches:
-    #         - master
+    pull_request:
+        branches:
+            - master
 jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-            - uses: actions/setup-python@v2
+            - uses: actions/setup-python@v1  # Use v1, not v2
               with:
                   python-version: 3.9
             - name: Install dependencies
               run: |
                   python -m pip install --upgrade pip
                   pip install --user --no-cache-dir Cython
-                  pip install pytest -r requirements.txt -r requirements_dev.txt
+                  pip install codespell -r requirements.txt -r requirements_dev.txt
+            - name: Discover typos with codespell
+              run: codespell --ignore-words-list="aci,fallow,hist,nd,wqs" --skip="*.bib,*.csv,*.geojson,*.ipynb,*.json,*.kml"
             - name: LOAD EE CREDENTIALS
               run: python ./.github/ee_token.py
               env:
@@ -26,7 +28,6 @@ jobs:
             - name: GEEMAP-TEST
               run: |
                   python -m unittest discover tests/
-              #   pytest
             - run: pip install mkdocs-material mkdocstrings mkdocs-git-revision-date-plugin mkdocs-jupyter mkdocs-pdf-export-plugin
             - run: mkdocs gh-deploy --force
               env:
