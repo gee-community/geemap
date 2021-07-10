@@ -37,34 +37,3 @@ class TestGeemap(unittest.TestCase):
         end_date = "12-01"
         sentCollection = sentinel2_timeseries(start_date=start_date, end_date=end_date)
         self.assertIsInstance(sentCollection, ee.imagecollection.ImageCollection)
-
-    def test_004_bad_years(self):
-        years = [[2014, 2020], [2015, 2021], [205, 2019], [2016, 202]]
-        for start_year, end_year in years:
-            sentCollection = sentinel2_timeseries(
-                start_year=start_year, end_year=end_year
-            )
-            self.assertNotIsInstance(sentCollection, ee.imagecollection.ImageCollection)
-
-    def test_006_prior_years(self):
-        years = [
-            [2016, 2015],
-            [2017, 2015],
-            [2018, 2015],
-            [2019, 2015],
-            [2018, 2016],
-            [2019, 2017],
-        ]
-        for start_year, end_year in years:
-            self.assertRaises(
-                Exception,
-                sentinel2_timeseries(start_year=start_year, end_year=end_year),
-            )
-
-    def test_007_bad_dates(self):
-        start_date = "06-01"
-        end_date = "31-12"
-        self.assertRaises(
-            Exception,
-            sentinel2_timeseries(start_date=start_date, end_date=end_date),
-        )
