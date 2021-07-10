@@ -106,7 +106,7 @@ def plot_colormap(
 
 
 def plot_colormaps(width=8.0, height=0.4):
-    """Plot all availabe colormaps.
+    """Plot all available colormaps.
 
     Args:
         width (float, optional): Width of the colormap. Defaults to 8.0.

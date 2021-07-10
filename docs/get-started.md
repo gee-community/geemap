@@ -47,7 +47,7 @@ This Get Started guide is intended as a quick way to start programming with **ge
 
 ## Interact with the map
 
-Once data are added to the map, you can interact with data using vairous tools, such as the drawing tools, inspector tool, plotting tool.
+Once data are added to the map, you can interact with data using various tools, such as the drawing tools, inspector tool, plotting tool.
 Check the video below on how to use the Inspector tool to query Earth Engine interactively.
 
 [![geemap](http://img.youtube.com/vi/k477ksjkaXw/0.jpg)](http://www.youtube.com/watch?v=k477ksjkaXw "inspector")
