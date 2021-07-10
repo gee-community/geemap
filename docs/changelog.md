@@ -128,7 +128,7 @@
 
 -   Added a colormap module [#302](https://github.com/giswqs/geemap/issues/302)
 -   Added a new cartoee scale bar function [#313](https://github.com/giswqs/geemap/pull/313)
--   Added extract pixel values funciton [#315](https://github.com/giswqs/geemap/issues/315)
+-   Added extract pixel values function [#315](https://github.com/giswqs/geemap/issues/315)
 -   Visualizing Earth Engine image with >200 matplotlib colormaps via dot notation ([example](https://geemap.org/notebooks/60_colormaps/))
 
 **Improvement**:
@@ -225,7 +225,7 @@
 **New Features**:
 
 -   Add toolbar [#6](https://github.com/giswqs/geemap/issues/6)
--   Add fuctions for downloading imgae thumbnails [#214](https://github.com/giswqs/geemap/issues/214)
+-   Add functions for downloading imgae thumbnails [#214](https://github.com/giswqs/geemap/issues/214)
 -   Add func for getting image collection dates [#216](https://github.com/giswqs/geemap/issues/216)
 -   Add cartoee scale bar and north arrow [#191](https://github.com/giswqs/geemap/issues/191)
 -   Add support for COG mosaic [#200](https://github.com/giswqs/geemap/issues/200)

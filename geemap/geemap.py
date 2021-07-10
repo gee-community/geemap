@@ -1322,7 +1322,7 @@ class Map(ipyleaflet.Map):
             and not isinstance(ee_object, ee.Feature)
             and not isinstance(ee_object, ee.Geometry)
         ):
-            err_str = "\n\nThe image argument in 'addLayer' function must be an instace of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
+            err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
             raise AttributeError(err_str)
 
         if (
@@ -2504,7 +2504,7 @@ class Map(ipyleaflet.Map):
                 print("The legend keys must be a list.")
                 return
         else:
-            legend_keys = ["One", "Two", "Three", "Four", "ect"]
+            legend_keys = ["One", "Two", "Three", "Four", "etc"]
 
         if legend_colors is not None:
             if not isinstance(legend_colors, list):
@@ -3220,7 +3220,7 @@ class Map(ipyleaflet.Map):
 
         Args:
             image (str): The image file path.
-            bands (int or list, optional): The image bands to use. It can be either a nubmer (e.g., 1) or a list (e.g., [3, 2, 1]). Defaults to None.
+            bands (int or list, optional): The image bands to use. It can be either a number (e.g., 1) or a list (e.g., [3, 2, 1]). Defaults to None.
             layer_name (str, optional): The layer name to use for the raster. Defaults to None.
             colormap (str, optional): The name of the colormap to use for the raster, such as 'gray' and 'terrain'. More can be found at https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html. Defaults to None.
             x_dim (str, optional): The x dimension. Defaults to 'x'.
@@ -5387,7 +5387,7 @@ def ee_tile_layer(
         and not isinstance(ee_object, ee.Feature)
         and not isinstance(ee_object, ee.Geometry)
     ):
-        err_str = "\n\nThe image argument in 'addLayer' function must be an instace of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
+        err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
         raise AttributeError(err_str)
 
     if (
@@ -5445,7 +5445,7 @@ def linked_maps(
 
     Args:
         rows (int, optional): The number of rows of maps to create. Defaults to 2.
-        cols (int, optional): The number of columns of maps to ceate. Defaults to 2.
+        cols (int, optional): The number of columns of maps to create. Defaults to 2.
         height (str, optional): The height of each map in pixels. Defaults to "400px".
         ee_objects (list, optional): The list of Earth Engine objects to use for each map. Defaults to [].
         vis_params (list, optional): The list of visualization parameters to use for each map. Defaults to [].
