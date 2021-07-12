@@ -2,7 +2,7 @@
 """
 
 import csv
-from datetime import datetime
+import datetime
 import math
 import os
 import json
@@ -455,13 +455,12 @@ def open_image_from_url(url):
     """
     from PIL import Image
     import requests
-    from io import BytesIO
-
+    # from io import BytesIO
     # from urllib.parse import urlparse
 
     try:
         response = requests.get(url)
-        img = Image.open(BytesIO(response.content))
+        img = Image.open(io.BytesIO(response.content))
         return img
     except Exception as e:
         print(e)
@@ -2256,7 +2255,7 @@ def sentinel2_timeseries(
     ################################################################################
     # Input and output parameters.
     import re
-    import datetime
+    # import datetime
 
     if roi is None:
         # roi = ee.Geometry.Polygon(
@@ -2493,7 +2492,7 @@ def landsat_timeseries(
     ################################################################################
     # Input and output parameters.
     import re
-    import datetime
+    # import datetime
 
     if roi is None:
         roi = ee.Geometry.Polygon(
