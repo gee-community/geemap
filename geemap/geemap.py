@@ -6,6 +6,7 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 import math
 import os
 import time
+
 import ee
 import ipyevents
 import ipyleaflet
@@ -13,7 +14,8 @@ import ipywidgets as widgets
 from bqplot import pyplot as plt
 from ipyfilechooser import FileChooser
 from IPython.display import display
-from .basemaps import basemaps, basemap_tiles
+
+from .basemaps import basemap_tiles, basemaps
 from .common import *
 from .conversion import *
 from .legends import builtin_legends
@@ -403,7 +405,9 @@ class Map(ipyleaflet.Map):
 
         search_event.on_dom_event(handle_search_event)
 
-        data_control = ipyleaflet.WidgetControl(widget=search_widget, position="topleft")
+        data_control = ipyleaflet.WidgetControl(
+            widget=search_widget, position="topleft"
+        )
 
         if kwargs.get("data_ctrl"):
             self.add_control(control=data_control)
@@ -781,7 +785,7 @@ class Map(ipyleaflet.Map):
                     self.whitebox = wbt_control
                     self.add_control(wbt_control)
                 elif tool_name == "geetoolbox":
-                    from .toolbar import get_tools_dict, build_toolbox
+                    from .toolbar import build_toolbox, get_tools_dict
 
                     tools_dict = get_tools_dict()
                     gee_toolbox = build_toolbox(
@@ -1068,12 +1072,16 @@ class Map(ipyleaflet.Map):
                 toolbar_footer.children = [toolbar_grid]
 
         layers_button.observe(layers_btn_click, "value")
-        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position="topright"
+        )
 
         if kwargs.get("toolbar_ctrl"):
             self.add_control(toolbar_control)
 
-        tool_output_control = ipyleaflet.WidgetControl(widget=tool_output, position="topright")
+        tool_output_control = ipyleaflet.WidgetControl(
+            widget=tool_output, position="topright"
+        )
         # self.add_control(tool_output_control)
 
         def handle_interaction(**kwargs):
@@ -2010,8 +2018,9 @@ class Map(ipyleaflet.Map):
             max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.
         """
 
-        import numpy as np
         import time
+
+        import numpy as np
 
         if self.random_marker is not None:
             self.remove_layer(self.random_marker)
@@ -2334,8 +2343,12 @@ class Map(ipyleaflet.Map):
         left_dropdown.layout.max_width = "130px"
         right_dropdown.layout.max_width = "130px"
 
-        left_control = ipyleaflet.WidgetControl(widget=left_dropdown, position="topleft")
-        right_control = ipyleaflet.WidgetControl(widget=right_dropdown, position="topright")
+        left_control = ipyleaflet.WidgetControl(
+            widget=left_dropdown, position="topleft"
+        )
+        right_control = ipyleaflet.WidgetControl(
+            widget=right_dropdown, position="topright"
+        )
 
         self.add_control(control=left_control)
         self.add_control(control=right_control)
@@ -2883,8 +2896,9 @@ class Map(ipyleaflet.Map):
             name (str): name of the layer to show on the layer control.
         """
         from base64 import b64encode
-        from PIL import Image, ImageSequence
         from io import BytesIO
+
+        from PIL import Image, ImageSequence
 
         try:
             if not url.startswith("http"):
@@ -3241,11 +3255,11 @@ class Map(ipyleaflet.Map):
             )
 
         import warnings
-        import numpy as np
-        import rioxarray
 
         # import xarray as xr
         import matplotlib.pyplot as plt
+        import numpy as np
+        import rioxarray
 
         warnings.simplefilter("ignore")
 
@@ -4780,6 +4794,7 @@ class Map(ipyleaflet.Map):
         """
         import json
         import random
+
         import requests
 
         try:
@@ -4855,7 +4870,9 @@ class Map(ipyleaflet.Map):
         output_widget = widgets.VBox(
             [widgets.HBox([toolbar_button, close_button]), html]
         )
-        info_control = ipyleaflet.WidgetControl(widget=output_widget, position="bottomright")
+        info_control = ipyleaflet.WidgetControl(
+            widget=output_widget, position="bottomright"
+        )
 
         if info_mode in ["on_hover", "on_click"]:
             self.add_control(info_control)
@@ -5117,8 +5134,8 @@ class Map(ipyleaflet.Map):
         Raises:
             TypeError: If the ee_object is not ee.Image | ee.ImageCollection.
         """
-        import time
         import threading
+        import time
 
         if isinstance(ee_object, ee.Image):
             if region is not None:
@@ -5323,7 +5340,10 @@ class Map(ipyleaflet.Map):
                     for index, point in enumerate(points)
                 ]
             else:
-                markers = [ipyleaflet.Marker(location=point, draggable=False) for point in points]
+                markers = [
+                    ipyleaflet.Marker(location=point, draggable=False)
+                    for point in points
+                ]
 
             marker_cluster = ipyleaflet.MarkerCluster(markers=markers, name=layer_name)
             self.add_layer(marker_cluster)
@@ -5500,7 +5520,9 @@ def linked_maps(
                 label = widgets.Label(
                     labels[index], layout=widgets.Layout(padding="0px 5px 0px 5px")
                 )
-                control = ipyleaflet.WidgetControl(widget=label, position=label_position)
+                control = ipyleaflet.WidgetControl(
+                    widget=label, position=label_position
+                )
                 m.add_control(control)
 
             maps.append(m)
