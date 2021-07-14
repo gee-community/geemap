@@ -6,6 +6,7 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 import math
 import os
 import time
+
 import ee
 import ipyevents
 import ipyleaflet
@@ -13,7 +14,8 @@ import ipywidgets as widgets
 from bqplot import pyplot as plt
 from ipyfilechooser import FileChooser
 from IPython.display import display
-from .basemaps import basemaps, basemap_tiles
+
+from .basemaps import basemap_tiles, basemaps
 from .common import *
 from .conversion import *
 from .legends import builtin_legends
@@ -783,7 +785,7 @@ class Map(ipyleaflet.Map):
                     self.whitebox = wbt_control
                     self.add_control(wbt_control)
                 elif tool_name == "geetoolbox":
-                    from .toolbar import get_tools_dict, build_toolbox
+                    from .toolbar import build_toolbox, get_tools_dict
 
                     tools_dict = get_tools_dict()
                     gee_toolbox = build_toolbox(
@@ -2016,8 +2018,9 @@ class Map(ipyleaflet.Map):
             max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.
         """
 
-        import numpy as np
         import time
+
+        import numpy as np
 
         if self.random_marker is not None:
             self.remove_layer(self.random_marker)
@@ -2893,8 +2896,9 @@ class Map(ipyleaflet.Map):
             name (str): name of the layer to show on the layer control.
         """
         from base64 import b64encode
-        from PIL import Image, ImageSequence
         from io import BytesIO
+
+        from PIL import Image, ImageSequence
 
         try:
             if not url.startswith("http"):
@@ -3251,11 +3255,11 @@ class Map(ipyleaflet.Map):
             )
 
         import warnings
-        import numpy as np
-        import rioxarray
 
         # import xarray as xr
         import matplotlib.pyplot as plt
+        import numpy as np
+        import rioxarray
 
         warnings.simplefilter("ignore")
 
@@ -4790,6 +4794,7 @@ class Map(ipyleaflet.Map):
         """
         import json
         import random
+
         import requests
 
         try:
@@ -5129,8 +5134,8 @@ class Map(ipyleaflet.Map):
         Raises:
             TypeError: If the ee_object is not ee.Image | ee.ImageCollection.
         """
-        import time
         import threading
+        import time
 
         if isinstance(ee_object, ee.Image):
             if region is not None:

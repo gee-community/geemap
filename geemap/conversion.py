@@ -16,11 +16,13 @@ To execute all Jupyter notebooks in a folder recursively:                       
 
 
 import os
-import pkg_resources
 import shutil
 import urllib.request
 from collections import deque
 from pathlib import Path
+
+import pkg_resources
+
 from .common import *
 
 
