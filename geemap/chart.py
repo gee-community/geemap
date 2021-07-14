@@ -3,8 +3,9 @@
 
 # import ee
 import pandas as pd
-from bqplot import pyplot as plt
 from bqplot import Tooltip
+from bqplot import pyplot as plt
+
 from .common import ee_to_pandas
 
 
