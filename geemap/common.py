@@ -3759,9 +3759,12 @@ def search_ee_data(keywords):
         for asset in assets:
             asset_dates = asset["start_date"] + " - " + asset["end_date"]
             asset_snippet = asset["ee_id_snippet"]
-            start_index = asset_snippet.index("'") + 1
-            end_index = asset_snippet.index("'", start_index)
-            asset_id = asset_snippet[start_index:end_index]
+            if "ee." in asset_snippet:
+                start_index = asset_snippet.index("'") + 1
+                end_index = asset_snippet.index("'", start_index)
+                asset_id = asset_snippet[start_index:end_index]
+            else:
+                asset_id = asset_snippet
 
             asset["dates"] = asset_dates
             asset["id"] = asset_id
