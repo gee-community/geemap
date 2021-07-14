@@ -222,7 +222,7 @@ class Map(ipyleaflet.Map):
         )
 
         def import_btn_clicked(b):
-            if assets_dropdown.value != "":
+            if assets_dropdown.value is not None:
                 datasets = self.search_datasets
                 dataset = datasets[assets_dropdown.index]
                 dataset_uid = "dataset_" + random_string(string_length=3)
