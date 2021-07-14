@@ -1,13 +1,14 @@
 """ This module extends the folium Map class. It is designed to be used in Google Colab, as Google Colab currently does not support ipyleaflet.
 """
 import os
+
 import ee
 import folium
 from folium import plugins
+
 from .common import *
 from .conversion import *
 from .legends import builtin_legends
-
 
 # More WMS basemaps can be found at https://viewer.nationalmap.gov/services/
 ee_basemaps = {
@@ -660,7 +661,7 @@ class Map(folium.Map):
         """
 
         import pkg_resources
-        from branca.element import Template, MacroElement
+        from branca.element import MacroElement, Template
 
         pkg_dir = os.path.dirname(
             pkg_resources.resource_filename("geemap", "geemap.py")
@@ -849,6 +850,7 @@ class Map(folium.Map):
             FileNotFoundError: The provided GeoJSON file could not be found.
         """
         import json
+
         import requests
 
         try:
