@@ -1,12 +1,14 @@
 """Module for dealing with the toolbar.
 """
-import ee
 import os
+
+import ee
 import ipyevents
 import ipyleaflet
 import ipywidgets as widgets
-from IPython.core.display import display
 from ipyfilechooser import FileChooser
+from IPython.core.display import display
+
 from .common import *
 
 
@@ -178,7 +180,9 @@ def tool_template(m=None):
 
     toolbar_button.value = True
     if m is not None:
-        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position="topright"
+        )
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
@@ -504,7 +508,9 @@ def change_basemap(m):
 
     close_btn.on_click(close_click)
 
-    basemap_control = ipyleaflet.WidgetControl(widget=basemap_widget, position="topright")
+    basemap_control = ipyleaflet.WidgetControl(
+        widget=basemap_widget, position="topright"
+    )
     m.add_control(basemap_control)
     m.basemap_ctrl = basemap_control
 
@@ -533,7 +539,7 @@ def convert_js2py(m):
 
     def button_clicked(change):
         if change["new"] == "Convert":
-            from .conversion import js_snippet_to_py, create_new_cell
+            from .conversion import create_new_cell, js_snippet_to_py
 
             if len(text_widget.value) > 0:
                 out_lines = js_snippet_to_py(
@@ -722,8 +728,8 @@ def collect_samples(m):
 
 def get_tools_dict():
 
-    import pkg_resources
     import pandas as pd
+    import pkg_resources
 
     pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
     toolbox_csv = os.path.join(pkg_dir, "data/template/toolbox.csv")
@@ -1465,7 +1471,9 @@ def timelapse(m=None):
 
     toolbar_button.value = True
     if m is not None:
-        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position="topright"
+        )
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
@@ -2356,7 +2364,9 @@ def time_slider(m=None):
 
     toolbar_button.value = True
     if m is not None:
-        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position="topright"
+        )
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
@@ -2490,7 +2500,9 @@ def plot_transect(m=None):
                 image = image.toBands()
             band.options = image.bandNames().getInfo()
 
-        transect_control = ipyleaflet.WidgetControl(widget=output, position="bottomright")
+        transect_control = ipyleaflet.WidgetControl(
+            widget=output, position="bottomright"
+        )
         m.add_control(transect_control)
         m.transect_control = transect_control
 
@@ -2599,7 +2611,9 @@ def plot_transect(m=None):
 
     toolbar_button.value = True
     if m is not None:
-        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position="topright"
+        )
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
@@ -2945,7 +2959,9 @@ def sankee_gui(m=None):
 
         plot_widget = widgets.VBox([plot_output])
 
-        sankee_control = ipyleaflet.WidgetControl(widget=plot_widget, position="bottomright")
+        sankee_control = ipyleaflet.WidgetControl(
+            widget=plot_widget, position="bottomright"
+        )
         m.add_control(sankee_control)
         m.sankee_control = sankee_control
 
@@ -3147,7 +3163,9 @@ def sankee_gui(m=None):
 
     toolbar_button.value = True
     if m is not None:
-        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position="topright"
+        )
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
