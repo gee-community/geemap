@@ -1,9 +1,10 @@
+import multiprocessing as mp
 import os
+from functools import partial
+
 import ee
 import numpy as np
 import pandas as pd
-import multiprocessing as mp
-from functools import partial
 
 
 def tree_to_string(estimator, feature_names, labels=None, output_mode="INFER"):
