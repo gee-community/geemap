@@ -455,6 +455,7 @@ def open_image_from_url(url):
     """
     from PIL import Image
     import requests
+
     # from io import BytesIO
     # from urllib.parse import urlparse
 
@@ -1138,6 +1139,7 @@ def shp_to_geojson(in_shp, out_json=None, **kwargs):
     """
     try:
         import shapefile
+
         # from datetime import date
 
         in_shp = os.path.abspath(in_shp)
@@ -2255,6 +2257,7 @@ def sentinel2_timeseries(
     ################################################################################
     # Input and output parameters.
     import re
+
     # import datetime
 
     if roi is None:
@@ -2492,6 +2495,7 @@ def landsat_timeseries(
     ################################################################################
     # Input and output parameters.
     import re
+
     # import datetime
 
     if roi is None:
@@ -3751,9 +3755,12 @@ def search_ee_data(keywords):
         for asset in assets:
             asset_dates = asset["start_date"] + " - " + asset["end_date"]
             asset_snippet = asset["ee_id_snippet"]
-            start_index = asset_snippet.index("'") + 1
-            end_index = asset_snippet.index("'", start_index)
-            asset_id = asset_snippet[start_index:end_index]
+            if "ee." in asset_snippet:
+                start_index = asset_snippet.index("'") + 1
+                end_index = asset_snippet.index("'", start_index)
+                asset_id = asset_snippet[start_index:end_index]
+            else:
+                asset_id = asset_snippet
 
             asset["dates"] = asset_dates
             asset["id"] = asset_id
@@ -7806,7 +7813,7 @@ def planet_monthly_tropical(api_key=None, token_name="PLANET_API_KEY"):
     year_now = int(today.strftime("%Y"))
     month_now = int(today.strftime("%m"))
 
-    links = []  
+    links = []
     prefix = "https://tiles.planet.com/basemaps/v1/planet-tiles/planet_medres_normalized_analytic_"
     subfix = "_mosaic/gmap/{z}/{x}/{y}.png?api_key="
 

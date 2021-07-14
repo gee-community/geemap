@@ -220,7 +220,7 @@ class Map(ipyleaflet.Map):
         )
 
         def import_btn_clicked(b):
-            if assets_dropdown.value != "":
+            if assets_dropdown.value is not None:
                 datasets = self.search_datasets
                 dataset = datasets[assets_dropdown.index]
                 dataset_uid = "dataset_" + random_string(string_length=3)
@@ -403,7 +403,9 @@ class Map(ipyleaflet.Map):
 
         search_event.on_dom_event(handle_search_event)
 
-        data_control = ipyleaflet.WidgetControl(widget=search_widget, position="topleft")
+        data_control = ipyleaflet.WidgetControl(
+            widget=search_widget, position="topleft"
+        )
 
         if kwargs.get("data_ctrl"):
             self.add_control(control=data_control)
@@ -1068,12 +1070,16 @@ class Map(ipyleaflet.Map):
                 toolbar_footer.children = [toolbar_grid]
 
         layers_button.observe(layers_btn_click, "value")
-        toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position="topright")
+        toolbar_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position="topright"
+        )
 
         if kwargs.get("toolbar_ctrl"):
             self.add_control(toolbar_control)
 
-        tool_output_control = ipyleaflet.WidgetControl(widget=tool_output, position="topright")
+        tool_output_control = ipyleaflet.WidgetControl(
+            widget=tool_output, position="topright"
+        )
         # self.add_control(tool_output_control)
 
         def handle_interaction(**kwargs):
@@ -2334,8 +2340,12 @@ class Map(ipyleaflet.Map):
         left_dropdown.layout.max_width = "130px"
         right_dropdown.layout.max_width = "130px"
 
-        left_control = ipyleaflet.WidgetControl(widget=left_dropdown, position="topleft")
-        right_control = ipyleaflet.WidgetControl(widget=right_dropdown, position="topright")
+        left_control = ipyleaflet.WidgetControl(
+            widget=left_dropdown, position="topleft"
+        )
+        right_control = ipyleaflet.WidgetControl(
+            widget=right_dropdown, position="topright"
+        )
 
         self.add_control(control=left_control)
         self.add_control(control=right_control)
@@ -4855,7 +4865,9 @@ class Map(ipyleaflet.Map):
         output_widget = widgets.VBox(
             [widgets.HBox([toolbar_button, close_button]), html]
         )
-        info_control = ipyleaflet.WidgetControl(widget=output_widget, position="bottomright")
+        info_control = ipyleaflet.WidgetControl(
+            widget=output_widget, position="bottomright"
+        )
 
         if info_mode in ["on_hover", "on_click"]:
             self.add_control(info_control)
@@ -5323,7 +5335,10 @@ class Map(ipyleaflet.Map):
                     for index, point in enumerate(points)
                 ]
             else:
-                markers = [ipyleaflet.Marker(location=point, draggable=False) for point in points]
+                markers = [
+                    ipyleaflet.Marker(location=point, draggable=False)
+                    for point in points
+                ]
 
             marker_cluster = ipyleaflet.MarkerCluster(markers=markers, name=layer_name)
             self.add_layer(marker_cluster)
@@ -5500,7 +5515,9 @@ def linked_maps(
                 label = widgets.Label(
                     labels[index], layout=widgets.Layout(padding="0px 5px 0px 5px")
                 )
-                control = ipyleaflet.WidgetControl(widget=label, position=label_position)
+                control = ipyleaflet.WidgetControl(
+                    widget=label, position=label_position
+                )
                 m.add_control(control)
 
             maps.append(m)
