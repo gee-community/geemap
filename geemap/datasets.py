@@ -1,13 +1,15 @@
 import json
 import os
-import pkg_resources
 import shutil
 import urllib.request
-import ipywidgets as widgets
 from pathlib import Path
+
+import ipywidgets as widgets
+import pkg_resources
 from box import Box
-from .common import download_from_url, search_ee_data, ee_data_html
 from IPython.display import display
+
+from .common import download_from_url, ee_data_html, search_ee_data
 
 
 def get_data_csv():
