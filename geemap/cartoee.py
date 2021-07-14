@@ -1,26 +1,26 @@
-import ee
-import os
-import sys
 import logging
-import requests
-import warnings
+import os
 import subprocess
-import numpy as np
-from io import BytesIO
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from matplotlib import font_manager as mfonts
-from matplotlib import cm, colors
+import sys
+import warnings
 from collections.abc import Iterable
+from io import BytesIO
 
+import ee
+import matplotlib as mpl
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
+import numpy as np
+import requests
+from matplotlib import cm, colors
+from matplotlib import font_manager as mfonts
 
 try:
 
-    from PIL import Image
     import cartopy.crs as ccrs
     from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
     from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
+    from PIL import Image
 
 except ImportError:
 
@@ -710,7 +710,7 @@ def add_scale_bar(
     # Auxiliary functions
 
     def _crs_coord_project(crs_target, xcoords, ycoords, crs_source):
-        """ metric coordinates (x, y) from cartopy.crs_source"""
+        """metric coordinates (x, y) from cartopy.crs_source"""
 
         axes_coords = crs_target.transform_points(crs_source, xcoords, ycoords)
 

@@ -3,18 +3,19 @@
 
 import csv
 import datetime
+import io
+import json
 import math
 import os
-import json
 import shutil
 import tarfile
 import urllib.request
 import zipfile
+
 import ee
-import io
 import ipywidgets as widgets
-from ipytree import Tree, Node
 from IPython.display import display
+from ipytree import Node, Tree
 
 # __all__ = [
 #     "add_text_to_gif",
@@ -453,8 +454,8 @@ def open_image_from_url(url):
     Returns:
         object: Image object.
     """
-    from PIL import Image
     import requests
+    from PIL import Image
 
     # from io import BytesIO
     # from urllib.parse import urlparse
@@ -768,6 +769,7 @@ def create_download_link(filename, title="Click here to download: "):
         str: HTML download URL.
     """
     import base64
+
     from IPython.display import HTML
 
     data = open(filename, "rb").read()
@@ -2960,9 +2962,10 @@ def add_text_to_gif(
 
     """
     # import io
-    import pkg_resources
     import warnings
-    from PIL import Image, ImageDraw, ImageSequence, ImageFont
+
+    import pkg_resources
+    from PIL import Image, ImageDraw, ImageFont, ImageSequence
 
     warnings.simplefilter("ignore")
     pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
@@ -3111,6 +3114,7 @@ def add_image_to_gif(
     """
     # import io
     import warnings
+
     from PIL import Image, ImageDraw, ImageSequence
 
     warnings.simplefilter("ignore")
@@ -3398,10 +3402,10 @@ def create_colorbar(
 
     """
     import decimal
+    import warnings
 
     # import io
     import pkg_resources
-    import warnings
     from colour import Color
     from PIL import Image, ImageDraw, ImageFont
 
@@ -3785,8 +3789,9 @@ def ee_data_thumbnail(asset_id):
     Returns:
         str: An http url of the thumbnail.
     """
-    import requests
     import urllib
+
+    import requests
     from bs4 import BeautifulSoup
 
     asset_uid = asset_id.replace("/", "_")
@@ -3864,6 +3869,7 @@ def create_code_cell(code="", where="below"):
     """
 
     import base64
+
     from IPython.display import Javascript, display
 
     encoded_code = (base64.b64encode(str.encode(code))).decode()
@@ -4005,6 +4011,7 @@ def read_api_csv():
         dict: The dictionary containing information about each function, including name, description, function form, return type, arguments, html.
     """
     import copy
+
     import pkg_resources
 
     pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
@@ -4352,6 +4359,7 @@ def ee_user_id():
 def build_asset_tree(limit=100):
 
     import warnings
+
     import geeadd.ee_report as geeadd
 
     warnings.filterwarnings("ignore")
@@ -6879,8 +6887,9 @@ def png_to_gif(in_dir, out_gif, fps=10, loop=0):
     Raises:
         FileNotFoundError: No png images could be found.
     """
-    from PIL import Image
     import glob
+
+    from PIL import Image
 
     if not out_gif.endswith(".gif"):
         raise ValueError("The out_gif must be a gif file.")
@@ -7043,6 +7052,7 @@ def vector_styling(ee_object, column, palette, **kwargs):
 def is_GCS(in_shp):
 
     import warnings
+
     import pycrs
 
     if not os.path.exists(in_shp):
@@ -7907,8 +7917,8 @@ def planet_monthly_tiles_tropical(
     Returns:
         dict: A dictionary of TileLayer.
     """
-    import ipyleaflet
     import folium
+    import ipyleaflet
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
@@ -7952,8 +7962,8 @@ def planet_biannual_tiles_tropical(
         dict: A dictionary of TileLayer.
     """
 
-    import ipyleaflet
     import folium
+    import ipyleaflet
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
@@ -8124,8 +8134,8 @@ def planet_monthly_tiles(
     Returns:
         dict: A dictionary of TileLayer.
     """
-    import ipyleaflet
     import folium
+    import ipyleaflet
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
@@ -8169,8 +8179,8 @@ def planet_quarterly_tiles(
     Returns:
         dict: A dictionary of TileLayer.
     """
-    import ipyleaflet
     import folium
+    import ipyleaflet
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
@@ -8355,8 +8365,8 @@ def planet_tile_by_quarter(
         dict: A dictionary of TileLayer.
     """
 
-    import ipyleaflet
     import folium
+    import ipyleaflet
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
@@ -8404,8 +8414,8 @@ def planet_tile_by_month(
     Returns:
         dict: A dictionary of TileLayer.
     """
-    import ipyleaflet
     import folium
+    import ipyleaflet
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")

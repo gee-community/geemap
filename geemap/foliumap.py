@@ -1,13 +1,14 @@
 """ This module extends the folium Map class. It is designed to be used in Google Colab, as Google Colab currently does not support ipyleaflet.
 """
 import os
+
 import ee
 import folium
 from folium import plugins
+
 from .common import *
 from .conversion import *
 from .legends import builtin_legends
-
 
 # More WMS basemaps can be found at https://viewer.nationalmap.gov/services/
 ee_basemaps = {
@@ -660,7 +661,7 @@ class Map(folium.Map):
         """
 
         import pkg_resources
-        from branca.element import Template, MacroElement
+        from branca.element import MacroElement, Template
 
         pkg_dir = os.path.dirname(
             pkg_resources.resource_filename("geemap", "geemap.py")
@@ -849,6 +850,7 @@ class Map(folium.Map):
             FileNotFoundError: The provided GeoJSON file could not be found.
         """
         import json
+
         import requests
 
         try:
@@ -1048,7 +1050,7 @@ def delete_dp_report(name):
         if name in names:
             report = dp.Report.get(name)
             url = report.blocks[0]["url"]
-            # print('Deleting {}...'.format(url))
+            # print(f'Deleting {url}...')
             dp.Report.delete(dp.Report.by_id(url))
     except Exception as e:
         print(e)
@@ -1065,7 +1067,7 @@ def delete_dp_reports():
             print(item["name"])
             report = dp.Report.get(item["name"])
             url = report.blocks[0]["url"]
-            print("Deleting {}...".format(url))
+            print(f"Deleting {url}...")
             dp.Report.delete(dp.Report.by_id(url))
     except Exception as e:
         print(e)
