@@ -7072,10 +7072,11 @@ def is_GCS(in_shp):
         epsg4326 = pycrs.parse.from_epsg_code(4326).to_proj4()
         try:
             crs = pycrs.parse.from_esri_wkt(esri_wkt).to_proj4()
-            if crs == epsg4326:
-                return True
-            else:
-                return False
+            return crs == epsg4326
+            # if crs == epsg4326:
+            #     return True
+            # else:
+            #     return False
         except Exception:
             return False
 
