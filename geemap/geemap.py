@@ -95,7 +95,7 @@ class Map(ipyleaflet.Map):
         if "toolbar_ctrl" not in kwargs.keys():
             kwargs["toolbar_ctrl"] = True
         if "attribution_ctrl" not in kwargs.keys():
-            kwargs["attribution_ctrl"] = False
+            kwargs["attribution_ctrl"] = True
         if "use_voila" not in kwargs.keys():
             kwargs["use_voila"] = False
 
