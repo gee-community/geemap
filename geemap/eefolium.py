@@ -806,6 +806,8 @@ class Map(folium.Map):
 
         self.add_child(colormap)
 
+    add_colorbar_branca = add_colorbar
+
     def add_styled_vector(
         self, ee_object, column, palette, layer_name="Untitled", **kwargs
     ):
