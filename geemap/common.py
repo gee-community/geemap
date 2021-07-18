@@ -7073,6 +7073,10 @@ def is_GCS(in_shp):
         try:
             crs = pycrs.parse.from_esri_wkt(esri_wkt).to_proj4()
             return crs == epsg4326
+            # if crs == epsg4326:
+            #     return True
+            # else:
+            #     return False
         except Exception:
             return False
 
@@ -7632,8 +7636,7 @@ def extract_transect(
 
         if to_pandas:
             return ee_to_pandas(transect)
-        else:
-            return transect
+        return transect
 
     except Exception as e:
         raise Exception(e)
