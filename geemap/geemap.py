@@ -2018,8 +2018,6 @@ class Map(ipyleaflet.Map):
             max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.
         """
 
-        import time
-
         import numpy as np
 
         if self.random_marker is not None:
@@ -5135,7 +5133,6 @@ class Map(ipyleaflet.Map):
             TypeError: If the ee_object is not ee.Image | ee.ImageCollection.
         """
         import threading
-        import time
 
         if isinstance(ee_object, ee.Image):
             if region is not None:
