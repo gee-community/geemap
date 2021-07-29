@@ -599,7 +599,7 @@ def check_color(in_color):
     """Checks the input color and returns the corresponding hex color code.
 
     Args:
-        in_color (str or tuple): It can be a string (e.g., 'red', '#ffff00') or tuple (e.g., (255, 127, 0)).
+        in_color (str or tuple): It can be a string (e.g., 'red', '#ffff00', 'ffff00', 'ff0') or RGB tuple (e.g., (255, 127, 0)).
 
     Returns:
         str: A hex color code.
@@ -608,27 +608,35 @@ def check_color(in_color):
 
     out_color = "#000000"  # default black color
     if isinstance(in_color, tuple) and len(in_color) == 3:
+        
+        # rescale color if necessary
         if all(isinstance(item, int) for item in in_color):
-            rescaled_color = [x / 255.0 for x in in_color]
-            out_color = colour.Color(rgb=tuple(rescaled_color))
-            return out_color.hex_l
-        else:
-            print(
-                "RGB color must be a tuple with three integer values ranging from 0 to 255."
-            )
-            return
+            in_color = [c / 255.0 for c in in_color]
+        
+        return colour.Color(rgb=tuple(in_color)).hex_l
+    
     else:
+        
+        # try to guess the color system 
         try:
-            out_color = colour.Color(in_color)
-            return out_color.hex_l
+            return colour.Color(in_color).hex_l
+        
         except Exception as e:
-            print("The provided color is invalid. Using the default black color.")
+            pass
+        
+        # try again by adding an extra # (GEE handle hex codes without #)
+        try:
+            return colour.Color(f'#{in_color}').hex_l
+        
+        except Exception as e:
+            print(f"The provided color ({in_color}) is invalid. Using the default black color.")
             print(e)
-            return out_color
-
+        
+        return out_color
+ 
 
 def to_hex_colors(colors):
-    """Adds # to a list of hex color codes.
+    """Convert a GEE color palette into hexadecimal color codes. can handle mixin formats
 
     Args:
         colors (list): A list of hex color codes.
@@ -636,11 +644,8 @@ def to_hex_colors(colors):
     Returns:
         list: A list of hex color codes prefixed with #.
     """
-    result = all([len(color.strip()) == 6 for color in colors])
-    if result:
-        return ["#" + color.strip() for color in colors]
-    else:
-        return colors
+    
+    return [check_color(c) for c in colors]
 
 
 def system_fonts(show_full_path=False):
