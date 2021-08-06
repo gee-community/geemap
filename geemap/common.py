@@ -608,32 +608,34 @@ def check_color(in_color):
 
     out_color = "#000000"  # default black color
     if isinstance(in_color, tuple) and len(in_color) == 3:
-        
+
         # rescale color if necessary
         if all(isinstance(item, int) for item in in_color):
             in_color = [c / 255.0 for c in in_color]
-        
+
         return colour.Color(rgb=tuple(in_color)).hex_l
-    
+
     else:
-        
-        # try to guess the color system 
+
+        # try to guess the color system
         try:
             return colour.Color(in_color).hex_l
-        
+
         except Exception as e:
             pass
-        
+
         # try again by adding an extra # (GEE handle hex codes without #)
         try:
-            return colour.Color(f'#{in_color}').hex_l
-        
+            return colour.Color(f"#{in_color}").hex_l
+
         except Exception as e:
-            print(f"The provided color ({in_color}) is invalid. Using the default black color.")
+            print(
+                f"The provided color ({in_color}) is invalid. Using the default black color."
+            )
             print(e)
-        
+
         return out_color
- 
+
 
 def to_hex_colors(colors):
     """Convert a GEE color palette into hexadecimal color codes. can handle mixin formats
@@ -644,7 +646,7 @@ def to_hex_colors(colors):
     Returns:
         list: A list of hex color codes prefixed with #.
     """
-    
+
     return [check_color(c) for c in colors]
 
 
@@ -6223,26 +6225,50 @@ def extract_values_to_points(
     in_fc,
     image,
     out_fc=None,
-    properties=None,
     scale=None,
-    projection=None,
-    tile_scale=1,
-    geometries=True,
+    crs=None,
+    crsTransform=None,
+    tileScale=1,
+    stats_type="FIRST",
+    **kwargs,
 ):
     """Extracts image values to points.
 
     Args:
-        in_fc (object): ee.FeatureCollection
-        image (object): The ee.Image to extract pixel values
-        properties (list, optional): The list of properties to copy from each input feature. Defaults to all non-system properties.
-        scale (float, optional): A nominal scale in meters of the projection to sample in. If unspecified,the scale of the image's first band is used.
-        projection (str, optional): The projection in which to sample. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale.
+        in_fc (object): ee.FeatureCollection.
+        image (object): The ee.Image to extract pixel values.
+        out_fc (object, optional): The output feature collection. Defaults to None.
+        scale (ee.Projectoin, optional): A nominal scale in meters of the projection to sample in. If unspecified,the scale of the image's first band is used.
+        crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
+        crsTransform (list, optional): The list of CRS transform values. This is a row-major ordering of the 3x2 transform matrix. This option is mutually exclusive with 'scale', and will replace any transform already set on the projection.
         tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default.
-        geometries (bool, optional): If true, the results will include a geometry per sampled pixel. Otherwise, geometries will be omitted (saving memory).
+        stats_type (str, optional): Statistic type to be calculated. Defaults to 'FIRST'.
 
     Returns:
         object: ee.FeatureCollection
     """
+
+    if "tile_scale" in kwargs:
+        tileScale = kwargs["tile_scale"]
+    if "crs_transform" in kwargs:
+        crsTransform = kwargs["crs_transform"]
+
+    allowed_stats = {
+        "FIRST": ee.Reducer.first(),
+        "MEAN": ee.Reducer.mean(),
+        "MAXIMUM": ee.Reducer.max(),
+        "MEDIAN": ee.Reducer.median(),
+        "MINIMUM": ee.Reducer.min(),
+        "STD": ee.Reducer.stdDev(),
+        "MIN_MAX": ee.Reducer.minMax(),
+        "SUM": ee.Reducer.sum(),
+        "VARIANCE": ee.Reducer.variance(),
+    }
+
+    if stats_type.upper() not in allowed_stats:
+        raise ValueError(
+            f"The statistics_type must be one of the following {', '.join(allowed_stats.keys())}"
+        )
 
     if not isinstance(in_fc, ee.FeatureCollection):
         try:
@@ -6255,15 +6281,13 @@ def extract_values_to_points(
         print("The image must be an instance of ee.Image.")
         return
 
-    result = image.sampleRegions(
-        **{
-            "collection": in_fc,
-            "properties": properties,
-            "scale": scale,
-            "projection": projection,
-            "tileScale": tile_scale,
-            "geometries": geometries,
-        }
+    result = image.reduceRegions(
+        collection=in_fc,
+        reducer=allowed_stats[stats_type.upper()],
+        scale=scale,
+        crs=crs,
+        crsTransform=crsTransform,
+        tileScale=tileScale,
     )
 
     if out_fc is not None:
