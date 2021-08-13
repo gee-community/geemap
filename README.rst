@@ -526,7 +526,7 @@ Launch an interactive notebook with **Google Colab**. Keep in mind that the conv
 The source code for this automated conversion module can be found at `conversion.py <https://github.com/giswqs/geemap/blob/master/geemap/conversion.py>`__.
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
-        :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/notebooks/earthengine_js_to_ipynb.ipynb
+        :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/notebooks/08_ee_js_to_ipynb.ipynb
 
 
 .. code:: python
