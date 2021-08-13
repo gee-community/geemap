@@ -8466,3 +8466,14 @@ def planet_tile_by_month(
         )
 
     return tile
+
+
+def get_current_latlon():
+    """Get the current latitude and longitude based on the user's location."""
+    import geocoder
+
+    g = geocoder.ip("me")
+    props = g.geojson["features"][0]["properties"]
+    lat = props["lat"]
+    lon = props["lng"]
+    return lat, lon
