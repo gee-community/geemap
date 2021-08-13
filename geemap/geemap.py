@@ -1535,6 +1535,24 @@ class Map(ipyleaflet.Map):
 
     zoomToObject = zoom_to_object
 
+    def zoom_to_me(self, zoom=14, add_marker=True):
+        """Zoom to the current device location.
+
+        Args:
+            zoom (int, optional): Zoom level. Defaults to 14.
+            add_marker (bool, optional): Whether to add a marker of the current device location. Defaults to True.
+        """
+        lat, lon = get_current_latlon()
+        self.set_center(lon, lat, zoom)
+
+        if add_marker:
+            marker = ipyleaflet.Marker(
+                location=(lat, lon),
+                draggable=False,
+                name="Device location",
+            )
+            self.add_layer(marker)
+
     def get_scale(self):
         """Returns the approximate pixel scale of the current map view, in meters.
 
