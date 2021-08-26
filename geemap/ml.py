@@ -13,8 +13,6 @@ def tree_to_string(estimator, feature_names, labels=None, output_mode="INFER"):
     args:
         estimator (sklearn.tree.estimator): An estimator consisting of multiple decision tree classifiers. Expects object to contain estimators_ attribute
         feature_names (Iterable[str]): List of strings that define the name of features (i.e. bands) used to create the model
-
-    kwargs:
         labels (Iterable[numeric]): List of class labels to map outputs to, must be numeric values. If None, then raw outputs will be used. default = None
         output_mode (str): the output mode of the estimator. Options are "INFER", "CLASSIFIATION", or "REGRESSION" (capitalization does not matter). default = "INFER"
 
@@ -248,8 +246,6 @@ def rf_to_strings(estimator, feature_names, processes=2, output_mode="INFER"):
     args:
         estimator (sklearn.ensemble.estimator): A decision tree classifier or regressor object created using sklearn
         feature_names (list[str]): List of strings that define the name of features (i.e. bands) used to create the model
-
-    kwargs:
         processes (int): number of cpu processes to spawn. Increasing processes will improve speed for large models. default = 2
         output_mode (str): the output mode of the estimator. Options are "INFER", "CLASSIFIATION", or "REGRESSION" (capitalization does not matter). default = "INFER"
 
