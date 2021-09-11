@@ -25,7 +25,12 @@ def use_folium():
         return False
 
 
-if in_colab_shell() or use_folium():
+if use_folium():
     from .foliumap import *
 else:
     from .geemap import *
+
+    if in_colab_shell():
+        from google.colab import output
+
+        output.enable_custom_widget_manager()
