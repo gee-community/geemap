@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.9.0 - September 10, 2021
+
+**New Features**:
+
+-   Get current device latlon [#618](https://github.com/giswqs/geemap/issues/618)
+
+**Improvement**:
+
+-   Improved Colab support [#661](https://github.com/giswqs/geemap/issues/661)
+-   Improved folium colorbar [#586](https://github.com/giswqs/geemap/issues/586)
+-   Fixed broken link [#653](https://github.com/giswqs/geemap/issues/653)
+-   Fixed extract pixel values bug [#610](https://github.com/giswqs/geemap/issues/610)
+-   Fixed color palette bug [#605](https://github.com/giswqs/geemap/pull/605)
+-   Fixed typos [#589](https://github.com/giswqs/geemap/pull/589)
+
 ## v0.8.18 - July 8, 2021
 
 **New Features**:
