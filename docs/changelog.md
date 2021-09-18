@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.9.1 - September 17, 2021
+
+**New Features**:
+
+-   Added `sandbox_path` option allowing users to restrict Voila app access to system directories [#673](https://github.com/giswqs/geemap/issues/673)
+
 ## v0.9.0 - September 10, 2021
 
 **New Features**:
