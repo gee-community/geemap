@@ -216,7 +216,7 @@ def open_data_widget(m):
     )
     file_type.style.button_width = "88px"
 
-    file_chooser = FileChooser(os.getcwd())
+    file_chooser = FileChooser(os.getcwd(), sandbox_path=m.sandbox_path)
     file_chooser.filter_pattern = "*.shp"
     file_chooser.use_dir_icons = True
 
@@ -778,73 +778,6 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
         disabled=True,
     )
     children.append(desc)
-
-    # params = tool_dict["parameters"]
-    # for param in params:
-    #     items = params[param]
-    #     required = ""
-    #     if items["optional"] == "false":
-    #         required = "*"
-    #         required_inputs.append(param)
-    #     label = items["name"] + required
-    #     param_type = items["parameter_type"]
-    #     default_value = None
-
-    #     if (items["default_value"] != "null") and (len(items["default_value"]) > 0):
-    #         if "false" in items["default_value"]:
-    #             default_value = False
-    #         elif "true" in items["default_value"]:
-    #             default_value = True
-    #         else:
-    #             default_value = items["default_value"].replace('"', "")
-
-    #     layout = widgets.Layout(width="500px", max_width=max_width)
-
-    #     if isinstance(param_type, str):
-    #         # display(data_types[param_type])
-
-    #         if param_type == "Boolean":
-    #             var_widget = widgets.Checkbox(
-    #                 description=label, style=style, layout=layout, value=default_value
-    #             )
-    #         elif param_type in [
-    #             "Directory",
-    #             "ExistingFile",
-    #             "ExistingFileOrFloat",
-    #             "FileList",
-    #             "NewFile",
-    #         ]:
-    #             var_widget = FileChooser(title=label)
-    #         else:
-    #             var_widget = widgets.Text(description=label, style=style, layout=layout)
-    #             if default_value is not None:
-    #                 var_widget.value = str(default_value)
-
-    #         args[param] = var_widget
-
-    #         children.append(var_widget)
-    #     elif isinstance(param_type, dict):
-
-    #         if "OptionList" in param_type:
-    #             var_widget = widgets.Dropdown(
-    #                 options=param_type["OptionList"],
-    #                 description=label,
-    #                 style=style,
-    #                 layout=layout,
-    #             )
-    #         elif list(param_type.keys())[0] in [
-    #             "Directory",
-    #             "ExistingFile",
-    #             "ExistingFileOrFloat",
-    #             "FileList",
-    #             "NewFile",
-    #         ]:
-    #             var_widget = FileChooser(title=label)
-    #         else:
-    #             var_widget = FileChooser(title=label)
-    #         args[param] = var_widget
-
-    #         children.append(var_widget)
 
     run_btn = widgets.Button(description="Run", layout=widgets.Layout(width="100px"))
     cancel_btn = widgets.Button(
