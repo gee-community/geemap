@@ -114,6 +114,19 @@ class Map(ipyleaflet.Map):
         self.baseclass = "ipyleaflet"
         self.layout.height = kwargs["height"]
 
+        # sandbox path for Voila app to restrict access to system directories.
+        if "sandbox_path" not in kwargs:
+            if os.environ.get("USE_VOILA") is not None:
+                self.sandbox_path = os.getcwd()
+            else:
+                self.sandbox_path = None
+        else:
+            if os.path.exists(os.path.abspath(kwargs["sandbox_path"])):
+                self.sandbox_path = kwargs["sandbox_path"]
+            else:
+                print("The sandbox path is invalid.")
+                self.sandbox_path = None
+
         self.clear_controls()
 
         # The number of shapes drawn by the user using the DrawControl
@@ -557,7 +570,7 @@ class Map(ipyleaflet.Map):
             ],
         )
 
-        file_chooser = FileChooser(os.getcwd())
+        file_chooser = FileChooser(os.getcwd(), sandbox_path=self.sandbox_path)
         file_chooser.default_filename = "my_map.html"
         file_chooser.use_dir_icons = True
 
@@ -690,12 +703,12 @@ class Map(ipyleaflet.Map):
             },
         }
 
-        if kwargs["use_voila"]:
-            voila_tools = ["camera", "folder-open", "cloud-download", "gears"]
+        # if kwargs["use_voila"]:
+        #     voila_tools = ["camera", "folder-open", "cloud-download", "gears"]
 
-            for item in voila_tools:
-                if item in tools.keys():
-                    del tools[item]
+        #     for item in voila_tools:
+        #         if item in tools.keys():
+        #             del tools[item]
 
         icons = list(tools.keys())
         tooltips = [item["tooltip"] for item in list(tools.values())]
@@ -718,7 +731,7 @@ class Map(ipyleaflet.Map):
                 for i in range(len(icons))
             ],
             layout=widgets.Layout(
-                width="107px",
+                width="109px",
                 grid_template_columns=(icon_width + " ") * n_cols,
                 grid_template_rows=(icon_height + " ") * n_rows,
                 grid_gap="1px 1px",
@@ -777,7 +790,10 @@ class Map(ipyleaflet.Map):
 
                     tools_dict = wbt.get_wbt_dict()
                     wbt_toolbox = wbt.build_toolbox(
-                        tools_dict, max_width="800px", max_height="500px"
+                        tools_dict,
+                        max_width="800px",
+                        max_height="500px",
+                        sandbox_path=self.sandbox_path,
                     )
                     wbt_control = ipyleaflet.WidgetControl(
                         widget=wbt_toolbox, position="bottomright"
