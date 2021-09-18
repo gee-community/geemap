@@ -415,12 +415,26 @@ def add_colorbar(
                 'cmap keyword or "palette" key in visParams must be provided'
             )
 
+    tick_font_size = None
+    if "tick_font_size" in kwargs:
+        tick_font_size = kwargs.pop("tick_font_size")
+
+    label_font_size = None
+    if "label_font_size" in kwargs:
+        label_font_size = kwargs.pop("label_font_size")
+
     cb = mpl.colorbar.ColorbarBase(cax, norm=norm, alpha=alpha, cmap=cmap, **kwargs)
 
     if "bands" in vis_keys:
         cb.set_label(vis_params["bands"])
     elif label is not None:
-        cb.set_label(label)
+        if label_font_size is not None:
+            cb.set_label(label, fontsize=label_font_size)
+        else:
+            cb.set_label(label)
+
+    if tick_font_size is not None:
+        cb.ax.tick_params(labelsize=tick_font_size)
 
     return
 
