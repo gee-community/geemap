@@ -17,7 +17,7 @@ jobs:
                   pip install --user --no-cache-dir Cython
                   pip install codespell -r requirements.txt -r requirements_dev.txt
             - name: Discover typos with codespell
-              run: codespell --skip="*.csv,*.geojson" --ignore-words-list="aci,acount,acounts,fallow,hart,hist,nd,ned,ois,wqs"
+              run: codespell --skip="*.csv,*.geojson" --ignore-words-list="aci,acount,acounts,fallow,hart,hist,nd,ned,ois,wqs,watermask"
             - name: LOAD EE CREDENTIALS
               run: python ./.github/ee_token.py
               env:

@@ -183,7 +183,7 @@ def ExtractEndpoints(CL1px):
 
     result = CL1px
 
-    # // the for loop removes the identified endpoints from the imput image
+    # // the for loop removes the identified endpoints from the input image
     i = 0
     while i < 4:  # rotate kernels
         result = result.subtract(hitOrMiss(CL1px, se11, se12))
@@ -203,7 +203,7 @@ def ExtractCorners(CL1px):
     se12 = ee.Kernel.fixed(3, 3, splitKernel(se1w, 2))
 
     result = CL1px
-    # // the for loop removes the identified corners from the imput image
+    # // the for loop removes the identified corners from the input image
 
     i = 0
     while i < 4:  # rotate kernels
@@ -778,9 +778,9 @@ def rwGenSR(
         # // calculate orthogonal direction of the centerline
         imgOut = CalculateOrthAngle(imgOut)
         # // export widths
-        widthOut = CalculateWidth(imgOut)
+        width_fc = CalculateWidth(imgOut)
 
-        return widthOut
+        return width_fc
 
     return tempFUN
 
@@ -984,13 +984,13 @@ def rwc(
         MAXDISTANCE_BRANCH_REMOVAL=max_dist_branch_removal,
     )
 
-    widthOut = gen(img)
+    width_fc = gen(img)
 
     if return_fc:
-        return widthOut
+        return width_fc
     else:
         taskWidth = ee.batch.Export.table.toDrive(
-            collection=widthOut,
+            collection=width_fc,
             description=description,
             folder=folder,
             fileFormat=file_format,
