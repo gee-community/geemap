@@ -181,6 +181,7 @@ nav:
                 - notebooks/otsu.ipynb
                 - notebooks/qgis_layer_style_file.ipynb
                 - notebooks/random_sampling.ipynb
+                - notebooks/river_width.ipynb
                 - notebooks/select_features.ipynb
                 - notebooks/select_features_old.ipynb
                 - notebooks/surface_water_mapping.ipynb
