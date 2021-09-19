@@ -56,6 +56,8 @@ nav:
     - YouTube Channel: https://www.youtube.com/c/QiushengWu
     - Report Issues: https://github.com/giswqs/geemap/issues
     - API Reference:
+          - algorithm modules:
+                - river module: river.md
           - basemaps module: basemaps.md
           - cartoee module: cartoee.md
           - chart module: chart.md
