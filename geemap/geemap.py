@@ -2333,6 +2333,8 @@ class Map(ipyleaflet.Map):
         right_names,
         left_vis={},
         right_vis={},
+        width="130px",
+        **kwargs,
     ):
         """Creates a split-panel map for inspecting timeseries images.
 
@@ -2343,7 +2345,11 @@ class Map(ipyleaflet.Map):
             right_names (list): A list of names to show under the right dropdown.
             left_vis (dict, optional): Visualization parameters for the left layer. Defaults to {}.
             right_vis (dict, optional): Visualization parameters for the right layer. Defaults to {}.
+            width (str, optional): The width of the dropdown list. Defaults to '130px'.
         """
+        controls = self.controls
+        layers = self.layers
+
         left_count = int(left_ts.size().getInfo())
         right_count = int(right_ts.size().getInfo())
 
@@ -2372,8 +2378,8 @@ class Map(ipyleaflet.Map):
         self.clear_controls()
         left_dropdown = widgets.Dropdown(options=left_names, value=None)
         right_dropdown = widgets.Dropdown(options=right_names, value=None)
-        left_dropdown.layout.max_width = "130px"
-        right_dropdown.layout.max_width = "130px"
+        left_dropdown.layout.max_width = width
+        right_dropdown.layout.max_width = width
 
         left_control = ipyleaflet.WidgetControl(
             widget=left_dropdown, position="topleft"
@@ -2453,12 +2459,35 @@ class Map(ipyleaflet.Map):
 
         right_dropdown.observe(right_dropdown_change, names="value")
 
+        close_button = widgets.ToggleButton(
+            value=False,
+            tooltip="Close the tool",
+            icon="times",
+            # button_style="primary",
+            layout=widgets.Layout(
+                height="28px", width="28px", padding="0px 0px 0px 4px"
+            ),
+        )
+
+        def close_btn_click(change):
+            if change["new"]:
+                self.controls = controls
+                self.clear_layers()
+                self.layers = layers
+
+        close_button.observe(close_btn_click, "value")
+        close_control = ipyleaflet.WidgetControl(
+            widget=close_button, position="bottomright"
+        )
+
         try:
 
             split_control = ipyleaflet.SplitMapControl(
                 left_layer=left_layer, right_layer=right_layer
             )
             self.add_control(split_control)
+
+            self.add_control(close_control)
 
         except Exception as e:
             raise Exception(e)

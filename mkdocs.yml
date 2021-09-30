@@ -176,6 +176,7 @@ nav:
                 - notebooks/local_rf_training.ipynb
                 - notebooks/mouse_click_coordinates.ipynb
                 - notebooks/netcdf.ipynb
+                - notebooks/nlcd_app.ipynb
                 - notebooks/notebook_template.ipynb
                 - notebooks/oil_palm_and_rubber_plantation.ipynb
                 - notebooks/otsu.ipynb
