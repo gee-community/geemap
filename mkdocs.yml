@@ -193,4 +193,3 @@ nav:
                 - notebooks/velocity.ipynb
                 - notebooks/video_overlay.ipynb
                 - notebooks/water_app.ipynb
-                - notebooks/xy_to_points.ipynb

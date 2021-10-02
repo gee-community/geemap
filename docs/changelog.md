@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.9.2 - October 1, 2021
+
+**New Features**:
+
+-   Added RivWidthCloud module [#682](https://github.com/giswqs/geemap/issues/682)
+-   Added RivWidthCloud notebook [#682](https://github.com/giswqs/geemap/issues/682)
+-   Added [NLCD notebook](https://geemap.org/notebooks/nlcd_app/)
+-   Added a close button to timeseries inspector
+
+**Improvement**:
+
+-   Fixed hover countries notebook [#686](https://github.com/giswqs/geemap/pull/686)
+-   Imporved cartoee colorbar with custom label size [#681](https://github.com/giswqs/geemap/discussions/681)
+
 ## v0.9.1 - September 17, 2021
 
 **New Features**:
