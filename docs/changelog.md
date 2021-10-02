@@ -12,7 +12,7 @@
 **Improvement**:
 
 -   Fixed hover countries notebook [#686](https://github.com/giswqs/geemap/pull/686)
--   Imporved cartoee colorbar with custom label size [#681](https://github.com/giswqs/geemap/discussions/681)
+-   Improved cartoee colorbar with custom label size [#681](https://github.com/giswqs/geemap/discussions/681)
 
 ## v0.9.1 - September 17, 2021
 
