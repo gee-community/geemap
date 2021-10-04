@@ -4855,8 +4855,12 @@ class Map(ipyleaflet.Map):
         """
         import json
         import random
-
         import requests
+
+        style_callback_only = False
+
+        if len(style) == 0 and style_callback is not None:
+            style_callback_only = True
 
         try:
 
@@ -4971,13 +4975,21 @@ class Map(ipyleaflet.Map):
         if style_callback is None:
             style_callback = random_color
 
-        geojson = ipyleaflet.GeoJSON(
-            data=data,
-            style=style,
-            hover_style=hover_style,
-            style_callback=style_callback,
-            name=layer_name,
-        )
+        if style_callback_only:
+            geojson = ipyleaflet.GeoJSON(
+                data=data,
+                hover_style=hover_style,
+                style_callback=style_callback,
+                name=layer_name,
+            )
+        else:
+            geojson = ipyleaflet.GeoJSON(
+                data=data,
+                style=style,
+                hover_style=hover_style,
+                style_callback=style_callback,
+                name=layer_name,
+            )
 
         if info_mode == "on_hover":
             geojson.on_hover(update_html)
