@@ -3191,16 +3191,17 @@ class Map(ipyleaflet.Map):
 
     def to_html(
         self,
-        outfile,
+        outfile=None,
         title="My Map",
         width="100%",
         height="880px",
         add_layer_control=True,
+        **kwargs,
     ):
-        """Saves the map as a HTML file.
+        """Saves the map as an HTML file.
 
         Args:
-            outfile (str): The output file path to the HTML file.
+            outfile (str, optional): The output file path to the HTML file.
             title (str, optional): The title of the HTML file. Defaults to 'My Map'.
             width (str, optional): The width of the map in pixels or percentage. Defaults to '100%'.
             height (str, optional): The height of the map in pixels. Defaults to '880px'.
@@ -3209,13 +3210,17 @@ class Map(ipyleaflet.Map):
         """
         try:
 
-            if not outfile.endswith(".html"):
-                print("The output file must end with .html")
-                return
-
-            out_dir = os.path.dirname(outfile)
-            if not os.path.exists(out_dir):
-                os.makedirs(out_dir)
+            save = True
+            if outfile is not None:
+                if not outfile.endswith(".html"):
+                    raise ValueError("The output file extension must be html.")
+                outfile = os.path.abspath(outfile)
+                out_dir = os.path.dirname(outfile)
+                if not os.path.exists(out_dir):
+                    os.makedirs(out_dir)
+            else:
+                outfile = os.path.abspath(random_string() + ".html")
+                save = False
 
             if add_layer_control and self.layer_control is None:
                 layer_control = ipyleaflet.LayersControl(position="topright")
@@ -3244,10 +3249,18 @@ class Map(ipyleaflet.Map):
             self.layout.width = width
             self.layout.height = height
 
-            self.save(outfile, title=title)
+            self.save(outfile, title=title, **kwargs)
 
             self.layout.width = before_width
             self.layout.height = before_height
+
+            if not save:
+                out_html = ""
+                with open(outfile) as f:
+                    lines = f.readlines()
+                    out_html = "".join(lines)
+                os.remove(outfile)
+                return out_html
 
         except Exception as e:
             raise Exception(e)
@@ -5451,6 +5464,27 @@ class Map(ipyleaflet.Map):
         """
         layer = planet_tile_by_quarter(year, quarter, name, api_key, token_name)
         self.add_layer(layer)
+
+    def to_streamlit(self, width=700, height=500, scrolling=False, **kwargs):
+        """Renders map figure in a Streamlit app.
+
+        Args:
+            width (int, optional): Width of the map. Defaults to 700.
+            height (int, optional): Height of the map. Defaults to 500.
+            scrolling (bool, optional): If True, show a scrollbar when the content is larger than the iframe. Otherwise, do not show a scrollbar. Defaults to False.
+
+        Returns:
+            streamlit.components: components.html object.
+        """
+
+        check_package(
+            "streamlit", URL="https://docs.streamlit.io/en/stable/installation.html"
+        )
+        import streamlit.components.v1 as components
+
+        return components.html(
+            self.to_html(), width=width, height=height, scrolling=scrolling
+        )
 
 
 # The functions below are outside the Map class.
