@@ -961,7 +961,7 @@ class Map(folium.Map):
         layer = planet_tile_by_month(
             year, month, name, api_key, token_name, tile_format="folium"
         )
-        self.add_layer(layer)
+        layer.add_to(self)
 
     def add_planet_by_quarter(
         self, year=2016, quarter=1, name=None, api_key=None, token_name="PLANET_API_KEY"
@@ -978,7 +978,7 @@ class Map(folium.Map):
         layer = planet_tile_by_quarter(
             year, quarter, name, api_key, token_name, tile_format="folium"
         )
-        self.add_layer(layer)
+        layer.add_to(self)
 
     def publish(
         self,
