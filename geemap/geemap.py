@@ -5486,6 +5486,94 @@ class Map(ipyleaflet.Map):
             self.to_html(), width=width, height=height, scrolling=scrolling
         )
 
+    def add_point_layer(
+        self, filename, popup=None, layer_name="Marker Cluster", **kwargs
+    ):
+        """Adds a point layer to the map with a popup attribute.
+
+        Args:
+            filename (str): str, http url, path object or file-like object. Either the absolute or relative path to the file or URL to be opened, or any object with a read() method (such as an open file or StringIO)
+            popup (str | list, optional): Column name(s) to be used for popup. Defaults to None.
+            layer_name (str, optional): A layer name to use. Defaults to "Marker Cluster".
+
+        Raises:
+            ValueError: If the specified column name does not exist.
+            ValueError: If the specified column names do not exist.
+        """
+        import warnings
+
+        warnings.filterwarnings("ignore")
+        check_package(name="geopandas", URL="https://geopandas.org")
+        import geopandas as gpd
+
+        self.default_style = {"cursor": "wait"}
+
+        if not filename.startswith("http"):
+            filename = os.path.abspath(filename)
+        ext = os.path.splitext(filename)[1].lower()
+        if ext == ".kml":
+            gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
+            gdf = gpd.read_file(filename, driver="KML", **kwargs)
+        else:
+            gdf = gpd.read_file(filename, **kwargs)
+        df = gdf.to_crs(epsg="4326")
+        col_names = df.columns.values.tolist()
+        if popup is not None:
+            if isinstance(popup, str) and (popup not in col_names):
+                raise ValueError(
+                    f"popup must be one of the following: {', '.join(col_names)}"
+                )
+            elif isinstance(popup, list) and (
+                not all(item in col_names for item in popup)
+            ):
+                raise ValueError(
+                    f"All popup items must be select from: {', '.join(col_names)}"
+                )
+
+        df["x"] = df.geometry.x
+        df["y"] = df.geometry.y
+
+        points = list(zip(df["y"], df["x"]))
+
+        if popup is not None:
+            if isinstance(popup, str):
+                labels = df[popup]
+                markers = [
+                    ipyleaflet.Marker(
+                        location=point,
+                        draggable=False,
+                        popup=widgets.HTML(str(labels[index])),
+                    )
+                    for index, point in enumerate(points)
+                ]
+            elif isinstance(popup, list):
+                labels = []
+                for i in range(len(points)):
+                    label = ""
+                    for item in popup:
+                        label = label + str(item) + ": " + str(df[item][i]) + "<br>"
+                    labels.append(label)
+                df["popup"] = labels
+
+                markers = [
+                    ipyleaflet.Marker(
+                        location=point,
+                        draggable=False,
+                        popup=widgets.HTML(labels[index]),
+                    )
+                    for index, point in enumerate(points)
+                ]
+
+        else:
+            markers = [
+                ipyleaflet.Marker(location=point, draggable=False) for point in points
+            ]
+
+        marker_cluster = ipyleaflet.MarkerCluster(markers=markers, name=layer_name)
+        self.add_layer(marker_cluster)
+
+        self.default_style = {"cursor": "default"}
+
 
 # The functions below are outside the Map class.
 
