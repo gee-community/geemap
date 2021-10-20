@@ -399,7 +399,7 @@ def open_data_widget(m):
                             m.addLayer(ee_object, {}, layer_name.value)
                         else:
                             m.add_shapefile(
-                                file_path, style=None, layer_name=layer_name.value
+                                file_path, style={}, layer_name=layer_name.value
                             )
                     elif ext.lower() == ".geojson":
                         if convert_bool.value:
@@ -407,7 +407,7 @@ def open_data_widget(m):
                             m.addLayer(ee_object, {}, layer_name.value)
                         else:
                             m.add_geojson(
-                                file_path, style=None, layer_name=layer_name.value
+                                file_path, style={}, layer_name=layer_name.value
                             )
 
                     elif ext.lower() == ".csv":
@@ -436,7 +436,7 @@ def open_data_widget(m):
                             y_dim=y_dim.value,
                         )
                     else:
-                        m.add_vector(file_path, style=None, layer_name=layer_name.value)
+                        m.add_vector(file_path, style={}, layer_name=layer_name.value)
             else:
                 print("Please select a file to open.")
 
