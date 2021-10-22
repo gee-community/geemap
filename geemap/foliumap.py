@@ -1027,6 +1027,37 @@ class Map(folium.Map):
         except Exception as e:
             raise Exception(e)
 
+    def to_html(self, outfile=None, **kwargs):
+        """Exports a map as an HTML file.
+
+        Args:
+            outfile (str, optional): File path to the output HTML. Defaults to None.
+
+        Raises:
+            ValueError: If it is an invalid HTML file.
+
+        Returns:
+            str: A string containing the HTML code.
+        """
+
+        if outfile is not None:
+            if not outfile.endswith(".html"):
+                raise ValueError("The output file extension must be html.")
+            outfile = os.path.abspath(outfile)
+            out_dir = os.path.dirname(outfile)
+            if not os.path.exists(out_dir):
+                os.makedirs(out_dir)
+            self.save(outfile, **kwargs)
+        else:
+            outfile = os.path.abspath(random_string() + ".html")
+            self.save(outfile, **kwargs)
+            out_html = ""
+            with open(outfile) as f:
+                lines = f.readlines()
+                out_html = "".join(lines)
+            os.remove(outfile)
+            return out_html
+
     def to_streamlit(self, width=700, height=500, add_layer_control=True, **kwargs):
         """Renders `folium.Figure` or `folium.Map` in a Streamlit app. This method is a static Streamlit Component, meaning, no information is passed back from Leaflet on browser interaction.
 
@@ -1042,20 +1073,14 @@ class Map(folium.Map):
             streamlit.components: components.html object.
         """
 
-        check_package(
-            "streamlit", URL="https://docs.streamlit.io/en/stable/installation.html"
-        )
-
         try:
-            from streamlit_folium import folium_static
+            import streamlit.components.v1 as components
 
             if add_layer_control:
                 self.add_layer_control()
-            return folium_static(self, width=width, height=height)
-        except ImportError:
-            raise ImportError(
-                "streamlit-folium is not installed. You need to install streamlit-folium first using 'pip install streamlit-folium'. See https://github.com/randyzwitch/streamlit-folium"
-            )
+            return components.html(self.to_html(), width=width, height=height)
+        except Exception as e:
+            raise Exception(e)
 
     def add_census_data(self, wms, layer, census_dict=None, **kwargs):
         """Adds a census data layer to the map.
