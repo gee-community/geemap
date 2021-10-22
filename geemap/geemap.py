@@ -5574,6 +5574,78 @@ class Map(ipyleaflet.Map):
 
         self.default_style = {"cursor": "default"}
 
+    def add_census_data(self, wms, layer, census_dict=None, **kwargs):
+        """Adds a census data layer to the map.
+
+        Args:
+            wms (str): The wms to use. For example, "Current", "ACS 2021", "Census 2020".  See the complete list at https://tigerweb.geo.census.gov/tigerwebmain/TIGERweb_wms.html
+            layer (str): The layer name to add to the map.
+            census_dict (dict, optional): A dictionary containing census data. Defaults to None. It can be obtained from the get_census_dict() function.
+        """
+
+        try:
+            if census_dict is None:
+                census_dict = get_census_dict()
+
+            if wms not in census_dict.keys():
+                raise ValueError(
+                    f"The provided WMS is invalid. It must be one of {census_dict.keys()}"
+                )
+
+            layers = census_dict[wms]["layers"]
+            if layer not in layers:
+                raise ValueError(
+                    f"The layer name is not valid. It must be one of {layers}"
+                )
+
+            url = census_dict[wms]["url"]
+            if "name" not in kwargs:
+                kwargs["name"] = layer
+            if "attribution" not in kwargs:
+                kwargs["attribution"] = "U.S. Census Bureau"
+            if "format" not in kwargs:
+                kwargs["format"] = "image/png"
+            if "transparent" not in kwargs:
+                kwargs["transparent"] = True
+
+            self.add_wms_layer(url, layer, **kwargs)
+
+        except Exception as e:
+            raise Exception(e)
+
+    def add_xyz_service(self, provider, **kwargs):
+        """Add a XYZ tile layer to the map.
+
+        Args:
+            provider (str): A tile layer name starts with xyz or qms. For example, xyz.OpenTopoMap,
+
+        Raises:
+            ValueError: The provider is not valid. It must start with xyz or qms.
+        """
+        import xyzservices.providers as xyz
+        from xyzservices import TileProvider
+
+        if provider.startswith("xyz"):
+            name = provider[4:]
+            xyz_provider = xyz.flatten()[name]
+            url = xyz_provider.build_url()
+            attribution = xyz_provider.attribution
+            if attribution.strip() == "":
+                attribution = " "
+            self.add_tile_layer(url, name, attribution)
+        elif provider.startswith("qms"):
+            name = provider[4:]
+            qms_provider = TileProvider.from_qms(name)
+            url = qms_provider.build_url()
+            attribution = qms_provider.attribution
+            if attribution.strip() == "":
+                attribution = " "
+            self.add_tile_layer(url, name, attribution)
+        else:
+            raise ValueError(
+                f"The provider {provider} is not valid. It must start with xyz or qms."
+            )
+
 
 # The functions below are outside the Map class.
 

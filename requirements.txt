@@ -17,6 +17,7 @@ jupyterlab>=3
 matplotlib
 mss
 numpy
+owslib
 pandas
 pillow
 pycrs
@@ -25,3 +26,4 @@ python-box
 sankee
 voila
 whiteboxgui>=0.6.0
+xyzservices
