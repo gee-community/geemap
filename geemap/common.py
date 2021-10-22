@@ -8477,3 +8477,158 @@ def get_current_latlon():
     lat = props["lat"]
     lon = props["lng"]
     return lat, lon
+
+
+def get_census_dict(reset=False):
+    """Returns a dictionary of Census data.
+
+    Args:
+        reset (bool, optional): Reset the dictionary. Defaults to False.
+
+    Returns:
+        dict: A dictionary of Census data.
+    """
+    import json
+    import pkg_resources
+
+    pkg_dir = os.path.dirname(pkg_resources.resource_filename("leafmap", "leafmap.py"))
+    census_data = os.path.join(pkg_dir, "data/census_data.json")
+
+    if reset:
+
+        from owslib.wms import WebMapService
+
+        census_dict = {}
+
+        names = [
+            "Current",
+            "ACS 2021",
+            "ACS 2019",
+            "ACS 2018",
+            "ACS 2017",
+            "ACS 2016",
+            "ACS 2015",
+            "ACS 2014",
+            "ACS 2013",
+            "ACS 2012",
+            "ECON 2012",
+            "Census 2020",
+            "Census 2010",
+            "Physical Features",
+            "Decennial Census 2020",
+            "Decennial Census 2010",
+            "Decennial Census 2000",
+            "Decennial Physical Features",
+        ]
+
+        links = {}
+
+        print("Retrieving data. Please wait ...")
+        for name in names:
+            if "Decennial" not in name:
+                links[
+                    name
+                ] = f"https://tigerweb.geo.census.gov/arcgis/services/TIGERweb/tigerWMS_{name.replace(' ', '')}/MapServer/WMSServer"
+            else:
+                links[
+                    name
+                ] = f"https://tigerweb.geo.census.gov/arcgis/services/Census2020/tigerWMS_{name.replace('Decennial', '').replace(' ', '')}/MapServer/WMSServer"
+
+            wms = WebMapService(links[name], timeout=300)
+            layers = list(wms.contents)
+            layers.sort()
+            census_dict[name] = {
+                "url": links[name],
+                "layers": layers,
+                # "title": wms.identification.title,
+                # "abstract": wms.identification.abstract,
+            }
+
+        with open(census_data, "w") as f:
+            json.dump(census_dict, f, indent=4)
+
+    else:
+
+        with open(census_data, "r") as f:
+            census_dict = json.load(f)
+
+    return census_dict
+
+
+def search_xyz_services(keyword, name=None, list_only=True, add_prefix=True):
+    """Search for XYZ tile providers from xyzservices.
+
+    Args:
+        keyword (str): The keyword to search for.
+        name (str, optional): The name of the xyz tile. Defaults to None.
+        list_only (bool, optional): If True, only the list of services will be returned. Defaults to True.
+        add_prefix (bool, optional): If True, the prefix "xyz." will be added to the service name. Defaults to True.
+
+    Returns:
+        list: A list of XYZ tile providers.
+    """
+
+    import xyzservices.providers as xyz
+
+    if name is None:
+        providers = xyz.filter(keyword=keyword).flatten()
+    else:
+        providers = xyz.filter(name=name).flatten()
+
+    if list_only:
+        if add_prefix:
+            return ["xyz." + provider for provider in providers]
+        else:
+            return [provider for provider in providers]
+    else:
+        return providers
+
+
+def search_qms(keyword, limit=10, list_only=True, add_prefix=True):
+    """Search for QMS tile providers from Quick Map Services.
+
+    Args:
+        keyword (str): The keyword to search for.
+        limit (int, optional): The maximum number of results to return. Defaults to 10.
+        list_only (bool, optional): If True, only the list of services will be returned. Defaults to True.
+        add_prefix (bool, optional): If True, the prefix "qms." will be added to the service name. Defaults to True.
+
+    Returns:
+        list: A list of QMS tile providers.
+    """
+
+    import requests
+
+    QMS_API = "https://qms.nextgis.com/api/v1/geoservices"
+    services = requests.get(
+        f"{QMS_API}/?search={keyword}&type=tms&epsg=3857&limit={limit}"
+    )
+    services = services.json()
+    if services["results"]:
+        providers = services["results"]
+        if list_only:
+            if add_prefix:
+                return ["qms." + provider["name"] for provider in providers]
+            else:
+                return [provider["name"] for provider in providers]
+        else:
+            return providers
+    else:
+        return None
+
+
+def get_wms_layers(url):
+    """Returns a list of WMS layers from a WMS service.
+
+    Args:
+        url (str): The URL of the WMS service.
+
+    Returns:
+        list: A list of WMS layers.
+    """
+    from owslib.wms import WebMapService
+
+    wms = WebMapService(url)
+    layers = list(wms.contents)
+    layers.sort()
+    return layers
