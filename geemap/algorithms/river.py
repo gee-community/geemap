@@ -814,8 +814,54 @@ def maximum_no_of_tasks(MaxNActive, waitingPeriod):
     return ()
 
 
+def str_to_ee(id):
+    """Convert an image id to ee.Image.
+
+    Args:
+        id (str | ee.Image): A string representing an ee.Image, such as LC08_022034_20180303, LANDSAT/LC08/C01/T1_SR/LC08_022034_20180303, LC08_L1TP_022034_20180303_20180319_01_T1
+
+    Raises:
+        Exception: The image id is not recognized. It must be retrieved using either LANDSAT_ID, system:index, or system:id
+        Exception: The image id is not recognized. It must be either ee.Image or a string retrieved using either LANDSAT_ID, system:index, or system:id
+
+    Returns:
+        ee.Image: An ee.Image.
+    """
+    if isinstance(id, str):
+        if len(id) == 43 and "/" in id:
+            id = ee.Image(id).get("LANDSAT_ID").getInfo()
+            return ee.Image(
+                merge_collections_std_bandnames_collection1tier1_sr()
+                .filterMetadata("LANDSAT_ID", "equals", id)
+                .first()
+            )
+
+        elif len(id) == 40:
+            return ee.Image(
+                merge_collections_std_bandnames_collection1tier1_sr()
+                .filterMetadata("LANDSAT_ID", "equals", id)
+                .first()
+            )
+        else:
+            raise Exception(
+                "The image id is not recognized. It must be retrieved using either LANDSAT_ID, system:index"
+            )
+
+    elif isinstance(id, ee.Image):
+        id = id.get("LANDSAT_ID").getInfo()
+        return ee.Image(
+            merge_collections_std_bandnames_collection1tier1_sr()
+            .filterMetadata("LANDSAT_ID", "equals", id)
+            .first()
+        )
+    else:
+        raise Exception(
+            "The image id is not recognized. It must be either ee.Image or a string retrieved using either LANDSAT_ID, system:index, or system:id"
+        )
+
+
 def rwc(
-    img_id,
+    image,
     description=None,
     folder="",
     file_format="shp",
@@ -829,7 +875,7 @@ def rwc(
     """Calculate river centerlines and widths for one Landsat SR image.
 
     Args:
-        img_id (str): LANDSAT_ID for any Landsat 5, 7, and 8 SR scene. For example, LC08_L1TP_022034_20130422_20170310_01_T1.
+        image (str | ee.Image): LANDSAT_ID for any Landsat 5, 7, and 8 SR scene. For example, LC08_L1TP_022034_20130422_20170310_01_T1.
         description (str, optional): File name of the output file. Defaults to None.
         folder (str, optional): Folder name within Google Drive to save the exported file. Defaults to "", which is the root directory.
         file_format (str, optional): The supported file format include shp, csv, json, kml, kmz, and TFRecord. Defaults to 'shp'. Defaults to "shp".
@@ -841,9 +887,13 @@ def rwc(
         return_fc(bool, optional): whether to return the result as an ee.FeatureColleciton. Defaults to False.
     """
 
+    img = str_to_ee(image)
     if description is None:
-        description = img_id
-    img = id2Img(img_id)
+        if isinstance(image, str):
+            description = image
+        else:
+            description = img.get("LANDSAT_ID").getInfo()
+
     gen = rwGenSR(
         aoi=aoi,
         WATER_METHOD=water_method,
@@ -868,7 +918,7 @@ def rwc(
 
 
 def rwc_batch(
-    in_csv,
+    images,
     folder="",
     file_format="shp",
     aoi=None,
@@ -880,7 +930,7 @@ def rwc_batch(
     """Calculate river centerlines and widths for multiple Landsat SR images.
 
     Args:
-        in_csv (str): An input csv file containing a list of Landsat IDs (e.g., LC08_L1TP_022034_20130422_20170310_01_T1)
+        images (str | list | ee.ImageCollection): An input csv file containing a list of Landsat IDs (e.g., LC08_L1TP_022034_20130422_20170310_01_T1)
         folder (str, optional): Folder name within Google Drive to save the exported file. Defaults to "", which is the root directory.
         file_format (str, optional): The supported file format include shp, csv, json, kml, kmz, and TFRecord. Defaults to 'shp'. Defaults to "shp".
         aoi (ee.Geometry.Polygon, optional): A polygon (or rectangle) geometry define the area of interest. Only widths and centerline from this area will be calculated. Defaults to None.
@@ -892,13 +942,18 @@ def rwc_batch(
     """
     import pandas as pd
 
-    imageInfo = pd.read_csv(
-        in_csv, dtype={"Point_ID": np.unicode_, "LANDSAT_ID": np.unicode_}
-    )
-    sceneIDList = imageInfo["LANDSAT_ID"].values.tolist()
-    # point_IDList = imageInfo["Point_ID"].values.tolist()
-    # x = imageInfo["Longitude"].values.tolist()
-    # y = imageInfo["Latitude"].values.tolist()
+    if isinstance(images, str):
+
+        imageInfo = pd.read_csv(
+            images, dtype={"Point_ID": np.unicode_, "LANDSAT_ID": np.unicode_}
+        )
+        sceneIDList = imageInfo["LANDSAT_ID"].values.tolist()
+    elif isinstance(images, ee.ImageCollection):
+        sceneIDList = images.aggregate_array("LANDSAT_ID").getInfo()
+    elif isinstance(images, list):
+        sceneIDList = images
+    else:
+        raise Exception("images must be a list of Landsat IDs or an ee.ImageCollection")
 
     for scene in sceneIDList:
         rwc(
