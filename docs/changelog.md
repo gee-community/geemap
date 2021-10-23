@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.9.3 - October 23, 2021
+
+**New Features**:
+
+-   Added streamlit support [#697](https://github.com/giswqs/geemap/issues/697)
+-   Added point layer function [#702](https://github.com/giswqs/geemap/issues/702)
+-   Added river width module [#682](https://github.com/giswqs/geemap/issues/682)
+-   Added census data and xyzservices
+-   Added nlcd notebook
+-   Added river width module notebook
+-   Added GEE workshop notebook
+
+**Improvement**:
+
+-   Fixed geojson style callback bug [#692](https://github.com/giswqs/geemap/issues/692)
+-   Fixed open vector bug [#124](https://github.com/giswqs/geemap/issues/124)
+-   Removed py36 due to xyzservices
+
 ## v0.9.2 - October 1, 2021
 
 **New Features**:
