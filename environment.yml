@@ -1,14 +1,21 @@
-name: geemap
+name: gee
 channels:
     - conda-forge
 dependencies:
-    - nodejs=14.11
+    - cartopy
+    - datapane
+    - geemap
+    - geopandas
+    - imageio
     - ipyleaflet
     - jupyterlab=3
-    - geemap
+    - keplergl
     - leafmap
-    - xarray_leaflet
-    - geopandas
+    - nodejs
     - osmnx
-    - sqlalchemy
     - psycopg2
+    - pydeck
+    - scipy
+    - sqlalchemy
+    - tifffile
+    - xarray_leaflet
