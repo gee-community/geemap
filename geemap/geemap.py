@@ -5467,26 +5467,38 @@ class Map(ipyleaflet.Map):
         layer = planet_tile_by_quarter(year, quarter, name, api_key, token_name)
         self.add_layer(layer)
 
-    def to_streamlit(self, width=700, height=500, scrolling=False, **kwargs):
+    def to_streamlit(
+        self, width=700, height=500, responsive=True, scrolling=False, **kwargs
+    ):
         """Renders map figure in a Streamlit app.
 
         Args:
             width (int, optional): Width of the map. Defaults to 700.
             height (int, optional): Height of the map. Defaults to 500.
+            responsive (bool, optional): Whether to make the map responsive. Defaults to True.
             scrolling (bool, optional): If True, show a scrollbar when the content is larger than the iframe. Otherwise, do not show a scrollbar. Defaults to False.
 
         Returns:
             streamlit.components: components.html object.
         """
 
-        check_package(
-            "streamlit", URL="https://docs.streamlit.io/en/stable/installation.html"
-        )
-        import streamlit.components.v1 as components
+        try:
+            import streamlit as st
+            import streamlit.components.v1 as components
 
-        return components.html(
-            self.to_html(), width=width, height=height, scrolling=scrolling
-        )
+            if responsive:
+                make_map_responsive = """
+                <style>
+                [title~="st.iframe"] { width: 100%}
+                </style>
+                """
+                st.markdown(make_map_responsive, unsafe_allow_html=True)
+            return components.html(
+                self.to_html(), width=width, height=height, scrolling=scrolling
+            )
+
+        except Exception as e:
+            raise Exception(e)
 
     def add_point_layer(
         self, filename, popup=None, layer_name="Marker Cluster", **kwargs
