@@ -113,6 +113,8 @@ class Map(ipyleaflet.Map):
         super().__init__(**kwargs)
         self.baseclass = "ipyleaflet"
         self.layout.height = kwargs["height"]
+        if "width" in kwargs:
+            self.layout.width = kwargs["width"]
 
         # sandbox path for Voila app to restrict access to system directories.
         if "sandbox_path" not in kwargs:
