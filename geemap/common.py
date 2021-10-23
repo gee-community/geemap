@@ -8632,3 +8632,27 @@ def get_wms_layers(url):
     layers = list(wms.contents)
     layers.sort()
     return layers
+
+
+def read_file_from_url(url, return_type="list", encoding="utf-8"):
+    """Reads a file from a URL.
+
+    Args:
+        url (str): The URL of the file.
+        return_type (str, optional): The return type, can either be string or list. Defaults to "list".
+        encoding (str, optional): The encoding of the file. Defaults to "utf-8".
+
+    Raises:
+        ValueError: The return type must be either list or string.
+
+    Returns:
+        str | list: The contents of the file.
+    """
+    from urllib.request import urlopen
+
+    if return_type == "list":
+        return [line.decode(encoding).rstrip() for line in urlopen(url).readlines()]
+    elif return_type == "string":
+        return urlopen(url).read().decode(encoding)
+    else:
+        raise ValueError("The return type must be either list or string.")
