@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.9.4 - October 23, 2021
+
+**New Features**:
+
+-   Made streamlit map width responsive [#713](https://github.com/giswqs/geemap/issues/713)
+-   Added function read file from url
+
+**Improvement**:
+
+-   Fixed map width bug [#712](https://github.com/giswqs/geemap/issues/712)
+-   Fixed algorithms module bug
+-   Updated environment.yml
+
 ## v0.9.3 - October 23, 2021
 
 **New Features**:
