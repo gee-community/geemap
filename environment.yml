@@ -15,6 +15,7 @@ dependencies:
     - osmnx
     - psycopg2
     - pydeck
+    - pydeck-earthengine-layers
     - scipy
     - sqlalchemy
     - tifffile

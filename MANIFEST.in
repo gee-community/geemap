@@ -6,6 +6,7 @@ include README.rst
 include requirements.txt
 
 recursive-include geemap/data *
+recursive-include geemap/algorithms *
 recursive-include tests *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
