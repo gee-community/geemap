@@ -8656,3 +8656,84 @@ def read_file_from_url(url, return_type="list", encoding="utf-8"):
         return urlopen(url).read().decode(encoding)
     else:
         raise ValueError("The return type must be either list or string.")
+
+
+def create_download_button(
+    label,
+    data,
+    file_name=None,
+    mime=None,
+    key=None,
+    help=None,
+    on_click=None,
+    args=None,
+    **kwargs,
+):
+    """Streamlit function to create a download button.
+
+    Args:
+        label (str): A short label explaining to the user what this button is for..
+        data (str | list): The contents of the file to be downloaded. See example below for caching techniques to avoid recomputing this data unnecessarily.
+        file_name (str, optional): An optional string to use as the name of the file to be downloaded, such as 'my_file.csv'. If not specified, the name will be automatically generated. Defaults to None.
+        mime (str, optional): The MIME type of the data. If None, defaults to "text/plain" (if data is of type str or is a textual file) or "application/octet-stream" (if data is of type bytes or is a binary file). Defaults to None.
+        key (str, optional): An optional string or integer to use as the unique key for the widget. If this is omitted, a key will be generated for the widget based on its content. Multiple widgets of the same type may not share the same key. Defaults to None.
+        help (str, optional): An optional tooltip that gets displayed when the button is hovered over. Defaults to None.
+        on_click (str, optional): An optional callback invoked when this button is clicked. Defaults to None.
+        args (list, optional): An optional tuple of args to pass to the callback. Defaults to None.
+        kwargs (dict, optional): An optional tuple of args to pass to the callback.
+
+    """
+    try:
+        import streamlit as st
+        import pandas as pd
+
+        if isinstance(data, str):
+
+            if file_name is None:
+                file_name = data.split("/")[-1]
+
+            if data.endswith(".csv"):
+                data = pd.read_csv(data).to_csv()
+                if mime is None:
+                    mime = "text/csv"
+                return st.download_button(
+                    label, data, file_name, mime, key, help, on_click, args, **kwargs
+                )
+            elif (
+                data.endswith(".gif") or data.endswith(".png") or data.endswith(".jpg")
+            ):
+                if mime is None:
+                    mime = f"image/{os.path.splitext(data)[1][1:]}"
+
+                with open(data, "rb") as file:
+                    return st.download_button(
+                        label,
+                        file,
+                        file_name,
+                        mime,
+                        key,
+                        help,
+                        on_click,
+                        args,
+                        **kwargs,
+                    )
+
+            else:
+                return st.download_button(
+                    label,
+                    label,
+                    data,
+                    file_name,
+                    mime,
+                    key,
+                    help,
+                    on_click,
+                    args,
+                    **kwargs,
+                )
+
+    except ImportError:
+        print("Streamlit is not installed. Please run 'pip install streamlit'.")
+        return
+    except Exception as e:
+        raise Exception(e)
