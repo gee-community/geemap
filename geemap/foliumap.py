@@ -355,6 +355,15 @@ class Map(folium.Map):
 
     setCenter = set_center
 
+    def zoom_to_bounds(self, bounds):
+        """Zooms to a bounding box in the form of [minx, miny, maxx, maxy].
+
+        Args:
+            bounds (list | tuple): A list/tuple containing minx, miny, maxx, maxy values for the bounds.
+        """
+        #  The folium fit_bounds method takes lat/lon bounds in the form [[south, west], [north, east]].
+        self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
+
     def center_object(self, ee_object, zoom=10):
         """Centers the map view on a given object.
 
