@@ -8737,3 +8737,64 @@ def create_download_button(
         return
     except Exception as e:
         raise Exception(e)
+
+
+def gdf_to_geojson(gdf, out_geojson=None, epsg=None):
+    """Converts a GeoDataFame to GeoJSON.
+
+    Args:
+        gdf (GeoDataFrame): A GeoPandas GeoDataFrame.
+        out_geojson (str, optional): File path to he output GeoJSON. Defaults to None.
+        epsg (str, optional): An EPSG string, e.g., "4326". Defaults to None.
+
+    Raises:
+        TypeError: When the output file extension is incorrect.
+        Exception: When the conversion fails.
+
+    Returns:
+        dict: When the out_json is None returns a dict.
+    """
+    check_package(name="geopandas", URL="https://geopandas.org")
+
+    try:
+        if epsg is not None:
+            gdf = gdf.to_crs(epsg=epsg)
+        geojson = gdf.__geo_interface__
+
+        if out_geojson is None:
+            return geojson
+        else:
+            ext = os.path.splitext(out_geojson)[1]
+            if ext.lower() not in [".json", ".geojson"]:
+                raise TypeError(
+                    "The output file extension must be either .json or .geojson"
+                )
+            out_dir = os.path.dirname(out_geojson)
+            if not os.path.exists(out_dir):
+                os.makedirs(out_dir)
+
+            gdf.to_file(out_geojson, driver="GeoJSON")
+    except Exception as e:
+        raise Exception(e)
+
+
+def temp_file_path(extension):
+    """Returns a temporary file path.
+
+    Args:
+        extension (str): The file extension.
+
+    Returns:
+        str: The temporary file path.
+    """
+
+    import tempfile
+    import os
+    import uuid
+
+    if not extension.startswith("."):
+        extension = "." + extension
+    file_id = str(uuid.uuid4())
+    file_path = os.path.join(tempfile.gettempdir(), f"{file_id}{extension}")
+
+    return file_path

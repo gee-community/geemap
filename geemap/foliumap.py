@@ -364,6 +364,15 @@ class Map(folium.Map):
         #  The folium fit_bounds method takes lat/lon bounds in the form [[south, west], [north, east]].
         self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
 
+    def zoom_to_gdf(self, gdf):
+        """Zooms to the bounding box of a GeoPandas GeoDataFrame.
+
+        Args:
+            gdf (GeoDataFrame): A GeoPandas GeoDataFrame.
+        """
+        bounds = gdf.total_bounds
+        self.zoom_to_bounds(bounds)
+
     def center_object(self, ee_object, zoom=10):
         """Centers the map view on a given object.
 
@@ -915,6 +924,30 @@ class Map(folium.Map):
         geo_json = folium.GeoJson(data=data, name=layer_name, **kwargs)
         geo_json.add_to(self)
         # os.remove(out_json)
+
+    def add_gdf(self, gdf, layer_name="Untitled", zoom_to_layer=True, **kwargs):
+        """Adds a GeoPandas GeoDataFrameto the map.
+
+        Args:
+            gdf (GeoDataFrame): A GeoPandas GeoDataFrame.
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
+            zoom_to_layer (bool, optional): Whether to zoom to the layer.
+
+        """
+
+        data = gdf_to_geojson(gdf, epsg="4326")
+
+        self.add_geojson(data, layer_name=layer_name, **kwargs)
+
+        if zoom_to_layer:
+            import numpy as np
+
+            bounds = gdf.to_crs(epsg="4326").bounds
+            west = np.min(bounds["minx"])
+            south = np.min(bounds["miny"])
+            east = np.max(bounds["maxx"])
+            north = np.max(bounds["maxy"])
+            self.fit_bounds([[south, east], [north, west]])
 
     def add_osm(
         self,
