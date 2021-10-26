@@ -8808,7 +8808,7 @@ def create_contours(image, min_value, max_value, interval, kernel=None, region=N
         min_value (float): The minimum value of contours.
         max_value (float): The maximum value of contours.
         interval (float):  The interval between contours.
-        kernel (ee.Kernel, optional): The kernal to use for smoothing image. Defaults to None.
+        kernel (ee.Kernel, optional): The kernel to use for smoothing image. Defaults to None.
         region (ee.Geometry | ee.FeatureCollection, optional): The region of interest. Defaults to None.
 
     Raises:
