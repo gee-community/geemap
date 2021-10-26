@@ -90,3 +90,6 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 76. Downloading and visualizing OpenStreetMap data (video | gif | [notebook](https://geemap.org/notebooks/76_osm_to_ee))
 77. Adding Planet global monthly and quarterly mosaic (video | gif | [notebook](https://geemap.org/notebooks/77_planet_imagery))
 78. Using timeseries inspector with one click (video | [gif](https://i.imgur.com/s1GoEOV.gif) | [notebook](https://geemap.org/notebooks/78_ts_inspector))
+79. Creating histograms using the geemap chart module (video | gif | [notebook](https://geemap.org/notebooks/79_chart_histogram/))
+80. Adding a point layer with popup attributes (video | gif | [notebook](https://geemap.org/notebooks/80_point_layer))
+81. Creating timelapse animations from GEOS weather satellites (video | gif | [notebook](https://geemap.org/notebooks/81_goes_timelapse))
