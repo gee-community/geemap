@@ -8798,3 +8798,57 @@ def temp_file_path(extension):
     file_path = os.path.join(tempfile.gettempdir(), f"{file_id}{extension}")
 
     return file_path
+
+
+def create_contours(image, min_value, max_value, interval, kernel=None, region=None):
+    """Creates contours from an image. Code adapted from https://mygeoblog.com/2017/01/28/contour-lines-in-gee. Credits to MyGeoBlog.
+
+    Args:
+        image (ee.Image): An image to create contours.
+        min_value (float): The minimum value of contours.
+        max_value (float): The maximum value of contours.
+        interval (float):  The interval between contours.
+        kernel (ee.Kernel, optional): The kernal to use for smoothing image. Defaults to None.
+        region (ee.Geometry | ee.FeatureCollection, optional): The region of interest. Defaults to None.
+
+    Raises:
+        TypeError: The image must be an ee.Image.
+        TypeError: The region must be an ee.Geometry or ee.FeatureCollection.
+
+    Returns:
+        ee.Image: The image containing contours.
+    """
+    if not isinstance(image, ee.Image):
+        raise TypeError("The image must be an ee.Image.")
+    if region is not None:
+        if isinstance(region, ee.FeatureCollection) or isinstance(region, ee.Geometry):
+            pass
+        else:
+
+            raise TypeError(
+                "The region must be an ee.Geometry or ee.FeatureCollection."
+            )
+
+    if kernel is None:
+        kernel = ee.Kernel.gaussian(5, 3)
+
+    values = ee.List.sequence(min_value, max_value, interval)
+
+    def contouring(value):
+        mycountour = (
+            image.convolve(kernel)
+            .subtract(ee.Image.constant(value))
+            .zeroCrossing()
+            .multiply(ee.Image.constant(value).toFloat())
+        )
+        return mycountour.mask(mycountour)
+
+    contours = values.map(contouring)
+
+    if region is not None:
+        if isinstance(region, ee.FeatureCollection):
+            return ee.ImageCollection(contours).mosaic().clipToCollection(region)
+        elif isinstance(region, ee.Geometry):
+            return ee.ImageCollection(contours).mosaic().clip(region)
+    else:
+        return ee.ImageCollection(contours).mosaic()

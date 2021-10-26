@@ -162,6 +162,7 @@ nav:
                 - notebooks/cartoee_quickstart.ipynb
                 - notebooks/cartoee_scalebar.ipynb
                 - notebooks/cartoee_subplots.ipynb
+                - notebooks/contours.ipynb
                 - notebooks/file_browser.ipynb
                 - notebooks/geemap_and_earthengine.ipynb
                 - notebooks/geemap_and_folium.ipynb
