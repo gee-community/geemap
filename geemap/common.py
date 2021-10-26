@@ -8800,7 +8800,9 @@ def temp_file_path(extension):
     return file_path
 
 
-def create_contours(image, min_value, max_value, interval, kernel=None, region=None):
+def create_contours(
+    image, min_value, max_value, interval, kernel=None, region=None, values=None
+):
     """Creates contours from an image. Code adapted from https://mygeoblog.com/2017/01/28/contour-lines-in-gee. Credits to MyGeoBlog.
 
     Args:
@@ -8810,6 +8812,7 @@ def create_contours(image, min_value, max_value, interval, kernel=None, region=N
         interval (float):  The interval between contours.
         kernel (ee.Kernel, optional): The kernel to use for smoothing image. Defaults to None.
         region (ee.Geometry | ee.FeatureCollection, optional): The region of interest. Defaults to None.
+        values (list, optional): A list of values to create contours for. Defaults to None.
 
     Raises:
         TypeError: The image must be an ee.Image.
@@ -8832,7 +8835,13 @@ def create_contours(image, min_value, max_value, interval, kernel=None, region=N
     if kernel is None:
         kernel = ee.Kernel.gaussian(5, 3)
 
-    values = ee.List.sequence(min_value, max_value, interval)
+    if isinstance(values, list):
+        values = ee.List(values)
+    elif isinstance(values, ee.List):
+        pass
+
+    if values is None:
+        values = ee.List.sequence(min_value, max_value, interval)
 
     def contouring(value):
         mycountour = (
@@ -8852,3 +8861,183 @@ def create_contours(image, min_value, max_value, interval, kernel=None, region=N
             return ee.ImageCollection(contours).mosaic().clip(region)
     else:
         return ee.ImageCollection(contours).mosaic()
+
+
+def goes_timeseries(
+    start_date="2021-10-24T14:00:00",
+    end_date="2021-10-25T01:00:00",
+    data="GOES-17",
+    scan="full_disk",
+    region=None,
+):
+
+    """Create a time series of GOES data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4.
+    Credits to Justin Braaten. See also https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
+
+    Args:
+        start_date (str, optional): The start date of the time series. Defaults to "2021-10-24T14:00:00".
+        end_date (str, optional): The end date of the time series. Defaults to "2021-10-25T01:00:00".
+        data (str, optional): The GOES satellite data to use. Defaults to "GOES-17".
+        scan (str, optional): The GOES scan to use. Defaults to "full_disk".
+        region (ee.Geometry, optional): The region of interest. Defaults to None.
+
+    Raises:
+        ValueError: The data must be either GOES-16 or GOES-17.
+        ValueError: The scan must be either full_disk, conus, or mesoscale.
+
+    Returns:
+        ee.ImageCollection: [description]
+    """
+
+    if data not in ["GOES-16", "GOES-17"]:
+        raise ValueError("The data must be either GOES-16 or GOES-17.")
+
+    if scan.lower() not in ["full_disk", "conus", "mesoscale"]:
+        raise ValueError("The scan must be either full_disk, conus, or mesoscale.")
+
+    scan_types = {
+        "full_disk": "MCMIPF",
+        "consu": "MCMIPC",
+        "mesoscale": "MCMIPM",
+    }
+
+    col = ee.ImageCollection(f"NOAA/GOES/{data[-2:]}/{scan_types[scan.lower()]}")
+
+    if region is None:
+        region = ee.Geometry.Polygon(
+            [
+                [
+                    [-159.5954379282731, 60.40883060191719],
+                    [-159.5954379282731, 24.517881970830725],
+                    [-114.2438754282731, 24.517881970830725],
+                    [-114.2438754282731, 60.40883060191719],
+                ]
+            ],
+            None,
+            False,
+        )
+
+    # Applies scaling factors.
+    def applyScaleAndOffset(img):
+        def getFactorImg(factorNames):
+            factorList = img.toDictionary().select(factorNames).values()
+            return ee.Image.constant(factorList)
+
+        scaleImg = getFactorImg(["CMI_C.._scale"])
+        offsetImg = getFactorImg(["CMI_C.._offset"])
+        scaled = img.select("CMI_C..").multiply(scaleImg).add(offsetImg)
+        return img.addBands(**{"srcImg": scaled, "overwrite": True})
+
+    # Adds a synthetic green band.
+    def addGreenBand(img):
+        green = img.expression(
+            "CMI_GREEN = 0.45 * red + 0.10 * nir + 0.45 * blue",
+            {
+                "blue": img.select("CMI_C01"),
+                "red": img.select("CMI_C02"),
+                "nir": img.select("CMI_C03"),
+            },
+        )
+        return img.addBands(green)
+
+    # Scales select bands for visualization.
+    def scaleForVis(img):
+        return (
+            img.select(["CMI_C01", "CMI_GREEN", "CMI_C02", "CMI_C03", "CMI_C05"])
+            .resample("bicubic")
+            .log10()
+            .interpolate([-1.6, 0.176], [0, 1], "clamp")
+            .unmask(0)
+            .set("system:time_start", img.get("system:time_start"))
+        )
+
+    # Wraps previous functions.
+    def processForVis(img):
+
+        return scaleForVis(addGreenBand(applyScaleAndOffset(img)))
+
+    return col.filterDate(start_date, end_date).map(processForVis).filterBounds(region)
+
+
+def goes_timelapse(
+    out_gif,
+    start_date="2021-10-24T14:00:00",
+    end_date="2021-10-25T01:00:00",
+    data="GOES-17",
+    scan="full_disk",
+    region=None,
+    dimensions=768,
+    framesPerSecond=10,
+    date_format="YYYY-MM-dd HH:mm",
+    xy=("3%", "3%"),
+    text_sequence=None,
+    font_type="arial.ttf",
+    font_size=20,
+    font_color="#ffffff",
+    add_progress_bar=True,
+    progress_bar_color="white",
+    progress_bar_height=5,
+    loop=0,
+):
+    """Create a timelapse of GOES data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4.
+    Credits to Justin Braaten. See also https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
+
+    Args:
+        out_gif (str): The file path to save the gif.
+        start_date (str, optional): The start date of the time series. Defaults to "2021-10-24T14:00:00".
+        end_date (str, optional): The end date of the time series. Defaults to "2021-10-25T01:00:00".
+        data (str, optional): The GOES satellite data to use. Defaults to "GOES-17".
+        scan (str, optional): The GOES scan to use. Defaults to "full_disk".
+        region (ee.Geometry, optional): The region of interest. Defaults to None.
+        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+        date_format (str, optional): The date format to use. Defaults to "YYYY-MM-dd HH:mm".
+        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
+        loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+
+    Raises:
+        Exception: Raise exception.
+    """
+
+    try:
+
+        col = goes_timeseries(start_date, end_date, data, scan, region)
+
+        visParams = {
+            "bands": ["CMI_C02", "CMI_GREEN", "CMI_C01"],
+            "min": 0,
+            "max": 0.8,
+            "dimensions": dimensions,
+            "framesPerSecond": framesPerSecond,
+            "region": region,
+            "crs": col.first().projection(),
+        }
+
+        if text_sequence is None:
+            text_sequence = image_dates(col, date_format=date_format).getInfo()
+
+        download_ee_video(col, visParams, out_gif)
+        add_text_to_gif(
+            out_gif,
+            out_gif,
+            xy,
+            text_sequence,
+            font_type,
+            font_size,
+            font_color,
+            add_progress_bar,
+            progress_bar_color,
+            progress_bar_height,
+            duration=1000 / framesPerSecond,
+            loop=loop,
+        )
+
+    except Exception as e:
+        raise Exception(e)

@@ -155,6 +155,7 @@ nav:
           - notebooks/78_ts_inspector.ipynb
           - notebooks/79_chart_histogram.ipynb
           - notebooks/80_point_layer.ipynb
+          - notebooks/81_goes_timelapse.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
