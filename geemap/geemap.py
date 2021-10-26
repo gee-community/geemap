@@ -5205,6 +5205,8 @@ class Map(ipyleaflet.Map):
         position="bottomright",
         slider_length="150px",
         date_format="YYYY-MM-dd",
+        opacity=1.0,
+        **kwargs,
     ):
         """Adds a time slider to the map.
 
@@ -5218,6 +5220,7 @@ class Map(ipyleaflet.Map):
             position (str, optional): Position to place the time slider, can be any of ['topleft', 'topright', 'bottomleft', 'bottomright']. Defaults to "bottomright".
             slider_length (str, optional): Length of the time slider. Defaults to "150px".
             date_format (str, optional): The date format to use. Defaults to 'YYYY-MM-dd'.
+            opacity (float, optional): The opacity of layers. Defaults to 1.0.
 
         Raises:
             TypeError: If the ee_object is not ee.Image | ee.ImageCollection.
@@ -5231,7 +5234,7 @@ class Map(ipyleaflet.Map):
                 elif isinstance(region, ee.FeatureCollection):
                     ee_object = ee_object.clipToCollection(region)
             if layer_name not in self.ee_raster_layer_names:
-                self.addLayer(ee_object, {}, layer_name, False)
+                self.addLayer(ee_object, {}, layer_name, False, opacity)
             band_names = ee_object.bandNames()
             ee_object = ee.ImageCollection(
                 ee_object.bandNames().map(lambda b: ee_object.select([b]))
@@ -5275,8 +5278,8 @@ class Map(ipyleaflet.Map):
         first = ee.Image(ee_object.first())
 
         if layer_name not in self.ee_raster_layer_names:
-            self.addLayer(ee_object.toBands(), {}, layer_name, False)
-        self.addLayer(first, vis_params, "Image X")
+            self.addLayer(ee_object.toBands(), {}, layer_name, False, opacity)
+        self.addLayer(first, vis_params, "Image X", True, opacity)
 
         slider = widgets.IntSlider(
             min=1,
@@ -5341,8 +5344,8 @@ class Map(ipyleaflet.Map):
             label.value = labels[index]
             image = ee.Image(ee_object.toList(ee_object.size()).get(index))
             if layer_name not in self.ee_raster_layer_names:
-                self.addLayer(ee_object.toBands(), {}, layer_name, False)
-            self.addLayer(image, vis_params, "Image X")
+                self.addLayer(ee_object.toBands(), {}, layer_name, False, opacity)
+            self.addLayer(image, vis_params, "Image X", True, opacity)
             self.default_style = {"cursor": "default"}
 
         slider.observe(slider_changed, "value")
