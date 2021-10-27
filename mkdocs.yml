@@ -156,6 +156,7 @@ nav:
           - notebooks/79_chart_histogram.ipynb
           - notebooks/80_point_layer.ipynb
           - notebooks/81_goes_timelapse.ipynb
+          - notebooks/82_contours.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
@@ -163,7 +164,6 @@ nav:
                 - notebooks/cartoee_quickstart.ipynb
                 - notebooks/cartoee_scalebar.ipynb
                 - notebooks/cartoee_subplots.ipynb
-                - notebooks/contours.ipynb
                 - notebooks/file_browser.ipynb
                 - notebooks/geemap_and_earthengine.ipynb
                 - notebooks/geemap_and_folium.ipynb
