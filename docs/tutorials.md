@@ -93,3 +93,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 79. Creating histograms using the geemap chart module (video | gif | [notebook](https://geemap.org/notebooks/79_chart_histogram/))
 80. Adding a point layer with popup attributes (video | gif | [notebook](https://geemap.org/notebooks/80_point_layer))
 81. Creating timelapse animations from GEOS weather satellites (video | gif | [notebook](https://geemap.org/notebooks/81_goes_timelapse))
+82. Creating elevation contours for any location around the globe (video | gif | [notebook](https://geemap.org/notebooks/82_contours))
