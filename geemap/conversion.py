@@ -342,7 +342,6 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
             lines = check_map_functions(lines)
 
             for index, line in enumerate(lines):
-
                 if ("/* color" in line) and ("*/" in line):
                     line = (
                         line[: line.index("/*")].lstrip()
@@ -354,7 +353,13 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
                     or ("=function" in line)
                     or line.strip().startswith("function")
                 ):
-                    bracket_index = line.index("{")
+                    try:
+                        bracket_index = line.index("{")
+                    except Exception as e:
+                        raise Exception(
+                            f"The opening curly bracket could not be found in Line {index}: {line}. Please reformat the function definition and make sure the opening curly bracket apprears on the same line as the function keyword. "
+                        )
+
                     (
                         matching_line_index,
                         matching_char_index,

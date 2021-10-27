@@ -9024,20 +9024,58 @@ def goes_timelapse(
             text_sequence = image_dates(col, date_format=date_format).getInfo()
 
         download_ee_video(col, visParams, out_gif)
-        add_text_to_gif(
-            out_gif,
-            out_gif,
-            xy,
-            text_sequence,
-            font_type,
-            font_size,
-            font_color,
-            add_progress_bar,
-            progress_bar_color,
-            progress_bar_height,
-            duration=1000 / framesPerSecond,
-            loop=loop,
-        )
+
+        if os.path.exists(out_gif):
+
+            add_text_to_gif(
+                out_gif,
+                out_gif,
+                xy,
+                text_sequence,
+                font_type,
+                font_size,
+                font_color,
+                add_progress_bar,
+                progress_bar_color,
+                progress_bar_height,
+                duration=1000 / framesPerSecond,
+                loop=loop,
+            )
+
+            try:
+                reduce_gif_size(out_gif)
+            except Exception as _:
+                pass
 
     except Exception as e:
         raise Exception(e)
+
+
+def merge_gifs(in_gifs, out_gif):
+    """Merge multiple gifs into one.
+
+    Args:
+        in_gifs (str | list): The input gifs as a list or a directory path.
+        out_gif (str): The output gif.
+
+    Raises:
+        Exception:  Raise exception when gifsicle is not installed.
+    """
+    import glob
+
+    try:
+        if isinstance(in_gifs, str) and os.path.isdir(in_gifs):
+            in_gifs = glob.glob(os.path.join(in_gifs, "*.gif"))
+        elif not isinstance(in_gifs, list):
+            raise Exception("in_gifs must be a list.")
+
+        in_gifs = " ".join(in_gifs)
+
+        cmd = f"gifsicle {in_gifs} > {out_gif}"
+        os.system(cmd)
+
+    except Exception as e:
+        print(
+            "gifsicle is not installed. Run 'sudo apt-get install -y gifsicle' to install it."
+        )
+        print(e)
