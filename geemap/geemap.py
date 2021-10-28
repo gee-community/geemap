@@ -3045,7 +3045,7 @@ class Map(ipyleaflet.Map):
         Args:
             layer_name (str, optional): Layer name to show under the layer control. Defaults to 'Timelapse'.
             roi (object, optional): Region of interest to create the timelapse. Defaults to None.
-            label (str, optional): A label to shown on the GIF, such as place name. Defaults to None.
+            label (str, optional): A label to show on the GIF, such as place name. Defaults to None.
             start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
             end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
             start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.

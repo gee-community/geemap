@@ -8897,7 +8897,7 @@ def goes_timeseries(
 
     scan_types = {
         "full_disk": "MCMIPF",
-        "consu": "MCMIPC",
+        "conus": "MCMIPC",
         "mesoscale": "MCMIPM",
     }
 
