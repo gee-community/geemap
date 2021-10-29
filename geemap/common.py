@@ -3238,6 +3238,9 @@ def reduce_gif_size(in_gif, out_gif=None):
         out_gif (str, optional): The output file path to the GIF image. Defaults to None.
     """
     import ffmpeg
+    import warnings
+
+    warnings.filterwarnings("ignore")
 
     if not is_tool("ffmpeg"):
         print("ffmpeg is not installed on your computer.")
@@ -8956,7 +8959,7 @@ def goes_timeseries(
 
         return scaleForVis(addGreenBand(applyScaleAndOffset(img)))
 
-    return col.filterDate(start_date, end_date).map(processForVis).filterBounds(region)
+    return col.filterDate(start_date, end_date).map(processForVis)
 
 
 def goes_fire_timeseries(
@@ -8999,7 +9002,7 @@ def goes_fire_timeseries(
     }
 
     if region is None:
-        region = ee.Geometry.BBox(-123.17, 36.56, -116.22, 40.03)
+        region = ee.Geometry.BBox(-123.17, 36.56, -118.22, 40.03)
 
     # Get the fire/hotspot characterization dataset.
     col = ee.ImageCollection(f"NOAA/GOES/{data[-2:]}/{scan_types[scan.lower()]}")
@@ -9018,7 +9021,7 @@ def goes_fire_timeseries(
             .set("system:time_start", img.get("system:time_start"))
         )
 
-    fdcVisCol = fdcCol.map(fdcVis).filterBounds(region)
+    fdcVisCol = fdcCol.map(fdcVis)
     if not merge:
         return fdcVisCol
     else:
@@ -9066,6 +9069,7 @@ def goes_timelapse(
     progress_bar_color="white",
     progress_bar_height=5,
     loop=0,
+    crs=None,
 ):
     """Create a timelapse of GOES data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4.
     Credits to Justin Braaten. See also https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
@@ -9087,8 +9091,8 @@ def goes_timelapse(
         font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
         add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
         progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
-        loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.        loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        crs (str, optional): The coordinate reference system to use, e.g., "EPSG:3857". Defaults to None.
 
     Raises:
         Exception: Raise exception.
@@ -9098,6 +9102,23 @@ def goes_timelapse(
 
         col = goes_timeseries(start_date, end_date, data, scan, region)
 
+        if region is None:
+            region = ee.Geometry.Polygon(
+                [
+                    [
+                        [-159.5954, 60.4088],
+                        [-159.5954, 24.5178],
+                        [-114.2438, 24.5178],
+                        [-114.2438, 60.4088],
+                    ]
+                ],
+                None,
+                False,
+            )
+
+        if crs is None:
+            crs = col.first().projection()
+
         visParams = {
             "bands": ["CMI_C02", "CMI_GREEN", "CMI_C01"],
             "min": 0,
@@ -9105,7 +9126,7 @@ def goes_timelapse(
             "dimensions": dimensions,
             "framesPerSecond": framesPerSecond,
             "region": region,
-            "crs": col.first().projection(),
+            "crs": crs,
         }
 
         if text_sequence is None:
@@ -9158,6 +9179,7 @@ def goes_fire_timelapse(
     progress_bar_color="white",
     progress_bar_height=5,
     loop=0,
+    crs=None,
 ):
     """Create a timelapse of GOES fire data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/8a083a7fb13b95ad4ba148ed9b65475e.
     Credits to Justin Braaten. See also https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
@@ -9181,6 +9203,7 @@ def goes_fire_timelapse(
         progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
         progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
         loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        crs (str, optional): The coordinate reference system to use, e.g., "EPSG:3857". Defaults to None.
 
     Raises:
         Exception: Raise exception.
@@ -9189,7 +9212,7 @@ def goes_fire_timelapse(
     try:
 
         if region is None:
-            region = ee.Geometry.BBox(-123.17, 36.56, -116.22, 40.03)
+            region = ee.Geometry.BBox(-123.17, 36.56, -118.22, 40.03)
 
         col = goes_fire_timeseries(start_date, end_date, data, scan, region)
 
@@ -9203,11 +9226,14 @@ def goes_fire_timelapse(
         #     "crs": col.first().projection(),
         # }
 
+        if crs is None:
+            crs = col.first().projection()
+
         cmiFdcVisParams = {
             "dimensions": dimensions,
             "framesPerSecond": framesPerSecond,
             "region": region,
-            "crs": "EPSG:3857",
+            "crs": crs,
         }
 
         if text_sequence is None:
