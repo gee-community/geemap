@@ -9295,3 +9295,200 @@ def merge_gifs(in_gifs, out_gif):
             "gifsicle is not installed. Run 'sudo apt-get install -y gifsicle' to install it."
         )
         print(e)
+
+
+def modis_ndvi_doy_ts(
+    data="Terra", band="NDVI", start_date=None, end_date=None, region=None
+):
+    """Create MODIS NDVI timeseries. The source code is adapted from https://developers.google.com/earth-engine/tutorials/community/modis-ndvi-time-series-animation.
+
+    Args:
+        data (str, optional): Either "Terra" or "Aqua". Defaults to "Terra".
+        band (str, optional): Either the "NDVI" or "EVI" band. Defaults to "NDVI".
+        start_date (str, optional): The start date used to filter the image collection, e.g., "2013-01-01". Defaults to None.
+        end_date (str, optional): The end date used to filter the image collection. Defaults to None.
+        region (ee.Geometry, optional): The geometry used to filter the image collection. Defaults to None.
+
+    Returns:
+        ee.ImageCollection: The MODIS NDVI time series.
+    """
+    if data not in ["Terra", "Aqua"]:
+        raise Exception("data must be 'Terra' or 'Aqua'.")
+
+    if band not in ["NDVI", "EVI"]:
+        raise Exception("band must be 'NDVI' or 'EVI'.")
+
+    if region is not None:
+        if isinstance(region, ee.Geometry) or isinstance(region, ee.FeatureCollection):
+            pass
+        else:
+            raise Exception("region must be an ee.Geometry or ee.FeatureCollection.")
+
+    if data == "Terra":
+        col = ee.ImageCollection("MODIS/006/MOD13A2").select(band)
+    else:
+        col = ee.ImageCollection("MODIS/006/MYD13A2").select(band)
+
+    if (start_date is not None) and (end_date is not None):
+        col = col.filterDate(start_date, end_date)
+
+    def set_doy(img):
+        doy = ee.Date(img.get("system:time_start")).getRelative("day", "year")
+        return img.set("doy", doy)
+
+    col = col.map(set_doy)
+
+    # Get a collection of distinct images by 'doy'.
+    distinctDOY = col.filterDate("2013-01-01", "2014-01-01")
+
+    # Define a filter that identifies which images from the complete
+    # collection match the DOY from the distinct DOY collection.
+    filter = ee.Filter.equals(**{"leftField": "doy", "rightField": "doy"})
+
+    # Define a join.
+    join = ee.Join.saveAll("doy_matches")
+
+    # Apply the join and convert the resulting FeatureCollection to an
+    # ImageCollection.
+    joinCol = ee.ImageCollection(join.apply(distinctDOY, col, filter))
+
+    # Apply median reduction among matching DOY collections.
+
+    def match_doy(img):
+        doyCol = ee.ImageCollection.fromImages(img.get("doy_matches"))
+        return doyCol.reduce(ee.Reducer.median())
+
+    comp = joinCol.map(match_doy)
+
+    if region is not None:
+        return comp.map(lambda img: img.clip(region))
+    else:
+        return comp
+
+
+def modis_ndvi_timelapse(
+    out_gif,
+    data="Terra",
+    band="NDVI",
+    start_date=None,
+    end_date=None,
+    region=None,
+    dimensions=768,
+    framesPerSecond=10,
+    crs="EPSG:3857",
+    xy=("3%", "3%"),
+    text_sequence=None,
+    font_type="arial.ttf",
+    font_size=20,
+    font_color="#ffffff",
+    add_progress_bar=True,
+    progress_bar_color="white",
+    progress_bar_height=5,
+    loop=0,
+):
+    """Create MODIS NDVI timelapse. The source code is adapted from https://developers.google.com/earth-engine/tutorials/community/modis-ndvi-time-series-animation.
+
+    Args:
+        data (str, optional): Either "Terra" or "Aqua". Defaults to "Terra".
+        band (str, optional): Either the "NDVI" or "EVI" band. Defaults to "NDVI".
+        start_date (str, optional): The start date used to filter the image collection, e.g., "2013-01-01". Defaults to None.
+        end_date (str, optional): The end date used to filter the image collection. Defaults to None.
+        region (ee.Geometry, optional): The geometry used to filter the image collection. Defaults to None.
+        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
+        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
+        loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+
+    """
+
+    if region is None:
+        region = ee.Geometry.Polygon(
+            [
+                [
+                    [-18.6983, 38.1446],
+                    [-18.6983, -36.1630],
+                    [52.2293, -36.1630],
+                    [52.2293, 38.1446],
+                ]
+            ],
+            None,
+            False,
+        )
+
+    try:
+        col = modis_ndvi_doy_ts(data, band, start_date, end_date, region)
+
+        # Define RGB visualization parameters.
+        visParams = {
+            "min": 0.0,
+            "max": 9000.0,
+            "palette": [
+                "FFFFFF",
+                "CE7E45",
+                "DF923D",
+                "F1B555",
+                "FCD163",
+                "99B718",
+                "74A901",
+                "66A000",
+                "529400",
+                "3E8601",
+                "207401",
+                "056201",
+                "004C00",
+                "023B01",
+                "012E01",
+                "011D01",
+                "011301",
+            ],
+        }
+
+        # Create RGB visualization images for use as animation frames.
+        rgbVis = col.map(lambda img: img.visualize(**visParams).clip(region))
+
+        # Define GIF visualization arguments.
+        videoArgs = {
+            "region": region,
+            "dimensions": dimensions,
+            "crs": crs,
+            "framesPerSecond": framesPerSecond,
+        }
+
+        download_ee_video(rgbVis, videoArgs, out_gif)
+
+        if text_sequence is None:
+            text = rgbVis.aggregate_array("system:index").getInfo()
+            text_sequence = [d.replace("_", "-")[5:] for d in text]
+
+        if os.path.exists(out_gif):
+
+            add_text_to_gif(
+                out_gif,
+                out_gif,
+                xy,
+                text_sequence,
+                font_type,
+                font_size,
+                font_color,
+                add_progress_bar,
+                progress_bar_color,
+                progress_bar_height,
+                duration=1000 / framesPerSecond,
+                loop=loop,
+            )
+
+            try:
+                reduce_gif_size(out_gif)
+            except Exception as _:
+                pass
+
+    except Exception as e:
+        raise Exception(e)
