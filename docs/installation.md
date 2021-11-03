@@ -19,13 +19,13 @@ the [Earth Engine Code Editor](https://code.earthengine.google.com/) to get fami
 ## Install from conda-forge
 
 **geemap** is also available on [conda-forge](https://anaconda.org/conda-forge/geemap). If you have
-[Anaconda](https://www.anaconda.com/distribution/#download-section) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed on your computer, you can install leafmap using the following command:
+[Anaconda](https://www.anaconda.com/distribution/#download-section) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) installed on your computer, you can install geemap using the following command:
 
 ```bash
     conda install geemap -c conda-forge
 ```
 
-The geemap package has an optional dependency - [geopandas](https://geopandas.org/), which can be challenging to install on some computers, especially Windows. It is highly recommended that you create a fresh conda environment to install geopandas and geemap. Follow the commands below to set up a conda env and install geopandas, xarray_leaflet, and leafmap.
+The geemap package has an optional dependency - [geopandas](https://geopandas.org/), which can be challenging to install on some computers, especially Windows. It is highly recommended that you create a fresh conda environment to install geopandas and geemap. Follow the commands below to set up a conda env and install geopandas, xarray_leaflet, and geemap.
 
 ```bash
     conda create -n gee python=3.8

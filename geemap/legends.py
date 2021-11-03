@@ -29,6 +29,19 @@ builtin_legends = {
         "90 Woody Wetlands": "b8d9eb",
         "95 Emergent Herbaceous Wetlands": "6c9fb8",
     },
+    "ESA_WorldCover": {
+        "10 Trees": "006400",
+        "20 Shrubland": "ffbb22",
+        "30 Grassland": "ffff4c",
+        "40 Cropland": "f096ff",
+        "50 Built-up": "fa0000",
+        "60 Barren / sparse vegetation": "b4b4b4",
+        "70 Snow and ice": "f0f0f0",
+        "80 Open water": "0064c8",
+        "90 Herbaceous wetland": "0096a0",
+        "95 Mangroves": "00cf75",
+        "100 Moss and lichen": "fae6a0",
+    },
     # National Wetlands Inventory Legend: https://www.fws.gov/wetlands/data/Mapper-Wetlands-Legend.html
     "NWI": {
         "Freshwater- Forested and Shrub wetland": (0, 136, 55),

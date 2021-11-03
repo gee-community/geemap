@@ -8494,7 +8494,7 @@ def get_census_dict(reset=False):
     import json
     import pkg_resources
 
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("leafmap", "leafmap.py"))
+    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
     census_data = os.path.join(pkg_dir, "data/census_data.json")
 
     if reset:
