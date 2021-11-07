@@ -69,6 +69,7 @@ nav:
           - geemap module: geemap.md
           - legends module: legends.md
           - ml module: ml.md
+          - timelapse module: timelapse.md
           - toolbar module: toolbar.md
     - Workshops:
           - workshops/GeoPython_2021.ipynb

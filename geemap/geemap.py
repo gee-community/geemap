@@ -19,6 +19,7 @@ from .basemaps import basemap_tiles, basemaps
 from .common import *
 from .conversion import *
 from .legends import builtin_legends
+from .timelapse import *
 
 
 class Map(ipyleaflet.Map):
@@ -820,9 +821,9 @@ class Map(ipyleaflet.Map):
 
                     change_basemap(self)
                 elif tool_name == "timelapse":
-                    from .toolbar import timelapse
+                    from .toolbar import timelapse_gui
 
-                    timelapse(self)
+                    timelapse_gui(self)
                     self.toolbar_reset()
                 elif tool_name == "timeslider":
                     from .toolbar import time_slider
@@ -3100,7 +3101,7 @@ class Map(ipyleaflet.Map):
             geojson = adjust_longitude(geojson)
             roi = ee.Geometry(geojson)
 
-            in_gif = landsat_ts_gif(
+            in_gif = landsat_timelapse(
                 roi=roi,
                 out_gif=out_gif,
                 start_year=start_year,
