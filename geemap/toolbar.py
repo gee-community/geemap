@@ -10,6 +10,7 @@ from ipyfilechooser import FileChooser
 from IPython.core.display import display
 
 from .common import *
+from .timelapse import *
 
 
 def tool_template(m=None):
@@ -972,7 +973,7 @@ def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
     return full_widget
 
 
-def timelapse(m=None):
+def timelapse_gui(m=None):
     """Creates timelapse animations.
 
     Args:
