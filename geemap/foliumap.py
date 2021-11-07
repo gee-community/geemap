@@ -9,6 +9,8 @@ from folium import plugins
 from .common import *
 from .conversion import *
 from .legends import builtin_legends
+from .timelapse import *
+
 
 # More WMS basemaps can be found at https://viewer.nationalmap.gov/services/
 ee_basemaps = {
