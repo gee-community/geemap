@@ -10,14 +10,17 @@ import ee
 from .common import *
 
 
-def add_overlay(collection, overlay_data, color="black", width=1, region=None):
+def add_overlay(
+    collection, overlay_data, color="black", width=1, opacity=1.0, region=None
+):
     """Adds an overlay to an image collection.
 
     Args:
         collection (ee.ImageCollection): The image collection to add the overlay to.
-        overlay_data (str | ee.Geometry | ee.FeatureCollection): The overlay data to add to the image collection.
+        overlay_data (str | ee.Geometry | ee.FeatureCollection): The overlay data to add to the image collection. It can be an HTTP URL to a GeoJSON file.
         color (str, optional): The color of the overlay. Defaults to 'black'.
         width (int, optional): The width of the overlay. Defaults to 1.
+        opacity (float, optional): The opacity of the overlay. Defaults to 1.0.
         region (ee.Geometry | ee.FeatureCollection, optional): The region of interest to add the overlay to. Defaults to None.
 
     Returns:
@@ -26,6 +29,7 @@ def add_overlay(collection, overlay_data, color="black", width=1, region=None):
 
     # Some common administrative boundaries.
     public_assets = [
+        "continents",
         "countries",
         "us_states",
         "chn_admin_level0",
@@ -43,12 +47,16 @@ def add_overlay(collection, overlay_data, color="black", width=1, region=None):
                     overlay_data = ee.FeatureCollection(
                         f"users/giswqs/public/{overlay_data.lower()}"
                     )
+                elif overlay_data.startswith("http") and overlay_data.endswith(
+                    ".geojson"
+                ):
+                    overlay_data = geojson_to_ee(overlay_data)
                 else:
                     overlay_data = ee.FeatureCollection(overlay_data)
 
             except Exception as e:
                 print(
-                    "The overlay_data must be a valid ee.FeatureCollection or a valid ee.FeatureCollection asset id."
+                    "The overlay_data must be a valid ee.FeatureCollection, a valid ee.FeatureCollection asset id, or http url to a geojson file."
                 )
                 raise Exception(e)
         elif isinstance(overlay_data, ee.Feature):
@@ -71,7 +79,7 @@ def add_overlay(collection, overlay_data, color="black", width=1, region=None):
                 "color": 1,
                 "width": width,
             }
-        ).visualize(**{"palette": check_color(color)})
+        ).visualize(**{"palette": check_color(color), "opacity": opacity})
         blend_col = collection.map(lambda img: img.blend(image))
         return blend_col
     except Exception as e:
@@ -148,7 +156,7 @@ def naip_timeseries(roi=None, start_year=2003, end_year=2021, RGBN=False):
 def sentinel2_timeseries(
     roi=None,
     start_year=2015,
-    end_year=2019,
+    end_year=2021,
     start_date="01-01",
     end_date="12-31",
     apply_fmask=True,
@@ -159,7 +167,7 @@ def sentinel2_timeseries(
 
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
-        end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
+        end_year (int, optional): Ending year for the timelapse. Defaults to 2021.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
         apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
@@ -694,7 +702,7 @@ def landsat_timelapse(
     roi=None,
     out_gif=None,
     start_year=1984,
-    end_year=2020,
+    end_year=2021,
     start_date="06-10",
     end_date="09-20",
     bands=["NIR", "Red", "Green"],
@@ -708,6 +716,7 @@ def landsat_timelapse(
     overlay_data=None,
     overlay_color="black",
     overlay_width=1,
+    overlay_opacity=1.0,
 ):
     """Generates a Landsat timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
 
@@ -715,7 +724,7 @@ def landsat_timelapse(
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
         out_gif (str, optional): File path to the output animated GIF. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
+        end_year (int, optional): Ending year for the timelapse. Defaults to 2021.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
         bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']. Defaults to ['NIR', 'Red', 'Green'].
@@ -729,6 +738,7 @@ def landsat_timelapse(
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
         overlay_width (int, optional): Line width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
 
     Returns:
         str: File path to the output GIF image.
@@ -797,11 +807,6 @@ def landsat_timelapse(
             )
 
     try:
-        col = landsat_timeseries(
-            roi, start_year, end_year, start_date, end_date, apply_fmask
-        )
-        if overlay_data is not None:
-            col = add_overlay(col, overlay_data, overlay_color, overlay_width)
 
         if vis_params is None:
             vis_params = {}
@@ -809,24 +814,36 @@ def landsat_timelapse(
             vis_params["min"] = 0
             vis_params["max"] = 4000
             vis_params["gamma"] = [1, 1, 1]
+        col = landsat_timeseries(
+            roi, start_year, end_year, start_date, end_date, apply_fmask
+        )
+        # col = col.select(bands)
+        col = col.select(bands).map(lambda img: img.visualize(**vis_params))
+        if overlay_data is not None:
+            col = add_overlay(
+                col, overlay_data, overlay_color, overlay_width, overlay_opacity
+            )
 
         video_args = vis_params.copy()
         video_args["dimensions"] = dimensions
         video_args["region"] = roi
         video_args["framesPerSecond"] = frames_per_second
         video_args["crs"] = "EPSG:3857"
+        video_args["bands"] = ["vis-red", "vis-green", "vis-blue"]
+        video_args["min"] = 0
+        video_args["max"] = 255
 
-        if "bands" not in video_args.keys():
-            video_args["bands"] = bands
+        # if "bands" not in video_args.keys():
+        #     video_args["bands"] = bands
 
-        if "min" not in video_args.keys():
-            video_args["min"] = 0
+        # if "min" not in video_args.keys():
+        #     video_args["min"] = 0
 
-        if "max" not in video_args.keys():
-            video_args["max"] = 4000
+        # if "max" not in video_args.keys():
+        #     video_args["max"] = 4000
 
-        if "gamma" not in video_args.keys():
-            video_args["gamma"] = [1, 1, 1]
+        # if "gamma" not in video_args.keys():
+        #     video_args["gamma"] = [1, 1, 1]
 
         download_ee_video(col, video_args, out_gif)
 
@@ -843,6 +860,181 @@ def landsat_timelapse(
                 dimensions=dimensions,
                 frames_per_second=frames_per_second,
             )
+
+        return out_gif
+
+    except Exception as e:
+        print(e)
+
+
+def sentinel2_timelapse(
+    roi=None,
+    out_gif=None,
+    start_year=2015,
+    end_year=2021,
+    start_date="06-10",
+    end_date="09-20",
+    bands=["NIR", "Red", "Green"],
+    vis_params=None,
+    dimensions=768,
+    frames_per_second=10,
+    apply_fmask=True,
+    overlay_data=None,
+    overlay_color="black",
+    overlay_width=1,
+    overlay_opacity=1.0,
+):
+    """Generates a Sentinel-2 timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
+
+    Args:
+        roi (object, optional): Region of interest to create the timelapse. Defaults to None.
+        out_gif (str, optional): File path to the output animated GIF. Defaults to None.
+        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
+        end_year (int, optional): Ending year for the timelapse. Defaults to 2021.
+        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
+        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+        bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'Red Edge 1', 'Red Edge 2', 'Red Edge 3', 'Red Edge 4']. Defaults to ['NIR', 'Red', 'Green'].
+        vis_params (dict, optional): Visualization parameters. Defaults to None.
+        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+        apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
+        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
+        overlay_width (int, optional): Line width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+
+    Returns:
+        str: File path to the output GIF image.
+    """
+
+    # ee_initialize()
+
+    if roi is None:
+        roi = ee.Geometry.Polygon(
+            [
+                [
+                    [-115.471773, 35.892718],
+                    [-115.471773, 36.409454],
+                    [-114.271283, 36.409454],
+                    [-114.271283, 35.892718],
+                    [-115.471773, 35.892718],
+                ]
+            ],
+            None,
+            False,
+        )
+    elif isinstance(roi, ee.Feature) or isinstance(roi, ee.FeatureCollection):
+        roi = roi.geometry()
+    elif isinstance(roi, ee.Geometry):
+        pass
+    else:
+        print("The provided roi is invalid. It must be an ee.Geometry")
+        return
+
+    if out_gif is None:
+        out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+        filename = "s2_ts_" + random_string() + ".gif"
+        out_gif = os.path.join(out_dir, filename)
+    elif not out_gif.endswith(".gif"):
+        print("The output file must end with .gif")
+        return
+    # elif not os.path.isfile(out_gif):
+    #     print('The output file must be a file')
+    #     return
+    else:
+        out_gif = os.path.abspath(out_gif)
+        out_dir = os.path.dirname(out_gif)
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    allowed_bands = [
+        "Blue",
+        "Green",
+        "Red",
+        "Red Edge 1",
+        "Red Edge 2",
+        "Red Edge 3",
+        "NIR",
+        "Red Edge 4",
+        "SWIR1",
+        "SWIR2",
+        "QA60",
+    ]
+
+    if len(bands) == 3 and all(x in allowed_bands for x in bands):
+        pass
+    else:
+        raise Exception(
+            "You can only select 3 bands from the following: {}".format(
+                ", ".join(allowed_bands)
+            )
+        )
+
+    # if nd_bands is not None:
+    #     if len(nd_bands) == 2 and all(x in allowed_bands[:-1] for x in nd_bands):
+    #         pass
+    #     else:
+    #         raise Exception(
+    #             "You can only select two bands from the following: {}".format(
+    #                 ", ".join(allowed_bands[:-1])
+    #             )
+    #         )
+
+    try:
+
+        if vis_params is None:
+            vis_params = {}
+            vis_params["bands"] = bands
+            vis_params["min"] = 0
+            vis_params["max"] = 4000
+            vis_params["gamma"] = [1, 1, 1]
+        col = sentinel2_timeseries(
+            roi, start_year, end_year, start_date, end_date, apply_fmask
+        )
+        # col = col.select(bands)
+        col = col.select(bands).map(lambda img: img.visualize(**vis_params))
+        if overlay_data is not None:
+            col = add_overlay(
+                col, overlay_data, overlay_color, overlay_width, overlay_opacity
+            )
+
+        video_args = vis_params.copy()
+        video_args["dimensions"] = dimensions
+        video_args["region"] = roi
+        video_args["framesPerSecond"] = frames_per_second
+        video_args["crs"] = "EPSG:3857"
+        video_args["bands"] = ["vis-red", "vis-green", "vis-blue"]
+        video_args["min"] = 0
+        video_args["max"] = 255
+
+        # if "bands" not in video_args.keys():
+        #     video_args["bands"] = bands
+
+        # if "min" not in video_args.keys():
+        #     video_args["min"] = 0
+
+        # if "max" not in video_args.keys():
+        #     video_args["max"] = 4000
+
+        # if "gamma" not in video_args.keys():
+        #     video_args["gamma"] = [1, 1, 1]
+
+        download_ee_video(col, video_args, out_gif)
+
+        # if nd_bands is not None:
+        #     nd_images = landsat_ts_norm_diff(
+        #         col, bands=nd_bands, threshold=nd_threshold
+        #     )
+        #     out_nd_gif = out_gif.replace(".gif", "_nd.gif")
+        #     landsat_ts_norm_diff_gif(
+        #         nd_images,
+        #         out_gif=out_nd_gif,
+        #         vis_params=None,
+        #         palette=nd_palette,
+        #         dimensions=dimensions,
+        #         frames_per_second=frames_per_second,
+        #     )
 
         return out_gif
 
@@ -1459,6 +1651,7 @@ def goes_timelapse(
     overlay_data=None,
     overlay_color="black",
     overlay_width=1,
+    overlay_opacity=1.0,
     **kwargs,
 ):
     """Create a timelapse of GOES data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4.
@@ -1486,15 +1679,25 @@ def goes_timelapse(
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
         overlay_width (int, optional): Line width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
     Raises:
         Exception: Raise exception.
     """
 
     try:
 
+        bands = ["CMI_C02", "CMI_GREEN", "CMI_C01"]
+        visParams = {
+            "bands": bands,
+            "min": 0,
+            "max": 0.8,
+        }
         col = goes_timeseries(start_date, end_date, data, scan, region)
+        col = col.select(bands).map(lambda img: img.visualize(**visParams))
         if overlay_data is not None:
-            col = add_overlay(col, overlay_data, overlay_color, overlay_width)
+            col = add_overlay(
+                col, overlay_data, overlay_color, overlay_width, overlay_opacity
+            )
 
         if region is None:
             region = ee.Geometry.Polygon(
@@ -1513,10 +1716,10 @@ def goes_timelapse(
         if crs is None:
             crs = col.first().projection()
 
-        visParams = {
-            "bands": ["CMI_C02", "CMI_GREEN", "CMI_C01"],
+        videoParams = {
+            "bands": ["vis-red", "vis-green", "vis-blue"],
             "min": 0,
-            "max": 0.8,
+            "max": 255,
             "dimensions": dimensions,
             "framesPerSecond": framesPerSecond,
             "region": region,
@@ -1526,7 +1729,7 @@ def goes_timelapse(
         if text_sequence is None:
             text_sequence = image_dates(col, date_format=date_format).getInfo()
 
-        download_ee_video(col, visParams, out_gif)
+        download_ee_video(col, videoParams, out_gif)
 
         if os.path.exists(out_gif):
 
@@ -1577,6 +1780,7 @@ def goes_fire_timelapse(
     overlay_data=None,
     overlay_color="#000000",
     overlay_width=1,
+    overlay_opacity=1.0,
     **kwargs,
 ):
     """Create a timelapse of GOES fire data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/8a083a7fb13b95ad4ba148ed9b65475e.
@@ -1605,6 +1809,7 @@ def goes_fire_timelapse(
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
         overlay_width (int, optional): Width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
 
     Raises:
         Exception: Raise exception.
@@ -1617,7 +1822,9 @@ def goes_fire_timelapse(
 
         col = goes_fire_timeseries(start_date, end_date, data, scan, region)
         if overlay_data is not None:
-            col = add_overlay(col, overlay_data, overlay_color, overlay_width)
+            col = add_overlay(
+                col, overlay_data, overlay_color, overlay_width, overlay_opacity
+            )
 
         # visParams = {
         #     "bands": ["CMI_C02", "CMI_GREEN", "CMI_C01"],
@@ -1761,6 +1968,7 @@ def modis_ndvi_timelapse(
     overlay_data=None,
     overlay_color="black",
     overlay_width=1,
+    overlay_opacity=1.0,
     **kwargs,
 ):
     """Create MODIS NDVI timelapse. The source code is adapted from https://developers.google.com/earth-engine/tutorials/community/modis-ndvi-time-series-animation.
@@ -1786,6 +1994,7 @@ def modis_ndvi_timelapse(
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
         overlay_width (int, optional): Width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
 
     """
 
@@ -1840,6 +2049,7 @@ def modis_ndvi_timelapse(
                 overlay_data,
                 overlay_color,
                 overlay_width,
+                overlay_opacity,
                 region,
             )
 
