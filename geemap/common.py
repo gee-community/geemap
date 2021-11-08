@@ -1055,12 +1055,13 @@ def csv_to_geopandas(
     return gdf
 
 
-def geojson_to_ee(geo_json, geodesic=False):
+def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
     """Converts a geojson to ee.Geometry()
 
     Args:
         geo_json (dict): A geojson geometry dictionary or file path.
         geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected. Defaults to False.
+        encoding (str, optional): The encoding of characters. Defaults to "utf-8".
 
     Returns:
         ee_object: An ee.Geometry object
@@ -1068,11 +1069,17 @@ def geojson_to_ee(geo_json, geodesic=False):
 
     try:
 
-        # import json
+        if isinstance(geo_json, str):
+            if geo_json.startswith("http") and geo_json.endswith(".geojson"):
+                out_geojson = temp_file_path(extension=".geojson")
+                download_from_url(geo_json, out_geojson, verbose=False)
+                with open(out_geojson, "r", encoding=encoding) as f:
+                    geo_json = json.loads(f.read())
+                os.remove(out_geojson)
 
-        if not isinstance(geo_json, dict) and os.path.isfile(geo_json):
-            with open(os.path.abspath(geo_json), encoding="utf-8") as f:
-                geo_json = json.load(f)
+            elif os.path.isfile(geo_json):
+                with open(os.path.abspath(geo_json), encoding=encoding) as f:
+                    geo_json = json.load(f)
 
         geo_json["geodesic"] = geodesic
         if geo_json["type"] == "FeatureCollection":
