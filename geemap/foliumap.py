@@ -20,6 +20,7 @@ ee_basemaps = {
         name="Google Maps",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "SATELLITE": folium.TileLayer(
         tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
@@ -27,6 +28,7 @@ ee_basemaps = {
         name="Google Satellite",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "TERRAIN": folium.TileLayer(
         tiles="https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",
@@ -34,6 +36,7 @@ ee_basemaps = {
         name="Google Terrain",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "HYBRID": folium.TileLayer(
         tiles="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
@@ -41,6 +44,7 @@ ee_basemaps = {
         name="Google Satellite",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "ESRI": folium.TileLayer(
         tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -48,6 +52,7 @@ ee_basemaps = {
         name="Esri Satellite",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "Esri Ocean": folium.TileLayer(
         tiles="https://services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
@@ -55,6 +60,7 @@ ee_basemaps = {
         name="Esri Ocean",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "Esri Satellite": folium.TileLayer(
         tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -62,6 +68,7 @@ ee_basemaps = {
         name="Esri Satellite",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "Esri Standard": folium.TileLayer(
         tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
@@ -69,6 +76,7 @@ ee_basemaps = {
         name="Esri Standard",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "Esri Terrain": folium.TileLayer(
         tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}",
@@ -76,6 +84,7 @@ ee_basemaps = {
         name="Esri Terrain",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "Esri Transportation": folium.TileLayer(
         tiles="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}",
@@ -83,6 +92,7 @@ ee_basemaps = {
         name="Esri Transportation",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "Esri Topo World": folium.TileLayer(
         tiles="https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
@@ -90,6 +100,7 @@ ee_basemaps = {
         name="Esri Topo World",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "Esri National Geographic": folium.TileLayer(
         tiles="http://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",
@@ -97,6 +108,7 @@ ee_basemaps = {
         name="Esri National Geographic",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "Esri Shaded Relief": folium.TileLayer(
         tiles="https://services.arcgisonline.com/arcgis/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}",
@@ -104,6 +116,7 @@ ee_basemaps = {
         name="Esri Shaded Relief",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "Esri Physical Map": folium.TileLayer(
         tiles="https://services.arcgisonline.com/arcgis/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}",
@@ -111,6 +124,7 @@ ee_basemaps = {
         name="Esri Physical Map",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "Bing VirtualEarth": folium.TileLayer(
         tiles="http://ecn.t3.tiles.virtualearth.net/tiles/a{q}.jpeg?g=1",
@@ -118,6 +132,7 @@ ee_basemaps = {
         name="Bing VirtualEarth",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "3DEP Elevation": folium.WmsTileLayer(
         url="https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WMSServer?",
@@ -126,6 +141,7 @@ ee_basemaps = {
         name="3DEP Elevation",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
     "NAIP Imagery": folium.WmsTileLayer(
         url="https://services.nationalmap.gov/arcgis/services/USGSNAIPImagery/ImageServer/WMSServer?",
@@ -134,6 +150,7 @@ ee_basemaps = {
         name="NAIP Imagery",
         overlay=True,
         control=True,
+        max_zoom=24
     ),
 }
 
@@ -177,6 +194,8 @@ class Map(folium.Map):
             zoom = kwargs["zoom_start"]
         else:
             kwargs["zoom_start"] = zoom
+        if "max_zoom" not in kwargs.keys():
+            kwargs["max_zoom"] = 24
 
         if "add_google_map" not in kwargs.keys() and "basemap" not in kwargs.keys():
             kwargs["add_google_map"] = True
@@ -331,6 +350,7 @@ class Map(folium.Map):
             control=True,
             show=shown,
             opacity=opacity,
+            max_zoom=24,
             **kwargs,
         ).add_to(self)
 

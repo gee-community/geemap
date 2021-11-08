@@ -22,21 +22,25 @@ _ee_basemaps = {
         url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
         attribution="Google",
         name="Google Maps",
+        max_zoom=24
     ),
     "SATELLITE": TileLayer(
         url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
         attribution="Google",
         name="Google Satellite",
+        max_zoom=24
     ),
     "TERRAIN": TileLayer(
         url="https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",
         attribution="Google",
         name="Google Terrain",
+        max_zoom=24
     ),
     "HYBRID": TileLayer(
         url="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
         attribution="Google",
         name="Google Satellite",
+        max_zoom=24
     ),
     "ESRI": TileLayer(
         url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -108,21 +112,25 @@ _ee_basemaps = {
         url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
         attribution="Google",
         name="Google Maps",
+        max_zoom=24
     ),
     "Google Satellite": TileLayer(
         url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
         attribution="Google",
         name="Google Satellite",
+        max_zoom=24
     ),
     "Google Terrain": TileLayer(
         url="https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",
         attribution="Google",
         name="Google Terrain",
+        max_zoom=24
     ),
     "Google Satellite Hybrid": TileLayer(
         url="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
         attribution="Google",
         name="Google Satellite",
+        max_zoom=24
     ),
     "NLCD 2016 CONUS Land Cover": WMSLayer(
         url="https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2016_Land_Cover_L48/wms?",

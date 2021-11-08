@@ -56,6 +56,8 @@ class Map(ipyleaflet.Map):
             kwargs.pop("zoom_start")
         if "zoom" not in kwargs.keys():
             kwargs["zoom"] = zoom
+        if "max_zoom" not in kwargs.keys():
+            kwargs["max_zoom"] = 24
 
         if "add_google_map" not in kwargs.keys() and "basemap" not in kwargs.keys():
             kwargs["add_google_map"] = True
@@ -1395,6 +1397,7 @@ class Map(ipyleaflet.Map):
             name=name,
             opacity=opacity,
             visible=shown,
+            max_zoom=24
         )
 
         layer = self.find_layer(name=name)
