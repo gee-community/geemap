@@ -80,7 +80,11 @@ def add_overlay(
                 "width": width,
             }
         ).visualize(**{"palette": check_color(color), "opacity": opacity})
-        blend_col = collection.map(lambda img: img.blend(image))
+        blend_col = collection.map(
+            lambda img: img.blend(image).set(
+                "system:time_start", img.get("system:time_start")
+            )
+        )
         return blend_col
     except Exception as e:
         print("Error in add_overlay:")
@@ -115,6 +119,624 @@ def merge_gifs(in_gifs, out_gif):
             "gifsicle is not installed. Run 'sudo apt-get install -y gifsicle' to install it."
         )
         print(e)
+
+
+def add_text_to_gif(
+    in_gif,
+    out_gif,
+    xy=None,
+    text_sequence=None,
+    font_type="arial.ttf",
+    font_size=20,
+    font_color="#000000",
+    add_progress_bar=True,
+    progress_bar_color="white",
+    progress_bar_height=5,
+    duration=100,
+    loop=0,
+):
+    """Adds animated text to a GIF image.
+
+    Args:
+        in_gif (str): The file path to the input GIF image.
+        out_gif (str): The file path to the output GIF image.
+        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
+        duration (int, optional): controls how long each frame will be displayed for, in milliseconds. It is the inverse of the frame rate. Setting it to 100 milliseconds gives 10 frames per second. You can decrease the duration to give a smoother animation.. Defaults to 100.
+        loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+
+    """
+    # import io
+    import warnings
+
+    import pkg_resources
+    from PIL import Image, ImageDraw, ImageFont, ImageSequence
+
+    warnings.simplefilter("ignore")
+    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    default_font = os.path.join(pkg_dir, "data/fonts/arial.ttf")
+
+    in_gif = os.path.abspath(in_gif)
+    out_gif = os.path.abspath(out_gif)
+
+    if not os.path.exists(in_gif):
+        print("The input gif file does not exist.")
+        return
+
+    if not os.path.exists(os.path.dirname(out_gif)):
+        os.makedirs(os.path.dirname(out_gif))
+
+    if font_type == "arial.ttf":
+        font = ImageFont.truetype(default_font, font_size)
+    elif font_type == "alibaba.otf":
+        default_font = os.path.join(pkg_dir, "data/fonts/alibaba.otf")
+        font = ImageFont.truetype(default_font, font_size)
+    else:
+        try:
+            font_list = system_fonts(show_full_path=True)
+            font_names = [os.path.basename(f) for f in font_list]
+            if (font_type in font_list) or (font_type in font_names):
+                font = ImageFont.truetype(font_type, font_size)
+            else:
+                print(
+                    "The specified font type could not be found on your system. Using the default font instead."
+                )
+                font = ImageFont.truetype(default_font, font_size)
+        except Exception as e:
+            print(e)
+            font = ImageFont.truetype(default_font, font_size)
+
+    color = check_color(font_color)
+    progress_bar_color = check_color(progress_bar_color)
+
+    try:
+        image = Image.open(in_gif)
+    except Exception as e:
+        print("An error occurred while opening the gif.")
+        print(e)
+        return
+
+    count = image.n_frames
+    W, H = image.size
+    progress_bar_widths = [i * 1.0 / count * W for i in range(1, count + 1)]
+    progress_bar_shapes = [
+        [(0, H - progress_bar_height), (x, H)] for x in progress_bar_widths
+    ]
+
+    if xy is None:
+        # default text location is 5% width and 5% height of the image.
+        xy = (int(0.05 * W), int(0.05 * H))
+    elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
+        print("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
+        return
+    elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):
+        x, y = xy
+        if (x > 0) and (x < W) and (y > 0) and (y < H):
+            pass
+        else:
+            print(
+                f"xy is out of bounds. x must be within [0, {W}], and y must be within [0, {H}]"
+            )
+            return
+    elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
+        x, y = xy
+        if ("%" in x) and ("%" in y):
+            try:
+                x = int(float(x.replace("%", "")) / 100.0 * W)
+                y = int(float(y.replace("%", "")) / 100.0 * H)
+                xy = (x, y)
+            except Exception:
+                raise Exception(
+                    "The specified xy is invalid. It must be formatted like this ('10%', '10%')"
+                )
+    else:
+        print(
+            "The specified xy is invalid. It must be formatted like this: (10, 10) or ('10%', '10%')"
+        )
+        return
+
+    if text_sequence is None:
+        text = [str(x) for x in range(1, count + 1)]
+    elif isinstance(text_sequence, int):
+        text = [str(x) for x in range(text_sequence, text_sequence + count + 1)]
+    elif isinstance(text_sequence, str):
+        try:
+            text_sequence = int(text_sequence)
+            text = [str(x) for x in range(text_sequence, text_sequence + count + 1)]
+        except Exception:
+            text = [text_sequence] * count
+    elif isinstance(text_sequence, list) and len(text_sequence) != count:
+        print(
+            f"The length of the text sequence must be equal to the number ({count}) of frames in the gif."
+        )
+        return
+    else:
+        text = [str(x) for x in text_sequence]
+
+    try:
+
+        frames = []
+        # Loop over each frame in the animated image
+        for index, frame in enumerate(ImageSequence.Iterator(image)):
+            # Draw the text on the frame
+            frame = frame.convert("RGB")
+            draw = ImageDraw.Draw(frame)
+            # w, h = draw.textsize(text[index])
+            draw.text(xy, text[index], font=font, fill=color)
+            if add_progress_bar:
+                draw.rectangle(progress_bar_shapes[index], fill=progress_bar_color)
+            del draw
+
+            b = io.BytesIO()
+            frame.save(b, format="GIF")
+            frame = Image.open(b)
+
+            frames.append(frame)
+        # https://www.pythoninformer.com/python-libraries/pillow/creating-animated-gif/
+        # Save the frames as a new image
+
+        frames[0].save(
+            out_gif,
+            save_all=True,
+            append_images=frames[1:],
+            duration=duration,
+            loop=loop,
+            optimize=True,
+        )
+    except Exception as e:
+        print(e)
+
+
+def add_image_to_gif(
+    in_gif, out_gif, in_image, xy=None, image_size=(80, 80), circle_mask=False
+):
+    """Adds an image logo to a GIF image.
+
+    Args:
+        in_gif (str): Input file path to the GIF image.
+        out_gif (str): Output file path to the GIF image.
+        in_image (str): Input file path to the image.
+        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        image_size (tuple, optional): Resize image. Defaults to (80, 80).
+        circle_mask (bool, optional): Whether to apply a circle mask to the image. This only works with non-png images. Defaults to False.
+    """
+    # import io
+    import warnings
+
+    from PIL import Image, ImageDraw, ImageSequence
+
+    warnings.simplefilter("ignore")
+
+    in_gif = os.path.abspath(in_gif)
+
+    is_url = False
+    if in_image.startswith("http"):
+        is_url = True
+
+    if not os.path.exists(in_gif):
+        print("The input gif file does not exist.")
+        return
+
+    if (not is_url) and (not os.path.exists(in_image)):
+        print("The provided logo file does not exist.")
+        return
+
+    if not os.path.exists(os.path.dirname(out_gif)):
+        os.makedirs(os.path.dirname(out_gif))
+
+    try:
+        image = Image.open(in_gif)
+    except Exception as e:
+        print("An error occurred while opening the image.")
+        print(e)
+        return
+
+    logo_raw_image = None
+    try:
+        if in_image.startswith("http"):
+            logo_raw_image = open_image_from_url(in_image)
+        else:
+            in_image = os.path.abspath(in_image)
+            logo_raw_image = Image.open(in_image)
+    except Exception as e:
+        print(e)
+
+    logo_raw_size = logo_raw_image.size
+    image_size = min(logo_raw_size[0], image_size[0]), min(
+        logo_raw_size[1], image_size[1]
+    )
+
+    logo_image = logo_raw_image.convert("RGBA")
+    logo_image.thumbnail(image_size, Image.ANTIALIAS)
+
+    W, H = image.size
+    mask_im = None
+
+    if circle_mask:
+        mask_im = Image.new("L", image_size, 0)
+        draw = ImageDraw.Draw(mask_im)
+        draw.ellipse((0, 0, image_size[0], image_size[1]), fill=255)
+
+    if has_transparency(logo_raw_image):
+        mask_im = logo_image.copy()
+
+    if xy is None:
+        # default logo location is 5% width and 5% height of the image.
+        xy = (int(0.05 * W), int(0.05 * H))
+    elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
+        print("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
+        return
+    elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):
+        x, y = xy
+        if (x > 0) and (x < W) and (y > 0) and (y < H):
+            pass
+        else:
+            print(
+                "xy is out of bounds. x must be within [0, {}], and y must be within [0, {}]".format(
+                    W, H
+                )
+            )
+            return
+    elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
+        x, y = xy
+        if ("%" in x) and ("%" in y):
+            try:
+                x = int(float(x.replace("%", "")) / 100.0 * W)
+                y = int(float(y.replace("%", "")) / 100.0 * H)
+                xy = (x, y)
+            except Exception:
+                raise Exception(
+                    "The specified xy is invalid. It must be formatted like this ('10%', '10%')"
+                )
+
+    else:
+        raise Exception(
+            "The specified xy is invalid. It must be formatted like this: (10, 10) or ('10%', '10%')"
+        )
+
+    try:
+
+        frames = []
+        for _, frame in enumerate(ImageSequence.Iterator(image)):
+            frame = frame.convert("RGBA")
+            frame.paste(logo_image, xy, mask_im)
+
+            b = io.BytesIO()
+            frame.save(b, format="GIF")
+            frame = Image.open(b)
+            frames.append(frame)
+
+        frames[0].save(out_gif, save_all=True, append_images=frames[1:])
+    except Exception as e:
+        print(e)
+
+
+def reduce_gif_size(in_gif, out_gif=None):
+    """Reduces a GIF image using ffmpeg.
+
+    Args:
+        in_gif (str): The input file path to the GIF image.
+        out_gif (str, optional): The output file path to the GIF image. Defaults to None.
+    """
+    import ffmpeg
+    import warnings
+
+    warnings.filterwarnings("ignore")
+
+    if not is_tool("ffmpeg"):
+        print("ffmpeg is not installed on your computer.")
+        return
+
+    if not os.path.exists(in_gif):
+        print("The input gif file does not exist.")
+        return
+
+    if out_gif is None:
+        out_gif = in_gif
+    elif not os.path.exists(os.path.dirname(out_gif)):
+        os.makedirs(os.path.dirname(out_gif))
+
+    if in_gif == out_gif:
+        tmp_gif = in_gif.replace(".gif", "_tmp.gif")
+        shutil.copyfile(in_gif, tmp_gif)
+        stream = ffmpeg.input(tmp_gif)
+        stream = ffmpeg.output(stream, in_gif).overwrite_output()
+        ffmpeg.run(stream)
+        os.remove(tmp_gif)
+
+    else:
+        stream = ffmpeg.input(in_gif)
+        stream = ffmpeg.output(stream, out_gif).overwrite_output()
+        ffmpeg.run(stream)
+
+
+def create_timeseries(
+    collection,
+    start_date,
+    end_date,
+    region=None,
+    frequency="year",
+    reducer="median",
+    drop_empty=True,
+    date_format="YYYY-MM-dd",
+):
+    """Creates a timeseries from a collection of images by a specified frequency and reducer.
+
+    Args:
+        collection (str | ee.ImageCollection): The collection of images to create a timeseries from. It can be a string representing the collection ID or an ee.ImageCollection object.
+        start_date (str): The start date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
+        end_date (str): The end date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
+        region (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
+        frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
+        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
+        drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
+        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
+
+    Returns:
+        ee.ImageCollection: The timeseries.
+    """
+    if not isinstance(collection, ee.ImageCollection):
+        if isinstance(collection, str):
+            collection = ee.ImageCollection(collection)
+        else:
+            raise Exception(
+                "The collection must be an ee.ImageCollection object or asset id."
+            )
+
+    dates = date_sequence(start_date, end_date, frequency, date_format)
+
+    try:
+        reducer = eval(f"ee.Reducer.{reducer}()")
+    except Exception as e:
+        print("The provided reducer is invalid.")
+        raise Exception(e)
+
+    def create_image(date):
+        start = ee.Date(date)
+        end = start.advance(1, frequency)
+        if region is None:
+            sub_col = collection.filterDate(start, end)
+            image = sub_col.reduce(reducer)
+
+        else:
+            sub_col = collection.filterDate(start, end).filterBounds(region)
+            image = sub_col.reduce(reducer).clip(region)
+        return image.set("system:time_start", date).set("empty", sub_col.size().eq(0))
+
+    try:
+
+        images = ee.ImageCollection(dates.map(create_image))
+        if drop_empty:
+            return images.filterMetadata("empty", "equals", 0)
+        else:
+            return images
+    except Exception as e:
+        raise Exception(e)
+
+
+def create_timelapse(
+    collection,
+    start_date,
+    end_date,
+    region=None,
+    frequency="year",
+    reducer="median",
+    date_format="YYYY-MM-dd",
+    out_gif=None,
+    bands=None,
+    palette=None,
+    vis_params=None,
+    dimensions=768,
+    frames_per_second=10,
+    crs="EPSG:3857",
+    overlay_data=None,
+    overlay_color="black",
+    overlay_width=1,
+    overlay_opacity=1.0,
+    title=None,
+    title_xy=("2%", "90%"),
+    add_text=True,
+    text_xy=("2%", "2%"),
+    text_sequence=None,
+    font_type="arial.ttf",
+    font_size=20,
+    font_color="white",
+    add_progress_bar=True,
+    progress_bar_color="white",
+    progress_bar_height=5,
+    duration=100,
+    loop=0,
+):
+    """Create a timelapse from any ee.ImageCollection.
+
+    Args:
+        collection (str | ee.ImageCollection): The collection of images to create a timeseries from. It can be a string representing the collection ID or an ee.ImageCollection object.
+        start_date (str): The start date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
+        end_date (str): The end date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
+        region (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
+        frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
+        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
+        drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
+        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
+        out_gif (str): The output gif file path. Defaults to None.
+        bands (list, optional): A list of band names to use in the timelapse. Defaults to None.
+        palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
+        vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
+        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
+        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
+        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
+        overlay_width (int, optional): Width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        title (str, optional): The title of the timelapse. Defaults to None.
+        title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
+        title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
+        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+
+    Returns:
+        str: File path to the timelapse gif.
+    """
+    import geemap.colormaps as cm
+
+    col = create_timeseries(
+        collection,
+        start_date,
+        end_date,
+        region=region,
+        frequency=frequency,
+        reducer=reducer,
+        drop_empty=True,
+        date_format=date_format,
+    )
+
+    # rename the bands to remove the '_reducer' characters from the band names.
+    col = col.map(
+        lambda img: img.rename(
+            img.bandNames().map(lambda name: ee.String(name).replace(f"_{reducer}", ""))
+        )
+    )
+
+    if out_gif is None:
+        out_gif = temp_file_path(".gif")
+    else:
+        out_gif = os.path.abspath(out_gif)
+        if not os.path.exists(os.path.dirname(out_gif)):
+            os.makedirs(os.path.dirname(out_gif))
+
+    if bands is None:
+        names = col.first().bandNames().getInfo()
+        if len(names) < 3:
+            bands = [names[0]]
+        else:
+            bands = names[:3][::-1]
+    elif isinstance(bands, str):
+        bands = [bands]
+    elif not isinstance(bands, list):
+        raise Exception("The bands must be a string or a list of strings.")
+
+    if isinstance(palette, str):
+        palette = cm.get_palette(palette, 15)
+    elif isinstance(palette, list) or isinstance(palette, tuple):
+        pass
+    elif palette is not None:
+        raise Exception("The palette must be a string or a list of strings.")
+
+    if vis_params is None:
+        img = col.first().select(bands)
+        scale = collection.first().select(0).projection().nominalScale().multiply(10)
+        min_value = min(image_min_value(img, scale=scale).getInfo().values())
+        max_value = max(image_max_value(img, scale=scale).getInfo().values())
+        vis_params = {"bands": bands, "min": min_value, "max": max_value, "gamma": 1}
+
+        if len(bands) == 1:
+            if palette is not None:
+                vis_params["palette"] = palette
+            else:
+                vis_params["palette"] = cm.palettes.ndvi
+    elif isinstance(vis_params, dict):
+        if "bands" not in vis_params:
+            vis_params["bands"] = bands
+        if "min" not in vis_params:
+            img = col.first().select(bands)
+            scale = (
+                collection.first().select(0).projection().nominalScale().multiply(10)
+            )
+            vis_params["min"] = min(
+                image_min_value(img, scale=scale).getInfo().values()
+            )
+        if "max" not in vis_params:
+            img = col.first().select(bands)
+            scale = (
+                collection.first().select(0).projection().nominalScale().multiply(10)
+            )
+            vis_params["max"] = max(
+                image_max_value(img, scale=scale).getInfo().values()
+            )
+        if palette is None and (len(bands) == 1) and ("palette" not in vis_params):
+            vis_params["palette"] = cm.palettes.ndvi
+        if len(bands) > 1 and "palette" in vis_params:
+            del vis_params["palette"]
+    else:
+        raise Exception("The vis_params must be a dictionary.")
+
+    col = col.select(bands).map(
+        lambda img: img.visualize(**vis_params).set(
+            "system:time_start", img.get("system:time_start")
+        )
+    )
+
+    if overlay_data is not None:
+        col = add_overlay(
+            col, overlay_data, overlay_color, overlay_width, overlay_opacity
+        )
+
+    video_args = {}
+    video_args["dimensions"] = dimensions
+    video_args["region"] = region
+    video_args["framesPerSecond"] = frames_per_second
+    video_args["crs"] = crs
+    video_args["min"] = 0
+    video_args["max"] = 255
+
+    # if crs is not None:
+    #     video_args["crs"] = crs
+
+    if "palette" in vis_params or len(bands) > 1:
+        video_args["bands"] = ["vis-red", "vis-green", "vis-blue"]
+    else:
+        video_args["bands"] = ["vis-gray"]
+
+    download_ee_video(col, video_args, out_gif)
+
+    if title is not None and isinstance(title, str):
+        add_text_to_gif(
+            out_gif,
+            out_gif,
+            xy=title_xy,
+            text_sequence=title,
+            font_type=font_type,
+            font_size=font_size,
+            font_color=font_color,
+            add_progress_bar=add_progress_bar,
+            progress_bar_color=progress_bar_color,
+            progress_bar_height=progress_bar_height,
+            duration=duration,
+            loop=loop,
+        )
+    if add_text:
+        if text_sequence is None:
+            text_sequence = col.aggregate_array("system:time_start").getInfo()
+        add_text_to_gif(
+            out_gif,
+            out_gif,
+            xy=text_xy,
+            text_sequence=text_sequence,
+            font_type=font_type,
+            font_size=font_size,
+            font_color=font_color,
+            add_progress_bar=add_progress_bar,
+            progress_bar_color=progress_bar_color,
+            progress_bar_height=progress_bar_height,
+            duration=duration,
+            loop=loop,
+        )
+
+    return out_gif
 
 
 def naip_timeseries(roi=None, start_year=2003, end_year=2021, RGBN=False):
@@ -1042,338 +1664,6 @@ def sentinel2_timelapse(
         print(e)
 
 
-def add_text_to_gif(
-    in_gif,
-    out_gif,
-    xy=None,
-    text_sequence=None,
-    font_type="arial.ttf",
-    font_size=20,
-    font_color="#000000",
-    add_progress_bar=True,
-    progress_bar_color="white",
-    progress_bar_height=5,
-    duration=100,
-    loop=0,
-):
-    """Adds animated text to a GIF image.
-
-    Args:
-        in_gif (str): The file path to the input GIF image.
-        out_gif (str): The file path to the output GIF image.
-        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
-        font_type (str, optional): Font type. Defaults to "arial.ttf".
-        font_size (int, optional): Font size. Defaults to 20.
-        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
-        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
-        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
-        duration (int, optional): controls how long each frame will be displayed for, in milliseconds. It is the inverse of the frame rate. Setting it to 100 milliseconds gives 10 frames per second. You can decrease the duration to give a smoother animation.. Defaults to 100.
-        loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
-
-    """
-    # import io
-    import warnings
-
-    import pkg_resources
-    from PIL import Image, ImageDraw, ImageFont, ImageSequence
-
-    warnings.simplefilter("ignore")
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
-    default_font = os.path.join(pkg_dir, "data/fonts/arial.ttf")
-
-    in_gif = os.path.abspath(in_gif)
-    out_gif = os.path.abspath(out_gif)
-
-    if not os.path.exists(in_gif):
-        print("The input gif file does not exist.")
-        return
-
-    if not os.path.exists(os.path.dirname(out_gif)):
-        os.makedirs(os.path.dirname(out_gif))
-
-    if font_type == "arial.ttf":
-        font = ImageFont.truetype(default_font, font_size)
-    else:
-        try:
-            font_list = system_fonts(show_full_path=True)
-            font_names = [os.path.basename(f) for f in font_list]
-            if (font_type in font_list) or (font_type in font_names):
-                font = ImageFont.truetype(font_type, font_size)
-            else:
-                print(
-                    "The specified font type could not be found on your system. Using the default font instead."
-                )
-                font = ImageFont.truetype(default_font, font_size)
-        except Exception as e:
-            print(e)
-            font = ImageFont.truetype(default_font, font_size)
-
-    color = check_color(font_color)
-    progress_bar_color = check_color(progress_bar_color)
-
-    try:
-        image = Image.open(in_gif)
-    except Exception as e:
-        print("An error occurred while opening the gif.")
-        print(e)
-        return
-
-    count = image.n_frames
-    W, H = image.size
-    progress_bar_widths = [i * 1.0 / count * W for i in range(1, count + 1)]
-    progress_bar_shapes = [
-        [(0, H - progress_bar_height), (x, H)] for x in progress_bar_widths
-    ]
-
-    if xy is None:
-        # default text location is 5% width and 5% height of the image.
-        xy = (int(0.05 * W), int(0.05 * H))
-    elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
-        print("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
-        return
-    elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):
-        x, y = xy
-        if (x > 0) and (x < W) and (y > 0) and (y < H):
-            pass
-        else:
-            print(
-                f"xy is out of bounds. x must be within [0, {W}], and y must be within [0, {H}]"
-            )
-            return
-    elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
-        x, y = xy
-        if ("%" in x) and ("%" in y):
-            try:
-                x = int(float(x.replace("%", "")) / 100.0 * W)
-                y = int(float(y.replace("%", "")) / 100.0 * H)
-                xy = (x, y)
-            except Exception:
-                raise Exception(
-                    "The specified xy is invalid. It must be formatted like this ('10%', '10%')"
-                )
-    else:
-        print(
-            "The specified xy is invalid. It must be formatted like this: (10, 10) or ('10%', '10%')"
-        )
-        return
-
-    if text_sequence is None:
-        text = [str(x) for x in range(1, count + 1)]
-    elif isinstance(text_sequence, int):
-        text = [str(x) for x in range(text_sequence, text_sequence + count + 1)]
-    elif isinstance(text_sequence, str):
-        try:
-            text_sequence = int(text_sequence)
-            text = [str(x) for x in range(text_sequence, text_sequence + count + 1)]
-        except Exception:
-            text = [text_sequence] * count
-    elif isinstance(text_sequence, list) and len(text_sequence) != count:
-        print(
-            f"The length of the text sequence must be equal to the number ({count}) of frames in the gif."
-        )
-        return
-    else:
-        text = [str(x) for x in text_sequence]
-
-    try:
-
-        frames = []
-        # Loop over each frame in the animated image
-        for index, frame in enumerate(ImageSequence.Iterator(image)):
-            # Draw the text on the frame
-            frame = frame.convert("RGB")
-            draw = ImageDraw.Draw(frame)
-            # w, h = draw.textsize(text[index])
-            draw.text(xy, text[index], font=font, fill=color)
-            if add_progress_bar:
-                draw.rectangle(progress_bar_shapes[index], fill=progress_bar_color)
-            del draw
-
-            b = io.BytesIO()
-            frame.save(b, format="GIF")
-            frame = Image.open(b)
-
-            frames.append(frame)
-        # https://www.pythoninformer.com/python-libraries/pillow/creating-animated-gif/
-        # Save the frames as a new image
-
-        frames[0].save(
-            out_gif,
-            save_all=True,
-            append_images=frames[1:],
-            duration=duration,
-            loop=loop,
-            optimize=True,
-        )
-    except Exception as e:
-        print(e)
-
-
-def add_image_to_gif(
-    in_gif, out_gif, in_image, xy=None, image_size=(80, 80), circle_mask=False
-):
-    """Adds an image logo to a GIF image.
-
-    Args:
-        in_gif (str): Input file path to the GIF image.
-        out_gif (str): Output file path to the GIF image.
-        in_image (str): Input file path to the image.
-        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        image_size (tuple, optional): Resize image. Defaults to (80, 80).
-        circle_mask (bool, optional): Whether to apply a circle mask to the image. This only works with non-png images. Defaults to False.
-    """
-    # import io
-    import warnings
-
-    from PIL import Image, ImageDraw, ImageSequence
-
-    warnings.simplefilter("ignore")
-
-    in_gif = os.path.abspath(in_gif)
-
-    is_url = False
-    if in_image.startswith("http"):
-        is_url = True
-
-    if not os.path.exists(in_gif):
-        print("The input gif file does not exist.")
-        return
-
-    if (not is_url) and (not os.path.exists(in_image)):
-        print("The provided logo file does not exist.")
-        return
-
-    if not os.path.exists(os.path.dirname(out_gif)):
-        os.makedirs(os.path.dirname(out_gif))
-
-    try:
-        image = Image.open(in_gif)
-    except Exception as e:
-        print("An error occurred while opening the image.")
-        print(e)
-        return
-
-    logo_raw_image = None
-    try:
-        if in_image.startswith("http"):
-            logo_raw_image = open_image_from_url(in_image)
-        else:
-            in_image = os.path.abspath(in_image)
-            logo_raw_image = Image.open(in_image)
-    except Exception as e:
-        print(e)
-
-    logo_raw_size = logo_raw_image.size
-    image_size = min(logo_raw_size[0], image_size[0]), min(
-        logo_raw_size[1], image_size[1]
-    )
-
-    logo_image = logo_raw_image.convert("RGBA")
-    logo_image.thumbnail(image_size, Image.ANTIALIAS)
-
-    W, H = image.size
-    mask_im = None
-
-    if circle_mask:
-        mask_im = Image.new("L", image_size, 0)
-        draw = ImageDraw.Draw(mask_im)
-        draw.ellipse((0, 0, image_size[0], image_size[1]), fill=255)
-
-    if has_transparency(logo_raw_image):
-        mask_im = logo_image.copy()
-
-    if xy is None:
-        # default logo location is 5% width and 5% height of the image.
-        xy = (int(0.05 * W), int(0.05 * H))
-    elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
-        print("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
-        return
-    elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):
-        x, y = xy
-        if (x > 0) and (x < W) and (y > 0) and (y < H):
-            pass
-        else:
-            print(
-                "xy is out of bounds. x must be within [0, {}], and y must be within [0, {}]".format(
-                    W, H
-                )
-            )
-            return
-    elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
-        x, y = xy
-        if ("%" in x) and ("%" in y):
-            try:
-                x = int(float(x.replace("%", "")) / 100.0 * W)
-                y = int(float(y.replace("%", "")) / 100.0 * H)
-                xy = (x, y)
-            except Exception:
-                raise Exception(
-                    "The specified xy is invalid. It must be formatted like this ('10%', '10%')"
-                )
-
-    else:
-        raise Exception(
-            "The specified xy is invalid. It must be formatted like this: (10, 10) or ('10%', '10%')"
-        )
-
-    try:
-
-        frames = []
-        for _, frame in enumerate(ImageSequence.Iterator(image)):
-            frame = frame.convert("RGBA")
-            frame.paste(logo_image, xy, mask_im)
-
-            b = io.BytesIO()
-            frame.save(b, format="GIF")
-            frame = Image.open(b)
-            frames.append(frame)
-
-        frames[0].save(out_gif, save_all=True, append_images=frames[1:])
-    except Exception as e:
-        print(e)
-
-
-def reduce_gif_size(in_gif, out_gif=None):
-    """Reduces a GIF image using ffmpeg.
-
-    Args:
-        in_gif (str): The input file path to the GIF image.
-        out_gif (str, optional): The output file path to the GIF image. Defaults to None.
-    """
-    import ffmpeg
-    import warnings
-
-    warnings.filterwarnings("ignore")
-
-    if not is_tool("ffmpeg"):
-        print("ffmpeg is not installed on your computer.")
-        return
-
-    if not os.path.exists(in_gif):
-        print("The input gif file does not exist.")
-        return
-
-    if out_gif is None:
-        out_gif = in_gif
-    elif not os.path.exists(os.path.dirname(out_gif)):
-        os.makedirs(os.path.dirname(out_gif))
-
-    if in_gif == out_gif:
-        tmp_gif = in_gif.replace(".gif", "_tmp.gif")
-        shutil.copyfile(in_gif, tmp_gif)
-        stream = ffmpeg.input(tmp_gif)
-        stream = ffmpeg.output(stream, in_gif).overwrite_output()
-        ffmpeg.run(stream)
-        os.remove(tmp_gif)
-
-    else:
-        stream = ffmpeg.input(in_gif)
-        stream = ffmpeg.output(stream, out_gif).overwrite_output()
-        ffmpeg.run(stream)
-
-
 def landsat_ts_norm_diff(collection, bands=["Green", "SWIR1"], threshold=0):
     """Computes a normalized difference index based on a Landsat timeseries.
 
@@ -1974,14 +2264,15 @@ def modis_ndvi_timelapse(
     """Create MODIS NDVI timelapse. The source code is adapted from https://developers.google.com/earth-engine/tutorials/community/modis-ndvi-time-series-animation.
 
     Args:
+        out_gif (str): The output gif file path.
         data (str, optional): Either "Terra" or "Aqua". Defaults to "Terra".
         band (str, optional): Either the "NDVI" or "EVI" band. Defaults to "NDVI".
         start_date (str, optional): The start date used to filter the image collection, e.g., "2013-01-01". Defaults to None.
         end_date (str, optional): The end date used to filter the image collection. Defaults to None.
         region (ee.Geometry, optional): The geometry used to filter the image collection. Defaults to None.
-        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
         dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
+        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
         xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
         text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
         font_type (str, optional): Font type. Defaults to "arial.ttf".
