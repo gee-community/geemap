@@ -3735,7 +3735,6 @@ def date_sequence(start, end, unit, date_format="YYYY-MM-dd"):
     else:
         unit = "month"
         count = ee.Number(end_date.difference(start_date, unit)).divide(3).toInt()
-        print(count.getInfo())
         num_seq = ee.List.sequence(0, count.multiply(3), 3)
         date_seq = num_seq.map(
             lambda d: start_date.advance(d, unit).format(date_format)
