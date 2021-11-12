@@ -499,7 +499,11 @@ def create_timeseries(
 
     def create_image(date):
         start = ee.Date(date)
-        end = start.advance(1, frequency)
+        if frequency == "quarter":
+            end = start.advance(3, "month")
+        else:
+            end = start.advance(1, frequency)
+
         if region is None:
             sub_col = collection.filterDate(start, end)
             image = sub_col.reduce(reducer)
@@ -550,7 +554,6 @@ def create_timelapse(
     add_progress_bar=True,
     progress_bar_color="white",
     progress_bar_height=5,
-    duration=100,
     loop=0,
 ):
     """Create a timelapse from any ee.ImageCollection.
@@ -592,6 +595,14 @@ def create_timelapse(
         str: File path to the timelapse gif.
     """
     import geemap.colormaps as cm
+
+    if not isinstance(collection, ee.ImageCollection):
+        if isinstance(collection, str):
+            collection = ee.ImageCollection(collection)
+        else:
+            raise Exception(
+                "The collection must be an ee.ImageCollection object or asset id."
+            )
 
     col = create_timeseries(
         collection,
@@ -639,8 +650,12 @@ def create_timelapse(
     if vis_params is None:
         img = col.first().select(bands)
         scale = collection.first().select(0).projection().nominalScale().multiply(10)
-        min_value = min(image_min_value(img, scale=scale).getInfo().values())
-        max_value = max(image_max_value(img, scale=scale).getInfo().values())
+        min_value = min(
+            image_min_value(img, region=region, scale=scale).getInfo().values()
+        )
+        max_value = max(
+            image_max_value(img, region=region, scale=scale).getInfo().values()
+        )
         vis_params = {"bands": bands, "min": min_value, "max": max_value, "gamma": 1}
 
         if len(bands) == 1:
@@ -657,7 +672,7 @@ def create_timelapse(
                 collection.first().select(0).projection().nominalScale().multiply(10)
             )
             vis_params["min"] = min(
-                image_min_value(img, scale=scale).getInfo().values()
+                image_min_value(img, region=region, scale=scale).getInfo().values()
             )
         if "max" not in vis_params:
             img = col.first().select(bands)
@@ -665,7 +680,7 @@ def create_timelapse(
                 collection.first().select(0).projection().nominalScale().multiply(10)
             )
             vis_params["max"] = max(
-                image_max_value(img, scale=scale).getInfo().values()
+                image_max_value(img, region=region, scale=scale).getInfo().values()
             )
         if palette is None and (len(bands) == 1) and ("palette" not in vis_params):
             vis_params["palette"] = cm.palettes.ndvi
@@ -715,7 +730,7 @@ def create_timelapse(
             add_progress_bar=add_progress_bar,
             progress_bar_color=progress_bar_color,
             progress_bar_height=progress_bar_height,
-            duration=duration,
+            duration=1000 / frames_per_second,
             loop=loop,
         )
     if add_text:
@@ -732,7 +747,7 @@ def create_timelapse(
             add_progress_bar=add_progress_bar,
             progress_bar_color=progress_bar_color,
             progress_bar_height=progress_bar_height,
-            duration=duration,
+            duration=1000 / frames_per_second,
             loop=loop,
         )
 

@@ -29,6 +29,7 @@ def get_colorbar(
     height=0.4,
     orientation="horizontal",
     discrete=False,
+    return_fig=False,
 ):
     """Creates a colorbar based on custom colors.
 
@@ -40,9 +41,10 @@ def get_colorbar(
         height (float, optional): The height of the colormap. Defaults to 0.4.
         orientation (str, optional): The orientation of the colormap. Defaults to "horizontal".
         discrete (bool, optional): Whether to create a discrete colormap.
+        return_fig (bool, optional): Whether to return the figure. Defaults to False.
     """
     hexcodes = [i if i[0] == "#" else "#" + i for i in colors]
-    _, ax = plt.subplots(figsize=(width, height))
+    fig, ax = plt.subplots(figsize=(width, height))
     if discrete:
         cmap = mpl.colors.ListedColormap(hexcodes)
         vals = np.linspace(vmin, vmax, cmap.N + 1)
@@ -51,7 +53,10 @@ def get_colorbar(
         cmap = mpl.colors.LinearSegmentedColormap.from_list("custom", hexcodes, N=256)
         norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
     mpl.colorbar.ColorbarBase(ax, norm=norm, cmap=cmap, orientation=orientation)
-    plt.show()
+    if return_fig:
+        return fig
+    else:
+        plt.show()
 
 
 def list_colormaps():
@@ -73,6 +78,7 @@ def plot_colormap(
     axis_off=True,
     show_name=False,
     font_size=12,
+    return_fig=False,
 ):
     """Plot a matplotlib colormap.
 
@@ -86,6 +92,7 @@ def plot_colormap(
         axis_off (bool, optional): Whether to turn axis off. Defaults to True.
         show_name (bool, optional): Whether to show the colormap name. Defaults to False.
         font_size (int, optional): Font size of the text. Defaults to 12.
+        return_fig (bool, optional): Whether to return the figure. Defaults to False.
     """
     fig, ax = plt.subplots(figsize=(width, height))
     col_map = plt.get_cmap(cmap)
@@ -102,7 +109,10 @@ def plot_colormap(
         y_text = pos[1] + pos[3] / 2.0
         fig.text(x_text, y_text, cmap, va="center", ha="right", fontsize=font_size)
 
-    plt.show()
+    if return_fig:
+        return fig
+    else:
+        plt.show()
 
 
 def plot_colormaps(width=8.0, height=0.4):
