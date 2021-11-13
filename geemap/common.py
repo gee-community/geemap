@@ -1081,10 +1081,11 @@ def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
                 with open(os.path.abspath(geo_json), encoding=encoding) as f:
                     geo_json = json.load(f)
 
-        geo_json["geodesic"] = geodesic
+        # geo_json["geodesic"] = geodesic
         if geo_json["type"] == "FeatureCollection":
             for feature in geo_json["features"]:
-                feature["geometry"]["geodesic"] = geodesic
+                if feature["geometry"]["type"] != "Point":
+                    feature["geometry"]["geodesic"] = geodesic
             features = ee.FeatureCollection(geo_json["features"])
             return features
         elif geo_json["type"] == "Feature":

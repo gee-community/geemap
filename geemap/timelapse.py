@@ -464,7 +464,7 @@ def create_timeseries(
     frequency="year",
     reducer="median",
     drop_empty=True,
-    date_format="YYYY-MM-dd",
+    date_format=None,
 ):
     """Creates a timeseries from a collection of images by a specified frequency and reducer.
 
@@ -489,6 +489,20 @@ def create_timeseries(
                 "The collection must be an ee.ImageCollection object or asset id."
             )
 
+    feq_dict = {
+        "year": "YYYY",
+        "month": "YYYY-MM",
+        "quarter": "YYYY-MM",
+        "week": "YYYY-w",
+        "day": "YYYY-MM-dd",
+        "hour": "YYYY-MM-dd HH",
+        "minute": "YYYY-MM-dd HH:mm",
+        "second": "YYYY-MM-dd HH:mm:ss",
+    }
+
+    if date_format is None:
+        date_format = feq_dict[frequency]
+
     dates = date_sequence(start_date, end_date, frequency, date_format)
 
     try:
@@ -511,7 +525,13 @@ def create_timeseries(
         else:
             sub_col = collection.filterDate(start, end).filterBounds(region)
             image = sub_col.reduce(reducer).clip(region)
-        return image.set("system:time_start", date).set("empty", sub_col.size().eq(0))
+        return image.set(
+            {
+                "system:time_start": ee.Date(date).millis(),
+                "system:date": ee.Date(date).format(date_format),
+                "empty": sub_col.size().eq(0),
+            }
+        )
 
     try:
 
@@ -531,7 +551,7 @@ def create_timelapse(
     region=None,
     frequency="year",
     reducer="median",
-    date_format="YYYY-MM-dd",
+    date_format=None,
     out_gif=None,
     bands=None,
     palette=None,
@@ -656,7 +676,7 @@ def create_timelapse(
         max_value = max(
             image_max_value(img, region=region, scale=scale).getInfo().values()
         )
-        vis_params = {"bands": bands, "min": min_value, "max": max_value, "gamma": 1}
+        vis_params = {"bands": bands, "min": min_value, "max": max_value}
 
         if len(bands) == 1:
             if palette is not None:
@@ -691,7 +711,10 @@ def create_timelapse(
 
     col = col.select(bands).map(
         lambda img: img.visualize(**vis_params).set(
-            "system:time_start", img.get("system:time_start")
+            {
+                "system:time_start": img.get("system:time_start"),
+                "system:date": img.get("system:date"),
+            }
         )
     )
 
@@ -735,7 +758,7 @@ def create_timelapse(
         )
     if add_text:
         if text_sequence is None:
-            text_sequence = col.aggregate_array("system:time_start").getInfo()
+            text_sequence = col.aggregate_array("system:date").getInfo()
         add_text_to_gif(
             out_gif,
             out_gif,
