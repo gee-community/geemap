@@ -493,7 +493,7 @@ def create_timeseries(
         "year": "YYYY",
         "month": "YYYY-MM",
         "quarter": "YYYY-MM",
-        "week": "YYYY-w",
+        "week": "YYYY-MM-dd",
         "day": "YYYY-MM-dd",
         "hour": "YYYY-MM-dd HH",
         "minute": "YYYY-MM-dd HH:mm",
