@@ -28,14 +28,7 @@ def add_overlay(
     """
 
     # Some common administrative boundaries.
-    public_assets = [
-        "continents",
-        "countries",
-        "us_states",
-        "chn_admin_level0",
-        "chn_admin_level1",
-        "chn_admin_level2",
-    ]
+    public_assets = ["continents", "countries", "us_states", "china"]
 
     if not isinstance(collection, ee.ImageCollection):
         raise Exception("The collection must be an ee.ImageCollection.")
