@@ -84,6 +84,84 @@ def add_overlay(
         raise Exception(e)
 
 
+def make_gif(images, out_gif, ext="png", fps=10, loop=0, mp4=False, clean_up=False):
+    """Creates a gif from a list of images.
+
+    Args:
+        images (list | str): The list of images or input directory to create the gif from.
+        out_gif (str): File path to the output gif.
+        ext (str, optional): The extension of the images. Defaults to 'png'.
+        fps (int, optional): The frames per second of the gif. Defaults to 10.
+        loop (int, optional): The number of times to loop the gif. Defaults to 0.
+        mp4 (bool, optional): Whether to convert the gif to mp4. Defaults to False.
+
+    """
+    import glob
+    from PIL import Image
+
+    if isinstance(images, str) and os.path.isdir(images):
+        images = list(glob.glob(os.path.join(images, f"*.{ext}")))
+        if len(images) == 0:
+            raise ValueError("No images found in the input directory.")
+    elif not isinstance(images, list):
+        raise ValueError("images must be a list or a path to the image directory.")
+
+    images.sort()
+
+    frames = [Image.open(image) for image in images]
+    frame_one = frames[0]
+    frame_one.save(
+        out_gif,
+        format="GIF",
+        append_images=frames,
+        save_all=True,
+        duration=int(1000 / fps),
+        loop=loop,
+    )
+
+    if mp4:
+        if not is_tool("ffmpeg"):
+            print("ffmpeg is not installed on your computer.")
+            return
+
+        if os.path.exists(out_gif):
+            out_mp4 = out_gif.replace(".gif", ".mp4")
+            cmd = f"ffmpeg -i {out_gif} -vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
+            os.system(cmd)
+            if not os.path.exists(out_mp4):
+                raise Exception(f"Failed to create mp4 file.")
+    if clean_up:
+        for image in images:
+            os.remove(image)
+
+
+def gif_to_mp4(in_gif, out_mp4):
+    """Converts a gif to mp4.
+
+    Args:
+        in_gif (str): The input gif file.
+        out_mp4 (str): The output mp4 file.
+    """
+    if not os.path.exists(in_gif):
+        raise FileNotFoundError(f"{in_gif} does not exist.")
+
+    out_mp4 = os.path.abspath(out_mp4)
+    if not out_mp4.endswith(".mp4"):
+        out_mp4 = out_mp4 + ".mp4"
+
+    if not os.path.exists(os.path.dirname(out_mp4)):
+        os.makedirs(os.path.dirname(out_mp4))
+
+    if not is_tool("ffmpeg"):
+        print("ffmpeg is not installed on your computer.")
+        return
+
+    cmd = f"ffmpeg -i {in_gif} -vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
+    os.system(cmd)
+    if not os.path.exists(out_mp4):
+        raise Exception(f"Failed to create mp4 file.")
+
+
 def merge_gifs(in_gifs, out_gif):
     """Merge multiple gifs into one.
 

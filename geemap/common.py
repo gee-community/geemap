@@ -1817,7 +1817,13 @@ def ee_export_image_collection_to_drive(
 
 
 def get_image_thumbnail(
-    ee_object, out_img, vis_params, dimensions=500, region=None, format="png"
+    ee_object,
+    out_img,
+    vis_params,
+    dimensions=500,
+    region=None,
+    format="png",
+    crs="EPSG:3857",
 ):
     """Download a thumbnail for an ee.Image.
 
@@ -1850,6 +1856,7 @@ def get_image_thumbnail(
 
     vis_params["dimensions"] = dimensions
     vis_params["format"] = format
+    vis_params["crs"] = crs
     url = ee_object.getThumbURL(vis_params)
 
     r = requests.get(url, stream=True)
