@@ -1822,7 +1822,7 @@ def get_image_thumbnail(
     vis_params,
     dimensions=500,
     region=None,
-    format="png",
+    format="jpg",
     crs="EPSG:3857",
 ):
     """Download a thumbnail for an ee.Image.
@@ -1833,7 +1833,7 @@ def get_image_thumbnail(
         vis_params (dict): The visualization parameters.
         dimensions (int, optional):(a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 500.
         region (object, optional): Geospatial region of the image to render, it may be an ee.Geometry, GeoJSON, or an array of lat/lon points (E,S,W,N). If not set the default is the bounds image. Defaults to None.
-        format (str, optional): Either 'png' or 'jpg'. Default to 'png'.
+        format (str, optional): Either 'png' or 'jpg'. Default to 'jpg'.
     """
     import requests
 
@@ -1874,7 +1874,7 @@ def get_image_collection_thumbnails(
     vis_params,
     dimensions=500,
     region=None,
-    format="png",
+    format="jpg",
     names=None,
     verbose=True,
 ):
@@ -1886,7 +1886,7 @@ def get_image_collection_thumbnails(
         vis_params (dict): The visualization parameters.
         dimensions (int, optional):(a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 500.
         region (object, optional): Geospatial region of the image to render, it may be an ee.Geometry, GeoJSON, or an array of lat/lon points (E,S,W,N). If not set the default is the bounds image. Defaults to None.
-        format (str, optional): Either 'png' or 'jpg'. Default to 'png'.
+        format (str, optional): Either 'png' or 'jpg'. Default to 'jpg'.
         names (list, optional): The list of output file names. Defaults to None.
         verbose (bool, optional): Whether or not to print hints. Defaults to True.
     """
@@ -1917,7 +1917,7 @@ def get_image_collection_thumbnails(
         for i in range(0, count):
             image = ee.Image(images.get(i))
             name = str(names[i])
-            ext = os.path.splitext(name)[0][1:]
+            ext = os.path.splitext(name)[1][1:]
             if ext != format:
                 name = name + "." + format
             out_img = os.path.join(out_dir, name)
