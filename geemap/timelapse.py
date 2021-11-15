@@ -84,13 +84,13 @@ def add_overlay(
         raise Exception(e)
 
 
-def make_gif(images, out_gif, ext="png", fps=10, loop=0, mp4=False, clean_up=False):
+def make_gif(images, out_gif, ext="jpg", fps=10, loop=0, mp4=False, clean_up=False):
     """Creates a gif from a list of images.
 
     Args:
         images (list | str): The list of images or input directory to create the gif from.
         out_gif (str): File path to the output gif.
-        ext (str, optional): The extension of the images. Defaults to 'png'.
+        ext (str, optional): The extension of the images. Defaults to 'jpg'.
         fps (int, optional): The frames per second of the gif. Defaults to 10.
         loop (int, optional): The number of times to loop the gif. Defaults to 0.
         mp4 (bool, optional): Whether to convert the gif to mp4. Defaults to False.
@@ -142,6 +142,8 @@ def gif_to_mp4(in_gif, out_mp4):
         in_gif (str): The input gif file.
         out_mp4 (str): The output mp4 file.
     """
+    from PIL import Image
+
     if not os.path.exists(in_gif):
         raise FileNotFoundError(f"{in_gif} does not exist.")
 
@@ -156,8 +158,17 @@ def gif_to_mp4(in_gif, out_mp4):
         print("ffmpeg is not installed on your computer.")
         return
 
-    cmd = f"ffmpeg -i {in_gif} -vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
-    os.system(cmd)
+    width, height = Image.open(in_gif).size
+
+    if width % 2 == 0 and height % 2 == 0:
+        cmd = f"ffmpeg -i {in_gif} -vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
+        os.system(cmd)
+    else:
+        width += width % 2
+        height += height % 2
+        cmd = f"ffmpeg -i {in_gif} -vf scale={width}:{height} -vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
+        os.system(cmd)
+
     if not os.path.exists(out_mp4):
         raise Exception(f"Failed to create mp4 file.")
 
@@ -646,6 +657,7 @@ def create_timelapse(
     progress_bar_color="white",
     progress_bar_height=5,
     loop=0,
+    mp4=False,
 ):
     """Create a timelapse from any ee.ImageCollection.
 
@@ -681,6 +693,7 @@ def create_timelapse(
         progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
         progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
 
     Returns:
         str: File path to the timelapse gif.
@@ -719,6 +732,7 @@ def create_timelapse(
         out_gif = os.path.abspath(out_gif)
         if not os.path.exists(os.path.dirname(out_gif)):
             os.makedirs(os.path.dirname(out_gif))
+    out_dir = os.path.dirname(out_gif)
 
     if bands is None:
         names = col.first().bandNames().getInfo()
@@ -810,7 +824,36 @@ def create_timelapse(
     else:
         video_args["bands"] = ["vis-gray"]
 
-    download_ee_video(col, video_args, out_gif)
+    if dimensions > 768:
+        count = col.size().getInfo()
+        basename = os.path.basename(out_gif)[:-4]
+        names = [
+            os.path.join(
+                out_dir, f"{basename}_{str(i+1).zfill(int(len(str(count))))}.jpg"
+            )
+            for i in range(count)
+        ]
+        get_image_collection_thumbnails(
+            col,
+            out_dir,
+            vis_params={
+                "min": 0,
+                "max": 255,
+                "bands": video_args["bands"],
+            },
+            dimensions=dimensions,
+            names=names,
+        )
+        make_gif(
+            names,
+            out_gif,
+            fps=frames_per_second,
+            loop=loop,
+            mp4=False,
+            clean_up=True,
+        )
+    else:
+        download_ee_video(col, video_args, out_gif)
 
     if title is not None and isinstance(title, str):
         add_text_to_gif(
@@ -844,6 +887,13 @@ def create_timelapse(
             duration=1000 / frames_per_second,
             loop=loop,
         )
+
+    if os.path.exists(out_gif):
+        reduce_gif_size(out_gif)
+
+    if mp4:
+        out_mp4 = out_gif.replace(".gif", ".mp4")
+        gif_to_mp4(out_gif, out_mp4)
 
     return out_gif
 
@@ -1633,6 +1683,7 @@ def landsat_timelapse(
     progress_bar_color="white",
     progress_bar_height=5,
     loop=0,
+    mp4=False,
 ):
     """Generates a Landsat timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
 
@@ -1670,6 +1721,7 @@ def landsat_timelapse(
         progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
         progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
 
     Returns:
         str: File path to the output GIF image.
@@ -1697,14 +1749,12 @@ def landsat_timelapse(
         raise ValueError("The provided roi is invalid. It must be an ee.Geometry")
 
     if out_gif is None:
-        out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-        filename = "landsat_ts_" + random_string() + ".gif"
-        out_gif = os.path.join(out_dir, filename)
+        out_gif = temp_file_path(".gif")
     elif not out_gif.endswith(".gif"):
         raise ValueError("The output file must end with .gif")
     else:
         out_gif = os.path.abspath(out_gif)
-        out_dir = os.path.dirname(out_gif)
+    out_dir = os.path.dirname(out_gif)
 
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
@@ -1762,16 +1812,46 @@ def landsat_timelapse(
                 col, overlay_data, overlay_color, overlay_width, overlay_opacity
             )
 
-        video_args = vis_params.copy()
-        video_args["dimensions"] = dimensions
-        video_args["region"] = roi
-        video_args["framesPerSecond"] = frames_per_second
-        video_args["crs"] = crs
-        video_args["bands"] = ["vis-red", "vis-green", "vis-blue"]
-        video_args["min"] = 0
-        video_args["max"] = 255
+        if dimensions > 768:
+            count = col.size().getInfo()
+            basename = os.path.basename(out_gif)[:-4]
+            names = [
+                os.path.join(
+                    out_dir, f"{basename}_{str(i+1).zfill(int(len(str(count))))}.jpg"
+                )
+                for i in range(count)
+            ]
+            get_image_collection_thumbnails(
+                col,
+                out_dir,
+                vis_params={
+                    "min": 0,
+                    "max": 255,
+                    "bands": ["vis-red", "vis-green", "vis-blue"],
+                },
+                dimensions=dimensions,
+                names=names,
+            )
+            make_gif(
+                names,
+                out_gif,
+                fps=frames_per_second,
+                loop=loop,
+                mp4=False,
+                clean_up=True,
+            )
 
-        download_ee_video(col, video_args, out_gif)
+        else:
+            video_args = vis_params.copy()
+            video_args["dimensions"] = dimensions
+            video_args["region"] = roi
+            video_args["framesPerSecond"] = frames_per_second
+            video_args["crs"] = crs
+            video_args["bands"] = ["vis-red", "vis-green", "vis-blue"]
+            video_args["min"] = 0
+            video_args["max"] = 255
+
+            download_ee_video(col, video_args, out_gif)
 
         if os.path.exists(out_gif):
 
@@ -1822,6 +1902,13 @@ def landsat_timelapse(
                 frames_per_second=frames_per_second,
             )
 
+        if os.path.exists(out_gif):
+            reduce_gif_size(out_gif)
+
+        if mp4:
+            out_mp4 = out_gif.replace(".gif", ".mp4")
+            gif_to_mp4(out_gif, out_mp4)
+
         return out_gif
 
     except Exception as e:
@@ -1859,6 +1946,7 @@ def sentinel2_timelapse(
     progress_bar_color="white",
     progress_bar_height=5,
     loop=0,
+    mp4=False,
 ):
     """Generates a Sentinel-2 timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
 
@@ -1879,6 +1967,21 @@ def sentinel2_timelapse(
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
         overlay_width (int, optional): Line width of the overlay. Defaults to 1.
         overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.
+        date_format (str, optional): Date format for the timelapse. Defaults to None.
+        title (str, optional): The title of the timelapse. Defaults to None.
+        title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
+        title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
+        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
 
     Returns:
         str: File path to the output GIF image.
@@ -1975,16 +2078,46 @@ def sentinel2_timelapse(
                 col, overlay_data, overlay_color, overlay_width, overlay_opacity
             )
 
-        video_args = vis_params.copy()
-        video_args["dimensions"] = dimensions
-        video_args["region"] = roi
-        video_args["framesPerSecond"] = frames_per_second
-        video_args["crs"] = crs
-        video_args["bands"] = ["vis-red", "vis-green", "vis-blue"]
-        video_args["min"] = 0
-        video_args["max"] = 255
+        if dimensions > 768:
+            count = col.size().getInfo()
+            basename = os.path.basename(out_gif)[:-4]
+            names = [
+                os.path.join(
+                    out_dir, f"{basename}_{str(i+1).zfill(int(len(str(count))))}.jpg"
+                )
+                for i in range(count)
+            ]
+            get_image_collection_thumbnails(
+                col,
+                out_dir,
+                vis_params={
+                    "min": 0,
+                    "max": 255,
+                    "bands": ["vis-red", "vis-green", "vis-blue"],
+                },
+                dimensions=dimensions,
+                names=names,
+            )
+            make_gif(
+                names,
+                out_gif,
+                fps=frames_per_second,
+                loop=loop,
+                mp4=False,
+                clean_up=True,
+            )
+        else:
 
-        download_ee_video(col, video_args, out_gif)
+            video_args = vis_params.copy()
+            video_args["dimensions"] = dimensions
+            video_args["region"] = roi
+            video_args["framesPerSecond"] = frames_per_second
+            video_args["crs"] = crs
+            video_args["bands"] = ["vis-red", "vis-green", "vis-blue"]
+            video_args["min"] = 0
+            video_args["max"] = 255
+
+            download_ee_video(col, video_args, out_gif)
 
         if os.path.exists(out_gif):
             if title is not None and isinstance(title, str):
@@ -2020,6 +2153,13 @@ def sentinel2_timelapse(
                     loop=loop,
                 )
 
+        if os.path.exists(out_gif):
+            reduce_gif_size(out_gif)
+
+        if mp4:
+            out_mp4 = out_gif.replace(".gif", ".mp4")
+            gif_to_mp4(out_gif, out_mp4)
+
         return out_gif
 
     except Exception as e:
@@ -2052,6 +2192,7 @@ def landsat_ts_norm_diff_gif(
     palette=["black", "blue"],
     dimensions=768,
     frames_per_second=10,
+    mp4=False,
 ):
     """[summary]
 
@@ -2062,6 +2203,7 @@ def landsat_ts_norm_diff_gif(
         palette (list, optional): The palette to use for visualizing the timelapse. Defaults to ['black', 'blue']. The first color in the list is the background color.
         dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
+        mp4 (bool, optional): If True, the output gif will be converted to mp4. Defaults to False.
 
     Returns:
         str: File path to the output animated GIF.
@@ -2093,7 +2235,12 @@ def landsat_ts_norm_diff_gif(
 
     download_ee_video(collection, video_args, out_gif)
 
-    return out_gif
+    if os.path.exists(out_gif):
+        reduce_gif_size(out_gif)
+
+    if mp4:
+        out_mp4 = out_gif.replace(".gif", ".mp4")
+        gif_to_mp4(out_gif, out_mp4)
 
 
 def goes_timeseries(
@@ -2304,6 +2451,7 @@ def goes_timelapse(
     overlay_color="black",
     overlay_width=1,
     overlay_opacity=1.0,
+    mp4=False,
     **kwargs,
 ):
     """Create a timelapse of GOES data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4.
@@ -2332,6 +2480,7 @@ def goes_timelapse(
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
         overlay_width (int, optional): Line width of the overlay. Defaults to 1.
         overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        mp4 (bool, optional): Whether to save the animation as an mp4 file. Defaults to False.
     Raises:
         Exception: Raise exception.
     """
@@ -2345,7 +2494,13 @@ def goes_timelapse(
             "max": 0.8,
         }
         col = goes_timeseries(start_date, end_date, data, scan, region)
-        col = col.select(bands).map(lambda img: img.visualize(**visParams))
+        col = col.select(bands).map(
+            lambda img: img.visualize(**visParams).set(
+                {
+                    "system:time_start": img.get("system:time_start"),
+                }
+            )
+        )
         if overlay_data is not None:
             col = add_overlay(
                 col, overlay_data, overlay_color, overlay_width, overlay_opacity
@@ -2405,6 +2560,10 @@ def goes_timelapse(
             except Exception as _:
                 pass
 
+            if mp4:
+                out_mp4 = out_gif.replace(".gif", ".mp4")
+                gif_to_mp4(out_gif, out_mp4)
+
     except Exception as e:
         raise Exception(e)
 
@@ -2433,6 +2592,7 @@ def goes_fire_timelapse(
     overlay_color="#000000",
     overlay_width=1,
     overlay_opacity=1.0,
+    mp4=False,
     **kwargs,
 ):
     """Create a timelapse of GOES fire data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/8a083a7fb13b95ad4ba148ed9b65475e.
@@ -2462,6 +2622,7 @@ def goes_fire_timelapse(
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
         overlay_width (int, optional): Width of the overlay. Defaults to 1.
         overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
 
     Raises:
         Exception: Raise exception.
@@ -2524,6 +2685,10 @@ def goes_fire_timelapse(
                 reduce_gif_size(out_gif)
             except Exception as _:
                 pass
+
+            if mp4:
+                out_mp4 = out_gif.replace(".gif", ".mp4")
+                gif_to_mp4(out_gif, out_mp4)
 
     except Exception as e:
         raise Exception(e)
@@ -2621,6 +2786,7 @@ def modis_ndvi_timelapse(
     overlay_color="black",
     overlay_width=1,
     overlay_opacity=1.0,
+    mp4=False,
     **kwargs,
 ):
     """Create MODIS NDVI timelapse. The source code is adapted from https://developers.google.com/earth-engine/tutorials/community/modis-ndvi-time-series-animation.
@@ -2648,6 +2814,7 @@ def modis_ndvi_timelapse(
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
         overlay_width (int, optional): Width of the overlay. Defaults to 1.
         overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        mp4 (bool, optional): Whether to convert the output gif to mp4. Defaults to False.
 
     """
 
@@ -2741,6 +2908,10 @@ def modis_ndvi_timelapse(
                 reduce_gif_size(out_gif)
             except Exception as _:
                 pass
+
+        if mp4:
+            out_mp4 = out_gif.replace(".gif", ".mp4")
+            gif_to_mp4(out_gif, out_mp4)
 
     except Exception as e:
         raise Exception(e)
