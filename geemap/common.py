@@ -6024,7 +6024,7 @@ def is_GCS(in_shp):
             return False
 
 
-def kml_to_shp(in_kml, out_shp):
+def kml_to_shp(in_kml, out_shp, **kwargs):
     """Converts a KML to shapefile.
 
     Args:
@@ -6058,11 +6058,11 @@ def kml_to_shp(in_kml, out_shp):
     # import fiona
     # print(fiona.supported_drivers)
     gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
-    df = gpd.read_file(in_kml, driver="KML")
-    df.to_file(out_shp)
+    df = gpd.read_file(in_kml, driver="KML", **kwargs)
+    df.to_file(out_shp, **kwargs)
 
 
-def kml_to_geojson(in_kml, out_geojson=None):
+def kml_to_geojson(in_kml, out_geojson=None, **kwargs):
     """Converts a KML to GeoJSON.
 
     Args:
@@ -6098,15 +6098,15 @@ def kml_to_geojson(in_kml, out_geojson=None):
     # import fiona
     # print(fiona.supported_drivers)
     gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
-    gdf = gpd.read_file(in_kml, driver="KML")
+    gdf = gpd.read_file(in_kml, driver="KML", **kwargs)
 
     if out_geojson is not None:
-        gdf.to_file(out_geojson, driver="GeoJSON")
+        gdf.to_file(out_geojson, driver="GeoJSON", **kwargs)
     else:
         return gdf.__geo_interface__
 
 
-def kml_to_ee(in_kml):
+def kml_to_ee(in_kml, **kwargs):
     """Converts a KML to ee.FeatureColleciton.
 
     Args:
@@ -6130,13 +6130,13 @@ def kml_to_ee(in_kml):
 
     check_package(name="geopandas", URL="https://geopandas.org")
 
-    kml_to_geojson(in_kml, out_json)
+    kml_to_geojson(in_kml, out_json, **kwargs)
     ee_object = geojson_to_ee(out_json)
     os.remove(out_json)
     return ee_object
 
 
-def kmz_to_ee(in_kmz):
+def kmz_to_ee(in_kmz, **kwargs):
     """Converts a KMZ to ee.FeatureColleciton.
 
     Args:
@@ -6157,7 +6157,7 @@ def kmz_to_ee(in_kmz):
     with zipfile.ZipFile(in_kmz, "r") as zip_ref:
         zip_ref.extractall(out_dir)
 
-    fc = kml_to_ee(out_kml)
+    fc = kml_to_ee(out_kml, **kwargs)
     os.remove(out_kml)
     return fc
 
@@ -6205,7 +6205,7 @@ def ee_to_pandas(ee_object, **kwargs):
         raise Exception(e)
 
 
-def shp_to_geopandas(in_shp):
+def shp_to_geopandas(in_shp, **kwargs):
     """Converts a shapefile to Geopandas dataframe.
 
     Args:
@@ -6230,7 +6230,7 @@ def shp_to_geopandas(in_shp):
     import geopandas as gpd
 
     try:
-        return gpd.read_file(in_shp)
+        return gpd.read_file(in_shp, **kwargs)
     except Exception as e:
         raise Exception(e)
 
