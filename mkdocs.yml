@@ -51,6 +51,7 @@ nav:
     - Citations: citations.md
     - FAQ: faq.md
     - Changelog: changelog.md
+    - Streamlit Web App: https://streamlit.gishub.org
     - Voilà App: https://geemap-tutorials.herokuapp.com
     - Blog: https://blog.gishub.org
     - YouTube Channel: https://www.youtube.com/c/QiushengWu

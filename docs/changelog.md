@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.9.5 - November 22, 2021
+
+**New Features**:
+
+-   Added timelapse module
+-   Added quarter and monthly timelapse [#746](https://github.com/giswqs/geemap/issues/746)
+-   Improved create timeseries [#736](https://github.com/giswqs/geemap/issues/736)
+-   Added Sentinel-2 timelapse [#733](https://github.com/giswqs/geemap/issues/733) [#736](https://github.com/giswqs/geemap/issues/736)
+-   Added MODIS NDVI timelapse [#728](https://github.com/giswqs/geemap/issues/728)
+-   Added GOES timelapse [#717](https://github.com/giswqs/geemap/issues/717)
+-   Added time slider opacity param [#720](https://github.com/giswqs/geemap/discussions/720)
+-   Added contour function [#688](https://github.com/giswqs/geemap/issues/688)
+-   Added more gif functions
+-   Added make_gif and gif_to_mp4 functions
+-   Improved date sequence
+-   Added Alibaba font type
+-   Added ESA Land Cover legend
+-   Added zoom to bounds function
+-   Added streamlit download button
+
+**Improvement**:
+
+-   Fixed encoding bug [#747](https://github.com/giswqs/geemap/issues/747)
+
 ## v0.9.4 - October 23, 2021
 
 **New Features**:
