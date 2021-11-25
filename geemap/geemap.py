@@ -164,7 +164,7 @@ class Map(ipyleaflet.Map):
         self.random_marker = None
 
         self.legend_widget = None
-        self.legend_control = None
+        self.legend = None
         self.colorbar = None
 
         self.ee_layers = []
@@ -1397,7 +1397,7 @@ class Map(ipyleaflet.Map):
             name=name,
             opacity=opacity,
             visible=shown,
-            max_zoom=24
+            max_zoom=24,
         )
 
         layer = self.find_layer(name=name)
@@ -2701,7 +2701,7 @@ class Map(ipyleaflet.Map):
                 display(legend_widget)
 
             self.legend_widget = legend_output_widget
-            self.legend_control = legend_control
+            self.legend = legend_control
             self.add_control(legend_control)
 
             if layer_name in self.ee_layer_names:
@@ -2953,6 +2953,11 @@ class Map(ipyleaflet.Map):
         """Remove colorbar from the map."""
         if self.colorbar is not None:
             self.remove_control(self.colorbar)
+
+    def remove_legend(self):
+        """Remove legend from the map."""
+        if self.legend is not None:
+            self.remove_control(self.legend)
 
     def image_overlay(self, url, bounds, name):
         """Overlays an image from the Internet or locally on the map.
