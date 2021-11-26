@@ -1608,6 +1608,22 @@ class Map(ipyleaflet.Map):
                 )
             )
 
+    def add_marker(self, location, **kwargs):
+        """Adds a marker to the map. More info about marker at https://ipyleaflet.readthedocs.io/en/latest/api_reference/marker.html.
+
+        Args:
+            location (list | tuple): The location of the marker in the format of [lat, lng].
+
+            **kwargs: Keyword arguments for the marker.
+        """
+        if isinstance(location, list):
+            location = tuple(location)
+        if isinstance(location, tuple):
+            marker = ipyleaflet.Marker(location=location, **kwargs)
+            self.add_layer(marker)
+        else:
+            raise TypeError("The location must be a list or a tuple.")
+
     def find_layer(self, name):
         """Finds layer by name
 
