@@ -2241,7 +2241,7 @@ class Map(ipyleaflet.Map):
 
         self.on_interaction(handle_interaction)
 
-    def add_maker_cluster(self, event="click", add_marker=True):
+    def add_marker_cluster(self, event="click", add_marker=True):
         """Captures user inputs and add markers to the map.
 
         Args:
