@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.10.0 - November 28, 2021
+
+**New Features**:
+
+-   Added remove_legend function [#761](https://github.com/giswqs/geemap/issues/761)
+-   Added add_marker function [#765](https://github.com/giswqs/geemap/pull/765)
+-   Added support for local tile and raster GUI [#758](https://github.com/giswqs/geemap/issues/758), [#769](https://github.com/giswqs/geemap/pull/769)
+-   Added a new osm module [#770](https://github.com/giswqs/geemap/issues/770) [#772](- Added a new osm module [#770](https://github.com/giswqs/geemap/issues/770) https://github.com/giswqs/geemap/pull/772)
+-   Added support for PostGIS [#771](https://github.com/giswqs/geemap/issues/771) [#772](- Added a new osm module [#770](https://github.com/giswqs/geemap/issues/770) https://github.com/giswqs/geemap/pull/772)
+
 ## v0.9.5 - November 22, 2021
 
 **New Features**:
