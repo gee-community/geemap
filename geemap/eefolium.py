@@ -932,7 +932,7 @@ class Map(folium.Map):
 
         """
 
-        gdf = osm_to_geopandas(
+        gdf = osm_to_gdf(
             query, which_result=which_result, by_osmid=by_osmid, buffer_dist=buffer_dist
         )
         geojson = gdf.__geo_interface__

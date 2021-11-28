@@ -39,8 +39,6 @@ import ee
 import math
 import numpy as np
 
-from geemap.common import ee_initialize
-
 
 def hitOrMiss(image, se1, se2):
     """perform hitOrMiss transform (adapted from [citation])"""
@@ -380,7 +378,7 @@ def GetWidth(clAngleNorm, segmentInfo, endInfo, DM, crs, bound, scale, sceneID, 
 
 def CalculateCenterline(imgIn):
 
-    crs = imgIn.get("crs")
+    # crs = imgIn.get("crs")
     scale = ee.Number(imgIn.get("scale"))
     riverMask = imgIn.select(["riverMask"])
 
