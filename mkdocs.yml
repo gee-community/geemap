@@ -70,6 +70,7 @@ nav:
           - geemap module: geemap.md
           - legends module: legends.md
           - ml module: ml.md
+          - osm module: osm.md
           - timelapse module: timelapse.md
           - toolbar module: toolbar.md
     - Workshops:
