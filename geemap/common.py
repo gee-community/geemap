@@ -7772,3 +7772,266 @@ def create_contours(
             return ee.ImageCollection(contours).mosaic().clip(region)
     else:
         return ee.ImageCollection(contours).mosaic()
+
+
+def get_local_tile_layer(
+    source,
+    port="default",
+    debug=False,
+    projection="EPSG:3857",
+    band=None,
+    palette=None,
+    vmin=None,
+    vmax=None,
+    nodata=None,
+    attribution=None,
+    tile_format="ipyleaflet",
+    layer_name=None,
+    get_center=False,
+    get_bounds=False,
+    **kwargs,
+):
+    """Generate an ipyleaflet/folium TileLayer from a local raster dataset or remote Cloud Optimized GeoTIFF (COG).
+
+    Args:
+        source (str): The path to the GeoTIFF file or the URL of the Cloud Optimized GeoTIFF.
+        port (str, optional): The port to use for the server. Defaults to "default".
+        debug (bool, optional): If True, the server will be started in debug mode. Defaults to False.
+        projection (str, optional): The projection of the GeoTIFF. Defaults to "EPSG:3857".
+        band (int, optional): The band to use. Band indexing starts at 1. Defaults to None.
+        palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
+        vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
+        vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
+        nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
+        attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
+        tile_format (str, optional): The tile layer format. Can be either ipyleaflet or folium. Defaults to "ipyleaflet".
+        layer_name (str, optional): The layer name to use. Defaults to None.
+        get_center (bool, optional): If True, the center of the layer will be returned. Defaults to False.
+        get_bounds (bool, optional): If True, the bounds [minx, miny, maxx, maxy] of the layer will be returned. Defaults to False.
+
+    Returns:
+        ipyleaflet.TileLayer | folium.TileLayer: An ipyleaflet.TileLayer or folium.TileLayer.
+    """
+
+    check_package(
+        "localtileserver", URL="https://github.com/banesullivan/localtileserver"
+    )
+
+    from localtileserver import (
+        get_leaflet_tile_layer,
+        get_folium_tile_layer,
+        TileClient,
+    )
+
+    if isinstance(source, str):
+        if not source.startswith("http"):
+            source = os.path.abspath(source)
+            if not os.path.exists(source):
+                raise ValueError("The source path does not exist.")
+    else:
+        raise ValueError("The source must either be a string or TileClient")
+
+    if tile_format not in ["ipyleaflet", "folium"]:
+        raise ValueError("The tile format must be either ipyleaflet or folium.")
+
+    if layer_name is None:
+        if source.startswith("http"):
+            layer_name = "RemoteTile_" + random_string(3)
+        else:
+            layer_name = "LocalTile_" + random_string(3)
+
+    tile_client = TileClient(source, port=port, debug=debug)
+
+    if tile_format == "ipyleaflet":
+        tile_layer = get_leaflet_tile_layer(
+            tile_client,
+            port=port,
+            debug=debug,
+            projection=projection,
+            band=band,
+            palette=palette,
+            vmin=vmin,
+            vmax=vmax,
+            nodata=nodata,
+            attribution=attribution,
+            name=layer_name,
+            **kwargs,
+        )
+    else:
+        tile_layer = get_folium_tile_layer(
+            tile_client,
+            port=port,
+            debug=debug,
+            projection=projection,
+            band=band,
+            palette=palette,
+            vmin=vmin,
+            vmax=vmax,
+            nodata=nodata,
+            attr=attribution,
+            overlay=True,
+            name=layer_name,
+            **kwargs,
+        )
+
+    center = tile_client.center()
+    bounds = tile_client.bounds()  # [ymin, ymax, xmin, xmax]
+    bounds = (bounds[2], bounds[0], bounds[3], bounds[1])  # [minx, miny, maxx, maxy]
+
+    if get_center and get_bounds:
+        return tile_layer, center, bounds
+    elif get_center:
+        return tile_layer, center
+    elif get_bounds:
+        return tile_layer, bounds
+    else:
+        return tile_layer
+
+
+def get_palettable(types=None):
+    """Get a list of palettable color palettes.
+
+    Args:
+        types (list, optional): A list of palettable types to return, e.g., types=['matplotlib', 'cartocolors']. Defaults to None.
+
+    Returns:
+        list: A list of palettable color palettes.
+    """
+    import palettable
+
+    if types is not None and (not isinstance(types, list)):
+        raise ValueError("The types must be a list.")
+
+    allowed_palettes = [
+        "cartocolors",
+        "cmocean",
+        "colorbrewer",
+        "cubehelix",
+        "lightbartlein",
+        "matplotlib",
+        "mycarta",
+        "scientific",
+        "tableau",
+        "wesanderson",
+    ]
+
+    if types is None:
+        types = allowed_palettes[:]
+
+    if all(x in allowed_palettes for x in types):
+        pass
+    else:
+        raise ValueError(
+            "The types must be one of the following: " + ", ".join(allowed_palettes)
+        )
+
+    palettes = []
+
+    if "cartocolors" in types:
+
+        cartocolors_diverging = [
+            f"cartocolors.diverging.{c}"
+            for c in dir(palettable.cartocolors.diverging)[:-19]
+        ]
+        cartocolors_qualitative = [
+            f"cartocolors.qualitative.{c}"
+            for c in dir(palettable.cartocolors.qualitative)[:-19]
+        ]
+        cartocolors_sequential = [
+            f"cartocolors.sequential.{c}"
+            for c in dir(palettable.cartocolors.sequential)[:-41]
+        ]
+
+        palettes = (
+            palettes
+            + cartocolors_diverging
+            + cartocolors_qualitative
+            + cartocolors_sequential
+        )
+
+    if "cmocean" in types:
+
+        cmocean_diverging = [
+            f"cmocean.diverging.{c}" for c in dir(palettable.cmocean.diverging)[:-19]
+        ]
+        cmocean_sequential = [
+            f"cmocean.sequential.{c}" for c in dir(palettable.cmocean.sequential)[:-19]
+        ]
+
+        palettes = palettes + cmocean_diverging + cmocean_sequential
+
+    if "colorbrewer" in types:
+
+        colorbrewer_diverging = [
+            f"colorbrewer.diverging.{c}"
+            for c in dir(palettable.colorbrewer.diverging)[:-19]
+        ]
+        colorbrewer_qualitative = [
+            f"colorbrewer.qualitative.{c}"
+            for c in dir(palettable.colorbrewer.qualitative)[:-19]
+        ]
+        colorbrewer_sequential = [
+            f"colorbrewer.sequential.{c}"
+            for c in dir(palettable.colorbrewer.sequential)[:-41]
+        ]
+
+        palettes = (
+            palettes
+            + colorbrewer_diverging
+            + colorbrewer_qualitative
+            + colorbrewer_sequential
+        )
+
+    if "cubehelix" in types:
+        cubehelix = [
+            "classic_16",
+            "cubehelix1_16",
+            "cubehelix2_16",
+            "cubehelix3_16",
+            "jim_special_16",
+            "perceptual_rainbow_16",
+            "purple_16",
+            "red_16",
+        ]
+        cubehelix = [f"cubehelix.{c}" for c in cubehelix]
+        palettes = palettes + cubehelix
+
+    if "lightbartlein" in types:
+        lightbartlein_diverging = [
+            f"lightbartlein.diverging.{c}"
+            for c in dir(palettable.lightbartlein.diverging)[:-19]
+        ]
+        lightbartlein_sequential = [
+            f"lightbartlein.sequential.{c}"
+            for c in dir(palettable.lightbartlein.sequential)[:-19]
+        ]
+
+        palettes = palettes + lightbartlein_diverging + lightbartlein_sequential
+
+    if "matplotlib" in types:
+        matplotlib_colors = [
+            f"matplotlib.{c}" for c in dir(palettable.matplotlib)[:-16]
+        ]
+        palettes = palettes + matplotlib_colors
+
+    if "mycarta" in types:
+        mycarta = [f"mycarta.{c}" for c in dir(palettable.mycarta)[:-16]]
+        palettes = palettes + mycarta
+
+    if "scientific" in types:
+        scientific_diverging = [
+            f"scientific.diverging.{c}"
+            for c in dir(palettable.scientific.diverging)[:-19]
+        ]
+        scientific_sequential = [
+            f"scientific.sequential.{c}"
+            for c in dir(palettable.scientific.sequential)[:-19]
+        ]
+
+        palettes = palettes + scientific_diverging + scientific_sequential
+
+    if "tableau" in types:
+        tableau = [f"tableau.{c}" for c in dir(palettable.tableau)[:-14]]
+        palettes = palettes + tableau
+
+    return palettes
