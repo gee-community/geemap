@@ -705,6 +705,127 @@ class Map(folium.Map):
         )
         self.set_center(lon=center[0], lat=center[1], zoom=10)
 
+    def add_local_tile(
+        self,
+        source,
+        band=None,
+        palette=None,
+        vmin=None,
+        vmax=None,
+        nodata=None,
+        attribution=None,
+        layer_name=None,
+        **kwargs,
+    ):
+        """Add a local raster dataset to the map.
+
+        Args:
+            source (str): The path to the GeoTIFF file or the URL of the Cloud Optimized GeoTIFF.
+            band (int, optional): The band to use. Band indexing starts at 1. Defaults to None.
+            palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
+            vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
+            attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
+            layer_name (str, optional): The layer name to use. Defaults to None.
+        """
+
+        tile, bounds = get_local_tile_layer(
+            source,
+            band=band,
+            palette=palette,
+            vmin=vmin,
+            vmax=vmax,
+            nodata=nodata,
+            attribution=attribution,
+            tile_format="folium",
+            layer_name=layer_name,
+            get_bounds=True,
+            **kwargs,
+        )
+        tile.add_to(self)
+        self.zoom_to_bounds(bounds)
+
+    def add_remote_tile(
+        self,
+        source,
+        band=None,
+        palette=None,
+        vmin=None,
+        vmax=None,
+        nodata=None,
+        attribution=None,
+        layer_name=None,
+        **kwargs,
+    ):
+        """Add a remote Cloud Optimized GeoTIFF (COG) to the map.
+
+        Args:
+            source (str): The path to the remote Cloud Optimized GeoTIFF.
+            band (int, optional): The band to use. Band indexing starts at 1. Defaults to None.
+            palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
+            vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
+            attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
+            layer_name (str, optional): The layer name to use. Defaults to None.
+        """
+        if isinstance(source, str) and source.startswith("http"):
+            self.add_local_tile(
+                source,
+                band=band,
+                palette=palette,
+                vmin=vmin,
+                vmax=vmax,
+                nodata=nodata,
+                attribution=attribution,
+                layer_name=layer_name,
+                **kwargs,
+            )
+        else:
+            raise Exception("The source must be a URL.")
+
+    def add_heatmap(
+        self,
+        filepath=None,
+        latitude="latitude",
+        longitude="longitude",
+        value="value",
+        data=None,
+        name="Heat map",
+        radius=25,
+        **kwargs,
+    ):
+        """Adds a heat map to the map. Reference: https://stackoverflow.com/a/54756617
+
+        Args:
+            filepath (str, optional): File path or HTTP URL to the input file. Defaults to None.
+            latitude (str, optional): The column name of latitude. Defaults to "latitude".
+            longitude (str, optional): The column name of longitude. Defaults to "longitude".
+            value (str, optional): The column name of values. Defaults to "value".
+            data (list, optional): A list of data points in the format of [[x1, y1, z1], [x2, y2, z2]]. Defaults to None.
+            name (str, optional): Layer name to use. Defaults to "Heat map".
+            radius (int, optional): Radius of each “point” of the heatmap. Defaults to 25.
+
+        Raises:
+            ValueError: If data is not a list.
+        """
+        import pandas as pd
+
+        if data is None:
+            if filepath is None:
+                filepath = "https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/us_cities.csv"
+                value = "pop_max"
+
+            df = pd.read_csv(filepath)
+            data = df[[latitude, longitude, value]].values.tolist()
+        elif not isinstance(data, list):
+            raise ValueError("data must be a list in the format of ")
+
+        plugins.HeatMap(data, name=name, radius=radius, **kwargs).add_to(
+            folium.FeatureGroup(name=name).add_to(self)
+        )
+
     def add_legend(
         self,
         title="Legend",

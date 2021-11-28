@@ -1575,6 +1575,24 @@ class Map(ipyleaflet.Map):
             )
             self.add_layer(marker)
 
+    def zoom_to_bounds(self, bounds):
+        """Zooms to a bounding box in the form of [minx, miny, maxx, maxy].
+
+        Args:
+            bounds (list | tuple): A list/tuple containing minx, miny, maxx, maxy values for the bounds.
+        """
+        #  The ipyleaflet fit_bounds method takes lat/lon bounds in the form [[south, west], [north, east]].
+        self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
+
+    def zoom_to_gdf(self, gdf):
+        """Zooms to the bounding box of a GeoPandas GeoDataFrame.
+
+        Args:
+            gdf (GeoDataFrame): A GeoPandas GeoDataFrame.
+        """
+        bounds = gdf.total_bounds
+        self.zoom_to_bounds(bounds)
+
     def get_scale(self):
         """Returns the approximate pixel scale of the current map view, in meters.
 
@@ -3320,6 +3338,85 @@ class Map(ipyleaflet.Map):
         toolbar_grid = self.toolbar
         for tool in toolbar_grid.children:
             tool.value = False
+
+    def add_local_tile(
+        self,
+        source,
+        band=None,
+        palette=None,
+        vmin=None,
+        vmax=None,
+        nodata=None,
+        attribution=None,
+        layer_name=None,
+        **kwargs,
+    ):
+        """Add a local raster dataset to the map.
+
+        Args:
+            source (str): The path to the GeoTIFF file or the URL of the Cloud Optimized GeoTIFF.
+            band (int, optional): The band to use. Band indexing starts at 1. Defaults to None.
+            palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
+            vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
+            attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
+            layer_name (str, optional): The layer name to use. Defaults to None.
+        """
+
+        tile, bounds = get_local_tile_layer(
+            source,
+            band=band,
+            palette=palette,
+            vmin=vmin,
+            vmax=vmax,
+            nodata=nodata,
+            attribution=attribution,
+            layer_name=layer_name,
+            get_bounds=True,
+            **kwargs,
+        )
+        self.add_layer(tile)
+        self.zoom_to_bounds(bounds)
+
+    def add_remote_tile(
+        self,
+        source,
+        band=None,
+        palette=None,
+        vmin=None,
+        vmax=None,
+        nodata=None,
+        attribution=None,
+        layer_name=None,
+        **kwargs,
+    ):
+        """Add a remote Cloud Optimized GeoTIFF (COG) to the map.
+
+        Args:
+            source (str): The path to the remote Cloud Optimized GeoTIFF.
+            band (int, optional): The band to use. Band indexing starts at 1. Defaults to None.
+            palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
+            vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
+            attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
+            layer_name (str, optional): The layer name to use. Defaults to None.
+        """
+        if isinstance(source, str) and source.startswith("http"):
+            self.add_local_tile(
+                source,
+                band=band,
+                palette=palette,
+                vmin=vmin,
+                vmax=vmax,
+                nodata=nodata,
+                attribution=attribution,
+                layer_name=layer_name,
+                **kwargs,
+            )
+        else:
+            raise Exception("The source must be a URL.")
 
     def add_raster(
         self,
