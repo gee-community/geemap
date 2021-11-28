@@ -18,6 +18,7 @@ matplotlib
 mss
 numpy
 owslib
+palettable
 pandas
 pillow
 pycrs
