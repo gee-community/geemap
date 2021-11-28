@@ -160,6 +160,9 @@ nav:
           - notebooks/80_point_layer.ipynb
           - notebooks/81_goes_timelapse.ipynb
           - notebooks/82_contours.ipynb
+          - notebooks/83_local_tile.ipynb
+          - notebooks/84_openstreetmap.ipynb
+          - notebooks/85_postgis.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb

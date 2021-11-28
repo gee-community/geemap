@@ -6,7 +6,7 @@ import pandas as pd
 from bqplot import Tooltip
 from bqplot import pyplot as plt
 
-from .common import ee_to_pandas
+from .common import ee_to_df
 
 
 def feature_byFeature(features, xProperty, yProperties, **kwargs):
@@ -24,7 +24,7 @@ def feature_byFeature(features, xProperty, yProperties, **kwargs):
 
     try:
 
-        df = ee_to_pandas(features)
+        df = ee_to_df(features)
         if "ylim" in kwargs:
             min_value = kwargs["ylim"][0]
             max_value = kwargs["ylim"][1]
@@ -108,7 +108,7 @@ def feature_byProperty(features, xProperties, seriesProperty, **kwargs):
         Exception: If the chart fails to create.
     """
     try:
-        df = ee_to_pandas(features)
+        df = ee_to_df(features)
 
         if isinstance(xProperties, list):
             x_data = xProperties
@@ -196,7 +196,7 @@ def feature_groups(features, xProperty, yProperty, seriesProperty, **kwargs):
     """
 
     try:
-        df = ee_to_pandas(features)
+        df = ee_to_df(features)
         df[yProperty] = pd.to_numeric(df[yProperty])
         unique_series_values = df[seriesProperty].unique().tolist()
         new_column_names = []
