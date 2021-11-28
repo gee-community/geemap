@@ -1026,9 +1026,7 @@ def csv_to_ee(
     return fc
 
 
-def csv_to_geopandas(
-    in_csv, latitude="latitude", longitude="longitude", encoding="utf-8"
-):
+def csv_to_gdf(in_csv, latitude="latitude", longitude="longitude", encoding="utf-8"):
     """Creates points for a CSV file and converts them to a GeoDataFrame.
 
     Args:
@@ -1053,6 +1051,9 @@ def csv_to_geopandas(
     gdf = gpd.read_file(out_geojson)
     os.remove(out_geojson)
     return gdf
+
+
+csv_to_geopandas = csv_to_gdf
 
 
 def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
@@ -6162,7 +6163,7 @@ def kmz_to_ee(in_kmz, **kwargs):
     return fc
 
 
-def csv_to_pandas(in_csv, **kwargs):
+def csv_to_df(in_csv, **kwargs):
     """Converts a CSV file to pandas dataframe.
 
     Args:
@@ -6179,7 +6180,10 @@ def csv_to_pandas(in_csv, **kwargs):
         raise Exception(e)
 
 
-def ee_to_pandas(ee_object, **kwargs):
+csv_to_pandas = csv_to_df
+
+
+def ee_to_df(ee_object, **kwargs):
     """Converts an ee.FeatureCollection to pandas dataframe.
 
     Args:
@@ -6205,7 +6209,10 @@ def ee_to_pandas(ee_object, **kwargs):
         raise Exception(e)
 
 
-def shp_to_geopandas(in_shp, **kwargs):
+ee_to_pandas = ee_to_df
+
+
+def shp_to_gdf(in_shp, **kwargs):
     """Converts a shapefile to Geopandas dataframe.
 
     Args:
@@ -6235,7 +6242,10 @@ def shp_to_geopandas(in_shp, **kwargs):
         raise Exception(e)
 
 
-def ee_to_geopandas(ee_object, selectors=None, verbose=False):
+shp_to_geopandas = shp_to_gdf
+
+
+def ee_to_gdf(ee_object, selectors=None, verbose=False):
     """Converts an ee.FeatureCollection to Geopandas dataframe.
 
     Args:
@@ -6264,6 +6274,9 @@ def ee_to_geopandas(ee_object, selectors=None, verbose=False):
     return gdf
 
 
+ee_to_geopandas = ee_to_gdf
+
+
 def delete_shp(in_shp, verbose=False):
     """Deletes a shapefile.
 
@@ -6290,7 +6303,7 @@ def delete_shp(in_shp, verbose=False):
                 print(e)
 
 
-def pandas_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
+def df_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
     """Converts a pandas DataFrame to ee.FeatureCollection.
 
     Args:
@@ -6315,7 +6328,10 @@ def pandas_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
     return fc
 
 
-def geopandas_to_ee(gdf, geodesic=True):
+pandas_to_ee = df_to_ee
+
+
+def gdf_to_ee(gdf, geodesic=True):
     """Converts a GeoPandas GeoDataFrame to ee.FeatureCollection.
 
     Args:
@@ -6336,12 +6352,16 @@ def geopandas_to_ee(gdf, geodesic=True):
         raise TypeError("The input data type must be geopandas.GeoDataFrame.")
 
     out_json = os.path.join(os.getcwd(), random_string(6) + ".geojson")
+    gdf = gdf.to_crs(4326)
     gdf.to_file(out_json, driver="GeoJSON")
 
     fc = geojson_to_ee(out_json, geodesic=geodesic)
     os.remove(out_json)
 
     return fc
+
+
+geopandas_to_ee = gdf_to_ee
 
 
 def vector_to_geojson(
@@ -6578,7 +6598,7 @@ def extract_transect(
         )
 
         if to_pandas:
-            return ee_to_pandas(transect)
+            return ee_to_df(transect)
         return transect
 
     except Exception as e:
@@ -6637,12 +6657,12 @@ def random_sampling(
     )
 
     if to_pandas:
-        return ee_to_pandas(points)
+        return ee_to_df(points)
     else:
         return points
 
 
-def osm_to_geopandas(
+def osm_to_gdf(
     query,
     which_result=None,
     by_osmid=False,
@@ -6673,6 +6693,9 @@ def osm_to_geopandas(
         raise Exception(e)
 
 
+osm_to_geopandas = osm_to_gdf
+
+
 def osm_to_ee(
     query, which_result=None, by_osmid=False, buffer_dist=None, geodesic=True
 ):
@@ -6688,8 +6711,8 @@ def osm_to_ee(
     Returns:
         ee.FeatureCollection: An Earth Engine FeatureCollection.
     """
-    gdf = osm_to_geopandas(query, which_result, by_osmid, buffer_dist)
-    fc = geopandas_to_ee(gdf, geodesic)
+    gdf = osm_to_gdf(query, which_result, by_osmid, buffer_dist)
+    fc = gdf_to_ee(gdf, geodesic)
     return fc
 
 
@@ -6705,7 +6728,7 @@ def osm_to_geojson(query, which_result=None, by_osmid=False, buffer_dist=None):
     Returns:
         ee.FeatureCollection: An Earth Engine FeatureCollection.
     """
-    gdf = osm_to_geopandas(query, which_result, by_osmid, buffer_dist)
+    gdf = osm_to_gdf(query, which_result, by_osmid, buffer_dist)
     return gdf.__geo_interface__
 
 
@@ -8035,3 +8058,93 @@ def get_palettable(types=None):
         palettes = palettes + tableau
 
     return palettes
+
+
+def connect_postgis(
+    database, host="localhost", user=None, password=None, port=5432, use_env_var=False
+):
+    """Connects to a PostGIS database.
+
+    Args:
+        database (str): Name of the database
+        host (str, optional): Hosting server for the database. Defaults to "localhost".
+        user (str, optional): User name to access the database. Defaults to None.
+        password (str, optional): Password to access the database. Defaults to None.
+        port (int, optional): Port number to connect to at the server host. Defaults to 5432.
+        use_env_var (bool, optional): Whether to use environment variables. It set to True, user and password are treated as an environment variables with default values user="SQL_USER" and password="SQL_PASSWORD". Defaults to False.
+
+    Raises:
+        ValueError: If user is not specified.
+        ValueError: If password is not specified.
+
+    Returns:
+        [type]: [description]
+    """
+    check_package(name="geopandas", URL="https://geopandas.org")
+    check_package(
+        name="sqlalchemy",
+        URL="https://docs.sqlalchemy.org/en/14/intro.html#installation",
+    )
+
+    from sqlalchemy import create_engine
+
+    if use_env_var:
+        if user is not None:
+            user = os.getenv(user)
+        else:
+            user = os.getenv("SQL_USER")
+
+        if password is not None:
+            password = os.getenv(password)
+        else:
+            password = os.getenv("SQL_PASSWORD")
+
+        if user is None:
+            raise ValueError("user is not specified.")
+        if password is None:
+            raise ValueError("password is not specified.")
+
+    connection_string = f"postgresql://{user}:{password}@{host}:{port}/{database}"
+    engine = create_engine(connection_string)
+
+    return engine
+
+
+def read_postgis(sql, con, geom_col="geom", crs=None, **kwargs):
+    """Reads data from a PostGIS database and returns a GeoDataFrame.
+
+    Args:
+        sql (str): SQL query to execute in selecting entries from database, or name of the table to read from the database.
+        con (sqlalchemy.engine.Engine): Active connection to the database to query.
+        geom_col (str, optional): Column name to convert to shapely geometries. Defaults to "geom".
+        crs (str | dict, optional): CRS to use for the returned GeoDataFrame; if not set, tries to determine CRS from the SRID associated with the first geometry in the database, and assigns that to all geometries. Defaults to None.
+
+    Returns:
+        [type]: [description]
+    """
+    check_package(name="geopandas", URL="https://geopandas.org")
+
+    import geopandas as gpd
+
+    gdf = gpd.read_postgis(sql, con, geom_col, crs, **kwargs)
+    return gdf
+
+
+def postgis_to_ee(sql, con, geom_col="geom", crs=None, geodestic=False, **kwargs):
+    """Reads data from a PostGIS database and returns a GeoDataFrame.
+
+    Args:
+        sql (str): SQL query to execute in selecting entries from database, or name of the table to read from the database.
+        con (sqlalchemy.engine.Engine): Active connection to the database to query.
+        geom_col (str, optional): Column name to convert to shapely geometries. Defaults to "geom".
+        crs (str | dict, optional): CRS to use for the returned GeoDataFrame; if not set, tries to determine CRS from the SRID associated with the first geometry in the database, and assigns that to all geometries. Defaults to None.
+        geodestic (bool, optional): Whether to use geodestic coordinates. Defaults to False.
+
+    Returns:
+        [type]: [description]
+    """
+    check_package(name="geopandas", URL="https://geopandas.org")
+
+    gdf = read_postgis(sql, con, geom_col, crs=crs, **kwargs)
+    fc = gdf_to_ee(gdf, geodesic=geodestic)
+    return fc

@@ -1167,6 +1167,35 @@ class Map(folium.Map):
             north = np.max(bounds["maxy"])
             self.fit_bounds([[south, east], [north, west]])
 
+    def add_gdf_from_postgis(
+        self, sql, con, layer_name="Untitled", zoom_to_layer=True, **kwargs
+    ):
+        """Adds a GeoPandas GeoDataFrameto the map.
+
+        Args:
+            sql (str): SQL query to execute in selecting entries from database, or name of the table to read from the database.
+            con (sqlalchemy.engine.Engine): Active connection to the database to query.
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
+            zoom_to_layer (bool, optional): Whether to zoom to the layer.
+
+        """
+        if "fill_colors" in kwargs:
+            kwargs.pop("fill_colors")
+        gdf = read_postgis(sql, con, **kwargs)
+        data = gdf_to_geojson(gdf, epsg="4326")
+
+        self.add_geojson(data, layer_name=layer_name, **kwargs)
+
+        if zoom_to_layer:
+            import numpy as np
+
+            bounds = gdf.to_crs(epsg="4326").bounds
+            west = np.min(bounds["minx"])
+            south = np.min(bounds["miny"])
+            east = np.max(bounds["maxx"])
+            north = np.max(bounds["maxy"])
+            self.fit_bounds([[south, east], [north, west]])
+
     def add_osm(
         self,
         query,
@@ -1192,7 +1221,7 @@ class Map(folium.Map):
 
         """
 
-        gdf = osm_to_geopandas(
+        gdf = osm_to_gdf(
             query, which_result=which_result, by_osmid=by_osmid, buffer_dist=buffer_dist
         )
         geojson = gdf.__geo_interface__

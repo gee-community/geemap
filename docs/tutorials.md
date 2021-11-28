@@ -96,3 +96,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 82. Creating elevation contours for any location around the globe (video | gif | [notebook](https://geemap.org/notebooks/82_contours))
 83. Loading local raster datasets and Cloud Optimized GeoTIFF (COG) ([notebook](https://geemap.org/notebooks/83_local_tile))
 84. Downloading OpenStreetMap data with a single line of code ([notebook](https://geemap.org/notebooks/84_openstreetmap))
+85. Converting PostGIS data to ee.FeatureCollection ([notebook](https://geemap.org/notebooks/85_postgis))
