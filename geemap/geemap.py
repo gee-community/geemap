@@ -6270,6 +6270,60 @@ class Map(ipyleaflet.Map):
 
 # The functions below are outside the Map class.
 
+class ImageOverlay(ipyleaflet.ImageOverlay):
+    """ImageOverlay class.
+
+    Args:
+        url (str): http URL or local file path to the image.
+        bounds (tuple): bounding box of the image in the format of (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -100)).
+    """
+
+    def __init__(self, **kwargs):
+
+        from base64 import b64encode
+        from PIL import Image, ImageSequence
+        from io import BytesIO
+
+        try:
+            url = kwargs.get("url")
+            if not url.startswith("http"):
+
+                url = os.path.abspath(url)
+                if not os.path.exists(url):
+                    raise FileNotFoundError("The provided file does not exist.")
+
+                ext = os.path.splitext(url)[1][1:]  # file extension
+                image = Image.open(url)
+
+                f = BytesIO()
+                if ext.lower() == "gif":
+                    frames = []
+                    # Loop over each frame in the animated image
+                    for frame in ImageSequence.Iterator(image):
+                        frame = frame.convert("RGBA")
+                        b = BytesIO()
+                        frame.save(b, format="gif")
+                        frame = Image.open(b)
+                        frames.append(frame)
+                    frames[0].save(
+                        f,
+                        format="GIF",
+                        save_all=True,
+                        append_images=frames[1:],
+                        loop=0,
+                    )
+                else:
+                    image.save(f, ext)
+
+                data = b64encode(f.getvalue())
+                data = data.decode("ascii")
+                url = "data:image/{};base64,".format(ext) + data
+                kwargs["url"] = url
+        except Exception as e:
+            raise Exception(e)
+
+        super().__init__(**kwargs)
+
 
 def ee_tile_layer(
     ee_object, vis_params={}, name="Layer untitled", shown=True, opacity=1.0

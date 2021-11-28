@@ -163,6 +163,7 @@ nav:
           - notebooks/83_local_tile.ipynb
           - notebooks/84_openstreetmap.ipynb
           - notebooks/85_postgis.ipynb
+          - notebooks/86_image_overlay.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
