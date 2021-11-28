@@ -102,6 +102,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 81. Creating timelapse animations from GEOS weather satellites (video | gif | [notebook](https://geemap.org/notebooks/81_goes_timelapse))
 82. Creating elevation contours for any location around the globe (video | gif | [notebook](https://geemap.org/notebooks/82_contours))
 83. Loading local raster datasets and Cloud Optimized GeoTIFF (COG) ([notebook](https://geemap.org/notebooks/83_local_tile))
+84. Downloading OpenStreetMap data with a single line of code ([notebook](https://geemap.org/notebooks/84_openstreetmap))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
