@@ -4,6 +4,7 @@ channels:
 dependencies:
     - cartopy
     - datapane
+    - gdal
     - geemap
     - geopandas
     - imageio
@@ -11,8 +12,10 @@ dependencies:
     - jupyterlab=3
     - keplergl
     - leafmap
+    - localtileserver
     - nodejs
     - osmnx
+    - palettable
     - psycopg2
     - pydeck
     - pydeck-earthengine-layers
