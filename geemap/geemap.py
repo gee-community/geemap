@@ -6270,12 +6270,14 @@ class Map(ipyleaflet.Map):
 
 # The functions below are outside the Map class.
 
+
 class ImageOverlay(ipyleaflet.ImageOverlay):
     """ImageOverlay class.
 
     Args:
         url (str): http URL or local file path to the image.
         bounds (tuple): bounding box of the image in the format of (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -100)).
+        name (str): The name of the layer.
     """
 
     def __init__(self, **kwargs):
