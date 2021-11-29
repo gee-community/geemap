@@ -16,6 +16,7 @@ dependencies:
     - nodejs
     - osmnx
     - palettable
+    - pip
     - psycopg2
     - pydeck
     - pydeck-earthengine-layers
@@ -23,3 +24,5 @@ dependencies:
     - sqlalchemy
     - tifffile
     - xarray_leaflet
+    - pip:
+          - localtileserver
