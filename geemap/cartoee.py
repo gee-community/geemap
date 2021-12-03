@@ -205,9 +205,9 @@ def add_layer(
 
     if region is not None:
         map_region = ee.Geometry.Rectangle(region).getInfo()["coordinates"]
-        view_extent = (region[0], region[2], region[1], region[3])
+        view_extent = (region[2], region[0], region[1], region[3])
     else:
-        map_region = ee_object.geometry(100).bounds().getInfo()["coordinates"]
+        map_region = ee_object.geometry(100).bounds(1).getInfo()["coordinates"]
         # get the image bounds
         x, y = list(zip(*map_region[0]))
         view_extent = [min(x), max(x), min(y), max(y)]
@@ -222,8 +222,7 @@ def add_layer(
         )
 
     args = {"format": "png", "crs": "EPSG:4326"}
-    if region:
-        args["region"] = map_region
+    args["region"] = map_region
     if dims:
         args["dimensions"] = dims
 
