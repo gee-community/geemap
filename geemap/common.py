@@ -6183,11 +6183,12 @@ def csv_to_df(in_csv, **kwargs):
 csv_to_pandas = csv_to_df
 
 
-def ee_to_df(ee_object, **kwargs):
+def ee_to_df(ee_object, col_names=None, **kwargs):
     """Converts an ee.FeatureCollection to pandas dataframe.
 
     Args:
         ee_object (ee.FeatureCollection): ee.FeatureCollection.
+        col_names (list): List of column names. Defaults to None.
 
     Raises:
         TypeError: ee_object must be an ee.FeatureCollection
@@ -6197,6 +6198,9 @@ def ee_to_df(ee_object, **kwargs):
     """
     import pandas as pd
 
+    if isinstance(ee_object, ee.Feature):
+        ee_object = ee.FeatureCollection([ee_object])
+
     if not isinstance(ee_object, ee.FeatureCollection):
         raise TypeError("ee_object must be an ee.FeatureCollection")
 
@@ -6204,6 +6208,15 @@ def ee_to_df(ee_object, **kwargs):
         data = ee_object.map(lambda f: ee.Feature(None, f.toDictionary()))
         data = [x["properties"] for x in data.getInfo()["features"]]
         df = pd.DataFrame(data)
+
+        if col_names is None:
+            col_names = ee_object.first().propertyNames().getInfo()
+            col_names.remove("system:index")
+        elif not isinstance(col_names, list):
+            raise TypeError("col_names must be a list")
+
+        df = df[col_names]
+
         return df
     except Exception as e:
         raise Exception(e)
