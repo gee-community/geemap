@@ -1506,57 +1506,37 @@ class Map(ipyleaflet.Map):
             ee_object (Element|Geometry): An Earth Engine object to center on a geometry, image or feature.
             zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.
         """
-        if zoom is None and hasattr(self, "fit_bounds"):
-            self.zoom_to_object(ee_object)
-        else:
-            lat = 0
-            lon = 0
-            if isinstance(ee_object, ee.geometry.Geometry):
-                centroid = ee_object.centroid(1)
-                lon, lat = centroid.getInfo()["coordinates"]
-            else:
-                try:
-                    centroid = ee_object.geometry().centroid(1)
-                    lon, lat = centroid.getInfo()["coordinates"]
-                except Exception as e:
-                    print(e)
-                    raise Exception(e)
-
-            self.setCenter(lon, lat, zoom)
-
-    centerObject = center_object
-
-    def zoom_to_object(self, ee_object):
-        """Zoom to the full extent of an Earth Engine object.
-
-        Args:
-            ee_object (object): An Earth Engine object, such as Image, ImageCollection, Geometry, Feature, FeatureCollection.
-
-        Raises:
-            Exception: Error getting geometry.
-        """
-        coordinates = None
-        if isinstance(ee_object, ee.geometry.Geometry):
-            bounds = ee_object.bounds()
-            coordinates = bounds.getInfo()["coordinates"][0]
-
+        maxError = 0.001
+        if isinstance(ee_object, ee.Geometry):
+            geometry = ee_object.transform(maxError=maxError)
         else:
             try:
-                bounds = ee_object.geometry().bounds()
-                coordinates = bounds.getInfo()["coordinates"][0]
+                geometry = ee_object.geometry().transform(maxError=maxError)
+            except Exception:
+                raise Exception(
+                    "ee_object must be an instance of one of ee.Geometry, ee.FeatureCollection, ee.Image, or ee.ImageCollection."
+                )
 
-            except Exception as e:
-                print(e)
-                raise Exception(e)
+        if zoom is not None:
+            if not isinstance(zoom, int):
+                raise Exception("Zoom must be an integer.")
+            else:
+                centroid = geometry.centroid(maxError=maxError).getInfo()["coordinates"]
+                lat = centroid[1]
+                lon = centroid[0]
+                self.set_center(lon, lat, zoom)
+        else:
+            coordinates = geometry.bounds(maxError).getInfo()["coordinates"][0]
+            x = [c[0] for c in coordinates]
+            y = [c[1] for c in coordinates]
+            xmin = min(x)
+            xmax = max(x)
+            ymin = min(y)
+            ymax = max(y)
+            bounds = [[ymin, xmin], [ymax, xmax]]
+            self.fit_bounds(bounds)
 
-        if coordinates is not None:
-            south = coordinates[0][1]
-            west = coordinates[0][0]
-            north = coordinates[2][1]
-            east = coordinates[2][0]
-            self.fit_bounds([[south, east], [north, west]])
-
-    zoomToObject = zoom_to_object
+    centerObject = center_object
 
     def zoom_to_me(self, zoom=14, add_marker=True):
         """Zoom to the current device location.
