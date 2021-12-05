@@ -396,36 +396,43 @@ class Map(folium.Map):
         bounds = gdf.total_bounds
         self.zoom_to_bounds(bounds)
 
-    def center_object(self, ee_object, zoom=10):
+    def center_object(self, ee_object, zoom=None):
         """Centers the map view on a given object.
 
         Args:
-            ee_object (Element|Geometry): An Earth Engine object to center on - a geometry, image or feature.
-            zoom (int, optional): The zoom level, from 1 to 24. Defaults to 10.
+            ee_object (Element|Geometry): An Earth Engine object to center on a geometry, image or feature.
+            zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.
         """
-        lat = 0
-        lon = 0
 
-        if isinstance(ee_object, ee.geometry.Geometry):
-            centroid = ee_object.centroid()
-            lon, lat = centroid.getInfo()["coordinates"]
-            bounds = [[lat, lon], [lat, lon]]
-        elif isinstance(ee_object, ee.featurecollection.FeatureCollection):
-            centroid = ee_object.geometry().centroid()
-            lon, lat = centroid.getInfo()["coordinates"]
-            bounds = [[lat, lon], [lat, lon]]
-        elif isinstance(ee_object, ee.image.Image):
-            geometry = ee_object.geometry()
-            coordinates = geometry.getInfo()["coordinates"][0]
-            bounds = [coordinates[0][::-1], coordinates[2][::-1]]
-        elif isinstance(ee_object, ee.imagecollection.ImageCollection):
-            geometry = ee_object.geometry()
-            coordinates = geometry.getInfo()["coordinates"][0]
-            bounds = [coordinates[0][::-1], coordinates[2][::-1]]
+        maxError = 0.001
+        if isinstance(ee_object, ee.Geometry):
+            geometry = ee_object.transform(maxError=maxError)
         else:
-            bounds = [[0, 0], [0, 0]]
+            try:
+                geometry = ee_object.geometry().transform(maxError=maxError)
+            except Exception:
+                raise Exception(
+                    "ee_object must be an instance of one of ee.Geometry, ee.FeatureCollection, ee.Image, or ee.ImageCollection."
+                )
 
-        self.fit_bounds(bounds, max_zoom=zoom)
+        if zoom is not None:
+            if not isinstance(zoom, int):
+                raise Exception("Zoom must be an integer.")
+            else:
+                centroid = geometry.centroid(maxError=maxError).getInfo()["coordinates"]
+                lat = centroid[1]
+                lon = centroid[0]
+                self.set_center(lon, lat, zoom)
+        else:
+            coordinates = geometry.bounds(maxError).getInfo()["coordinates"][0]
+            x = [c[0] for c in coordinates]
+            y = [c[1] for c in coordinates]
+            xmin = min(x)
+            xmax = max(x)
+            ymin = min(y)
+            ymax = max(y)
+            bounds = [[ymin, xmin], [ymax, xmax]]
+            self.fit_bounds(bounds)
 
     centerObject = center_object
 
