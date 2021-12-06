@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.10.1 - December 6, 2021
+
+**Improvement**:
+
+-   A temporary fix for ipyleaflet basemap error [#795](https://github.com/giswqs/geemap/issues/795)
+
 ## v0.10.0 - November 28, 2021
 
 **New Features**:
