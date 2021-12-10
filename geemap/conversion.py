@@ -356,9 +356,10 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
                     try:
                         bracket_index = line.index("{")
                     except Exception as e:
-                        raise Exception(
-                            f"The opening curly bracket could not be found in Line {index}: {line}. Please reformat the function definition and make sure the opening curly bracket apprears on the same line as the function keyword. "
+                        print(
+                            f"An error occurred when processing {in_file}. The closing curly bracket could not be found in Line {index+1}: {line}. Please reformat the function definition and make sure that both the opening and closing curly brackets apprear on the same line as the function keyword. "
                         )
+                        return
 
                     (
                         matching_line_index,
