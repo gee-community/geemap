@@ -212,6 +212,8 @@ class Map(folium.Map):
             kwargs["plugin_MiniMap"] = False
         if "plugin_LayerControl" not in kwargs.keys():
             kwargs["plugin_LayerControl"] = False
+        if "locate_control" not in kwargs:
+            kwargs["locate_control"] = False
 
         super().__init__(**kwargs)
         self.baseclass = "folium"
@@ -230,6 +232,8 @@ class Map(folium.Map):
             plugins.MiniMap().add_to(self)
         if kwargs.get("plugin_LayerControl"):
             folium.LayerControl().add_to(self)
+        if kwargs["locate_control"]:
+            plugins.LocateControl().add_to(self)
 
         self.fit_bounds([latlon, latlon], max_zoom=zoom)
 
