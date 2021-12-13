@@ -1501,7 +1501,7 @@ class Map(folium.Map):
         data,
         x="longitude",
         y="latitude",
-        popups=None,
+        popup=None,
         min_width=100,
         max_width=200,
         layer_name="Marker Cluster",
@@ -1513,7 +1513,7 @@ class Map(folium.Map):
             data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z values.
             x (str, optional): The column name for the x values. Defaults to "longitude".
             y (str, optional): The column name for the y values. Defaults to "latitude".
-            popups (list, optional): A list of column names to be used as the popup. Defaults to None.
+            popup (list, optional): A list of column names to be used as the popup. Defaults to None.
             min_width (int, optional): The minimum width of the popup. Defaults to 100.
             max_width (int, optional): The maximum width of the popup. Defaults to 200.
             layer_name (str, optional): The name of the layer. Defaults to "Marker Cluster".
@@ -1530,8 +1530,8 @@ class Map(folium.Map):
 
         col_names = df.columns.values.tolist()
 
-        if popups is None:
-            popups = col_names
+        if popup is None:
+            popup = col_names
 
         if x not in col_names:
             raise ValueError(f"x must be one of the following: {', '.join(col_names)}")
@@ -1543,7 +1543,7 @@ class Map(folium.Map):
 
         for row in df.itertuples():
             html = ""
-            for p in popups:
+            for p in popup:
                 html = (
                     html
                     + "<b>"
@@ -1553,9 +1553,9 @@ class Map(folium.Map):
                     + str(eval(str("row." + p)))
                     + "<br>"
                 )
-            popup = folium.Popup(html, min_width=min_width, max_width=max_width)
+            popup_html = folium.Popup(html, min_width=min_width, max_width=max_width)
             folium.Marker(
-                location=[eval(f"row.{y}"), eval(f"row.{x}")], popup=popup
+                location=[eval(f"row.{y}"), eval(f"row.{x}")], popup=popup_html
             ).add_to(marker_cluster)
 
     def add_planet_by_month(
