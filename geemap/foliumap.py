@@ -1496,6 +1496,68 @@ class Map(folium.Map):
         )
         self.zoom_to_gdf(gdf)
 
+    def add_points_from_xy(
+        self,
+        data,
+        x="longitude",
+        y="latitude",
+        popups=None,
+        min_width=100,
+        max_width=200,
+        layer_name="Marker Cluster",
+        **kwargs,
+    ):
+        """Adds a marker cluster to the map.
+
+        Args:
+            data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z values.
+            x (str, optional): The column name for the x values. Defaults to "longitude".
+            y (str, optional): The column name for the y values. Defaults to "latitude".
+            popups (list, optional): A list of column names to be used as the popup. Defaults to None.
+            min_width (int, optional): The minimum width of the popup. Defaults to 100.
+            max_width (int, optional): The maximum width of the popup. Defaults to 200.
+            layer_name (str, optional): The name of the layer. Defaults to "Marker Cluster".
+
+        """
+        import pandas as pd
+
+        if isinstance(data, pd.DataFrame):
+            df = data
+        elif not data.startswith("http") and (not os.path.exists(data)):
+            raise FileNotFoundError("The specified input csv does not exist.")
+        else:
+            df = pd.read_csv(data)
+
+        col_names = df.columns.values.tolist()
+
+        if popups is None:
+            popups = col_names
+
+        if x not in col_names:
+            raise ValueError(f"x must be one of the following: {', '.join(col_names)}")
+
+        if y not in col_names:
+            raise ValueError(f"y must be one of the following: {', '.join(col_names)}")
+
+        marker_cluster = plugins.MarkerCluster(name=layer_name).add_to(self)
+
+        for row in df.itertuples():
+            html = ""
+            for p in popups:
+                html = (
+                    html
+                    + "<b>"
+                    + p
+                    + "</b>"
+                    + ": "
+                    + str(eval(str("row." + p)))
+                    + "<br>"
+                )
+            popup = folium.Popup(html, min_width=min_width, max_width=max_width)
+            folium.Marker(
+                location=[eval(f"row.{y}"), eval(f"row.{x}")], popup=popup
+            ).add_to(marker_cluster)
+
     def add_planet_by_month(
         self, year=2016, month=1, name=None, api_key=None, token_name="PLANET_API_KEY"
     ):

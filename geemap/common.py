@@ -8161,3 +8161,38 @@ def postgis_to_ee(sql, con, geom_col="geom", crs=None, geodestic=False, **kwargs
     gdf = read_postgis(sql, con, geom_col, crs=crs, **kwargs)
     fc = gdf_to_ee(gdf, geodesic=geodestic)
     return fc
+
+
+def points_from_xy(data, x="longitude", y="latitude", z=None, crs=None, **kwargs):
+    """Create a GeoPandas GeoDataFrame from a csv or Pandas DataFrame containing x, y, z values.
+
+    Args:
+        data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z values.
+        x (str, optional): The column name for the x values. Defaults to "longitude".
+        y (str, optional): The column name for the y values. Defaults to "latitude".
+        z (str, optional): The column name for the z values. Defaults to None.
+        crs (str | int, optional): The coordinate reference system for the GeoDataFrame. Defaults to None.
+
+    Returns:
+        geopandas.GeoDataFrame: A GeoPandas GeoDataFrame containing x, y, z values.
+    """
+    check_package(name="geopandas", URL="https://geopandas.org")
+    import geopandas as gpd
+    import pandas as pd
+
+    if crs is None:
+        crs = "epsg:4326"
+
+    if isinstance(data, pd.DataFrame):
+        df = data
+    elif isinstance(data, str):
+        if not data.startswith("http") and (not os.path.exists(data)):
+            raise FileNotFoundError("The specified input csv does not exist.")
+        else:
+            df = pd.read_csv(data, **kwargs)
+    else:
+        raise TypeError("The data must be a pandas DataFrame or a csv file path.")
+
+    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[x], df[y], z=z, crs=crs))
+
+    return gdf

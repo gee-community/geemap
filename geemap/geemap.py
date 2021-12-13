@@ -6024,6 +6024,106 @@ class Map(ipyleaflet.Map):
 
         self.default_style = {"cursor": "default"}
 
+    def add_points_from_xy(
+        self,
+        data,
+        x="longitude",
+        y="latitude",
+        popups=None,
+        layer_name="Marker Cluster",
+        **kwargs,
+    ):
+        """Adds a marker cluster to the map.
+
+        Args:
+            data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z values.
+            x (str, optional): The column name for the x values. Defaults to "longitude".
+            y (str, optional): The column name for the y values. Defaults to "latitude".
+            popups (list, optional): A list of column names to be used as the popup. Defaults to None.
+            layer_name (str, optional): The name of the layer. Defaults to "Marker Cluster".
+
+        """
+        import pandas as pd
+
+        if isinstance(data, pd.DataFrame):
+            df = data
+        elif not data.startswith("http") and (not os.path.exists(data)):
+            raise FileNotFoundError("The specified input csv does not exist.")
+        else:
+            df = pd.read_csv(data)
+
+        df = points_from_xy(df, x, y)
+
+        col_names = df.columns.values.tolist()
+        if "geometry" in col_names:
+            col_names.remove("geometry")
+
+        if popups is not None:
+            if isinstance(popups, str) and (popups not in col_names):
+                raise ValueError(
+                    f"popup must be one of the following: {', '.join(col_names)}"
+                )
+            elif isinstance(popups, list) and (
+                not all(item in col_names for item in popups)
+            ):
+                raise ValueError(
+                    f"All popup items must be select from: {', '.join(col_names)}"
+                )
+        else:
+            popups = col_names
+
+        df["x"] = df.geometry.x
+        df["y"] = df.geometry.y
+
+        points = list(zip(df["y"], df["x"]))
+
+        if popups is not None:
+            if isinstance(popups, str):
+                labels = df[popups]
+                markers = [
+                    ipyleaflet.Marker(
+                        location=point,
+                        draggable=False,
+                        popup=widgets.HTML(str(labels[index])),
+                    )
+                    for index, point in enumerate(points)
+                ]
+            elif isinstance(popups, list):
+                labels = []
+                for i in range(len(points)):
+                    label = ""
+                    for item in popups:
+                        label = (
+                            label
+                            + "<b>"
+                            + str(item)
+                            + "</b>"
+                            + ": "
+                            + str(df[item][i])
+                            + "<br>"
+                        )
+                    labels.append(label)
+                df["popup"] = labels
+
+                markers = [
+                    ipyleaflet.Marker(
+                        location=point,
+                        draggable=False,
+                        popup=widgets.HTML(labels[index]),
+                    )
+                    for index, point in enumerate(points)
+                ]
+
+        else:
+            markers = [
+                ipyleaflet.Marker(location=point, draggable=False) for point in points
+            ]
+
+        marker_cluster = ipyleaflet.MarkerCluster(markers=markers, name=layer_name)
+        self.add_layer(marker_cluster)
+
+        self.default_style = {"cursor": "default"}
+
     def add_planet_by_month(
         self, year=2016, month=1, name=None, api_key=None, token_name="PLANET_API_KEY"
     ):
