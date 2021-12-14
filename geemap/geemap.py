@@ -6347,6 +6347,50 @@ class Map(ipyleaflet.Map):
                 f"The provider {provider} is not valid. It must start with xyz or qms."
             )
 
+    def add_heatmap(
+        self,
+        data,
+        latitude="latitude",
+        longitude="longitude",
+        value="value",
+        name="Heat map",
+        radius=25,
+        **kwargs,
+    ):
+        """Adds a heat map to the map. Reference: https://ipyleaflet.readthedocs.io/en/latest/api_reference/heatmap.html
+
+        Args:
+            data (str | list | pd.DataFrame): File path or HTTP URL to the input file or a list of data points in the format of [[x1, y1, z1], [x2, y2, z2]]. For example, https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/world_cities.csv
+            latitude (str, optional): The column name of latitude. Defaults to "latitude".
+            longitude (str, optional): The column name of longitude. Defaults to "longitude".
+            value (str, optional): The column name of values. Defaults to "value".
+            name (str, optional): Layer name to use. Defaults to "Heat map".
+            radius (int, optional): Radius of each “point” of the heatmap. Defaults to 25.
+
+        Raises:
+            ValueError: If data is not a list.
+        """
+        import pandas as pd
+        from ipyleaflet import Heatmap
+
+        try:
+
+            if isinstance(data, str):
+                df = pd.read_csv(data)
+                data = df[[latitude, longitude, value]].values.tolist()
+            elif isinstance(data, pd.DataFrame):
+                data = data[[latitude, longitude, value]].values.tolist()
+            elif isinstance(data, list):
+                pass
+            else:
+                raise ValueError("data must be a list, a DataFrame, or a file path.")
+
+            heatmap = Heatmap(locations=data, radius=radius, name=name, **kwargs)
+            self.add_layer(heatmap)
+
+        except Exception as e:
+            raise Exception(e)
+
 
 # The functions below are outside the Map class.
 
