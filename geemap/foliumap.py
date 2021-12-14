@@ -799,11 +799,10 @@ class Map(folium.Map):
 
     def add_heatmap(
         self,
-        filepath=None,
+        data,
         latitude="latitude",
         longitude="longitude",
         value="value",
-        data=None,
         name="Heat map",
         radius=25,
         **kwargs,
@@ -811,11 +810,10 @@ class Map(folium.Map):
         """Adds a heat map to the map. Reference: https://stackoverflow.com/a/54756617
 
         Args:
-            filepath (str, optional): File path or HTTP URL to the input file. Defaults to None.
+            data (str | list | pd.DataFrame): File path or HTTP URL to the input file or a list of data points in the format of [[x1, y1, z1], [x2, y2, z2]]. For example, https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/world_cities.csv
             latitude (str, optional): The column name of latitude. Defaults to "latitude".
             longitude (str, optional): The column name of longitude. Defaults to "longitude".
             value (str, optional): The column name of values. Defaults to "value".
-            data (list, optional): A list of data points in the format of [[x1, y1, z1], [x2, y2, z2]]. Defaults to None.
             name (str, optional): Layer name to use. Defaults to "Heat map".
             radius (int, optional): Radius of each “point” of the heatmap. Defaults to 25.
 
@@ -824,19 +822,23 @@ class Map(folium.Map):
         """
         import pandas as pd
 
-        if data is None:
-            if filepath is None:
-                filepath = "https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/us_cities.csv"
-                value = "pop_max"
+        try:
 
-            df = pd.read_csv(filepath)
-            data = df[[latitude, longitude, value]].values.tolist()
-        elif not isinstance(data, list):
-            raise ValueError("data must be a list in the format of ")
+            if isinstance(data, str):
+                df = pd.read_csv(data)
+                data = df[[latitude, longitude, value]].values.tolist()
+            elif isinstance(data, pd.DataFrame):
+                data = data[[latitude, longitude, value]].values.tolist()
+            elif isinstance(data, list):
+                pass
+            else:
+                raise ValueError("data must be a list, a DataFrame, or a file path.")
 
-        plugins.HeatMap(data, name=name, radius=radius, **kwargs).add_to(
-            folium.FeatureGroup(name=name).add_to(self)
-        )
+            plugins.HeatMap(data, name=name, radius=radius, **kwargs).add_to(
+                folium.FeatureGroup(name=name).add_to(self)
+            )
+        except Exception as e:
+            raise Exception(e)
 
     def add_legend(
         self,
