@@ -176,8 +176,8 @@ class Map(folium.Map):
             ee_initialize()
 
         # Default map center location and zoom level
-        latlon = [40, -100]
-        zoom = 4
+        latlon = [20, 0]
+        zoom = 2
 
         # Interchangeable parameters between ipyleaflet and folium
         if "center" in kwargs.keys():
