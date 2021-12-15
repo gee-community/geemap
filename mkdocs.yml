@@ -165,6 +165,7 @@ nav:
           - notebooks/85_postgis.ipynb
           - notebooks/86_image_overlay.ipynb
           - notebooks/87_add_points_from_xy.ipynb
+          - notebooks/88_circle_markers.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb

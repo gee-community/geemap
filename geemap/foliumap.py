@@ -1560,6 +1560,106 @@ class Map(folium.Map):
                 location=[eval(f"row.{y}"), eval(f"row.{x}")], popup=popup_html
             ).add_to(marker_cluster)
 
+    def add_circle_markers_from_xy(
+        self,
+        data,
+        x="longitude",
+        y="latitude",
+        radius=10,
+        popup=None,
+        tooltip=None,
+        min_width=100,
+        max_width=200,
+        **kwargs,
+    ):
+        """Adds a marker cluster to the map.
+
+        Args:
+            data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z values.
+            x (str, optional): The column name for the x values. Defaults to "longitude".
+            y (str, optional): The column name for the y values. Defaults to "latitude".
+            radius (int, optional): The radius of the circle. Defaults to 10.
+            popup (list, optional): A list of column names to be used as the popup. Defaults to None.
+            tooltip (list, optional): A list of column names to be used as the tooltip. Defaults to None.
+            min_width (int, optional): The minimum width of the popup. Defaults to 100.
+            max_width (int, optional): The maximum width of the popup. Defaults to 200.
+
+        """
+        import pandas as pd
+
+        if isinstance(data, pd.DataFrame):
+            df = data
+        elif not data.startswith("http") and (not os.path.exists(data)):
+            raise FileNotFoundError("The specified input csv does not exist.")
+        else:
+            df = pd.read_csv(data)
+
+        col_names = df.columns.values.tolist()
+
+        if "color" not in kwargs:
+            kwargs["color"] = None
+        if "fill" not in kwargs:
+            fill = True
+        if "fill_color" not in kwargs:
+            kwargs["fill_color"] = "blue"
+        if "fill_opacity" not in kwargs:
+            kwargs["fill_opacity"] = 0.7
+
+        if popup is None:
+            popup = col_names
+
+        if not isinstance(popup, list):
+            popup = [popup]
+
+        if tooltip is not None:
+            if not isinstance(tooltip, list):
+                tooltip = [tooltip]
+
+        if x not in col_names:
+            raise ValueError(f"x must be one of the following: {', '.join(col_names)}")
+
+        if y not in col_names:
+            raise ValueError(f"y must be one of the following: {', '.join(col_names)}")
+
+        for row in df.itertuples():
+            html = ""
+            for p in popup:
+                html = (
+                    html
+                    + "<b>"
+                    + p
+                    + "</b>"
+                    + ": "
+                    + str(eval(str("row." + p)))
+                    + "<br>"
+                )
+            popup_html = folium.Popup(html, min_width=min_width, max_width=max_width)
+
+            if tooltip is not None:
+                html = ""
+                for p in tooltip:
+                    html = (
+                        html
+                        + "<b>"
+                        + p
+                        + "</b>"
+                        + ": "
+                        + str(eval(str("row." + p)))
+                        + "<br>"
+                    )
+
+                tooltip_str = folium.Tooltip(html)
+            else:
+                tooltip_str = None
+
+            folium.CircleMarker(
+                location=[eval(f"row.{y}"), eval(f"row.{x}")],
+                radius=radius,
+                popup=popup_html,
+                tooltip=tooltip_str,
+                **kwargs,
+            ).add_to(self)
+
     def add_planet_by_month(
         self, year=2016, month=1, name=None, api_key=None, token_name="PLANET_API_KEY"
     ):
