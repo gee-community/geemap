@@ -6124,6 +6124,71 @@ class Map(ipyleaflet.Map):
 
         self.default_style = {"cursor": "default"}
 
+    def add_circle_markers_from_xy(
+        self,
+        data,
+        x="longitude",
+        y="latitude",
+        radius=10,
+        popup=None,
+        **kwargs,
+    ):
+        """Adds a marker cluster to the map. For a list of options, see https://ipyleaflet.readthedocs.io/en/latest/api_reference/circle_marker.html
+
+        Args:
+            data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z values.
+            x (str, optional): The column name for the x values. Defaults to "longitude".
+            y (str, optional): The column name for the y values. Defaults to "latitude".
+            radius (int, optional): The radius of the circle. Defaults to 10.
+            popup (list, optional): A list of column names to be used as the popup. Defaults to None.
+
+        """
+        import pandas as pd
+
+        if isinstance(data, pd.DataFrame):
+            df = data
+        elif not data.startswith("http") and (not os.path.exists(data)):
+            raise FileNotFoundError("The specified input csv does not exist.")
+        else:
+            df = pd.read_csv(data)
+
+        col_names = df.columns.values.tolist()
+
+        if popup is None:
+            popup = col_names
+
+        if not isinstance(popup, list):
+            popup = [popup]
+
+        if x not in col_names:
+            raise ValueError(f"x must be one of the following: {', '.join(col_names)}")
+
+        if y not in col_names:
+            raise ValueError(f"y must be one of the following: {', '.join(col_names)}")
+
+        for row in df.itertuples():
+            html = ""
+            for p in popup:
+                html = (
+                    html
+                    + "<b>"
+                    + p
+                    + "</b>"
+                    + ": "
+                    + str(eval(str("row." + p)))
+                    + "<br>"
+                )
+            popup_html = widgets.HTML(html)
+
+            marker = ipyleaflet.CircleMarker(
+                location=[eval(f"row.{y}"), eval(f"row.{x}")],
+                radius=radius,
+                popup=popup_html,
+                **kwargs,
+            )
+
+            self.add_layer(marker)
+
     def add_planet_by_month(
         self, year=2016, month=1, name=None, api_key=None, token_name="PLANET_API_KEY"
     ):
