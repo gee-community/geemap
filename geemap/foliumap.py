@@ -1890,6 +1890,66 @@ class Map(folium.Map):
                 f"The provider {provider} is not valid. It must start with xyz or qms."
             )
 
+    def add_labels(
+        self,
+        data,
+        column,
+        font_size="12pt",
+        font_color="black",
+        font_family="arial",
+        font_weight="normal",
+        x="longitude",
+        y="latitude",
+        **kwargs,
+    ):
+        """Adds a label layer to the map. Reference: https://python-visualization.github.io/folium/modules.html#folium.features.DivIcon
+
+        Args:
+            data (pd.DataFrame | ee.FeatureCollection): The input data to label.
+            column (str): The column name of the data to label.
+            font_size (str, optional): The font size of the labels. Defaults to "12pt".
+            font_color (str, optional): The font color of the labels. Defaults to "black".
+            font_family (str, optional): The font family of the labels. Defaults to "arial".
+            font_weight (str, optional): The font weight of the labels, can be normal, bold. Defaults to "normal".
+            x (str, optional): The column name of the longitude. Defaults to "longitude".
+            y (str, optional): The column name of the latitude. Defaults to "latitude".
+
+        """
+        import pandas as pd
+        from folium.features import DivIcon
+
+        if isinstance(data, ee.FeatureCollection):
+            centroids = vector_centroids(data)
+            df = ee_to_df(centroids)
+        elif isinstance(data, pd.DataFrame):
+            df = data
+        else:
+            raise ValueError("data must be a DataFrame or an ee.FeatureCollection.")
+
+        if column not in df.columns:
+            raise ValueError(f"column must be one of {', '.join(df.columns)}.")
+        if x not in df.columns:
+            raise ValueError(f"column must be one of {', '.join(df.columns)}.")
+        if y not in df.columns:
+            raise ValueError(f"column must be one of {', '.join(df.columns)}.")
+
+        try:
+            size = int(font_size.replace("pt", ""))
+        except:
+            raise ValueError("font_size must be something like '10pt'")
+
+        for index in df.index:
+            html = f'<div style="font-size: {font_size};color:{font_color};font-family:{font_family};font-weight: {font_weight}">{df[column][index]}</div>'
+            folium.Marker(
+                location=[df[y][index], df[x][index]],
+                icon=DivIcon(
+                    icon_size=(1, 1),
+                    icon_anchor=(size, size),
+                    html=html,
+                    **kwargs,
+                ),
+            ).add_to(self)
+
 
 def delete_dp_report(name):
     """Deletes a datapane report.

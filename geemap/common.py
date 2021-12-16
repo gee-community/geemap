@@ -8196,3 +8196,34 @@ def points_from_xy(data, x="longitude", y="latitude", z=None, crs=None, **kwargs
     gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[x], df[y], z=z, crs=crs))
 
     return gdf
+
+
+def vector_centroids(ee_object):
+    """Returns the centroids of an ee.FeatureCollection.
+
+    Args:
+        ee_object (ee.FeatureCollection): The ee.FeatureCollection to get the centroids of.
+
+    Raises:
+        TypeError: If the ee_object is not an ee.FeatureCollection.
+
+    Returns:
+        ee.FeatureCollection: The centroids of the ee_object.
+    """
+    if not isinstance(ee_object, ee.FeatureCollection):
+        raise TypeError("The input must be an Earth Engine FeatureCollection.")
+
+    centroids = ee_object.map(
+        lambda f: ee.Feature(f.geometry().centroid(0.001), f.toDictionary())
+    )
+
+    centroids = centroids.map(
+        lambda f: f.set(
+            {
+                "longitude": f.geometry().coordinates().get(0),
+                "latitude": f.geometry().coordinates().get(1),
+            }
+        )
+    )
+
+    return centroids
