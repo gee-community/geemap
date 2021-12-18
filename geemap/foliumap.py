@@ -413,7 +413,9 @@ class Map(folium.Map):
             geometry = ee_object.transform(maxError=maxError)
         else:
             try:
-                geometry = ee_object.geometry().transform(maxError=maxError)
+                geometry = ee_object.geometry(maxError=maxError).transform(
+                    maxError=maxError
+                )
             except Exception:
                 raise Exception(
                     "ee_object must be an instance of one of ee.Geometry, ee.FeatureCollection, ee.Image, or ee.ImageCollection."
