@@ -167,6 +167,7 @@ nav:
           - notebooks/87_add_points_from_xy.ipynb
           - notebooks/88_circle_markers.ipynb
           - notebooks/89_add_labels.ipynb
+          - notebooks/90_naip_timelapse.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
