@@ -921,14 +921,143 @@ def naip_timeseries(roi=None, start_year=2003, end_year=2021, RGBN=False):
                 naip = collection.filterDate(start_date, end_date)
                 if RGBN:
                     naip = naip.filter(ee.Filter.listContains("system:band_names", "N"))
-                naip = ee.Image(ee.ImageCollection(naip).mosaic())
-                return naip
+                if roi is not None:
+                    if isinstance(roi, ee.Geometry):
+                        image = ee.Image(ee.ImageCollection(naip).mosaic().clip(roi))
+                    elif isinstance(roi, ee.FeatureCollection):
+                        image = ee.Image(
+                            ee.ImageCollection(naip).mosaic().clipToCollection(roi)
+                        )
+                else:
+                    image = ee.Image(ee.ImageCollection(naip).mosaic())
+                return image.set(
+                    {
+                        "system:time_start": ee.Date(start_date).millis(),
+                        "system:time_end": ee.Date(end_date).millis(),
+                        "empty": naip.size().eq(0),
+                    }
+                )
             except Exception as e:
                 raise Exception(e)
 
         years = ee.List.sequence(start_year, end_year)
         collection = ee.ImageCollection(years.map(get_annual_NAIP))
-        return collection
+        return collection.filterMetadata("empty", "equals", 0)
+
+    except Exception as e:
+        raise Exception(e)
+
+
+def naip_timelapse(
+    region,
+    start_year=2003,
+    end_year=2021,
+    out_gif=None,
+    bands=None,
+    palette=None,
+    vis_params=None,
+    dimensions=768,
+    frames_per_second=3,
+    crs="EPSG:3857",
+    overlay_data=None,
+    overlay_color="black",
+    overlay_width=1,
+    overlay_opacity=1.0,
+    title=None,
+    title_xy=("2%", "90%"),
+    add_text=True,
+    text_xy=("2%", "2%"),
+    text_sequence=None,
+    font_type="arial.ttf",
+    font_size=20,
+    font_color="white",
+    add_progress_bar=True,
+    progress_bar_color="white",
+    progress_bar_height=5,
+    loop=0,
+    mp4=False,
+):
+    """Create a timelapse from NAIP imagery.
+
+    Args:
+        region (ee.Geometry): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
+        start_year (int | str, optional): The start year of the timeseries. It must be formatted like this: 'YYYY'. Defaults to 2003.
+        end_year (int | str, optional): The end year of the timeseries. It must be formatted like this: 'YYYY'. Defaults to 2021.
+        out_gif (str): The output gif file path. Defaults to None.
+        bands (list, optional): A list of band names to use in the timelapse. Defaults to None.
+        palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
+        vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
+        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
+        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
+        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
+        overlay_width (int, optional): Width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        title (str, optional): The title of the timelapse. Defaults to None.
+        title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
+        title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
+        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
+
+    Returns:
+        str: File path to the timelapse gif.
+    """
+
+    try:
+        collection = ee.ImageCollection("USDA/NAIP/DOQQ")
+        start_date = str(start_year) + "-01-01"
+        end_date = str(end_year) + "-12-31"
+        frequency = "year"
+        reducer = "median"
+        date_format = "YYYY"
+
+        if bands is not None and isinstance(bands, list) and "N" in bands:
+            collection = collection.filter(
+                ee.Filter.listContains("system:band_names", "N")
+            )
+
+        create_timelapse(
+            collection,
+            start_date,
+            end_date,
+            region,
+            frequency,
+            reducer,
+            date_format,
+            out_gif,
+            bands,
+            palette,
+            vis_params,
+            dimensions,
+            frames_per_second,
+            crs,
+            overlay_data,
+            overlay_color,
+            overlay_width,
+            overlay_opacity,
+            title,
+            title_xy,
+            add_text,
+            text_xy,
+            text_sequence,
+            font_type,
+            font_size,
+            font_color,
+            add_progress_bar,
+            progress_bar_color,
+            progress_bar_height,
+            loop,
+            mp4,
+        )
 
     except Exception as e:
         raise Exception(e)
