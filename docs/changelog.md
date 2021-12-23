@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.10.2 - December 23, 2021
+
+**New Features**:
+
+-   Add locate control to folium [#809](https://github.com/giswqs/geemap/issues/809)
+-   Added add_points_from_xy function [#812](https://github.com/giswqs/geemap/issues/812)
+-   Added heatmap function
+-   Added add_labels function [#815](https://github.com/giswqs/geemap/issues/815)
+-   Added NAIP timelapse [#789](https://github.com/giswqs/geemap/issues/789)
+
+**Improvement**:
+
+-   Improved js_to_py function [#805](https://github.com/giswqs/geemap/discussions/805)
+-   Renamed popups to popup [#812](https://github.com/giswqs/geemap/issues/812)
+-   Changed default map view [#821](https://github.com/giswqs/geemap/issues/821)
+-   Fixed centerObject bug [#823](https://github.com/giswqs/geemap/issues/823)
+-   Fixed typo [#824](https://github.com/giswqs/geemap/pull/824)
+
 ## v0.10.1 - December 6, 2021
 
 **Improvement**:

@@ -1025,7 +1025,7 @@ def naip_timelapse(
                 ee.Filter.listContains("system:band_names", "N")
             )
 
-        create_timelapse(
+        return create_timelapse(
             collection,
             start_date,
             end_date,

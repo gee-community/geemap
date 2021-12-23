@@ -105,6 +105,10 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 84. Downloading OpenStreetMap data with a single line of code ([notebook](https://geemap.org/notebooks/84_openstreetmap))
 85. Converting PostGIS data to ee.FeatureCollection ([notebook](https://geemap.org/notebooks/85_postgis))
 86. Adding image overlay to the map ([notebook](https://geemap.org/notebooks/86_image_overlay))
+87. Adding points from xy data (e.g., CSV, Pandas DataFrame) ([notebook](https://geemap.org/notebooks/87_add_points_from_xy))
+88. Adding circle markers from xy data (e.g., CSV, Pandas DataFrame) ([notebook](https://geemap.org/notebooks/88_circle_markers))
+89. Labeling Earth Engine FeatureCollection on the map ([notebook](https://geemap.org/notebooks/89_add_labels))
+90. Creating 1-m resolution NAIP imagery timelapse ([notebook](https://geemap.org/notebooks/90_naip_timelapse))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
