@@ -1903,6 +1903,7 @@ class Map(folium.Map):
         x="longitude",
         y="latitude",
         draggable=True,
+        layer_name="Labels",
         **kwargs,
     ):
         """Adds a label layer to the map. Reference: https://python-visualization.github.io/folium/modules.html#folium.features.DivIcon
@@ -1917,6 +1918,7 @@ class Map(folium.Map):
             x (str, optional): The column name of the longitude. Defaults to "longitude".
             y (str, optional): The column name of the latitude. Defaults to "latitude".
             draggable (bool, optional): Whether the labels are draggable. Defaults to True.
+            layer_name (str, optional): The name of the layer. Defaults to "Labels".
 
         """
         import warnings
@@ -1959,6 +1961,7 @@ class Map(folium.Map):
         except:
             raise ValueError("font_size must be something like '10pt'")
 
+        layer_group = folium.FeatureGroup(name=layer_name)
         for index in df.index:
             html = f'<div style="font-size: {font_size};color:{font_color};font-family:{font_family};font-weight: {font_weight}">{df[column][index]}</div>'
             folium.Marker(
@@ -1970,7 +1973,9 @@ class Map(folium.Map):
                     **kwargs,
                 ),
                 draggable=draggable,
-            ).add_to(self)
+            ).add_to(layer_group)
+
+        layer_group.add_to(self)
 
 
 def delete_dp_report(name):

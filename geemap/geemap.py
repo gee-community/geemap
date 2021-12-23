@@ -6469,6 +6469,7 @@ class Map(ipyleaflet.Map):
         x="longitude",
         y="latitude",
         draggable=True,
+        layer_name="Labels",
         **kwargs,
     ):
         """Adds a label layer to the map. Reference: https://ipyleaflet.readthedocs.io/en/latest/api_reference/divicon.html
@@ -6483,6 +6484,7 @@ class Map(ipyleaflet.Map):
             x (str, optional): The column name of the longitude. Defaults to "longitude".
             y (str, optional): The column name of the latitude. Defaults to "latitude".
             draggable (bool, optional): Whether the labels are draggable. Defaults to True.
+            layer_name (str, optional): Layer name to use. Defaults to "Labels".
 
         """
         import warnings
@@ -6538,15 +6540,15 @@ class Map(ipyleaflet.Map):
                 ),
                 draggable=draggable,
             )
-            self.add_layer(marker)
             labels.append(marker)
-        self.labels = labels
+        layer_group = ipyleaflet.LayerGroup(layers=labels, name=layer_name)
+        self.add_layer(layer_group)
+        self.labels = layer_group
 
     def remove_labels(self):
         """Removes all labels from the map."""
         if hasattr(self, "labels"):
-            for label in self.labels:
-                self.remove_layer(label)
+            self.remove_layer(self.labels)
             delattr(self, "labels")
 
 
