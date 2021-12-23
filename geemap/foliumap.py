@@ -1902,6 +1902,7 @@ class Map(folium.Map):
         font_weight="normal",
         x="longitude",
         y="latitude",
+        draggable=True,
         **kwargs,
     ):
         """Adds a label layer to the map. Reference: https://python-visualization.github.io/folium/modules.html#folium.features.DivIcon
@@ -1915,16 +1916,34 @@ class Map(folium.Map):
             font_weight (str, optional): The font weight of the labels, can be normal, bold. Defaults to "normal".
             x (str, optional): The column name of the longitude. Defaults to "longitude".
             y (str, optional): The column name of the latitude. Defaults to "latitude".
+            draggable (bool, optional): Whether the labels are draggable. Defaults to True.
 
         """
+        import warnings
         import pandas as pd
         from folium.features import DivIcon
+
+        warnings.filterwarnings("ignore")
 
         if isinstance(data, ee.FeatureCollection):
             centroids = vector_centroids(data)
             df = ee_to_df(centroids)
         elif isinstance(data, pd.DataFrame):
             df = data
+        elif isinstance(data, str):
+            ext = os.path.splitext(data)[1]
+            if ext == ".csv":
+                df = pd.read_csv(data)
+            elif ext in [".geojson", ".json", ".shp", ".gpkg"]:
+                try:
+                    import geopandas as gpd
+
+                    df = gpd.read_file(data)
+                    df[x] = df.centroid.x
+                    df[y] = df.centroid.y
+                except:
+                    print("geopandas is required to read geojson.")
+                    return
         else:
             raise ValueError("data must be a DataFrame or an ee.FeatureCollection.")
 
@@ -1950,6 +1969,7 @@ class Map(folium.Map):
                     html=html,
                     **kwargs,
                 ),
+                draggable=draggable,
             ).add_to(self)
 
 
