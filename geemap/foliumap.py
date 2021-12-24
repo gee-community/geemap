@@ -454,7 +454,7 @@ class Map(folium.Map):
         attribution=".",
         opacity=1.0,
         shown=True,
-        titiler_endpoint="https://api.cogeo.xyz/",
+        titiler_endpoint="https://titiler.xyz",
         **kwargs,
     ):
         """Adds a COG TileLayer to the map.
@@ -465,7 +465,7 @@ class Map(folium.Map):
             attribution (str, optional): The attribution to use. Defaults to '.'.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
         """
         tile_url = get_cog_tile(url, titiler_endpoint, **kwargs)
         center = get_cog_center(url, titiler_endpoint)  # (lon, lat)
@@ -485,7 +485,7 @@ class Map(folium.Map):
         attribution=".",
         opacity=1.0,
         shown=True,
-        titiler_endpoint="https://api.cogeo.xyz/",
+        titiler_endpoint="https://titiler.xyz",
         username="anonymous",
         overwrite=False,
         show_footprints=False,
@@ -500,7 +500,7 @@ class Map(folium.Map):
             attribution (str, optional): The attribution to use. Defaults to '.'.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
             username (str, optional): The username to create mosaic using the titiler endpoint. Defaults to 'anonymous'.
             overwrite (bool, optional): Whether or not to replace existing layer with the same layer name. Defaults to False.
             show_footprints (bool, optional): Whether or not to show footprints of COGs. Defaults to False.
@@ -553,7 +553,7 @@ class Map(folium.Map):
         attribution=".",
         opacity=1.0,
         shown=True,
-        titiler_endpoint="https://api.cogeo.xyz/",
+        titiler_endpoint="https://titiler.xyz",
         **kwargs,
     ):
         """Adds a STAC TileLayer to the map.
@@ -564,7 +564,7 @@ class Map(folium.Map):
             attribution (str, optional): The attribution to use. Defaults to '.'.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://api.cogeo.xyz/".
+            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
         """
         tile_url = get_stac_tile(url, bands, titiler_endpoint, **kwargs)
         center = get_stac_center(url, titiler_endpoint)
