@@ -1977,6 +1977,10 @@ class Map(folium.Map):
 
         layer_group.add_to(self)
 
+    def remove_labels(self, **kwargs):
+        """Removes a layer from the map."""
+        print("The folium plotting backend does not support removing labels.")
+
 
 def delete_dp_report(name):
     """Deletes a datapane report.
