@@ -10,7 +10,7 @@ geojson
 googledrivedownloader
 ipyevents
 ipyfilechooser>=0.6.0
-ipyleaflet<=0.14.0
+ipyleaflet>=0.14.0
 ipynb-py-convert
 ipytree
 jupyterlab>=3
