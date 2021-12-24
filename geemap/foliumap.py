@@ -6,154 +6,12 @@ import ee
 import folium
 from folium import plugins
 
+from .basemaps import folium_basemaps
 from .common import *
 from .conversion import *
 from .legends import builtin_legends
 from .osm import *
 from .timelapse import *
-
-
-# More WMS basemaps can be found at https://viewer.nationalmap.gov/services/
-ee_basemaps = {
-    "ROADMAP": folium.TileLayer(
-        tiles="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-        attr="Google",
-        name="Google Maps",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "SATELLITE": folium.TileLayer(
-        tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        attr="Google",
-        name="Google Satellite",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "TERRAIN": folium.TileLayer(
-        tiles="https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",
-        attr="Google",
-        name="Google Terrain",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "HYBRID": folium.TileLayer(
-        tiles="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
-        attr="Google",
-        name="Google Satellite",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "ESRI": folium.TileLayer(
-        tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        attr="Esri",
-        name="Esri Satellite",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "Esri Ocean": folium.TileLayer(
-        tiles="https://services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
-        attr="Esri",
-        name="Esri Ocean",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "Esri Satellite": folium.TileLayer(
-        tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        attr="Esri",
-        name="Esri Satellite",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "Esri Standard": folium.TileLayer(
-        tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
-        attr="Esri",
-        name="Esri Standard",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "Esri Terrain": folium.TileLayer(
-        tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}",
-        attr="Esri",
-        name="Esri Terrain",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "Esri Transportation": folium.TileLayer(
-        tiles="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}",
-        attr="Esri",
-        name="Esri Transportation",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "Esri Topo World": folium.TileLayer(
-        tiles="https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-        attr="Esri",
-        name="Esri Topo World",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "Esri National Geographic": folium.TileLayer(
-        tiles="http://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}",
-        attr="Esri",
-        name="Esri National Geographic",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "Esri Shaded Relief": folium.TileLayer(
-        tiles="https://services.arcgisonline.com/arcgis/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}",
-        attr="Esri",
-        name="Esri Shaded Relief",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "Esri Physical Map": folium.TileLayer(
-        tiles="https://services.arcgisonline.com/arcgis/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}",
-        attr="Esri",
-        name="Esri Physical Map",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "Bing VirtualEarth": folium.TileLayer(
-        tiles="http://ecn.t3.tiles.virtualearth.net/tiles/a{q}.jpeg?g=1",
-        attr="Microsoft",
-        name="Bing VirtualEarth",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "3DEP Elevation": folium.WmsTileLayer(
-        url="https://elevation.nationalmap.gov/arcgis/services/3DEPElevation/ImageServer/WMSServer?",
-        layers="3DEPElevation:None",
-        attr="USGS",
-        name="3DEP Elevation",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-    "NAIP Imagery": folium.WmsTileLayer(
-        url="https://services.nationalmap.gov/arcgis/services/USGSNAIPImagery/ImageServer/WMSServer?",
-        layers="0",
-        attr="USGS",
-        name="NAIP Imagery",
-        overlay=True,
-        control=True,
-        max_zoom=24,
-    ),
-}
 
 
 class Map(folium.Map):
@@ -219,9 +77,9 @@ class Map(folium.Map):
         self.baseclass = "folium"
 
         if kwargs.get("add_google_map"):
-            ee_basemaps["ROADMAP"].add_to(self)
+            folium_basemaps["ROADMAP"].add_to(self)
         if kwargs.get("basemap"):
-            ee_basemaps[kwargs.get("basemap")].add_to(self)
+            folium_basemaps[kwargs.get("basemap")].add_to(self)
         if kwargs.get("plugin_LatLngPopup"):
             folium.LatLngPopup().add_to(self)
         if kwargs.get("plugin_Fullscreen"):
@@ -246,11 +104,11 @@ class Map(folium.Map):
             types ([type], optional): A list of mapTypeIds to make available. If omitted, but opt_styles is specified, appends all of the style keys to the standard Google Maps API map types.. Defaults to None.
         """
         try:
-            ee_basemaps[mapTypeId].add_to(self)
+            folium_basemaps[mapTypeId].add_to(self)
         except Exception:
             raise Exception(
                 "Basemap can only be one of the following: {}".format(
-                    ", ".join(ee_basemaps.keys())
+                    ", ".join(folium_basemaps.keys())
                 )
             )
 
@@ -263,11 +121,11 @@ class Map(folium.Map):
             basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'HYBRID'.
         """
         try:
-            ee_basemaps[basemap].add_to(self)
+            folium_basemaps[basemap].add_to(self)
         except Exception:
             raise Exception(
                 "Basemap can only be one of the following: {}".format(
-                    ", ".join(ee_basemaps.keys())
+                    ", ".join(folium_basemaps.keys())
                 )
             )
 
