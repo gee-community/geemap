@@ -5,9 +5,6 @@ geemap
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
         :target: https://gishub.org/geemap-colab
 
-.. image:: https://binder.pangeo.io/badge_logo.svg
-        :target: https://gishub.org/geemap-pangeo
-
 .. image:: https://mybinder.org/badge_logo.svg
         :target: https://gishub.org/geemap-binder
 
