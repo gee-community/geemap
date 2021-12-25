@@ -168,6 +168,7 @@ nav:
           - notebooks/88_circle_markers.ipynb
           - notebooks/89_add_labels.ipynb
           - notebooks/90_naip_timelapse.ipynb
+          - notebooks/91_planetary_computer.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
