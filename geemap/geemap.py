@@ -1771,8 +1771,8 @@ class Map(ipyleaflet.Map):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
         """
-        tile_url = get_cog_tile(url, titiler_endpoint, **kwargs)
-        center = get_cog_center(url, titiler_endpoint)  # (lon, lat)
+        tile_url = cog_tile(url, titiler_endpoint, **kwargs)
+        center = cog_center(url, titiler_endpoint)  # (lon, lat)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
         self.set_center(lon=center[0], lat=center[1], zoom=10)
 
@@ -1805,7 +1805,7 @@ class Map(ipyleaflet.Map):
             verbose (bool, optional): Whether or not to print descriptions. Defaults to True.
         """
         layername = name.replace(" ", "_")
-        tile = get_cog_mosaic(
+        tile = cog_mosaic(
             links,
             titiler_endpoint=titiler_endpoint,
             username=username,
@@ -1822,7 +1822,7 @@ class Map(ipyleaflet.Map):
                 )
             coords = []
             for link in links:
-                coord = get_cog_bounds(link)
+                coord = cog_bounds(link)
                 if coord is not None:
                     coords.append(coord)
             fc = coords_to_geojson(coords)
@@ -1843,35 +1843,44 @@ class Map(ipyleaflet.Map):
             if verbose:
                 print("The footprint layer has been added.")
         else:
-            center = get_cog_center(links[0], titiler_endpoint)
+            center = cog_center(links[0], titiler_endpoint)
 
         self.set_center(center[0], center[1], zoom=6)
 
     def add_stac_layer(
         self,
-        url,
+        url=None,
+        collection=None,
+        items=None,
+        assets=None,
         bands=None,
-        name="Untitled",
+        titiler_endpoint=None,
+        name="STAC Layer",
         attribution="",
         opacity=1.0,
         shown=True,
-        titiler_endpoint="https://titiler.xyz",
         **kwargs,
     ):
         """Adds a STAC TileLayer to the map.
 
         Args:
-            url (str): The URL of the COG tile layer.
-            name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
+            url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+            collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
+            items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+            assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
+            bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
+            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+            name (str, optional): The layer name to use for the layer. Defaults to 'STAC Layer'.
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
         """
-        tile_url = get_stac_tile(url, bands, titiler_endpoint, **kwargs)
-        center = get_stac_center(url, titiler_endpoint)
+        tile_url = stac_tile(
+            url, collection, items, assets, bands, titiler_endpoint, **kwargs
+        )
+        bounds = stac_bounds(url, collection, items, titiler_endpoint)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
-        self.set_center(lon=center[0], lat=center[1], zoom=10)
+        self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
 
     def add_minimap(self, zoom=5, position="bottomright"):
         """Adds a minimap (overview) to the ipyleaflet map.
