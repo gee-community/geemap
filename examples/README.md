@@ -1,7 +1,6 @@
 # geemap
 
 [![image](https://colab.research.google.com/assets/colab-badge.svg)](https://gishub.org/geemap-colab)
-[![image](https://binder.pangeo.io/badge_logo.svg)](https://gishub.org/geemap-pangeo)
 [![image](https://mybinder.org/badge_logo.svg)](https://gishub.org/geemap-binder)
 [![image](https://img.shields.io/pypi/v/geemap.svg)](https://pypi.python.org/pypi/geemap)
 [![image](https://img.shields.io/conda/vn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
@@ -109,6 +108,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 88. Adding circle markers from xy data (e.g., CSV, Pandas DataFrame) ([notebook](https://geemap.org/notebooks/88_circle_markers))
 89. Labeling Earth Engine FeatureCollection on the map ([notebook](https://geemap.org/notebooks/89_add_labels))
 90. Creating 1-m resolution NAIP imagery timelapse ([notebook](https://geemap.org/notebooks/90_naip_timelapse))
+91. Adding Planetary Computer STAC item to the map ([notebook](https://geemap.org/notebooks/91_planetary_computer))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
