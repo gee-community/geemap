@@ -1,7 +1,7 @@
 # geemap
 
 [![image](https://colab.research.google.com/assets/colab-badge.svg)](https://gishub.org/geemap-colab)
-[![image](https://binder.pangeo.io/badge_logo.svg)](https://gishub.org/geemap-pangeo)
+[![image](https://mybinder.org/badge_logo.svg)](https://gishub.org/geemap-binder)
 [![image](https://mybinder.org/badge_logo.svg)](https://gishub.org/geemap-binder)
 [![image](https://img.shields.io/pypi/v/geemap.svg)](https://pypi.python.org/pypi/geemap)
 [![image](https://img.shields.io/conda/vn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
