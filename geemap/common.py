@@ -4259,6 +4259,50 @@ def cog_info(url, titiler_endpoint="https://titiler.xyz", return_geojson=False):
     return r
 
 
+def cog_pixel_value(
+    lon,
+    lat,
+    url,
+    bidx=None,
+    titiler_endpoint="https://titiler.xyz",
+    **kwargs,
+):
+    """Get pixel value from COG.
+
+    Args:
+        lon (float): Longitude of the pixel.
+        lat (float): Latitude of the pixel.
+        url (str): HTTP URL to a COG, e.g., 'https://opendata.digitalglobe.com/events/california-fire-2020/pre-event/2018-02-16/pine-gulch-fire20/1030010076004E00.tif'
+        bidx (str, optional): Dataset band indexes (e.g bidx=1, bidx=1&bidx=2&bidx=3). Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+
+    Returns:
+        list: A dictionary of band info.
+    """
+
+    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    kwargs["url"] = url
+    if bidx is not None:
+        kwargs["bidx"] = bidx
+
+    r = requests.get(f"{titiler_endpoint}/cog/point/{lon},{lat}", params=kwargs).json()
+    bands = cog_bands(url, titiler_endpoint)
+    # if isinstance(titiler_endpoint, str):
+    #     r = requests.get(f"{titiler_endpoint}/cog/point/{lon},{lat}", params=kwargs).json()
+    # else:
+    #     r = requests.get(
+    #         titiler_endpoint.url_for_stac_pixel_value(lon, lat), params=kwargs
+    #     ).json()
+
+    if "detail" in r:
+        print(r["detail"])
+        return None
+    else:
+        values = r["values"]
+        result = dict(zip(bands, values))
+        return result
+
+
 def stac_tile(
     url=None,
     collection=None,
@@ -4621,6 +4665,73 @@ def stac_assets(url=None, collection=None, items=None, titiler_endpoint=None, **
         r = requests.get(titiler_endpoint.url_for_stac_assets(), params=kwargs).json()
 
     return r
+
+
+def stac_pixel_value(
+    lon,
+    lat,
+    url=None,
+    collection=None,
+    items=None,
+    assets=None,
+    titiler_endpoint=None,
+    **kwargs,
+):
+    """Get pixel value from STAC assets.
+
+    Args:
+        lon (float): Longitude of the pixel.
+        lat (float): Latitude of the pixel.
+        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
+        items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+        assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+
+    Returns:
+        list: A dictionary of pixel values for each asset.
+    """
+
+    if url is None and collection is None:
+        raise ValueError("Either url or collection must be specified.")
+
+    if collection is not None and titiler_endpoint is None:
+        titiler_endpoint = "planetary-computer"
+
+    if url is not None:
+        kwargs["url"] = url
+    if collection is not None:
+        kwargs["collection"] = collection
+    if items is not None:
+        kwargs["items"] = items
+
+    if assets is None:
+        assets = stac_assets(
+            url=url,
+            collection=collection,
+            items=items,
+            titiler_endpoint=titiler_endpoint,
+        )
+        assets = ",".join(assets)
+    kwargs["assets"] = assets
+
+    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    if isinstance(titiler_endpoint, str):
+        r = requests.get(f"{titiler_endpoint}/stac/{lon},{lat}", params=kwargs).json()
+    else:
+        r = requests.get(
+            titiler_endpoint.url_for_stac_pixel_value(lon, lat), params=kwargs
+        ).json()
+
+    if "detail" in r:
+        print(r["detail"])
+        return None
+    else:
+        values = [v[0] for v in r["values"]]
+        print(values)
+        print(assets)
+        result = dict(zip(assets.split(","), values))
+        return result
 
 
 def bbox_to_geojson(bounds):
