@@ -8772,3 +8772,25 @@ def vector_centroids(ee_object):
     )
 
     return centroids
+
+
+def bbox_to_gdf(bbox, crs="EPSG:4326"):
+    """Converts a bounding box to a GeoDataFrame.
+
+    Args:
+        bbox (tuple): A bounding box in the form of a tuple (minx, miny, maxx, maxy).
+        crs (str, optional): The coordinate reference system of the bounding box to convert to. Defaults to "EPSG:4326".
+
+    Returns:
+        geopandas.GeoDataFrame: A GeoDataFrame containing the bounding box.
+    """
+    check_package(name="geopandas", URL="https://geopandas.org")
+    from shapely.geometry import box
+    from geopandas import GeoDataFrame
+
+    minx, miny, maxx, maxy = bbox
+    geometry = box(minx, miny, maxx, maxy)
+    d = {"geometry": [geometry]}
+    gdf = GeoDataFrame(d, crs="EPSG:4326")
+    gdf.to_crs(crs=crs, inplace=True)
+    return gdf
