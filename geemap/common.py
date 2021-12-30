@@ -4022,7 +4022,7 @@ def load_GeoTIFFs(URLs):
     return ee.ImageCollection(collection)
 
 
-def cog_tile(url, titiler_endpoint="https://titiler.xyz", **kwargs):
+def cog_tile(url, bands=None, titiler_endpoint="https://titiler.xyz", **kwargs):
     """Get a tile layer from a Cloud Optimized GeoTIFF (COG).
         Source code adapted from https://developmentseed.org/titiler/examples/notebooks/Working_with_CloudOptimizedGeoTIFF_simple/
 
@@ -4035,6 +4035,25 @@ def cog_tile(url, titiler_endpoint="https://titiler.xyz", **kwargs):
     """
 
     kwargs["url"] = url
+
+    band_names = cog_bands(url, titiler_endpoint)
+
+    if bands is None and "bidx" not in kwargs:
+        if len(band_names) >= 3:
+            kwargs["bidx"] = [1, 2, 3]
+    elif bands is not None and "bidx" not in kwargs:
+        if all(isinstance(x, int) for x in bands):
+            kwargs["bidx"] = bands
+        elif all(isinstance(x, str) for x in bands):
+            kwargs["bidx"] = [band_names.index(x) + 1 for x in bands]
+        else:
+            raise ValueError("Bands must be a list of integers or strings.")
+
+    if "rescale" not in kwargs:
+        stats = cog_stats(url, titiler_endpoint)
+        percentile_2 = min([stats[s]["percentile_2"] for s in stats])
+        percentile_98 = max([stats[s]["percentile_98"] for s in stats])
+        kwargs["rescale"] = f"{percentile_2},{percentile_98}"
 
     TileMatrixSetId = "WebMercatorQuad"
     if "TileMatrixSetId" in kwargs.keys():
