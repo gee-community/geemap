@@ -1758,6 +1758,7 @@ class Map(ipyleaflet.Map):
         attribution="",
         opacity=1.0,
         shown=True,
+        bands=None,
         titiler_endpoint="https://titiler.xyz",
         **kwargs,
     ):
@@ -1769,12 +1770,14 @@ class Map(ipyleaflet.Map):
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            bands (list, optional): A list of bands to use for the layer. Defaults to None.
             titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+            **kwargs: Arbitrary keyword arguments, including bidx, expression, nodata, unscale, resampling, rescale, color_formula, colormap, colormap_name, return_mask. See https://developmentseed.org/titiler/endpoints/cog/ and https://cogeotiff.github.io/rio-tiler/colormap/. To select a certain bands, use bidx=[1, 2, 3]
         """
-        tile_url = cog_tile(url, titiler_endpoint, **kwargs)
-        center = cog_center(url, titiler_endpoint)  # (lon, lat)
+        tile_url = cog_tile(url, bands, titiler_endpoint, **kwargs)
+        bounds = cog_bounds(url, titiler_endpoint)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
-        self.set_center(lon=center[0], lat=center[1], zoom=10)
+        self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
 
     def add_cog_mosaic(
         self,
