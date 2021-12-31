@@ -543,6 +543,7 @@ def create_timeseries(
     start_date,
     end_date,
     region=None,
+    bands=None,
     frequency="year",
     reducer="median",
     drop_empty=True,
@@ -555,6 +556,7 @@ def create_timeseries(
         start_date (str): The start date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
         end_date (str): The end date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
         region (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
+        bands (list, optional): The list of bands to use to create the timeseries. It must be a list of strings. Defaults to None.
         frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
         reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
         drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
@@ -570,6 +572,11 @@ def create_timeseries(
             raise Exception(
                 "The collection must be an ee.ImageCollection object or asset id."
             )
+
+    if bands is not None:
+        collection = collection.select(bands)
+    else:
+        bands = collection.first().bandNames()
 
     feq_dict = {
         "year": "YYYY",
@@ -613,7 +620,7 @@ def create_timeseries(
                 "system:date": ee.Date(date).format(date_format),
                 "empty": sub_col.size().eq(0),
             }
-        )
+        ).rename(bands)
 
     try:
 
@@ -631,11 +638,11 @@ def create_timelapse(
     start_date,
     end_date,
     region=None,
+    bands=None,
     frequency="year",
     reducer="median",
     date_format=None,
     out_gif=None,
-    bands=None,
     palette=None,
     vis_params=None,
     dimensions=768,
@@ -666,12 +673,12 @@ def create_timelapse(
         start_date (str): The start date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
         end_date (str): The end date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
         region (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
+        bands (list, optional): A list of band names to use in the timelapse. Defaults to None.
         frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
         reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
         drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
         date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
         out_gif (str): The output gif file path. Defaults to None.
-        bands (list, optional): A list of band names to use in the timelapse. Defaults to None.
         palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
         vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
         dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
@@ -713,6 +720,7 @@ def create_timelapse(
         start_date,
         end_date,
         region=region,
+        bands=bands,
         frequency=frequency,
         reducer=reducer,
         drop_empty=True,
@@ -789,6 +797,8 @@ def create_timelapse(
             )
         if palette is None and (len(bands) == 1) and ("palette" not in vis_params):
             vis_params["palette"] = cm.palettes.ndvi
+        elif palette is not None and ("palette" not in vis_params):
+            vis_params["palette"] = palette
         if len(bands) > 1 and "palette" in vis_params:
             del vis_params["palette"]
     else:
@@ -1030,11 +1040,11 @@ def naip_timelapse(
             start_date,
             end_date,
             region,
+            bands,
             frequency,
             reducer,
             date_format,
             out_gif,
-            bands,
             palette,
             vis_params,
             dimensions,
@@ -3044,3 +3054,187 @@ def modis_ndvi_timelapse(
 
     except Exception as e:
         raise Exception(e)
+
+
+def modis_ocean_color_timeseries(
+    satellite,
+    start_date,
+    end_date,
+    region=None,
+    bands=None,
+    frequency="year",
+    reducer="median",
+    drop_empty=True,
+    date_format=None,
+):
+    """Creates a ocean color timeseries from MODIS. https://developers.google.com/earth-engine/datasets/catalog/NASA_OCEANDATA_MODIS-Aqua_L3SMI
+
+    Args:
+        satellite (str): The satellite to use, can be either "Terra" or "Aqua".
+        start_date (str): The start date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
+        end_date (str): The end date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
+        region (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
+        bands (list, optional): The list of bands to use to create the timeseries. It must be a list of strings. Defaults to None.
+        frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day'. Defaults to 'year'.
+        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
+        drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
+        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
+
+    Returns:
+        ee.ImageCollection: The timeseries.
+    """
+
+    if satellite not in ["Terra", "Aqua"]:
+        raise Exception("Satellite must be 'Terra' or 'Aqua'.")
+
+    allowed_frequency = ["year", "quarter", "month", "week", "day"]
+    if frequency not in allowed_frequency:
+        raise Exception(
+            "Frequency must be one of the following: {}".format(allowed_frequency)
+        )
+
+    if region is not None:
+        if isinstance(region, ee.Geometry) or isinstance(region, ee.FeatureCollection):
+            pass
+        else:
+            raise Exception("region must be an ee.Geometry or ee.FeatureCollection.")
+
+    col = ee.ImageCollection(f"NASA/OCEANDATA/MODIS-{satellite}/L3SMI").filterDate(
+        start_date, end_date
+    )
+
+    ts = create_timeseries(
+        col,
+        start_date,
+        end_date,
+        region,
+        bands,
+        frequency,
+        reducer,
+        drop_empty,
+        date_format,
+    )
+
+    return ts
+
+
+def modis_ocean_color_timelapse(
+    satellite,
+    start_date,
+    end_date,
+    region=None,
+    bands=None,
+    frequency="year",
+    reducer="median",
+    date_format=None,
+    out_gif=None,
+    palette=None,
+    vis_params=None,
+    dimensions=768,
+    frames_per_second=5,
+    crs="EPSG:3857",
+    overlay_data=None,
+    overlay_color="black",
+    overlay_width=1,
+    overlay_opacity=1.0,
+    title=None,
+    title_xy=("2%", "90%"),
+    add_text=True,
+    text_xy=("2%", "2%"),
+    text_sequence=None,
+    font_type="arial.ttf",
+    font_size=20,
+    font_color="white",
+    add_progress_bar=True,
+    progress_bar_color="white",
+    progress_bar_height=5,
+    loop=0,
+    mp4=False,
+):
+    """Creates a ocean color timelapse from MODIS. https://developers.google.com/earth-engine/datasets/catalog/NASA_OCEANDATA_MODIS-Aqua_L3SMI
+
+    Args:
+        satellite (str): The satellite to use, can be either "Terra" or "Aqua".
+        start_date (str): The start date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
+        end_date (str): The end date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
+        region (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
+        bands (list, optional): A list of band names to use in the timelapse. Defaults to None.
+        frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
+        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
+        drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
+        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
+        out_gif (str): The output gif file path. Defaults to None.
+        palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
+        vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
+        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
+        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
+        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
+        overlay_width (int, optional): Width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        title (str, optional): The title of the timelapse. Defaults to None.
+        title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
+        title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
+        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
+
+    Returns:
+        str: File path to the timelapse gif.
+    """
+    collection = modis_ocean_color_timeseries(
+        satellite, start_date, end_date, region, bands, frequency, reducer, date_format
+    )
+
+    if bands is None:
+        bands = ["sst"]
+
+    if len(bands) == 1 and palette is None:
+        palette = "coolwarm"
+
+    if region is None:
+        region = ee.Geometry.BBox(-99.755133, 18.316722, -79.761194, 31.206929)
+
+    out_gif = create_timelapse(
+        collection,
+        start_date,
+        end_date,
+        region,
+        bands,
+        frequency,
+        reducer,
+        date_format,
+        out_gif,
+        palette,
+        vis_params,
+        dimensions,
+        frames_per_second,
+        crs,
+        overlay_data,
+        overlay_color,
+        overlay_width,
+        overlay_opacity,
+        title,
+        title_xy,
+        add_text,
+        text_xy,
+        text_sequence,
+        font_type,
+        font_size,
+        font_color,
+        add_progress_bar,
+        progress_bar_color,
+        progress_bar_height,
+        loop,
+        mp4,
+    )
+
+    return out_gif

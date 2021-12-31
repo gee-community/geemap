@@ -1453,6 +1453,7 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip
                 fd.write(chunk)
     except Exception as e:
         print("An error occurred while downloading.")
+        print(r.json()["error"]["message"])
         raise ValueError(e)
 
     try:
@@ -1581,7 +1582,8 @@ def ee_export_geojson(ee_object, filename=None, selectors=None):
                 fd.write(chunk)
     except Exception as e:
         print("An error occurred while downloading.")
-        print(e)
+        print(r.json()["error"]["message"])
+
         return
 
     with open(filename) as f:
@@ -1723,7 +1725,7 @@ def ee_export_image(
 
     except Exception as e:
         print("An error occurred while downloading.")
-        print(e)
+        print(r.json()["error"]["message"])
         return
 
     try:
@@ -1947,6 +1949,8 @@ def get_image_thumbnail(
     r = requests.get(url, stream=True)
     if r.status_code != 200:
         print("An error occurred while downloading.")
+        print(r.json()["error"]["message"])
+
     else:
         with open(out_img, "wb") as fd:
             for chunk in r.iter_content(chunk_size=1024):
@@ -2265,6 +2269,7 @@ def download_ee_video(collection, video_args, out_gif):
 
         if r.status_code != 200:
             print("An error occurred while downloading.")
+            print(r.json()["error"]["message"])
             return
         else:
             with open(out_gif, "wb") as fd:
