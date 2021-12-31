@@ -2559,6 +2559,118 @@ def create_colorbar(
     return out_file
 
 
+def save_colorbar(
+    out_fig=None,
+    width=6.0,
+    height=0.4,
+    vmin=0,
+    vmax=1.0,
+    palette=None,
+    vis_params=None,
+    cmap="gray",
+    discrete=False,
+    label=None,
+    label_size=12,
+    label_weight="normal",
+    tick_size=10,
+    bg_color=None,
+    orientation="horizontal",
+    dpi="figure",
+    **kwargs,
+):
+    """Create a standalone colorbar and save it as an image.
+
+    Args:
+        out_fig (str): Path to the output image.
+        width (float): Width of the colorbar in inches. Default is 6.0.
+        height (float): Height of the colorbar in inches. Default is 0.4.
+        vmin (float): Minimum value of the colorbar. Default is 0.
+        vmax (float): Maximum value of the colorbar. Default is 1.0.
+        palette (list): List of colors to use for the colorbar. It can also be a cmap name, such as ndvi, ndwi, dem, coolwarm. Default is None.
+        vis_params (dict): Visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.
+        cmap (str, optional): Matplotlib colormap. Defaults to "gray". See https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py for options.
+        discrete (bool, optional): Whether to create a discrete colorbar. Defaults to False.
+        label (str, optional): Label for the colorbar. Defaults to None.
+        label_size (int, optional): Font size for the colorbar label. Defaults to 12.
+        label_weight (str, optional): Font weight for the colorbar label, can be "normal", "bold", etc. Defaults to "normal".
+        tick_size (int, optional): Font size for the colorbar tick labels. Defaults to 10.
+        bg_color (str, optional): Background color for the colorbar. Defaults to None.
+        orientation (str, optional): Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
+        dpi (float | str, optional): The resolution in dots per inch.  If 'figure', use the figure's dpi value.. Defaults to "figure".
+
+    Returns:
+        str: Path to the output image.
+    """
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from .colormaps import palettes
+
+    if out_fig is None:
+        out_fig = temp_file_path("png")
+
+    if vis_params is None:
+        vis_params = {}
+    elif not isinstance(vis_params, dict):
+        raise TypeError("The vis_params must be a dictionary.")
+
+    if palette is not None:
+        if palette in list(palettes.keys()):
+            palette = palettes[palette]
+        vis_params["palette"] = palette
+
+    orientation = orientation.lower()
+    if orientation not in ["horizontal", "vertical"]:
+        raise ValueError("The orientation must be either horizontal or vertical.")
+
+    if "opacity" in vis_params:
+        alpha = vis_params["opacity"]
+        if type(alpha) not in (int, float):
+            raise ValueError("The provided opacity value must be type scalar.")
+    elif "alpha" in kwargs:
+        alpha = kwargs["alpha"]
+    else:
+        alpha = 1
+
+    if cmap is not None:
+
+        cmap = mpl.pyplot.get_cmap(cmap)
+        norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+
+    if "palette" in vis_params:
+        hexcodes = to_hex_colors(vis_params["palette"])
+        if discrete:
+            cmap = mpl.colors.ListedColormap(hexcodes)
+            vals = np.linspace(vmin, vmax, cmap.N + 1)
+            norm = mpl.colors.BoundaryNorm(vals, cmap.N)
+
+        else:
+            cmap = mpl.colors.LinearSegmentedColormap.from_list(
+                "custom", hexcodes, N=256
+            )
+            norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+
+    elif cmap is not None:
+
+        cmap = mpl.pyplot.get_cmap(cmap)
+        norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+
+    else:
+        raise ValueError(
+            'cmap keyword or "palette" key in vis_params must be provided.'
+        )
+
+    fig, ax = plt.subplots(figsize=(width, height))
+    cb = mpl.colorbar.ColorbarBase(
+        ax, norm=norm, alpha=alpha, cmap=cmap, orientation=orientation, **kwargs
+    )
+    if label is not None:
+        cb.set_label(label=label, size=label_size, weight=label_weight)
+    cb.ax.tick_params(labelsize=tick_size)
+    fig.savefig(out_fig, dpi=dpi, facecolor=bg_color, bbox_inches="tight")
+    return out_fig
+
+
 def minimum_bounding_box(geojson):
     """Gets the minimum bounding box for a geojson polygon.
 
