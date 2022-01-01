@@ -409,11 +409,12 @@ def add_image_to_gif(
         print("The provided logo file does not exist.")
         return
 
-    if not os.path.exists(os.path.dirname(out_gif)):
-        os.makedirs(os.path.dirname(out_gif))
+    out_dir = check_dir((os.path.dirname(out_gif)))
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
 
     try:
-        image = Image.open(in_gif)
+        gif = Image.open(in_gif)
     except Exception as e:
         print("An error occurred while opening the image.")
         print(e)
@@ -430,6 +431,12 @@ def add_image_to_gif(
         print(e)
 
     logo_raw_size = logo_raw_image.size
+
+    ratio = max(
+        logo_raw_size[0] / image_size[0],
+        logo_raw_size[1] / image_size[1],
+    )
+    image_resize = (int(logo_raw_size[0] / ratio), int(logo_raw_size[1] / ratio))
     image_size = min(logo_raw_size[0], image_size[0]), min(
         logo_raw_size[1], image_size[1]
     )
@@ -437,7 +444,7 @@ def add_image_to_gif(
     logo_image = logo_raw_image.convert("RGBA")
     logo_image.thumbnail(image_size, Image.ANTIALIAS)
 
-    W, H = image.size
+    gif_width, gif_height = gif.size
     mask_im = None
 
     if circle_mask:
@@ -450,18 +457,20 @@ def add_image_to_gif(
 
     if xy is None:
         # default logo location is 5% width and 5% height of the image.
-        xy = (int(0.05 * W), int(0.05 * H))
+        delta = 10
+        xy = (gif_width - image_resize[0] - delta, gif_height - image_resize[1] - delta)
+        # xy = (int(0.05 * gif_width), int(0.05 * gif_height))
     elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
         print("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
         return
     elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):
         x, y = xy
-        if (x > 0) and (x < W) and (y > 0) and (y < H):
+        if (x > 0) and (x < gif_width) and (y > 0) and (y < gif_height):
             pass
         else:
             print(
                 "xy is out of bounds. x must be within [0, {}], and y must be within [0, {}]".format(
-                    W, H
+                    gif_width, gif_height
                 )
             )
             return
@@ -469,8 +478,8 @@ def add_image_to_gif(
         x, y = xy
         if ("%" in x) and ("%" in y):
             try:
-                x = int(float(x.replace("%", "")) / 100.0 * W)
-                y = int(float(y.replace("%", "")) / 100.0 * H)
+                x = int(float(x.replace("%", "")) / 100.0 * gif_width)
+                y = int(float(y.replace("%", "")) / 100.0 * gif_height)
                 xy = (x, y)
             except Exception:
                 raise Exception(
@@ -485,7 +494,7 @@ def add_image_to_gif(
     try:
 
         frames = []
-        for _, frame in enumerate(ImageSequence.Iterator(image)):
+        for _, frame in enumerate(ImageSequence.Iterator(gif)):
             frame = frame.convert("RGBA")
             frame.paste(logo_image, xy, mask_im)
 
@@ -663,6 +672,18 @@ def create_timelapse(
     add_progress_bar=True,
     progress_bar_color="white",
     progress_bar_height=5,
+    add_colorbar=False,
+    colorbar_width=6.0,
+    colorbar_height=0.4,
+    colorbar_label=None,
+    colorbar_label_size=12,
+    colorbar_label_weight="normal",
+    colorbar_tick_size=10,
+    colorbar_bg_color=None,
+    colorbar_orientation="horizontal",
+    colorbar_dpi="figure",
+    colorbar_xy=None,
+    colorbar_size=(300, 300),
     loop=0,
     mp4=False,
 ):
@@ -699,6 +720,18 @@ def create_timelapse(
         add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
         progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
         progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
+        add_colorbar (bool, optional): Whether to add a colorbar to the timelapse. Defaults to False.
+        colorbar_width (float, optional): Width of the colorbar. Defaults to 6.0.
+        colorbar_height (float, optional): Height of the colorbar. Defaults to 0.4.
+        colorbar_label (str, optional): Label for the colorbar. Defaults to None.
+        colorbar_label_size (int, optional): Font size for the colorbar label. Defaults to 12.
+        colorbar_label_weight (str, optional): Font weight for the colorbar label. Defaults to 'normal'.
+        colorbar_tick_size (int, optional): Font size for the colorbar ticks. Defaults to 10.
+        colorbar_bg_color (str, optional): Background color for the colorbar, can be color like "white", "black". Defaults to None.
+        colorbar_orientation (str, optional): Orientation of the colorbar. Defaults to 'horizontal'.
+        colorbar_dpi (str, optional): DPI for the colorbar, can be numbers like 100, 300. Defaults to 'figure'.
+        colorbar_xy (tuple, optional): Lower left corner of the colorbar. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        colorbar_size (tuple, optional): Size of the colorbar. It can be formatted like this: (300, 300). Defaults to (300, 300).
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
 
@@ -737,9 +770,8 @@ def create_timelapse(
     if out_gif is None:
         out_gif = temp_file_path(".gif")
     else:
-        out_gif = os.path.abspath(out_gif)
-        if not os.path.exists(os.path.dirname(out_gif)):
-            os.makedirs(os.path.dirname(out_gif))
+        out_gif = check_file_path(out_gif)
+
     out_dir = os.path.dirname(out_gif)
 
     if bands is None:
@@ -897,6 +929,24 @@ def create_timelapse(
             duration=1000 / frames_per_second,
             loop=loop,
         )
+    if add_colorbar:
+        colorbar = save_colorbar(
+            None,
+            colorbar_width,
+            colorbar_height,
+            vis_params["min"],
+            vis_params["max"],
+            vis_params["palette"],
+            label=colorbar_label,
+            label_size=colorbar_label_size,
+            label_weight=colorbar_label_weight,
+            tick_size=colorbar_tick_size,
+            bg_color=colorbar_bg_color,
+            orientation=colorbar_orientation,
+            dpi=colorbar_dpi,
+            show_colorbar=False,
+        )
+        add_image_to_gif(out_gif, out_gif, colorbar, colorbar_xy, colorbar_size)
 
     if os.path.exists(out_gif):
         reduce_gif_size(out_gif)
@@ -1065,8 +1115,8 @@ def naip_timelapse(
             add_progress_bar,
             progress_bar_color,
             progress_bar_height,
-            loop,
-            mp4,
+            loop=loop,
+            mp4=mp4,
         )
 
     except Exception as e:
@@ -3128,7 +3178,7 @@ def modis_ocean_color_timelapse(
     reducer="median",
     date_format=None,
     out_gif=None,
-    palette=None,
+    palette="coolwarm",
     vis_params=None,
     dimensions=768,
     frames_per_second=5,
@@ -3148,6 +3198,18 @@ def modis_ocean_color_timelapse(
     add_progress_bar=True,
     progress_bar_color="white",
     progress_bar_height=5,
+    add_colorbar=True,
+    colorbar_width=6.0,
+    colorbar_height=0.4,
+    colorbar_label="Sea Surface Temperature (°C)",
+    colorbar_label_size=12,
+    colorbar_label_weight="normal",
+    colorbar_tick_size=10,
+    colorbar_bg_color="white",
+    colorbar_orientation="horizontal",
+    colorbar_dpi="figure",
+    colorbar_xy=None,
+    colorbar_size=(300, 300),
     loop=0,
     mp4=False,
 ):
@@ -3184,6 +3246,18 @@ def modis_ocean_color_timelapse(
         add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
         progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
         progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
+        add_colorbar (bool, optional): Whether to add a colorbar to the timelapse. Defaults to False.
+        colorbar_width (float, optional): Width of the colorbar. Defaults to 6.0.
+        colorbar_height (float, optional): Height of the colorbar. Defaults to 0.4.
+        colorbar_label (str, optional): Label for the colorbar. Defaults to None.
+        colorbar_label_size (int, optional): Font size for the colorbar label. Defaults to 12.
+        colorbar_label_weight (str, optional): Font weight for the colorbar label. Defaults to 'normal'.
+        colorbar_tick_size (int, optional): Font size for the colorbar ticks. Defaults to 10.
+        colorbar_bg_color (str, optional): Background color for the colorbar, can be color like "white", "black". Defaults to None.
+        colorbar_orientation (str, optional): Orientation of the colorbar. Defaults to 'horizontal'.
+        colorbar_dpi (str, optional): DPI for the colorbar, can be numbers like 100, 300. Defaults to 'figure'.
+        colorbar_xy (tuple, optional): Lower left corner of the colorbar. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        colorbar_size (tuple, optional): Size of the colorbar. It can be formatted like this: (300, 300). Defaults to (300, 300).
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
 
@@ -3233,6 +3307,18 @@ def modis_ocean_color_timelapse(
         add_progress_bar,
         progress_bar_color,
         progress_bar_height,
+        add_colorbar,
+        colorbar_width,
+        colorbar_height,
+        colorbar_label,
+        colorbar_label_size,
+        colorbar_label_weight,
+        colorbar_tick_size,
+        colorbar_bg_color,
+        colorbar_orientation,
+        colorbar_dpi,
+        colorbar_xy,
+        colorbar_size,
         loop,
         mp4,
     )
