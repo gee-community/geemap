@@ -2576,6 +2576,7 @@ def save_colorbar(
     bg_color=None,
     orientation="horizontal",
     dpi="figure",
+    show_colorbar=True,
     **kwargs,
 ):
     """Create a standalone colorbar and save it as an image.
@@ -2597,17 +2598,21 @@ def save_colorbar(
         bg_color (str, optional): Background color for the colorbar. Defaults to None.
         orientation (str, optional): Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
         dpi (float | str, optional): The resolution in dots per inch.  If 'figure', use the figure's dpi value.. Defaults to "figure".
+        show_colorbar (bool, optional): Whether to show the colorbar. Defaults to True.
 
     Returns:
         str: Path to the output image.
     """
+    import ipywidgets as widgets
     import matplotlib as mpl
     import matplotlib.pyplot as plt
     import numpy as np
-    from .colormaps import palettes
+    from .colormaps import palettes, get_palette
 
     if out_fig is None:
         out_fig = temp_file_path("png")
+    else:
+        out_fig = check_file_path(out_fig)
 
     if vis_params is None:
         vis_params = {}
@@ -2615,8 +2620,10 @@ def save_colorbar(
         raise TypeError("The vis_params must be a dictionary.")
 
     if palette is not None:
-        if palette in list(palettes.keys()):
+        if palette in ["ndvi", "ndwi", "dem"]:
             palette = palettes[palette]
+        elif palette in list(palettes.keys()):
+            palette = get_palette(palette)
         vis_params["palette"] = palette
 
     orientation = orientation.lower()
@@ -2668,6 +2675,8 @@ def save_colorbar(
         cb.set_label(label=label, size=label_size, weight=label_weight)
     cb.ax.tick_params(labelsize=tick_size)
     fig.savefig(out_fig, dpi=dpi, facecolor=bg_color, bbox_inches="tight")
+    if not show_colorbar:
+        plt.close(fig)
     return out_fig
 
 
@@ -8930,3 +8939,65 @@ def bbox_to_gdf(bbox, crs="EPSG:4326"):
     gdf = GeoDataFrame(d, crs="EPSG:4326")
     gdf.to_crs(crs=crs, inplace=True)
     return gdf
+
+
+def check_dir(dir_path, make_dirs=True):
+    """Checks if a directory exists and creates it if it does not.
+
+    Args:
+        dir_path ([str): The path to the directory.
+        make_dirs (bool, optional): Whether to create the directory if it does not exist. Defaults to True.
+
+    Raises:
+        FileNotFoundError: If the directory could not be found.
+        TypeError: If the input directory path is not a string.
+
+    Returns:
+        str: The path to the directory.
+    """
+
+    if isinstance(dir_path, str):
+        if dir_path.startswith("~"):
+            dir_path = os.path.expanduser(dir_path)
+        else:
+            dir_path = os.path.abspath(dir_path)
+
+        if not os.path.exists(dir_path) and make_dirs:
+            os.makedirs(dir_path)
+
+        if os.path.exists(dir_path):
+            return dir_path
+        else:
+            raise FileNotFoundError("The provided directory could not be found.")
+    else:
+        raise TypeError("The provided directory path must be a string.")
+
+
+def check_file_path(file_path, make_dirs=True):
+    """Gets the absolute file path.
+
+    Args:
+        file_path ([str): The path to the file.
+        make_dirs (bool, optional): Whether to create the directory if it does not exist. Defaults to True.
+
+    Raises:
+        FileNotFoundError: If the directory could not be found.
+        TypeError: If the input directory path is not a string.
+
+    Returns:
+        str: The absolute path to the file.
+    """
+    if isinstance(file_path, str):
+        if file_path.startswith("~"):
+            file_path = os.path.expanduser(file_path)
+        else:
+            file_path = os.path.abspath(file_path)
+
+        file_dir = os.path.dirname(file_path)
+        if not os.path.exists(file_dir) and make_dirs:
+            os.makedirs(file_dir)
+
+        return file_path
+
+    else:
+        raise TypeError("The provided file path must be a string.")
