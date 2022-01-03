@@ -28,3 +28,4 @@ sankee
 voila
 whiteboxgui>=0.6.0
 xyzservices
+ee_extra
