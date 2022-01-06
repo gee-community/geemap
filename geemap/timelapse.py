@@ -2438,6 +2438,7 @@ def goes_timeseries(
     data="GOES-17",
     scan="full_disk",
     region=None,
+    night_ir=False,    
 ):
 
     """Create a time series of GOES data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4.
@@ -2449,7 +2450,7 @@ def goes_timeseries(
         data (str, optional): The GOES satellite data to use. Defaults to "GOES-17".
         scan (str, optional): The GOES scan to use. Defaults to "full_disk".
         region (ee.Geometry, optional): The region of interest. Defaults to None.
-
+        night_ir (bool, optional): Add infrared to RGB to be able to observe the clouds at night. Defaults to False.
     Raises:
         ValueError: The data must be either GOES-16 or GOES-17.
         ValueError: The scan must be either full_disk, conus, or mesoscale.
@@ -2508,6 +2509,24 @@ def goes_timeseries(
             },
         )
         return img.addBands(green)
+    
+    # Add IR to RGB
+    def addIR(img):
+        # Make normalized infrared
+        IR_n = img.select('CMI_C13').unitScale(ee.Number(90), ee.Number(313))
+        IR_n = IR_n.expression(
+            "ir_p = (1 -IR_n)/1.4",
+            {
+                "IR_n": IR_n.select('CMI_C13'),
+            },
+        )
+        
+        # Add infrared to rgb bands
+        R_ir = img.select('CMI_C02').max(IR_n)
+        G_ir = img.select('CMI_GREEN').max(IR_n)
+        B_ir = img.select('CMI_C01').max(IR_n)
+        
+        return img.addBands([R_ir, G_ir, B_ir], overwrite=True)
 
     # Scales select bands for visualization.
     def scaleForVis(img):
@@ -2522,8 +2541,10 @@ def goes_timeseries(
 
     # Wraps previous functions.
     def processForVis(img):
-
-        return scaleForVis(addGreenBand(applyScaleAndOffset(img)))
+        if night_ir:
+            return scaleForVis(addIR(addGreenBand(applyScaleAndOffset(img))))
+        else:
+            return scaleForVis(addGreenBand(applyScaleAndOffset(img)))
 
     return col.filterDate(start_date, end_date).map(processForVis)
 
