@@ -171,6 +171,8 @@ nav:
           - notebooks/90_naip_timelapse.ipynb
           - notebooks/91_planetary_computer.ipynb
           - notebooks/92_plotly.ipynb
+          - notebooks/93_cog_inspector.ipynb
+          - notebooks/94_heremap.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
