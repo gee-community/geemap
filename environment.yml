@@ -5,13 +5,11 @@ dependencies:
     - cartopy
     - datapane
     - gdal
-    - geemap
     - geopandas
     - imageio
     - ipyleaflet
     - jupyterlab=3
     - keplergl
-    - leafmap
     - localtileserver
     - nodejs
     - osmnx
@@ -26,4 +24,5 @@ dependencies:
     - tifffile
     - xarray_leaflet
     - pip:
-          - localtileserver
+          - git+git://github.com/giswqs/leafmap
+          - git+git://github.com/giswqs/geemap

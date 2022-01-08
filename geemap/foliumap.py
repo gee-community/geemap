@@ -4,14 +4,17 @@ import os
 
 import ee
 import folium
+from box import Box
 from folium import plugins
 
-from .basemaps import folium_basemaps
+from .basemaps import xyz_to_folium
 from .common import *
 from .conversion import *
 from .legends import builtin_legends
 from .osm import *
 from .timelapse import *
+
+folium_basemaps = Box(xyz_to_folium(), frozen_box=True)
 
 
 class Map(folium.Map):
@@ -373,7 +376,6 @@ class Map(folium.Map):
         styles="",
         **kwargs,
     ):
-
         """Add a WMS layer to the map.
 
         Args:

@@ -20,7 +20,6 @@ import folium
 # import here_map_widget
 import ipyleaflet
 import xyzservices.providers as xyz
-from box import Box
 from .common import check_package, planet_tiles
 
 # Custom XYZ tile services.
@@ -413,6 +412,42 @@ def xyz_to_folium():
     return folium_dict
 
 
+def xyz_to_plotly():
+    """Convert xyz tile services to plotly tile layers.
+
+    Returns:
+        dict: A dictionary of plotly tile layers.
+    """
+    plotly_dict = {}
+
+    for key in xyz_tiles:
+        url = xyz_tiles[key]["url"]
+        attribution = xyz_tiles[key]["attribution"]
+        plotly_dict[key] = {
+            "below": "traces",
+            "sourcetype": "raster",
+            "sourceattribution": attribution,
+            "source": [url],
+            "name": key,
+        }
+
+    xyz_dict = get_xyz_dict()
+    for item in xyz_dict:
+        name = xyz_dict[item].name
+        url = xyz_dict[item].build_url()
+        attribution = xyz_dict[item].attribution
+
+        plotly_dict[name] = {
+            "below": "traces",
+            "sourcetype": "raster",
+            "sourceattribution": attribution,
+            "source": [url],
+            "name": name,
+        }
+
+    return plotly_dict
+
+
 # def ():
 #     """Convert xyz tile services to hermap tile layers.
 
@@ -479,7 +514,7 @@ def get_qms(service_id):
     return service_details.json()
 
 
-def qms_to_leafmap(service_id):
+def qms_to_geemap(service_id):
 
     service_details = get_qms(service_id)
     name = service_details["name"]
@@ -488,14 +523,3 @@ def qms_to_leafmap(service_id):
 
     layer = ipyleaflet.TileLayer(url=url, name=name, attribution=attribution)
     return layer
-
-
-leafmap_basemaps = Box(xyz_to_leaflet(), frozen_box=True)
-folium_basemaps = Box(xyz_to_folium(), frozen_box=True)
-# here_basemaps = Box(xyz_to_heremap(), frozen_box=True)
-
-basemap_tiles = leafmap_basemaps
-basemaps = Box(
-    dict(zip(list(leafmap_basemaps.keys()), list(leafmap_basemaps.keys()))),
-    frozen_box=True,
-)

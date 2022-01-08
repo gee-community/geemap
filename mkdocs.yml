@@ -71,6 +71,7 @@ nav:
           - legends module: legends.md
           - ml module: ml.md
           - osm module: osm.md
+          - plotlymap module: plotlymap.md
           - timelapse module: timelapse.md
           - toolbar module: toolbar.md
     - Workshops:
@@ -169,6 +170,7 @@ nav:
           - notebooks/89_add_labels.ipynb
           - notebooks/90_naip_timelapse.ipynb
           - notebooks/91_planetary_computer.ipynb
+          - notebooks/92_plotly.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
