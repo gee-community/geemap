@@ -750,7 +750,6 @@ class Map(go.FigureWidget):
 
         self.add_traces(fig.data)
         self.set_center(center_lat, center_lon, zoom)
-        del fig
 
 
 def fix_widget_error():

@@ -3529,7 +3529,7 @@ def plotly_tool_template(canvas):
 
     widget_width = "250px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
-    style = {"description_width": "initial"}
+    # style = {"description_width": "initial"}
 
     toolbar_button = widgets.ToggleButton(
         value=False,
@@ -3844,7 +3844,7 @@ def plotly_whitebox_gui(canvas):
 
     widget_width = "250px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
-    style = {"description_width": "initial"}
+    # style = {"description_width": "initial"}
 
     toolbar_button = widgets.ToggleButton(
         value=False,

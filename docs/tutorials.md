@@ -103,3 +103,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 89. Labeling Earth Engine FeatureCollection on the map ([notebook](https://geemap.org/notebooks/89_add_labels))
 90. Creating 1-m resolution NAIP imagery timelapse ([notebook](https://geemap.org/notebooks/90_naip_timelapse))
 91. Adding Planetary Computer STAC item to the map ([notebook](https://geemap.org/notebooks/91_planetary_computer))
+92. Using plotly with Earth Engine ([notebook](https://geemap.org/notebooks/92_plotly))
