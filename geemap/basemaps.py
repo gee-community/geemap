@@ -16,8 +16,7 @@ import collections
 import os
 import requests
 import folium
-
-# import here_map_widget
+import here_map_widget
 import ipyleaflet
 import xyzservices.providers as xyz
 from .common import check_package, planet_tiles
@@ -159,60 +158,60 @@ wms_tiles = {
     },
 }
 
-# # Built-in heremap tile services.
-# here_tiles = {
-#     "HERE_RASTER_NORMAL_MAP": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.normal.map
-#     ),
-#     "HERE_RASTER_NORMAL_BASE": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.normal.base
-#     ),
-#     "HERE_RASTER_NORMAL_BASE_NIGHT": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.normal.basenight
-#     ),
-#     "HERE_RASTER_NORMAL_LABELS": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.normal.labels
-#     ),
-#     "HERE_RASTER_NORMAL_TRANSIT": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.normal.transit
-#     ),
-#     "HERE_RASTER_NORMAL_XBASE": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.normal.xbase
-#     ),
-#     "HERE_RASTER_NORMAL_XBASE_NIGHT": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.normal.xbasenight
-#     ),
-#     "HERE_RASTER_SATELLITE_MAP": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.satellite.map
-#     ),
-#     "HERE_RASTER_SATELLITE_LABELS": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.satellite.labels
-#     ),
-#     "HERE_RASTER_SATELLITE_BASE": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.satellite.base
-#     ),
-#     "HERE_RASTER_SATELLITE_XBASE": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.satellite.xbase
-#     ),
-#     "HERE_RASTER_TERRAIN_MAP": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.terrain.map
-#     ),
-#     "HERE_RASTER_TERRAIN_LABELS": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.terrain.labels
-#     ),
-#     "HERE_RASTER_TERRAIN_BASE": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.terrain.base
-#     ),
-#     "HERE_RASTER_TERRAIN_XBASE": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.raster.terrain.xbase
-#     ),
-#     "HERE_VECTOR_NORMAL_MAP": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.vector.normal.map
-#     ),
-#     "HERE_VECTOR_NORMAL_TRUCK": here_map_widget.DefaultLayers(
-#         layer_name=here_map_widget.DefaultLayerNames.vector.normal.truck
-#     ),
-# }
+# Built-in heremap tile services.
+here_tiles = {
+    "HERE_RASTER_NORMAL_MAP": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.normal.map
+    ),
+    "HERE_RASTER_NORMAL_BASE": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.normal.base
+    ),
+    "HERE_RASTER_NORMAL_BASE_NIGHT": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.normal.basenight
+    ),
+    "HERE_RASTER_NORMAL_LABELS": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.normal.labels
+    ),
+    "HERE_RASTER_NORMAL_TRANSIT": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.normal.transit
+    ),
+    "HERE_RASTER_NORMAL_XBASE": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.normal.xbase
+    ),
+    "HERE_RASTER_NORMAL_XBASE_NIGHT": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.normal.xbasenight
+    ),
+    "HERE_RASTER_SATELLITE_MAP": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.satellite.map
+    ),
+    "HERE_RASTER_SATELLITE_LABELS": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.satellite.labels
+    ),
+    "HERE_RASTER_SATELLITE_BASE": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.satellite.base
+    ),
+    "HERE_RASTER_SATELLITE_XBASE": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.satellite.xbase
+    ),
+    "HERE_RASTER_TERRAIN_MAP": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.terrain.map
+    ),
+    "HERE_RASTER_TERRAIN_LABELS": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.terrain.labels
+    ),
+    "HERE_RASTER_TERRAIN_BASE": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.terrain.base
+    ),
+    "HERE_RASTER_TERRAIN_XBASE": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.raster.terrain.xbase
+    ),
+    "HERE_VECTOR_NORMAL_MAP": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.vector.normal.map
+    ),
+    "HERE_VECTOR_NORMAL_TRUCK": here_map_widget.DefaultLayers(
+        layer_name=here_map_widget.DefaultLayerNames.vector.normal.truck
+    ),
+}
 
 
 def get_xyz_dict(free_only=True):
@@ -448,42 +447,42 @@ def xyz_to_plotly():
     return plotly_dict
 
 
-# def ():
-#     """Convert xyz tile services to hermap tile layers.
+def xyz_to_heremap():
+    """Convert xyz tile services to hermap tile layers.
 
-#     Returns:
-#         dict: A dictionary of heremap tile layers.
-#     """
-#     heremap_dict = {}
+    Returns:
+        dict: A dictionary of heremap tile layers.
+    """
+    heremap_dict = {}
 
-#     for key in xyz_tiles:
-#         name = xyz_tiles[key]["name"]
-#         url = xyz_tiles[key]["url"]
-#         attribution = xyz_tiles[key]["attribution"]
-#         heremap_dict[key] = here_map_widget.TileLayer(
-#             provider=here_map_widget.ImageTileProvider(
-#                 url=url, attribution=attribution, name=name
-#             )
-#         )
+    for key in xyz_tiles:
+        name = xyz_tiles[key]["name"]
+        url = xyz_tiles[key]["url"]
+        attribution = xyz_tiles[key]["attribution"]
+        heremap_dict[key] = here_map_widget.TileLayer(
+            provider=here_map_widget.ImageTileProvider(
+                url=url, attribution=attribution, name=name
+            )
+        )
 
-#     xyz_dict = get_xyz_dict()
-#     for item in xyz_dict:
-#         name = xyz_dict[item].name
-#         url = xyz_dict[item].build_url()
-#         attribution = xyz_dict[item].attribution
-#         if "max_zoom" in xyz_dict[item].keys():
-#             max_zoom = xyz_dict[item]["max_zoom"]
-#         else:
-#             max_zoom = 22
-#         heremap_dict[name] = here_map_widget.TileLayer(
-#             provider=here_map_widget.ImageTileProvider(
-#                 url=url, attribution=attribution, name=name, max_zoom=max_zoom
-#             )
-#         )
+    xyz_dict = get_xyz_dict()
+    for item in xyz_dict:
+        name = xyz_dict[item].name
+        url = xyz_dict[item].build_url()
+        attribution = xyz_dict[item].attribution
+        if "max_zoom" in xyz_dict[item].keys():
+            max_zoom = xyz_dict[item]["max_zoom"]
+        else:
+            max_zoom = 22
+        heremap_dict[name] = here_map_widget.TileLayer(
+            provider=here_map_widget.ImageTileProvider(
+                url=url, attribution=attribution, name=name, max_zoom=max_zoom
+            )
+        )
 
-#     heremap_dict.update(here_tiles)
+    heremap_dict.update(here_tiles)
 
-#     return heremap_dict
+    return heremap_dict
 
 
 def search_qms(keywords, limit=10):
