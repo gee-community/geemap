@@ -68,6 +68,7 @@ nav:
           - datasets module: datasets.md
           - foliumap module: foliumap.md
           - geemap module: geemap.md
+          - heremap module: heremap.md
           - legends module: legends.md
           - ml module: ml.md
           - osm module: osm.md
