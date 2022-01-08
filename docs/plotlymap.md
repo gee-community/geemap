@@ -1,0 +1,3 @@
+# plotlymap module
+
+::: geemap.plotlymap

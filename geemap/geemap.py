@@ -11,16 +11,24 @@ import ee
 import ipyevents
 import ipyleaflet
 import ipywidgets as widgets
+from box import Box
 from bqplot import pyplot as plt
 from ipyfilechooser import FileChooser
 from IPython.display import display
-
-from .basemaps import basemap_tiles, basemaps
+from .basemaps import xyz_to_leaflet
 from .common import *
 from .conversion import *
 from .legends import builtin_legends
 from .timelapse import *
 from .osm import *
+
+
+basemap_tiles = Box(xyz_to_leaflet(), frozen_box=True)
+
+basemaps = Box(
+    dict(zip(list(basemap_tiles.keys()), list(basemap_tiles.keys()))),
+    frozen_box=True,
+)
 
 
 class Map(ipyleaflet.Map):
@@ -1337,7 +1345,6 @@ class Map(ipyleaflet.Map):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
-        from box import Box
 
         image = None
         if name is None:
@@ -1480,7 +1487,7 @@ class Map(ipyleaflet.Map):
             layers = list(self.layers)
             layers = (
                 layers[0:draw_layer_index]
-                + layers[(draw_layer_index + 1) :]
+                + layers[(draw_layer_index + 1):]
                 + [layers[draw_layer_index]]
             )
             self.layers = layers
@@ -2931,7 +2938,6 @@ class Map(ipyleaflet.Map):
             layer_name (str, optional): Layer name of the colorbar to be associated with. Defaults to None.
 
         """
-        from box import Box
         from branca.colormap import LinearColormap
 
         output = widgets.Output()
