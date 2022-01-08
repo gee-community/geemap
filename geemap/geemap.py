@@ -703,9 +703,9 @@ class Map(ipyleaflet.Map):
                 "name": "planet",
                 "tooltip": "Planet imagery",
             },
-            "smile-o": {
-                "name": "placehold",
-                "tooltip": "This is a placehold",
+            "info-circle": {
+                "name": "cog-inspector",
+                "tooltip": "Get COG/STAC pixel value",
             },
             "spinner": {
                 "name": "placehold2",
@@ -859,6 +859,10 @@ class Map(ipyleaflet.Map):
 
                     split_basemaps(self, layers_dict=planet_tiles())
                     self.toolbar_reset()
+                elif tool_name == "cog-inspector":
+                    from .toolbar import inspector_gui
+
+                    inspector_gui(self)
 
                 elif tool_name == "help":
                     import webbrowser
@@ -1786,6 +1790,17 @@ class Map(ipyleaflet.Map):
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
         self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
 
+        if not hasattr(self, "cog_layer_dict"):
+            self.cog_layer_dict = {}
+
+        params = {
+            "url": url,
+            "titizer_endpoint": titiler_endpoint,
+            "bounds": bounds,
+            "type": "COG",
+        }
+        self.cog_layer_dict[name] = params
+
     def add_cog_mosaic(
         self,
         links,
@@ -1879,7 +1894,7 @@ class Map(ipyleaflet.Map):
             items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
             assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
             bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
-            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "https://planetarycomputer.microsoft.com/api/data/v1", "planetary-computer", "pc". Defaults to None.
             name (str, optional): The layer name to use for the layer. Defaults to 'STAC Layer'.
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
@@ -1891,6 +1906,24 @@ class Map(ipyleaflet.Map):
         bounds = stac_bounds(url, collection, items, titiler_endpoint)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
         self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
+
+        if not hasattr(self, "cog_layer_dict"):
+            self.cog_layer_dict = {}
+
+        if assets is None and bands is not None:
+            assets = bands
+
+        params = {
+            "url": url,
+            "collection": collection,
+            "items": items,
+            "assets": assets,
+            "bounds": bounds,
+            "titiler_endpoint": titiler_endpoint,
+            "type": "STAC",
+        }
+
+        self.cog_layer_dict[name] = params
 
     def add_minimap(self, zoom=5, position="bottomright"):
         """Adds a minimap (overview) to the ipyleaflet map.
