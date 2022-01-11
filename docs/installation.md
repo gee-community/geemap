@@ -28,11 +28,11 @@ the [Earth Engine Code Editor](https://code.earthengine.google.com/) to get fami
 The geemap package has an optional dependency - [geopandas](https://geopandas.org/), which can be challenging to install on some computers, especially Windows. It is highly recommended that you create a fresh conda environment to install geopandas and geemap. Follow the commands below to set up a conda env and install geopandas, xarray_leaflet, and geemap.
 
 ```bash
-    conda create -n gee python=3.8
+    conda create -n gee python=3.9
     conda activate gee
     conda install geopandas
     conda install mamba -c conda-forge
-    mamba install geemap xarray_leaflet -c conda-forge
+    mamba install geemap localtileserver -c conda-forge
 ```
 
 Optionally, you can install some [Jupyter notebook extensions](https://github.com/ipython-contrib/jupyter_contrib_nbextensions), which can improve your productivity in the notebook environment. Some useful extensions include Table of Contents, Gist-it, Autopep8, Variable Inspector, etc. See this [post](https://towardsdatascience.com/jupyter-notebook-extensions-517fa69d2231) for more information.
