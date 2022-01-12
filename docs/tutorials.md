@@ -106,3 +106,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 92. Using plotly with Earth Engine ([notebook](https://geemap.org/notebooks/92_plotly))
 93. Getting pixel values from COG/STAC using the Inspector tool ([notebook](https://leafmap.org/notebooks/93_cog_inspector))
 94. Using heremap with Earth Engine ([notebook](https://geemap.org/notebooks/94_heremap))
+95. Creating Cloud Optimized GeoTIFF (COG) ([notebook](https://geemap.org/notebooks/95_create_cog))
