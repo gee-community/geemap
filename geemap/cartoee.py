@@ -975,6 +975,7 @@ def add_scale_bar_lite(
         ndim = int(np.floor(np.log10(length)))  # number of digits in number
         length = round(length, -ndim)  # round to 1sf
         # Returns numbers starting with the list
+
         def scale_number(x):
             if str(x)[0] in ["1", "2", "5"]:
                 return int(x)
@@ -1036,7 +1037,7 @@ def add_legend(ax, legend_elements=None, loc="lower right"):
                 ),
             ]
 
-        ax.legend(handles=legend_elements, loc="lower right")
+        ax.legend(handles=legend_elements, loc=loc)
         return
     except Exception as e:
         raise Exception(e)
@@ -1168,7 +1169,6 @@ def get_image_collection_gif(
         def convert_frames_to_video(
             input_list, output_video_file_name, fps_video, frame_size
         ):
-
             """Convert frames to video
 
             Args:
