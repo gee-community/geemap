@@ -6,18 +6,25 @@ import numpy as np
 from box import Box
 
 
-def get_palette(cmap_name=None, n_class=None):
+def get_palette(cmap_name=None, n_class=None, hashtag=False):
     """Get a palette from a matplotlib colormap. See the list of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.
 
     Args:
         cmap_name (str, optional): The name of the matplotlib colormap. Defaults to None.
         n_class (int, optional): The number of colors. Defaults to None.
+        hashtag (bool, optional): Whether to return a list of hex colors. Defaults to False.
 
     Returns:
         list: A list of hex colors.
     """
-    cmap = plt.cm.get_cmap(cmap_name, n_class)
-    colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
+
+    if cmap_name in ["dem", "ndvi", "ndwi"]:
+        colors = _palette_dict[cmap_name]
+    else:
+        cmap = plt.cm.get_cmap(cmap_name, n_class)
+        colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
+    if hashtag:
+        colors = ["#" + i for i in colors]
     return colors
 
 

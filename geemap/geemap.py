@@ -11,16 +11,24 @@ import ee
 import ipyevents
 import ipyleaflet
 import ipywidgets as widgets
+from box import Box
 from bqplot import pyplot as plt
 from ipyfilechooser import FileChooser
 from IPython.display import display
-
-from .basemaps import basemap_tiles, basemaps
+from .basemaps import xyz_to_leaflet
 from .common import *
 from .conversion import *
 from .legends import builtin_legends
 from .timelapse import *
 from .osm import *
+
+
+basemap_tiles = Box(xyz_to_leaflet(), frozen_box=True)
+
+basemaps = Box(
+    dict(zip(list(basemap_tiles.keys()), list(basemap_tiles.keys()))),
+    frozen_box=True,
+)
 
 
 class Map(ipyleaflet.Map):
@@ -695,9 +703,9 @@ class Map(ipyleaflet.Map):
                 "name": "planet",
                 "tooltip": "Planet imagery",
             },
-            "smile-o": {
-                "name": "placehold",
-                "tooltip": "This is a placehold",
+            "info-circle": {
+                "name": "cog-inspector",
+                "tooltip": "Get COG/STAC pixel value",
             },
             "spinner": {
                 "name": "placehold2",
@@ -851,6 +859,10 @@ class Map(ipyleaflet.Map):
 
                     split_basemaps(self, layers_dict=planet_tiles())
                     self.toolbar_reset()
+                elif tool_name == "cog-inspector":
+                    from .toolbar import inspector_gui
+
+                    inspector_gui(self)
 
                 elif tool_name == "help":
                     import webbrowser
@@ -1337,7 +1349,6 @@ class Map(ipyleaflet.Map):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
-        from box import Box
 
         image = None
         if name is None:
@@ -1480,7 +1491,7 @@ class Map(ipyleaflet.Map):
             layers = list(self.layers)
             layers = (
                 layers[0:draw_layer_index]
-                + layers[(draw_layer_index + 1) :]
+                + layers[(draw_layer_index + 1):]
                 + [layers[draw_layer_index]]
             )
             self.layers = layers
@@ -1779,76 +1790,21 @@ class Map(ipyleaflet.Map):
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
         self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
 
-    def add_cog_mosaic(
-        self,
-        links,
-        name="Untitled",
-        attribution="",
-        opacity=1.0,
-        shown=True,
-        titiler_endpoint="https://titiler.xyz",
-        username="anonymous",
-        overwrite=False,
-        show_footprints=False,
-        verbose=True,
-        **kwargs,
-    ):
-        """Add a virtual mosaic of COGs to the map.
+        if not hasattr(self, "cog_layer_dict"):
+            self.cog_layer_dict = {}
 
-        Args:
-            links (list): A list of links pointing to COGs.
-            name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
-            attribution (str, optional): The attribution to use. Defaults to ''.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
-            username (str, optional): The username to create mosaic using the titiler endpoint. Defaults to 'anonymous'.
-            overwrite (bool, optional): Whether or not to replace existing layer with the same layer name. Defaults to False.
-            show_footprints (bool, optional): Whether or not to show footprints of COGs. Defaults to False.
-            verbose (bool, optional): Whether or not to print descriptions. Defaults to True.
-        """
-        layername = name.replace(" ", "_")
-        tile = cog_mosaic(
-            links,
-            titiler_endpoint=titiler_endpoint,
-            username=username,
-            layername=layername,
-            overwrite=overwrite,
-            verbose=verbose,
+        params = {
+            "url": url,
+            "titizer_endpoint": titiler_endpoint,
+            "bounds": bounds,
+            "type": "COG",
+        }
+        self.cog_layer_dict[name] = params
+
+    def add_cog_mosaic(self, **kwargs):
+        raise NotImplementedError(
+            "This function is no longer supported.See https://github.com/giswqs/leafmap/issues/180."
         )
-        self.add_tile_layer(tile, name, attribution, opacity, shown)
-
-        if show_footprints:
-            if verbose:
-                print(
-                    f"Generating footprints of {len(links)} COGs. This might take a while ..."
-                )
-            coords = []
-            for link in links:
-                coord = cog_bounds(link)
-                if coord is not None:
-                    coords.append(coord)
-            fc = coords_to_geojson(coords)
-
-            geo_json = ipyleaflet.GeoJSON(
-                data=fc,
-                style={
-                    "opacity": 1,
-                    "dashArray": "1",
-                    "fillOpacity": 0,
-                    "weight": 1,
-                },
-                name="Footprints",
-            )
-
-            self.add_layer(geo_json)
-            center = get_center(fc)
-            if verbose:
-                print("The footprint layer has been added.")
-        else:
-            center = cog_center(links[0], titiler_endpoint)
-
-        self.set_center(center[0], center[1], zoom=6)
 
     def add_stac_layer(
         self,
@@ -1872,7 +1828,7 @@ class Map(ipyleaflet.Map):
             items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
             assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
             bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
-            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "https://planetarycomputer.microsoft.com/api/data/v1", "planetary-computer", "pc". Defaults to None.
             name (str, optional): The layer name to use for the layer. Defaults to 'STAC Layer'.
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
@@ -1884,6 +1840,24 @@ class Map(ipyleaflet.Map):
         bounds = stac_bounds(url, collection, items, titiler_endpoint)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
         self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
+
+        if not hasattr(self, "cog_layer_dict"):
+            self.cog_layer_dict = {}
+
+        if assets is None and bands is not None:
+            assets = bands
+
+        params = {
+            "url": url,
+            "collection": collection,
+            "items": items,
+            "assets": assets,
+            "bounds": bounds,
+            "titiler_endpoint": titiler_endpoint,
+            "type": "STAC",
+        }
+
+        self.cog_layer_dict[name] = params
 
     def add_minimap(self, zoom=5, position="bottomright"):
         """Adds a minimap (overview) to the ipyleaflet map.
@@ -2931,7 +2905,6 @@ class Map(ipyleaflet.Map):
             layer_name (str, optional): Layer name of the colorbar to be associated with. Defaults to None.
 
         """
-        from box import Box
         from branca.colormap import LinearColormap
 
         output = widgets.Output()
