@@ -1604,7 +1604,7 @@ class Map(ipyleaflet.Map):
         """Adds a basemap to the map.
 
         Args:
-            basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'HYBRID'.
+            basemap (str, optional): Can be one of string from basemaps. Defaults to 'HYBRID'.
         """
         try:
             if (
@@ -2283,12 +2283,12 @@ class Map(ipyleaflet.Map):
 
     addLayerControl = add_layer_control
 
-    def split_map(self, left_layer="HYBRID", right_layer="ESRI"):
+    def split_map(self, left_layer="HYBRID", right_layer="ROADMAP"):
         """Adds split map.
 
         Args:
             left_layer (str, optional): The layer tile layer. Defaults to 'HYBRID'.
-            right_layer (str, optional): The right tile layer. Defaults to 'ESRI'.
+            right_layer (str, optional): The right tile layer. Defaults to 'ROADMAP'.
         """
         try:
             controls = self.controls
