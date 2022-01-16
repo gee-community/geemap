@@ -68,9 +68,11 @@ nav:
           - datasets module: datasets.md
           - foliumap module: foliumap.md
           - geemap module: geemap.md
+          - heremap module: heremap.md
           - legends module: legends.md
           - ml module: ml.md
           - osm module: osm.md
+          - plotlymap module: plotlymap.md
           - timelapse module: timelapse.md
           - toolbar module: toolbar.md
     - Workshops:
@@ -169,6 +171,9 @@ nav:
           - notebooks/89_add_labels.ipynb
           - notebooks/90_naip_timelapse.ipynb
           - notebooks/91_planetary_computer.ipynb
+          - notebooks/92_plotly.ipynb
+          - notebooks/93_cog_inspector.ipynb
+          - notebooks/94_heremap.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb

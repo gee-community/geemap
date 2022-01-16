@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.11.0 - January 7, 2022
+
+**New Features**:
+
+-   Added support for plotly [#842](https://github.com/giswqs/geemap/issues/842)
+-   Added colorbar to timelapse [#846](https://github.com/giswqs/geemap/issues/846)
+-   Added save_colorbar function [#846](https://github.com/giswqs/geemap/issues/846)
+-   Added ocean color timelapse [#845](https://github.com/giswqs/geemap/issues/845)
+-   Added support for xyzservices basemaps [#795](https://github.com/giswqs/geemap/issues/795)
+-   Added labeling gdf shp geojson [#815](https://github.com/giswqs/geemap/issues/815)
+-   Added remove_labels [#815](https://github.com/giswqs/geemap/issues/815)
+-   Added Planetary Computer STAC support
+-   Added bbox_to_gdf function
+
+**Improvement**:
+
+-   Fixed cartoee projection bug [#843](https://github.com/giswqs/geemap/discussions/843)
+-   Improved COG visualization [#844](https://github.com/giswqs/geemap/issues/844)
+-   Updated STAC notebook example [#841](https://github.com/giswqs/geemap/issues/841)
+-   Improved stac tile functions [#839](https://github.com/giswqs/geemap/pull/839)
+-   Removed pangeo broken binder links
+
 ## v0.10.2 - December 23, 2021
 
 **New Features**:
@@ -317,7 +339,7 @@
 -   Added support for linking legend with layer [#234](https://github.com/giswqs/geemap/issues/234)
 -   Added styled vector function [#235](https://github.com/giswqs/geemap/issues/235)
 -   Added mouse click observe to toolbar [#215](https://github.com/giswqs/geemap/issues/215)
--   Added new tool for opening local data [#239 ](https://github.com/giswqs/geemap/issues/239)
+-   Added new tool for opening local data [#239](https://github.com/giswqs/geemap/issues/239)
 
 **Improvement**:
 
@@ -332,7 +354,7 @@
 -   Added color bar support [#223](https://github.com/giswqs/geemap/issues/223)
 -   Added draggable legend to folium maps [#224](https://github.com/giswqs/geemap/issues/224)
 -   Added `get_image_collection_gif()` function [#225](https://github.com/giswqs/geemap/issues/225)
--   Added `image_dates()` function [#216 ](https://github.com/giswqs/geemap/issues/216)
+-   Added `image_dates()` function [#216](https://github.com/giswqs/geemap/issues/216)
 
 **Improvement**:
 

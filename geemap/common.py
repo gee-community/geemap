@@ -675,7 +675,7 @@ def hex_to_rgb(value="FFFFFF"):
     """
     value = value.lstrip("#")
     lv = len(value)
-    return tuple(int(value[i : i + lv // 3], 16) for i in range(0, lv, lv // 3))
+    return tuple(int(value[i: i + lv // 3], 16) for i in range(0, lv, lv // 3))
 
 
 def check_color(in_color):
@@ -4175,6 +4175,10 @@ def cog_tile(url, bands=None, titiler_endpoint="https://titiler.xyz", **kwargs):
         else:
             raise ValueError("Bands must be a list of integers or strings.")
 
+    if "palette" in kwargs:
+        kwargs["colormap_name"] = kwargs["palette"]
+        del kwargs["palette"]
+
     if "rescale" not in kwargs:
         stats = cog_stats(url, titiler_endpoint)
         percentile_2 = min([stats[s]["percentile_2"] for s in stats])
@@ -4457,7 +4461,6 @@ def stac_tile(
     titiler_endpoint=None,
     **kwargs,
 ):
-
     """Get a tile layer from a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
@@ -7593,7 +7596,7 @@ def planet_monthly_tiles_tropical(
     link = planet_monthly_tropical(api_key, token_name)
     for url in link:
         index = url.find("20")
-        name = "Planet_" + url[index : index + 7]
+        name = "Planet_" + url[index: index + 7]
 
         if tile_format == "ipyleaflet":
             tile = ipyleaflet.TileLayer(url=url, attribution="Planet", name=name)
@@ -7638,7 +7641,7 @@ def planet_biannual_tiles_tropical(
     link = planet_biannual_tropical(api_key, token_name)
     for url in link:
         index = url.find("20")
-        name = "Planet_" + url[index : index + 15]
+        name = "Planet_" + url[index: index + 15]
         if tile_format == "ipyleaflet":
             tile = ipyleaflet.TileLayer(url=url, attribution="Planet", name=name)
         else:
@@ -7811,7 +7814,7 @@ def planet_monthly_tiles(
 
     for url in link:
         index = url.find("20")
-        name = "Planet_" + url[index : index + 7]
+        name = "Planet_" + url[index: index + 7]
 
         if tile_format == "ipyleaflet":
             tile = ipyleaflet.TileLayer(url=url, attribution="Planet", name=name)
@@ -7856,7 +7859,7 @@ def planet_quarterly_tiles(
 
     for url in links:
         index = url.find("20")
-        name = "Planet_" + url[index : index + 6]
+        name = "Planet_" + url[index: index + 6]
 
         if tile_format == "ipyleaflet":
             tile = ipyleaflet.TileLayer(url=url, attribution="Planet", name=name)
@@ -8557,6 +8560,11 @@ def get_local_tile_layer(
     else:
         raise ValueError("The source must either be a string or TileClient")
 
+    if isinstance(palette, str):
+        from .colormaps import get_palette
+
+        palette = get_palette(palette, hashtag=True)
+
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
 
@@ -9001,3 +9009,75 @@ def check_file_path(file_path, make_dirs=True):
 
     else:
         raise TypeError("The provided file path must be a string.")
+
+
+def image_to_cog(source, dst_path=None, profile="deflate", **kwargs):
+    """Converts an image to a COG file.
+
+    Args:
+        source (str): A dataset path, URL or rasterio.io.DatasetReader object.
+        dst_path (str, optional): An output dataset path or or PathLike object. Defaults to None.
+        profile (str, optional): COG profile. More at https://cogeotiff.github.io/rio-cogeo/profile. Defaults to "deflate".
+
+    Raises:
+        ImportError: If rio-cogeo is not installed.
+        FileNotFoundError: If the source file could not be found.
+    """
+    try:
+        from rio_cogeo.cogeo import cog_translate
+        from rio_cogeo.profiles import cog_profiles
+
+    except ImportError:
+        raise ImportError(
+            "The rio-cogeo package is not installed. Please install it with `pip install rio-cogeo` or `conda install rio-cogeo -c conda-forge`."
+        )
+
+    if not source.startswith("http"):
+        source = check_file_path(source)
+
+        if not os.path.exists(source):
+            raise FileNotFoundError("The provided input file could not be found.")
+
+    if dst_path is None:
+        if not source.startswith("http"):
+            dst_path = os.path.splitext(source)[0] + "_cog.tif"
+        else:
+            dst_path = temp_file_path(extension=".tif")
+
+    dst_path = check_file_path(dst_path)
+
+    dst_profile = cog_profiles.get(profile)
+    cog_translate(source, dst_path, dst_profile, **kwargs)
+
+
+def cog_validate(source, verbose=False):
+    """Validate Cloud Optimized Geotiff.
+
+    Args:
+        source (str): A dataset path or URL. Will be opened in "r" mode.
+        verbose (bool, optional): Whether to print the output of the validation. Defaults to False.
+
+    Raises:
+        ImportError: If the rio-cogeo package is not installed.
+        FileNotFoundError: If the provided file could not be found.
+
+    Returns:
+        tuple: A tuple containing the validation results (True is src_path is a valid COG, List of validation errors, and a list of validation warnings).
+    """
+    try:
+        from rio_cogeo.cogeo import cog_validate, cog_info
+    except ImportError:
+        raise ImportError(
+            "The rio-cogeo package is not installed. Please install it with `pip install rio-cogeo` or `conda install rio-cogeo -c conda-forge`."
+        )
+
+    if not source.startswith("http"):
+        source = check_file_path(source)
+
+        if not os.path.exists(source):
+            raise FileNotFoundError("The provided input file could not be found.")
+
+    if verbose:
+        return cog_info(source)
+    else:
+        return cog_validate(source)

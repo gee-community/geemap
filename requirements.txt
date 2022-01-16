@@ -8,6 +8,7 @@ geeadd>=0.5.1
 geocoder
 geojson
 googledrivedownloader
+here-map-widget-for-jupyter>=1.1.1
 ipyevents
 ipyfilechooser>=0.6.0
 ipyleaflet>=0.14.0
@@ -21,6 +22,7 @@ owslib
 palettable
 pandas
 pillow
+plotly
 pycrs
 pyshp>=2.1.3
 python-box
