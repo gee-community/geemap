@@ -131,7 +131,7 @@ class Map(here_map_widget.Map):
         """Adds a basemap to the map.
 
         Args:
-            basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'HYBRID'.
+            basemap (str, optional): Can be one of string from basemaps. Defaults to 'HYBRID'.
         """
         import xyzservices
 
