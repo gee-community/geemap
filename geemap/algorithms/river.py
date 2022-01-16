@@ -35,7 +35,7 @@ def rwc(
 
     Examples:
         >>> import ee
-        >>> from ee_extra.Algorithms import river
+        >>> from geemap.algorithms import river
         >>> ee.Initialize()
         >>> # Find an image by ROI.
         >>> point = ee.Geometry.Point([-88.08, 37.47])
@@ -90,7 +90,7 @@ def rwc_batch(
 
     Examples:
         >>> import ee
-        >>> from ee_extra.Algorithms import river
+        >>> from geemap.algorithms import river
         >>> ee.Initialize()
         >>> # Find an image by ROI.
         >>> point = ee.Geometry.Point([-88.08, 37.47])
