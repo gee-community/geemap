@@ -2438,7 +2438,7 @@ def goes_timeseries(
     data="GOES-17",
     scan="full_disk",
     region=None,
-    night_ir=False,    
+    show_night=[False, "a_mode"],
 ):
 
     """Create a time series of GOES data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4.
@@ -2450,7 +2450,7 @@ def goes_timeseries(
         data (str, optional): The GOES satellite data to use. Defaults to "GOES-17".
         scan (str, optional): The GOES scan to use. Defaults to "full_disk".
         region (ee.Geometry, optional): The region of interest. Defaults to None.
-        night_ir (bool, optional): Add infrared to RGB to be able to observe the clouds at night. Defaults to False.
+        show_night (list, optional): Show the clouds at night through [True, "a_mode"] o [True, "b_mode"].  Defaults to [False, "a_mode"]
     Raises:
         ValueError: The data must be either GOES-16 or GOES-17.
         ValueError: The scan must be either full_disk, conus, or mesoscale.
@@ -2509,9 +2509,9 @@ def goes_timeseries(
             },
         )
         return img.addBands(green)
-    
-    # Add IR to RGB
-    def addIR(img):
+
+    # Show at clouds at night (a-mode)
+    def showNighta(img):
         # Make normalized infrared
         IR_n = img.select('CMI_C13').unitScale(ee.Number(90), ee.Number(313))
         IR_n = IR_n.expression(
@@ -2520,14 +2520,28 @@ def goes_timeseries(
                 "IR_n": IR_n.select('CMI_C13'),
             },
         )
-        
+
         # Add infrared to rgb bands
         R_ir = img.select('CMI_C02').max(IR_n)
         G_ir = img.select('CMI_GREEN').max(IR_n)
         B_ir = img.select('CMI_C01').max(IR_n)
-        
+
         return img.addBands([R_ir, G_ir, B_ir], overwrite=True)
 
+    # Show at clouds at night (b-mode)
+    def showNightb(img):
+        night = img.select('CMI_C03').unitScale(0, 0.016).subtract(1).multiply(-1)
+
+        cmi11 = img.select('CMI_C11').unitScale(100, 310)
+        cmi13 = img.select('CMI_C13').unitScale(100, 300)
+        cmi15 = img.select('CMI_C15').unitScale(100, 310)
+        iNight = cmi15.addBands([cmi13, cmi11]).clamp(0, 1).subtract(1).multiply(-1) 
+
+        iRGBNight = iNight.visualize(**{"min": 0, "max": 1, "gamma": 1.4 }).updateMask(night)
+
+        iRGB = img.visualize(**{"bands": ['CMI_C02', 'CMI_C03', 'CMI_C01'], "min": 0.15, "max": 1, "gamma": 1.4 })
+        return iRGB.blend(iRGBNight).set("system:time_start", img.get("system:time_start"))
+    
     # Scales select bands for visualization.
     def scaleForVis(img):
         return (
@@ -2541,8 +2555,13 @@ def goes_timeseries(
 
     # Wraps previous functions.
     def processForVis(img):
-        if night_ir:
-            return scaleForVis(addIR(addGreenBand(applyScaleAndOffset(img))))
+        if show_night[0]:
+            if show_night[1] == "a_mode":
+                return scaleForVis(showNighta(addGreenBand(applyScaleAndOffset(img))))
+            
+            else:
+                return showNightb(applyScaleAndOffset(img))
+            
         else:
             return scaleForVis(addGreenBand(applyScaleAndOffset(img)))
 
