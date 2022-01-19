@@ -107,15 +107,13 @@ def get_ee_stac_list():
     """
     try:
         stac_url = (
-            "https://earthengine-stac.storage.googleapis.com/catalog/catalog.json"
+            "https://raw.githubusercontent.com/samapriya/Earth-Engine-Datasets-List/master/gee_catalog.json"
         )
 
         datasets = []
         with urllib.request.urlopen(stac_url) as url:
             data = json.loads(url.read().decode())
-            for link in data["links"]:
-                if "id" in link:
-                    datasets.append(link["id"])
+            datasets = [item["id"] for item in data]
 
         return datasets
 
