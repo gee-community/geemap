@@ -1,0 +1,40 @@
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+        branches:
+            - master
+
+name: Windows build
+jobs:
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: true
+          python-version: 3.9
+      - name: Install GDAL
+        run: conda install -c conda-forge gdal=3.4.0 --yes
+      - name: Test GDAL installation
+        run: |
+          python -c "from osgeo import gdal"
+          gdalinfo --version
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --no-cache-dir Cython
+          pip install -r codespell requirements.txt
+          pip install .
+      # - name: Discover typos with codespell
+      #   run: codespell --skip="*.csv,*.geojson,*.json,*.js,*.html,*cff" --ignore-words-list="aci,acount,acounts,fallow,hart,hist,nd,ned,ois,wqs"
+      # - name: PKG-TEST
+      #   run: |
+      #       python -m unittest discover tests/
+      #   env:
+      #       HEREMAPS_API_KEY: ${{ secrets.HEREMAPS_API_KEY }}
+      #       PLANET_API_KEY: ${{ secrets.PLANET_API_KEY }}
+      #       EARTHENGINE_TOKEN: ${{ secrets.EARTHENGINE_TOKEN }}
