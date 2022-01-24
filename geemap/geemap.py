@@ -2707,6 +2707,11 @@ class Map(ipyleaflet.Map):
             self.legend = legend_control
             self.add_control(legend_control)
 
+            if not hasattr(self, "legends"):
+                setattr(self, "legends", [legend_control])
+            else:
+                self.legends.append(legend_control)
+
             if layer_name in self.ee_layer_names:
                 self.ee_layer_dict[layer_name]["legend"] = legend_control
 
@@ -2959,7 +2964,14 @@ class Map(ipyleaflet.Map):
     def remove_legend(self):
         """Remove legend from the map."""
         if self.legend is not None:
-            self.remove_control(self.legend)
+            if self.legend in self.controls:
+                self.remove_control(self.legend)
+
+    def remove_legends(self):
+        """Remove all legends from the map."""
+        for legend in self.legends:
+            if legend in self.controls:
+                self.remove_control(legend)
 
     def image_overlay(self, url, bounds, name):
         """Overlays an image from the Internet or locally on the map.
