@@ -11,6 +11,14 @@ jobs:
             - uses: actions/setup-python@v2
               with:
                   python-version: 3.9
+            - name: Install GDAL
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install --find-links=https://girder.github.io/large_image_wheels --no-cache GDAL
+            - name: Test GDAL installation
+              run: |
+                  python -c "from osgeo import gdal"
+                  gdalinfo --version
             - name: Install dependencies
               run: |
                   python -m pip install --upgrade pip
