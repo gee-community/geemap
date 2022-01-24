@@ -2876,6 +2876,10 @@ class Map(ipyleaflet.Map):
             if "colorbar" in self.ee_layer_dict[layer_name]:
                 self.remove_control(self.ee_layer_dict[layer_name]["colorbar"])
             self.ee_layer_dict[layer_name]["colorbar"] = colormap_ctrl
+        if not hasattr(self, "colorbars"):
+            self.colorbars = [colormap_ctrl]
+        else:
+            self.colorbars.append(colormap_ctrl)
 
         self.add_control(colormap_ctrl)
 
@@ -2953,6 +2957,11 @@ class Map(ipyleaflet.Map):
         self.colorbar = colormap_ctrl
         self.add_control(colormap_ctrl)
 
+        if not hasattr(self, "colorbars"):
+            self.colorbars = [colormap_ctrl]
+        else:
+            self.colorbars.append(colormap_ctrl)
+
         if layer_name in self.ee_layer_names:
             self.ee_layer_dict[layer_name]["colorbar"] = colormap_ctrl
 
@@ -2960,6 +2969,13 @@ class Map(ipyleaflet.Map):
         """Remove colorbar from the map."""
         if self.colorbar is not None:
             self.remove_control(self.colorbar)
+
+    def remove_colorbars(self):
+        """Remove all colorbars from the map."""
+        if hasattr(self, "colorbars"):
+            for colorbar in self.colorbars:
+                if colorbar in self.controls:
+                    self.remove_control(colorbar)
 
     def remove_legend(self):
         """Remove legend from the map."""
@@ -2969,9 +2985,10 @@ class Map(ipyleaflet.Map):
 
     def remove_legends(self):
         """Remove all legends from the map."""
-        for legend in self.legends:
-            if legend in self.controls:
-                self.remove_control(legend)
+        if hasattr(self, "legends"):
+            for legend in self.legends:
+                if legend in self.controls:
+                    self.remove_control(legend)
 
     def image_overlay(self, url, bounds, name):
         """Overlays an image from the Internet or locally on the map.
