@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.11.1 - January 24, 2022
+
+**New Features**:
+
+-   Added ee_extra to algorithms [#868](https://github.com/giswqs/geemap/pull/868)
+-   Added COG creation [bc83fdf](https://github.com/giswqs/geemap/commit/bc83fdf959dd91bdeb40de6af41fea79933c57c2)
+-   Added heremap plotting backend [#382](https://github.com/giswqs/geemap/issues/382)
+-   Added COG Inspector GUI [#841](https://github.com/giswqs/geemap/issues/841)
+
+**Improvement**:
+
+-   Improved GitHub workflows [#879](https://github.com/giswqs/geemap/pull/879)
+-   Fixed ee_stac_list bug [#873](https://github.com/giswqs/geemap/issues/873)
+-   Fixed js py conversion [ce7fee0](https://github.com/giswqs/geemap/commit/ce7fee0e87ab2a35069e45d141fb2c84333f392b)
+-   Updated notebook 07 [#871](https://github.com/giswqs/geemap/pull/871)
+-   Added IR band to goes_timelapse [#870](https://github.com/giswqs/geemap/pull/870)
+-   Updated ee_basemaps [#869](https://github.com/giswqs/geemap/pull/869)
+-   Removed COG mosaic
+-   Fixed cartoee legend bug
+-   Updated installation instructions
+
 ## v0.11.0 - January 7, 2022
 
 **New Features**:
