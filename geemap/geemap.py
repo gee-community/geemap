@@ -3061,7 +3061,7 @@ class Map(ipyleaflet.Map):
         roi=None,
         label=None,
         start_year=1984,
-        end_year=2019,
+        end_year=2021,
         start_date="06-10",
         end_date="09-20",
         bands=["NIR", "Red", "Green"],
@@ -3087,7 +3087,7 @@ class Map(ipyleaflet.Map):
             roi (object, optional): Region of interest to create the timelapse. Defaults to None.
             label (str, optional): A label to show on the GIF, such as place name. Defaults to None.
             start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-            end_year (int, optional): Ending year for the timelapse. Defaults to 2019.
+            end_year (int, optional): Ending year for the timelapse. Defaults to 2021.
             start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
             end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
             bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']. Defaults to ['NIR', 'Red', 'Green'].
@@ -3155,22 +3155,13 @@ class Map(ipyleaflet.Map):
                 nd_bands=nd_bands,
                 nd_threshold=nd_threshold,
                 nd_palette=nd_palette,
-            )
-            in_nd_gif = in_gif.replace(".gif", "_nd.gif")
-
-            print("Adding animated text to GIF ...")
-            add_text_to_gif(
-                in_gif,
-                in_gif,
-                xy=("2%", "2%"),
-                text_sequence=start_year,
                 font_size=font_size,
                 font_color=font_color,
-                duration=int(1000 / frames_per_second),
-                add_progress_bar=add_progress_bar,
                 progress_bar_color=progress_bar_color,
                 progress_bar_height=progress_bar_height,
             )
+            in_nd_gif = in_gif.replace(".gif", "_nd.gif")
+
             if nd_bands is not None:
                 add_text_to_gif(
                     in_nd_gif,
