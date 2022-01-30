@@ -1711,7 +1711,12 @@ def ee_export_image(
         if crs is not None:
             params["crs"] = crs
 
-        url = ee_object.getDownloadURL(params)
+        try:
+            url = ee_object.getDownloadURL(params)
+        except Exception as e:
+            print("An error occurred while downloading.")
+            print(e)
+            return
         print(f"Downloading data from {url}\nPlease wait ...")
         r = requests.get(url, stream=True)
 
