@@ -1171,7 +1171,7 @@ def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
             for feature in geo_json["features"]:
                 if feature["geometry"]["type"] != "Point":
                     feature["geometry"]["geodesic"] = geodesic
-            features = ee.FeatureCollection(geo_json["features"])
+            features = ee.FeatureCollection(geo_json)
             return features
         elif geo_json["type"] == "Feature":
             geom = None
@@ -1380,7 +1380,7 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip
     if not isinstance(ee_object, ee.FeatureCollection):
         raise ValueError("ee_object must be an ee.FeatureCollection")
 
-    allowed_formats = ["csv", "geojson", "kml", "kmz", "shp"]
+    allowed_formats = ["csv", "geojson", "json", "kml", "kmz", "shp"]
     # allowed_formats = ['csv', 'kml', 'kmz']
     filename = os.path.abspath(filename)
     basename = os.path.basename(filename)
@@ -5248,7 +5248,7 @@ def zonal_statistics(
         print("The input zone data must be an ee.FeatureCollection.")
         return
 
-    allowed_formats = ["csv", "json", "kml", "kmz", "shp"]
+    allowed_formats = ["csv", "geojson", "kml", "kmz", "shp"]
     filename = os.path.abspath(out_file_path)
     basename = os.path.basename(filename)
     # name = os.path.splitext(basename)[0]
@@ -5396,7 +5396,7 @@ def zonal_statistics_by_group(
         print("The input zone data must be an ee.FeatureCollection.")
         return
 
-    allowed_formats = ["csv", "json", "kml", "kmz", "shp"]
+    allowed_formats = ["csv", "geojson", "kml", "kmz", "shp"]
     filename = os.path.abspath(out_file_path)
     basename = os.path.basename(filename)
     # name = os.path.splitext(basename)[0]
