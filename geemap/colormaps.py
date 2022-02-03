@@ -66,13 +66,19 @@ def get_colorbar(
         plt.show()
 
 
-def list_colormaps():
+def list_colormaps(add_extra=False, lowercase=False):
     """List all available colormaps. See a complete lost of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.
 
     Returns:
         list: The list of colormap names.
     """
-    return plt.colormaps()
+    result = plt.colormaps()
+    if add_extra:
+        result += ["dem", "ndvi", "ndwi"]
+    if lowercase:
+        result = [i.lower() for i in result]
+    result.sort()
+    return result
 
 
 def plot_colormap(

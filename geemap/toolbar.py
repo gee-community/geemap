@@ -11,6 +11,7 @@ from IPython.core.display import display
 
 from .common import *
 from .timelapse import *
+from .colormaps import list_colormaps
 
 
 def tool_template(m=None):
@@ -407,7 +408,7 @@ def open_data_widget(m):
             http_widget.children = [filepath]
         elif change["new"] == "Raster":
             file_chooser.filter_pattern = ["*.tif", "*.img"]
-            palette.options = get_palettable(types=["matplotlib", "cartocolors"])
+            palette.options = list_colormaps(add_extra=True)
             palette.value = None
             raster_options.children = [
                 widgets.HBox([bands, vmin, vmax]),
