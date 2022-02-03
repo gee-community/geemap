@@ -11,7 +11,6 @@ from IPython.core.display import display
 
 from .common import *
 from .timelapse import *
-from .colormaps import list_colormaps
 
 
 def tool_template(m=None):
@@ -199,7 +198,7 @@ def open_data_widget(m):
     Args:
         m (object): geemap.Map
     """
-
+    from .colormaps import list_colormaps
     padding = "0px 0px 0px 5px"
     style = {"description_width": "initial"}
 
