@@ -537,13 +537,13 @@ def reduce_gif_size(in_gif, out_gif=None):
         tmp_gif = in_gif.replace(".gif", "_tmp.gif")
         shutil.copyfile(in_gif, tmp_gif)
         stream = ffmpeg.input(tmp_gif)
-        stream = ffmpeg.output(stream, in_gif).overwrite_output()
+        stream = ffmpeg.output(stream, in_gif, loglevel="quiet").overwrite_output()
         ffmpeg.run(stream)
         os.remove(tmp_gif)
 
     else:
         stream = ffmpeg.input(in_gif)
-        stream = ffmpeg.output(stream, out_gif).overwrite_output()
+        stream = ffmpeg.output(stream, out_gif, loglevel="quiet").overwrite_output()
         ffmpeg.run(stream)
 
 
@@ -1977,7 +1977,7 @@ def landsat_timelapse(
             vis_params["min"] = 0
             vis_params["max"] = 4000
             vis_params["gamma"] = [1, 1, 1]
-        col = landsat_timeseries(
+        raw_col = landsat_timeseries(
             roi,
             start_year,
             end_year,
@@ -1988,7 +1988,7 @@ def landsat_timelapse(
             date_format,
         )
 
-        col = col.select(bands).map(
+        col = raw_col.select(bands).map(
             lambda img: img.visualize(**vis_params).set(
                 {
                     "system:time_start": img.get("system:time_start"),
@@ -2079,7 +2079,7 @@ def landsat_timelapse(
 
         if nd_bands is not None:
             nd_images = landsat_ts_norm_diff(
-                col, bands=nd_bands, threshold=nd_threshold
+                raw_col, bands=nd_bands, threshold=nd_threshold
             )
             out_nd_gif = out_gif.replace(".gif", "_nd.gif")
             landsat_ts_norm_diff_gif(
@@ -2440,7 +2440,6 @@ def goes_timeseries(
     region=None,
     show_night=[False, "a_mode"],
 ):
-
     """Create a time series of GOES data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4.
     Credits to Justin Braaten. See also https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
 
@@ -2535,13 +2534,15 @@ def goes_timeseries(
         cmi11 = img.select('CMI_C11').unitScale(100, 310)
         cmi13 = img.select('CMI_C13').unitScale(100, 300)
         cmi15 = img.select('CMI_C15').unitScale(100, 310)
-        iNight = cmi15.addBands([cmi13, cmi11]).clamp(0, 1).subtract(1).multiply(-1) 
+        iNight = cmi15.addBands([cmi13, cmi11]).clamp(0, 1).subtract(1).multiply(-1)
 
-        iRGBNight = iNight.visualize(**{"min": 0, "max": 1, "gamma": 1.4 }).updateMask(night)
+        iRGBNight = iNight.visualize(
+            **{"min": 0, "max": 1, "gamma": 1.4}).updateMask(night)
 
-        iRGB = img.visualize(**{"bands": ['CMI_C02', 'CMI_C03', 'CMI_C01'], "min": 0.15, "max": 1, "gamma": 1.4 })
+        iRGB = img.visualize(
+            **{"bands": ['CMI_C02', 'CMI_C03', 'CMI_C01'], "min": 0.15, "max": 1, "gamma": 1.4})
         return iRGB.blend(iRGBNight).set("system:time_start", img.get("system:time_start"))
-    
+
     # Scales select bands for visualization.
     def scaleForVis(img):
         return (
@@ -2558,10 +2559,10 @@ def goes_timeseries(
         if show_night[0]:
             if show_night[1] == "a_mode":
                 return scaleForVis(showNighta(addGreenBand(applyScaleAndOffset(img))))
-            
+
             else:
                 return showNightb(applyScaleAndOffset(img))
-            
+
         else:
             return scaleForVis(addGreenBand(applyScaleAndOffset(img)))
 
@@ -2576,7 +2577,6 @@ def goes_fire_timeseries(
     region=None,
     merge=True,
 ):
-
     """Create a time series of GOES Fire data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/8a083a7fb13b95ad4ba148ed9b65475e.
     Credits to Justin Braaten. See also https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
 
