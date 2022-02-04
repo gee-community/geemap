@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.11.2 - February 4, 2022
+
+**New Features**:
+
+-   Added remove_colorbars function [#881](https://github.com/giswqs/geemap/discussions/881)
+-   Added remove_legends function [#881](https://github.com/giswqs/geemap/discussions/881)
+
+**Improvement**:
+
+-   Update get_image_collection_gif() [#905](https://github.com/giswqs/geemap/pull/905)
+-   Fixed timelapse ND bug [#904](https://github.com/giswqs/geemap/issues/904)
+-   Improved open raster [#902](https://github.com/giswqs/geemap/issues/902)
+-   Fixed zonal stats bug [#899](https://github.com/giswqs/geemap/issues/899)
+-   Fixed Landsat timelapse bug [#885](https://github.com/giswqs/geemap/issues/885)
+
 ## v0.11.1 - January 24, 2022
 
 **New Features**:
