@@ -583,7 +583,7 @@ def convert_js2py(m):
         tooltips=["Convert", "Clear", "Close"],
         button_style="primary",
     )
-    buttons.style.button_width = "142px"
+    buttons.style.button_width = "128px"
 
     def button_clicked(change):
         if change["new"] == "Convert":
