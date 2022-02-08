@@ -9086,3 +9086,115 @@ def cog_validate(source, verbose=False):
         return cog_info(source)
     else:
         return cog_validate(source)
+
+
+def gdf_to_df(gdf, drop_geom=True):
+    """Converts a GeoDataFrame to a pandas DataFrame.
+
+    Args:
+        gdf (gpd.GeoDataFrame): A GeoDataFrame.
+        drop_geom (bool, optional): Whether to drop the geometry column. Defaults to True.
+
+    Returns:
+        pd.DataFrame: A pandas DataFrame containing the GeoDataFrame.
+    """
+    import pandas as pd
+
+    if drop_geom:
+        df = pd.DataFrame(gdf.drop(columns=["geometry"]))
+    else:
+        df = pd.DataFrame(gdf)
+
+    return df
+
+
+def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
+    """Converts a GeoJSON object to a pandas DataFrame.
+
+    Args:
+        in_geojson (str | dict): The input GeoJSON file or dict.
+        encoding (str, optional): The encoding of the GeoJSON object. Defaults to "utf-8".
+        drop_geometry (bool, optional): Whether to drop the geometry column. Defaults to True.
+
+    Raises:
+        FileNotFoundError: If the input GeoJSON file could not be found.
+
+    Returns:
+        pd.DataFrame: A pandas DataFrame containing the GeoJSON object.
+    """
+
+    import json
+    import pandas as pd
+    from urllib.request import urlopen
+
+    if isinstance(in_geojson, str):
+
+        if in_geojson.startswith("http"):
+            with urlopen(in_geojson) as f:
+                data = json.load(f)
+        else:
+            in_geojson = os.path.abspath(in_geojson)
+            if not os.path.exists(in_geojson):
+                raise FileNotFoundError("The provided GeoJSON file could not be found.")
+
+            with open(in_geojson, encoding=encoding) as f:
+                data = json.load(f)
+
+    elif isinstance(in_geojson, dict):
+        data = in_geojson
+
+    df = pd.json_normalize(data["features"])
+    df.columns = [col.replace("properties.", "") for col in df.columns]
+    if drop_geometry:
+        df = df[df.columns.drop(list(df.filter(regex="geometry")))]
+    return df
+
+
+def ee_join_table(ee_object, data, src_key, dst_key=None):
+    """Join a table to an ee.FeatureCollection attribute table.
+
+    Args:
+        ee_object (ee.FeatureCollection): The ee.FeatureCollection to be joined by a table.
+        data (str | pd.DataFraem | gpd.GeoDataFrame): The table to join to the ee.FeatureCollection.
+        src_key (str): The key of ee.FeatureCollection attribute table to join.
+        dst_key (str, optional): The key of the table to be joined to the ee.FeatureCollection. Defaults to None.
+
+    Returns:
+        ee.FeatureCollection: The joined ee.FeatureCollection.
+    """
+    import pandas as pd
+
+    if not isinstance(ee_object, ee.FeatureCollection):
+        raise TypeError("The input ee_object must be of type ee.FeatureCollection.")
+
+    if not isinstance(src_key, str):
+        raise TypeError("The input src_key must be of type str.")
+
+    if dst_key is None:
+        dst_key = src_key
+
+    if isinstance(data, str):
+        if data.endswith(".csv"):
+            df = pd.read_csv(data)
+        elif data.endswith(".geojson"):
+            df = geojson_to_df(data)
+        else:
+            import geopandas as gpd
+            gdf = gpd.read_file(data)
+            df = gdf_to_df(gdf)
+    elif isinstance(data, pd.DataFrame):
+        if 'geometry' in data.columns:
+            df = data.drop(columns=['geometry'])
+        elif 'geom' in data.columns:
+            df = data.drop(columns=['geom'])
+        else:
+            df = data
+    else:
+        raise TypeError("The input data must be of type str or pandas.DataFrame.")
+        
+    df.set_index(dst_key, inplace=True)   
+    df = df[~df.index.duplicated(keep='first')]
+    table = ee.Dictionary(df.to_dict('index'))
+
+    fc = ee_object.map(lambda f: f.set(table.get(f.get(src_key), ee.Dictionary())))
+    return fc

@@ -177,6 +177,7 @@ nav:
           - notebooks/94_heremap.ipynb
           - notebooks/95_create_cog.ipynb
           - notebooks/96_image_chips.ipynb
+          - notebooks/97_join_table.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
