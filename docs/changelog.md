@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.11.3 - February 7, 2022
+
+**New Features**:
+
+-   Added support for joining attribute tables `ee_join_table()` [#916](https://github.com/giswqs/geemap/issues/916)
+-   Added `gdf_to_df()` and `geojson_to_df()` functions
+
 ## v0.11.2 - February 4, 2022
 
 **New Features**:

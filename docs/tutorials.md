@@ -108,3 +108,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 94. Using heremap with Earth Engine ([notebook](https://geemap.org/notebooks/94_heremap))
 95. Creating Cloud Optimized GeoTIFF (COG) ([notebook](https://geemap.org/notebooks/95_create_cog))
 96. Exporting thousands of image chips in a few minutes ([notebook](https://geemap.org/notebooks/96_image_chips))
+97. Joining attribute tables with only one line of code ([notebook](https://geemap.org/notebooks/97_join_table))
