@@ -126,7 +126,7 @@ def make_gif(images, out_gif, ext="jpg", fps=10, loop=0, mp4=False, clean_up=Fal
 
         if os.path.exists(out_gif):
             out_mp4 = out_gif.replace(".gif", ".mp4")
-            cmd = f"ffmpeg -i {out_gif} -vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
+            cmd = f"ffmpeg -loglevel error -i {out_gif} -vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
             os.system(cmd)
             if not os.path.exists(out_mp4):
                 raise Exception(f"Failed to create mp4 file.")
@@ -161,12 +161,12 @@ def gif_to_mp4(in_gif, out_mp4):
     width, height = Image.open(in_gif).size
 
     if width % 2 == 0 and height % 2 == 0:
-        cmd = f"ffmpeg -i {in_gif} -vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
+        cmd = f"ffmpeg -loglevel error -i {in_gif} -vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
         os.system(cmd)
     else:
         width += width % 2
         height += height % 2
-        cmd = f"ffmpeg -i {in_gif} -vf scale={width}:{height} -vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
+        cmd = f"ffmpeg -loglevel error -i {in_gif} -vf scale={width}:{height} -vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
         os.system(cmd)
 
     if not os.path.exists(out_mp4):
@@ -201,6 +201,159 @@ def merge_gifs(in_gifs, out_gif):
             "gifsicle is not installed. Run 'sudo apt-get install -y gifsicle' to install it."
         )
         print(e)
+
+
+def gif_to_png(in_gif, out_dir=None, prefix="", verbose=True):
+    """Converts a gif to png.
+
+    Args:
+        in_gif (str): The input gif file.
+        out_dir (str, optional): The output directory. Defaults to None.
+        prefix (str, optional): The prefix of the output png files. Defaults to None.
+        verbose (bool, optional): Whether to print the progress. Defaults to True.
+
+    Raises:
+        FileNotFoundError: Raise exception when the input gif does not exist.
+        Exception: Raise exception when ffmpeg is not installed.
+    """
+    import tempfile
+
+    in_gif = os.path.abspath(in_gif)
+    if " " in in_gif:
+        raise Exception("in_gif cannot contain spaces.")
+    if not os.path.exists(in_gif):
+        raise FileNotFoundError(f"{in_gif} does not exist.")
+
+    basename = os.path.basename(in_gif).replace(".gif", "")
+    if out_dir is None:
+        out_dir = os.path.join(tempfile.gettempdir(), basename)
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+    elif isinstance(out_dir, str) and not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+    elif not isinstance(out_dir, str):
+        raise Exception("out_dir must be a string.")
+
+    out_dir = os.path.abspath(out_dir)
+    cmd = f"ffmpeg -loglevel error -i {in_gif} -vsync 0 {out_dir}/{prefix}%d.png"
+    os.system(cmd)
+
+    if verbose:
+        print(f"Images are saved to {out_dir}")
+
+
+def gif_fading(in_gif, out_gif, duration=1, verbose=True):
+    """Fade in/out the gif.
+
+    Args:
+        in_gif (str): The input gif file. Can be a directory path or http URL, e.g., "https://i.imgur.com/ZWSZC5z.gif"  
+        out_gif (str): The output gif file.
+        duration (float, optional): The duration of the fading. Defaults to 1.
+        verbose (bool, optional): Whether to print the progress. Defaults to True.
+
+    Raises:
+        FileNotFoundError: Raise exception when the input gif does not exist.
+        Exception: Raise exception when ffmpeg is not installed.
+    """
+    import glob
+    import shutil
+    import tempfile
+
+    current_dir = os.getcwd()
+
+    if isinstance(in_gif, str) and in_gif.startswith("http"):
+        ext = os.path.splitext(in_gif)[1]
+        file_path = temp_file_path(ext)
+        download_from_url(in_gif, file_path, verbose=verbose) 
+        in_gif = file_path
+
+    in_gif = os.path.abspath(in_gif)
+    if not in_gif.endswith(".gif"):
+        raise Exception("in_gif must be a gif file.")
+
+    if " " in in_gif:
+        raise Exception("The filename cannot contain spaces.")
+
+    out_gif = os.path.abspath(out_gif)
+    if not os.path.exists(os.path.dirname(out_gif)):
+        os.makedirs(os.path.dirname(out_gif))
+
+    if not os.path.exists(in_gif):
+        raise FileNotFoundError(f"{in_gif} does not exist.")
+
+    basename = os.path.basename(in_gif).replace(".gif", "")
+    temp_dir = os.path.join(tempfile.gettempdir(), basename)
+    if os.path.exists(temp_dir):
+        shutil.rmtree(temp_dir)
+
+    gif_to_png(in_gif, temp_dir, verbose=verbose)
+
+    os.chdir(temp_dir)
+
+    images = list(glob.glob(os.path.join(temp_dir, "*.png")))
+    count = len(images)
+
+    files = []
+    for i in range(1, count + 1):
+        files.append(f"-loop 1 -t {duration} -i {i}.png")
+    inputs = " ".join(files)
+
+    filters = []
+    for i in range(1, count):
+        if i == 1:
+            filters.append(
+                f"\"[1:v][0:v]blend=all_expr='A*(if(gte(T,3),1,T/3))+B*(1-(if(gte(T,3),1,T/3)))'[v0];"
+            )
+        else:
+            filters.append(
+                f"[{i}:v][{i-1}:v]blend=all_expr='A*(if(gte(T,3),1,T/3))+B*(1-(if(gte(T,3),1,T/3)))'[v{i-1}];"
+            )
+
+    last_filter = ""
+    for i in range(count - 1):
+        last_filter += f"[v{i}]"
+    last_filter += f'concat=n={count-1}:v=1:a=0[v]" -map "[v]"'
+    filters.append(last_filter)
+    filters = " ".join(filters)
+
+    cmd = f"ffmpeg -y -loglevel error {inputs} -filter_complex {filters} {out_gif}"
+
+    # if fade >= duration:
+    #     duration = fade + 1
+
+    # files = []
+    # for i in range(1, count + 1):
+    #     files.append(f"-framerate {framerate} -loop 1 -t {duration} -i {i}.png")
+
+    # inputs = " ".join(files)
+
+    # filters = []
+    # for i in range(count):
+    #     if i == 0:
+    #         filters.append(f'"[0:v]fade=t=out:st=4:d={fade}[v0];')
+    #     else:
+    #         filters.append(
+    #             f"[{i}:v]fade=t=in:st=0:d={fade},fade=t=out:st=4:d={fade}[v{i}];"
+    #         )
+
+    # last_filter = ""
+    # for i in range(count):
+    #     last_filter += f"[v{i}]"
+    # last_filter += f"concat=n={count}:v=1:a=0,split[v0][v1];"
+    # filters.append(last_filter)
+    # palette = f'[v0]palettegen[p];[v1][p]paletteuse[v]" -map "[v]"'
+    # filters.append(palette)
+    # filters = " ".join(filters)
+
+    # cmd = f"ffmpeg -y {inputs} -filter_complex {filters} {out_gif}"
+
+    os.system(cmd)
+    try:
+        shutil.rmtree(temp_dir)
+    except Exception as e:
+        print(e)
+
+    os.chdir(current_dir)
 
 
 def add_text_to_gif(
@@ -686,6 +839,7 @@ def create_timelapse(
     colorbar_size=(300, 300),
     loop=0,
     mp4=False,
+    fading=False,
 ):
     """Create a timelapse from any ee.ImageCollection.
 
@@ -734,6 +888,7 @@ def create_timelapse(
         colorbar_size (tuple, optional): Size of the colorbar. It can be formatted like this: (300, 300). Defaults to (300, 300).
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
 
     Returns:
         str: File path to the timelapse gif.
@@ -951,6 +1106,11 @@ def create_timelapse(
     if os.path.exists(out_gif):
         reduce_gif_size(out_gif)
 
+    if isinstance(fading, bool):
+        fading = int(fading)
+    if fading > 0:
+        gif_fading(out_gif, out_gif, duration=fading, verbose=False)
+
     if mp4:
         out_mp4 = out_gif.replace(".gif", ".mp4")
         gif_to_mp4(out_gif, out_mp4)
@@ -1036,6 +1196,7 @@ def naip_timelapse(
     progress_bar_height=5,
     loop=0,
     mp4=False,
+    fading=False
 ):
     """Create a timelapse from NAIP imagery.
 
@@ -1067,6 +1228,8 @@ def naip_timelapse(
         progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+
 
     Returns:
         str: File path to the timelapse gif.
@@ -1117,6 +1280,7 @@ def naip_timelapse(
             progress_bar_height,
             loop=loop,
             mp4=mp4,
+            fading=fading,
         )
 
     except Exception as e:
@@ -1873,6 +2037,7 @@ def landsat_timelapse(
     progress_bar_height=5,
     loop=0,
     mp4=False,
+    fading=False,
 ):
     """Generates a Landsat timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
 
@@ -1911,6 +2076,7 @@ def landsat_timelapse(
         progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
 
     Returns:
         str: File path to the output GIF image.
@@ -2094,6 +2260,11 @@ def landsat_timelapse(
         if os.path.exists(out_gif):
             reduce_gif_size(out_gif)
 
+        if isinstance(fading, bool):
+            fading = int(fading)
+        if fading > 0:
+            gif_fading(out_gif, out_gif, duration=fading, verbose=False)
+
         if mp4:
             out_mp4 = out_gif.replace(".gif", ".mp4")
             gif_to_mp4(out_gif, out_mp4)
@@ -2136,6 +2307,7 @@ def sentinel2_timelapse(
     progress_bar_height=5,
     loop=0,
     mp4=False,
+    fading=False
 ):
     """Generates a Sentinel-2 timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
 
@@ -2171,6 +2343,7 @@ def sentinel2_timelapse(
         progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
 
     Returns:
         str: File path to the output GIF image.
@@ -2345,6 +2518,11 @@ def sentinel2_timelapse(
         if os.path.exists(out_gif):
             reduce_gif_size(out_gif)
 
+        if isinstance(fading, bool):
+            fading = int(fading)
+        if fading > 0:
+            gif_fading(out_gif, out_gif, duration=fading, verbose=False)
+
         if mp4:
             out_mp4 = out_gif.replace(".gif", ".mp4")
             gif_to_mp4(out_gif, out_mp4)
@@ -2512,36 +2690,45 @@ def goes_timeseries(
     # Show at clouds at night (a-mode)
     def showNighta(img):
         # Make normalized infrared
-        IR_n = img.select('CMI_C13').unitScale(ee.Number(90), ee.Number(313))
+        IR_n = img.select("CMI_C13").unitScale(ee.Number(90), ee.Number(313))
         IR_n = IR_n.expression(
             "ir_p = (1 -IR_n)/1.4",
             {
-                "IR_n": IR_n.select('CMI_C13'),
+                "IR_n": IR_n.select("CMI_C13"),
             },
         )
 
         # Add infrared to rgb bands
-        R_ir = img.select('CMI_C02').max(IR_n)
-        G_ir = img.select('CMI_GREEN').max(IR_n)
-        B_ir = img.select('CMI_C01').max(IR_n)
+        R_ir = img.select("CMI_C02").max(IR_n)
+        G_ir = img.select("CMI_GREEN").max(IR_n)
+        B_ir = img.select("CMI_C01").max(IR_n)
 
         return img.addBands([R_ir, G_ir, B_ir], overwrite=True)
 
     # Show at clouds at night (b-mode)
     def showNightb(img):
-        night = img.select('CMI_C03').unitScale(0, 0.016).subtract(1).multiply(-1)
+        night = img.select("CMI_C03").unitScale(0, 0.016).subtract(1).multiply(-1)
 
-        cmi11 = img.select('CMI_C11').unitScale(100, 310)
-        cmi13 = img.select('CMI_C13').unitScale(100, 300)
-        cmi15 = img.select('CMI_C15').unitScale(100, 310)
+        cmi11 = img.select("CMI_C11").unitScale(100, 310)
+        cmi13 = img.select("CMI_C13").unitScale(100, 300)
+        cmi15 = img.select("CMI_C15").unitScale(100, 310)
         iNight = cmi15.addBands([cmi13, cmi11]).clamp(0, 1).subtract(1).multiply(-1)
 
-        iRGBNight = iNight.visualize(
-            **{"min": 0, "max": 1, "gamma": 1.4}).updateMask(night)
+        iRGBNight = iNight.visualize(**{"min": 0, "max": 1, "gamma": 1.4}).updateMask(
+            night
+        )
 
         iRGB = img.visualize(
-            **{"bands": ['CMI_C02', 'CMI_C03', 'CMI_C01'], "min": 0.15, "max": 1, "gamma": 1.4})
-        return iRGB.blend(iRGBNight).set("system:time_start", img.get("system:time_start"))
+            **{
+                "bands": ["CMI_C02", "CMI_C03", "CMI_C01"],
+                "min": 0.15,
+                "max": 1,
+                "gamma": 1.4,
+            }
+        )
+        return iRGB.blend(iRGBNight).set(
+            "system:time_start", img.get("system:time_start")
+        )
 
     # Scales select bands for visualization.
     def scaleForVis(img):
@@ -2681,6 +2868,7 @@ def goes_timelapse(
     overlay_width=1,
     overlay_opacity=1.0,
     mp4=False,
+    fading=False,
     **kwargs,
 ):
     """Create a timelapse of GOES data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4.
@@ -2710,6 +2898,7 @@ def goes_timelapse(
         overlay_width (int, optional): Line width of the overlay. Defaults to 1.
         overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
         mp4 (bool, optional): Whether to save the animation as an mp4 file. Defaults to False.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
     Raises:
         Exception: Raise exception.
     """
@@ -2786,6 +2975,12 @@ def goes_timelapse(
 
             try:
                 reduce_gif_size(out_gif)
+
+                if isinstance(fading, bool):
+                    fading = int(fading)
+                if fading > 0:
+                    gif_fading(out_gif, out_gif, duration=fading, verbose=False)
+
             except Exception as _:
                 pass
 
@@ -2822,6 +3017,7 @@ def goes_fire_timelapse(
     overlay_width=1,
     overlay_opacity=1.0,
     mp4=False,
+    fading=False,
     **kwargs,
 ):
     """Create a timelapse of GOES fire data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/8a083a7fb13b95ad4ba148ed9b65475e.
@@ -2852,6 +3048,7 @@ def goes_fire_timelapse(
         overlay_width (int, optional): Width of the overlay. Defaults to 1.
         overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
         mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
 
     Raises:
         Exception: Raise exception.
@@ -2912,6 +3109,11 @@ def goes_fire_timelapse(
 
             try:
                 reduce_gif_size(out_gif)
+                if isinstance(fading, bool):
+                    fading = int(fading)
+                if fading > 0:
+                    gif_fading(out_gif, out_gif, duration=fading, verbose=False)
+
             except Exception as _:
                 pass
 
@@ -3016,6 +3218,7 @@ def modis_ndvi_timelapse(
     overlay_width=1,
     overlay_opacity=1.0,
     mp4=False,
+    fading=False,
     **kwargs,
 ):
     """Create MODIS NDVI timelapse. The source code is adapted from https://developers.google.com/earth-engine/tutorials/community/modis-ndvi-time-series-animation.
@@ -3044,6 +3247,7 @@ def modis_ndvi_timelapse(
         overlay_width (int, optional): Width of the overlay. Defaults to 1.
         overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
         mp4 (bool, optional): Whether to convert the output gif to mp4. Defaults to False.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
 
     """
 
@@ -3135,6 +3339,11 @@ def modis_ndvi_timelapse(
 
             try:
                 reduce_gif_size(out_gif)
+                if isinstance(fading, bool):
+                    fading = int(fading)
+                if fading > 0:
+                    gif_fading(out_gif, out_gif, duration=fading, verbose=False)
+
             except Exception as _:
                 pass
 
@@ -3252,6 +3461,7 @@ def modis_ocean_color_timelapse(
     colorbar_size=(300, 300),
     loop=0,
     mp4=False,
+    fading=False,
 ):
     """Creates a ocean color timelapse from MODIS. https://developers.google.com/earth-engine/datasets/catalog/NASA_OCEANDATA_MODIS-Aqua_L3SMI
 
@@ -3300,6 +3510,7 @@ def modis_ocean_color_timelapse(
         colorbar_size (tuple, optional): Size of the colorbar. It can be formatted like this: (300, 300). Defaults to (300, 300).
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
 
     Returns:
         str: File path to the timelapse gif.
@@ -3361,6 +3572,7 @@ def modis_ocean_color_timelapse(
         colorbar_size,
         loop,
         mp4,
+        fading,
     )
 
     return out_gif

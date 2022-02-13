@@ -551,13 +551,14 @@ def open_image_from_url(url):
         print(e)
 
 
-def show_image(img_path, width=None, height=None):
+def show_image(img_path, width=None, height=None, verbose=True):
     """Shows an image within Jupyter notebook.
 
     Args:
         img_path (str): The image file path.
         width (int, optional): Width of the image in pixels. Defaults to None.
         height (int, optional): Height of the image in pixels. Defaults to None.
+        verbose (bool, optional): If True, print the progress. Defaults to True.
 
     """
     from IPython.display import display
@@ -569,7 +570,13 @@ def show_image(img_path, width=None, height=None):
         out.clear_output(wait=True)
         display(out)
         with out:
-            file = open(img_path, "rb")
+            if isinstance(img_path, str) and img_path.startswith("http"):
+                ext = os.path.splitext(img_path)[1]
+                file_path = temp_file_path(ext)
+                download_from_url(img_path, file_path, verbose=verbose)
+            else:
+                file_path = img_path
+            file = open(file_path, "rb")
             image = file.read()
             if (width is None) and (height is None):
                 display(widgets.Image(value=image))
