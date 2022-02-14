@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.11.4 - February 14, 2022
+
+**New Features**:
+
+-   Added timelapse fading effect [#925](https://github.com/giswqs/geemap/pull/925)
+
 ## v0.11.3 - February 7, 2022
 
 **New Features**:
