@@ -2,6 +2,7 @@ bqplot
 click
 colour
 earthengine-api>=0.1.230
+ee_extra>=0.0.10
 ffmpeg-python
 folium>=0.11.0
 geeadd>=0.5.1
@@ -30,4 +31,4 @@ sankee
 voila
 whiteboxgui>=0.6.0
 xyzservices
-ee_extra>=0.0.10
+
