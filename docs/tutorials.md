@@ -110,3 +110,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 96. Exporting thousands of image chips in a few minutes ([notebook](https://geemap.org/notebooks/96_image_chips))
 97. Joining attribute tables with only one line of code ([notebook](https://geemap.org/notebooks/97_join_table))
 98. Adding crossfade to satellite timelapse ([notebook](https://geemap.org/notebooks/98_timelapse_fading))
+99. Visualizing Landsat 9 data ([notebook](https://geemap.org/notebooks/99_landsat_9/))
