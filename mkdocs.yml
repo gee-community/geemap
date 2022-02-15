@@ -179,6 +179,7 @@ nav:
           - notebooks/96_image_chips.ipynb
           - notebooks/97_join_table.ipynb
           - notebooks/98_timelapse_fading.ipynb
+          - notebooks/99_landsat_9.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
