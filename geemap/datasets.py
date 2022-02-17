@@ -106,9 +106,7 @@ def get_ee_stac_list():
         list: The list of Earth Engine asset IDs.
     """
     try:
-        stac_url = (
-            "https://raw.githubusercontent.com/samapriya/Earth-Engine-Datasets-List/master/gee_catalog.json"
-        )
+        stac_url = "https://raw.githubusercontent.com/samapriya/Earth-Engine-Datasets-List/master/gee_catalog.json"
 
         datasets = []
         with urllib.request.urlopen(stac_url) as url:

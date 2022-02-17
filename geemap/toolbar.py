@@ -199,6 +199,7 @@ def open_data_widget(m):
         m (object): geemap.Map
     """
     from .colormaps import list_colormaps
+
     padding = "0px 0px 0px 5px"
     style = {"description_width": "initial"}
 

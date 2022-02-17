@@ -1115,7 +1115,7 @@ def get_image_collection_gif(
         fig = plt.figure(figsize=fig_size)
 
         # Set the facecolor
-        fig.patch.set_facecolor('white')
+        fig.patch.set_facecolor("white")
 
         # Plot image
         ax = get_map(image, region=region, vis_params=vis_params, cmap=cmap, proj=proj)
@@ -1136,7 +1136,12 @@ def get_image_collection_gif(
             add_north_arrow(ax, **north_arrow_dict)
 
         # Save plot
-        plt.savefig(fname=out_img, dpi=dpi_plot, bbox_inches='tight', facecolor=fig.get_facecolor())
+        plt.savefig(
+            fname=out_img,
+            dpi=dpi_plot,
+            bbox_inches="tight",
+            facecolor=fig.get_facecolor(),
+        )
 
         plt.clf()
         plt.close()

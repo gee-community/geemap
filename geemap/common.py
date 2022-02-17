@@ -682,7 +682,7 @@ def hex_to_rgb(value="FFFFFF"):
     """
     value = value.lstrip("#")
     lv = len(value)
-    return tuple(int(value[i: i + lv // 3], 16) for i in range(0, lv, lv // 3))
+    return tuple(int(value[i : i + lv // 3], 16) for i in range(0, lv, lv // 3))
 
 
 def check_color(in_color):
@@ -7608,7 +7608,7 @@ def planet_monthly_tiles_tropical(
     link = planet_monthly_tropical(api_key, token_name)
     for url in link:
         index = url.find("20")
-        name = "Planet_" + url[index: index + 7]
+        name = "Planet_" + url[index : index + 7]
 
         if tile_format == "ipyleaflet":
             tile = ipyleaflet.TileLayer(url=url, attribution="Planet", name=name)
@@ -7653,7 +7653,7 @@ def planet_biannual_tiles_tropical(
     link = planet_biannual_tropical(api_key, token_name)
     for url in link:
         index = url.find("20")
-        name = "Planet_" + url[index: index + 15]
+        name = "Planet_" + url[index : index + 15]
         if tile_format == "ipyleaflet":
             tile = ipyleaflet.TileLayer(url=url, attribution="Planet", name=name)
         else:
@@ -7826,7 +7826,7 @@ def planet_monthly_tiles(
 
     for url in link:
         index = url.find("20")
-        name = "Planet_" + url[index: index + 7]
+        name = "Planet_" + url[index : index + 7]
 
         if tile_format == "ipyleaflet":
             tile = ipyleaflet.TileLayer(url=url, attribution="Planet", name=name)
@@ -7871,7 +7871,7 @@ def planet_quarterly_tiles(
 
     for url in links:
         index = url.find("20")
-        name = "Planet_" + url[index: index + 6]
+        name = "Planet_" + url[index : index + 6]
 
         if tile_format == "ipyleaflet":
             tile = ipyleaflet.TileLayer(url=url, attribution="Planet", name=name)
@@ -9187,21 +9187,22 @@ def ee_join_table(ee_object, data, src_key, dst_key=None):
             df = geojson_to_df(data)
         else:
             import geopandas as gpd
+
             gdf = gpd.read_file(data)
             df = gdf_to_df(gdf)
     elif isinstance(data, pd.DataFrame):
-        if 'geometry' in data.columns:
-            df = data.drop(columns=['geometry'])
-        elif 'geom' in data.columns:
-            df = data.drop(columns=['geom'])
+        if "geometry" in data.columns:
+            df = data.drop(columns=["geometry"])
+        elif "geom" in data.columns:
+            df = data.drop(columns=["geom"])
         else:
             df = data
     else:
         raise TypeError("The input data must be of type str or pandas.DataFrame.")
-        
-    df.set_index(dst_key, inplace=True)   
-    df = df[~df.index.duplicated(keep='first')]
-    table = ee.Dictionary(df.to_dict('index'))
+
+    df.set_index(dst_key, inplace=True)
+    df = df[~df.index.duplicated(keep="first")]
+    table = ee.Dictionary(df.to_dict("index"))
 
     fc = ee_object.map(lambda f: f.set(table.get(f.get(src_key), ee.Dictionary())))
     return fc

@@ -12,7 +12,13 @@ import here_map_widget
 import ipywidgets as widgets
 from box import Box
 from .basemaps import xyz_to_heremap
-from .common import ee_initialize, shp_to_geojson, gdf_to_geojson, vector_to_geojson, random_string
+from .common import (
+    ee_initialize,
+    shp_to_geojson,
+    gdf_to_geojson,
+    vector_to_geojson,
+    random_string,
+)
 
 from here_map_widget import (
     FullscreenControl,
@@ -257,8 +263,9 @@ class Map(here_map_widget.Map):
 
         map_id_dict = ee.Image(image).getMapId(vis_params)
         url = map_id_dict["tile_fetcher"].url_format
-        self.add_tile_layer(url, name=name, attribution="Google Earth Engine",
-                            opacity=opacity, **kwargs)
+        self.add_tile_layer(
+            url, name=name, attribution="Google Earth Engine", opacity=opacity, **kwargs
+        )
 
     addLayer = add_ee_layer
 

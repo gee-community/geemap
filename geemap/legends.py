@@ -55,7 +55,7 @@ builtin_legends = {
         "Bare Ground": "EDE9E4",
         "Snow/Ice": "F2FAFF",
         "Clouds": "C8C8C8",
-    },    
+    },
     # National Wetlands Inventory Legend: https://www.fws.gov/wetlands/data/Mapper-Wetlands-Legend.html
     "NWI": {
         "Freshwater- Forested and Shrub wetland": (0, 136, 55),

@@ -461,8 +461,9 @@ class Map(go.FigureWidget):
 
         map_id_dict = ee.Image(image).getMapId(vis_params)
         url = map_id_dict["tile_fetcher"].url_format
-        self.add_tile_layer(url, name=name, attribution="Google Earth Engine",
-                            opacity=opacity, **kwargs)
+        self.add_tile_layer(
+            url, name=name, attribution="Google Earth Engine", opacity=opacity, **kwargs
+        )
         self.set_layer_visibility(name=name, show=shown)
 
     addLayer = add_ee_layer
