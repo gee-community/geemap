@@ -117,7 +117,7 @@ def format_params(line, sep=":"):
         bracket_index = line.index("{")
         if bracket_index < indices[0]:
             prefix = line[: bracket_index + 1]
-            line = line[bracket_index + 1:]
+            line = line[bracket_index + 1 :]
 
     if count > 0:
         items = line.split(sep)
@@ -183,9 +183,9 @@ def convert_for_loop(line):
     end_index = line.index(")")
 
     prefix = line[:(start_index)]
-    suffix = line[(end_index + 1):]
+    suffix = line[(end_index + 1) :]
 
-    params = line[(start_index + 1): end_index]
+    params = line[(start_index + 1) : end_index]
 
     if " in " in params and params.count(";") == 0:
         new_line = prefix + "{}:".format(params) + suffix
@@ -210,7 +210,7 @@ def convert_for_loop(line):
         step = -1
 
     prefix = line[:(start_index)]
-    suffix = line[(end_index + 1):]
+    suffix = line[(end_index + 1) :]
     new_line = (
         prefix
         + "{} in range({}, {}, {}):".format(param_name, start, end, step)
@@ -248,7 +248,7 @@ def check_map_functions(input_lines):
             output_lines.append(func_header)
 
             for sub_index, tmp_line in enumerate(
-                input_lines[index + 1: matching_line_index]
+                input_lines[index + 1 : matching_line_index]
             ):
                 output_lines.append(tmp_line)
                 input_lines[index + 1 + sub_index] = ""
@@ -260,7 +260,7 @@ def check_map_functions(input_lines):
             output_lines.append(func_footer)
 
             footer_line = input_lines[matching_line_index][
-                matching_char_index + 1:
+                matching_char_index + 1 :
             ].strip()
             if footer_line == ")" or footer_line == ");":
                 header_line = header_line + footer_line
@@ -345,7 +345,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
                 if ("/* color" in line) and ("*/" in line):
                     line = (
                         line[: line.index("/*")].lstrip()
-                        + line[(line.index("*/") + 2):]
+                        + line[(line.index("*/") + 2) :]
                     )
 
                 if (
@@ -366,16 +366,16 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
                         matching_char_index,
                     ) = find_matching_bracket(lines, index, bracket_index)
 
-                    line = line[:bracket_index] + line[bracket_index + 1:]
+                    line = line[:bracket_index] + line[bracket_index + 1 :]
                     if matching_line_index == index:
                         line = (
-                            line[:matching_char_index] + line[matching_char_index + 1:]
+                            line[:matching_char_index] + line[matching_char_index + 1 :]
                         )
                     else:
                         tmp_line = lines[matching_line_index]
                         lines[matching_line_index] = (
                             tmp_line[:matching_char_index]
-                            + tmp_line[matching_char_index + 1:]
+                            + tmp_line[matching_char_index + 1 :]
                         )
 
                     line = (
@@ -417,7 +417,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
                         tmp_line = lines[matching_line_index]
                         lines[matching_line_index] = (
                             tmp_line[:matching_char_index]
-                            + tmp_line[matching_char_index + 1:]
+                            + tmp_line[matching_char_index + 1 :]
                         )
                         line = line.replace("{", "")
 
@@ -624,7 +624,7 @@ def remove_qgis_import(in_file):
                 while True:
                     line_tmp = lines[start_index + i].strip()
                     if line_tmp != "":
-                        return lines[start_index + i:]
+                        return lines[start_index + i :]
                     else:
                         i = i + 1
 
@@ -776,7 +776,7 @@ def py_to_ipynb(
 
         out_py_path = str(out_file).split("/")
         index = out_py_path.index(github_repo)
-        out_py_relative_path = "/".join(out_py_path[index + 1:])
+        out_py_relative_path = "/".join(out_py_path[index + 1 :])
         out_ipynb_relative_path = out_py_relative_path.replace(".py", ".ipynb")
 
         new_header = []
@@ -901,7 +901,7 @@ def update_nb_header(in_file, github_username=None, github_repo=None):
         github_repo = "geemap"
 
     index = in_file.index(github_repo)
-    file_relative_path = in_file[index + len(github_repo) + 1:]
+    file_relative_path = in_file[index + len(github_repo) + 1 :]
 
     output_lines = []
 

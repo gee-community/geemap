@@ -1491,7 +1491,7 @@ class Map(ipyleaflet.Map):
             layers = list(self.layers)
             layers = (
                 layers[0:draw_layer_index]
-                + layers[(draw_layer_index + 1):]
+                + layers[(draw_layer_index + 1) :]
                 + [layers[draw_layer_index]]
             )
             self.layers = layers

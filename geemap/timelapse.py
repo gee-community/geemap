@@ -246,7 +246,7 @@ def gif_fading(in_gif, out_gif, duration=1, verbose=True):
     """Fade in/out the gif.
 
     Args:
-        in_gif (str): The input gif file. Can be a directory path or http URL, e.g., "https://i.imgur.com/ZWSZC5z.gif"  
+        in_gif (str): The input gif file. Can be a directory path or http URL, e.g., "https://i.imgur.com/ZWSZC5z.gif"
         out_gif (str): The output gif file.
         duration (float, optional): The duration of the fading. Defaults to 1.
         verbose (bool, optional): Whether to print the progress. Defaults to True.
@@ -264,7 +264,7 @@ def gif_fading(in_gif, out_gif, duration=1, verbose=True):
     if isinstance(in_gif, str) and in_gif.startswith("http"):
         ext = os.path.splitext(in_gif)[1]
         file_path = temp_file_path(ext)
-        download_from_url(in_gif, file_path, verbose=verbose) 
+        download_from_url(in_gif, file_path, verbose=verbose)
         in_gif = file_path
 
     in_gif = os.path.abspath(in_gif)
@@ -1196,7 +1196,7 @@ def naip_timelapse(
     progress_bar_height=5,
     loop=0,
     mp4=False,
-    fading=False
+    fading=False,
 ):
     """Create a timelapse from NAIP imagery.
 
@@ -2307,7 +2307,7 @@ def sentinel2_timelapse(
     progress_bar_height=5,
     loop=0,
     mp4=False,
-    fading=False
+    fading=False,
 ):
     """Generates a Sentinel-2 timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
 
