@@ -1354,7 +1354,7 @@ class Map(folium.Map):
 
         marker_cluster = plugins.MarkerCluster(name=layer_name).add_to(self)
 
-        for row in df.itertuples():
+        for _ in df.itertuples():
             html = ""
             for p in popup:
                 html = (
@@ -1410,7 +1410,7 @@ class Map(folium.Map):
         if "color" not in kwargs:
             kwargs["color"] = None
         if "fill" not in kwargs:
-            fill = True
+            kwargs["fill"] = True
         if "fill_color" not in kwargs:
             kwargs["fill_color"] = "blue"
         if "fill_opacity" not in kwargs:
@@ -1432,7 +1432,7 @@ class Map(folium.Map):
         if y not in col_names:
             raise ValueError(f"y must be one of the following: {', '.join(col_names)}")
 
-        for row in df.itertuples():
+        for _ in df.itertuples():
             html = ""
             for p in popup:
                 html = (
@@ -1767,7 +1767,7 @@ class Map(folium.Map):
 
         try:
             size = int(font_size.replace("pt", ""))
-        except:
+        except Exception as _:
             raise ValueError("font_size must be something like '10pt'")
 
         layer_group = folium.FeatureGroup(name=layer_name)
