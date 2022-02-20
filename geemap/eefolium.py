@@ -922,7 +922,7 @@ class Map(folium.Map):
         name="Folium Map",
         description="",
         source_url="",
-        visibility="PUBLIC",
+        visibility="DEFAULT",
         open=True,
         tags=None,
         **kwargs,
@@ -933,7 +933,7 @@ class Map(folium.Map):
             name (str, optional): The document name - can include spaces, caps, symbols, etc., e.g. "Profit & Loss 2020". Defaults to "Folium Map".
             description (str, optional): A high-level description for the document, this is displayed in searches and thumbnails. Defaults to ''.
             source_url (str, optional): A URL pointing to the source code for the document, e.g. a GitHub repo or a Colab notebook. Defaults to ''.
-            visibility (str, optional): Visibility of the map. It can be one of the following: PUBLIC, PRIVATE. Defaults to 'PUBLIC'.
+            visibility (str, optional): Visibility of the map. It can be one of the following: PORTFOLIO, PRIVATE, DEFAULT. Defaults to 'DEFAULT'.
             open (bool, optional): Whether to open the map. Defaults to True.
             tags (bool, optional): A list of tags (as strings) used to categorise your document. Defaults to None.
         """
@@ -951,17 +951,19 @@ class Map(folium.Map):
 
             visibility = visibility.upper()
 
-            if visibility not in ["PUBLIC", "PRIVATE"]:
+            if visibility not in ["DEFAULT", "PRIVATE", "PORTFOLIO"]:
                 raise ValueError(
-                    "The visibility argument must be either PUBLIC or PRIVATE."
+                    "The visibility argument must be either DEFAULT or PRIVATE or PORTFOLIO."
                 )
 
-            if visibility == "PUBLIC":
-                visibility = dp.Visibility.PUBLIC
-            else:
+            if visibility == "PRIVATE":
                 visibility = dp.Visibility.PRIVATE
+            elif visibility == "PORTFOLIO":
+                visibility = dp.Visibility.PORTFOLIO
+            else:
+                visibility = dp.Visibility.DEFAULT
 
-            dp.Report(dp.Plot(self)).publish(
+            dp.Report(dp.Plot(self)).upload(
                 name=name,
                 description=description,
                 source_url=source_url,
