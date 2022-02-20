@@ -179,8 +179,6 @@ def set_proxy(port=1080, ip="http://127.0.0.1"):
         port (int, optional): The proxy port number. Defaults to 1080.
         ip (str, optional): The IP address. Defaults to 'http://127.0.0.1'.
     """
-    import requests
-
     try:
 
         if not ip.startswith("http"):
@@ -537,7 +535,6 @@ def open_image_from_url(url):
     Returns:
         object: Image object.
     """
-    import requests
     from PIL import Image
 
     # from io import BytesIO
@@ -1382,7 +1379,6 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip
         verbose (bool, optional): Whether to print out descriptive text.
         keep_zip (bool, optional): Whether to keep the downloaded shapefile as a zip file.
     """
-    import requests
 
     if not isinstance(ee_object, ee.FeatureCollection):
         raise ValueError("ee_object must be an ee.FeatureCollection")
@@ -1525,7 +1521,6 @@ def ee_export_geojson(ee_object, filename=None, selectors=None):
         filename (str): Output file name. Defaults to None.
         selectors (list, optional): A list of attributes to export. Defaults to None.
     """
-    import requests
 
     if not isinstance(ee_object, ee.FeatureCollection):
         print("The ee_object must be an ee.FeatureCollection.")
@@ -1690,7 +1685,6 @@ def ee_export_image(
         region (object, optional): A polygon specifying a region to download; ignored if crs and crs_transform is specified. Defaults to None.
         file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
     """
-    import requests
 
     if not isinstance(ee_object, ee.Image):
         print("The ee_object must be an ee.Image.")
@@ -1934,7 +1928,6 @@ def get_image_thumbnail(
         region (object, optional): Geospatial region of the image to render, it may be an ee.Geometry, GeoJSON, or an array of lat/lon points (E,S,W,N). If not set the default is the bounds image. Defaults to None.
         format (str, optional): Either 'png' or 'jpg'. Default to 'jpg'.
     """
-    import requests
 
     if not isinstance(ee_object, ee.Image):
         raise TypeError("The ee_object must be an ee.Image.")
@@ -2246,7 +2239,6 @@ def download_ee_video(collection, video_args, out_gif):
         video_args (object): Parameters for expring the video thumbnail.
         out_gif (str): File path to the output GIF.
     """
-    import requests
 
     out_gif = os.path.abspath(out_gif)
     if not out_gif.endswith(".gif"):
@@ -2901,7 +2893,6 @@ def ee_data_thumbnail(asset_id):
     """
     import urllib
 
-    import requests
     from bs4 import BeautifulSoup
 
     asset_uid = asset_id.replace("/", "_")
@@ -3002,7 +2993,7 @@ def ee_api_to_csv(outfile=None):
         outfile (str, optional): The output file path to a csv file. Defaults to None.
     """
     import pkg_resources
-    import requests
+
     from bs4 import BeautifulSoup
 
     pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
@@ -8140,7 +8131,6 @@ def get_census_dict(reset=False):
     Returns:
         dict: A dictionary of Census data.
     """
-    import json
     import pkg_resources
 
     pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
@@ -8248,8 +8238,6 @@ def search_qms(keyword, limit=10, list_only=True, add_prefix=True):
     Returns:
         list: A list of QMS tile providers.
     """
-
-    import requests
 
     QMS_API = "https://qms.nextgis.com/api/v1/geoservices"
     services = requests.get(
@@ -8441,7 +8429,6 @@ def temp_file_path(extension):
     """
 
     import tempfile
-    import os
     import uuid
 
     if not extension.startswith("."):
@@ -9130,7 +9117,6 @@ def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
         pd.DataFrame: A pandas DataFrame containing the GeoJSON object.
     """
 
-    import json
     import pandas as pd
     from urllib.request import urlopen
 
@@ -9206,3 +9192,42 @@ def ee_join_table(ee_object, data, src_key, dst_key=None):
 
     fc = ee_object.map(lambda f: f.set(table.get(f.get(src_key), ee.Dictionary())))
     return fc
+
+
+def gdf_centroid(gdf, return_geom=False):
+    """Returns the centroid of a GeoDataFrame.
+
+    Args:
+        gdf (gpd.GeoDataFrame): A GeoDataFrame.
+        return_geom (bool, optional): Whether to return the bounding box as a GeoDataFrame. Defaults to False.
+
+    Returns:
+        list | gpd.GeoDataFrame: A bounding box in the form of a list (lon, lat) or GeoDataFrame.
+    """
+    import warnings
+
+    warnings.filterwarnings("ignore")
+
+    centroid = gdf_bounds(gdf, return_geom=True).centroid
+    if return_geom:
+        return centroid
+    else:
+        return centroid.x[0], centroid.y[0]
+
+
+def gdf_geom_type(gdf, first_only=True):
+    """Returns the geometry type of a GeoDataFrame.
+
+    Args:
+        gdf (gpd.GeoDataFrame): A GeoDataFrame.
+        first_only (bool, optional): Whether to return the geometry type of the first feature in the GeoDataFrame. Defaults to True.
+
+    Returns:
+        str: The geometry type of the GeoDataFrame.
+    """
+    import geopandas as gpd
+
+    if first_only:
+        return gdf.geometry.type[0]
+    else:
+        return gdf.geometry.type

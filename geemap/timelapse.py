@@ -256,7 +256,6 @@ def gif_fading(in_gif, out_gif, duration=1, verbose=True):
         Exception: Raise exception when ffmpeg is not installed.
     """
     import glob
-    import shutil
     import tempfile
 
     current_dir = os.getcwd()
@@ -2753,7 +2752,7 @@ def goes_timeseries(
         else:
             return scaleForVis(addGreenBand(applyScaleAndOffset(img)))
 
-    return col.filterDate(start_date, end_date).map(processForVis)
+    return col.filterDate(start_date, end_date).filterBounds(region).map(processForVis)
 
 
 def goes_fire_timeseries(
