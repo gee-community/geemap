@@ -6173,7 +6173,7 @@ class Map(ipyleaflet.Map):
         if y not in col_names:
             raise ValueError(f"y must be one of the following: {', '.join(col_names)}")
 
-        for row in df.itertuples():
+        for _ in df.itertuples():
             html = ""
             for p in popup:
                 html = (
@@ -6513,7 +6513,7 @@ class Map(ipyleaflet.Map):
                     df = gpd.read_file(data)
                     df[x] = df.centroid.x
                     df[y] = df.centroid.y
-                except:
+                except Exception as _:
                     print("geopandas is required to read geojson.")
                     return
 
