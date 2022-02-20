@@ -9194,6 +9194,23 @@ def ee_join_table(ee_object, data, src_key, dst_key=None):
     return fc
 
 
+def gdf_bounds(gdf, return_geom=False):
+    """Returns the bounding box of a GeoDataFrame.
+
+    Args:
+        gdf (gpd.GeoDataFrame): A GeoDataFrame.
+        return_geom (bool, optional): Whether to return the bounding box as a GeoDataFrame. Defaults to False.
+
+    Returns:
+        list | gpd.GeoDataFrame: A bounding box in the form of a list (minx, miny, maxx, maxy) or GeoDataFrame.
+    """
+    bounds = gdf.total_bounds
+    if return_geom:
+        return bbox_to_gdf(bbox=bounds)
+    else:
+        return bounds
+
+
 def gdf_centroid(gdf, return_geom=False):
     """Returns the centroid of a GeoDataFrame.
 
