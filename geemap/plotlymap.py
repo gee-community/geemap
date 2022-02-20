@@ -721,7 +721,7 @@ class Map(go.FigureWidget):
             raise ValueError("gdf must be a GeoDataFrame.")
 
         gdf = gdf.to_crs(epsg=4326)
-        geom_type = gdf_geom_type(gdf)
+        # geom_type = gdf_geom_type(gdf)
         center_lon, center_lat = gdf_centroid(gdf)
 
         if isinstance(label_col, str):

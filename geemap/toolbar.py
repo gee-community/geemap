@@ -472,7 +472,7 @@ def open_data_widget(m):
                                 vis_max = float(vmax.value)
                             if len(nodata.value) > 0:
                                 vis_nodata = float(nodata.value)
-                        except:
+                        except Exception as _:
                             pass
 
                         m.add_local_tile(
