@@ -8658,6 +8658,9 @@ def get_local_tile_layer(
         ipyleaflet.TileLayer | folium.TileLayer: An ipyleaflet.TileLayer or folium.TileLayer.
     """
 
+    import warnings
+
+    warnings.filterwarnings("ignore")
     check_package(
         "localtileserver", URL="https://github.com/banesullivan/localtileserver"
     )
@@ -9365,3 +9368,121 @@ def gdf_geom_type(gdf, first_only=True):
         return gdf.geometry.type[0]
     else:
         return gdf.geometry.type
+
+
+def image_to_numpy(image):
+    """Converts an image to a numpy array.
+
+    Args:
+        image (str): A dataset path, URL or rasterio.io.DatasetReader object.
+
+    Raises:
+        FileNotFoundError: If the provided file could not be found.
+
+    Returns:
+        np.array: A numpy array.
+    """
+    import rasterio
+
+    if not os.path.exists(image):
+        raise FileNotFoundError("The provided input file could not be found.")
+
+    with rasterio.open(image, 'r') as ds:
+        arr = ds.read()  # read all raster values
+
+    return arr
+
+
+def numpy_to_cog(
+    np_array, out_cog, bounds=None, profile=None, dtype=None, crs="epsg:4326"
+):
+    """Converts a numpy array to a COG file.
+
+    Args:
+        np_array (np.array): A numpy array representing the image.
+        out_cog (str): The output COG file path.
+        bounds (tuple, optional): The bounds of the image in the format of (minx, miny, maxx, maxy). Defaults to None.
+        profile (str | dict, optional): File path to an existing COG file or a dictionary representing the profile. Defaults to None.
+        dtype (str, optional): The data type of the output COG file. Defaults to None.
+        crs (str, optional): The coordinate reference system of the output COG file. Defaults to "epsg:4326".
+
+    """
+    import warnings
+    import numpy as np
+    import rasterio
+    from rasterio.io import MemoryFile
+    from rasterio.transform import from_bounds
+
+    from rio_cogeo.cogeo import cog_translate
+    from rio_cogeo.profiles import cog_profiles
+
+    warnings.filterwarnings("ignore")
+
+    if not isinstance(np_array, np.ndarray):
+        raise TypeError("The input array must be a numpy array.")
+
+    out_dir = os.path.dirname(out_cog)
+    check_dir(out_dir)
+
+    if profile is not None:
+        if isinstance(profile, str):
+            if not os.path.exists(profile):
+                raise FileNotFoundError("The provided file could not be found.")
+            with rasterio.open(profile) as ds:
+                bounds = ds.bounds
+        elif isinstance(profile, rasterio.profiles.Profile):
+            profile = dict(profile)
+        elif not isinstance(profile, dict):
+            raise TypeError("The provided profile must be a file path or a dictionary.")
+
+    if bounds is None:
+        bounds = (-180.0, -85.0511287798066, 180.0, 85.0511287798066)
+
+    if not isinstance(bounds, tuple) and len(bounds) != 4:
+        raise TypeError("The provided bounds must be a tuple of length 4.")
+
+    # Rasterio uses numpy array of shape of `(bands, height, width)`
+
+    if len(np_array.shape) == 3:
+        nbands = np_array.shape[0]
+        height = np_array.shape[1]
+        width = np_array.shape[2]
+    elif len(np_array.shape) == 2:
+        nbands = 1
+        height = np_array.shape[0]
+        width = np_array.shape[1]
+        np_array = np_array.reshape((1, height, width))
+    else:
+        raise ValueError("The input array must be a 2D or 3D numpy array.")
+
+    src_transform = from_bounds(*bounds, width=width, height=height)
+    if dtype is None:
+        dtype = str(np_array.dtype)
+
+    if isinstance(profile, dict):
+        src_profile = profile
+        src_profile["count"] = nbands
+    else:
+        src_profile = dict(
+            driver="GTiff",
+            dtype=dtype,
+            count=nbands,
+            height=height,
+            width=width,
+            crs=crs,
+            transform=src_transform,
+        )
+
+    with MemoryFile() as memfile:
+        with memfile.open(**src_profile) as mem:
+            # Populate the input file with numpy array
+            mem.write(np_array)
+
+            dst_profile = cog_profiles.get("deflate")
+            cog_translate(
+                mem,
+                out_cog,
+                dst_profile,
+                in_memory=True,
+                quiet=True,
+            )
