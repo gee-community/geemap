@@ -180,6 +180,7 @@ nav:
           - notebooks/97_join_table.ipynb
           - notebooks/98_timelapse_fading.ipynb
           - notebooks/99_landsat_9.ipynb
+          - notebooks/100_numpy_to_cog.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
