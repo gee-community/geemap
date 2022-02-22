@@ -502,7 +502,7 @@ class Map(go.FigureWidget):
         self,
         url=None,
         collection=None,
-        items=None,
+        item=None,
         assets=None,
         bands=None,
         titiler_endpoint=None,
@@ -516,7 +516,7 @@ class Map(go.FigureWidget):
         Args:
             url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
             collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-            items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+            item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
             assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
             bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
             titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
@@ -525,9 +525,9 @@ class Map(go.FigureWidget):
             opacity (float, optional): The opacity of the layer. Defaults to 1.
         """
         tile_url = stac_tile(
-            url, collection, items, assets, bands, titiler_endpoint, **kwargs
+            url, collection, item, assets, bands, titiler_endpoint, **kwargs
         )
-        center = stac_center(url, collection, items, titiler_endpoint)
+        center = stac_center(url, collection, item, titiler_endpoint)
         self.add_tile_layer(tile_url, name, attribution, opacity)
         self.set_center(lon=center[0], lat=center[1], zoom=10)
 
