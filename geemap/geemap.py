@@ -1351,6 +1351,10 @@ class Map(ipyleaflet.Map):
         """
 
         image = None
+
+        if vis_params is None:
+            vis_params = {}
+
         if name is None:
             layer_count = len(self.layers)
             name = "Layer " + str(layer_count + 1)
