@@ -493,7 +493,7 @@ class Map(folium.Map):
         self,
         url=None,
         collection=None,
-        items=None,
+        item=None,
         assets=None,
         bands=None,
         titiler_endpoint=None,
@@ -508,7 +508,7 @@ class Map(folium.Map):
         Args:
             url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
             collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-            items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+            item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
             assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
             bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
             titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
@@ -518,9 +518,9 @@ class Map(folium.Map):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
         """
         tile_url = stac_tile(
-            url, collection, items, assets, bands, titiler_endpoint, **kwargs
+            url, collection, item, assets, bands, titiler_endpoint, **kwargs
         )
-        bounds = stac_bounds(url, collection, items, titiler_endpoint)
+        bounds = stac_bounds(url, collection, item, titiler_endpoint)
         self.add_tile_layer(
             url=tile_url,
             name=name,
