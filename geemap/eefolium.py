@@ -267,6 +267,8 @@ class Map(folium.Map):
         from box import Box
 
         image = None
+        if vis_params is None:
+            vis_params = {}
 
         if (
             not isinstance(ee_object, ee.Image)

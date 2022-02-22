@@ -210,6 +210,10 @@ class Map(here_map_widget.Map):
         from box import Box
 
         image = None
+
+        if vis_params is None:
+            vis_params = {}
+
         if name is None:
             layer_count = len(self.layout.mapbox.layers)
             name = "Layer " + str(layer_count + 1)
