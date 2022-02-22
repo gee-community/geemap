@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.11.5 - February 22, 2022
+
+**New Features**:
+
+-   Added numpy to COG [#945](https://github.com/giswqs/geemap/pull/945)
+-   Added gdf_bounds [#939](https://github.com/giswqs/geemap/pull/939)
+-   Added [Landsat 9 notebook](https://geemap.org/notebooks/99_landsat_9)
+-   Added ESRI Global Land Cover legend
+
+**Improvement**:
+
+-   Fixed stac tile bug [#944](https://github.com/giswqs/geemap/pull/944)
+-   Added None to vis_params as optional [#943](https://github.com/giswqs/geemap/pull/943)
+-   Reformatted code using black
 ## v0.11.4 - February 14, 2022
 
 **New Features**:
