@@ -3371,6 +3371,8 @@ class Map(ipyleaflet.Map):
         self.add_layer(tile)
         self.zoom_to_bounds(bounds)
 
+    add_geotiff = add_local_tile
+
     def add_remote_tile(
         self,
         source,
