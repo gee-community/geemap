@@ -4458,18 +4458,19 @@ def cog_pixel_value(
 def stac_tile(
     url=None,
     collection=None,
-    items=None,
+    item=None,
     assets=None,
     bands=None,
     titiler_endpoint=None,
     **kwargs,
 ):
+
     """Get a tile layer from a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
         bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "https://planetarycomputer.microsoft.com/api/data/v1", "planetary-computer", "pc". Defaults to None.
@@ -4488,16 +4489,26 @@ def stac_tile(
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
-    if items is not None:
-        kwargs["items"] = items
+    if item is not None:
+        kwargs["item"] = item
+
+    if "palette" in kwargs:
+        kwargs["colormap_name"] = kwargs["palette"]
+        del kwargs["palette"]
+
+    if isinstance(bands, list) and len(set(bands)) == 1:
+        bands = bands[0]
+
+    if isinstance(assets, list) and len(set(assets)) == 1:
+        assets = assets[0]
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
 
     if isinstance(titiler_endpoint, PlanetaryComputerEndpoint):
-        if isinstance(bands, list):
-            bands = ",".join(bands)
-        if isinstance(assets, list):
-            assets = ",".join(assets)
+        if isinstance(bands, str):
+            bands = bands.split(",")
+        if isinstance(assets, str):
+            assets = assets.split(",")
         if assets is None and (bands is not None):
             assets = bands
         else:
@@ -4505,27 +4516,27 @@ def stac_tile(
 
         kwargs["assets"] = assets
 
-        if ("expression" in kwargs) and ("rescale" not in kwargs):
-            stats = stac_stats(
-                collection=collection,
-                items=items,
-                expression=kwargs["expression"],
-                titiler_endpoint=titiler_endpoint,
-            )
-            kwargs[
-                "rescale"
-            ] = f"{stats[0]['percentile_2']},{stats[0]['percentile_98']}"
+        # if ("expression" in kwargs) and ("rescale" not in kwargs):
+        #     stats = stac_stats(
+        #         collection=collection,
+        #         item=item,
+        #         expression=kwargs["expression"],
+        #         titiler_endpoint=titiler_endpoint,
+        #     )
+        #     kwargs[
+        #         "rescale"
+        #     ] = f"{stats[0]['percentile_2']},{stats[0]['percentile_98']}"
 
-        if ("asset_expression" in kwargs) and ("rescale" not in kwargs):
-            stats = stac_stats(
-                collection=collection,
-                items=items,
-                expression=kwargs["asset_expression"],
-                titiler_endpoint=titiler_endpoint,
-            )
-            kwargs[
-                "rescale"
-            ] = f"{stats[0]['percentile_2']},{stats[0]['percentile_98']}"
+        # if ("asset_expression" in kwargs) and ("rescale" not in kwargs):
+        #     stats = stac_stats(
+        #         collection=collection,
+        #         item=item,
+        #         expression=kwargs["asset_expression"],
+        #         titiler_endpoint=titiler_endpoint,
+        #     )
+        #     kwargs[
+        #         "rescale"
+        #     ] = f"{stats[0]['percentile_2']},{stats[0]['percentile_98']}"
 
         if (
             (assets is not None)
@@ -4535,12 +4546,16 @@ def stac_tile(
         ):
             stats = stac_stats(
                 collection=collection,
-                items=items,
+                item=item,
                 assets=assets,
                 titiler_endpoint=titiler_endpoint,
             )
-            percentile_2 = min([s["percentile_2"] for s in stats])
-            percentile_98 = max([s["percentile_98"] for s in stats])
+            percentile_2 = min(
+                [stats[s][list(stats[s].keys())[0]]["percentile_2"] for s in stats]
+            )
+            percentile_98 = max(
+                [stats[s][list(stats[s].keys())[0]]["percentile_98"] for s in stats]
+            )
             kwargs["rescale"] = f"{percentile_2},{percentile_98}"
 
     else:
@@ -4571,13 +4586,13 @@ def stac_tile(
     return r["tiles"][0]
 
 
-def stac_bounds(url=None, collection=None, items=None, titiler_endpoint=None, **kwargs):
+def stac_bounds(url=None, collection=None, item=None, titiler_endpoint=None, **kwargs):
     """Get the bounding box of a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
 
     Returns:
@@ -4594,8 +4609,8 @@ def stac_bounds(url=None, collection=None, items=None, titiler_endpoint=None, **
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
-    if items is not None:
-        kwargs["items"] = items
+    if item is not None:
+        kwargs["item"] = item
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     if isinstance(titiler_endpoint, str):
@@ -4607,30 +4622,30 @@ def stac_bounds(url=None, collection=None, items=None, titiler_endpoint=None, **
     return bounds
 
 
-def stac_center(url=None, collection=None, items=None, titiler_endpoint=None, **kwargs):
+def stac_center(url=None, collection=None, item=None, titiler_endpoint=None, **kwargs):
     """Get the centroid of a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
 
     Returns:
         tuple: A tuple representing (longitude, latitude)
     """
-    bounds = stac_bounds(url, collection, items, titiler_endpoint, **kwargs)
+    bounds = stac_bounds(url, collection, item, titiler_endpoint, **kwargs)
     center = ((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2)  # (lon, lat)
     return center
 
 
-def stac_bands(url=None, collection=None, items=None, titiler_endpoint=None, **kwargs):
+def stac_bands(url=None, collection=None, item=None, titiler_endpoint=None, **kwargs):
     """Get band names of a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
 
     Returns:
@@ -4647,8 +4662,8 @@ def stac_bands(url=None, collection=None, items=None, titiler_endpoint=None, **k
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
-    if items is not None:
-        kwargs["items"] = items
+    if item is not None:
+        kwargs["item"] = item
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     if isinstance(titiler_endpoint, str):
@@ -4660,14 +4675,14 @@ def stac_bands(url=None, collection=None, items=None, titiler_endpoint=None, **k
 
 
 def stac_stats(
-    url=None, collection=None, items=None, assets=None, titiler_endpoint=None, **kwargs
+    url=None, collection=None, item=None, assets=None, titiler_endpoint=None, **kwargs
 ):
     """Get band statistics of a STAC item.
 
     Args:
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
 
@@ -4685,8 +4700,8 @@ def stac_stats(
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
-    if items is not None:
-        kwargs["items"] = items
+    if item is not None:
+        kwargs["item"] = item
     if assets is not None:
         kwargs["assets"] = assets
 
@@ -4702,14 +4717,14 @@ def stac_stats(
 
 
 def stac_info(
-    url=None, collection=None, items=None, assets=None, titiler_endpoint=None, **kwargs
+    url=None, collection=None, item=None, assets=None, titiler_endpoint=None, **kwargs
 ):
     """Get band info of a STAC item.
 
     Args:
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
 
@@ -4727,8 +4742,8 @@ def stac_info(
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
-    if items is not None:
-        kwargs["items"] = items
+    if item is not None:
+        kwargs["item"] = item
     if assets is not None:
         kwargs["assets"] = assets
 
@@ -4742,14 +4757,14 @@ def stac_info(
 
 
 def stac_info_geojson(
-    url=None, collection=None, items=None, assets=None, titiler_endpoint=None, **kwargs
+    url=None, collection=None, item=None, assets=None, titiler_endpoint=None, **kwargs
 ):
     """Get band info of a STAC item.
 
     Args:
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
 
@@ -4767,8 +4782,8 @@ def stac_info_geojson(
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
-    if items is not None:
-        kwargs["items"] = items
+    if item is not None:
+        kwargs["item"] = item
     if assets is not None:
         kwargs["assets"] = assets
 
@@ -4783,13 +4798,13 @@ def stac_info_geojson(
     return r
 
 
-def stac_assets(url=None, collection=None, items=None, titiler_endpoint=None, **kwargs):
+def stac_assets(url=None, collection=None, item=None, titiler_endpoint=None, **kwargs):
     """Get all assets of a STAC item.
 
     Args:
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
 
     Returns:
@@ -4806,8 +4821,8 @@ def stac_assets(url=None, collection=None, items=None, titiler_endpoint=None, **
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
-    if items is not None:
-        kwargs["items"] = items
+    if item is not None:
+        kwargs["item"] = item
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     if isinstance(titiler_endpoint, str):
@@ -4823,9 +4838,10 @@ def stac_pixel_value(
     lat,
     url=None,
     collection=None,
-    items=None,
+    item=None,
     assets=None,
     titiler_endpoint=None,
+    verbose=True,
     **kwargs,
 ):
     """Get pixel value from STAC assets.
@@ -4835,9 +4851,10 @@ def stac_pixel_value(
         lat (float): Latitude of the pixel.
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        items (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        verbose (bool, optional): Print out the error message. Defaults to True.
 
     Returns:
         list: A dictionary of pixel values for each asset.
@@ -4853,14 +4870,14 @@ def stac_pixel_value(
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
-    if items is not None:
-        kwargs["items"] = items
+    if item is not None:
+        kwargs["item"] = item
 
     if assets is None:
         assets = stac_assets(
             url=url,
             collection=collection,
-            items=items,
+            item=item,
             titiler_endpoint=titiler_endpoint,
         )
         assets = ",".join(assets)
@@ -4875,12 +4892,112 @@ def stac_pixel_value(
         ).json()
 
     if "detail" in r:
-        print(r["detail"])
+        if verbose:
+            print(r["detail"])
         return None
     else:
         values = [v[0] for v in r["values"]]
         result = dict(zip(assets.split(","), values))
         return result
+
+
+def local_tile_pixel_value(
+    lon,
+    lat,
+    tile_client,
+    verbose=True,
+    **kwargs,
+):
+    """Get pixel value from COG.
+
+    Args:
+        lon (float): Longitude of the pixel.
+        lat (float): Latitude of the pixel.
+        url (str): HTTP URL to a COG, e.g., 'https://opendata.digitalglobe.com/events/california-fire-2020/pre-event/2018-02-16/pine-gulch-fire20/1030010076004E00.tif'
+        bidx (str, optional): Dataset band indexes (e.g bidx=1, bidx=1&bidx=2&bidx=3). Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        verbose (bool, optional): Print status messages. Defaults to True.
+
+    Returns:
+        list: A dictionary of band info.
+    """
+
+    r = tile_client.pixel(lat, lon, units="EPSG:4326", **kwargs)
+    if "bands" in r:
+        return r["bands"]
+    else:
+        if verbose:
+            print("No pixel value found.")
+        return None
+
+
+def local_tile_vmin_vmax(
+    source,
+    bands=None,
+    **kwargs,
+):
+    """Get vmin and vmax from COG.
+
+    Args:
+        source (str | TileClient): A local COG file path or TileClient object.
+        bands (str | list, optional): A list of band names. Defaults to None.
+
+    Raises:
+        ValueError: If source is not a TileClient object or a local COG file path.
+
+    Returns:
+        tuple: A tuple of vmin and vmax.
+    """
+    check_package("localtileserver", "https://github.com/banesullivan/localtileserver")
+    from localtileserver import TileClient
+
+    if isinstance(source, str):
+        tile_client = TileClient(source)
+    elif isinstance(source, TileClient):
+        tile_client = source
+    else:
+        raise ValueError("source must be a string or TileClient object.")
+
+    stats = tile_client.metadata()["bands"]
+    bandnames = list(stats.keys())
+
+    if isinstance(bands, str):
+        bands = [bands]
+    elif isinstance(bands, list):
+        pass
+    elif bands is None:
+        bands = bandnames
+
+    if all(b in bandnames for b in bands):
+        vmin = min([stats[b]["min"] for b in bands])
+        vmax = max([stats[b]["max"] for b in bands])
+    else:
+        vmin = min([stats[b]["min"] for b in bandnames])
+        vmax = max([stats[b]["max"] for b in bandnames])
+    return vmin, vmax
+
+
+def local_tile_bands(source):
+    """Get band names from COG.
+
+    Args:
+        source (str | TileClient): A local COG file path or TileClient
+
+    Returns:
+        list: A list of band names.
+    """
+    check_package("localtileserver", "https://github.com/banesullivan/localtileserver")
+    from localtileserver import TileClient
+
+    if isinstance(source, str):
+        tile_client = TileClient(source)
+    elif isinstance(source, TileClient):
+        tile_client = source
+    else:
+        raise ValueError("source must be a string or TileClient object.")
+
+    bandnames = list(tile_client.metadata()["bands"].keys())
+    return bandnames
 
 
 def bbox_to_geojson(bounds):
