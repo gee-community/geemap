@@ -6179,7 +6179,7 @@ class Map(ipyleaflet.Map):
         if y not in col_names:
             raise ValueError(f"y must be one of the following: {', '.join(col_names)}")
 
-        for _ in df.itertuples():
+        for row in df.itertuples():
             html = ""
             for p in popup:
                 html = (
