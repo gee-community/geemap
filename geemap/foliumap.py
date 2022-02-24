@@ -1358,7 +1358,7 @@ class Map(folium.Map):
 
         marker_cluster = plugins.MarkerCluster(name=layer_name).add_to(self)
 
-        for _ in df.itertuples():
+        for row in df.itertuples():
             html = ""
             for p in popup:
                 html = (
