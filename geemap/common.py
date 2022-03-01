@@ -7157,12 +7157,14 @@ def df_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
 pandas_to_ee = df_to_ee
 
 
-def gdf_to_ee(gdf, geodesic=True):
+def gdf_to_ee(gdf, geodesic=True, date=None, date_format='YYYY-MM-dd'):
     """Converts a GeoPandas GeoDataFrame to ee.FeatureCollection.
 
     Args:
         gdf (geopandas.GeoDataFrame): The input geopandas.GeoDataFrame to be converted ee.FeatureCollection.
         geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected. Defaults to True.
+        date (str, optional): Column name for the date column. Defaults to None.
+        date_format (str, optional): Date format. A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
 
     Raises:
         TypeError: The input data type must be geopandas.GeoDataFrame.
@@ -7182,6 +7184,18 @@ def gdf_to_ee(gdf, geodesic=True):
     gdf.to_file(out_json, driver="GeoJSON")
 
     fc = geojson_to_ee(out_json, geodesic=geodesic)
+
+    if date is not None:
+        try:
+            fc = fc.map(
+                lambda x: x.set(
+                    "system:time_start",
+                    ee.Date.parse(date_format, x.get(date)).millis(),
+                )
+            )
+        except Exception as e:
+            raise Exception(e)
+
     os.remove(out_json)
 
     return fc
