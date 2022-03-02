@@ -1,7 +1,7 @@
 """Module for creating charts for Earth Engine data.
 """
 
-# import ee
+import ee
 import pandas as pd
 from bqplot import Tooltip
 from bqplot import pyplot as plt
@@ -298,6 +298,14 @@ def feature_histogram(
         Exception: If the chart fails to create.
     """
     import math
+
+    if not isinstance(features, ee.FeatureCollection):
+        raise Exception("features must be an ee.FeatureCollection")
+
+    first = features.first()
+    props = first.propertyNames().getInfo()
+    if property not in props:
+        raise Exception(f"property {property} not found. Available properties: {', '.join(props)}")
 
     def nextPowerOf2(n):
         return pow(2, math.ceil(math.log2(n)))
