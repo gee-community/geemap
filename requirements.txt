@@ -5,6 +5,7 @@ earthengine-api>=0.1.230
 ee_extra>=0.0.10
 ffmpeg-python
 folium>=0.11.0
+gdown
 geeadd>=0.5.1
 geocoder
 geojson
