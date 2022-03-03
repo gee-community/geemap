@@ -1,12 +1,17 @@
 black
+black[jupyter]
 codespell
 datapane
 geopandas
 keplergl
+ipyvtklink
+laspy
 localtileserver
 osmnx
 psycopg2
 pydeck
+pyntcloud[LAS]
+pyvista
 rio-cogeo
 sqlalchemy
 xarray_leaflet         

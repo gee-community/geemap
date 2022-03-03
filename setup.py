@@ -20,9 +20,20 @@ with io.open(op.join(here, "requirements.txt"), encoding="utf-8") as f:
     if platform.system() == "Windows":
         all_reqs.append("pywin32")
 
+with io.open(op.join(here, "requirements_dev.txt"), encoding="utf-8") as f:
+    dev_reqs = [x.strip() for x in f.read().split("\n")]
+
 install_requires = [x.strip() for x in all_reqs if "git+" not in x]
 dependency_links = [x.strip().replace("git+", "") for x in all_reqs if "git+" not in x]
 
+extras_requires = {
+    "all": dev_reqs,
+    "backends": ["keplergl", "pydeck"],
+    "lidar": ["ipyvtklink", "laspy", "pyntcloud[LAS]", "pyvista"],
+    "raster": ["localtileserver", "rio-cogeo", "xarray_leaflet"],
+    "sql": ["psycopg2", "sqlalchemy"],
+    "vector": ["geopandas", "osmnx"],
+}
 
 requirements = [
     "Click>=7.0",
@@ -51,6 +62,7 @@ setup(
         ],
     },
     install_requires=install_requires,
+    extras_require=extras_requires,
     dependency_links=dependency_links,
     license="MIT license",
     long_description=readme + "\n\n" + history,
