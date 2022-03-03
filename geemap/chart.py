@@ -305,7 +305,9 @@ def feature_histogram(
     first = features.first()
     props = first.propertyNames().getInfo()
     if property not in props:
-        raise Exception(f"property {property} not found. Available properties: {', '.join(props)}")
+        raise Exception(
+            f"property {property} not found. Available properties: {', '.join(props)}"
+        )
 
     def nextPowerOf2(n):
         return pow(2, math.ceil(math.log2(n)))
@@ -436,7 +438,7 @@ def image_doySeries(
     yearReducer,
     startDay,
     endDay,
-    **kwargs
+    **kwargs,
 ):
     # TODO
     pass
@@ -452,7 +454,7 @@ def image_doySeriesByRegion(
     seriesProperty,
     startDay,
     endDay,
-    **kwargs
+    **kwargs,
 ):
     # TODO
     pass
@@ -467,7 +469,7 @@ def image_doySeriesByYear(
     sameDayReducer,
     startDay,
     endDay,
-    **kwargs
+    **kwargs,
 ):
     # TODO
     pass

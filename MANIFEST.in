@@ -4,6 +4,8 @@ include HISTORY.rst
 include LICENSE
 include README.rst
 include requirements.txt
+include requirements_dev.txt
+include requirements_docs.txt
 
 recursive-include geemap/data *
 recursive-include geemap/algorithms *
