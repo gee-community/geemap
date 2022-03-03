@@ -181,6 +181,7 @@ nav:
           - notebooks/98_timelapse_fading.ipynb
           - notebooks/99_landsat_9.ipynb
           - notebooks/100_numpy_to_cog.ipynb
+          - notebooks/101_lidar.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb

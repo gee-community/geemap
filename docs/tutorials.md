@@ -112,3 +112,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 98. Adding crossfade to satellite timelapse ([notebook](https://geemap.org/notebooks/98_timelapse_fading))
 99. Visualizing Landsat 9 data ([notebook](https://geemap.org/notebooks/99_landsat_9/))
 100. Converting numpy array to COG ([notebook](https://geemap.org/notebooks/100_numpy_to_cog))
+101. Visualizing LiDAR data in 3D with only one line of code ([notebook](https://geemap.org/notebooks/101_lidar))
