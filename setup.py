@@ -29,7 +29,7 @@ dependency_links = [x.strip().replace("git+", "") for x in all_reqs if "git+" no
 extras_requires = {
     "all": dev_reqs,
     "backends": ["keplergl", "pydeck"],
-    "lidar": ["ipyvtklink", "laspy", "pyntcloud[LAS]", "pyvista"],
+    "lidar": ["ipygany", "ipyvtklink", "laspy", "panel", "pyntcloud[LAS]", "pyvista"],
     "raster": ["localtileserver", "rio-cogeo", "xarray_leaflet"],
     "sql": ["psycopg2", "sqlalchemy"],
     "vector": ["geopandas", "osmnx"],
