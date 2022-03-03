@@ -9502,13 +9502,14 @@ def numpy_to_cog(
             )
 
 
-def view_lidar(filename, cmap="terrain", backend="pyvista", **kwargs):
+def view_lidar(filename, cmap="terrain", backend="pyvista", background=None, **kwargs):
     """View LiDAR data in 3D.
 
     Args:
         filename (str): The filepath to the LiDAR data.
         cmap (str, optional): The colormap to use. Defaults to "terrain". cmap currently does not work for the open3d backend.
-        backend (str, optional): The plotting backend to use, can be pyvista or open3d. Defaults to "pyvista".
+        backend (str, optional): The plotting backend to use, can be pyvista, ipygany, panel, and open3d. Defaults to "pyvista".
+        background (str, optional): The background color to use. Defaults to None.
 
     Raises:
         FileNotFoundError: If the file does not exist.
@@ -9522,11 +9523,9 @@ def view_lidar(filename, cmap="terrain", backend="pyvista", **kwargs):
         raise FileNotFoundError(f"{filename} does not exist.")
 
     backend = backend.lower()
-    if backend == "pyvista":
+    if backend in ["pyvista", "ipygany", "panel"]:
 
         try:
-            import ipyvtklink
-            import pyvista
             import pyntcloud
         except ImportError:
             print(
@@ -9535,10 +9534,20 @@ def view_lidar(filename, cmap="terrain", backend="pyvista", **kwargs):
             return
 
         try:
+            if backend == "pyvista":
+                backend = None
+            if backend == "ipygany":
+                cmap = None
             data = pyntcloud.PyntCloud.from_file(filename)
             mesh = data.to_instance("pyvista", mesh=False)
             mesh = mesh.elevation()
-            mesh.plot(scalars='Elevation', cmap=cmap, **kwargs)
+            mesh.plot(
+                scalars='Elevation',
+                cmap=cmap,
+                jupyter_backend=backend,
+                background=background,
+                **kwargs,
+            )
 
         except Exception as e:
             print("Something went wrong.")

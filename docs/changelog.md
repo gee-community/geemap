@@ -1,6 +1,18 @@
 # Changelog
 
-## v0.11.5 - February 22, 2022
+## v0.11.6 - Mar 3, 2022
+
+**New Features**:
+
+-   Added support for visualizing LiDAR data in 3D [#957](https://github.com/giswqs/geemap/pull/957)
+-   Added date option for gdf_to_ee [#950](https://github.com/giswqs/geemap/issues/950)
+
+**Improvement**:
+
+-   Improved chart histogram [#953](https://github.com/giswqs/geemap/pull/953)
+-   Fixed LGTM false alarm [#939](https://github.com/giswqs/geemap/pull/939)
+
+## v0.11.5 - Feb 22, 2022
 
 **New Features**:
 
@@ -14,20 +26,20 @@
 -   Fixed stac tile bug [#944](https://github.com/giswqs/geemap/pull/944)
 -   Added None to vis_params as optional [#943](https://github.com/giswqs/geemap/pull/943)
 -   Reformatted code using black
-## v0.11.4 - February 14, 2022
+## v0.11.4 - Feb 14, 2022
 
 **New Features**:
 
 -   Added timelapse fading effect [#925](https://github.com/giswqs/geemap/pull/925)
 
-## v0.11.3 - February 7, 2022
+## v0.11.3 - Feb 7, 2022
 
 **New Features**:
 
 -   Added support for joining attribute tables `ee_join_table()` [#916](https://github.com/giswqs/geemap/issues/916)
 -   Added `gdf_to_df()` and `geojson_to_df()` functions
 
-## v0.11.2 - February 4, 2022
+## v0.11.2 - Feb 4, 2022
 
 **New Features**:
 
@@ -85,7 +97,7 @@
 -   Improved stac tile functions [#839](https://github.com/giswqs/geemap/pull/839)
 -   Removed pangeo broken binder links
 
-## v0.10.2 - December 23, 2021
+## v0.10.2 - Dec 23, 2021
 
 **New Features**:
 
@@ -103,13 +115,13 @@
 -   Fixed centerObject bug [#823](https://github.com/giswqs/geemap/issues/823)
 -   Fixed typo [#824](https://github.com/giswqs/geemap/pull/824)
 
-## v0.10.1 - December 6, 2021
+## v0.10.1 - Dec 6, 2021
 
 **Improvement**:
 
 -   A temporary fix for ipyleaflet basemap error [#795](https://github.com/giswqs/geemap/issues/795)
 
-## v0.10.0 - November 28, 2021
+## v0.10.0 - Nov 28, 2021
 
 **New Features**:
 
@@ -120,7 +132,7 @@
 -   Added support for PostGIS [#771](https://github.com/giswqs/geemap/issues/771) [#772](https://github.com/giswqs/geemap/pull/772)
 -   Added ImageOverlay from local files [#773](https://github.com/giswqs/geemap/issues/773)
 
-## v0.9.5 - November 22, 2021
+## v0.9.5 - Nov 22, 2021
 
 **New Features**:
 
@@ -144,7 +156,7 @@
 
 -   Fixed encoding bug [#747](https://github.com/giswqs/geemap/issues/747)
 
-## v0.9.4 - October 23, 2021
+## v0.9.4 - Oct 23, 2021
 
 **New Features**:
 
@@ -157,7 +169,7 @@
 -   Fixed algorithms module bug
 -   Updated environment.yml
 
-## v0.9.3 - October 23, 2021
+## v0.9.3 - Oct 23, 2021
 
 **New Features**:
 
@@ -175,7 +187,7 @@
 -   Fixed open vector bug [#124](https://github.com/giswqs/geemap/issues/124)
 -   Removed py36 due to xyzservices
 
-## v0.9.2 - October 1, 2021
+## v0.9.2 - Oct 1, 2021
 
 **New Features**:
 
@@ -189,13 +201,13 @@
 -   Fixed hover countries notebook [#686](https://github.com/giswqs/geemap/pull/686)
 -   Improved cartoee colorbar with custom label size [#681](https://github.com/giswqs/geemap/discussions/681)
 
-## v0.9.1 - September 17, 2021
+## v0.9.1 - Sep 17, 2021
 
 **New Features**:
 
 -   Added `sandbox_path` option allowing users to restrict Voila app access to system directories [#673](https://github.com/giswqs/geemap/issues/673)
 
-## v0.9.0 - September 10, 2021
+## v0.9.0 - Sep 10, 2021
 
 **New Features**:
 
@@ -210,7 +222,7 @@
 -   Fixed color palette bug [#605](https://github.com/giswqs/geemap/pull/605)
 -   Fixed typos [#589](https://github.com/giswqs/geemap/pull/589)
 
-## v0.8.18 - July 8, 2021
+## v0.8.18 - Jul 8, 2021
 
 **New Features**:
 
@@ -228,7 +240,7 @@
 -   Improved split-panel map [#543](https://github.com/giswqs/geemap/discussions/543)
 -   Updated otsu example [#535](https://github.com/giswqs/geemap/discussions/535)
 
-## v0.8.17 - June 20, 2021
+## v0.8.17 - Jun 20, 2021
 
 **New Features**:
 
@@ -266,7 +278,7 @@
 -   Improved add_raster function [#449](https://github.com/giswqs/geemap/pull/449)
 -   Updated notebooks
 
-## v0.8.15 - April 28, 2021
+## v0.8.15 - Apr 28, 2021
 
 **Improvement**:
 
@@ -275,7 +287,7 @@
 -   Fixed map publish bug [#445](https://github.com/giswqs/geemap/issues/445)
 -   Improved add_colorbar function [dc7e548](https://github.com/giswqs/geemap/commit/dc7e54856694a1994b6d4f4044385babe04bd086)
 
-## v0.8.14 - April 20, 2021
+## v0.8.14 - Apr 20, 2021
 
 **New Features**:
 
@@ -289,7 +301,7 @@
 -   Improved cartoee colorbar [#413](https://github.com/giswqs/geemap/discussions/413)
 -   Improved cartoee add_layer function [#368](https://github.com/giswqs/geemap/issues/368)
 
-## v0.8.13 - March 22, 2021
+## v0.8.13 - Mar 22, 2021
 
 **New Features**:
 
@@ -311,7 +323,7 @@
 -   Added vector styling example
 -   Improved zonal statistics
 
-## v0.8.12 - March 8, 2021
+## v0.8.12 - Mar 8, 2021
 
 **New Features**:
 
@@ -332,7 +344,7 @@
 -   Fixed minimap zoom parameter [#329](https://github.com/giswqs/geemap/pull/329)
 -   Fixed centerObject bug
 
-## v0.8.11 - February 23, 2021
+## v0.8.11 - Feb 23, 2021
 
 **New Features**:
 
@@ -347,7 +359,7 @@
 -   Added googledrivedownloader and python-box to requirements [#310](https://github.com/giswqs/geemap/discussions/310)
 -   Fixed folium layer name bug [#314](https://github.com/giswqs/geemap/issues/314)
 
-## v0.8.10 - February 16, 2021
+## v0.8.10 - Feb 16, 2021
 
 **New Features**:
 
@@ -361,7 +373,7 @@
 
 -   Improved `Map.centerObject()` method [#303](https://github.com/giswqs/geemap/issues/303)
 
-## v0.8.9 - February 4, 2021
+## v0.8.9 - Feb 4, 2021
 
 **New Features**:
 
@@ -392,7 +404,7 @@
 -   Improved drawing tools [#240](https://github.com/giswqs/geemap/issues/240)
 -   Improved Inspector tool
 
-## v0.8.7 - December 27, 2020
+## v0.8.7 - Dec 27, 2020
 
 **New Features**:
 
@@ -408,7 +420,7 @@
 
 -   Fixed COG mosaic bug [#236](https://github.com/giswqs/geemap/issues/236) and [#237](https://github.com/giswqs/geemap/issues/237)
 
-## v0.8.6 - December 22, 2020
+## v0.8.6 - Dec 22, 2020
 
 **New Features**:
 
@@ -430,7 +442,7 @@
 -   Fixed split-panel map bug
 -   Improved Exception handling
 
-## v0.8.5 - December 12, 2020
+## v0.8.5 - Dec 12, 2020
 
 **New Features**:
 
@@ -447,7 +459,7 @@
 -   Improve Inspector tool for point geometry [#198](https://github.com/giswqs/geemap/issues/198)
 -   Add tutorials (COG, STAC, local RF, image thumbnails)
 
-## v0.8.4 - December 6, 2020
+## v0.8.4 - Dec 6, 2020
 
 **New Features:**
 
@@ -461,7 +473,7 @@
 -   Improve Google Colab support #193. Use `import geemap` rather than `import geemap.foliumap as geemap`
 -   Add `Open in Colab` button to notebooks #194
 
-## v0.8.3 - December 2, 2020
+## v0.8.3 - Dec 2, 2020
 
 **New Features:**
 
@@ -480,7 +492,7 @@
 -   Fix problematic Date field in shapefile #176
 -   Fix Windows unzip bug
 
-## v0.8.2 - November 6, 2020
+## v0.8.2 - Nov 6, 2020
 
 **Improvements**
 
@@ -490,7 +502,7 @@
 -   Format code using black
 -   Add more init options for Map class
 
-## v0.8.1 - October 27, 2020
+## v0.8.1 - Oct 27, 2020
 
 **New Features:**
 
@@ -504,7 +516,7 @@
 
 BIG THANK YOU to [Kel Markert](https://github.com/kmarkert) for adding the cartoee and ml modules!!
 
-## v0.8.0 - October 10, 2020
+## v0.8.0 - Oct 10, 2020
 
 **Improvements**
 
@@ -520,7 +532,7 @@ BIG THANK YOU to [Kel Markert](https://github.com/kmarkert) for adding the carto
 
 -   Fix Windows zipfile bug
 
-## v0.7.13 - September 15, 2020
+## v0.7.13 - Sep 15, 2020
 
 **Improvements**
 
@@ -533,7 +545,7 @@ BIG THANK YOU to [Kel Markert](https://github.com/kmarkert) for adding the carto
 -   Fix automated testing error
 -   Fix Windows ee_search() bug
 
-## v0.7.12 - September 1, 2020
+## v0.7.12 - Sep 1, 2020
 
 **Improvements**
 
@@ -547,7 +559,7 @@ BIG THANK YOU to [Kel Markert](https://github.com/kmarkert) for adding the carto
 -   Fix landsat timelapse bug #99 #134
 -   Fix js_py conversion bug #136
 
-## v0.7.11 - August 16, 2020
+## v0.7.11 - Aug 16, 2020
 
 **Improvements:**
 
@@ -561,7 +573,7 @@ BIG THANK YOU to [Kel Markert](https://github.com/kmarkert) for adding the carto
 -   [Fix js_py conversion bug](https://github.com/giswqs/geemap/commit/6c0ebe4006d60f9ebb4390d0914400fc276e2c7d)
 -   Fix typos
 
-## v0.7.10 - August 5, 2020
+## v0.7.10 - Aug 5, 2020
 
 **Improvements:**
 
@@ -569,7 +581,7 @@ BIG THANK YOU to [Kel Markert](https://github.com/kmarkert) for adding the carto
 -   Add function for calculating descriptive statistics (i.e., min, max, mean, std, sum)
 -   Add more utils functions
 
-## v0.7.7 - August 5, 2020
+## v0.7.7 - Aug 5, 2020
 
 **Improvements:**
 
@@ -584,14 +596,14 @@ BIG THANK YOU to [Kel Markert](https://github.com/kmarkert) for adding the carto
 
 ## v0.7.0 - May 22, 2020
 
-## v0.6.0 - April 5, 2020
+## v0.6.0 - Apr 5, 2020
 
-## v0.5.0 - March 23, 2020
+## v0.5.0 - Mar 23, 2020
 
-## v0.4.0 - March 19, 2020
+## v0.4.0 - Mar 19, 2020
 
-## v0.3.0 - March 18, 2020
+## v0.3.0 - Mar 18, 2020
 
-## v0.2.0 - March 17, 2020
+## v0.2.0 - Mar 17, 2020
 
-## v0.1.0 - March 8, 2020
+## v0.1.0 - Mar 8, 2020

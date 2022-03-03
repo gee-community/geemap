@@ -4,10 +4,12 @@ codespell
 datapane
 geopandas
 keplergl
+ipygany
 ipyvtklink
 laspy
 localtileserver
 osmnx
+panel
 psycopg2
 pydeck
 pyntcloud[LAS]
