@@ -5326,7 +5326,7 @@ def adjust_longitude(in_fc):
         return None
 
 
-def zonal_statistics(
+def zonal_stats(
     in_value_raster,
     in_zone_vector,
     out_file_path,
@@ -5415,6 +5415,7 @@ def zonal_statistics(
         "MAXIMUM": ee.Reducer.max(),
         "MEDIAN": ee.Reducer.median(),
         "MINIMUM": ee.Reducer.min(),
+        "MODE": ee.Reducer.mode(),
         "STD": ee.Reducer.stdDev(),
         "MIN_MAX": ee.Reducer.minMax(),
         "SUM": ee.Reducer.sum(),
@@ -5454,7 +5455,10 @@ def zonal_statistics(
         raise Exception(e)
 
 
-def zonal_statistics_by_group(
+zonal_statistics = zonal_stats
+
+
+def zonal_stats_by_group(
     in_value_raster,
     in_zone_vector,
     out_file_path,
@@ -5633,6 +5637,9 @@ def zonal_statistics_by_group(
 
     except Exception as e:
         raise Exception(e)
+
+
+zonal_statistics_by_group = zonal_stats_by_group
 
 
 def vec_area(fc):
