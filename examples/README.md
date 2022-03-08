@@ -119,6 +119,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 99. Visualizing Landsat 9 data ([notebook](https://geemap.org/notebooks/99_landsat_9))
 100. Converting numpy array to COG ([notebook](https://geemap.org/notebooks/100_numpy_to_cog))
 101. Visualizing LiDAR data in 3D with only one line of code ([notebook](https://geemap.org/notebooks/101_lidar))
+102. Creating a shaded relief by blending DEM and hillshade ([notebook](https://geemap.org/notebooks/102_blend_hillshade))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
