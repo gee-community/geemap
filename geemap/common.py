@@ -4464,7 +4464,6 @@ def stac_tile(
     titiler_endpoint=None,
     **kwargs,
 ):
-
     """Get a tile layer from a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
@@ -9692,3 +9691,68 @@ def download_folder(
         url, id, output, quiet, proxy, speed, use_cookies, remaining_ok
     )
     return files
+
+
+def blend(
+    top_layer,
+    bottom_layer=None,
+    top_vis=None,
+    bottom_vis=None,
+    hillshade=True,
+    expression='a*b',
+    **kwargs,
+):
+    """Create a blended image that is a combination of two images, e.g., DEM and hillshade. This function was inspired by Jesse Anderson. See https://github.com/jessjaco/gee-blend.
+
+    Args:
+        top_layer (ee.Image): The top layer image, e.g., ee.Image("CGIAR/SRTM90_V4")
+        bottom_layer (ee.Image, optional): The bottom layer image. If not specified, it will use the top layer image.
+        top_vis (dict, optional): The top layer image vis parameters as a dictionary. Defaults to None.
+        bottom_vis (dict, optional): The bottom layer image vis parameters as a dictionary. Defaults to None.
+        hillshade (bool, optional): Flag to use hillshade. Defaults to True.
+        expression (str, optional): The expression to use for the blend. Defaults to 'a*b'.
+
+    Returns:
+        ee.Image: The blended image.
+    """
+    if not isinstance(top_layer, ee.Image):
+        raise ValueError("top_layer must be an ee.Image.")
+
+    if bottom_layer is None:
+        bottom_layer = top_layer
+
+    if not isinstance(bottom_layer, ee.Image):
+        raise ValueError("bottom_layer must be an ee.Image.")
+
+    if top_vis is not None and (not isinstance(top_vis, dict)):
+        raise ValueError("top_vis must be a dictionary.")
+
+    if bottom_vis is not None and (not isinstance(bottom_vis, dict)):
+        raise ValueError("bottom_vis must be a dictionary.")
+
+    if top_vis is None:
+        top_bands = top_layer.bandNames().getInfo()
+        top_vis = {'bands': top_bands}
+        if hillshade:
+            top_vis['palette'] = ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"]
+            top_vis['min'] = 0
+            top_vis['max'] = 6000
+
+    if bottom_vis is None:
+        bottom_bands = bottom_layer.bandNames().getInfo()
+        bottom_vis = {'bands': bottom_bands}
+        if hillshade:
+            bottom_vis['bands'] = ['hillshade']
+
+    top = top_layer.visualize(**top_vis).divide(255)
+
+    if hillshade:
+        bottom = ee.Terrain.hillshade(bottom_layer).visualize(**bottom_vis).divide(255)
+    else:
+        bottom = bottom_layer.visualize(**bottom_vis).divide(255)
+
+    if 'a' not in expression or ('b' not in expression):
+        raise ValueError("expression must contain 'a' and 'b'.")
+
+    result = ee.Image().expression(expression, {'a': top, 'b': bottom})
+    return result
