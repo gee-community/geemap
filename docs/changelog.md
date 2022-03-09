@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.11.7 - Mar 8, 2022
+
+**New Features**:
+
+-   Added blend function for creating shaded relief maps blended with hillshade
+
+**Improvement**:
+
+-   Added mode reducer to zonal stats #960
 ## v0.11.6 - Mar 3, 2022
 
 **New Features**:

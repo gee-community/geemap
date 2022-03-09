@@ -51,14 +51,12 @@ nav:
     - Citations: citations.md
     - FAQ: faq.md
     - Changelog: changelog.md
-    - Streamlit Web App: https://streamlit.gishub.org
+    - Streamlit Web App: https://streamlit.geemap.org
     - Voilà App: https://geemap-tutorials.herokuapp.com
     - Blog: https://blog.gishub.org
     - YouTube Channel: https://www.youtube.com/c/QiushengWu
     - Report Issues: https://github.com/giswqs/geemap/issues
     - API Reference:
-          - algorithm modules:
-                - river module: river.md
           - basemaps module: basemaps.md
           - cartoee module: cartoee.md
           - chart module: chart.md
