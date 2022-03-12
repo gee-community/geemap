@@ -1,5 +1,5 @@
 """
-This module defines here-map-widget-for-jupyter as backend for leafmap library.
+This module defines here-map-widget-for-jupyter as backend for geemap library.
 For more details about Here Map Widget for Jupyter
 please check: https://github.com/heremaps/here-map-widget-for-jupyter
 """

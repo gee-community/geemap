@@ -27,7 +27,7 @@ pillow
 plotly
 pycrs
 pyshp>=2.1.3
-python-box
+python-box~=5.4
 sankee
 voila
 whiteboxgui>=0.6.0
