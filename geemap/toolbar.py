@@ -3927,7 +3927,7 @@ def inspector_gui(m=None):
     """Generates a tool GUI template using ipywidgets.
 
     Args:
-        m (leafmap.Map, optional): The leaflet Map object. Defaults to None.
+        m (geemap.Map, optional): The leaflet Map object. Defaults to None.
 
     Returns:
         ipywidgets: The tool GUI widget.
