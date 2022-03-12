@@ -7,12 +7,17 @@ import folium
 from box import Box
 from folium import plugins
 
+from branca.element import Figure, JavascriptLink
+from folium.map import Layer
+from jinja2 import Template
+
 from .basemaps import xyz_to_folium
 from .common import *
 from .conversion import *
 from .legends import builtin_legends
 from .osm import *
 from .timelapse import *
+
 
 folium_basemaps = Box(xyz_to_folium(), frozen_box=True)
 
@@ -62,11 +67,11 @@ class Map(folium.Map):
         if "add_google_map" not in kwargs.keys() and "basemap" not in kwargs.keys():
             kwargs["add_google_map"] = True
         if "plugin_LatLngPopup" not in kwargs.keys():
-            kwargs["plugin_LatLngPopup"] = True
+            kwargs["plugin_LatLngPopup"] = False
         if "plugin_Fullscreen" not in kwargs.keys():
             kwargs["plugin_Fullscreen"] = True
         if "plugin_Draw" not in kwargs.keys():
-            kwargs["plugin_Draw"] = False
+            kwargs["plugin_Draw"] = True
         if "Draw_export" not in kwargs.keys():
             kwargs["Draw_export"] = True
         if "plugin_MiniMap" not in kwargs.keys():
@@ -76,8 +81,30 @@ class Map(folium.Map):
         if "locate_control" not in kwargs:
             kwargs["locate_control"] = False
 
+        if (
+            "width" in kwargs
+            and isinstance(kwargs["width"], str)
+            and ('%' not in kwargs["width"])
+        ):
+            kwargs["width"] = float(kwargs["width"].replace("px", ""))
+
+        height = None
+        width = None
+
+        if "height" in kwargs:
+            height = kwargs.pop("height")
+
+        if "width" in kwargs:
+            width = kwargs.pop("width")
+        else:
+            width = '100%'
+
         super().__init__(**kwargs)
         self.baseclass = "folium"
+
+        if (height is not None) or (width is not None):
+            f = folium.Figure(width=width, height=height)
+            self.add_to(f)
 
         if kwargs.get("add_google_map"):
             folium_basemaps["ROADMAP"].add_to(self)
@@ -1790,9 +1817,144 @@ class Map(folium.Map):
 
         layer_group.add_to(self)
 
+    def split_map(self, left_layer="TERRAIN", right_layer="OpenTopoMap", **kwargs):
+        """Adds a split-panel map.
+
+        Args:
+            left_layer (str, optional): The layer tile layer. Defaults to 'TERRAIN'.
+            right_layer (str, optional): The right tile layer. Defaults to 'OpenTopoMap'.
+        """
+        try:
+            if left_layer in folium_basemaps.keys():
+                left_layer = folium_basemaps[left_layer]
+            elif isinstance(left_layer, str):
+                if left_layer.startswith("http") and left_layer.endswith(".tif"):
+                    url = cog_tile(left_layer)
+                    left_layer = folium.raster_layers.TileLayer(
+                        tiles=url,
+                        name="Left Layer",
+                        attr=" ",
+                        overlay=True,
+                    )
+                else:
+                    left_layer = folium.raster_layers.TileLayer(
+                        tiles=left_layer,
+                        name="Left Layer",
+                        attr=" ",
+                        overlay=True,
+                    )
+            elif isinstance(left_layer, folium.raster_layers.TileLayer) or isinstance(
+                left_layer, folium.WmsTileLayer
+            ):
+                pass
+            else:
+                raise ValueError(
+                    f"left_layer must be one of the following: {', '.join(folium_basemaps.keys())} or a string url to a tif file."
+                )
+
+            if right_layer in folium_basemaps.keys():
+                right_layer = folium_basemaps[right_layer]
+            elif isinstance(right_layer, str):
+                if right_layer.startswith("http") and right_layer.endswith(".tif"):
+                    url = cog_tile(right_layer)
+                    right_layer = folium.raster_layers.TileLayer(
+                        tiles=url,
+                        name="Right Layer",
+                        attr=" ",
+                        overlay=True,
+                    )
+                else:
+                    right_layer = folium.raster_layers.TileLayer(
+                        tiles=right_layer,
+                        name="Right Layer",
+                        attr=" ",
+                        overlay=True,
+                    )
+            elif isinstance(right_layer, folium.raster_layers.TileLayer) or isinstance(
+                left_layer, folium.WmsTileLayer
+            ):
+                pass
+            else:
+                raise ValueError(
+                    f"right_layer must be one of the following: {', '.join(folium_basemaps.keys())} or a string url to a tif file."
+                )
+
+            control = SplitControl(
+                layer_left=left_layer, layer_right=right_layer, name='Split Control'
+            )
+            left_layer.add_to(self)
+            right_layer.add_to(self)
+            control.add_to(self)
+
+        except Exception as e:
+            print("The provided layers are invalid!")
+            raise ValueError(e)
+
     def remove_labels(self, **kwargs):
         """Removes a layer from the map."""
         print("The folium plotting backend does not support removing labels.")
+
+
+class SplitControl(Layer):
+    """
+    Creates a SplitControl that takes two Layers and adds a sliding control with the leaflet-side-by-side plugin.
+    Uses the Leaflet leaflet-side-by-side plugin https://github.com/digidem/leaflet-side-by-side Parameters.
+    The source code is adapted from https://github.com/python-visualization/folium/pull/1292
+    ----------
+    layer_left: Layer.
+        The left Layer within the side by side control.
+        Must  be created and added to the map before being passed to this class.
+    layer_right: Layer.
+        The left Layer within the side by side control.
+        Must  be created and added to the map before being passed to this class.
+    name : string, default None
+        The name of the Layer, as it will appear in LayerControls.
+    overlay : bool, default True
+        Adds the layer as an optional overlay (True) or the base layer (False).
+    control : bool, default True
+        Whether the Layer will be included in LayerControls.
+    show: bool, default True
+        Whether the layer will be shown on opening (only for overlays).
+    Examples
+    --------
+    >>> sidebyside = SideBySideLayers(layer_left, layer_right)
+    >>> sidebyside.add_to(m)
+    """
+
+    _template = Template(
+        u"""
+        {% macro script(this, kwargs) %}
+            var {{ this.get_name() }} = L.control.sideBySide(
+                {{ this.layer_left.get_name() }}, {{ this.layer_right.get_name() }}
+            ).addTo({{ this._parent.get_name() }});
+        {% endmacro %}
+        """
+    )
+
+    def __init__(
+        self, layer_left, layer_right, name=None, overlay=True, control=True, show=True
+    ):
+        super(SplitControl, self).__init__(
+            name=name, overlay=overlay, control=control, show=show
+        )
+        self._name = 'SplitControl'
+        self.layer_left = layer_left
+        self.layer_right = layer_right
+
+    def render(self, **kwargs):
+        super(SplitControl, self).render()
+
+        figure = self.get_root()
+        assert isinstance(figure, Figure), (
+            'You cannot render this Element ' 'if it is not in a Figure.'
+        )
+
+        figure.header.add_child(
+            JavascriptLink(
+                'https://raw.githack.com/digidem/leaflet-side-by-side/gh-pages/leaflet-side-by-side.js'
+            ),  # noqa
+            name='leaflet.sidebyside',
+        )
 
 
 def delete_dp_report(name):
@@ -1832,3 +1994,73 @@ def delete_dp_reports():
     except Exception as e:
         print(e)
         return
+
+
+def ee_tile_layer(
+    ee_object, vis_params={}, name="Layer untitled", shown=True, opacity=1.0, **kwargs
+):
+    """Converts and Earth Engine layer to ipyleaflet TileLayer.
+
+    Args:
+        ee_object (Collection|Feature|Image|MapId): The object to add to the map.
+        vis_params (dict, optional): The visualization parameters. Defaults to {}.
+        name (str, optional): The name of the layer. Defaults to 'Layer untitled'.
+        shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+        opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
+    """
+
+    image = None
+
+    if (
+        not isinstance(ee_object, ee.Image)
+        and not isinstance(ee_object, ee.ImageCollection)
+        and not isinstance(ee_object, ee.FeatureCollection)
+        and not isinstance(ee_object, ee.Feature)
+        and not isinstance(ee_object, ee.Geometry)
+    ):
+        err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
+        raise AttributeError(err_str)
+
+    if (
+        isinstance(ee_object, ee.geometry.Geometry)
+        or isinstance(ee_object, ee.feature.Feature)
+        or isinstance(ee_object, ee.featurecollection.FeatureCollection)
+    ):
+        features = ee.FeatureCollection(ee_object)
+
+        width = 2
+
+        if "width" in vis_params:
+            width = vis_params["width"]
+
+        color = "000000"
+
+        if "color" in vis_params:
+            color = vis_params["color"]
+
+        image_fill = features.style(**{"fillColor": color}).updateMask(
+            ee.Image.constant(0.5)
+        )
+        image_outline = features.style(
+            **{"color": color, "fillColor": "00000000", "width": width}
+        )
+
+        image = image_fill.blend(image_outline)
+    elif isinstance(ee_object, ee.image.Image):
+        image = ee_object
+    elif isinstance(ee_object, ee.imagecollection.ImageCollection):
+        image = ee_object.mosaic()
+
+    map_id_dict = ee.Image(image).getMapId(vis_params)
+    tile_layer = folium.raster_layers.TileLayer(
+        tiles=map_id_dict["tile_fetcher"].url_format,
+        attr="Google Earth Engine",
+        name=name,
+        overlay=True,
+        control=True,
+        opacity=opacity,
+        show=shown,
+        max_zoom=24,
+        **kwargs,
+    )
+    return tile_layer
