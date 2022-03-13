@@ -418,6 +418,10 @@ def add_colorbar(
     if "tick_font_size" in kwargs:
         tick_font_size = kwargs.pop("tick_font_size")
 
+    label_font_family = None
+    if "label_font_family" in kwargs:
+        label_font_family = kwargs.pop("label_font_family")
+
     label_font_size = None
     if "label_font_size" in kwargs:
         label_font_size = kwargs.pop("label_font_size")
@@ -427,8 +431,12 @@ def add_colorbar(
     if "bands" in vis_keys:
         cb.set_label(vis_params["bands"])
     elif label is not None:
-        if label_font_size is not None:
+        if label_font_size is not None and label_font_family is not None:
+            cb.set_label(label, fontsize=label_font_size, family=label_font_family)
+        elif label_font_size is not None and label_font_family is None:
             cb.set_label(label, fontsize=label_font_size)
+        elif label_font_size is None and label_font_family is not None:
+            cb.set_label(label, family=label_font_family)
         else:
             cb.set_label(label)
 
