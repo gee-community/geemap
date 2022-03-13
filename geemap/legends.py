@@ -140,26 +140,6 @@ builtin_legends = {
         "2 Non-Forest": "FEFF99",
         "3 Water": "0000FF",
     },
-    # MCD12Q1.006 MODIS Land Cover Type Yearly Global 500m https://developers.google.com/earth-engine/datasets/catalog/MODIS_006_MCD12Q1
-    "MODIS/006/MCD12Q1": {
-        "1 Evergreen Needleleaf Forests: dominated by evergreen conifer trees (canopy >2m). Tree cover >60%.": "05450a",
-        "2 Evergreen Broadleaf Forests: dominated by evergreen broadleaf and palmate trees (canopy >2m). Tree cover >60%.": "086a10",
-        "3 Deciduous Needleleaf Forests: dominated by deciduous needleleaf (larch) trees (canopy >2m). Tree cover >60%.": "54a708",
-        "4 Deciduous Broadleaf Forests: dominated by deciduous broadleaf trees (canopy >2m). Tree cover >60%.": "78d203",
-        "5 Mixed Forests: dominated by neither deciduous nor evergreen (40-60% of each) tree type (canopy >2m). Tree cover >60%.": "009900",
-        "6 Closed Shrublands: dominated by woody perennials (1-2m height) >60% cover.": "c6b044",
-        "7 Open Shrublands: dominated by woody perennials (1-2m height) 10-60% cover.": "dcd159",
-        "8 Woody Savannas: tree cover 30-60% (canopy >2m).": "dade48",
-        "9 Savannas: tree cover 10-30% (canopy >2m).": "fbff13",
-        "10 Grasslands: dominated by herbaceous annuals (<2m).": "b6ff05",
-        "11 Permanent Wetlands: permanently inundated lands with 30-60% water cover and >10% vegetated cover.": "27ff87",
-        "12 Croplands: at least 60% of area is cultivated cropland.": "c24f44",
-        "13 Urban and Built-up Lands: at least 30% impervious surface area including building materials, asphalt and vehicles.": "a5a5a5",
-        "14 Cropland/Natural Vegetation Mosaics: mosaics of small-scale cultivation 40-60% with natural tree, shrub, or herbaceous vegetation.": "ff6d4c",
-        "15 Permanent Snow and Ice: at least 60% of area is covered by snow and ice for at least 10 months of the year.": "69fff8",
-        "16 Barren: at least 60% of area is non-vegetated barren (sand, rock, soil) areas with less than 10% vegetation.": "f9ffa4",
-        "17 Water Bodies: at least 60% of area is covered by permanent water bodies.": "1c0dff",
-    },
     # Oxford MAP: Malaria Atlas Project Fractional International Geosphere-Biosphere Programme Landcover https://developers.google.com/earth-engine/datasets/catalog/Oxford_MAP_IGBP_Fractional_Landcover_5km_Annual
     "Oxford": {
         "0 Water": "032f7e",
