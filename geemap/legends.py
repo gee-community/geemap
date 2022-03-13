@@ -88,6 +88,26 @@ builtin_legends = {
         "16 Barren or sparsely vegetated": "f9ffa4",
         "254 Unclassified": "ffffff",
     },
+    # MCD12Q1.006 Land Cover Type Yearly Global 500m https://developers.google.com/earth-engine/datasets/catalog/MODIS_006_MCD12Q1
+    "MODIS/006/MCD12Q1": {
+        "1 Evergreen needleleaf forest": "05450a",
+        "2 Evergreen broadleaf forest": "086a10",
+        "3 Deciduous needleleaf forest": "54a708",
+        "4 Deciduous broadleaf forest": "78d203",
+        "5 Mixed forest": "009900",
+        "6 Closed shrublands": "c6b044",
+        "7 Open shrublands": "dcd159",
+        "8 Woody savannas": "dade48",
+        "9 Savannas": "fbff13",
+        "10 Grasslands": "b6ff05",
+        "11 Permanent wetlands": "27ff87",
+        "12 Croplands": "c24f44",
+        "13 Urban and built-up": "a5a5a5",
+        "14 Cropland/natural vegetation mosaic": "ff6d4c",
+        "15 Snow and ice": "69fff8",
+        "16 Barren or sparsely vegetated": "f9ffa4",
+        "17 Water bodies": "1c0dff",
+    },
     # GlobCover: Global Land Cover Map https://developers.google.com/earth-engine/datasets/catalog/ESA_GLOBCOVER_L4_200901_200912_V2_3
     "GLOBCOVER": {
         "11 Post-flooding or irrigated croplands": "aaefef",
