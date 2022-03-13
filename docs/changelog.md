@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.11.8 - Mar 12, 2022
+
+**New Features**:
+
+-   Added split map for folium and streamlit [#970](https://github.com/giswqs/geemap/pull/970)
+-   Updated Landsat timelapse to Collection 2 [#974](https://github.com/giswqs/geemap/pull/974)
+
+**Improvement**:
+
+-   Fixed typos and broken links [#971](https://github.com/giswqs/geemap/issues/971)
+-   Updated netCDF notebook
 ## v0.11.7 - Mar 8, 2022
 
 **New Features**:
@@ -8,7 +19,7 @@
 
 **Improvement**:
 
--   Added mode reducer to zonal stats #960
+-   Added mode reducer to zonal stats [#960](https://github.com/giswqs/geemap/issues/960)
 ## v0.11.6 - Mar 3, 2022
 
 **New Features**:
