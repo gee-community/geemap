@@ -19,7 +19,7 @@ from .osm import *
 from .timelapse import *
 
 
-folium_basemaps = Box(xyz_to_folium(), frozen_box=True)
+basemaps = Box(xyz_to_folium(), frozen_box=True)
 
 
 class Map(folium.Map):
@@ -102,14 +102,31 @@ class Map(folium.Map):
         super().__init__(**kwargs)
         self.baseclass = "folium"
 
+        # The number of shapes drawn by the user using the DrawControl
+        self.draw_count = 0
+        # The list of Earth Engine Geometry objects converted from geojson
+        self.draw_features = []
+        # The Earth Engine Geometry object converted from the last drawn feature
+        self.draw_last_feature = None
+        self.draw_layer = None
+        self.draw_last_json = None
+        self.draw_last_bounds = None
+        self.user_roi = None
+        self.user_rois = None
+        self.last_ee_data = None
+        self.last_ee_layer = None
+        self.search_locations = None
+        self.search_loc_marker = None
+        self.search_loc_geom = None
+
         if (height is not None) or (width is not None):
             f = folium.Figure(width=width, height=height)
             self.add_to(f)
 
         if kwargs.get("add_google_map"):
-            folium_basemaps["ROADMAP"].add_to(self)
+            basemaps["ROADMAP"].add_to(self)
         if kwargs.get("basemap"):
-            folium_basemaps[kwargs.get("basemap")].add_to(self)
+            basemaps[kwargs.get("basemap")].add_to(self)
         if kwargs.get("plugin_LatLngPopup"):
             folium.LatLngPopup().add_to(self)
         if kwargs.get("plugin_Fullscreen"):
@@ -134,11 +151,11 @@ class Map(folium.Map):
             types ([type], optional): A list of mapTypeIds to make available. If omitted, but opt_styles is specified, appends all of the style keys to the standard Google Maps API map types.. Defaults to None.
         """
         try:
-            folium_basemaps[mapTypeId].add_to(self)
+            basemaps[mapTypeId].add_to(self)
         except Exception:
             raise Exception(
                 "Basemap can only be one of the following: {}".format(
-                    ", ".join(folium_basemaps.keys())
+                    ", ".join(basemaps.keys())
                 )
             )
 
@@ -151,11 +168,11 @@ class Map(folium.Map):
             basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'HYBRID'.
         """
         try:
-            folium_basemaps[basemap].add_to(self)
+            basemaps[basemap].add_to(self)
         except Exception:
             raise Exception(
                 "Basemap can only be one of the following: {}".format(
-                    ", ".join(folium_basemaps.keys())
+                    ", ".join(basemaps.keys())
                 )
             )
 
@@ -1825,8 +1842,8 @@ class Map(folium.Map):
             right_layer (str, optional): The right tile layer. Defaults to 'OpenTopoMap'.
         """
         try:
-            if left_layer in folium_basemaps.keys():
-                left_layer = folium_basemaps[left_layer]
+            if left_layer in basemaps.keys():
+                left_layer = basemaps[left_layer]
             elif isinstance(left_layer, str):
                 if left_layer.startswith("http") and left_layer.endswith(".tif"):
                     url = cog_tile(left_layer)
@@ -1849,11 +1866,11 @@ class Map(folium.Map):
                 pass
             else:
                 raise ValueError(
-                    f"left_layer must be one of the following: {', '.join(folium_basemaps.keys())} or a string url to a tif file."
+                    f"left_layer must be one of the following: {', '.join(basemaps.keys())} or a string url to a tif file."
                 )
 
-            if right_layer in folium_basemaps.keys():
-                right_layer = folium_basemaps[right_layer]
+            if right_layer in basemaps.keys():
+                right_layer = basemaps[right_layer]
             elif isinstance(right_layer, str):
                 if right_layer.startswith("http") and right_layer.endswith(".tif"):
                     url = cog_tile(right_layer)
@@ -1876,7 +1893,7 @@ class Map(folium.Map):
                 pass
             else:
                 raise ValueError(
-                    f"right_layer must be one of the following: {', '.join(folium_basemaps.keys())} or a string url to a tif file."
+                    f"right_layer must be one of the following: {', '.join(basemaps.keys())} or a string url to a tif file."
                 )
 
             control = SplitControl(
@@ -1894,6 +1911,16 @@ class Map(folium.Map):
         """Removes a layer from the map."""
         print("The folium plotting backend does not support removing labels.")
 
+    def basemap_demo(self):
+        """A demo for using geemap basemaps."""
+        print("The folium plotting backend does not support this function.")
+
+    def set_plot_options(
+        self,
+        **kwargs,
+    ):
+        """Sets plotting options."""
+        print("The folium plotting backend does not support this function.")        
 
 class SplitControl(Layer):
     """
