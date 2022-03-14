@@ -73,7 +73,7 @@ class Map(folium.Map):
         if "plugin_Draw" not in kwargs.keys():
             kwargs["plugin_Draw"] = True
         if "Draw_export" not in kwargs.keys():
-            kwargs["Draw_export"] = True
+            kwargs["Draw_export"] = False
         if "plugin_MiniMap" not in kwargs.keys():
             kwargs["plugin_MiniMap"] = False
         if "plugin_LayerControl" not in kwargs.keys():
