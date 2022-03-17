@@ -80,6 +80,8 @@ class Map(folium.Map):
             kwargs["plugin_LayerControl"] = False
         if "locate_control" not in kwargs:
             kwargs["locate_control"] = False
+        if "search_control" not in kwargs:
+            kwargs["search_control"] = True
 
         if (
             "width" in kwargs
@@ -139,6 +141,8 @@ class Map(folium.Map):
             folium.LayerControl().add_to(self)
         if kwargs["locate_control"]:
             plugins.LocateControl().add_to(self)
+        if kwargs["search_control"]:
+            plugins.Geocoder(collapsed=True, position='topleft').add_to(self)
 
         self.fit_bounds([latlon, latlon], max_zoom=zoom)
 
@@ -1633,21 +1637,23 @@ class Map(folium.Map):
 
     def to_streamlit(
         self,
-        width=700,
-        height=500,
+        width=1000,
+        height=650,
         responsive=True,
         scrolling=False,
         add_layer_control=True,
+        bidirectional=False,
         **kwargs,
     ):
         """Renders `folium.Figure` or `folium.Map` in a Streamlit app. This method is a static Streamlit Component, meaning, no information is passed back from Leaflet on browser interaction.
 
         Args:
-            width (int, optional): Width of the map. Defaults to 800.
-            height (int, optional): Height of the map. Defaults to 600.
+            width (int, optional): Width of the map. Defaults to 1000.
+            height (int, optional): Height of the map. Defaults to 650.
             responsive (bool, optional): Whether to make the map responsive. Defaults to True.
             scrolling (bool, optional): Whether to allow the map to scroll. Defaults to False.
             add_layer_control (bool, optional): Whether to add the layer control. Defaults to True.
+            bidirectional (bool, optional): Whether to add bidirectional functionality to the map. The streamlit-folium package is required to use the bidirectional functionality. Defaults to False.
 
         Raises:
             ImportError: If streamlit is not installed.
@@ -1663,19 +1669,118 @@ class Map(folium.Map):
             if add_layer_control:
                 self.add_layer_control()
 
-            if responsive:
-                make_map_responsive = """
-                <style>
-                [title~="st.iframe"] { width: 100%}
-                </style>
-                """
-                st.markdown(make_map_responsive, unsafe_allow_html=True)
-            return components.html(
-                self.to_html(), width=width, height=height, scrolling=scrolling
-            )
+            if bidirectional:
+                from streamlit_folium import st_folium
+
+                output = st_folium(self, width=width, height=height)
+                return output
+            else:
+
+                if responsive:
+                    make_map_responsive = """
+                    <style>
+                    [title~="st.iframe"] { width: 100%}
+                    </style>
+                    """
+                    st.markdown(make_map_responsive, unsafe_allow_html=True)
+                return components.html(
+                    self.to_html(), width=width, height=height, scrolling=scrolling
+                )
 
         except Exception as e:
             raise Exception(e)
+
+    def st_map_center(self, st_component):
+        """Get the center of the map.
+
+        Args:
+            st_folium: The streamlit component.
+
+        Returns:
+            tuple: The center of the map.
+        """
+
+        bounds = st_component['bounds']
+        west = bounds['_southWest']['lng']
+        south = bounds['_southWest']['lat']
+        east = bounds['_northEast']['lng']
+        north = bounds['_northEast']['lat']
+        return (south + (north - south) / 2, west + (east - west) / 2)
+
+    def st_map_bounds(self, st_component):
+        """Get the bounds of the map in the format of (miny, minx, maxy, maxx).
+
+        Args:
+            st_folium: The streamlit component.
+
+        Returns:
+            tuple: The bounds of the map.
+        """
+
+        bounds = st_component['bounds']
+        south = bounds['_southWest']['lat']
+        west = bounds['_southWest']['lng']
+        north = bounds['_northEast']['lat']
+        east = bounds['_northEast']['lng']
+
+        bounds = [[south, west], [north, east]]
+        return bounds
+
+    def st_fit_bounds(self):
+        """Fit the map to the bounds of the map.
+
+        Returns:
+            folium.Map: The map.
+        """
+
+        try:
+            import streamlit as st
+
+            if "map_bounds" in st.session_state:
+
+                bounds = st.session_state['map_bounds']
+
+                self.fit_bounds(bounds)
+
+        except Exception as e:
+            raise Exception(e)
+
+    def st_last_draw(self, st_component):
+        """Get the last draw feature of the map.
+
+        Args:
+            st_folium: The streamlit component.
+
+        Returns:
+            str: The last draw of the map.
+        """
+
+        return st_component['last_active_drawing']
+
+    def st_last_click(self, st_component):
+        """Get the last click feature of the map.
+
+        Args:
+            st_folium: The streamlit component.
+
+        Returns:
+            str: The last click of the map.
+        """
+
+        coords = st_component['last_clicked']
+        return (coords['lat'], coords['lng'])
+
+    def st_draw_features(self, st_component):
+        """Get the draw features of the map.
+
+        Args:
+            st_folium: The streamlit component.
+
+        Returns:
+            list: The draw features of the map.
+        """
+
+        return st_component['all_drawings']
 
     def add_census_data(self, wms, layer, census_dict=None, **kwargs):
         """Adds a census data layer to the map.
@@ -1920,7 +2025,8 @@ class Map(folium.Map):
         **kwargs,
     ):
         """Sets plotting options."""
-        print("The folium plotting backend does not support this function.")        
+        print("The folium plotting backend does not support this function.")
+
 
 class SplitControl(Layer):
     """
@@ -2091,3 +2197,53 @@ def ee_tile_layer(
         **kwargs,
     )
     return tile_layer
+
+
+def st_map_center(lat, lon):
+    """Returns the map center coordinates for a given latitude and longitude. If the system variable 'map_center' exists, it is used. Otherwise, the default is returned.
+
+    Args:
+        lat (float): Latitude.
+        lon (float): Longitude.
+
+    Raises:
+        Exception: If streamlit is not installed.
+
+    Returns:
+        list: The map center coordinates.
+    """
+    try:
+        import streamlit as st
+
+        if 'map_center' in st.session_state:
+            return st.session_state['map_center']
+        else:
+            return [lat, lon]
+
+    except Exception as e:
+        raise Exception(e)
+
+
+def st_save_bounds(st_component):
+    """Saves the map bounds to the session state.
+
+    Args:
+        map (folium.folium.Map): The map to save the bounds from.
+    """
+    try:
+        import streamlit as st
+
+        if st_component is not None:
+            bounds = st_component['bounds']
+            south = bounds['_southWest']['lat']
+            west = bounds['_southWest']['lng']
+            north = bounds['_northEast']['lat']
+            east = bounds['_northEast']['lng']
+
+            bounds = [[south, west], [north, east]]
+            center = [south + (north - south) / 2, west + (east - west) / 2]
+
+            st.session_state['map_bounds'] = bounds
+            st.session_state['map_center'] = center
+    except Exception as e:
+        raise Exception(e)
