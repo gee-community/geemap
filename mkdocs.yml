@@ -182,6 +182,7 @@ nav:
           - notebooks/101_lidar.ipynb
           - notebooks/102_blend_hillshade.ipynb
           - notebooks/103_split_control.ipynb
+          - notebooks/104_clip_image.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb

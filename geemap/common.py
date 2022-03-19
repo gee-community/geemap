@@ -2428,7 +2428,7 @@ def create_colorbar(
         heatmap.append(pair)
 
     def gaussian(x, a, b, c, d=0):
-        return a * math.exp(-((x - b) ** 2) / (2 * c ** 2)) + d
+        return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
 
     def pixel(x, width=100, map=[], spread=1):
         width = float(width)
@@ -9756,3 +9756,78 @@ def blend(
 
     result = ee.Image().expression(expression, {'a': top, 'b': bottom})
     return result
+
+
+def clip_image(image, mask, output):
+    """Clip an image by mask.
+
+    Args:
+        image (str): Path to the image file in GeoTIFF format.
+        mask (str | list | dict): The mask used to extract the image. It can be a path to vector datasets (e.g., GeoJSON, Shapefile), a list of coordinates, or m.user_roi.
+        output (str): Path to the output file.
+
+    Raises:
+        ImportError: If the fiona or rasterio package is not installed.
+        FileNotFoundError: If the image is not found.
+        ValueError: If the mask is not a valid GeoJSON or raster file.
+        FileNotFoundError: If the mask file is not found.
+    """
+    try:
+        import json
+        import fiona
+        import rasterio
+        import rasterio.mask
+    except ImportError as e:
+        raise ImportError(e)
+
+    if not os.path.exists(image):
+        raise FileNotFoundError(f"{image} does not exist.")
+
+    if not output.endswith(".tif"):
+        raise ValueError("Output must be a tif file.")
+
+    output = check_file_path(output)
+
+    if isinstance(mask, str):
+        if not os.path.exists(mask):
+            raise FileNotFoundError(f"{mask} does not exist.")
+    elif isinstance(mask, list) or isinstance(mask, dict):
+
+        if isinstance(mask, list):
+            geojson = {
+                "type": "FeatureCollection",
+                "features": [
+                    {
+                        "type": "Feature",
+                        "properties": {},
+                        "geometry": {"type": "Polygon", "coordinates": [mask]},
+                    }
+                ],
+            }
+        else:
+            geojson = {
+                "type": "FeatureCollection",
+                "features": [mask],
+            }
+        mask = temp_file_path(".geojson")
+        with open(mask, "w") as f:
+            json.dump(geojson, f)
+
+    with fiona.open(mask, "r") as shapefile:
+        shapes = [feature["geometry"] for feature in shapefile]
+
+    with rasterio.open(image) as src:
+        out_image, out_transform = rasterio.mask.mask(src, shapes, crop=True)
+        out_meta = src.meta
+
+    out_meta.update(
+        {
+            "driver": "GTiff",
+            "height": out_image.shape[1],
+            "width": out_image.shape[2],
+            "transform": out_transform,
+        }
+    )
+
+    with rasterio.open(output, "w", **out_meta) as dest:
+        dest.write(out_image)
