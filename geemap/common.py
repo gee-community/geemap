@@ -172,12 +172,13 @@ def ee_initialize(token_name="EARTHENGINE_TOKEN"):
             ee.Initialize()
 
 
-def set_proxy(port=1080, ip="http://127.0.0.1"):
+def set_proxy(port=1080, ip="http://127.0.0.1", timeout=300):
     """Sets proxy if needed. This is only needed for countries where Google services are not available.
 
     Args:
         port (int, optional): The proxy port number. Defaults to 1080.
         ip (str, optional): The IP address. Defaults to 'http://127.0.0.1'.
+        timeout (int, optional): The timeout in seconds. Defaults to 300.
     """
     try:
 
@@ -188,7 +189,7 @@ def set_proxy(port=1080, ip="http://127.0.0.1"):
         os.environ["HTTP_PROXY"] = proxy
         os.environ["HTTPS_PROXY"] = proxy
 
-        a = requests.get("https://earthengine.google.com/")
+        a = requests.get("https://earthengine.google.com/", timeout=timeout)
 
         if a.status_code != 200:
             print(
@@ -526,11 +527,12 @@ def random_string(string_length=3):
     return "".join(random.choice(letters) for i in range(string_length))
 
 
-def open_image_from_url(url):
+def open_image_from_url(url, timeout=300):
     """Loads an image from the specified URL.
 
     Args:
         url (str): URL of the image.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         object: Image object.
@@ -541,7 +543,7 @@ def open_image_from_url(url):
     # from urllib.parse import urlparse
 
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=timeout)
         img = Image.open(io.BytesIO(response.content))
         return img
     except Exception as e:
@@ -1369,7 +1371,9 @@ def filter_polygons(ftr):
     return ee.Feature(polygons).copyProperties(ftr)
 
 
-def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip=False):
+def ee_export_vector(
+    ee_object, filename, selectors=None, verbose=True, keep_zip=False, timeout=300
+):
     """Exports Earth Engine FeatureCollection to other formats, including shp, csv, json, kml, and kmz.
 
     Args:
@@ -1378,6 +1382,7 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip
         selectors (list, optional): A list of attributes to export. Defaults to None.
         verbose (bool, optional): Whether to print out descriptive text.
         keep_zip (bool, optional): Whether to keep the downloaded shapefile as a zip file.
+        timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
     """
 
     if not isinstance(ee_object, ee.FeatureCollection):
@@ -1435,7 +1440,7 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip
         )
         if verbose:
             print(f"Downloading data from {url}\nPlease wait ...")
-        r = requests.get(url, stream=True)
+        r = requests.get(url, stream=True, timeout=timeout)
 
         if r.status_code != 200:
             print("An error occurred while downloading. \n Retrying ...")
@@ -1446,7 +1451,7 @@ def ee_export_vector(ee_object, filename, selectors=None, verbose=True, keep_zip
                     filetype=filetype, selectors=selectors, filename=name
                 )
                 print(f"Downloading data from {url}\nPlease wait ...")
-                r = requests.get(url, stream=True)
+                r = requests.get(url, stream=True, timeout=timeout)
             except Exception as e:
                 print(e)
                 raise ValueError
@@ -1513,13 +1518,14 @@ def ee_export_vector_to_drive(
     task.start()
 
 
-def ee_export_geojson(ee_object, filename=None, selectors=None):
+def ee_export_geojson(ee_object, filename=None, selectors=None, timeout=300):
     """Exports Earth Engine FeatureCollection to geojson.
 
     Args:
         ee_object (object): ee.FeatureCollection to export.
         filename (str): Output file name. Defaults to None.
         selectors (list, optional): A list of attributes to export. Defaults to None.
+        timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
     """
 
     if not isinstance(ee_object, ee.FeatureCollection):
@@ -1564,7 +1570,7 @@ def ee_export_geojson(ee_object, filename=None, selectors=None):
             filetype=filetype, selectors=selectors, filename=name
         )
         # print('Downloading data from {}\nPlease wait ...'.format(url))
-        r = requests.get(url, stream=True)
+        r = requests.get(url, stream=True, timeout=timeout)
 
         if r.status_code != 200:
             print("An error occurred while downloading. \n Retrying ...")
@@ -1575,7 +1581,7 @@ def ee_export_geojson(ee_object, filename=None, selectors=None):
                     filetype=filetype, selectors=selectors, filename=name
                 )
                 print(f"Downloading data from {url}\nPlease wait ...")
-                r = requests.get(url, stream=True)
+                r = requests.get(url, stream=True, timeout=timeout)
             except Exception as e:
                 print(e)
 
@@ -1673,7 +1679,13 @@ def dict_to_csv(data_dict, out_csv, by_row=False):
 
 
 def ee_export_image(
-    ee_object, filename, scale=None, crs=None, region=None, file_per_band=False
+    ee_object,
+    filename,
+    scale=None,
+    crs=None,
+    region=None,
+    file_per_band=False,
+    timeout=300,
 ):
     """Exports an ee.Image as a GeoTIFF.
 
@@ -1684,6 +1696,7 @@ def ee_export_image(
         crs (str, optional): A default CRS string to use for any bands that do not explicitly specify one. Defaults to None.
         region (object, optional): A polygon specifying a region to download; ignored if crs and crs_transform is specified. Defaults to None.
         file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
+        timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
     """
 
     if not isinstance(ee_object, ee.Image):
@@ -1719,7 +1732,7 @@ def ee_export_image(
             print(e)
             return
         print(f"Downloading data from {url}\nPlease wait ...")
-        r = requests.get(url, stream=True)
+        r = requests.get(url, stream=True, timeout=timeout)
 
         if r.status_code != 200:
             print("An error occurred while downloading.")
@@ -1917,6 +1930,7 @@ def get_image_thumbnail(
     region=None,
     format="jpg",
     crs="EPSG:3857",
+    timeout=300,
 ):
     """Download a thumbnail for an ee.Image.
 
@@ -1927,6 +1941,7 @@ def get_image_thumbnail(
         dimensions (int, optional):(a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 500.
         region (object, optional): Geospatial region of the image to render, it may be an ee.Geometry, GeoJSON, or an array of lat/lon points (E,S,W,N). If not set the default is the bounds image. Defaults to None.
         format (str, optional): Either 'png' or 'jpg'. Default to 'jpg'.
+        timeout (int, optional): The number of seconds after which the request will be terminated. Defaults to 300.
     """
 
     if not isinstance(ee_object, ee.Image):
@@ -1951,7 +1966,7 @@ def get_image_thumbnail(
     vis_params["crs"] = crs
     url = ee_object.getThumbURL(vis_params)
 
-    r = requests.get(url, stream=True)
+    r = requests.get(url, stream=True, timeout=timeout)
     if r.status_code != 200:
         print("An error occurred while downloading.")
         print(r.json()["error"]["message"])
@@ -2231,13 +2246,14 @@ def ee_to_numpy(
         print(e)
 
 
-def download_ee_video(collection, video_args, out_gif):
+def download_ee_video(collection, video_args, out_gif, timeout=300):
     """Downloads a video thumbnail as a GIF image from Earth Engine.
 
     Args:
         collection (object): An ee.ImageCollection.
         video_args (object): Parameters for expring the video thumbnail.
         out_gif (str): File path to the output GIF.
+        timeout (int, optional): The number of seconds the request will be timed out. Defaults to 300.
     """
 
     out_gif = os.path.abspath(out_gif)
@@ -2269,7 +2285,7 @@ def download_ee_video(collection, video_args, out_gif):
         url = collection.getVideoThumbURL(video_args)
 
         print(f"Downloading GIF image from {url}\nPlease wait ...")
-        r = requests.get(url, stream=True)
+        r = requests.get(url, stream=True, timeout=timeout)
 
         if r.status_code != 200:
             print("An error occurred while downloading.")
@@ -2882,11 +2898,12 @@ def search_ee_data(keywords):
         print(e)
 
 
-def ee_data_thumbnail(asset_id):
+def ee_data_thumbnail(asset_id, timeout=300):
     """Retrieves the thumbnail URL of an Earth Engine asset.
 
     Args:
         asset_id (str): An Earth Engine asset id.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         str: An http url of the thumbnail.
@@ -2903,7 +2920,7 @@ def ee_data_thumbnail(asset_id):
         asset_uid
     )
 
-    r = requests.get(thumbnail_url)
+    r = requests.get(thumbnail_url, timeout=timeout)
 
     try:
         if r.status_code != 200:
@@ -2986,11 +3003,12 @@ def create_code_cell(code="", where="below"):
     )
 
 
-def ee_api_to_csv(outfile=None):
+def ee_api_to_csv(outfile=None, timeout=300):
     """Extracts Earth Engine API documentation from https://developers.google.com/earth-engine/api_docs as a csv file.
 
     Args:
         outfile (str, optional): The output file path to a csv file. Defaults to None.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
     """
     import pkg_resources
 
@@ -3016,7 +3034,7 @@ def ee_api_to_csv(outfile=None):
 
     try:
 
-        r = requests.get(url)
+        r = requests.get(url, timeout=timeout)
         soup = BeautifulSoup(r.content, "html.parser")
 
         names = []
@@ -4151,13 +4169,16 @@ def load_GeoTIFFs(URLs):
     return ee.ImageCollection(collection)
 
 
-def cog_tile(url, bands=None, titiler_endpoint="https://titiler.xyz", **kwargs):
+def cog_tile(
+    url, bands=None, titiler_endpoint="https://titiler.xyz", timeout=300, **kwargs
+):
     """Get a tile layer from a Cloud Optimized GeoTIFF (COG).
         Source code adapted from https://developmentseed.org/titiler/examples/notebooks/Working_with_CloudOptimizedGeoTIFF_simple/
 
     Args:
         url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
         titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         tuple: Returns the COG Tile layer URL and bounds.
@@ -4194,7 +4215,9 @@ def cog_tile(url, bands=None, titiler_endpoint="https://titiler.xyz", **kwargs):
         kwargs.pop("TileMatrixSetId")
 
     r = requests.get(
-        f"{titiler_endpoint}/cog/{TileMatrixSetId}/tilejson.json", params=kwargs
+        f"{titiler_endpoint}/cog/{TileMatrixSetId}/tilejson.json",
+        params=kwargs,
+        timeout=timeout,
     ).json()
 
     return r["tiles"][0]
@@ -4207,6 +4230,7 @@ def cog_mosaic(
     layername=None,
     overwrite=False,
     verbose=True,
+    timeout=300,
     **kwargs,
 ):
     """Creates a COG mosaic from a list of COG URLs.
@@ -4218,6 +4242,7 @@ def cog_mosaic(
         layername ([type], optional): Layer name to use. Defaults to None.
         overwrite (bool, optional): Whether to overwrite the layer name if existing. Defaults to False.
         verbose (bool, optional): Whether to print out descriptive information. Defaults to True.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Raises:
         Exception: If the COG mosaic fails to create.
@@ -4256,6 +4281,7 @@ def cog_mosaic(
 
         r2 = requests.get(
             f"{titiler_endpoint}/mosaicjson/{username}.{layername}/tilejson.json",
+            timeout=timeout,
         ).json()
 
         return r2["tiles"][0]
@@ -4308,18 +4334,21 @@ def cog_mosaic_from_file(
     return mosaic
 
 
-def cog_bounds(url, titiler_endpoint="https://titiler.xyz"):
+def cog_bounds(url, titiler_endpoint="https://titiler.xyz", timeout=300):
     """Get the bounding box of a Cloud Optimized GeoTIFF (COG).
 
     Args:
         url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
         titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A list of values representing [left, bottom, right, top]
     """
 
-    r = requests.get(f"{titiler_endpoint}/cog/bounds", params={"url": url}).json()
+    r = requests.get(
+        f"{titiler_endpoint}/cog/bounds", params={"url": url}, timeout=timeout
+    ).json()
 
     if "bounds" in r.keys():
         bounds = r["bounds"]
@@ -4343,12 +4372,13 @@ def cog_center(url, titiler_endpoint="https://titiler.xyz"):
     return center
 
 
-def cog_bands(url, titiler_endpoint="https://titiler.xyz"):
+def cog_bands(url, titiler_endpoint="https://titiler.xyz", timeout=300):
     """Get band names of a Cloud Optimized GeoTIFF (COG).
 
     Args:
         url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
         titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A list of band names
@@ -4359,18 +4389,20 @@ def cog_bands(url, titiler_endpoint="https://titiler.xyz"):
         params={
             "url": url,
         },
+        timeout=timeout,
     ).json()
 
     bands = [b[0] for b in r["band_descriptions"]]
     return bands
 
 
-def cog_stats(url, titiler_endpoint="https://titiler.xyz"):
+def cog_stats(url, titiler_endpoint="https://titiler.xyz", timeout=300):
     """Get band statistics of a Cloud Optimized GeoTIFF (COG).
 
     Args:
         url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
         titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of band statistics.
@@ -4381,17 +4413,21 @@ def cog_stats(url, titiler_endpoint="https://titiler.xyz"):
         params={
             "url": url,
         },
+        timeout=timeout,
     ).json()
 
     return r
 
 
-def cog_info(url, titiler_endpoint="https://titiler.xyz", return_geojson=False):
+def cog_info(
+    url, titiler_endpoint="https://titiler.xyz", return_geojson=False, timeout=300
+):
     """Get band statistics of a Cloud Optimized GeoTIFF (COG).
 
     Args:
         url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
         titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of band info.
@@ -4406,6 +4442,7 @@ def cog_info(url, titiler_endpoint="https://titiler.xyz", return_geojson=False):
         params={
             "url": url,
         },
+        timeout=timeout,
     ).json()
 
     return r
@@ -4417,6 +4454,7 @@ def cog_pixel_value(
     url,
     bidx=None,
     titiler_endpoint="https://titiler.xyz",
+    timeout=300,
     **kwargs,
 ):
     """Get pixel value from COG.
@@ -4427,6 +4465,7 @@ def cog_pixel_value(
         url (str): HTTP URL to a COG, e.g., 'https://opendata.digitalglobe.com/events/california-fire-2020/pre-event/2018-02-16/pine-gulch-fire20/1030010076004E00.tif'
         bidx (str, optional): Dataset band indexes (e.g bidx=1, bidx=1&bidx=2&bidx=3). Defaults to None.
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of band info.
@@ -4437,7 +4476,9 @@ def cog_pixel_value(
     if bidx is not None:
         kwargs["bidx"] = bidx
 
-    r = requests.get(f"{titiler_endpoint}/cog/point/{lon},{lat}", params=kwargs).json()
+    r = requests.get(
+        f"{titiler_endpoint}/cog/point/{lon},{lat}", params=kwargs, timeout=timeout
+    ).json()
     bands = cog_bands(url, titiler_endpoint)
     # if isinstance(titiler_endpoint, str):
     #     r = requests.get(f"{titiler_endpoint}/cog/point/{lon},{lat}", params=kwargs).json()
@@ -4462,6 +4503,7 @@ def stac_tile(
     assets=None,
     bands=None,
     titiler_endpoint=None,
+    timeout=300,
     **kwargs,
 ):
     """Get a tile layer from a single SpatialTemporal Asset Catalog (STAC) item.
@@ -4473,6 +4515,7 @@ def stac_tile(
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
         bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "https://planetarycomputer.microsoft.com/api/data/v1", "planetary-computer", "pc". Defaults to None.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         str: Returns the STAC Tile layer URL.
@@ -4578,14 +4621,19 @@ def stac_tile(
         r = requests.get(
             f"{titiler_endpoint}/stac/{TileMatrixSetId}/tilejson.json",
             params=kwargs,
+            timeout=timeout,
         ).json()
     else:
-        r = requests.get(titiler_endpoint.url_for_stac_item(), params=kwargs).json()
+        r = requests.get(
+            titiler_endpoint.url_for_stac_item(), params=kwargs, timeout=timeout
+        ).json()
 
     return r["tiles"][0]
 
 
-def stac_bounds(url=None, collection=None, item=None, titiler_endpoint=None, **kwargs):
+def stac_bounds(
+    url=None, collection=None, item=None, titiler_endpoint=None, timeout=300, **kwargs
+):
     """Get the bounding box of a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
@@ -4593,6 +4641,7 @@ def stac_bounds(url=None, collection=None, item=None, titiler_endpoint=None, **k
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A list of values representing [left, bottom, right, top]
@@ -4613,9 +4662,13 @@ def stac_bounds(url=None, collection=None, item=None, titiler_endpoint=None, **k
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     if isinstance(titiler_endpoint, str):
-        r = requests.get(f"{titiler_endpoint}/stac/bounds", params=kwargs).json()
+        r = requests.get(
+            f"{titiler_endpoint}/stac/bounds", params=kwargs, timeout=timeout
+        ).json()
     else:
-        r = requests.get(titiler_endpoint.url_for_stac_bounds(), params=kwargs).json()
+        r = requests.get(
+            titiler_endpoint.url_for_stac_bounds(), params=kwargs, timeout=timeout
+        ).json()
 
     bounds = r["bounds"]
     return bounds
@@ -4638,7 +4691,9 @@ def stac_center(url=None, collection=None, item=None, titiler_endpoint=None, **k
     return center
 
 
-def stac_bands(url=None, collection=None, item=None, titiler_endpoint=None, **kwargs):
+def stac_bands(
+    url=None, collection=None, item=None, titiler_endpoint=None, timeout=300, **kwargs
+):
     """Get band names of a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
@@ -4646,6 +4701,7 @@ def stac_bands(url=None, collection=None, item=None, titiler_endpoint=None, **kw
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A list of band names
@@ -4666,15 +4722,25 @@ def stac_bands(url=None, collection=None, item=None, titiler_endpoint=None, **kw
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     if isinstance(titiler_endpoint, str):
-        r = requests.get(f"{titiler_endpoint}/stac/assets", params=kwargs).json()
+        r = requests.get(
+            f"{titiler_endpoint}/stac/assets", params=kwargs, timeout=timeout
+        ).json()
     else:
-        r = requests.get(titiler_endpoint.url_for_stac_assets(), params=kwargs).json()
+        r = requests.get(
+            titiler_endpoint.url_for_stac_assets(), params=kwargs, timeout=timeout
+        ).json()
 
     return r
 
 
 def stac_stats(
-    url=None, collection=None, item=None, assets=None, titiler_endpoint=None, **kwargs
+    url=None,
+    collection=None,
+    item=None,
+    assets=None,
+    titiler_endpoint=None,
+    timeout=300,
+    **kwargs,
 ):
     """Get band statistics of a STAC item.
 
@@ -4684,6 +4750,7 @@ def stac_stats(
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of band statistics.
@@ -4706,17 +4773,25 @@ def stac_stats(
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     if isinstance(titiler_endpoint, str):
-        r = requests.get(f"{titiler_endpoint}/stac/statistics", params=kwargs).json()
+        r = requests.get(
+            f"{titiler_endpoint}/stac/statistics", params=kwargs, timeout=timeout
+        ).json()
     else:
         r = requests.get(
-            titiler_endpoint.url_for_stac_statistics(), params=kwargs
+            titiler_endpoint.url_for_stac_statistics(), params=kwargs, timeout=timeout
         ).json()
 
     return r
 
 
 def stac_info(
-    url=None, collection=None, item=None, assets=None, titiler_endpoint=None, **kwargs
+    url=None,
+    collection=None,
+    item=None,
+    assets=None,
+    titiler_endpoint=None,
+    timeout=300,
+    **kwargs,
 ):
     """Get band info of a STAC item.
 
@@ -4726,6 +4801,7 @@ def stac_info(
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of band info.
@@ -4748,56 +4824,71 @@ def stac_info(
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     if isinstance(titiler_endpoint, str):
-        r = requests.get(f"{titiler_endpoint}/stac/info", params=kwargs).json()
-    else:
-        r = requests.get(titiler_endpoint.url_for_stac_info(), params=kwargs).json()
-
-    return r
-
-
-def stac_info_geojson(
-    url=None, collection=None, item=None, assets=None, titiler_endpoint=None, **kwargs
-):
-    """Get band info of a STAC item.
-
-    Args:
-        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-        collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
-
-    Returns:
-        list: A dictionary of band info.
-    """
-
-    if url is None and collection is None:
-        raise ValueError("Either url or collection must be specified.")
-
-    if collection is not None and titiler_endpoint is None:
-        titiler_endpoint = "planetary-computer"
-
-    if url is not None:
-        kwargs["url"] = url
-    if collection is not None:
-        kwargs["collection"] = collection
-    if item is not None:
-        kwargs["item"] = item
-    if assets is not None:
-        kwargs["assets"] = assets
-
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
-    if isinstance(titiler_endpoint, str):
-        r = requests.get(f"{titiler_endpoint}/stac/info.geojson", params=kwargs).json()
+        r = requests.get(
+            f"{titiler_endpoint}/stac/info", params=kwargs, timeout=timeout
+        ).json()
     else:
         r = requests.get(
-            titiler_endpoint.url_for_stac_info_geojson(), params=kwargs
+            titiler_endpoint.url_for_stac_info(), params=kwargs, timeout=timeout
         ).json()
 
     return r
 
 
-def stac_assets(url=None, collection=None, item=None, titiler_endpoint=None, **kwargs):
+def stac_info_geojson(
+    url=None,
+    collection=None,
+    item=None,
+    assets=None,
+    titiler_endpoint=None,
+    timeout=300,
+    **kwargs,
+):
+    """Get band info of a STAC item.
+
+    Args:
+        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
+        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+        assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
+
+    Returns:
+        list: A dictionary of band info.
+    """
+
+    if url is None and collection is None:
+        raise ValueError("Either url or collection must be specified.")
+
+    if collection is not None and titiler_endpoint is None:
+        titiler_endpoint = "planetary-computer"
+
+    if url is not None:
+        kwargs["url"] = url
+    if collection is not None:
+        kwargs["collection"] = collection
+    if item is not None:
+        kwargs["item"] = item
+    if assets is not None:
+        kwargs["assets"] = assets
+
+    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    if isinstance(titiler_endpoint, str):
+        r = requests.get(
+            f"{titiler_endpoint}/stac/info.geojson", params=kwargs, timeout=timeout
+        ).json()
+    else:
+        r = requests.get(
+            titiler_endpoint.url_for_stac_info_geojson(), params=kwargs, timeout=timeout
+        ).json()
+
+    return r
+
+
+def stac_assets(
+    url=None, collection=None, item=None, titiler_endpoint=None, timeout=300, **kwargs
+):
     """Get all assets of a STAC item.
 
     Args:
@@ -4805,6 +4896,7 @@ def stac_assets(url=None, collection=None, item=None, titiler_endpoint=None, **k
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A list of assets.
@@ -4825,9 +4917,13 @@ def stac_assets(url=None, collection=None, item=None, titiler_endpoint=None, **k
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     if isinstance(titiler_endpoint, str):
-        r = requests.get(f"{titiler_endpoint}/stac/assets", params=kwargs).json()
+        r = requests.get(
+            f"{titiler_endpoint}/stac/assets", params=kwargs, timeout=timeout
+        ).json()
     else:
-        r = requests.get(titiler_endpoint.url_for_stac_assets(), params=kwargs).json()
+        r = requests.get(
+            titiler_endpoint.url_for_stac_assets(), params=kwargs, timeout=timeout
+        ).json()
 
     return r
 
@@ -4841,6 +4937,7 @@ def stac_pixel_value(
     assets=None,
     titiler_endpoint=None,
     verbose=True,
+    timeout=300,
     **kwargs,
 ):
     """Get pixel value from STAC assets.
@@ -4854,6 +4951,7 @@ def stac_pixel_value(
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
         verbose (bool, optional): Print out the error message. Defaults to True.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of pixel values for each asset.
@@ -4884,10 +4982,14 @@ def stac_pixel_value(
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     if isinstance(titiler_endpoint, str):
-        r = requests.get(f"{titiler_endpoint}/stac/{lon},{lat}", params=kwargs).json()
+        r = requests.get(
+            f"{titiler_endpoint}/stac/{lon},{lat}", params=kwargs, timeout=timeout
+        ).json()
     else:
         r = requests.get(
-            titiler_endpoint.url_for_stac_pixel_value(lon, lat), params=kwargs
+            titiler_endpoint.url_for_stac_pixel_value(lon, lat),
+            params=kwargs,
+            timeout=timeout,
         ).json()
 
     if "detail" in r:
@@ -5335,6 +5437,7 @@ def zonal_stats(
     tile_scale=1.0,
     return_fc=False,
     verbose=True,
+    timeout=300,
     **kwargs,
 ):
     """Summarizes the values of a raster within the zones of another dataset and exports the results as a csv, shp, json, kml, or kmz.
@@ -5349,6 +5452,7 @@ def zonal_stats(
         tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
         verbose (bool, optional): Whether to print descriptive text when the programming is running. Default to True.
         return_fc (bool, optional): Whether to return the results as an ee.FeatureCollection. Defaults to False.
+        timeout (int, optional): Timeout in seconds. Default to 300.
     """
 
     if isinstance(in_value_raster, ee.ImageCollection):
@@ -5449,7 +5553,7 @@ def zonal_stats(
         if return_fc:
             return result
         else:
-            ee_export_vector(result, filename)
+            ee_export_vector(result, filename, timeout=timeout)
     except Exception as e:
         raise Exception(e)
 
@@ -5469,6 +5573,7 @@ def zonal_stats_by_group(
     tile_scale=1.0,
     return_fc=False,
     verbose=True,
+    timeout=300,
     **kwargs,
 ):
     """Summarizes the area or percentage of a raster by group within the zones of another dataset and exports the results as a csv, shp, json, kml, or kmz.
@@ -5485,6 +5590,7 @@ def zonal_stats_by_group(
         tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
         verbose (bool, optional): Whether to print descriptive text when the programming is running. Default to True.
         return_fc (bool, optional): Whether to return the results as an ee.FeatureCollection. Defaults to False.
+        timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     """
 
@@ -5632,7 +5738,7 @@ def zonal_stats_by_group(
         if return_fc:
             return final_result
         else:
-            ee_export_vector(final_result, filename)
+            ee_export_vector(final_result, filename, timeout=timeout)
 
     except Exception as e:
         raise Exception(e)
@@ -8363,7 +8469,7 @@ def search_xyz_services(keyword, name=None, list_only=True, add_prefix=True):
         return providers
 
 
-def search_qms(keyword, limit=10, list_only=True, add_prefix=True):
+def search_qms(keyword, limit=10, list_only=True, add_prefix=True, timeout=300):
     """Search for QMS tile providers from Quick Map Services.
 
     Args:
@@ -8371,6 +8477,7 @@ def search_qms(keyword, limit=10, list_only=True, add_prefix=True):
         limit (int, optional): The maximum number of results to return. Defaults to 10.
         list_only (bool, optional): If True, only the list of services will be returned. Defaults to True.
         add_prefix (bool, optional): If True, the prefix "qms." will be added to the service name. Defaults to True.
+        timeout (int, optional): The timeout in seconds. Defaults to 300.
 
     Returns:
         list: A list of QMS tile providers.
@@ -8378,7 +8485,7 @@ def search_qms(keyword, limit=10, list_only=True, add_prefix=True):
 
     QMS_API = "https://qms.nextgis.com/api/v1/geoservices"
     services = requests.get(
-        f"{QMS_API}/?search={keyword}&type=tms&epsg=3857&limit={limit}"
+        f"{QMS_API}/?search={keyword}&type=tms&epsg=3857&limit={limit}", timeout=timeout
     )
     services = services.json()
     if services["results"]:
