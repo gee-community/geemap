@@ -74,7 +74,7 @@
 -   Fixed zonal stats bug [#899](https://github.com/giswqs/geemap/issues/899)
 -   Fixed Landsat timelapse bug [#885](https://github.com/giswqs/geemap/issues/885)
 
-## v0.11.1 - January 24, 2022
+## v0.11.1 - Jan 24, 2022
 
 **New Features**:
 
@@ -95,7 +95,7 @@
 -   Fixed cartoee legend bug
 -   Updated installation instructions
 
-## v0.11.0 - January 7, 2022
+## v0.11.0 - Jan 7, 2022
 
 **New Features**:
 
@@ -403,7 +403,7 @@
 
 -   Fixed file open encoding bug
 
-## v0.8.8 - January 17, 2021
+## v0.8.8 - Jan 17, 2021
 
 **New Features**:
 
