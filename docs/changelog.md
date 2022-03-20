@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.12.0 - Mar 19, 2022
+
+**New Features**:
+
+-   Added support for NetCDF data [#991](https://github.com/giswqs/geemap/pull/991)
+-   Converting NetCDF data to GeoTIFF
+-   Adding velocity map with NetCDF data
+-   Added clip image by mask [#986](https://github.com/giswqs/geemap/pull/986)
+-   Added streamlit bidirectional functionality [#985](https://github.com/giswqs/geemap/pull/985)
+
+
+**Improvement**:
+
+-   Added requests timeout [#989](https://github.com/giswqs/geemap/issues/989)
+-   Renamed folium basemaps [#978](https://github.com/giswqs/geemap/pull/978)
+-   Set draw export to False by default
+-   Added font family setting for cartoee [#863](https://github.com/giswqs/geemap/issues/863) [#977](https://github.com/giswqs/geemap/pull/977)
+
 ## v0.11.8 - Mar 12, 2022
 
 **New Features**:
