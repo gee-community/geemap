@@ -824,11 +824,9 @@ class Map(folium.Map):
 
     def add_colorbar(
         self,
-        colors,
-        vmin=0,
-        vmax=1.0,
+        vis_params,
         index=None,
-        caption="",
+        label="",
         categorical=False,
         step=None,
         **kwargs,
@@ -840,12 +838,27 @@ class Map(folium.Map):
             vmin (int, optional): The minimal value for the colormap. Values lower than vmin will be bound directly to colors[0].. Defaults to 0.
             vmax (float, optional): The maximal value for the colormap. Values higher than vmax will be bound directly to colors[-1]. Defaults to 1.0.
             index (list, optional):The values corresponding to each color. It has to be sorted, and have the same length as colors. If None, a regular grid between vmin and vmax is created.. Defaults to None.
-            caption (str, optional): The caption for the colormap. Defaults to "".
+            label (str, optional): The caption for the colormap. Defaults to "".
             categorical (bool, optional): Whether or not to create a categorical colormap. Defaults to False.
             step (int, optional): The step to split the LinearColormap into a StepColormap. Defaults to None.
         """
         from box import Box
         from branca.colormap import LinearColormap
+
+        if not isinstance(vis_params, dict):
+            raise ValueError("vis_params must be a dictionary.")
+
+        if 'palette' not in vis_params:
+            raise ValueError("vis_params must contain a palette.")
+
+        if 'min' not in vis_params:
+            vis_params['min'] = 0
+        if 'max' not in vis_params:
+            vis_params['max'] = 1
+
+        colors = vis_params['palette']
+        vmin = vis_params['min']
+        vmax = vis_params['max']
 
         if isinstance(colors, Box):
             try:
@@ -858,7 +871,7 @@ class Map(folium.Map):
             colors = ["#" + color for color in colors]
 
         colormap = LinearColormap(
-            colors=colors, index=index, vmin=vmin, vmax=vmax, caption=caption
+            colors=colors, index=index, vmin=vmin, vmax=vmax, caption=label
         )
 
         if categorical:
@@ -2091,6 +2104,19 @@ class Map(folium.Map):
         """Sets plotting options."""
         print("The folium plotting backend does not support this function.")
 
+    def ts_inspector(
+        self,
+        left_ts,
+        right_ts,
+        left_names,
+        right_names,
+        left_vis={},
+        right_vis={},
+        width="130px",
+        **kwargs,
+    ):
+        print("The folium plotting backend does not support this function.")
+
 
 class SplitControl(Layer):
     """
@@ -2311,3 +2337,16 @@ def st_save_bounds(st_component):
             st.session_state['map_center'] = center
     except Exception as e:
         raise Exception(e)
+
+
+def linked_maps(
+    rows=2,
+    cols=2,
+    height="400px",
+    ee_objects=[],
+    vis_params=[],
+    labels=[],
+    label_position="topright",
+    **kwargs,
+):
+    print("The folium plotting backend does not support this function.")
