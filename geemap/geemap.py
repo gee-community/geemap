@@ -6602,6 +6602,131 @@ class Map(ipyleaflet.Map):
             self.remove_layer(self.labels)
             delattr(self, "labels")
 
+    def add_netcdf(
+        self,
+        filename,
+        variables=None,
+        palette=None,
+        vmin=None,
+        vmax=None,
+        nodata=None,
+        attribution=None,
+        layer_name="NetCDF layer",
+        shift_lon=True,
+        lat='lat',
+        lon='lon',
+        **kwargs,
+    ):
+        """Generate an ipyleaflet/folium TileLayer from a netCDF file.
+            If you are using this function in JupyterHub on a remote server (e.g., Binder, Microsoft Planetary Computer),
+            try adding to following two lines to the beginning of the notebook if the raster does not render properly.
+
+            import os
+            os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = f'{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}'
+
+        Args:
+            filename (str): File path or HTTP URL to the netCDF file.
+            variables (int, optional): The variable/band names to extract data from the netCDF file. Defaults to None. If None, all variables will be extracted.
+            port (str, optional): The port to use for the server. Defaults to "default".
+            palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
+            vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
+            attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
+            layer_name (str, optional): The layer name to use. Defaults to "netCDF layer".
+            shift_lon (bool, optional): Flag to shift longitude values from [0, 360] to the range [-180, 180]. Defaults to True.
+            lat (str, optional): Name of the latitude variable. Defaults to 'lat'.
+            lon (str, optional): Name of the longitude variable. Defaults to 'lon'.
+        """
+
+        tif, vars = netcdf_to_tif(
+            filename, shift_lon=shift_lon, lat=lat, lon=lon, return_vars=True
+        )
+
+        if variables is None:
+            if len(vars) >= 3:
+                band_idx = [1, 2, 3]
+            else:
+                band_idx = [1]
+        else:
+            if not set(variables).issubset(set(vars)):
+                raise ValueError(f"The variables must be a subset of {vars}.")
+            else:
+                band_idx = [vars.index(v) + 1 for v in variables]
+
+        self.add_local_tile(
+            tif,
+            band=band_idx,
+            palette=palette,
+            vmin=vmin,
+            vmax=vmax,
+            nodata=nodata,
+            attribution=attribution,
+            layer_name=layer_name,
+            **kwargs,
+        )
+
+    def add_velocity(
+        self,
+        data,
+        zonal_speed,
+        meridional_speed,
+        latitude_dimension='lat',
+        longitude_dimension='lon',
+        velocity_scale=0.01,
+        max_velocity=20,
+        display_options={},
+        name='Velocity',
+    ):
+        """Add a velocity layer to the map.
+
+        Args:
+            data (str | xr.Dataset): The data to use for the velocity layer. It can be a file path to a NetCDF file or an xarray Dataset.
+            zonal_speed (str): Name of the zonal speed in the dataset. See https://en.wikipedia.org/wiki/Zonal_and_meridional_flow.
+            meridional_speed (str): Name of the meridional speed in the dataset. See https://en.wikipedia.org/wiki/Zonal_and_meridional_flow.
+            latitude_dimension (str, optional): Name of the latitude dimension in the dataset. Defaults to 'lat'.
+            longitude_dimension (str, optional): Name of the longitude dimension in the dataset. Defaults to 'lon'.
+            velocity_scale (float, optional): The scale of the velocity. Defaults to 0.01.
+            max_velocity (int, optional): The maximum velocity to display. Defaults to 20.
+            display_options (dict, optional): The display options for the velocity layer. Defaults to {}. See https://bit.ly/3uf8t6w.
+            name (str, optional): Layer name to use . Defaults to 'Velocity'.
+
+        Raises:
+            ImportError: If the xarray package is not installed.
+            ValueError: If the data is not a NetCDF file or an xarray Dataset.
+        """
+        try:
+            import xarray as xr
+            from ipyleaflet.velocity import Velocity
+        except ImportError:
+            raise ImportError(
+                "The xarray package is required to add a velocity layer. "
+                "Please install it with `pip install xarray`."
+            )
+
+        if isinstance(data, str):
+            if data.startswith("http"):
+                data = download_file(data)
+            ds = xr.open_dataset(data)
+
+        elif isinstance(data, xr.Dataset):
+            ds = data
+        else:
+            raise ValueError("The data must be a file path or xarray dataset.")
+
+        wind = Velocity(
+            data=ds,
+            zonal_speed=zonal_speed,
+            meridional_speed=meridional_speed,
+            latitude_dimension=latitude_dimension,
+            longitude_dimension=longitude_dimension,
+            velocity_scale=velocity_scale,
+            max_velocity=max_velocity,
+            display_options=display_options,
+            name=name,
+        )
+        self.add_layer(wind)
+
 
 # The functions below are outside the Map class.
 

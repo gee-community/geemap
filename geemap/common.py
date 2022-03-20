@@ -9938,3 +9938,209 @@ def clip_image(image, mask, output):
 
     with rasterio.open(output, "w", **out_meta) as dest:
         dest.write(out_image)
+
+
+def netcdf_to_tif(
+    filename,
+    output=None,
+    variables=None,
+    shift_lon=True,
+    lat='lat',
+    lon='lon',
+    return_vars=False,
+    **kwargs,
+):
+    """Convert a netcdf file to a GeoTIFF file.
+
+    Args:
+        filename (str): Path to the netcdf file.
+        output (str, optional): Path to the output GeoTIFF file. Defaults to None. If None, the output file will be the same as the input file with the extension changed to .tif.
+        variables (str | list, optional): Name of the variable or a list of variables to extract. Defaults to None. If None, all variables will be extracted.
+        shift_lon (bool, optional): Flag to shift longitude values from [0, 360] to the range [-180, 180]. Defaults to True.
+        lat (str, optional): Name of the latitude variable. Defaults to 'lat'.
+        lon (str, optional): Name of the longitude variable. Defaults to 'lon'.
+        return_vars (bool, optional): Flag to return all variables. Defaults to False.
+
+    Raises:
+        ImportError: If the xarray or rioxarray package is not installed.
+        FileNotFoundError: If the netcdf file is not found.
+        ValueError: If the variable is not found in the netcdf file.
+    """
+    try:
+        import xarray as xr
+    except ImportError as e:
+        raise ImportError(e)
+
+    if filename.startswith("http"):
+        filename = download_file(filename)
+
+    if not os.path.exists(filename):
+        raise FileNotFoundError(f"{filename} does not exist.")
+
+    if output is None:
+        output = filename.replace(".nc", ".tif")
+    else:
+        output = check_file_path(output)
+
+    xds = xr.open_dataset(filename, **kwargs)
+
+    if shift_lon:
+        xds.coords[lon] = (xds.coords[lon] + 180) % 360 - 180
+        xds = xds.sortby(xds.lon)
+
+    allowed_vars = list(xds.data_vars.keys())
+    if isinstance(variables, str):
+        if variables not in allowed_vars:
+            raise ValueError(f"{variables} is not a valid variable.")
+        variables = [variables]
+
+    if variables is not None and (not set(variables).issubset(allowed_vars)):
+        raise ValueError(f"{variables} must be a subset of {allowed_vars}.")
+
+    if variables is None:
+        xds.rio.set_spatial_dims(x_dim=lon, y_dim=lat).rio.to_raster(output)
+    else:
+        xds[variables].rio.set_spatial_dims(x_dim=lon, y_dim=lat).rio.to_raster(output)
+
+    if return_vars:
+        return output, allowed_vars
+    else:
+        return output
+
+
+def read_netcdf(filename, **kwargs):
+    """Read a netcdf file.
+
+    Args:
+        filename (str): File path or HTTP URL to the netcdf file.
+
+    Raises:
+        ImportError: If the xarray or rioxarray package is not installed.
+        FileNotFoundError: If the netcdf file is not found.
+
+    Returns:
+        xarray.Dataset: The netcdf file as an xarray dataset.
+    """
+    try:
+        import xarray as xr
+    except ImportError as e:
+        raise ImportError(e)
+
+    if filename.startswith("http"):
+        filename = download_file(filename)
+
+    if not os.path.exists(filename):
+        raise FileNotFoundError(f"{filename} does not exist.")
+
+    xds = xr.open_dataset(filename, **kwargs)
+    return xds
+
+
+def netcdf_tile_layer(
+    filename,
+    variables=None,
+    palette=None,
+    vmin=None,
+    vmax=None,
+    nodata=None,
+    port="default",
+    debug=False,
+    projection="EPSG:3857",
+    attribution=None,
+    tile_format="ipyleaflet",
+    layer_name="NetCDF layer",
+    return_client=False,
+    shift_lon=True,
+    lat='lat',
+    lon='lon',
+    **kwargs,
+):
+    """Generate an ipyleaflet/folium TileLayer from a netCDF file.
+        If you are using this function in JupyterHub on a remote server (e.g., Binder, Microsoft Planetary Computer),
+        try adding to following two lines to the beginning of the notebook if the raster does not render properly.
+
+        import os
+        os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = f'{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}'
+
+    Args:
+        filename (str): File path or HTTP URL to the netCDF file.
+        variables (int, optional): The variable/band names to extract data from the netCDF file. Defaults to None. If None, all variables will be extracted.
+        port (str, optional): The port to use for the server. Defaults to "default".
+        palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
+        vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
+        vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
+        nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
+        debug (bool, optional): If True, the server will be started in debug mode. Defaults to False.
+        projection (str, optional): The projection of the GeoTIFF. Defaults to "EPSG:3857".
+        attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
+        tile_format (str, optional): The tile layer format. Can be either ipyleaflet or folium. Defaults to "ipyleaflet".
+        layer_name (str, optional): The layer name to use. Defaults to "NetCDF layer".
+        return_client (bool, optional): If True, the tile client will be returned. Defaults to False.
+        shift_lon (bool, optional): Flag to shift longitude values from [0, 360] to the range [-180, 180]. Defaults to True.
+        lat (str, optional): Name of the latitude variable. Defaults to 'lat'.
+        lon (str, optional): Name of the longitude variable. Defaults to 'lon'.
+
+    Returns:
+        ipyleaflet.TileLayer | folium.TileLayer: An ipyleaflet.TileLayer or folium.TileLayer.
+    """
+
+    check_package(
+        "localtileserver", URL="https://github.com/banesullivan/localtileserver"
+    )
+
+    try:
+        import xarray as xr
+    except ImportError as e:
+        raise ImportError(e)
+
+    if filename.startswith("http"):
+        filename = download_file(filename)
+
+    if not os.path.exists(filename):
+        raise FileNotFoundError(f"{filename} does not exist.")
+
+    output = filename.replace(".nc", ".tif")
+
+    xds = xr.open_dataset(filename, **kwargs)
+
+    if shift_lon:
+        xds.coords[lon] = (xds.coords[lon] + 180) % 360 - 180
+        xds = xds.sortby(xds.lon)
+
+    allowed_vars = list(xds.data_vars.keys())
+    if isinstance(variables, str):
+        if variables not in allowed_vars:
+            raise ValueError(f"{variables} is not a subset of {allowed_vars}.")
+        variables = [variables]
+
+    if variables is not None and len(variables) > 3:
+        raise ValueError("Only 3 variables can be plotted at a time.")
+
+    if variables is not None and (not set(variables).issubset(allowed_vars)):
+        raise ValueError(f"{variables} must be a subset of {allowed_vars}.")
+
+    xds.rio.set_spatial_dims(x_dim=lon, y_dim=lat).rio.to_raster(output)
+    if variables is None:
+        if len(allowed_vars) >= 3:
+            band_idx = [1, 2, 3]
+        else:
+            band_idx = [1]
+    else:
+        band_idx = [allowed_vars.index(var) + 1 for var in variables]
+
+    tile_layer = get_local_tile_layer(
+        output,
+        port=port,
+        debug=debug,
+        projection=projection,
+        band=band_idx,
+        palette=palette,
+        vmin=vmin,
+        vmax=vmax,
+        nodata=nodata,
+        attribution=attribution,
+        tile_format=tile_format,
+        layer_name=layer_name,
+        return_client=return_client,
+    )
+    return tile_layer
