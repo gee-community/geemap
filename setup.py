@@ -30,8 +30,15 @@ extras_requires = {
     "all": dev_reqs,
     "backends": ["keplergl", "pydeck"],
     "lidar": ["ipygany", "ipyvtklink", "laspy", "panel", "pyntcloud[LAS]", "pyvista"],
-    "raster": ["localtileserver", "rio-cogeo", "xarray_leaflet"],
+    "raster": [
+        "localtileserver",
+        "rio-cogeo",
+        "rioxarray",
+        "netcdf4",
+        "xarray_leaflet",
+    ],
     "sql": ["psycopg2", "sqlalchemy"],
+    "streamlit": ["streamlit-folium"],
     "vector": ["geopandas", "osmnx"],
 }
 

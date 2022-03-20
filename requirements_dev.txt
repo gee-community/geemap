@@ -8,6 +8,7 @@ ipygany
 ipyvtklink
 laspy
 localtileserver
+netcdf4
 osmnx
 panel
 psycopg2
@@ -15,5 +16,7 @@ pydeck
 pyntcloud[LAS]
 pyvista
 rio-cogeo
+rioxarray
 sqlalchemy
+streamlit-folium
 xarray_leaflet         
