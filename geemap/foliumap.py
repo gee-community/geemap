@@ -2012,6 +2012,70 @@ class Map(folium.Map):
             print("The provided layers are invalid!")
             raise ValueError(e)
 
+    def add_netcdf(
+        self,
+        filename,
+        variables=None,
+        palette=None,
+        vmin=None,
+        vmax=None,
+        nodata=None,
+        attribution=None,
+        layer_name="NetCDF layer",
+        shift_lon=True,
+        lat='lat',
+        lon='lon',
+        **kwargs,
+    ):
+        """Generate an ipyleaflet/folium TileLayer from a netCDF file.
+            If you are using this function in JupyterHub on a remote server (e.g., Binder, Microsoft Planetary Computer),
+            try adding to following two lines to the beginning of the notebook if the raster does not render properly.
+
+            import os
+            os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = f'{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}'
+
+        Args:
+            filename (str): File path or HTTP URL to the netCDF file.
+            variables (int, optional): The variable/band names to extract data from the netCDF file. Defaults to None. If None, all variables will be extracted.
+            port (str, optional): The port to use for the server. Defaults to "default".
+            palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
+            vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
+            attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
+            layer_name (str, optional): The layer name to use. Defaults to "netCDF layer".
+            shift_lon (bool, optional): Flag to shift longitude values from [0, 360] to the range [-180, 180]. Defaults to True.
+            lat (str, optional): Name of the latitude variable. Defaults to 'lat'.
+            lon (str, optional): Name of the longitude variable. Defaults to 'lon'.
+        """
+
+        tif, vars = netcdf_to_tif(
+            filename, shift_lon=shift_lon, lat=lat, lon=lon, return_vars=True
+        )
+
+        if variables is None:
+            if len(vars) >= 3:
+                band_idx = [1, 2, 3]
+            else:
+                band_idx = [1]
+        else:
+            if not set(variables).issubset(set(vars)):
+                raise ValueError(f"The variables must be a subset of {vars}.")
+            else:
+                band_idx = [vars.index(v) + 1 for v in variables]
+
+        self.add_local_tile(
+            tif,
+            band=band_idx,
+            palette=palette,
+            vmin=vmin,
+            vmax=vmax,
+            nodata=nodata,
+            attribution=attribution,
+            layer_name=layer_name,
+            **kwargs,
+        )
+
     def remove_labels(self, **kwargs):
         """Removes a layer from the map."""
         print("The folium plotting backend does not support removing labels.")

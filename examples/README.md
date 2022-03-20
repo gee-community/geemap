@@ -122,6 +122,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 102. Creating a shaded relief by blending DEM and hillshade ([notebook](https://geemap.org/notebooks/102_blend_hillshade))
 103. Creating a split-panel map with folium ([notebook](https://geemap.org/notebooks/103_split_control))
 104. Clipping an image by mask ([notebook](https://geemap.org/notebooks/104_clip_image))
+105. Visualizing NetCDF data ([notebook](https://geemap.org/notebooks/105_netcdf))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
