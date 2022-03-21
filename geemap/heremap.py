@@ -34,7 +34,7 @@ from here_map_widget import (
 )
 
 
-here_basemaps = Box(xyz_to_heremap(), frozen_box=True)
+basemaps = Box(xyz_to_heremap(), frozen_box=True)
 
 
 class Map(here_map_widget.Map):
@@ -71,7 +71,7 @@ class Map(here_map_widget.Map):
             kwargs["zoom"] = 2
 
         if "basemap" in kwargs:
-            kwargs["basemap"] = here_basemaps[kwargs["basemap"]]
+            kwargs["basemap"] = basemaps[kwargs["basemap"]]
 
         super().__init__(api_key=api_key, **kwargs)
         self.baseclass = "here_map_widget"
@@ -156,12 +156,12 @@ class Map(here_map_widget.Map):
                     )
                 )
                 self.basemap = layer
-            elif basemap in here_basemaps and here_basemaps[basemap] not in self.layers:
-                self.basemap = here_basemaps[basemap]
+            elif basemap in basemaps and basemaps[basemap] not in self.layers:
+                self.basemap = basemaps[basemap]
         except Exception:
             raise ValueError(
                 "Basemap can only be one of the following:\n  {}".format(
-                    "\n  ".join(here_basemaps.keys())
+                    "\n  ".join(basemaps.keys())
                 )
             )
 

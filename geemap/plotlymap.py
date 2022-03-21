@@ -9,7 +9,7 @@ from .common import *
 from .osm import *
 
 
-plotly_basemaps = xyz_to_plotly()
+basemaps = xyz_to_plotly()
 
 
 class Canvas:
@@ -188,16 +188,16 @@ class Map(go.FigureWidget):
         """Adds a basemap to the map.
 
         Args:
-            basemap (str, optional): Can be one of string from plotly_basemaps. Defaults to 'ROADMAP'.
+            basemap (str, optional): Can be one of string from basemaps. Defaults to 'ROADMAP'.
         """
-        if basemap not in plotly_basemaps:
+        if basemap not in basemaps:
             raise ValueError(
-                f"Basemap {basemap} not found. Choose from {','.join(plotly_basemaps.keys())}"
+                f"Basemap {basemap} not found. Choose from {','.join(basemaps.keys())}"
             )
 
         if basemap in self.get_tile_layers():
             self.remove_basemap(basemap)
-        layers = list(self.layout.mapbox.layers) + [plotly_basemaps[basemap]]
+        layers = list(self.layout.mapbox.layers) + [basemaps[basemap]]
         self.update_layout(mapbox_layers=layers)
 
     def remove_basemap(self, name):

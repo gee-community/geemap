@@ -23,12 +23,7 @@ from .timelapse import *
 from .osm import *
 
 
-basemap_tiles = Box(xyz_to_leaflet(), frozen_box=True)
-
-basemaps = Box(
-    dict(zip(list(basemap_tiles.keys()), list(basemap_tiles.keys()))),
-    frozen_box=True,
-)
+basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class Map(ipyleaflet.Map):
@@ -121,7 +116,7 @@ class Map(ipyleaflet.Map):
             and isinstance(kwargs["basemap"], str)
             and kwargs["basemap"] in basemaps.keys()
         ):
-            kwargs["basemap"] = basemap_tiles[kwargs["basemap"]]
+            kwargs["basemap"] = basemaps[kwargs["basemap"]]
 
         if os.environ.get("USE_VOILA") is not None:
             kwargs["use_voila"] = True
@@ -487,7 +482,7 @@ class Map(ipyleaflet.Map):
             self.add_control(measure)
 
         if kwargs.get("add_google_map"):
-            self.add_layer(basemap_tiles["ROADMAP"])
+            self.add_layer(basemaps["ROADMAP"])
 
         if kwargs.get("attribution_ctrl"):
             self.add_control(ipyleaflet.AttributionControl(position="bottomright"))
@@ -1334,7 +1329,7 @@ class Map(ipyleaflet.Map):
         self.add_control(measure)
 
         try:
-            self.add_layer(basemap_tiles[mapTypeId])
+            self.add_layer(basemaps[mapTypeId])
         except Exception:
             raise ValueError(
                 'Google basemaps can only be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN".'
@@ -1616,16 +1611,13 @@ class Map(ipyleaflet.Map):
             basemap (str, optional): Can be one of string from basemaps. Defaults to 'HYBRID'.
         """
         try:
-            if (
-                basemap in basemap_tiles.keys()
-                and basemap_tiles[basemap] not in self.layers
-            ):
-                self.add_layer(basemap_tiles[basemap])
+            if basemap in basemaps.keys() and basemaps[basemap] not in self.layers:
+                self.add_layer(basemaps[basemap])
 
         except Exception:
             raise ValueError(
                 "Basemap can only be one of the following:\n  {}".format(
-                    "\n  ".join(basemap_tiles.keys())
+                    "\n  ".join(basemaps.keys())
                 )
             )
 
@@ -1880,7 +1872,7 @@ class Map(ipyleaflet.Map):
             attribution_control=False,
             zoom=zoom,
             center=self.center,
-            layers=[basemap_tiles["ROADMAP"]],
+            layers=[basemaps["ROADMAP"]],
         )
         minimap.layout.width = "150px"
         minimap.layout.height = "150px"
@@ -2306,8 +2298,8 @@ class Map(ipyleaflet.Map):
 
             self.add_control(ipyleaflet.ZoomControl())
             self.add_control(ipyleaflet.FullScreenControl())
-            if left_layer in basemap_tiles.keys():
-                left_layer = basemap_tiles[left_layer]
+            if left_layer in basemaps.keys():
+                left_layer = basemaps[left_layer]
             elif isinstance(left_layer, str):
                 if left_layer.startswith("http") and left_layer.endswith(".tif"):
                     url = cog_tile(left_layer)
@@ -2326,11 +2318,11 @@ class Map(ipyleaflet.Map):
                 pass
             else:
                 raise ValueError(
-                    f"left_layer must be one of the following: {', '.join(basemap_tiles.keys())} or a string url to a tif file."
+                    f"left_layer must be one of the following: {', '.join(basemaps.keys())} or a string url to a tif file."
                 )
 
-            if right_layer in basemap_tiles.keys():
-                right_layer = basemap_tiles[right_layer]
+            if right_layer in basemaps.keys():
+                right_layer = basemaps[right_layer]
             elif isinstance(right_layer, str):
                 if right_layer.startswith("http") and right_layer.endswith(".tif"):
                     url = cog_tile(right_layer)
@@ -2349,7 +2341,7 @@ class Map(ipyleaflet.Map):
                 pass
             else:
                 raise ValueError(
-                    f"right_layer must be one of the following: {', '.join(basemap_tiles.keys())} or a string url to a tif file."
+                    f"right_layer must be one of the following: {', '.join(basemaps.keys())} or a string url to a tif file."
                 )
 
             control = ipyleaflet.SplitMapControl(
@@ -2553,7 +2545,7 @@ class Map(ipyleaflet.Map):
     def basemap_demo(self):
         """A demo for using geemap basemaps."""
         dropdown = widgets.Dropdown(
-            options=list(basemap_tiles.keys()),
+            options=list(basemaps.keys()),
             value="HYBRID",
             description="Basemaps",
         )
@@ -2561,7 +2553,7 @@ class Map(ipyleaflet.Map):
         def on_click(change):
             basemap_name = change["new"]
             old_basemap = self.layers[-1]
-            self.substitute_layer(old_basemap, basemap_tiles[basemap_name])
+            self.substitute_layer(old_basemap, basemaps[basemap_name])
 
         dropdown.observe(on_click, "value")
         basemap_control = ipyleaflet.WidgetControl(widget=dropdown, position="topright")
@@ -6977,12 +6969,12 @@ def ts_inspector(
 
     if layers_dict is None:
         layers_dict = {}
-        keys = dict(basemap_tiles).keys()
+        keys = dict(basemaps).keys()
         for key in keys:
-            if isinstance(basemap_tiles[key], ipyleaflet.WMSLayer):
+            if isinstance(basemaps[key], ipyleaflet.WMSLayer):
                 pass
             else:
-                layers_dict[key] = basemap_tiles[key]
+                layers_dict[key] = basemaps[key]
 
     keys = list(layers_dict.keys())
     if left_name is None:
