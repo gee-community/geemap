@@ -184,6 +184,8 @@ nav:
           - notebooks/103_split_control.ipynb
           - notebooks/104_clip_image.ipynb
           - notebooks/105_netcdf.ipynb
+          - notebooks/106_kepler_gl.ipynb
+          - notebooks/107_pydeck.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
