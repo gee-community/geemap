@@ -36,8 +36,8 @@ To add a minimap (overview) to an ipyleaflet-based Map:
 
 To add additional basemaps to the Map:
 
-    Map.add_basemap('Esri Ocean')
-    Map.add_basemap('Esri National Geographic')
+    Map.add_basemap('Esri.OceanBasemap')
+    Map.add_basemap('Esri.NatGeoWorldMap')
 
 To add an XYZ tile layer to the Map:
 

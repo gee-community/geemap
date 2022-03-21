@@ -17,10 +17,9 @@ conda install geemap -c conda-forge
 ### Create a new conda env
 
 ```console
-conda create -n gee python=3.8
+conda create -n gee python=3.9
 conda activate gee
-conda install mamba -c conda-forge
-mamba install geemap -c conda-forge
+conda install geemap -c conda-forge
 ```
 
 ## Upgrade
@@ -49,7 +48,7 @@ geemap.update_package()
 ### Create an interactive map
 
 ```python
-Map = geemap.Map(center=(lon, lat), zoom=4)
+Map = geemap.Map(center=(lat, lon), zoom=4)
 Map
 ```
 
