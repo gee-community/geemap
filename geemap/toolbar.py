@@ -520,10 +520,10 @@ def change_basemap(m):
     Args:
         m (object): geemap.Map()
     """
-    from .geemap import basemap_tiles
+    from .geemap import basemaps
 
     dropdown = widgets.Dropdown(
-        options=list(basemap_tiles.keys()),
+        options=list(basemaps.keys()),
         value="ROADMAP",
         layout=widgets.Layout(width="200px")
         # description="Basemaps",
@@ -545,7 +545,7 @@ def change_basemap(m):
             old_basemap = m.layers[0]
         else:
             old_basemap = m.layers[1]
-        m.substitute_layer(old_basemap, basemap_tiles[basemap_name])
+        m.substitute_layer(old_basemap, basemaps[basemap_name])
 
     dropdown.observe(on_click, "value")
 
@@ -3160,7 +3160,7 @@ def split_basemaps(
     m, layers_dict=None, left_name=None, right_name=None, width="120px", **kwargs
 ):
 
-    from .geemap import basemap_tiles
+    from .geemap import basemaps
 
     controls = m.controls
     layers = m.layers
@@ -3172,12 +3172,12 @@ def split_basemaps(
 
     if layers_dict is None:
         layers_dict = {}
-        keys = dict(basemap_tiles).keys()
+        keys = dict(basemaps).keys()
         for key in keys:
-            if isinstance(basemap_tiles[key], ipyleaflet.WMSLayer):
+            if isinstance(basemaps[key], ipyleaflet.WMSLayer):
                 pass
             else:
-                layers_dict[key] = basemap_tiles[key]
+                layers_dict[key] = basemaps[key]
 
     keys = list(layers_dict.keys())
     if left_name is None:
@@ -3607,7 +3607,7 @@ def plotly_basemap_gui(canvas, map_min_width="78%", map_max_width="98%"):
     Args:
         m (object): geemap.Map.
     """
-    from .plotlymap import plotly_basemaps
+    from .plotlymap import basemaps
 
     m = canvas.map
     layer_count = len(m.layout.mapbox.layers)
@@ -3620,7 +3620,7 @@ def plotly_basemap_gui(canvas, map_min_width="78%", map_max_width="98%"):
     m.add_basemap(value)
 
     dropdown = widgets.Dropdown(
-        options=list(plotly_basemaps.keys()),
+        options=list(basemaps.keys()),
         value=value,
         layout=widgets.Layout(width="200px"),
     )

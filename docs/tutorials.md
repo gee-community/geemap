@@ -117,3 +117,5 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 103. Creating a split-panel map with folium ([notebook](https://geemap.org/notebooks/103_split_control))
 104. Clipping an image by mask ([notebook](https://geemap.org/notebooks/104_clip_image))
 105. Visualizing NetCDF data ([notebook](https://geemap.org/notebooks/105_netcdf))
+106. Using the kepler.gl plotting backend ([notebook](https://geemap.org/notebooks/106_kepler_gl))
+107. Using the pydeck plotting backend ([notebook](https://geemap.org/notebooks/107_pydeck))
