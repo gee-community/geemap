@@ -54,6 +54,11 @@ class Map(ipyleaflet.Map):
         # Interchangeable parameters between ipyleaflet and folium
         if "height" not in kwargs.keys():
             kwargs["height"] = "600px"
+        elif isinstance(kwargs["height"], int):
+            kwargs["height"] = str(kwargs["height"]) + "px"
+        if "width" in kwargs.keys() and isinstance(kwargs["width"], int):
+            kwargs["width"] = str(kwargs["width"]) + "px"
+
         if "location" in kwargs.keys():
             kwargs["center"] = kwargs["location"]
             kwargs.pop("location")
