@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.12.1 - Mar 22, 2022
+
+**New Features**:
+
+-   Added support for pydeck and kepler.gl [#993](https://github.com/giswqs/geemap/pull/993)
+
+
+**Improvement**:
+
+-   Renamed basemaps 
+-   Added GEE-Courses link
+-   Updated folium module
+
 ## v0.12.0 - Mar 19, 2022
 
 **New Features**:
