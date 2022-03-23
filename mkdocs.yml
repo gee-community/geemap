@@ -64,9 +64,11 @@ nav:
           - common module: common.md
           - conversion module: conversion.md
           - datasets module: datasets.md
+          - deck module: deck.md
           - foliumap module: foliumap.md
           - geemap module: geemap.md
           - heremap module: heremap.md
+          - kepler module: kepler.md
           - legends module: legends.md
           - ml module: ml.md
           - osm module: osm.md

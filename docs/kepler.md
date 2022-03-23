@@ -1,0 +1,3 @@
+# kepler module
+
+::: geemap.kepler
