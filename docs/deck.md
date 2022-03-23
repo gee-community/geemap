@@ -1,0 +1,3 @@
+# deck module
+
+::: geemap.deck
