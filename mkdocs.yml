@@ -12,9 +12,10 @@ theme:
         repo: fontawesome/brands/github
     features:
         - navigation.instant
-        # - navigation.expand
-        # - navigation.tabs
+        - navigation.tracking
+        - navigation.top
         - search.highlight
+        - search.share
     custom_dir: "docs/overrides"
 
 plugins:
@@ -35,9 +36,10 @@ markdown_extensions:
     - toc:
           permalink: true
 
-google_analytics:
-    - UA-186406134-1
-    - auto
+extra:
+  analytics:
+    provider: google
+    property: UA-186406134-1
 
 nav:
     - Home: index.md
@@ -45,14 +47,13 @@ nav:
     - Get Started: get-started.md
     - Usage: usage.md
     - Cheat Sheet: cheatsheet.md
-    - Geemap Tutorials: tutorials.md
+    - Tutorials: tutorials.md
     - Courses: https://courses.geemap.org
     - Contributing: contributing.md
     - Citations: citations.md
     - FAQ: faq.md
     - Changelog: changelog.md
     - Streamlit Web App: https://streamlit.geemap.org
-    - Voilà App: https://geemap-tutorials.herokuapp.com
     - Blog: https://blog.gishub.org
     - YouTube Channel: https://www.youtube.com/c/QiushengWu
     - Report Issues: https://github.com/giswqs/geemap/issues
@@ -211,6 +212,7 @@ nav:
                 - notebooks/local_rf_training.ipynb
                 - notebooks/mouse_click_coordinates.ipynb
                 - notebooks/netcdf.ipynb
+                - notebooks/numpy_to_ee.ipynb
                 - notebooks/nlcd_app.ipynb
                 - notebooks/nlcd_datapane.ipynb
                 - notebooks/notebook_template.ipynb
@@ -229,3 +231,4 @@ nav:
                 - notebooks/velocity.ipynb
                 - notebooks/video_overlay.ipynb
                 - notebooks/water_app.ipynb
+                - notebooks/world_pop_density.ipynb
