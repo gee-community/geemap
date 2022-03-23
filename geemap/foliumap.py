@@ -86,7 +86,7 @@ class Map(folium.Map):
         if (
             "width" in kwargs
             and isinstance(kwargs["width"], str)
-            and ('%' not in kwargs["width"])
+            and ("%" not in kwargs["width"])
         ):
             kwargs["width"] = float(kwargs["width"].replace("px", ""))
 
@@ -99,7 +99,7 @@ class Map(folium.Map):
         if "width" in kwargs:
             width = kwargs.pop("width")
         else:
-            width = '100%'
+            width = "100%"
 
         super().__init__(**kwargs)
         self.baseclass = "folium"
@@ -142,7 +142,7 @@ class Map(folium.Map):
         if kwargs["locate_control"]:
             plugins.LocateControl().add_to(self)
         if kwargs["search_control"]:
-            plugins.Geocoder(collapsed=True, position='topleft').add_to(self)
+            plugins.Geocoder(collapsed=True, position="topleft").add_to(self)
 
         self.fit_bounds([latlon, latlon], max_zoom=zoom)
 
@@ -848,17 +848,17 @@ class Map(folium.Map):
         if not isinstance(vis_params, dict):
             raise ValueError("vis_params must be a dictionary.")
 
-        if 'palette' not in vis_params:
+        if "palette" not in vis_params:
             raise ValueError("vis_params must contain a palette.")
 
-        if 'min' not in vis_params:
-            vis_params['min'] = 0
-        if 'max' not in vis_params:
-            vis_params['max'] = 1
+        if "min" not in vis_params:
+            vis_params["min"] = 0
+        if "max" not in vis_params:
+            vis_params["max"] = 1
 
-        colors = vis_params['palette']
-        vmin = vis_params['min']
-        vmax = vis_params['max']
+        colors = vis_params["palette"]
+        vmin = vis_params["min"]
+        vmax = vis_params["max"]
 
         if isinstance(colors, Box):
             try:
@@ -1707,34 +1707,34 @@ class Map(folium.Map):
         """Get the center of the map.
 
         Args:
-            st_folium: The streamlit component.
+            st_folium (streamlit-folium): The streamlit component.
 
         Returns:
             tuple: The center of the map.
         """
 
-        bounds = st_component['bounds']
-        west = bounds['_southWest']['lng']
-        south = bounds['_southWest']['lat']
-        east = bounds['_northEast']['lng']
-        north = bounds['_northEast']['lat']
+        bounds = st_component["bounds"]
+        west = bounds["_southWest"]["lng"]
+        south = bounds["_southWest"]["lat"]
+        east = bounds["_northEast"]["lng"]
+        north = bounds["_northEast"]["lat"]
         return (south + (north - south) / 2, west + (east - west) / 2)
 
     def st_map_bounds(self, st_component):
         """Get the bounds of the map in the format of (miny, minx, maxy, maxx).
 
         Args:
-            st_folium: The streamlit component.
+            st_folium (streamlit-folium): The streamlit component.
 
         Returns:
             tuple: The bounds of the map.
         """
 
-        bounds = st_component['bounds']
-        south = bounds['_southWest']['lat']
-        west = bounds['_southWest']['lng']
-        north = bounds['_northEast']['lat']
-        east = bounds['_northEast']['lng']
+        bounds = st_component["bounds"]
+        south = bounds["_southWest"]["lat"]
+        west = bounds["_southWest"]["lng"]
+        north = bounds["_northEast"]["lat"]
+        east = bounds["_northEast"]["lng"]
 
         bounds = [[south, west], [north, east]]
         return bounds
@@ -1751,7 +1751,7 @@ class Map(folium.Map):
 
             if "map_bounds" in st.session_state:
 
-                bounds = st.session_state['map_bounds']
+                bounds = st.session_state["map_bounds"]
 
                 self.fit_bounds(bounds)
 
@@ -1762,38 +1762,38 @@ class Map(folium.Map):
         """Get the last draw feature of the map.
 
         Args:
-            st_folium: The streamlit component.
+            st_folium (streamlit-folium): The streamlit component.
 
         Returns:
             str: The last draw of the map.
         """
 
-        return st_component['last_active_drawing']
+        return st_component["last_active_drawing"]
 
     def st_last_click(self, st_component):
         """Get the last click feature of the map.
 
         Args:
-            st_folium: The streamlit component.
+            st_folium (streamlit-folium): The streamlit component.
 
         Returns:
             str: The last click of the map.
         """
 
-        coords = st_component['last_clicked']
-        return (coords['lat'], coords['lng'])
+        coords = st_component["last_clicked"]
+        return (coords["lat"], coords["lng"])
 
     def st_draw_features(self, st_component):
         """Get the draw features of the map.
 
         Args:
-            st_folium: The streamlit component.
+            st_folium (streamlit-folium): The streamlit component.
 
         Returns:
             list: The draw features of the map.
         """
 
-        return st_component['all_drawings']
+        return st_component["all_drawings"]
 
     def add_census_data(self, wms, layer, census_dict=None, **kwargs):
         """Adds a census data layer to the map.
@@ -2015,7 +2015,7 @@ class Map(folium.Map):
                 )
 
             control = SplitControl(
-                layer_left=left_layer, layer_right=right_layer, name='Split Control'
+                layer_left=left_layer, layer_right=right_layer, name="Split Control"
             )
             left_layer.add_to(self)
             right_layer.add_to(self)
@@ -2036,8 +2036,8 @@ class Map(folium.Map):
         attribution=None,
         layer_name="NetCDF layer",
         shift_lon=True,
-        lat='lat',
-        lon='lon',
+        lat="lat",
+        lon="lon",
         **kwargs,
     ):
         """Generate an ipyleaflet/folium TileLayer from a netCDF file.
@@ -2145,7 +2145,7 @@ class SplitControl(Layer):
     """
 
     _template = Template(
-        u"""
+        """
         {% macro script(this, kwargs) %}
             var {{ this.get_name() }} = L.control.sideBySide(
                 {{ this.layer_left.get_name() }}, {{ this.layer_right.get_name() }}
@@ -2160,7 +2160,7 @@ class SplitControl(Layer):
         super(SplitControl, self).__init__(
             name=name, overlay=overlay, control=control, show=show
         )
-        self._name = 'SplitControl'
+        self._name = "SplitControl"
         self.layer_left = layer_left
         self.layer_right = layer_right
 
@@ -2169,14 +2169,14 @@ class SplitControl(Layer):
 
         figure = self.get_root()
         assert isinstance(figure, Figure), (
-            'You cannot render this Element ' 'if it is not in a Figure.'
+            "You cannot render this Element " "if it is not in a Figure."
         )
 
         figure.header.add_child(
             JavascriptLink(
-                'https://raw.githack.com/digidem/leaflet-side-by-side/gh-pages/leaflet-side-by-side.js'
+                "https://raw.githack.com/digidem/leaflet-side-by-side/gh-pages/leaflet-side-by-side.js"
             ),  # noqa
-            name='leaflet.sidebyside',
+            name="leaflet.sidebyside",
         )
 
 
@@ -2305,8 +2305,8 @@ def st_map_center(lat, lon):
     try:
         import streamlit as st
 
-        if 'map_center' in st.session_state:
-            return st.session_state['map_center']
+        if "map_center" in st.session_state:
+            return st.session_state["map_center"]
         else:
             return [lat, lon]
 
@@ -2324,17 +2324,17 @@ def st_save_bounds(st_component):
         import streamlit as st
 
         if st_component is not None:
-            bounds = st_component['bounds']
-            south = bounds['_southWest']['lat']
-            west = bounds['_southWest']['lng']
-            north = bounds['_northEast']['lat']
-            east = bounds['_northEast']['lng']
+            bounds = st_component["bounds"]
+            south = bounds["_southWest"]["lat"]
+            west = bounds["_southWest"]["lng"]
+            north = bounds["_northEast"]["lat"]
+            east = bounds["_northEast"]["lng"]
 
             bounds = [[south, west], [north, east]]
             center = [south + (north - south) / 2, west + (east - west) / 2]
 
-            st.session_state['map_bounds'] = bounds
-            st.session_state['map_center'] = center
+            st.session_state["map_bounds"] = bounds
+            st.session_state["map_center"] = center
     except Exception as e:
         raise Exception(e)
 
