@@ -1514,8 +1514,9 @@ def ee_export_vector_to_drive(
         ee_object = ee_object.select([".*"], None, False)
 
     print(f"Exporting {description}...")
-    task = ee.batch.Export.table.toDrive(ee_object, description, **task_config)
-    task.start()
+    if os.environ.get("USE_MKDOCS") is None:  # skip if running GitHub CI.
+        task = ee.batch.Export.table.toDrive(ee_object, description, **task_config)
+        task.start()
 
 
 def ee_export_geojson(ee_object, filename=None, selectors=None, timeout=300):
@@ -1851,10 +1852,11 @@ def ee_export_image_to_drive(
         params["fileFormat"] = file_format
         params["formatOptions"] = format_options
 
-        task = ee.batch.Export.image(ee_object, description, params)
-        task.start()
-
         print(f"Exporting {description} ...")
+        if os.environ.get("USE_MKDOCS") is None:  # skip if running GitHub CI.
+
+            task = ee.batch.Export.image(ee_object, description, params)
+            task.start()
 
     except Exception as e:
         print(e)
@@ -1903,20 +1905,22 @@ def ee_export_image_collection_to_drive(
 
         images = ee_object.toList(count)
 
-        for i in range(0, count):
-            image = ee.Image(images.get(i))
-            name = descriptions[i]
-            ee_export_image_to_drive(
-                image,
-                name,
-                folder,
-                region,
-                scale,
-                crs,
-                max_pixels,
-                file_format,
-                format_options,
-            )
+        if os.environ.get("USE_MKDOCS") is None:  # skip if running GitHub CI.
+
+            for i in range(0, count):
+                image = ee.Image(images.get(i))
+                name = descriptions[i]
+                ee_export_image_to_drive(
+                    image,
+                    name,
+                    folder,
+                    region,
+                    scale,
+                    crs,
+                    max_pixels,
+                    file_format,
+                    format_options,
+                )
 
     except Exception as e:
         print(e)
@@ -7269,7 +7273,7 @@ def df_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
 pandas_to_ee = df_to_ee
 
 
-def gdf_to_ee(gdf, geodesic=True, date=None, date_format='YYYY-MM-dd'):
+def gdf_to_ee(gdf, geodesic=True, date=None, date_format="YYYY-MM-dd"):
     """Converts a GeoPandas GeoDataFrame to ee.FeatureCollection.
 
     Args:
@@ -9514,7 +9518,7 @@ def image_to_numpy(image):
     if not os.path.exists(image):
         raise FileNotFoundError("The provided input file could not be found.")
 
-    with rasterio.open(image, 'r') as ds:
+    with rasterio.open(image, "r") as ds:
         arr = ds.read()  # read all raster values
 
     return arr
@@ -9655,7 +9659,7 @@ def view_lidar(filename, cmap="terrain", backend="pyvista", background=None, **k
             mesh = data.to_instance("pyvista", mesh=False)
             mesh = mesh.elevation()
             mesh.plot(
-                scalars='Elevation',
+                scalars="Elevation",
                 cmap=cmap,
                 jupyter_backend=backend,
                 background=background,
@@ -9749,7 +9753,7 @@ def download_file(
 
     import gdown
 
-    if 'https://drive.google.com/file/d/' in url:
+    if "https://drive.google.com/file/d/" in url:
         fuzzy = True
 
     output = gdown.download(
@@ -9806,7 +9810,7 @@ def blend(
     top_vis=None,
     bottom_vis=None,
     hillshade=True,
-    expression='a*b',
+    expression="a*b",
     **kwargs,
 ):
     """Create a blended image that is a combination of two images, e.g., DEM and hillshade. This function was inspired by Jesse Anderson. See https://github.com/jessjaco/gee-blend.
@@ -9839,17 +9843,17 @@ def blend(
 
     if top_vis is None:
         top_bands = top_layer.bandNames().getInfo()
-        top_vis = {'bands': top_bands}
+        top_vis = {"bands": top_bands}
         if hillshade:
-            top_vis['palette'] = ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"]
-            top_vis['min'] = 0
-            top_vis['max'] = 6000
+            top_vis["palette"] = ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"]
+            top_vis["min"] = 0
+            top_vis["max"] = 6000
 
     if bottom_vis is None:
         bottom_bands = bottom_layer.bandNames().getInfo()
-        bottom_vis = {'bands': bottom_bands}
+        bottom_vis = {"bands": bottom_bands}
         if hillshade:
-            bottom_vis['bands'] = ['hillshade']
+            bottom_vis["bands"] = ["hillshade"]
 
     top = top_layer.visualize(**top_vis).divide(255)
 
@@ -9858,10 +9862,10 @@ def blend(
     else:
         bottom = bottom_layer.visualize(**bottom_vis).divide(255)
 
-    if 'a' not in expression or ('b' not in expression):
+    if "a" not in expression or ("b" not in expression):
         raise ValueError("expression must contain 'a' and 'b'.")
 
-    result = ee.Image().expression(expression, {'a': top, 'b': bottom})
+    result = ee.Image().expression(expression, {"a": top, "b": bottom})
     return result
 
 
@@ -9945,8 +9949,8 @@ def netcdf_to_tif(
     output=None,
     variables=None,
     shift_lon=True,
-    lat='lat',
-    lon='lon',
+    lat="lat",
+    lon="lon",
     return_vars=False,
     **kwargs,
 ):
@@ -10051,8 +10055,8 @@ def netcdf_tile_layer(
     layer_name="NetCDF layer",
     return_client=False,
     shift_lon=True,
-    lat='lat',
-    lon='lon',
+    lat="lat",
+    lon="lon",
     **kwargs,
 ):
     """Generate an ipyleaflet/folium TileLayer from a netCDF file.
