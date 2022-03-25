@@ -2117,6 +2117,25 @@ class Map(folium.Map):
     ):
         print("The folium plotting backend does not support this function.")
 
+    def add_time_slider(
+        self,
+        ee_object,
+        vis_params={},
+        region=None,
+        layer_name="Time series",
+        labels=None,
+        time_interval=1,
+        position="bottomright",
+        slider_length="150px",
+        date_format="YYYY-MM-dd",
+        opacity=1.0,
+        **kwargs,
+    ):
+        print("The folium plotting backend does not support this function.")
+
+    def extract_values_to_points(self, filename):
+        print("The folium plotting backend does not support this function.")
+
 
 class SplitControl(Layer):
     """
