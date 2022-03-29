@@ -1014,7 +1014,15 @@ def add_scale_bar_lite(
     return
 
 
-def add_legend(ax, legend_elements=None, loc="lower right",font_size=14, font_weight='normal',font_color='black',font_family=None):
+def add_legend(
+    ax,
+    legend_elements=None,
+    loc="lower right",
+    font_size=14,
+    font_weight='normal',
+    font_color='black',
+    font_family=None,
+):
     """Adds a legend to the map. The legend elements can be formatted as:
     legend_elements = [Line2D([], [], color='#00ffff', lw=2, label='Coastline'),
         Line2D([], [], marker='o', color='#A8321D', label='City', markerfacecolor='#A8321D', markersize=10, ls ='')]
@@ -1045,14 +1053,14 @@ def add_legend(ax, legend_elements=None, loc="lower right",font_size=14, font_we
                     markerfacecolor="#A8321D",
                     markersize=10,
                     ls="",
-                ),g
+                ),
             ]
         if font_family is not None:
-            fontdict={"family": font_family, "size": font_size, "weight": font_weight}
+            fontdict = {"family": font_family, "size": font_size, "weight": font_weight}
         else:
-            fontdict={"size": font_size, "weight": font_weight}    
+            fontdict = {"size": font_size, "weight": font_weight}
         leg = ax.legend(handles=legend_elements, loc=loc, prop=fontdict)
-        
+
         # Change font color If default color is changed.
         if font_color != 'black':
             for text in leg.get_texts():
