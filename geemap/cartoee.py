@@ -1014,7 +1014,7 @@ def add_scale_bar_lite(
     return
 
 
-def add_legend(ax, legend_elements=None, loc="lower right",font_size=14, font_weight='normal',font_color='k',show_chinese=False):
+def add_legend(ax, legend_elements=None, loc="lower right",font_size=14, font_weight='normal',font_color='black',font_family=None):
     """Adds a legend to the map. The legend elements can be formatted as:
     legend_elements = [Line2D([], [], color='#00ffff', lw=2, label='Coastline'),
         Line2D([], [], marker='o', color='#A8321D', label='City', markerfacecolor='#A8321D', markersize=10, ls ='')]
@@ -1026,7 +1026,7 @@ def add_legend(ax, legend_elements=None, loc="lower right",font_size=14, font_we
         font_size(int|string, optional): Font size. Either an absolute font size or an relative value of 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'. defaults to 14.
         font_weight(string|int, optional): Font weight. A numeric value in the range 0-1000 or one of 'ultralight', 'light', 'normal' (default), 'regular', 'book', 'medium', 'roman', 'semibold', 'demibold', 'demi', 'bold', 'heavy', 'extra bold', 'black'. Defaults to 'normal'.
         font_color(str, optional): Text color. Defaults to "black".
-        show_chinese(bool, optional): Whether to display Chinese fonts. If True, using 'SimHei' font.
+        font_family(string, optional): Name of font family. Set to a font family like 'SimHei' if you want to show Chinese in the legend. Defaults to None.
     Raises:
         Exception: If the legend fails to add.
     """
@@ -1045,16 +1045,16 @@ def add_legend(ax, legend_elements=None, loc="lower right",font_size=14, font_we
                     markerfacecolor="#A8321D",
                     markersize=10,
                     ls="",
-                ),
+                ),g
             ]
-        if show_chinese == True:
-            fontdict={"family": "SimHei", "size": font_size, "weight": font_weight}
+        if font_family is not None:
+            fontdict={"family": font_family, "size": font_size, "weight": font_weight}
         else:
             fontdict={"size": font_size, "weight": font_weight}    
         leg = ax.legend(handles=legend_elements, loc=loc, prop=fontdict)
         
         # Change font color If default color is changed.
-        if font_color != 'k':
+        if font_color != 'black':
             for text in leg.get_texts():
                 text.set_color(font_color)
         return
