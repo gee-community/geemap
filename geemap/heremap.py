@@ -8,7 +8,6 @@ import os
 import json
 import random
 import requests
-import here_map_widget
 import ipywidgets as widgets
 from box import Box
 from .basemaps import xyz_to_heremap
@@ -19,6 +18,14 @@ from .common import (
     vector_to_geojson,
     random_string,
 )
+
+try:
+    import here_map_widget
+except ImportError:
+    raise ImportError(
+        'This module requires the hermap package. Please install it using "pip install here-map-widget-for-jupyter".'
+    )
+
 
 from here_map_widget import (
     FullscreenControl,

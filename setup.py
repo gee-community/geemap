@@ -28,7 +28,7 @@ dependency_links = [x.strip().replace("git+", "") for x in all_reqs if "git+" no
 
 extras_requires = {
     "all": dev_reqs,
-    "backends": ["keplergl", "pydeck"],
+    "backends": ["keplergl", "pydeck", "plotly", "here-map-widget-for-jupyter"],
     "lidar": ["ipygany", "ipyvtklink", "laspy", "panel", "pyntcloud[LAS]", "pyvista"],
     "raster": [
         "localtileserver",
@@ -38,13 +38,9 @@ extras_requires = {
         "xarray_leaflet",
     ],
     "sql": ["psycopg2", "sqlalchemy"],
-    "streamlit": ["streamlit-folium"],
+    "apps": ["streamlit-folium", "voila"],
     "vector": ["geopandas", "osmnx"],
 }
-
-requirements = [
-    "Click>=7.0",
-]
 
 setup_requirements = []
 

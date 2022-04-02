@@ -6219,25 +6219,16 @@ class Map(ipyleaflet.Map):
         for row in df.itertuples():
             html = ""
             for p in popup:
-                html = (
-                    html
-                    + "<b>"
-                    + p
-                    + "</b>"
-                    + ": "
-                    + str(eval(str("row." + p)))
-                    + "<br>"
-                )
+                html = html + "<b>" + p + "</b>" + ": " + str(getattr(row, p)) + "<br>"
             popup_html = widgets.HTML(html)
 
             marker = ipyleaflet.CircleMarker(
-                location=[eval(f"row.{y}"), eval(f"row.{x}")],
+                location=[getattr(row, y), getattr(row, x)],
                 radius=radius,
                 popup=popup_html,
                 **kwargs,
             )
-
-            self.add_layer(marker)
+            super().add_layer(marker)
 
     def add_planet_by_month(
         self, year=2016, month=1, name=None, api_key=None, token_name="PLANET_API_KEY"
