@@ -842,7 +842,12 @@ def download_from_gdrive(gfile_url, file_name, out_dir=".", unzip=True, verbose=
         unzip (bool, optional): Whether to unzip the output file if it is a zip file. Defaults to True.
         verbose (bool, optional): Whether to display or not the output of the function
     """
-    from google_drive_downloader import GoogleDriveDownloader as gdd
+    try:
+        from google_drive_downloader import GoogleDriveDownloader as gdd
+    except ImportError:
+        raise Exception(
+            "Please install the google_drive_downloader package using `pip install googledrivedownloader`"
+        )
 
     file_id = gfile_url.split("/")[5]
     if verbose:
@@ -1030,7 +1035,6 @@ def csv_to_geojson(
 
     """
 
-    # import json
     import pandas as pd
 
     if out_geojson is not None:
@@ -1068,7 +1072,6 @@ def pandas_to_geojson(
 
     """
 
-    # import json
     from geojson import Feature, FeatureCollection, Point
 
     if out_geojson is not None:
@@ -2311,7 +2314,10 @@ def screen_capture(outfile, monitor=1):
         outfile (str): The output file path to the screenshot.
         monitor (int, optional): The monitor to take the screenshot. Defaults to 1.
     """
-    from mss import mss
+    try:
+        from mss import mss
+    except ImportError:
+        raise ImportError("Please install mss package using 'pip install mss'")
 
     out_dir = os.path.dirname(outfile)
     if not os.path.exists(out_dir):
@@ -2627,7 +2633,6 @@ def save_colorbar(
     Returns:
         str: Path to the output image.
     """
-    import ipywidgets as widgets
     import matplotlib as mpl
     import matplotlib.pyplot as plt
     import numpy as np
@@ -7201,7 +7206,6 @@ def ee_to_gdf(ee_object, selectors=None, verbose=False):
     Returns:
         gpd.GeoDataFrame: geopandas.GeoDataFrame
     """
-    from pathlib import Path
 
     check_package(name="geopandas", URL="https://geopandas.org")
 
@@ -8385,7 +8389,12 @@ def get_census_dict(reset=False):
 
     if reset:
 
-        from owslib.wms import WebMapService
+        try:
+            from owslib.wms import WebMapService
+        except ImportError:
+            raise ImportError(
+                'The owslib package must be installed to use this function. Install with "pip install owslib"'
+            )
 
         census_dict = {}
 
@@ -8881,7 +8890,12 @@ def get_palettable(types=None):
     Returns:
         list: A list of palettable color palettes.
     """
-    import palettable
+    try:
+        import palettable
+    except ImportError:
+        raise ImportError(
+            "The palettable package is not installed. Please install it with `pip install palettable`."
+        )
 
     if types is not None and (not isinstance(types, list)):
         raise ValueError("The types must be a list.")
@@ -9189,12 +9203,12 @@ def bbox_to_gdf(bbox, crs="EPSG:4326"):
     """
     check_package(name="geopandas", URL="https://geopandas.org")
     from shapely.geometry import box
-    from geopandas import GeoDataFrame
+    import geopandas as gpd
 
     minx, miny, maxx, maxy = bbox
     geometry = box(minx, miny, maxx, maxy)
     d = {"geometry": [geometry]}
-    gdf = GeoDataFrame(d, crs="EPSG:4326")
+    gdf = gpd.GeoDataFrame(d, crs="EPSG:4326")
     gdf.to_crs(crs=crs, inplace=True)
     return gdf
 
@@ -9493,7 +9507,6 @@ def gdf_geom_type(gdf, first_only=True):
     Returns:
         str: The geometry type of the GeoDataFrame.
     """
-    import geopandas as gpd
 
     if first_only:
         return gdf.geometry.type[0]
@@ -9761,7 +9774,6 @@ def download_file(
     )
 
     if unzip and output.endswith(".zip"):
-        import zipfile
 
         with zipfile.ZipFile(output, "r") as zip_ref:
             if not quiet:
@@ -9884,7 +9896,6 @@ def clip_image(image, mask, output):
         FileNotFoundError: If the mask file is not found.
     """
     try:
-        import json
         import fiona
         import rasterio
         import rasterio.mask
