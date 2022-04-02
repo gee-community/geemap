@@ -1,15 +1,25 @@
 # Changelog
 
+## v0.13.0 - Apr 2, 2022
+
+**Improvement**:
+
+-   Reduced number of dependencies, making plotting backends optional except ipyleaflet anf folium [#1003](https://github.com/giswqs/geemap/pull/1003)
+-   Improved cartoee.add_legend [#997](https://github.com/giswqs/geemap/pull/997)
+-   Added deck and kepler to docs
+-   Skip export with GitHub Actions
+-   Update folium module
+-   Updated clip image notebook
+
 ## v0.12.1 - Mar 22, 2022
 
 **New Features**:
 
 -   Added support for pydeck and kepler.gl [#993](https://github.com/giswqs/geemap/pull/993)
 
-
 **Improvement**:
 
--   Renamed basemaps 
+-   Renamed basemaps
 -   Added GEE-Courses link
 -   Updated folium module
 
@@ -22,7 +32,6 @@
 -   Adding velocity map with NetCDF data
 -   Added clip image by mask [#986](https://github.com/giswqs/geemap/pull/986)
 -   Added streamlit bidirectional functionality [#985](https://github.com/giswqs/geemap/pull/985)
-
 
 **Improvement**:
 
@@ -42,6 +51,7 @@
 
 -   Fixed typos and broken links [#971](https://github.com/giswqs/geemap/issues/971)
 -   Updated netCDF notebook
+
 ## v0.11.7 - Mar 8, 2022
 
 **New Features**:
@@ -51,6 +61,7 @@
 **Improvement**:
 
 -   Added mode reducer to zonal stats [#960](https://github.com/giswqs/geemap/issues/960)
+
 ## v0.11.6 - Mar 3, 2022
 
 **New Features**:
@@ -77,6 +88,7 @@
 -   Fixed stac tile bug [#944](https://github.com/giswqs/geemap/pull/944)
 -   Added None to vis_params as optional [#943](https://github.com/giswqs/geemap/pull/943)
 -   Reformatted code using black
+
 ## v0.11.4 - Feb 14, 2022
 
 **New Features**:
