@@ -1,13 +1,18 @@
 import os
 import numpy as np
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
 import ipywidgets as widgets
 from .basemaps import xyz_to_plotly
 from .common import *
 from .osm import *
 
+try:
+    import plotly.express as px
+    import plotly.graph_objects as go
+except ImportError:
+    raise ImportError(
+        "This module requires the plotly package. Please install it using 'pip install plotly'."
+    )
 
 basemaps = xyz_to_plotly()
 
