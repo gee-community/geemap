@@ -3,14 +3,20 @@ black[jupyter]
 codespell
 datapane
 geopandas
+here-map-widget-for-jupyter>=1.1.1
 keplergl
 ipygany
+ipynb-py-convert
 ipyvtklink
 laspy
 localtileserver
+mss
 netcdf4
+palettable
 osmnx
+owslib
 panel
+plotly
 psycopg2
 pydeck
 pyntcloud[LAS]
@@ -19,4 +25,5 @@ rio-cogeo
 rioxarray
 sqlalchemy
 streamlit-folium
+voila
 xarray_leaflet         
