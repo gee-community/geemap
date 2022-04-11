@@ -443,8 +443,6 @@ def add_colorbar(
     if tick_font_size is not None:
         cb.ax.tick_params(labelsize=tick_font_size)
 
-    return cb
-
 
 def _buffer_box(bbox, interval):
     """Helper function to buffer a bounding box to the nearest multiple of interval
@@ -988,7 +986,7 @@ def add_scale_bar_lite(
             if str(x)[0] in ["1", "2", "5"]:
                 return int(x)
             else:
-                return scale_number(x - 10**ndim)
+                return scale_number(x - 10 ** ndim)
 
         length = scale_number(length)
         num = length
@@ -1019,8 +1017,8 @@ def add_legend(
     legend_elements=None,
     loc="lower right",
     font_size=14,
-    font_weight='normal',
-    font_color='black',
+    font_weight="normal",
+    font_color="black",
     font_family=None,
 ):
     """Adds a legend to the map. The legend elements can be formatted as:
@@ -1062,7 +1060,7 @@ def add_legend(
         leg = ax.legend(handles=legend_elements, loc=loc, prop=fontdict)
 
         # Change font color If default color is changed.
-        if font_color != 'black':
+        if font_color != "black":
             for text in leg.get_texts():
                 text.set_color(font_color)
         return
