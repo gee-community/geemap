@@ -428,9 +428,7 @@ def add_colorbar(
 
     cb = mpl.colorbar.ColorbarBase(cax, norm=norm, alpha=alpha, cmap=cmap, **kwargs)
 
-    if "bands" in vis_keys:
-        cb.set_label(vis_params["bands"])
-    elif label is not None:
+    if label is not None:
         if label_font_size is not None and label_font_family is not None:
             cb.set_label(label, fontsize=label_font_size, family=label_font_family)
         elif label_font_size is not None and label_font_family is None:
@@ -439,11 +437,13 @@ def add_colorbar(
             cb.set_label(label, family=label_font_family)
         else:
             cb.set_label(label)
+    elif "bands" in vis_keys:
+        cb.set_label(vis_params["bands"])
 
     if tick_font_size is not None:
         cb.ax.tick_params(labelsize=tick_font_size)
 
-    return
+    return cb
 
 
 def _buffer_box(bbox, interval):
