@@ -2454,7 +2454,7 @@ def create_colorbar(
         heatmap.append(pair)
 
     def gaussian(x, a, b, c, d=0):
-        return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
+        return a * math.exp(-((x - b) ** 2) / (2 * c ** 2)) + d
 
     def pixel(x, width=100, map=[], spread=1):
         width = float(width)
@@ -6065,6 +6065,38 @@ def image_sum_value(img, region=None, scale=None):
         }
     )
     return sum_value
+
+
+def image_value_list(img, region=None, scale=None, return_hist=False, **kwargs):
+    """Get the unique values of an image.
+
+    Args:
+        img (ee.Image): The image to calculate the unique values.
+        region (ee.Geometry | ee.FeatureCollection, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+        return_hist (bool, optional): If True, return a histogram of the values. Defaults to False.
+
+    Returns:
+        ee.List | ee.Dictionary: A list of unique values or a dictionary containing a list of unique values and a histogram.
+    """
+    if region is None:
+        geom = img.geometry().bounds()
+        region = ee.FeatureCollection([ee.Feature(geom)])
+
+    if scale is None:
+        scale = img.select(0).projection().nominalScale().multiply(10)
+
+    reducer = ee.Reducer.frequencyHistogram()
+    kwargs["scale"] = scale
+    kwargs["reducer"] = reducer
+    kwargs["collection"] = region
+
+    result = img.reduceRegions(**kwargs)
+    hist = ee.Dictionary(result.first().get("histogram"))
+    if return_hist:
+        return hist
+    else:
+        return hist.keys()
 
 
 def extract_values_to_points(
