@@ -6193,6 +6193,106 @@ def image_stats_by_zone(
         return df
 
 
+def latitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
+    """Create a latitude grid.
+
+    Args:
+        step (float, optional): The step size in degrees. Defaults to 1.0.
+        west (int, optional): The west boundary in degrees. Defaults to -180.
+        east (int, optional): The east boundary in degrees. Defaults to 180.
+        south (int, optional): The south boundary in degrees. Defaults to -85.
+        north (int, optional): The north boundary in degrees. Defaults to 85.
+
+    Returns:
+        ee.FeatureColleciton: A feature collection of latitude grids.
+    """
+    values = ee.List.sequence(south, north - step, step)
+
+    def create_feature(lat):
+        return ee.Feature(
+            ee.Geometry.BBox(west, lat, east, ee.Number(lat).add(step))
+        ).set(
+            {
+                "south": lat,
+                "west": west,
+                "north": ee.Number(lat).add(step),
+                "east": east,
+            }
+        )
+
+    features = ee.FeatureCollection(values.map(create_feature))
+    return features
+
+
+def longitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
+    """Create a longitude grid.
+
+    Args:
+        step (float, optional): The step size in degrees. Defaults to 1.0.
+        west (int, optional): The west boundary in degrees. Defaults to -180.
+        east (int, optional): The east boundary in degrees. Defaults to 180.
+        south (int, optional): The south boundary in degrees. Defaults to -85.
+        north (int, optional): The north boundary in degrees. Defaults to 85.
+
+    Returns:
+        ee.FeatureColleciton: A feature collection of longitude grids.
+    """
+
+    values = ee.List.sequence(west, east - step, step)
+
+    def create_feature(lon):
+        return ee.Feature(
+            ee.Geometry.BBox(lon, south, ee.Number(lon).add(step), north)
+        ).set(
+            {
+                "south": south,
+                "west": lon,
+                "north": north,
+                "east": ee.Number(lon).add(step),
+            }
+        )
+
+    features = ee.FeatureCollection(values.map(create_feature))
+    return features
+
+
+def latlon_grid(lat_step=1.0, lon_step=1.0, west=-180, east=180, south=-85, north=85):
+    """Create a retangular grid of latitude and longitude.
+
+    Args:
+        lat_step (float, optional): The step size in degrees. Defaults to 1.0.
+        lon_step (float, optional): The step size in degrees. Defaults to 1.0.
+        west (int, optional): The west boundary in degrees. Defaults to -180.
+        east (int, optional): The east boundary in degrees. Defaults to 180.
+        south (int, optional): The south boundary in degrees. Defaults to -85.
+        north (int, optional): The north boundary in degrees. Defaults to 85.
+
+    Returns:
+        ee.FeatureCollection: A feature collection of latitude and longitude grids.
+    """
+    longitudes = ee.List.sequence(west, east - lon_step, lon_step)
+    latitudes = ee.List.sequence(south, north - lat_step, lat_step)
+
+    def create_lat_feature(lat):
+        def create_lon_features(lon):
+            return ee.Feature(
+                ee.Geometry.BBox(
+                    lon, lat, ee.Number(lon).add(lon_step), ee.Number(lat).add(lat_step)
+                )
+            ).set(
+                {
+                    "south": lat,
+                    "west": lon,
+                    "north": ee.Number(lat).add(lat_step),
+                    "east": ee.Number(lon).add(lon_step),
+                }
+            )
+
+        return ee.FeatureCollection(longitudes.map(create_lon_features))
+
+    return ee.FeatureCollection(latitudes.map(create_lat_feature)).flatten()
+
+
 def extract_values_to_points(
     in_fc,
     image,
