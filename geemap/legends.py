@@ -438,6 +438,23 @@ builtin_legends = {
         "250 Cranberries": "ff6666",
         "254 Dbl Crop Barley/Soybeans": "267000",
     },
+    "ALOS_landforms": {
+        "11 Peak/ridge (warm)": "141414",
+        "12 Peak/ridge": "383838",
+        "13 Peak/ridge (cool)": "808080",
+        "14 Mountain/divide": "EBEB8F",
+        "15 Cliff": "F7D311",
+        "21 Upper slope (warm)": "AA0000",
+        "22 Upper slope": "D89382",
+        "23 Upper slope (cool)": "DDC9C9",
+        "24 Upper slope (flat)": "DCCDCE",
+        "31 Lower slope (warm)": "1C6330",
+        "32 Lower slope": "68AA63",
+        "33 Lower slope (cool)": "B5C98E",
+        "34 Lower slope (flat)": "E1F0E5",
+        "41 Valley": "a975ba",
+        "42 Valley (narrow)": "6f198c",
+    },
 }
 
 
