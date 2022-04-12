@@ -6082,6 +6082,12 @@ def image_value_list(img, region=None, scale=None, return_hist=False, **kwargs):
     if region is None:
         geom = img.geometry().bounds()
         region = ee.FeatureCollection([ee.Feature(geom)])
+    elif isinstance(region, ee.Geometry):
+        region = ee.FeatureCollection([ee.Feature(region)])
+    elif isinstance(region, ee.FeatureCollection):
+        pass
+    else:
+        raise ValueError("region must be an ee.Geometry or ee.FeatureCollection")
 
     if scale is None:
         scale = img.select(0).projection().nominalScale().multiply(10)
@@ -6097,6 +6103,94 @@ def image_value_list(img, region=None, scale=None, return_hist=False, **kwargs):
         return hist
     else:
         return hist.keys()
+
+
+def image_stats_by_zone(
+    image,
+    zones,
+    out_csv=None,
+    region=None,
+    scale=None,
+    reducer="MEAN",
+    bestEffort=True,
+    **kwargs,
+):
+    """Calculate statistics for an image by zone.
+
+    Args:
+        image (ee.Image): The image to calculate statistics for.
+        zones (ee.Image): The zones to calculate statistics for.
+        out_csv (str, optional): The path to the output CSV file. Defaults to None.
+        region (ee.Geometry, optional): The region over which to reduce data. Defaults to the footprint of zone image.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+        reducer (str | ee.Reducer, optional): The reducer to use. Defaults to 'MEAN'.
+        bestEffort (bool, optional): If the polygon would contain too many pixels at the given scale, compute and use a larger scale which would allow the operation to succeed. Defaults to True.
+
+    Returns:
+        str | pd.DataFrame: The path to the output CSV file or a pandas DataFrame.
+    """
+    import pandas as pd
+
+    if region is not None:
+        if isinstance(region, ee.Geometry):
+            pass
+        if isinstance(region, ee.FeatureCollection):
+            region = region.geometry()
+        else:
+            raise ValueError("region must be an ee.Geometry or ee.FeatureCollection")
+
+    if scale is None:
+        scale = image_scale(image)
+
+    allowed_stats = {
+        "MEAN": ee.Reducer.mean(),
+        "MAXIMUM": ee.Reducer.max(),
+        "MEDIAN": ee.Reducer.median(),
+        "MINIMUM": ee.Reducer.min(),
+        "MODE": ee.Reducer.mode(),
+        "STD": ee.Reducer.stdDev(),
+        "MIN_MAX": ee.Reducer.minMax(),
+        "SUM": ee.Reducer.sum(),
+        "VARIANCE": ee.Reducer.variance(),
+    }
+
+    if isinstance(reducer, str):
+        if reducer.upper() not in allowed_stats:
+            raise ValueError(
+                "reducer must be one of: {}".format(", ".join(allowed_stats.keys()))
+            )
+        else:
+            reducer = allowed_stats[reducer.upper()]
+    elif isinstance(reducer, ee.Reducer):
+        pass
+    else:
+        raise ValueError(
+            "reducer must be one of: {}".format(", ".join(allowed_stats.keys()))
+        )
+
+    values = image_value_list(zones, region=region)
+    values = values.map(lambda x: ee.Number.parse(x))
+
+    def get_stats(value):
+        img = image.updateMask(zones.eq(ee.Number(value)))
+        kwargs["reducer"] = reducer
+        kwargs["scale"] = scale
+        kwargs["geometry"] = region
+        kwargs["bestEffort"] = bestEffort
+        stat = img.reduceRegion(**kwargs)
+        return ee.Image().set({"zone": value}).set({"stat": stat.values().get(0)})
+
+    collection = ee.ImageCollection(values.map(lambda x: get_stats(x)))
+    keys = collection.aggregate_array("zone").getInfo()
+    values = collection.aggregate_array("stat").getInfo()
+    df = pd.DataFrame({"zone": keys, "stat": values})
+
+    if out_csv is not None:
+        check_file_path(out_csv)
+        df.to_csv(out_csv, index=False)
+        return out_csv
+    else:
+        return df
 
 
 def extract_values_to_points(
