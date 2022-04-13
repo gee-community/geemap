@@ -6109,6 +6109,7 @@ def image_stats_by_zone(
     image,
     zones,
     out_csv=None,
+    labels=None,
     region=None,
     scale=None,
     reducer="MEAN",
@@ -6121,6 +6122,7 @@ def image_stats_by_zone(
         image (ee.Image): The image to calculate statistics for.
         zones (ee.Image): The zones to calculate statistics for.
         out_csv (str, optional): The path to the output CSV file. Defaults to None.
+        labels (list, optional): The list of zone labels to use for the output CSV. Defaults to None.
         region (ee.Geometry, optional): The region over which to reduce data. Defaults to the footprint of zone image.
         scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
         reducer (str | ee.Reducer, optional): The reducer to use. Defaults to 'MEAN'.
@@ -6183,7 +6185,14 @@ def image_stats_by_zone(
     collection = ee.ImageCollection(values.map(lambda x: get_stats(x)))
     keys = collection.aggregate_array("zone").getInfo()
     values = collection.aggregate_array("stat").getInfo()
-    df = pd.DataFrame({"zone": keys, "stat": values})
+
+    if labels is not None and isinstance(labels, list):
+        if len(labels) != len(keys):
+            raise ValueError("labels must be the same length as keys")
+        else:
+            df = pd.DataFrame({"zone": keys, "label": labels, "stat": values})
+    else:
+        df = pd.DataFrame({"zone": keys, "label": labels, "stat": values})
 
     if out_csv is not None:
         check_file_path(out_csv)
