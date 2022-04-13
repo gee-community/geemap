@@ -6136,7 +6136,7 @@ def image_stats_by_zone(
     if region is not None:
         if isinstance(region, ee.Geometry):
             pass
-        if isinstance(region, ee.FeatureCollection):
+        elif isinstance(region, ee.FeatureCollection):
             region = region.geometry()
         else:
             raise ValueError("region must be an ee.Geometry or ee.FeatureCollection")
