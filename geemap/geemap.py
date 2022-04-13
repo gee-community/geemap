@@ -6601,8 +6601,8 @@ class Map(ipyleaflet.Map):
         attribution=None,
         layer_name="NetCDF layer",
         shift_lon=True,
-        lat='lat',
-        lon='lon',
+        lat="lat",
+        lon="lon",
         **kwargs,
     ):
         """Generate an ipyleaflet/folium TileLayer from a netCDF file.
@@ -6659,12 +6659,15 @@ class Map(ipyleaflet.Map):
         data,
         zonal_speed,
         meridional_speed,
-        latitude_dimension='lat',
-        longitude_dimension='lon',
+        latitude_dimension="lat",
+        longitude_dimension="lon",
+        level_dimension="lev",
+        level_index=0,
+        time_index=0,
         velocity_scale=0.01,
         max_velocity=20,
         display_options={},
-        name='Velocity',
+        name="Velocity",
     ):
         """Add a velocity layer to the map.
 
@@ -6674,6 +6677,9 @@ class Map(ipyleaflet.Map):
             meridional_speed (str): Name of the meridional speed in the dataset. See https://en.wikipedia.org/wiki/Zonal_and_meridional_flow.
             latitude_dimension (str, optional): Name of the latitude dimension in the dataset. Defaults to 'lat'.
             longitude_dimension (str, optional): Name of the longitude dimension in the dataset. Defaults to 'lon'.
+            level_dimension (str, optional): Name of the level dimension in the dataset. Defaults to 'lev'.
+            level_index (int, optional): The index of the level dimension to display. Defaults to 0.
+            time_index (int, optional): The index of the time dimension to display. Defaults to 0.
             velocity_scale (float, optional): The scale of the velocity. Defaults to 0.01.
             max_velocity (int, optional): The maximum velocity to display. Defaults to 20.
             display_options (dict, optional): The display options for the velocity layer. Defaults to {}. See https://bit.ly/3uf8t6w.
@@ -6701,6 +6707,16 @@ class Map(ipyleaflet.Map):
             ds = data
         else:
             raise ValueError("The data must be a file path or xarray dataset.")
+
+        coords = list(ds.coords.keys())
+
+        # Rasterio does not handle time or levels. So we must drop them
+        if "time" in coords:
+            ds = ds.isel(time=time_index, drop=True)
+
+        params = {level_dimension: level_index}
+        if level_dimension in coords:
+            ds = ds.isel(drop=True, **params)
 
         wind = Velocity(
             data=ds,
