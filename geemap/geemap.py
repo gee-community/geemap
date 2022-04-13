@@ -2280,7 +2280,10 @@ class Map(ipyleaflet.Map):
 
     def add_layer_control(self):
         """Adds the layer control to the map."""
-        pass
+        if self.layer_control is None:
+            layer_control = ipyleaflet.LayersControl(position="topright")
+            self.layer_control = layer_control
+            self.add_control(layer_control)
 
     addLayerControl = add_layer_control
 
