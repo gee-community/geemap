@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.13.2 - Apr 15, 2022
+
+**New Features**:
+
+-   Added image_value_list function [#1010](https://github.com/giswqs/geemap/pull/1010)
+-   Added image_stats_by_zone [#1012](https://github.com/giswqs/geemap/pull/1012)
+-   Added support for creating grids [#1014](https://github.com/giswqs/geemap/pull/1014)
+-   Added ALOS landforms legend
+
+**Improvement**:
+
+-   Updated cartoee add_colorbar [#1006](https://github.com/giswqs/geemap/pull/1006)
+-   Added layer control for ipyleaflet [#1017](https://github.com/giswqs/geemap/issues/1017)
+-   Updated authentication method [#1018](https://github.com/giswqs/geemap/issues/1018)
+-   Fixed add_colorbar bug
+
 ## v0.13.1 - Apr 2, 2022
 
 **Improvement**:
