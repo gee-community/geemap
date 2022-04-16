@@ -6132,6 +6132,7 @@ def image_stats_by_zone(
         str | pd.DataFrame: The path to the output CSV file or a pandas DataFrame.
     """
     import pandas as pd
+    import warnings
 
     if region is not None:
         if isinstance(region, ee.Geometry):
@@ -6188,7 +6189,8 @@ def image_stats_by_zone(
 
     if labels is not None and isinstance(labels, list):
         if len(labels) != len(keys):
-            raise ValueError("labels must be the same length as keys")
+            warnings.warn("labels are not the same length as keys, ignoring labels.")
+            df = pd.DataFrame({"zone": keys, "stat": values})
         else:
             df = pd.DataFrame({"zone": keys, "label": labels, "stat": values})
     else:
