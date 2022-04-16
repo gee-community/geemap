@@ -7,7 +7,7 @@
 -   Added image_value_list function [#1010](https://github.com/giswqs/geemap/pull/1010)
 -   Added image_stats_by_zone [#1012](https://github.com/giswqs/geemap/pull/1012)
 -   Added support for creating grids [#1014](https://github.com/giswqs/geemap/pull/1014)
--   Added ALOS landforms legend
+-   Added landforms legend
 
 **Improvement**:
 
