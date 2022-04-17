@@ -3,13 +3,195 @@
 
 import ee
 import pandas as pd
+import numpy as np
 from bqplot import Tooltip
 from bqplot import pyplot as plt
 
 from .common import ee_to_df
 
+from typing import Union
 
-def feature_byFeature(features, xProperty, yProperties, **kwargs):
+
+class BaseChartClass:
+    """This should include everything a chart module requires to plot figures."""
+
+    def __init__(self, features, default_labels, name, **kwargs):
+        self.ylim = None
+        self.xlim = None
+        self.title = ""
+        self.legend_location = "top-left"
+        self.layout_width = None
+        self.layout_height = None
+        self.display_legend = True
+        self.xlabel = None
+        self.ylabel = None
+        self.labels = default_labels
+        self.width = None
+        self.height = None
+        self.colors = "black"
+        self.df = ee_to_df(features)
+        self.name = name
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    @classmethod
+    def get_data(self):
+        pass
+
+    @classmethod
+    def plot_chart(self):
+        pass
+
+    def __repr__(self):
+        return self.name
+
+
+class BarChart(BaseChartClass):
+    """Create Bar Chart. All histogram/bar charts can use this object."""
+
+    def __init__(self, features, default_labels, name, type="grouped", **kwargs):
+        super().__init__(features, default_labels, name, **kwargs)
+        self.type = type
+
+    def generate_tooltip(self):
+        if (self.xlabel is not None) and (self.ylabel is not None):
+            self.bar_chart.tooltip = Tooltip(
+                fields=["x", "y"], labels=[self.xlabel, self.ylabel]
+            )
+        else:
+            self.bar_chart.tooltip = Tooltip(fields=["x", "y"])
+
+    def get_ylim(self):
+        if self.ylim:
+            ylim_min, ylim_max = self.ylim[0], self.ylim[1]
+        else:
+            if self.name in ["feature.byFeature", "feature.byProperty"]:
+                ylim_min = np.min(self.y_data)
+                ylim_max = np.max(self.y_data) + 0.2 * (
+                    np.max(self.y_data) - np.min(self.y_data)
+                )
+            if self.name in ["feature.groups"]:
+                ylim_min = np.min(self.df[self.yProperty])
+                ylim_max = np.max(self.df[self.yProperty])
+                ylim_max = ylim_max + 0.2 * (ylim_max - ylim_min)
+        return (ylim_min, ylim_max)
+
+    def plot_chart(self):
+        fig = plt.figure(
+            title=self.title,
+            legend_location=self.legend_location,
+        )
+
+        self.bar_chart = plt.bar(
+            self.x_data,
+            self.y_data,
+            labels=self.labels,
+            display_legend=self.display_legend,
+        )
+
+        self.generate_tooltip()
+        plt.ylim(*self.get_ylim())
+        plt.xlabel(self.xlabel)
+        plt.ylabel(self.ylabel)
+
+        if self.width:
+            fig.layout.width = self.width
+        if self.height:
+            fig.layout.height = self.height
+
+        self.bar_chart.colors = self.colors
+        self.bar_chart.type = self.type
+
+        plt.show()
+
+
+class Feature_ByFeature(BarChart):
+    """A object to define variables and get_data method. 
+    """
+    def __init__(
+        self, features, xProperty, yProperties, name="feature.byFeature", **kwargs
+    ):
+        default_labels = yProperties
+        super().__init__(features, default_labels, name, **kwargs)
+        self.x_data, self.y_data = self.get_data(xProperty, yProperties)
+
+    def get_data(self, xProperty, yProperties):
+        x_data = list(self.df[xProperty])
+        y_data = list(self.df[yProperties].values.T)
+        return x_data, y_data
+
+
+class Feature_ByProperty(BarChart):
+    """A object to define variables and get_data method. 
+    """
+    def __init__(
+        self, features, xProperties, seriesProperty, name="feature.byProperty", **kwargs
+    ):
+        default_labels = None
+        super().__init__(features, default_labels, name, **kwargs)
+        if "labels" in kwargs:
+            raise Exception("Please remove labels in kwargs and try again.")
+
+        self.labels = list(self.df[seriesProperty])
+        self.x_data, self.y_data = self.get_data(xProperties)
+
+    def get_data(self, xProperties):
+        if isinstance(xProperties, list):
+            x_data = xProperties
+            y_data = self.df[xProperties].values
+        elif isinstance(xProperties, dict):
+            x_data = list(xProperties.values())
+            y_data = self.df[list(xProperties.keys())].values
+        else:
+            raise Exception("xProperties must be a list or dictionary.")
+
+        return x_data, y_data
+
+
+class Feature_Groups(BarChart):
+    """A object to define variables and get_data method. 
+    """
+    def __init__(
+        self,
+        features,
+        xProperty,
+        yProperty,
+        seriesProperty,
+        name="feature.groups",
+        type="stacked",
+        **kwargs,
+    ):
+        df = ee_to_df(features)
+        self.unique_series_values = df[seriesProperty].unique().tolist()
+        default_labels = [str(x) for x in self.unique_series_values]
+        self.yProperty = yProperty
+        super().__init__(features, default_labels, name, type, **kwargs)
+
+        self.new_column_names = self.get_column_names(seriesProperty, yProperty)
+        self.x_data, self.y_data = self.get_data(xProperty, self.new_column_names)
+
+    def get_column_names(self, seriesProperty, yProperty):
+        new_column_names = []
+
+        for value in self.unique_series_values:
+            sample_filter = (self.df[seriesProperty] == value).map({True: 1, False: 0})
+            column_name = str(yProperty) + "_" + str(value)
+            self.df[column_name] = self.df[yProperty] * sample_filter
+            new_column_names.append(column_name)
+
+        return new_column_names
+
+    def get_data(self, xProperty, new_column_names):
+        x_data = list(self.df[xProperty])
+        y_data = [self.df[x] for x in new_column_names]
+
+        return x_data, y_data
+
+
+def feature_byFeature(
+    features: ee.FeatureCollection, xProperty: str, yProperties: list, **kwargs
+):
     """Generates a Chart from a set of features. Plots the value of one or more properties for each feature.
     Reference: https://developers.google.com/earth-engine/guides/charts_feature#uichartfeaturebyfeature
 
@@ -21,161 +203,45 @@ def feature_byFeature(features, xProperty, yProperties, **kwargs):
     Raises:
         Exception: Errors when creating the chart.
     """
+    bar = Feature_ByFeature(
+        features=features, xProperty=xProperty, yProperties=yProperties, **kwargs
+    )
 
     try:
-
-        df = ee_to_df(features)
-        if "ylim" in kwargs:
-            min_value = kwargs["ylim"][0]
-            max_value = kwargs["ylim"][1]
-        else:
-            min_value = df[yProperties].to_numpy().min()
-            max_value = df[yProperties].to_numpy().max()
-            max_value = max_value + 0.2 * (max_value - min_value)
-
-        if "title" not in kwargs:
-            title = ""
-        else:
-            title = kwargs["title"]
-        if "legend_location" not in kwargs:
-            legend_location = "top-left"
-        else:
-            legend_location = kwargs["legend_location"]
-
-        x_data = list(df[xProperty])
-        y_data = df[yProperties].values.T.tolist()
-
-        plt.bar(x_data, y_data)
-        fig = plt.figure(
-            title=title,
-            legend_location=legend_location,
-        )
-
-        if "width" in kwargs:
-            fig.layout.width = kwargs["width"]
-        if "height" in kwargs:
-            fig.layout.height = kwargs["height"]
-
-        if "labels" in kwargs:
-            labels = kwargs["labels"]
-        else:
-            labels = yProperties
-
-        if "display_legend" not in kwargs:
-            display_legend = True
-        else:
-            display_legend = kwargs["display_legend"]
-
-        bar_chart = plt.bar(
-            x_data, y_data, labels=labels, display_legend=display_legend
-        )
-
-        bar_chart.type = "grouped"
-
-        if "colors" in kwargs:
-            bar_chart.colors = kwargs["colors"]
-
-        if "xlabel" in kwargs:
-            plt.xlabel(kwargs["xlabel"])
-        if "ylabel" in kwargs:
-            plt.ylabel(kwargs["ylabel"])
-        plt.ylim(min_value, max_value)
-
-        if "xlabel" in kwargs and ("ylabel" in kwargs):
-            bar_chart.tooltip = Tooltip(
-                fields=["x", "y"], labels=[kwargs["xlabel"], kwargs["ylabel"]]
-            )
-        else:
-            bar_chart.tooltip = Tooltip(fields=["x", "y"])
-
-        plt.show()
+        bar.plot_chart()
 
     except Exception as e:
         raise Exception(e)
 
 
-def feature_byProperty(features, xProperties, seriesProperty, **kwargs):
+def feature_byProperty(
+    features: ee.FeatureCollection,
+    xProperties: Union[list, dict],
+    seriesProperty: str,
+    **kwargs,
+):
     """Generates a Chart from a set of features. Plots property values of one or more features.
     Reference: https://developers.google.com/earth-engine/guides/charts_feature#uichartfeaturebyproperty
 
     Args:
         features (ee.FeatureCollection): The features to include in the chart.
-        xProperties (list | dict): One of (1) a list of properties to be plotted on the x-axis; or (2) a (property, label) dictionary specifying labels for properties to be used as values on the x-axis.
+        xProperties (list | dict): One of (1) a list of properties to be plotted on the x-axis; or
+            (2) a (property, label) dictionary specifying labels for properties to be used as values on the x-axis.
         seriesProperty (str): The name of the property used to label each feature in the legend.
 
     Raises:
         Exception: If the provided xProperties is not a list or dict.
         Exception: If the chart fails to create.
     """
+    bar = Feature_ByProperty(
+        features=features,
+        xProperties=xProperties,
+        seriesProperty=seriesProperty,
+        **kwargs,
+    )
+
     try:
-        df = ee_to_df(features)
-
-        if isinstance(xProperties, list):
-            x_data = xProperties
-            y_data = df[xProperties].values
-        elif isinstance(xProperties, dict):
-            x_data = list(xProperties.values())
-            y_data = df[list(xProperties.keys())].values
-        else:
-            raise Exception("xProperties must be a list or dictionary.")
-
-        labels = list(df[seriesProperty])
-
-        if "ylim" in kwargs:
-            min_value = kwargs["ylim"][0]
-            max_value = kwargs["ylim"][1]
-        else:
-            min_value = y_data.min()
-            max_value = y_data.max()
-            max_value = max_value + 0.2 * (max_value - min_value)
-
-        if "title" not in kwargs:
-            title = ""
-        else:
-            title = kwargs["title"]
-        if "legend_location" not in kwargs:
-            legend_location = "top-left"
-        else:
-            legend_location = kwargs["legend_location"]
-
-        if "display_legend" not in kwargs:
-            display_legend = True
-        else:
-            display_legend = kwargs["display_legend"]
-
-        fig = plt.figure(
-            title=title,
-            legend_location=legend_location,
-        )
-
-        if "width" in kwargs:
-            fig.layout.width = kwargs["width"]
-        if "height" in kwargs:
-            fig.layout.height = kwargs["height"]
-
-        bar_chart = plt.bar(
-            x=x_data, y=y_data, labels=labels, display_legend=display_legend
-        )
-
-        bar_chart.type = "grouped"
-
-        if "colors" in kwargs:
-            bar_chart.colors = kwargs["colors"]
-
-        if "xlabel" in kwargs:
-            plt.xlabel(kwargs["xlabel"])
-        if "ylabel" in kwargs:
-            plt.ylabel(kwargs["ylabel"])
-        plt.ylim(min_value, max_value)
-
-        if "xlabel" in kwargs and ("ylabel" in kwargs):
-            bar_chart.tooltip = Tooltip(
-                fields=["x", "y"], labels=[kwargs["xlabel"], kwargs["ylabel"]]
-            )
-        else:
-            bar_chart.tooltip = Tooltip(fields=["x", "y"])
-
-        plt.show()
+        bar.plot_chart()
 
     except Exception as e:
         raise Exception(e)
@@ -195,80 +261,16 @@ def feature_groups(features, xProperty, yProperty, seriesProperty, **kwargs):
         Exception: Errors when creating the chart.
     """
 
+    bar = Feature_Groups(
+        features=features,
+        xProperty=xProperty,
+        yProperty=yProperty,
+        seriesProperty=seriesProperty,
+        **kwargs,
+    )
+
     try:
-        df = ee_to_df(features)
-        df[yProperty] = pd.to_numeric(df[yProperty])
-        unique_series_values = df[seriesProperty].unique().tolist()
-        new_column_names = []
-
-        for value in unique_series_values:
-            sample_filter = (df[seriesProperty] == value).map({True: 1, False: 0})
-            column_name = str(yProperty) + "_" + str(value)
-            df[column_name] = df[yProperty] * sample_filter
-            new_column_names.append(column_name)
-
-        if "labels" in kwargs:
-            labels = kwargs["labels"]
-        else:
-            labels = [str(x) for x in unique_series_values]
-
-        if "ylim" in kwargs:
-            min_value = kwargs["ylim"][0]
-            max_value = kwargs["ylim"][1]
-        else:
-            min_value = df[yProperty].to_numpy().min()
-            max_value = df[yProperty].to_numpy().max()
-            max_value = max_value + 0.2 * (max_value - min_value)
-
-        if "title" not in kwargs:
-            title = ""
-        else:
-            title = kwargs["title"]
-        if "legend_location" not in kwargs:
-            legend_location = "top-left"
-        else:
-            legend_location = kwargs["legend_location"]
-
-        x_data = list(df[xProperty])
-        y_data = [df[x] for x in new_column_names]
-
-        plt.bar(x_data, y_data)
-        fig = plt.figure(
-            title=title,
-            legend_location=legend_location,
-        )
-
-        if "width" in kwargs:
-            fig.layout.width = kwargs["width"]
-        if "height" in kwargs:
-            fig.layout.height = kwargs["height"]
-
-        if "display_legend" not in kwargs:
-            display_legend = True
-        else:
-            display_legend = kwargs["display_legend"]
-
-        bar_chart = plt.bar(
-            x_data, y_data, labels=labels, display_legend=display_legend
-        )
-
-        if "colors" in kwargs:
-            bar_chart.colors = kwargs["colors"]
-
-        if "xlabel" in kwargs:
-            plt.xlabel(kwargs["xlabel"])
-        if "ylabel" in kwargs:
-            plt.ylabel(kwargs["ylabel"])
-        plt.ylim(min_value, max_value)
-
-        if "xlabel" in kwargs and ("ylabel" in kwargs):
-            bar_chart.tooltip = Tooltip(
-                fields=["x", "y"], labels=[kwargs["xlabel"], kwargs["ylabel"]]
-            )
-        else:
-            bar_chart.tooltip = Tooltip(fields=["x", "y"])
-
-        plt.show()
+        bar.plot_chart()
 
     except Exception as e:
         raise Exception(e)
