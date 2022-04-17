@@ -169,7 +169,6 @@ class Feature_Groups(BarChart):
         self.new_column_names = self.get_column_names(seriesProperty, yProperty)
         self.x_data, self.y_data = self.get_data(xProperty, self.new_column_names)
 
-    @classmethod
     def get_column_names(self, seriesProperty, yProperty):
         new_column_names = []
 
