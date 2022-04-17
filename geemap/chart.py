@@ -92,6 +92,8 @@ class BarChart(BaseChartClass):
 
         self.generate_tooltip()
         plt.ylim(*self.get_ylim())
+        plt.xlabel(self.xlabel)
+        plt.ylabel(self.ylabel)
 
         if self.width:
             fig.layout.width = self.width
