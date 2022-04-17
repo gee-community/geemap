@@ -48,7 +48,7 @@ class BaseChartClass:
 
 
 class BarChart(BaseChartClass):
-    """Create Bar Chart. All histogram/bar charts should use this object."""
+    """Create Bar Chart. All histogram/bar charts can use this object."""
 
     def __init__(self, features, default_labels, name, type="grouped", **kwargs):
         super().__init__(features, default_labels, name, **kwargs)
@@ -105,6 +105,8 @@ class BarChart(BaseChartClass):
 
 
 class Feature_ByFeature(BarChart):
+    """A object to define variables and get_data method. 
+    """
     def __init__(
         self, features, xProperty, yProperties, name="feature.byFeature", **kwargs
     ):
@@ -119,6 +121,8 @@ class Feature_ByFeature(BarChart):
 
 
 class Feature_ByProperty(BarChart):
+    """A object to define variables and get_data method. 
+    """
     def __init__(
         self, features, xProperties, seriesProperty, name="feature.byProperty", **kwargs
     ):
@@ -144,6 +148,8 @@ class Feature_ByProperty(BarChart):
 
 
 class Feature_Groups(BarChart):
+    """A object to define variables and get_data method. 
+    """
     def __init__(
         self,
         features,
@@ -163,6 +169,7 @@ class Feature_Groups(BarChart):
         self.new_column_names = self.get_column_names(seriesProperty, yProperty)
         self.x_data, self.y_data = self.get_data(xProperty, self.new_column_names)
 
+    @classmethod
     def get_column_names(self, seriesProperty, yProperty):
         new_column_names = []
 
