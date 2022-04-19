@@ -775,3 +775,8 @@ Credits
 -------
 
 This package was created with `Cookiecutter <https://github.com/audreyr/cookiecutter>`__ and the `audreyr/cookiecutter-pypackage <https://github.com/audreyr/cookiecutter-pypackage>`__ project template.
+
+
+.. image:: https://badges.gitter.im/geemap/community.svg
+   :alt: Join the chat at https://gitter.im/geemap/community
+   :target: https://gitter.im/geemap/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
