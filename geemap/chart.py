@@ -277,7 +277,7 @@ def feature_groups(features, xProperty, yProperty, seriesProperty, **kwargs):
 
 
 def feature_histogram(
-    features, property, maxBuckets=None, minBucketWidth=None, **kwargs
+    features, property, maxBuckets=None, minBucketWidth=None, show=True, **kwargs
 ):
     """
     Generates a Chart from a set of features.
@@ -294,6 +294,7 @@ def feature_histogram(
         maxBuckets       (int, optional): The maximum number of buckets (bins) to use when building a histogram;
                                           will be rounded up to a power of 2.
         minBucketWidth (float, optional): The minimum histogram bucket width, or null to allow any power of 2.
+        show (bool, optional): Whether to show the chart. If not, it will return the bqplot chart object, which can be used to retrieve data for the chart. Defaults to True.
 
     Raises:
         Exception: If the provided xProperties is not a list or dict.
@@ -414,7 +415,11 @@ def feature_histogram(
             )
         else:
             histogram.tooltip = Tooltip(fields=["midpoint", "count"])
-        plt.show()
+
+        if show:
+            plt.show()
+        else:
+            return histogram
 
     except Exception as e:
         raise Exception(e)
