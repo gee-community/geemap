@@ -107,8 +107,8 @@ class BarChart(BaseChartClass):
 
 
 class Feature_ByFeature(BarChart):
-    """A object to define variables and get_data method. 
-    """
+    """A object to define variables and get_data method."""
+
     def __init__(
         self, features, xProperty, yProperties, name="feature.byFeature", **kwargs
     ):
@@ -123,8 +123,8 @@ class Feature_ByFeature(BarChart):
 
 
 class Feature_ByProperty(BarChart):
-    """A object to define variables and get_data method. 
-    """
+    """A object to define variables and get_data method."""
+
     def __init__(
         self, features, xProperties, seriesProperty, name="feature.byProperty", **kwargs
     ):
@@ -150,8 +150,8 @@ class Feature_ByProperty(BarChart):
 
 
 class Feature_Groups(BarChart):
-    """A object to define variables and get_data method. 
-    """
+    """A object to define variables and get_data method."""
+
     def __init__(
         self,
         features,
