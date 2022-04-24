@@ -190,6 +190,7 @@ nav:
           - notebooks/106_kepler_gl.ipynb
           - notebooks/107_pydeck.ipynb
           - notebooks/108_image_zonal_stats.ipynb
+          - notebooks/109_coordinate_grids.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
