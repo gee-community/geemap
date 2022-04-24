@@ -6142,7 +6142,7 @@ def image_stats_by_zone(
         labels (list, optional): The list of zone labels to use for the output CSV. Defaults to None.
         region (ee.Geometry, optional): The region over which to reduce data. Defaults to the footprint of zone image.
         scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
-        reducer (str | ee.Reducer, optional): The reducer to use. Defaults to 'MEAN'.
+        reducer (str | ee.Reducer, optional): The reducer to use. It can be one of MEAN, MAXIMUM, MINIMUM, MODE, STD, MIN_MAX, SUM, VARIANCE. Defaults to MEAN.
         bestEffort (bool, optional): If the polygon would contain too many pixels at the given scale, compute and use a larger scale which would allow the operation to succeed. Defaults to True.
 
     Returns:
@@ -6211,7 +6211,7 @@ def image_stats_by_zone(
         else:
             df = pd.DataFrame({"zone": keys, "label": labels, "stat": values})
     else:
-        df = pd.DataFrame({"zone": keys, "label": labels, "stat": values})
+        df = pd.DataFrame({"zone": keys, "stat": values})
 
     if out_csv is not None:
         check_file_path(out_csv)

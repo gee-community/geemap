@@ -37,9 +37,9 @@ markdown_extensions:
           permalink: true
 
 extra:
-  analytics:
-    provider: google
-    property: UA-186406134-1
+    analytics:
+        provider: google
+        property: UA-186406134-1
 
 nav:
     - Home: index.md
@@ -189,6 +189,7 @@ nav:
           - notebooks/105_netcdf.ipynb
           - notebooks/106_kepler_gl.ipynb
           - notebooks/107_pydeck.ipynb
+          - notebooks/108_image_zonal_stats.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
