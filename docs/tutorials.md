@@ -119,3 +119,5 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 105. Visualizing NetCDF data ([notebook](https://geemap.org/notebooks/105_netcdf))
 106. Using the kepler.gl plotting backend ([notebook](https://geemap.org/notebooks/106_kepler_gl))
 107. Using the pydeck plotting backend ([notebook](https://geemap.org/notebooks/107_pydeck))
+108. Calculating zonal statistics with two images ([notebook](https://geemap.org/notebooks/108_image_zonal_stats))
+109. Creating coordinate grids with one line of code ([notebook](https://geemap.org/notebooks/109_coordinate_grids))
