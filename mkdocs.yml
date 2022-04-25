@@ -66,6 +66,7 @@ nav:
           - conversion module: conversion.md
           - datasets module: datasets.md
           - deck module: deck.md
+          - examples module: examples.md
           - foliumap module: foliumap.md
           - geemap module: geemap.md
           - heremap module: heremap.md
