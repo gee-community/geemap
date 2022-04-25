@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.13.3 - Apr 25, 2022
+
+**New Features**:
+
+-   Added an examples module
+-   Added creating coordinate grids notebook
+-   Added image zonal stats notebook
+
+**Improvement**:
+
+-   Improved chart module [#1026](https://github.com/giswqs/geemap/pull/1026)
+-   Improved chart histogram [#1032](https://github.com/giswqs/geemap/discussions/1032)
+
 ## v0.13.2 - Apr 15, 2022
 
 **New Features**:
