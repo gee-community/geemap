@@ -1,0 +1,3 @@
+# examples module
+
+::: geemap.examples
