@@ -18,3 +18,4 @@ mkdocs-material
 mkdocs-pdf-export-plugin
 mkdocstrings
 pygments>=2.10,<2.12
+pymdown-extensions<9.4
