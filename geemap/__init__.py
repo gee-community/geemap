@@ -5,6 +5,7 @@ __email__ = "giswqs@gmail.com"
 __version__ = "0.13.2"
 
 import os
+from . import examples
 
 
 def in_colab_shell():
