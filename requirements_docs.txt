@@ -16,4 +16,5 @@ mkdocs-git-revision-date-plugin
 mkdocs-jupyter 
 mkdocs-material 
 mkdocs-pdf-export-plugin
-mkdocstrings 
+mkdocstrings
+pygments>=2.10,<2.12
