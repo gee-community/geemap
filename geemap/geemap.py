@@ -21,6 +21,7 @@ from .conversion import *
 from .legends import builtin_legends
 from .timelapse import *
 from .osm import *
+from . import examples
 
 
 basemaps = Box(xyz_to_leaflet(), frozen_box=True)
@@ -156,6 +157,7 @@ class Map(ipyleaflet.Map):
         self.user_rois = None
         self.last_ee_data = None
         self.last_ee_layer = None
+        self.geojson_layers = []
 
         self.roi_start = False
         self.roi_end = False
@@ -2564,7 +2566,7 @@ class Map(ipyleaflet.Map):
 
     def add_legend(
         self,
-        legend_title="Legend",
+        title="Legend",
         legend_dict=None,
         legend_keys=None,
         legend_colors=None,
@@ -2576,7 +2578,7 @@ class Map(ipyleaflet.Map):
         """Adds a customized basemap to the map.
 
         Args:
-            legend_title (str, optional): Title of the legend. Defaults to 'Legend'.
+            title (str, optional): Title of the legend. Defaults to 'Legend'.
             legend_dict (dict, optional): A dictionary containing legend items as keys and color as values. If provided, legend_keys and legend_colors will be ignored. Defaults to None.
             legend_keys (list, optional): A list of legend keys. Defaults to None.
             legend_colors (list, optional): A list of legend colors. Defaults to None.
@@ -2710,7 +2712,7 @@ class Map(ipyleaflet.Map):
 
         with open(legend_template) as f:
             lines = f.readlines()
-            lines[3] = lines[3].replace("Legend", legend_title)
+            lines[3] = lines[3].replace("Legend", title)
             header = lines[:6]
             footer = lines[11:]
 
@@ -4131,7 +4133,7 @@ class Map(ipyleaflet.Map):
                             ]
 
                             self.add_legend(
-                                legend_title=legend_title.value,
+                                title=legend_title.value,
                                 legend_keys=labels,
                                 legend_colors=colors,
                                 layer_name=layer_name,
@@ -4901,7 +4903,7 @@ class Map(ipyleaflet.Map):
                             label.strip() for label in legend_labels.value.split(",")
                         ]
                         self.add_legend(
-                            legend_title=legend_title.value,
+                            title=legend_title.value,
                             legend_keys=legend_keys,
                             legend_colors=legend_colors,
                             layer_name=new_layer_name.value,
@@ -4971,6 +4973,7 @@ class Map(ipyleaflet.Map):
         style_callback=None,
         fill_colors=["black"],
         info_mode="on_hover",
+        encoding="utf-8",
     ):
         """Adds a shapefile to the map.
 
@@ -4982,6 +4985,7 @@ class Map(ipyleaflet.Map):
             style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
             fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
+            encoding (str, optional): The encoding of the shapefile. Defaults to "utf-8".
 
         Raises:
             FileNotFoundError: The provided shapefile could not be found.
@@ -4999,6 +5003,7 @@ class Map(ipyleaflet.Map):
             style_callback,
             fill_colors,
             info_mode,
+            encoding,
         )
 
     def add_geojson(
@@ -5010,6 +5015,7 @@ class Map(ipyleaflet.Map):
         style_callback=None,
         fill_colors=["black"],
         info_mode="on_hover",
+        encoding="utf-8",
     ):
         """Adds a GeoJSON file to the map.
 
@@ -5021,6 +5027,8 @@ class Map(ipyleaflet.Map):
             style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
             fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
+            encoding (str, optional): The encoding of the GeoJSON file. Defaults to "utf-8".
+
         Raises:
             FileNotFoundError: The provided GeoJSON file could not be found.
         """
@@ -5046,7 +5054,7 @@ class Map(ipyleaflet.Map):
                             "The provided GeoJSON file could not be found."
                         )
 
-                    with open(in_geojson, encoding="utf-8") as f:
+                    with open(in_geojson, encoding=encoding) as f:
                         data = json.load(f)
             elif isinstance(in_geojson, dict):
                 data = in_geojson
@@ -5136,7 +5144,7 @@ class Map(ipyleaflet.Map):
         def update_html(feature, **kwargs):
 
             value = [
-                "<h5><b>{}: </b>{}</h5>".format(prop, feature["properties"][prop])
+                "<b>{}: </b>{}<br>".format(prop, feature["properties"][prop])
                 for prop in feature["properties"].keys()
             ][:-1]
 
@@ -5168,6 +5176,7 @@ class Map(ipyleaflet.Map):
             geojson.on_click(update_html)
 
         self.add_layer(geojson)
+        self.geojson_layers.append(geojson)
 
     def add_kml(
         self,
@@ -5220,6 +5229,7 @@ class Map(ipyleaflet.Map):
         style_callback=None,
         fill_colors=["black"],
         info_mode="on_hover",
+        encoding="utf-8",
         **kwargs,
     ):
         """Adds any geopandas-supported vector dataset to the map.
@@ -5236,6 +5246,7 @@ class Map(ipyleaflet.Map):
             style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
             fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
+            encoding (str, optional): The encoding to use to read the file. Defaults to "utf-8".
 
         """
         if not filename.startswith("http"):
@@ -5264,6 +5275,7 @@ class Map(ipyleaflet.Map):
                     style_callback,
                     fill_colors,
                     info_mode,
+                    encoding,
                 )
             elif ext in [".json", ".geojson"]:
                 self.add_geojson(
@@ -5274,6 +5286,7 @@ class Map(ipyleaflet.Map):
                     style_callback,
                     fill_colors,
                     info_mode,
+                    encoding,
                 )
             else:
                 geojson = vector_to_geojson(
@@ -5293,6 +5306,7 @@ class Map(ipyleaflet.Map):
                     style_callback,
                     fill_colors,
                     info_mode,
+                    encoding,
                 )
 
     def add_osm(
@@ -5659,6 +5673,7 @@ class Map(ipyleaflet.Map):
         fill_colors=["black"],
         info_mode="on_hover",
         zoom_to_layer=True,
+        encoding="utf-8",
     ):
         """Adds a GeoDataFrame to the map.
 
@@ -5671,116 +5686,21 @@ class Map(ipyleaflet.Map):
             fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
             zoom_to_layer (bool, optional): Whether to zoom to the layer.
+            encoding (str, optional): The encoding of the GeoDataFrame. Defaults to "utf-8".
         """
-        import random
 
         data = gdf_to_geojson(gdf, epsg="4326")
 
-        if not style:
-            style = {
-                # "stroke": True,
-                "color": "#000000",
-                "weight": 1,
-                "opacity": 1,
-                # "fill": True,
-                # "fillColor": "#ffffff",
-                "fillOpacity": 0.1,
-                # "dashArray": "9"
-                # "clickable": True,
-            }
-        elif "weight" not in style:
-            style["weight"] = 1
-
-        if not hover_style:
-            hover_style = {"weight": style["weight"] + 1, "fillOpacity": 0.5}
-
-        def random_color(feature):
-            return {
-                "color": "black",
-                "fillColor": random.choice(fill_colors),
-            }
-
-        toolbar_button = widgets.ToggleButton(
-            value=True,
-            tooltip="Toolbar",
-            icon="info",
-            layout=widgets.Layout(
-                width="28px", height="28px", padding="0px 0px 0px 4px"
-            ),
+        self.add_geojson(
+            data,
+            layer_name,
+            style,
+            hover_style,
+            style_callback,
+            fill_colors,
+            info_mode,
+            encoding,
         )
-
-        close_button = widgets.ToggleButton(
-            value=False,
-            tooltip="Close the tool",
-            icon="times",
-            # button_style="primary",
-            layout=widgets.Layout(
-                height="28px", width="28px", padding="0px 0px 0px 4px"
-            ),
-        )
-
-        html = widgets.HTML()
-        html.layout.margin = "0px 10px 0px 10px"
-        html.layout.max_height = "250px"
-        html.layout.max_width = "250px"
-
-        output_widget = widgets.VBox(
-            [widgets.HBox([toolbar_button, close_button]), html]
-        )
-        info_control = ipyleaflet.WidgetControl(
-            widget=output_widget, position="bottomright"
-        )
-
-        if info_mode in ["on_hover", "on_click"]:
-            self.add_control(info_control)
-
-        def toolbar_btn_click(change):
-            if change["new"]:
-                close_button.value = False
-                output_widget.children = [
-                    widgets.VBox([widgets.HBox([toolbar_button, close_button]), html])
-                ]
-            else:
-                output_widget.children = [widgets.HBox([toolbar_button, close_button])]
-
-        toolbar_button.observe(toolbar_btn_click, "value")
-
-        def close_btn_click(change):
-            if change["new"]:
-                toolbar_button.value = False
-                if info_control in self.controls:
-                    self.remove_control(info_control)
-                output_widget.close()
-
-        close_button.observe(close_btn_click, "value")
-
-        def update_html(feature, **kwargs):
-
-            value = [
-                "<h5><b>{}: </b>{}</h5>".format(prop, feature["properties"][prop])
-                for prop in feature["properties"].keys()
-            ][:-1]
-
-            value = """{}""".format("".join(value))
-            html.value = value
-
-        if style_callback is None:
-            style_callback = random_color
-
-        geojson = ipyleaflet.GeoJSON(
-            data=data,
-            style=style,
-            hover_style=hover_style,
-            style_callback=style_callback,
-            name=layer_name,
-        )
-
-        if info_mode == "on_hover":
-            geojson.on_hover(update_html)
-        elif info_mode == "on_click":
-            geojson.on_click(update_html)
-
-        self.add_layer(geojson)
 
         if zoom_to_layer:
             import numpy as np
@@ -6733,6 +6653,132 @@ class Map(ipyleaflet.Map):
             name=name,
         )
         self.add_layer(wind)
+
+    def add_data(
+        self,
+        data,
+        column,
+        colors=None,
+        labels=None,
+        cmap=None,
+        scheme="Quantiles",
+        k=5,
+        add_legend=True,
+        legend_title=None,
+        legend_kwds=None,
+        classification_kwds=None,
+        layer_name="Untitled",
+        style=None,
+        hover_style=None,
+        style_callback=None,
+        info_mode="on_hover",
+        encoding="utf-8",
+        **kwargs,
+    ):
+        """Add vector data to the map with a variety of classification schemes.
+
+        Args:
+            data (str | pd.DataFrame | gpd.GeoDataFrame): The data to classify. It can be a filepath to a vector dataset, a pandas dataframe, or a geopandas geodataframe.
+            column (str): The column to classify.
+            cmap (str, optional): The name of a colormap recognized by matplotlib. Defaults to None.
+            colors (list, optional): A list of colors to use for the classification. Defaults to None.
+            labels (list, optional): A list of labels to use for the legend. Defaults to None.
+            scheme (str, optional): Name of a choropleth classification scheme (requires mapclassify).
+                Name of a choropleth classification scheme (requires mapclassify).
+                A mapclassify.MapClassifier object will be used
+                under the hood. Supported are all schemes provided by mapclassify (e.g.
+                'BoxPlot', 'EqualInterval', 'FisherJenks', 'FisherJenksSampled',
+                'HeadTailBreaks', 'JenksCaspall', 'JenksCaspallForced',
+                'JenksCaspallSampled', 'MaxP', 'MaximumBreaks',
+                'NaturalBreaks', 'Quantiles', 'Percentiles', 'StdMean',
+                'UserDefined'). Arguments can be passed in classification_kwds.
+            k (int, optional): Number of classes (ignored if scheme is None or if column is categorical). Default to 5.
+            legend_kwds (dict, optional): Keyword arguments to pass to :func:`matplotlib.pyplot.legend` or `matplotlib.pyplot.colorbar`. Defaults to None.
+                Keyword arguments to pass to :func:`matplotlib.pyplot.legend` or
+                Additional accepted keywords when `scheme` is specified:
+                fmt : string
+                    A formatting specification for the bin edges of the classes in the
+                    legend. For example, to have no decimals: ``{"fmt": "{:.0f}"}``.
+                labels : list-like
+                    A list of legend labels to override the auto-generated labblels.
+                    Needs to have the same number of elements as the number of
+                    classes (`k`).
+                interval : boolean (default False)
+                    An option to control brackets from mapclassify legend.
+                    If True, open/closed interval brackets are shown in the legend.
+            classification_kwds (dict, optional): Keyword arguments to pass to mapclassify. Defaults to None.
+            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            style (dict, optional): A dictionary specifying the style to be used. Defaults to None.
+                style is a dictionary of the following form:
+                    style = {
+                    "stroke": False,
+                    "color": "#ff0000",
+                    "weight": 1,
+                    "opacity": 1,
+                    "fill": True,
+                    "fillColor": "#ffffff",
+                    "fillOpacity": 1.0,
+                    "dashArray": "9"
+                    "clickable": True,
+                }
+            hover_style (dict, optional): Hover style dictionary. Defaults to {}.
+                hover_style is a dictionary of the following form:
+                    hover_style = {"weight": style["weight"] + 1, "fillOpacity": 0.5}
+            style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
+                style_callback is a function that takes the feature as argument and should return a dictionary of the following form:
+                style_callback = lambda feat: {"fillColor": feat["properties"]["color"]}
+            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
+            encoding (str, optional): The encoding of the GeoJSON file. Defaults to "utf-8".
+        """
+
+        gdf, legend_dict = classify(
+            data=data,
+            column=column,
+            cmap=cmap,
+            colors=colors,
+            labels=labels,
+            scheme=scheme,
+            k=k,
+            legend_kwds=legend_kwds,
+            classification_kwds=classification_kwds,
+        )
+
+        if legend_title is None:
+            legend_title = column
+
+        if style is None:
+            style = {
+                # "stroke": False,
+                # "color": "#ff0000",
+                "weight": 1,
+                "opacity": 1,
+                # "fill": True,
+                # "fillColor": "#ffffff",
+                "fillOpacity": 1.0,
+                # "dashArray": "9"
+                # "clickable": True,
+            }
+            if colors is not None:
+                style["color"] = "#000000"
+
+        if hover_style is None:
+            hover_style = {"weight": style["weight"] + 1, "fillOpacity": 0.5}
+
+        if style_callback is None:
+            style_callback = lambda feat: {"fillColor": feat["properties"]["color"]}
+
+        self.add_gdf(
+            gdf,
+            layer_name=layer_name,
+            style=style,
+            hover_style=hover_style,
+            style_callback=style_callback,
+            info_mode=info_mode,
+            encoding=encoding,
+            **kwargs,
+        )
+        if add_legend:
+            self.add_legend(title=legend_title, legend_dict=legend_dict)
 
 
 # The functions below are outside the Map class.

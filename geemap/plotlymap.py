@@ -5,6 +5,8 @@ import ipywidgets as widgets
 from .basemaps import xyz_to_plotly
 from .common import *
 from .osm import *
+from . import examples
+
 
 try:
     import plotly.express as px
