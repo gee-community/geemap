@@ -18,6 +18,7 @@ from .common import (
     vector_to_geojson,
     random_string,
 )
+from . import examples
 
 try:
     import here_map_widget
