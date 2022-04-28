@@ -2,6 +2,7 @@ import os
 from .common import *
 from .osm import *
 from .geemap import basemaps
+from . import examples
 
 try:
     import pydeck as pdk
