@@ -7,6 +7,7 @@ import pandas as pd
 from IPython.display import display, HTML
 from .common import *
 from .osm import *
+from . import examples
 
 try:
     import keplergl

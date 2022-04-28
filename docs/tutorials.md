@@ -121,3 +121,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 107. Using the pydeck plotting backend ([notebook](https://geemap.org/notebooks/107_pydeck))
 108. Calculating zonal statistics with two images ([notebook](https://geemap.org/notebooks/108_image_zonal_stats))
 109. Creating coordinate grids with one line of code ([notebook](https://geemap.org/notebooks/109_coordinate_grids))
+110. Creating choropleth maps with a variety of classification schemes ([notebook](https://geemap.org/notebooks/110_choropleth))
