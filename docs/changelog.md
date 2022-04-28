@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.13.4 - Apr 27, 2022
+
+**New Features**:
+
+-   Added support for creating interactive choropleth maps with a variety of classification schemes [#1043](https://github.com/giswqs/geemap/pull/1043)
+
 ## v0.13.3 - Apr 25, 2022
 
 **New Features**:
