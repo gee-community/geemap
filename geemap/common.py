@@ -1632,7 +1632,7 @@ def ee_export_geojson(
     return geojson
 
 
-def ee_to_shp(ee_object, filename, selectors=None, verbose=True, keep_zip=False):
+def ee_to_shp(ee_object, filename, selectors=None, verbose=True, keep_zip=False, timeout=300, proxies=None):
     """Downloads an ee.FeatureCollection as a shapefile.
 
     Args:
@@ -1641,6 +1641,8 @@ def ee_to_shp(ee_object, filename, selectors=None, verbose=True, keep_zip=False)
         selectors (list, optional): A list of attributes to export. Defaults to None.
         verbose (bool, optional): Whether to print out descriptive text.
         keep_zip (bool, optional): Whether to keep the downloaded shapefile as a zip file.
+        timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
+        proxies (dict, optional): Proxy settings. Defaults to None.
     """
     # ee_initialize()
     try:
@@ -1651,6 +1653,8 @@ def ee_to_shp(ee_object, filename, selectors=None, verbose=True, keep_zip=False)
                 selectors=selectors,
                 verbose=verbose,
                 keep_zip=keep_zip,
+                timeout=timeout,
+                proxies=proxies,
             )
         else:
             print("The filename must end with .shp")
@@ -1659,7 +1663,7 @@ def ee_to_shp(ee_object, filename, selectors=None, verbose=True, keep_zip=False)
         print(e)
 
 
-def ee_to_csv(ee_object, filename, selectors=None, verbose=True):
+def ee_to_csv(ee_object, filename, selectors=None, verbose=True, timeout=300, proxies=None):
     """Downloads an ee.FeatureCollection as a CSV file.
 
     Args:
@@ -1667,6 +1671,8 @@ def ee_to_csv(ee_object, filename, selectors=None, verbose=True):
         filename (str): The output filepath of the CSV file.
         selectors (list, optional): A list of attributes to export. Defaults to None.
         verbose (bool, optional): Whether to print out descriptive text.
+        timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
+        proxies (dict, optional): Proxy settings. Defaults to None.
 
     """
     # ee_initialize()
@@ -1677,6 +1683,8 @@ def ee_to_csv(ee_object, filename, selectors=None, verbose=True):
                 filename=filename,
                 selectors=selectors,
                 verbose=verbose,
+                timeout=timeout,
+                proxies=proxies,
             )
         else:
             print("The filename must end with .csv")
@@ -1685,13 +1693,15 @@ def ee_to_csv(ee_object, filename, selectors=None, verbose=True):
         print(e)
 
 
-def dict_to_csv(data_dict, out_csv, by_row=False):
+def dict_to_csv(data_dict, out_csv, by_row=False, timeout=300, proxies=None):
     """Downloads an ee.Dictionary as a CSV file.
 
     Args:
         data_dict (ee.Dictionary): The input ee.Dictionary.
         out_csv (str): The output file path to the CSV file.
         by_row (bool, optional): Whether to use by row or by column. Defaults to False.
+        timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
+        proxies (dict, optional): Proxy settings. Defaults to None.
     """
 
     out_dir = os.path.dirname(out_csv)
@@ -1707,7 +1717,7 @@ def dict_to_csv(data_dict, out_csv, by_row=False):
         csv_feature = data.map(lambda f: ee.Feature(None, f))
         csv_feat_col = ee.FeatureCollection(csv_feature)
 
-    ee_export_vector(csv_feat_col, out_csv)
+    ee_export_vector(csv_feat_col, out_csv, timeout=timeout, proxies=proxies)
 
 
 def ee_export_image(
@@ -6383,6 +6393,8 @@ def extract_values_to_points(
     crsTransform=None,
     tileScale=1,
     stats_type="FIRST",
+    timeout=300, 
+    proxies=None,
     **kwargs,
 ):
     """Extracts image values to points.
@@ -6396,6 +6408,8 @@ def extract_values_to_points(
         crsTransform (list, optional): The list of CRS transform values. This is a row-major ordering of the 3x2 transform matrix. This option is mutually exclusive with 'scale', and will replace any transform already set on the projection.
         tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default.
         stats_type (str, optional): Statistic type to be calculated. Defaults to 'FIRST'.
+        timeout (int, optional): The number of seconds after which the request will be terminated. Defaults to 300.
+        proxies (dict, optional): A dictionary of proxy servers to use for each request. Defaults to None.
 
     Returns:
         object: ee.FeatureCollection
@@ -6444,7 +6458,7 @@ def extract_values_to_points(
     )
 
     if out_fc is not None:
-        ee_export_vector(result, out_fc)
+        ee_export_vector(result, out_fc, timeout=timeout, proxies=proxies)
     else:
         return result
 
