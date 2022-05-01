@@ -5513,6 +5513,7 @@ def zonal_stats(
     return_fc=False,
     verbose=True,
     timeout=300,
+    proxies=None,
     **kwargs,
 ):
     """Summarizes the values of a raster within the zones of another dataset and exports the results as a csv, shp, json, kml, or kmz.
@@ -5528,6 +5529,7 @@ def zonal_stats(
         verbose (bool, optional): Whether to print descriptive text when the programming is running. Default to True.
         return_fc (bool, optional): Whether to return the results as an ee.FeatureCollection. Defaults to False.
         timeout (int, optional): Timeout in seconds. Default to 300.
+        proxies (dict, optional): A dictionary of proxy servers to use for the request. Default to None.
     """
 
     if isinstance(in_value_raster, ee.ImageCollection):
@@ -5628,7 +5630,7 @@ def zonal_stats(
         if return_fc:
             return result
         else:
-            ee_export_vector(result, filename, timeout=timeout)
+            ee_export_vector(result, filename, timeout=timeout, proxies=proxies)
     except Exception as e:
         raise Exception(e)
 
@@ -5649,6 +5651,7 @@ def zonal_stats_by_group(
     return_fc=False,
     verbose=True,
     timeout=300,
+    proxies=None,
     **kwargs,
 ):
     """Summarizes the area or percentage of a raster by group within the zones of another dataset and exports the results as a csv, shp, json, kml, or kmz.
@@ -5666,6 +5669,7 @@ def zonal_stats_by_group(
         verbose (bool, optional): Whether to print descriptive text when the programming is running. Default to True.
         return_fc (bool, optional): Whether to return the results as an ee.FeatureCollection. Defaults to False.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
+        proxies (dict, optional): A dictionary of proxies to use. Defaults to None.
 
     """
 
@@ -5813,7 +5817,7 @@ def zonal_stats_by_group(
         if return_fc:
             return final_result
         else:
-            ee_export_vector(final_result, filename, timeout=timeout)
+            ee_export_vector(final_result, filename, timeout=timeout, proxies=proxies)
 
     except Exception as e:
         raise Exception(e)
