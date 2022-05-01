@@ -544,12 +544,13 @@ def random_string(string_length=3):
     return "".join(random.choice(letters) for i in range(string_length))
 
 
-def open_image_from_url(url, timeout=300):
+def open_image_from_url(url, timeout=300, proxies=None):
     """Loads an image from the specified URL.
 
     Args:
         url (str): URL of the image.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
+        proxies (dict, optional): Dictionary of proxies. Defaults to None.
 
     Returns:
         object: Image object.
@@ -560,7 +561,7 @@ def open_image_from_url(url, timeout=300):
     # from urllib.parse import urlparse
 
     try:
-        response = requests.get(url, timeout=timeout)
+        response = requests.get(url, timeout=timeout, proxies=proxies)
         img = Image.open(io.BytesIO(response.content))
         return img
     except Exception as e:
@@ -1392,7 +1393,13 @@ def filter_polygons(ftr):
 
 
 def ee_export_vector(
-    ee_object, filename, selectors=None, verbose=True, keep_zip=False, timeout=300
+    ee_object,
+    filename,
+    selectors=None,
+    verbose=True,
+    keep_zip=False,
+    timeout=300,
+    proxies=None,
 ):
     """Exports Earth Engine FeatureCollection to other formats, including shp, csv, json, kml, and kmz.
 
@@ -1403,6 +1410,7 @@ def ee_export_vector(
         verbose (bool, optional): Whether to print out descriptive text.
         keep_zip (bool, optional): Whether to keep the downloaded shapefile as a zip file.
         timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
+        proxies (dict, optional): A dictionary of proxies to use. Defaults to None.
     """
 
     if not isinstance(ee_object, ee.FeatureCollection):
@@ -1460,7 +1468,7 @@ def ee_export_vector(
         )
         if verbose:
             print(f"Downloading data from {url}\nPlease wait ...")
-        r = requests.get(url, stream=True, timeout=timeout)
+        r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
         if r.status_code != 200:
             print("An error occurred while downloading. \n Retrying ...")
@@ -1471,7 +1479,7 @@ def ee_export_vector(
                     filetype=filetype, selectors=selectors, filename=name
                 )
                 print(f"Downloading data from {url}\nPlease wait ...")
-                r = requests.get(url, stream=True, timeout=timeout)
+                r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
             except Exception as e:
                 print(e)
                 raise ValueError
@@ -1539,7 +1547,9 @@ def ee_export_vector_to_drive(
         task.start()
 
 
-def ee_export_geojson(ee_object, filename=None, selectors=None, timeout=300):
+def ee_export_geojson(
+    ee_object, filename=None, selectors=None, timeout=300, proxies=None
+):
     """Exports Earth Engine FeatureCollection to geojson.
 
     Args:
@@ -1547,6 +1557,7 @@ def ee_export_geojson(ee_object, filename=None, selectors=None, timeout=300):
         filename (str): Output file name. Defaults to None.
         selectors (list, optional): A list of attributes to export. Defaults to None.
         timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
+        proxies (dict, optional): Proxy settings. Defaults to None.
     """
 
     if not isinstance(ee_object, ee.FeatureCollection):
@@ -1591,7 +1602,7 @@ def ee_export_geojson(ee_object, filename=None, selectors=None, timeout=300):
             filetype=filetype, selectors=selectors, filename=name
         )
         # print('Downloading data from {}\nPlease wait ...'.format(url))
-        r = requests.get(url, stream=True, timeout=timeout)
+        r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
         if r.status_code != 200:
             print("An error occurred while downloading. \n Retrying ...")
@@ -1602,7 +1613,7 @@ def ee_export_geojson(ee_object, filename=None, selectors=None, timeout=300):
                     filetype=filetype, selectors=selectors, filename=name
                 )
                 print(f"Downloading data from {url}\nPlease wait ...")
-                r = requests.get(url, stream=True, timeout=timeout)
+                r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
             except Exception as e:
                 print(e)
 
@@ -1707,6 +1718,7 @@ def ee_export_image(
     region=None,
     file_per_band=False,
     timeout=300,
+    proxies=None,
 ):
     """Exports an ee.Image as a GeoTIFF.
 
@@ -1718,6 +1730,7 @@ def ee_export_image(
         region (object, optional): A polygon specifying a region to download; ignored if crs and crs_transform is specified. Defaults to None.
         file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
         timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
+        proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
     """
 
     if not isinstance(ee_object, ee.Image):
@@ -1753,7 +1766,7 @@ def ee_export_image(
             print(e)
             return
         print(f"Downloading data from {url}\nPlease wait ...")
-        r = requests.get(url, stream=True, timeout=timeout)
+        r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
         if r.status_code != 200:
             print("An error occurred while downloading.")
@@ -1782,7 +1795,14 @@ def ee_export_image(
 
 
 def ee_export_image_collection(
-    ee_object, out_dir, scale=None, crs=None, region=None, file_per_band=False
+    ee_object,
+    out_dir,
+    scale=None,
+    crs=None,
+    region=None,
+    file_per_band=False,
+    timeout=300,
+    proxies=None,
 ):
     """Exports an ImageCollection as GeoTIFFs.
 
@@ -1793,6 +1813,8 @@ def ee_export_image_collection(
         crs (str, optional): A default CRS string to use for any bands that do not explicitly specify one. Defaults to None.
         region (object, optional): A polygon specifying a region to download; ignored if crs and crs_transform is specified. Defaults to None.
         file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
+        timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
+        proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
     """
 
     if not isinstance(ee_object, ee.ImageCollection):
@@ -1819,6 +1841,8 @@ def ee_export_image_collection(
                 crs=crs,
                 region=region,
                 file_per_band=file_per_band,
+                timeout=timeout,
+                proxies=proxies,
             )
             print("\n")
 
@@ -1955,6 +1979,7 @@ def get_image_thumbnail(
     format="jpg",
     crs="EPSG:3857",
     timeout=300,
+    proxies=None,
 ):
     """Download a thumbnail for an ee.Image.
 
@@ -1966,6 +1991,7 @@ def get_image_thumbnail(
         region (object, optional): Geospatial region of the image to render, it may be an ee.Geometry, GeoJSON, or an array of lat/lon points (E,S,W,N). If not set the default is the bounds image. Defaults to None.
         format (str, optional): Either 'png' or 'jpg'. Default to 'jpg'.
         timeout (int, optional): The number of seconds after which the request will be terminated. Defaults to 300.
+        proxies (dict, optional): A dictionary of proxy servers to use for the request. Defaults to None.
     """
 
     if not isinstance(ee_object, ee.Image):
@@ -1990,7 +2016,7 @@ def get_image_thumbnail(
     vis_params["crs"] = crs
     url = ee_object.getThumbURL(vis_params)
 
-    r = requests.get(url, stream=True, timeout=timeout)
+    r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
     if r.status_code != 200:
         print("An error occurred while downloading.")
         print(r.json()["error"]["message"])
@@ -2010,6 +2036,8 @@ def get_image_collection_thumbnails(
     format="jpg",
     names=None,
     verbose=True,
+    timeout=300,
+    proxies=None,
 ):
     """Download thumbnails for all images in an ImageCollection.
 
@@ -2022,6 +2050,8 @@ def get_image_collection_thumbnails(
         format (str, optional): Either 'png' or 'jpg'. Default to 'jpg'.
         names (list, optional): The list of output file names. Defaults to None.
         verbose (bool, optional): Whether or not to print hints. Defaults to True.
+        timeout (int, optional): The number of seconds after which the request will be terminated. Defaults to 300.
+        proxies (dict, optional): A dictionary of proxy servers to use for the request. Defaults to None.
     """
     if not isinstance(ee_object, ee.ImageCollection):
         print("The ee_object must be an ee.ImageCollection.")
@@ -2057,7 +2087,16 @@ def get_image_collection_thumbnails(
             if verbose:
                 print(f"Downloading {i+1}/{count}: {name} ...")
 
-            get_image_thumbnail(image, out_img, vis_params, dimensions, region, format)
+            get_image_thumbnail(
+                image,
+                out_img,
+                vis_params,
+                dimensions,
+                region,
+                format,
+                timeout=timeout,
+                proxies=proxies,
+            )
 
     except Exception as e:
         print(e)
@@ -2270,7 +2309,7 @@ def ee_to_numpy(
         print(e)
 
 
-def download_ee_video(collection, video_args, out_gif, timeout=300):
+def download_ee_video(collection, video_args, out_gif, timeout=300, proxies=None):
     """Downloads a video thumbnail as a GIF image from Earth Engine.
 
     Args:
@@ -2278,6 +2317,7 @@ def download_ee_video(collection, video_args, out_gif, timeout=300):
         video_args (object): Parameters for expring the video thumbnail.
         out_gif (str): File path to the output GIF.
         timeout (int, optional): The number of seconds the request will be timed out. Defaults to 300.
+        proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
     """
 
     out_gif = os.path.abspath(out_gif)
@@ -2309,7 +2349,7 @@ def download_ee_video(collection, video_args, out_gif, timeout=300):
         url = collection.getVideoThumbURL(video_args)
 
         print(f"Downloading GIF image from {url}\nPlease wait ...")
-        r = requests.get(url, stream=True, timeout=timeout)
+        r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
         if r.status_code != 200:
             print("An error occurred while downloading.")
@@ -2924,12 +2964,13 @@ def search_ee_data(keywords):
         print(e)
 
 
-def ee_data_thumbnail(asset_id, timeout=300):
+def ee_data_thumbnail(asset_id, timeout=300, proxies=None):
     """Retrieves the thumbnail URL of an Earth Engine asset.
 
     Args:
         asset_id (str): An Earth Engine asset id.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
+        proxies (dict, optional): Proxy settings. Defaults to None.
 
     Returns:
         str: An http url of the thumbnail.
@@ -2946,7 +2987,7 @@ def ee_data_thumbnail(asset_id, timeout=300):
         asset_uid
     )
 
-    r = requests.get(thumbnail_url, timeout=timeout)
+    r = requests.get(thumbnail_url, timeout=timeout, proxies=proxies)
 
     try:
         if r.status_code != 200:
@@ -3029,12 +3070,13 @@ def create_code_cell(code="", where="below"):
     )
 
 
-def ee_api_to_csv(outfile=None, timeout=300):
+def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
     """Extracts Earth Engine API documentation from https://developers.google.com/earth-engine/api_docs as a csv file.
 
     Args:
         outfile (str, optional): The output file path to a csv file. Defaults to None.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
+        proxies (dict, optional): Proxy settings. Defaults to None.
     """
     import pkg_resources
 
@@ -3060,7 +3102,7 @@ def ee_api_to_csv(outfile=None, timeout=300):
 
     try:
 
-        r = requests.get(url, timeout=timeout)
+        r = requests.get(url, timeout=timeout, proxies=proxies)
         soup = BeautifulSoup(r.content, "html.parser")
 
         names = []
@@ -4196,7 +4238,12 @@ def load_GeoTIFFs(URLs):
 
 
 def cog_tile(
-    url, bands=None, titiler_endpoint="https://titiler.xyz", timeout=300, **kwargs
+    url,
+    bands=None,
+    titiler_endpoint="https://titiler.xyz",
+    timeout=300,
+    proxies=None,
+    **kwargs,
 ):
     """Get a tile layer from a Cloud Optimized GeoTIFF (COG).
         Source code adapted from https://developmentseed.org/titiler/examples/notebooks/Working_with_CloudOptimizedGeoTIFF_simple/
@@ -4205,6 +4252,7 @@ def cog_tile(
         url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
         titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
         timeout (int, optional): Timeout in seconds. Defaults to 300.
+        proxies (dict, optional): Proxies to use. Defaults to None.
 
     Returns:
         tuple: Returns the COG Tile layer URL and bounds.
@@ -4244,6 +4292,7 @@ def cog_tile(
         f"{titiler_endpoint}/cog/{TileMatrixSetId}/tilejson.json",
         params=kwargs,
         timeout=timeout,
+        proxies=proxies,
     ).json()
 
     return r["tiles"][0]
