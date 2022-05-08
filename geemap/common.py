@@ -1632,7 +1632,15 @@ def ee_export_geojson(
     return geojson
 
 
-def ee_to_shp(ee_object, filename, selectors=None, verbose=True, keep_zip=False, timeout=300, proxies=None):
+def ee_to_shp(
+    ee_object,
+    filename,
+    selectors=None,
+    verbose=True,
+    keep_zip=False,
+    timeout=300,
+    proxies=None,
+):
     """Downloads an ee.FeatureCollection as a shapefile.
 
     Args:
@@ -1663,7 +1671,9 @@ def ee_to_shp(ee_object, filename, selectors=None, verbose=True, keep_zip=False,
         print(e)
 
 
-def ee_to_csv(ee_object, filename, selectors=None, verbose=True, timeout=300, proxies=None):
+def ee_to_csv(
+    ee_object, filename, selectors=None, verbose=True, timeout=300, proxies=None
+):
     """Downloads an ee.FeatureCollection as a CSV file.
 
     Args:
@@ -6393,7 +6403,7 @@ def extract_values_to_points(
     crsTransform=None,
     tileScale=1,
     stats_type="FIRST",
-    timeout=300, 
+    timeout=300,
     proxies=None,
     **kwargs,
 ):
@@ -8835,11 +8845,12 @@ def search_qms(keyword, limit=10, list_only=True, add_prefix=True, timeout=300):
         return None
 
 
-def get_wms_layers(url):
+def get_wms_layers(url, return_titles=False):
     """Returns a list of WMS layers from a WMS service.
 
     Args:
         url (str): The URL of the WMS service.
+        return_titles (bool, optional): If True, the titles of the layers will be returned. Defaults to False.
 
     Returns:
         list: A list of WMS layers.
@@ -8849,7 +8860,10 @@ def get_wms_layers(url):
     wms = WebMapService(url)
     layers = list(wms.contents)
     layers.sort()
-    return layers
+    if return_titles:
+        return layers, [wms[layer].title for layer in layers]
+    else:
+        return layers
 
 
 def read_file_from_url(url, return_type="list", encoding="utf-8"):
