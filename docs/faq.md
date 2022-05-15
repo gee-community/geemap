@@ -40,7 +40,7 @@ jupyter labextension install @jupyter-widgets/jupyterlab-manager jupyter-leaflet
 
 ## How to use geemap in countries where Google Services are blocked
 
-If you are trying to use geemap in coutries where Gooogle Services are blocked (e.g., China), you will need a VPN. Use `geemap.set_proxy(port=your-port-number)` to connect to Earth Engine servers. Otherwise, you might encounter a connection timeout issue.
+If you are trying to use geemap in a country where Google Services are blocked (e.g., China), you will need a VPN. Use `geemap.set_proxy(port=your-port-number)` to connect to Earth Engine servers. Otherwise, you might encounter a connection timeout issue.
 
 ```
 import geemap
