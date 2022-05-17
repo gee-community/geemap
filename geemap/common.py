@@ -2531,7 +2531,7 @@ def create_colorbar(
         heatmap.append(pair)
 
     def gaussian(x, a, b, c, d=0):
-        return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
+        return a * math.exp(-((x - b) ** 2) / (2 * c ** 2)) + d
 
     def pixel(x, width=100, map=[], spread=1):
         width = float(width)
