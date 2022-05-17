@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.13.5 - May 17, 2022
+
+**Improvement**:
+
+-   Improved JS-PY conversion [#1061](https://github.com/giswqs/geemap/pull/1061)
+-   Updated FAQ
+-   Improved get wms layers
+-   Updated NLCD notebook
+-   Added proxy settings to export data functions
+-   Added colorbar to image count notebook
+-   Added image_count function and notebook
+
 ## v0.13.4 - Apr 27, 2022
 
 **New Features**:
