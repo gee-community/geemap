@@ -300,9 +300,11 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
 
     is_python = False
     # add_github_url = False
-    qgis_import_str = ""
+    import_str = ""
     if use_qgis:
-        qgis_import_str = "from ee_plugin import Map \n"
+        import_str = "from ee_plugin import Map\n"
+    else:
+        import_str = "import geemap\n\nMap=geemap.Map()\n"
 
     github_url = ""
     if github_repo is not None:
@@ -331,7 +333,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
         output = github_url + "".join(map(str, lines))
     else:  # deal with JavaScript
 
-        header = github_url + "import ee \n" + qgis_import_str + math_import_str
+        header = github_url + "import ee \n" + math_import_str + import_str
         # function_defs = []
         output = header + "\n"
 
@@ -469,6 +471,9 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
                 else:
                     output += line + "\n"
 
+    if not use_qgis:
+        output += "Map"
+
     out_dir = os.path.dirname(out_file)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
@@ -584,7 +589,10 @@ def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
 
     for index, in_file in enumerate(files):
         print(f"Processing {index + 1}/{len(files)}: {in_file}")
-        out_file = os.path.splitext(in_file)[0] + "_qgis.py"
+        # if use_qgis:
+        #     out_file = os.path.splitext(in_file)[0] + "_qgis.py"
+        # else:
+        out_file = os.path.splitext(in_file)[0] + "_geemap.py"
         out_file = out_file.replace(in_dir, out_dir)
         js_to_python(in_file, out_file, use_qgis, github_repo)
     # print("Output Python script folder: {}".format(out_dir))
@@ -627,6 +635,8 @@ def remove_qgis_import(in_file):
                         return lines[start_index + i :]
                     else:
                         i = i + 1
+            elif "Map=geemap.Map()" in line:
+                return lines[index + 1 :]
 
 
 def get_js_examples(out_dir=None):
@@ -709,7 +719,7 @@ def template_header(in_template):
         template_lines = f.readlines()
         for index, line in enumerate(template_lines):
             if "## Add Earth Engine Python script" in line:
-                header_end_index = index + 5
+                header_end_index = index + 6
 
     header = template_lines[:header_end_index]
 
@@ -732,8 +742,8 @@ def template_footer(in_template):
     with open(in_template, encoding="utf-8") as f:
         template_lines = f.readlines()
         for index, line in enumerate(template_lines):
-            if "## Display Earth Engine data layers" in line:
-                footer_start_index = index - 3
+            if "## Display the interactive map" in line:
+                footer_start_index = index - 2
 
     footer = ["\n"] + template_lines[footer_start_index:]
 
@@ -742,7 +752,7 @@ def template_footer(in_template):
 
 def py_to_ipynb(
     in_file,
-    template_file,
+    template_file=None,
     out_file=None,
     github_username=None,
     github_repo=None,
@@ -757,18 +767,24 @@ def py_to_ipynb(
         github_repo (str, optional): GitHub repo name. Defaults to None.
     """
     in_file = os.path.abspath(in_file)
-    if out_file is None:
-        out_file = os.path.splitext(in_file)[0].replace("_qgis", "") + ".ipynb"
 
-    out_py_file = os.path.splitext(out_file)[0] + ".py"
+    if template_file is None:
+        template_file = get_nb_template()
+
+    if out_file is None:
+        out_file = os.path.splitext(in_file)[0] + ".ipynb"
+
+    out_py_file = os.path.splitext(out_file)[0] + "_tmp.py"
 
     out_dir = os.path.dirname(out_file)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
     if out_dir == os.path.dirname(in_file):
-        out_py_file = os.path.splitext(out_file)[0] + ".py"
+        out_py_file = os.path.splitext(out_file)[0] + "_tmp.py"
 
     content = remove_qgis_import(in_file)
+    if content[-1].strip() == "Map":
+        content = content[:-1]
     header = template_header(template_file)
     footer = template_footer(template_file)
 
@@ -795,6 +811,8 @@ def py_to_ipynb(
     else:
         out_text = header + footer
 
+    out_text = out_text[:-1] + [out_text[-1].strip()]
+
     if not os.path.exists(os.path.dirname(out_py_file)):
         os.makedirs(os.path.dirname(out_py_file))
 
@@ -811,18 +829,21 @@ def py_to_ipynb(
         print("pip install ipynb-py-convert")
         raise Exception(e)
 
-    # os.remove(out_py_file)
+    try:
+        os.remove(out_py_file)
+    except Exception as e:
+        print(e)
 
 
 def py_to_ipynb_dir(
-    in_dir, template_file, out_dir=None, github_username=None, github_repo=None
+    in_dir, template_file=None, out_dir=None, github_username=None, github_repo=None
 ):
     """Converts Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
 
     Args:
         in_dir (str): Input folder containing Earth Engine Python scripts.
-        template_file (str): Input jupyter notebook template file.
         out_dir str, optional): Output folder. Defaults to None.
+        template_file (str): Input jupyter notebook template file.
         github_username (str, optional): GitHub username. Defaults to None.
         github_repo (str, optional): GitHub repo name. Defaults to None.
     """
@@ -830,7 +851,7 @@ def py_to_ipynb_dir(
 
     in_dir = os.path.abspath(in_dir)
     files = []
-    qgis_files = list(Path(in_dir).rglob("*_qgis.py"))
+    qgis_files = list(Path(in_dir).rglob("*_geemap.py"))
     py_files = list(Path(in_dir).rglob("*.py"))
 
     if len(qgis_files) == len(py_files) / 2:
