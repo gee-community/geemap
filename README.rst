@@ -8,6 +8,9 @@ geemap
 .. image:: https://mybinder.org/badge_logo.svg
         :target: https://gishub.org/geemap-binder
 
+.. image:: https://renkulab.io/renku-badge.svg
+        :target: https://renkulab.io/projects/renku-stories/geemap/sessions/new?autostart=1
+
 .. image:: https://img.shields.io/pypi/v/geemap.svg
         :target: https://pypi.python.org/pypi/geemap
 
