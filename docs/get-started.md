@@ -43,7 +43,7 @@ Map
 ```python
 dem = ee.Image('USGS/SRTMGL1_003')
 landcover = ee.Image("ESA/GLOBCOVER_L4_200901_200912_V2_3").select('landcover')
-landsat7 = ee.Image('LE7_TOA_5YEAR/1999_2003')
+landsat7 = ee.Image('LANDSAT/LE7_TOA_5YEAR/1999_2003')
 states = ee.FeatureCollection("TIGER/2018/States")
 ```
 

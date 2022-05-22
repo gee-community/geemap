@@ -2069,11 +2069,11 @@ class Map(ipyleaflet.Map):
         if self.random_marker is not None:
             self.remove_layer(self.random_marker)
 
-        image = ee.Image("LE7_TOA_5YEAR/1999_2003").select([0, 1, 2, 3, 4, 6])
+        image = ee.Image("LANDSAT/LE7_TOA_5YEAR/1999_2003").select([0, 1, 2, 3, 4, 6])
         self.addLayer(
             image,
             {"bands": ["B4", "B3", "B2"], "gamma": 1.4},
-            "LE7_TOA_5YEAR/1999_2003",
+            "LANDSAT/LE7_TOA_5YEAR/1999_2003",
         )
         self.setCenter(-50.078877, 25.190030, 3)
         band_names = image.bandNames().getInfo()

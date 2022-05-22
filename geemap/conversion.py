@@ -304,7 +304,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
     if use_qgis:
         import_str = "from ee_plugin import Map\n"
     else:
-        import_str = "import geemap\n\nMap=geemap.Map()\n"
+        import_str = "import geemap\n\nMap = geemap.Map()\n"
 
     github_url = ""
     if github_repo is not None:
