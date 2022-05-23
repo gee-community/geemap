@@ -3766,8 +3766,10 @@ class Map(ipyleaflet.Map):
                 style={"description_width": "initial"},
             )
 
+            colormap_options = plt.colormaps()
+            colormap_options.sort()
             colormap = widgets.Dropdown(
-                options=plt.colormaps(),
+                options=colormap_options,
                 value=None,
                 description="Colormap:",
                 layout=widgets.Layout(width="181px"),
@@ -4717,7 +4719,7 @@ class Map(ipyleaflet.Map):
                     )
                     self.add_control(self.colorbar_ctrl)
                     fill_color.disabled = True
-                    colormap.options = plt.colormaps()
+                    colormap.options = colormap_options
                     colormap.value = "viridis"
                     style_vbox.children = [
                         widgets.HBox([style_chk, compute_label]),
