@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.13.6 - May 22, 2022
+
+**Improvement**:
+
+-   Added cartoee basemap support [#1067](https://github.com/giswqs/geemap/issues/1067)
+-   Updated Landsat LE7_TOA_5YEAR Image ID
+
 ## v0.13.5 - May 17, 2022
 
 **Improvement**:
