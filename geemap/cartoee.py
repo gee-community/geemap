@@ -15,9 +15,12 @@ import requests
 from matplotlib import cm, colors
 from matplotlib import font_manager as mfonts
 
+from .basemaps import xyz_tiles
+
 try:
 
     import cartopy.crs as ccrs
+    import cartopy.io.img_tiles as cimgt
     from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
     from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
     from PIL import Image
@@ -114,13 +117,15 @@ def check_dependencies():
 # check_dependencies()
 
 
-def get_map(ee_object, proj=None, **kwargs):
+def get_map(ee_object, proj=None, basemap=None, zoom_level=2, **kwargs):
     """
     Wrapper function to create a new cartopy plot with project and adds Earth
     Engine image results
     Args:
         ee_object (ee.Image | ee.FeatureCollection): Earth Engine image result to plot
         proj (cartopy.crs, optional): Cartopy projection that determines the projection of the resulting plot. By default uses an equirectangular projection, PlateCarree
+        basemap (str, optional): Basemap to use. It can be one of ["ROADMAP", "SATELLITE", "TERRAIN", "HYBRID"] or cartopy.io.img_tiles, such as cimgt.StamenTerrain(). Defaults to None. See https://scitools.org.uk/cartopy/docs/v0.19/cartopy/io/img_tiles.html
+        zoom_level (int, optional): Zoom level of the basemap. Defaults to 2.
         **kwargs: remaining keyword arguments are passed to addLayer()
     Returns:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot): cartopy GeoAxesSubplot object with Earth Engine results displayed
@@ -153,6 +158,17 @@ def get_map(ee_object, proj=None, **kwargs):
         del kwargs["style"]
 
     ax = mpl.pyplot.axes(projection=proj)
+
+    if basemap is not None:
+        if isinstance(basemap, str):
+            if basemap.upper() in ["ROADMAP", "SATELLITE", "TERRAIN", "HYBRID"]:
+                basemap = cimgt.GoogleTiles(url=xyz_tiles[basemap.upper()]["url"])
+
+        try:
+            ax.add_image(basemap, zoom_level)
+        except Exception as e:
+            print("Failed to add basemap: ", e)
+
     add_layer(ax, ee_object, **kwargs)
 
     return ax
@@ -257,6 +273,7 @@ def add_layer(
         extent=view_extent,
         origin="upper",
         transform=ccrs.PlateCarree(),
+        zorder=1,
     )
 
     return
@@ -986,7 +1003,7 @@ def add_scale_bar_lite(
             if str(x)[0] in ["1", "2", "5"]:
                 return int(x)
             else:
-                return scale_number(x - 10 ** ndim)
+                return scale_number(x - 10**ndim)
 
         length = scale_number(length)
         num = length
