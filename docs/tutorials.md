@@ -123,3 +123,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 109. Creating coordinate grids with one line of code ([notebook](https://geemap.org/notebooks/109_coordinate_grids))
 110. Creating choropleth maps with a variety of classification schemes ([notebook](https://geemap.org/notebooks/110_choropleth))
 111. Mapping the number of available satellite images for each pixel location ([notebook](https://geemap.org/notebooks/111_image_count))
+112. Adding basemaps to cartoee publication-quality maps ([notebook](https://geemap.org/notebooks/112_cartoee_basemap))
