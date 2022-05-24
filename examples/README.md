@@ -130,6 +130,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 110. Creating choropleth maps with a variety of classification schemes ([notebook](https://geemap.org/notebooks/110_choropleth))
 111. Mapping the number of available satellite images for each pixel location ([notebook](https://geemap.org/notebooks/111_image_count))
 112. Adding basemaps to cartoee publication-quality maps ([notebook](https://geemap.org/notebooks/112_cartoee_basemap))
+113. Calculating image area by group ([notebook](https://geemap.org/notebooks/113_image_area))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
