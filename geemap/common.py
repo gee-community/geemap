@@ -2531,7 +2531,7 @@ def create_colorbar(
         heatmap.append(pair)
 
     def gaussian(x, a, b, c, d=0):
-        return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
+        return a * math.exp(-((x - b) ** 2) / (2 * c ** 2)) + d
 
     def pixel(x, width=100, map=[], spread=1):
         width = float(width)
@@ -5981,7 +5981,7 @@ def image_dates(img_col, date_format="YYYY-MM-dd"):
 
 
 def image_area(img, region=None, scale=None, denominator=1.0):
-    """Calculates the the area of an image.
+    """Calculates the area of an image.
 
     Args:
         img (object): ee.Image
@@ -6010,6 +6010,66 @@ def image_area(img, region=None, scale=None, denominator=1.0):
         }
     )
     return img_area
+
+
+def image_area_by_group(
+    img,
+    groups=None,
+    region=None,
+    scale=None,
+    denominator=1.0,
+    out_csv=None,
+    labels = None,
+    decimal_places=4,
+    verbose=True,
+):
+    """Calculates the area of each class of an image.
+
+    Args:
+        img (object): ee.Image
+        groups (object, optional): The groups to use for the area calculation. Defaults to None.
+        region (object, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+        denominator (float, optional): The denominator to use for converting size from square meters to other units. Defaults to 1.0.
+        out_csv (str, optional): The path to the output CSV file. Defaults to None.
+        labels (object, optional): The class labels to use in the output CSV file. Defaults to None.
+        decimal_places (int, optional): The number of decimal places to use for the output. Defaults to 2.
+        verbose (bool, optional): If True, print the progress. Defaults to True.
+
+    Returns:
+        object: pandas.DataFrame
+    """
+    import pandas as pd
+
+    values = []
+    if region is None:
+        region = ee.Geometry.BBox(-179.9, -89.5, 179.9, 89.5)
+
+    if groups is None:
+        groups = image_value_list(img, region, scale)
+
+    if not isinstance(groups, list):
+        groups = groups.getInfo()
+
+    for group in groups:
+        if verbose:
+            print(f"Calculating area for group {group} ...")
+        area = image_area(img.eq(float(group)), region, scale, denominator)
+        values.append(area.values().get(0).getInfo())
+
+    if isinstance(labels, list) and len(labels) == len(values):
+        d = {"group": groups, "label": labels, "area": values}
+    else:
+        d = {"group": groups, "area": values}
+    df = pd.DataFrame(data=d)
+    df = df.set_index("group")
+    df["percentage"] = df["area"] / df["area"].sum()
+    df = df.astype(float).round(decimal_places)
+
+    if out_csv is not None:
+        df.to_csv(out_csv)
+    else:
+        return df
 
 
 def image_max_value(img, region=None, scale=None):
