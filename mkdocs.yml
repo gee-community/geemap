@@ -195,6 +195,7 @@ nav:
           - notebooks/110_choropleth.ipynb
           - notebooks/111_image_count.ipynb
           - notebooks/112_cartoee_basemap.ipynb
+          - notebooks/113_image_area.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
