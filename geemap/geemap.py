@@ -4719,6 +4719,8 @@ class Map(ipyleaflet.Map):
                     )
                     self.add_control(self.colorbar_ctrl)
                     fill_color.disabled = True
+                    colormap_options = plt.colormaps()
+                    colormap_options.sort()
                     colormap.options = colormap_options
                     colormap.value = "viridis"
                     style_vbox.children = [
