@@ -18,6 +18,7 @@ import requests
 import folium
 import ipyleaflet
 import xyzservices.providers as xyz
+from xyzservices import TileProvider
 from .common import check_package, planet_tiles
 
 # Custom XYZ tile services.
@@ -158,7 +159,7 @@ wms_tiles = {
 }
 
 
-def get_xyz_dict(free_only=True):
+def get_xyz_dict(free_only=True, _collection=xyz, _output={}):
     """Returns a dictionary of xyz services.
 
     Args:
@@ -167,34 +168,15 @@ def get_xyz_dict(free_only=True):
     Returns:
         dict: A dictionary of xyz services.
     """
-
-    xyz_dict = {}
-    for item in xyz.values():
-        try:
-            name = item["name"]
-            tile = eval("xyz." + name)
-            if eval("xyz." + name + ".requires_token()"):
-                if free_only:
-                    pass
-                else:
-                    xyz_dict[name] = tile
-            else:
-                xyz_dict[name] = tile
-
-        except Exception:
-            for sub_item in item:
-                name = item[sub_item]["name"]
-                tile = eval("xyz." + name)
-                if eval("xyz." + name + ".requires_token()"):
-                    if free_only:
-                        pass
-                    else:
-                        xyz_dict[name] = tile
-                else:
-                    xyz_dict[name] = tile
-
-    xyz_dict = collections.OrderedDict(sorted(xyz_dict.items()))
-    return xyz_dict
+    
+    for v in _collection.values():
+        if isinstance(v, TileProvider):
+            if not (v.requires_token() and free_only):
+                _output[v.name] = v
+        else: # it's a Bunch
+            get_xyz_dict(free_only, v, _output)
+    
+    return collections.OrderedDict(sorted(_output.items()))
 
 
 def xyz_to_leaflet():
@@ -205,41 +187,30 @@ def xyz_to_leaflet():
     """
     leaflet_dict = {}
 
-    for key in xyz_tiles:
-        name = xyz_tiles[key]["name"]
-        url = xyz_tiles[key]["url"]
-        attribution = xyz_tiles[key]["attribution"]
+    for key, tile in xyz_tiles.items():
+        name = tile["name"]
+        url = tile["url"]
+        attribution = tile["attribution"]
         leaflet_dict[key] = ipyleaflet.TileLayer(
             url=url, name=name, attribution=attribution, max_zoom=22
         )
 
-    for key in wms_tiles:
-        name = wms_tiles[key]["name"]
-        url = wms_tiles[key]["url"]
-        layers = wms_tiles[key]["layers"]
-        fmt = wms_tiles[key]["format"]
-        transparent = wms_tiles[key]["transparent"]
-        attribution = wms_tiles[key]["attribution"]
+    for key, tile in wms_tiles.items():
         leaflet_dict[key] = ipyleaflet.WMSLayer(
-            url=url,
-            layers=layers,
-            name=name,
-            attribution=attribution,
-            format=fmt,
-            transparent=transparent,
+            url=tile["url"],
+            layers=tile["layers"],
+            name=tile["name"],
+            attribution=tile["attribution"],
+            format=tile["format"],
+            transparent=tile["transparent"],
         )
-
-    xyz_dict = get_xyz_dict()
-    for item in xyz_dict:
-        name = xyz_dict[item].name
-        url = xyz_dict[item].build_url()
-        attribution = xyz_dict[item].attribution
-        if "max_zoom" in xyz_dict[item].keys():
-            max_zoom = xyz_dict[item]["max_zoom"]
-        else:
-            max_zoom = 22
-        leaflet_dict[name] = ipyleaflet.TileLayer(
-            url=url, name=name, max_zoom=max_zoom, attribution=attribution
+        
+    for item in get_xyz_dict().values():
+        leaflet_dict[item.name] = ipyleaflet.TileLayer(
+            url=item.build_url(), 
+            name=item.name, 
+            max_zoom=item.get("max_zoom", 22), 
+            attribution=item.attribution
         )
 
     if os.environ.get("PLANET_API_KEY") is not None:
@@ -262,20 +233,19 @@ def xyz_to_pydeck():
 
     pydeck_dict = {}
 
-    for key in xyz_tiles:
-        url = xyz_tiles[key]["url"]
+    for key, tile in xyz_tiles.items():
+        url = tile["url"]
         pydeck_dict[key] = url
 
-    xyz_dict = get_xyz_dict()
-    for item in xyz_dict:
-        url = xyz_dict[item].build_url()
-        pydeck_dict[item] = url
+    for key, item in get_xyz_dict().items():
+        url = item.build_url()
+        pydeck_dict[key] = url
 
         if os.environ.get("PLANET_API_KEY") is not None:
 
             planet_dict = planet_tiles(tile_format="ipyleaflet")
-            for tile in planet_dict:
-                pydeck_dict[tile] = planet_dict[tile].url
+            for id_, tile in planet_dict.items():
+                pydeck_dict[id_] = tile.url
 
     pdk.settings.custom_libraries = [
         {
@@ -298,51 +268,34 @@ def xyz_to_folium():
     """
     folium_dict = {}
 
-    for key in xyz_tiles:
-        name = xyz_tiles[key]["name"]
-        url = xyz_tiles[key]["url"]
-        attribution = xyz_tiles[key]["attribution"]
+    for key, tile in xyz_tiles.items():
         folium_dict[key] = folium.TileLayer(
-            tiles=url,
-            attr=attribution,
-            name=name,
+            tiles=tile["url"],
+            attr=tile["attribution"],
+            name=tile["name"],
             overlay=True,
             control=True,
             max_zoom=22,
         )
 
-    for key in wms_tiles:
-        name = wms_tiles[key]["name"]
-        url = wms_tiles[key]["url"]
-        layers = wms_tiles[key]["layers"]
-        fmt = wms_tiles[key]["format"]
-        transparent = wms_tiles[key]["transparent"]
-        attribution = wms_tiles[key]["attribution"]
+    for key, tile in wms_tiles.items():
         folium_dict[key] = folium.WmsTileLayer(
-            url=url,
-            layers=layers,
-            name=name,
-            attr=attribution,
-            fmt=fmt,
-            transparent=transparent,
+            url=tile["url"],
+            layers=tile["layers"],
+            name=tile["name"],
+            attr=tile["attribution"],
+            fmt=tile["format"],
+            transparent=tile["transparent"],
             overlay=True,
             control=True,
         )
-
-    xyz_dict = get_xyz_dict()
-    for item in xyz_dict:
-        name = xyz_dict[item].name
-        url = xyz_dict[item].build_url()
-        attribution = xyz_dict[item].attribution
-        if "max_zoom" in xyz_dict[item].keys():
-            max_zoom = xyz_dict[item]["max_zoom"]
-        else:
-            max_zoom = 22
-        folium_dict[name] = folium.TileLayer(
-            tiles=url,
-            attr=attribution,
-            name=name,
-            max_zoom=max_zoom,
+ 
+    for item in get_xyz_dict().values():
+        folium_dict[item.name] = folium.TileLayer(
+            tiles=item.build_url(),
+            attr=item.attribution,
+            name=item.name,
+            max_zoom=item.get("max_zoom", 22),
             overlay=True,
             control=True,
         )
@@ -363,29 +316,22 @@ def xyz_to_plotly():
     """
     plotly_dict = {}
 
-    for key in xyz_tiles:
-        url = xyz_tiles[key]["url"]
-        attribution = xyz_tiles[key]["attribution"]
+    for key, tile in xyz_tiles.items():
         plotly_dict[key] = {
             "below": "traces",
             "sourcetype": "raster",
-            "sourceattribution": attribution,
-            "source": [url],
+            "sourceattribution": tile["attribution"],
+            "source": [tile["url"]],
             "name": key,
         }
-
-    xyz_dict = get_xyz_dict()
-    for item in xyz_dict:
-        name = xyz_dict[item].name
-        url = xyz_dict[item].build_url()
-        attribution = xyz_dict[item].attribution
-
-        plotly_dict[name] = {
+        
+    for item in get_xyz_dict().values():
+        plotly_dict[item.name] = {
             "below": "traces",
             "sourcetype": "raster",
-            "sourceattribution": attribution,
-            "source": [url],
-            "name": name,
+            "sourceattribution": item.attribution,
+            "source": [item.build_url()],
+            "name": item.name,
         }
 
     return plotly_dict
@@ -462,28 +408,22 @@ def xyz_to_heremap():
 
     heremap_dict = {}
 
-    for key in xyz_tiles:
-        name = xyz_tiles[key]["name"]
-        url = xyz_tiles[key]["url"]
-        attribution = xyz_tiles[key]["attribution"]
+    for key, tile in xyz_tiles.items():
         heremap_dict[key] = here_map_widget.TileLayer(
             provider=here_map_widget.ImageTileProvider(
-                url=url, attribution=attribution, name=name
+                url=tile["url"], 
+                attribution=tile["attribution"], 
+                name=tile["name"]
             )
         )
-
-    xyz_dict = get_xyz_dict()
-    for item in xyz_dict:
-        name = xyz_dict[item].name
-        url = xyz_dict[item].build_url()
-        attribution = xyz_dict[item].attribution
-        if "max_zoom" in xyz_dict[item].keys():
-            max_zoom = xyz_dict[item]["max_zoom"]
-        else:
-            max_zoom = 22
-        heremap_dict[name] = here_map_widget.TileLayer(
+    
+    for item in get_xyz_dict().values():
+        heremap_dict[item.name] = here_map_widget.TileLayer(
             provider=here_map_widget.ImageTileProvider(
-                url=url, attribution=attribution, name=name, max_zoom=max_zoom
+                url=item.build_url(),
+                attribution=item.attribution, 
+                name=item.name, 
+                max_zoom=item.get("max_zoom", 22)
             )
         )
 
