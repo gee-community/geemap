@@ -209,7 +209,7 @@ def xyz_to_leaflet():
         leaflet_dict[item.name] = ipyleaflet.TileLayer(
             url=item.build_url(), 
             name=item.name, 
-            max_zoom=item.pop("max_zoom", 22), 
+            max_zoom=item.get("max_zoom", 22), 
             attribution=item.attribution
         )
 
@@ -295,7 +295,7 @@ def xyz_to_folium():
             tiles=item.build_url(),
             attr=item.attribution,
             name=item.name,
-            max_zoom=item.pop("max_zoom", 22),
+            max_zoom=item.get("max_zoom", 22),
             overlay=True,
             control=True,
         )
@@ -423,7 +423,7 @@ def xyz_to_heremap():
                 url=item.build_url(),
                 attribution=item.attribution, 
                 name=item.name, 
-                max_zoom=item.pop("max_zoom", 22)
+                max_zoom=item.get("max_zoom", 22)
             )
         )
 
