@@ -18,6 +18,7 @@ import requests
 import folium
 import ipyleaflet
 import xyzservices.providers as xyz
+from xyzservices import TileProvider
 from .common import check_package, planet_tiles
 
 # Custom XYZ tile services.
@@ -158,7 +159,7 @@ wms_tiles = {
 }
 
 
-def get_xyz_dict(free_only=True):
+def get_xyz_dict(free_only=True, _collection=xyz, _output={}):
     """Returns a dictionary of xyz services.
 
     Args:
@@ -167,34 +168,15 @@ def get_xyz_dict(free_only=True):
     Returns:
         dict: A dictionary of xyz services.
     """
-
-    xyz_dict = {}
-    for item in xyz.values():
-        try:
-            name = item["name"]
-            tile = eval("xyz." + name)
-            if eval("xyz." + name + ".requires_token()"):
-                if free_only:
-                    pass
-                else:
-                    xyz_dict[name] = tile
-            else:
-                xyz_dict[name] = tile
-
-        except Exception:
-            for sub_item in item.values():
-                name = sub_item["name"]
-                tile = eval("xyz." + name)
-                if eval("xyz." + name + ".requires_token()"):
-                    if free_only:
-                        pass
-                    else:
-                        xyz_dict[name] = tile
-                else:
-                    xyz_dict[name] = tile
-
-    xyz_dict = collections.OrderedDict(sorted(xyz_dict.items()))
-    return xyz_dict
+    
+    for v in _collection.values():
+        if isinstance(v, TileProvider):
+            if not (v.requires_token() and free_only):
+                _output[v.name] = v
+        else: # it's a Bunch
+            get_xyz_dict(free_only, v, _output)
+    
+    return collections.OrderedDict(sorted(_output.items()))
 
 
 def xyz_to_leaflet():
