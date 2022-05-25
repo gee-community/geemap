@@ -196,6 +196,8 @@ def add_layer(
         ValueError: If `ax` if not of type cartopy.mpl.geoaxes.GeoAxesSubplot '
     """
 
+    import warnings
+
     if (
         isinstance(ee_object, ee.geometry.Geometry)
         or isinstance(ee_object, ee.feature.Feature)
@@ -227,6 +229,11 @@ def add_layer(
         # get the image bounds
         x, y = list(zip(*map_region[0]))
         view_extent = [min(x), max(x), min(y), max(y)]
+
+        if ee_object.bandNames().getInfo() == ["vis-red", "vis-green", "vis-blue"]:
+            warnings.warn(
+                f"The region parameter is not specified. Using the default region {map_region}. Please specify a region if you get a blank image."
+            )
 
     if type(dims) not in [list, tuple, int]:
         raise ValueError("provided dims not of type list, tuple, or int")
