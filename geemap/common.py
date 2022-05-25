@@ -4687,13 +4687,27 @@ def stac_tile(
                 assets=assets,
                 titiler_endpoint=titiler_endpoint,
             )
-            percentile_2 = min(
-                [stats[s][list(stats[s].keys())[0]]["percentile_2"] for s in stats]
-            )
-            percentile_98 = max(
-                [stats[s][list(stats[s].keys())[0]]["percentile_98"] for s in stats]
-            )
-            kwargs["rescale"] = f"{percentile_2},{percentile_98}"
+            if "detail" not in stats:
+
+                try:
+                    percentile_2 = min([stats[s]["percentile_2"] for s in stats])
+                    percentile_98 = max([stats[s]["percentile_98"] for s in stats])
+                except:
+                    percentile_2 = min(
+                        [
+                            stats[s][list(stats[s].keys())[0]]["percentile_2"]
+                            for s in stats
+                        ]
+                    )
+                    percentile_98 = max(
+                        [
+                            stats[s][list(stats[s].keys())[0]]["percentile_98"]
+                            for s in stats
+                        ]
+                    )
+                kwargs["rescale"] = f"{percentile_2},{percentile_98}"
+            else:
+                print(stats["detail"])  # When operation times out.
 
     else:
         if isinstance(bands, str):
@@ -6019,7 +6033,7 @@ def image_area_by_group(
     scale=None,
     denominator=1.0,
     out_csv=None,
-    labels = None,
+    labels=None,
     decimal_places=4,
     verbose=True,
 ):
