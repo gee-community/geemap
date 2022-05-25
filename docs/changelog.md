@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.13.7 - May 25, 2022
+
+**New Features**:
+
+-   Added image_area_by_group function [#1073](https://github.com/giswqs/geemap/pull/1073)
+
+**Improvement**:
+
+-   Updated cartoee basemap notebook [#1067](https://github.com/giswqs/geemap/issues/1067)
+-   Refactored basemap [#1075](https://github.com/giswqs/geemap/pull/1075)
+-   Sorted raster colormap options
+-   Fixed colormap GUI bug
+-   Fixed stac stats bug
+
 ## v0.13.6 - May 22, 2022
 
 **Improvement**:
