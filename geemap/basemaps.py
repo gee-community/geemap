@@ -252,7 +252,7 @@ def xyz_to_pydeck():
     pydeck_dict = {}
 
     for key, tile in xyz_tiles.items():
-        url = item["url"]
+        url = tile["url"]
         pydeck_dict[key] = url
 
     for key, item in get_xyz_dict().items():
