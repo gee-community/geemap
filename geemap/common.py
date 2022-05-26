@@ -2531,7 +2531,7 @@ def create_colorbar(
         heatmap.append(pair)
 
     def gaussian(x, a, b, c, d=0):
-        return a * math.exp(-((x - b) ** 2) / (2 * c ** 2)) + d
+        return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
 
     def pixel(x, width=100, map=[], spread=1):
         width = float(width)
@@ -6071,14 +6071,13 @@ def image_area_by_group(
         area = image_area(img.eq(float(group)), region, scale, denominator)
         values.append(area.values().get(0).getInfo())
 
-    if isinstance(labels, list) and len(labels) == len(values):
-        d = {"group": groups, "label": labels, "area": values}
-    else:
-        d = {"group": groups, "area": values}
+    d = {"group": groups, "area": values}
     df = pd.DataFrame(data=d)
     df = df.set_index("group")
     df["percentage"] = df["area"] / df["area"].sum()
     df = df.astype(float).round(decimal_places)
+    if isinstance(labels, list) and len(labels) == len(values):
+        df["labels"] = labels
 
     if out_csv is not None:
         df.to_csv(out_csv)
