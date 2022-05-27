@@ -3087,7 +3087,7 @@ class Map(ipyleaflet.Map):
         except Exception as e:
             print(e)
 
-    def video_overlay(self, url, bounds, name):
+    def video_overlay(self, url, bounds, name="Video"):
         """Overlays a video from the Internet on the map.
 
         Args:
