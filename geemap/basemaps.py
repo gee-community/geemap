@@ -168,14 +168,14 @@ def get_xyz_dict(free_only=True, _collection=xyz, _output={}):
     Returns:
         dict: A dictionary of xyz services.
     """
-    
+
     for v in _collection.values():
         if isinstance(v, TileProvider):
             if not (v.requires_token() and free_only):
                 _output[v.name] = v
-        else: # it's a Bunch
+        else:  # it's a Bunch
             get_xyz_dict(free_only, v, _output)
-    
+
     return collections.OrderedDict(sorted(_output.items()))
 
 
@@ -204,13 +204,13 @@ def xyz_to_leaflet():
             format=tile["format"],
             transparent=tile["transparent"],
         )
-        
+
     for item in get_xyz_dict().values():
         leaflet_dict[item.name] = ipyleaflet.TileLayer(
-            url=item.build_url(), 
-            name=item.name, 
-            max_zoom=item.get("max_zoom", 22), 
-            attribution=item.attribution
+            url=item.build_url(),
+            name=item.name,
+            max_zoom=item.get("max_zoom", 22),
+            attribution=item.attribution,
         )
 
     if os.environ.get("PLANET_API_KEY") is not None:
@@ -289,7 +289,7 @@ def xyz_to_folium():
             overlay=True,
             control=True,
         )
- 
+
     for item in get_xyz_dict().values():
         folium_dict[item.name] = folium.TileLayer(
             tiles=item.build_url(),
@@ -324,7 +324,7 @@ def xyz_to_plotly():
             "source": [tile["url"]],
             "name": key,
         }
-        
+
     for item in get_xyz_dict().values():
         plotly_dict[item.name] = {
             "below": "traces",
@@ -411,19 +411,17 @@ def xyz_to_heremap():
     for key, tile in xyz_tiles.items():
         heremap_dict[key] = here_map_widget.TileLayer(
             provider=here_map_widget.ImageTileProvider(
-                url=tile["url"], 
-                attribution=tile["attribution"], 
-                name=tile["name"]
+                url=tile["url"], attribution=tile["attribution"], name=tile["name"]
             )
         )
-    
+
     for item in get_xyz_dict().values():
         heremap_dict[item.name] = here_map_widget.TileLayer(
             provider=here_map_widget.ImageTileProvider(
                 url=item.build_url(),
-                attribution=item.attribution, 
-                name=item.name, 
-                max_zoom=item.get("max_zoom", 22)
+                attribution=item.attribution,
+                name=item.name,
+                max_zoom=item.get("max_zoom", 22),
             )
         )
 
