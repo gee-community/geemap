@@ -10246,6 +10246,8 @@ def blend(
     Returns:
         ee.Image: The blended image.
     """
+    from box import Box
+
     if not isinstance(top_layer, ee.Image):
         raise ValueError("top_layer must be an ee.Image.")
 
@@ -10255,11 +10257,25 @@ def blend(
     if not isinstance(bottom_layer, ee.Image):
         raise ValueError("bottom_layer must be an ee.Image.")
 
-    if top_vis is not None and (not isinstance(top_vis, dict)):
-        raise ValueError("top_vis must be a dictionary.")
+    if top_vis is not None:
+        if not isinstance(top_vis, dict):
+            raise ValueError("top_vis must be a dictionary.")
+        elif "palette" in top_vis and isinstance(top_vis["palette"], Box):
+            try:
+                top_vis["palette"] = top_vis["palette"]["default"]
+            except Exception as e:
+                print("The provided palette is invalid.")
+                raise Exception(e)
 
-    if bottom_vis is not None and (not isinstance(bottom_vis, dict)):
-        raise ValueError("bottom_vis must be a dictionary.")
+    if bottom_vis is not None:
+        if not isinstance(bottom_vis, dict):
+            raise ValueError("top_vis must be a dictionary.")
+        elif "palette" in bottom_vis and isinstance(bottom_vis["palette"], Box):
+            try:
+                bottom_vis["palette"] = bottom_vis["palette"]["default"]
+            except Exception as e:
+                print("The provided palette is invalid.")
+                raise Exception(e)
 
     if top_vis is None:
         top_bands = top_layer.bandNames().getInfo()
