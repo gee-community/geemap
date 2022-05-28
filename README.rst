@@ -777,7 +777,7 @@ To support my work, please consider citing the following articles:
 Credits
 -------
 
-This package was created with `Cookiecutter <https://github.com/audreyr/cookiecutter>`__ and the `audreyr/cookiecutter-pypackage <https://github.com/audreyr/cookiecutter-pypackage>`__ project template.
+This package was created with `Cookiecutter <https://github.com/cookiecutter/cookiecutter>`__ and the `audreyr/cookiecutter-pypackage <https://github.com/audreyr/cookiecutter-pypackage>`__ project template.
 
 
 .. image:: https://badges.gitter.im/geemap/community.svg
