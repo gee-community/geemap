@@ -2,6 +2,7 @@ black
 black[jupyter]
 codespell
 datapane
+deadlink
 geopandas
 here-map-widget-for-jupyter>=1.1.1
 keplergl
