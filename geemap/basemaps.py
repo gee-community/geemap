@@ -159,7 +159,7 @@ wms_tiles = {
 }
 
 
-def get_xyz_dict(free_only=True, _collection=xyz, _output={}):
+def get_xyz_dict(free_only=True, _collection=None, _output=None):
     """Returns a dictionary of xyz services.
 
     Args:
@@ -168,6 +168,12 @@ def get_xyz_dict(free_only=True, _collection=xyz, _output={}):
     Returns:
         dict: A dictionary of xyz services.
     """
+
+    if _collection is None:
+        _collection = xyz
+
+    if _output is None:
+        _output = {}
 
     for v in _collection.values():
         if isinstance(v, TileProvider):
