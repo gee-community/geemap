@@ -2531,7 +2531,7 @@ def create_colorbar(
         heatmap.append(pair)
 
     def gaussian(x, a, b, c, d=0):
-        return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
+        return a * math.exp(-((x - b) ** 2) / (2 * c ** 2)) + d
 
     def pixel(x, width=100, map=[], spread=1):
         width = float(width)
@@ -10835,3 +10835,29 @@ def image_count(collection, region=None, start_date=None, end_date=None, clip=Fa
         image = image.clip(region)
 
     return image
+
+
+def check_cmap(cmap):
+    """Check the colormap and return a list of colors.
+
+    Args:
+        cmap (str | list | Box): The colormap to check.
+
+    Returns:
+        list: A list of colors.
+    """
+
+    from box import Box
+    from .colormaps import get_palette
+
+    if isinstance(cmap, str):
+        try:
+            return get_palette(cmap)
+        except Exception as e:
+            raise Exception(f"{cmap} is not a valid colormap.")
+    elif isinstance(cmap, Box):
+        return list(cmap["default"])
+    elif isinstance(cmap, list) or isinstance(cmap, tuple):
+        return cmap
+    else:
+        raise Exception(f"{cmap} is not a valid colormap.")

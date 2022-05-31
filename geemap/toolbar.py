@@ -663,9 +663,9 @@ def collect_samples(m):
             if len(color.value) != 7:
                 color.value = "#3388ff"
             draw_control = ipyleaflet.DrawControl(
-                marker={"shapeOptions": {"color": color.value}, "repeatMode": True},
-                rectangle={"shapeOptions": {"color": color.value}, "repeatMode": True},
-                polygon={"shapeOptions": {"color": color.value}, "repeatMode": True},
+                marker={"shapeOptions": {"color": color.value}, "repeatMode": False},
+                rectangle={"shapeOptions": {"color": color.value}, "repeatMode": False},
+                polygon={"shapeOptions": {"color": color.value}, "repeatMode": False},
                 circlemarker={},
                 polyline={},
                 edit=False,
