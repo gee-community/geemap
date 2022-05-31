@@ -3413,7 +3413,7 @@ class Map(ipyleaflet.Map):
         self.add_layer(tile)
         self.zoom_to_bounds(bounds)
 
-    add_geotiff = add_local_tile
+    add_raster = add_local_tile
 
     def add_remote_tile(
         self,
@@ -3454,7 +3454,7 @@ class Map(ipyleaflet.Map):
         else:
             raise Exception("The source must be a URL.")
 
-    def add_raster(
+    def add_raster_legacy(
         self,
         image,
         bands=None,
