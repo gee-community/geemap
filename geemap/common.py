@@ -11,6 +11,7 @@ import requests
 import shutil
 import tarfile
 import urllib.request
+import warnings
 import zipfile
 
 import ee
@@ -2486,7 +2487,6 @@ def create_colorbar(
 
     """
     import decimal
-    import warnings
 
     # import io
     import pkg_resources
@@ -3340,7 +3340,6 @@ def build_api_tree(api_dict, output_widget, layout_width="100%"):
     Returns:
         tuple: Returns a tuple containing two items: a tree Output widget and a tree dictionary.
     """
-    import warnings
 
     warnings.filterwarnings("ignore")
 
@@ -3394,7 +3393,6 @@ def search_api_tree(keywords, api_tree):
     Returns:
         object: An ipytree object/widget.
     """
-    import warnings
 
     warnings.filterwarnings("ignore")
 
@@ -3414,8 +3412,6 @@ def ee_search(asset_limit=100):
     Args:
         asset_limit (int, optional): The number of assets to display for each asset type, i.e., Image, ImageCollection, and FeatureCollection. Defaults to 100.
     """
-
-    import warnings
 
     warnings.filterwarnings("ignore")
 
@@ -3565,8 +3561,6 @@ def ee_user_id():
 
 def build_asset_tree(limit=100):
 
-    import warnings
-
     import geeadd.ee_report as geeadd
 
     warnings.filterwarnings("ignore")
@@ -3692,7 +3686,6 @@ def build_repo_tree(out_dir=None, name="gee_repos"):
     Returns:
         tuple: Returns a tuple containing a tree widget, an output widget, and a tree dictionary containing nodes.
     """
-    import warnings
 
     warnings.filterwarnings("ignore")
 
@@ -6295,7 +6288,6 @@ def image_stats_by_zone(
         str | pd.DataFrame: The path to the output CSV file or a pandas DataFrame.
     """
     import pandas as pd
-    import warnings
 
     if region is not None:
         if isinstance(region, ee.Geometry):
@@ -7330,8 +7322,6 @@ def vector_styling(ee_object, column, palette, **kwargs):
 
 def is_GCS(in_shp):
 
-    import warnings
-
     import pycrs
 
     if not os.path.exists(in_shp):
@@ -7374,7 +7364,6 @@ def kml_to_shp(in_kml, out_shp, **kwargs):
         FileNotFoundError: The input KML could not be found.
         TypeError: The output must be a shapefile.
     """
-    import warnings
 
     warnings.filterwarnings("ignore")
 
@@ -7412,7 +7401,6 @@ def kml_to_geojson(in_kml, out_geojson=None, **kwargs):
         FileNotFoundError: The input KML could not be found.
         TypeError: The output must be a GeoJSON.
     """
-    import warnings
 
     warnings.filterwarnings("ignore")
 
@@ -7457,7 +7445,6 @@ def kml_to_ee(in_kml, **kwargs):
     Returns:
         object: ee.FeatureCollection
     """
-    import warnings
 
     warnings.filterwarnings("ignore")
 
@@ -7575,7 +7562,6 @@ def shp_to_gdf(in_shp, **kwargs):
     Returns:
         gpd.GeoDataFrame: geopandas.GeoDataFrame
     """
-    import warnings
 
     warnings.filterwarnings("ignore")
 
@@ -7747,7 +7733,6 @@ def vector_to_geojson(
     Returns:
         dict: A dictionary containing the GeoJSON.
     """
-    import warnings
 
     warnings.filterwarnings("ignore")
     check_package(name="geopandas", URL="https://geopandas.org")
@@ -9206,8 +9191,6 @@ def get_local_tile_layer(
         ipyleaflet.TileLayer | folium.TileLayer: An ipyleaflet.TileLayer or folium.TileLayer.
     """
 
-    import warnings
-
     warnings.filterwarnings("ignore")
     check_package(
         "localtileserver", URL="https://github.com/banesullivan/localtileserver"
@@ -9894,7 +9877,6 @@ def gdf_centroid(gdf, return_geom=False):
     Returns:
         list | gpd.GeoDataFrame: A bounding box in the form of a list (lon, lat) or GeoDataFrame.
     """
-    import warnings
 
     warnings.filterwarnings("ignore")
 
@@ -9959,7 +9941,7 @@ def numpy_to_cog(
         crs (str, optional): The coordinate reference system of the output COG file. Defaults to "epsg:4326".
 
     """
-    import warnings
+
     import numpy as np
     import rasterio
     from rasterio.io import MemoryFile
@@ -10053,7 +10035,6 @@ def view_lidar(filename, cmap="terrain", backend="pyvista", background=None, **k
         FileNotFoundError: If the file does not exist.
         ValueError: If the backend is not supported.
     """
-    import warnings
 
     warnings.filterwarnings("ignore")
     filename = os.path.abspath(filename)
@@ -10633,7 +10614,6 @@ def classify(
         pd.DataFrame, dict: A pandas dataframe with the classification applied and a legend dictionary.
     """
 
-    import warnings
     import mapclassify
     import numpy as np
     import pandas as pd
