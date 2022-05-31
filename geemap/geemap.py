@@ -2875,7 +2875,7 @@ class Map(ipyleaflet.Map):
             norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
         if "palette" in vis_keys:
-            hexcodes = to_hex_colors(vis_params["palette"])
+            hexcodes = to_hex_colors(check_cmap(vis_params["palette"]))
             if discrete:
                 cmap = mpl.colors.ListedColormap(hexcodes)
                 vals = np.linspace(vmin, vmax, cmap.N + 1)
