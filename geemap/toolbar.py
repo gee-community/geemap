@@ -465,7 +465,7 @@ def open_data_widget(m):
 
                         try:
                             if len(bands.value) > 0:
-                                band = int(bands.value)
+                                band = bands.value.split(",")
                             if len(vmin.value) > 0:
                                 vis_min = float(vmin.value)
                             if len(vmax.value) > 0:
