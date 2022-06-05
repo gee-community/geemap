@@ -422,7 +422,7 @@ class Map(folium.Map):
         control=True,
         shown=True,
         format="image/png",
-        transparent=False,
+        transparent=True,
         version="1.1.1",
         styles="",
         **kwargs,
@@ -438,7 +438,7 @@ class Map(folium.Map):
             control (str, optional): Adds the layer to the layer control. Defaults to True.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             format (str, optional): WMS image format (use ‘image/png’ for layers with transparency). Defaults to 'image/png'.
-            transparent (bool, optional): Whether the layer shall allow transparency. Defaults to False.
+            transparent (bool, optional): Whether the layer shall allow transparency. Defaults to True.
             version (str, optional): Version of the WMS service to use. Defaults to "1.1.1".
             styles (str, optional): Comma-separated list of WMS styles. Defaults to "".
         """
