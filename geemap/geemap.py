@@ -1692,8 +1692,8 @@ class Map(ipyleaflet.Map):
         layers,
         name=None,
         attribution="",
-        format="image/jpeg",
-        transparent=False,
+        format="image/png",
+        transparent=True,
         opacity=1.0,
         shown=True,
         **kwargs,
@@ -1705,8 +1705,8 @@ class Map(ipyleaflet.Map):
             layers (str): Comma-separated list of WMS layers to show.
             name (str, optional): The layer name to use on the layer control. Defaults to None.
             attribution (str, optional): The attribution of the data layer. Defaults to ''.
-            format (str, optional): WMS image format (use ‘image/png’ for layers with transparency). Defaults to 'image/jpeg'.
-            transparent (bool, optional): If True, the WMS service will return images with transparency. Defaults to False.
+            format (str, optional): WMS image format (use ‘image/png’ for layers with transparency). Defaults to 'image/png'.
+            transparent (bool, optional): If True, the WMS service will return images with transparency. Defaults to True.
             opacity (float, optional): The opacity of the layer. Defaults to 1.0.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
         """
