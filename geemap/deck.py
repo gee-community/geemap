@@ -38,16 +38,31 @@ class Map(pdk.Deck):
         object: pydeck.Deck object.
     """
 
-    def __init__(self, center=(20, 0), zoom=1.2, **kwargs):
+    def __init__(self, center=(20, 0), zoom=1.2, height=800, width=None, **kwargs):
         """Initialize a Map object.
 
         Args:
             center (tuple, optional): Center of the map in the format of (lat, lon). Defaults to (20, 0).
             zoom (int, optional): The map zoom level. Defaults to 1.2.
+            height (int, optional): The map height. Note that the height has no effect in Jupyter notebook. Only works for streamlit. Defaults to 800.
+            width (int, optional): The map width. Note that the height has no effect in Jupyter notebook. Only works for streamlit. Defaults to None.
         """
+        # Authenticates Earth Engine and initializes an Earth Engine session
+        if "ee_initialize" not in kwargs.keys():
+            kwargs["ee_initialize"] = True
+
+        if kwargs["ee_initialize"]:
+            ee_initialize()
+
+        kwargs.pop("ee_initialize")
+
         if "initial_view_state" not in kwargs:
             kwargs["initial_view_state"] = pdk.ViewState(
-                latitude=center[0], longitude=center[1], zoom=zoom
+                latitude=center[0],
+                longitude=center[1],
+                zoom=zoom,
+                height=height,
+                width=width,
             )
 
         if "map_style" not in kwargs:
@@ -77,6 +92,83 @@ class Map(pdk.Deck):
         except Exception as e:
             raise Exception(e)
 
+    def add_ee_layer(
+        self, ee_object, vis_params={}, name=None, shown=True, opacity=1.0, **kwargs
+    ):
+        """Adds a given EE object to the map as a layer.
+
+        Args:
+            ee_object (Collection|Feature|Image|MapId): The object to add to the map.
+            vis_params (dict, optional): The visualization parameters. Defaults to {}.
+            name (str, optional): The name of the layer. Defaults to 'Layer N'.
+            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
+        """
+        import ee
+        from box import Box
+
+        image = None
+
+        if vis_params is None:
+            vis_params = {}
+
+        if name is None:
+            layer_count = len(self.layers)
+            name = "Layer " + str(layer_count + 1)
+
+        if (
+            not isinstance(ee_object, ee.Image)
+            and not isinstance(ee_object, ee.ImageCollection)
+            and not isinstance(ee_object, ee.FeatureCollection)
+            and not isinstance(ee_object, ee.Feature)
+            and not isinstance(ee_object, ee.Geometry)
+        ):
+            err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
+            raise AttributeError(err_str)
+
+        if (
+            isinstance(ee_object, ee.geometry.Geometry)
+            or isinstance(ee_object, ee.feature.Feature)
+            or isinstance(ee_object, ee.featurecollection.FeatureCollection)
+        ):
+            features = ee.FeatureCollection(ee_object)
+
+            width = 2
+
+            if "width" in vis_params:
+                width = vis_params["width"]
+
+            color = "000000"
+
+            if "color" in vis_params:
+                color = vis_params["color"]
+
+            image_fill = features.style(**{"fillColor": color}).updateMask(
+                ee.Image.constant(0.5)
+            )
+            image_outline = features.style(
+                **{"color": color, "fillColor": "00000000", "width": width}
+            )
+
+            image = image_fill.blend(image_outline)
+        elif isinstance(ee_object, ee.image.Image):
+            image = ee_object
+        elif isinstance(ee_object, ee.imagecollection.ImageCollection):
+            image = ee_object.mosaic()
+
+        if "palette" in vis_params and isinstance(vis_params["palette"], Box):
+            try:
+                vis_params["palette"] = vis_params["palette"]["default"]
+            except Exception as e:
+                print("The provided palette is invalid.")
+                raise Exception(e)
+
+        map_id_dict = ee.Image(image).getMapId(vis_params)
+        url = map_id_dict["tile_fetcher"].url_format
+        self.add_layer(url, layer_name=name, **kwargs)
+
+    addLayer = add_ee_layer
+
     def add_basemap(self, basemap="HYBRID"):
         """Adds a basemap to the map.
 
@@ -99,9 +191,6 @@ class Map(pdk.Deck):
                         "resourceUri": "https://cdn.jsdelivr.net/gh/giswqs/pydeck_myTileLayer@master/dist/bundle.js",
                     }
                 ]
-                print(basemap)
-                print(basemaps[basemap])
-
                 layer = pdk.Layer("MyTileLayer", basemaps[basemap].url, basemap)
 
                 self.add_layer(layer)
