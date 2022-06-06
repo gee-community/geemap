@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.13.8 - Jun 5, 2022
+
+**New Features**:
+
+-   Added check_cmap function [#1084](https://github.com/giswqs/geemap/pull/1084)
+-   Added ESA and USGS basemaps [#1089](https://github.com/giswqs/geemap/pull/1089)
+-   Added Earth Engine support for pydeck [#1090](https://github.com/giswqs/geemap/pull/1090)
+
+**Improvement**:
+
+-   Fixed add local tile bug
+-   Fixed image_area_by_group bug
+-   Improved blend function
+-   Fixed links redirect
+-   Fixed basemap docs [#1075](https://github.com/giswqs/geemap/pull/1075)
+-   Upgraded add_raster function [#1083](https://github.com/giswqs/geemap/pull/1083)
+-   Fixed raster GUI band bug
+
 ## v0.13.7 - May 25, 2022
 
 **New Features**:
