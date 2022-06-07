@@ -1401,12 +1401,19 @@ class Map(ipyleaflet.Map):
         elif isinstance(ee_object, ee.imagecollection.ImageCollection):
             image = ee_object.mosaic()
 
-        if "palette" in vis_params and isinstance(vis_params["palette"], Box):
-            try:
-                vis_params["palette"] = vis_params["palette"]["default"]
-            except Exception as e:
-                print("The provided palette is invalid.")
-                raise Exception(e)
+        if "palette" in vis_params:
+            if isinstance(vis_params["palette"], Box):
+                try:
+                    vis_params["palette"] = vis_params["palette"]["default"]
+                except Exception as e:
+                    print("The provided palette is invalid.")
+                    raise Exception(e)
+            elif isinstance(vis_params["palette"], str):
+                vis_params["palette"] = check_cmap(vis_params["palette"])
+            elif not isinstance(vis_params["palette"], list):
+                raise ValueError(
+                    "The palette must be a list of colors or a string or a Box object."
+                )
 
         map_id_dict = ee.Image(image).getMapId(vis_params)
         tile_layer = ipyleaflet.TileLayer(
@@ -6898,6 +6905,20 @@ def ee_tile_layer(
         image = ee_object
     elif isinstance(ee_object, ee.imagecollection.ImageCollection):
         image = ee_object.mosaic()
+
+    if "palette" in vis_params:
+        if isinstance(vis_params["palette"], Box):
+            try:
+                vis_params["palette"] = vis_params["palette"]["default"]
+            except Exception as e:
+                print("The provided palette is invalid.")
+                raise Exception(e)
+        elif isinstance(vis_params["palette"], str):
+            vis_params["palette"] = check_cmap(vis_params["palette"])
+        elif not isinstance(vis_params["palette"], list):
+            raise ValueError(
+                "The palette must be a list of colors or a string or a Box object."
+            )
 
     map_id_dict = ee.Image(image).getMapId(vis_params)
     tile_layer = ipyleaflet.TileLayer(
