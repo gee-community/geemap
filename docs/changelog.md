@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.13.9 - Jun 7, 2022
+
+**Improvement**:
+
+-   Improved palette support, accepting a string palette (e.g., terrain, ndvi) vis_params for Map.addLayer().
+
 ## v0.13.8 - Jun 5, 2022
 
 **New Features**:
