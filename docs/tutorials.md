@@ -125,3 +125,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 111. Mapping the number of available satellite images for each pixel location ([notebook](https://geemap.org/notebooks/111_image_count))
 112. Adding basemaps to cartoee publication-quality maps ([notebook](https://geemap.org/notebooks/112_cartoee_basemap))
 113. Calculating global land cover area with only one line of code ([notebook](https://geemap.org/notebooks/113_image_area))
+114. Creating near real-time global 10-m land cover maps with Dynamic World ([notebook](https://geemap.org/notebooks/114_dynamic_world))
