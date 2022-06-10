@@ -56,6 +56,17 @@ builtin_legends = {
         "Snow/Ice": "F2FAFF",
         "Clouds": "C8C8C8",
     },
+    "Dynamic_World": {
+        "Water": "419BDF",
+        "Trees": "397D49",
+        "Grass": "88B053",
+        "Flooded vegetation": "7A87C6",
+        "Crops": "E49635",
+        "Shrub & Scrub": "DFC35A",
+        "Built-up area": "C4281B",
+        "Bare ground": "A59B8F",
+        "Snow & Ice": "B39FE1",
+    },
     # National Wetlands Inventory Legend: https://www.fws.gov/wetlands/data/Mapper-Wetlands-Legend.html
     "NWI": {
         "Freshwater- Forested and Shrub wetland": (0, 136, 55),
