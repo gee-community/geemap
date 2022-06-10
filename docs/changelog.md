@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.13.10 - Jun 10, 2022
+
+**New Features**:
+
+-   Added support for Dynamic World Land Cover [#1098](https://github.com/giswqs/geemap/pull/1098)
+
 ## v0.13.9 - Jun 7, 2022
 
 **Improvement**:
