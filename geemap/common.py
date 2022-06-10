@@ -2531,7 +2531,7 @@ def create_colorbar(
         heatmap.append(pair)
 
     def gaussian(x, a, b, c, d=0):
-        return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
+        return a * math.exp(-((x - b) ** 2) / (2 * c ** 2)) + d
 
     def pixel(x, width=100, map=[], spread=1):
         width = float(width)
@@ -10841,3 +10841,163 @@ def check_cmap(cmap):
         return cmap
     else:
         raise Exception(f"{cmap} is not a valid colormap.")
+
+
+def dynamic_world(
+    region,
+    start_date="2021-01-01",
+    end_date="2022-01-01",
+    clip=True,
+    reducer=None,
+    projection="EPSG:3857",
+    scale=10,
+    return_type="hillshade",
+):
+    """Create 10-m land cover composite based on Dynamic World. The source code is adapted from the following tutorial by Spatial Thoughts:
+    https://developers.google.com/earth-engine/tutorials/community/introduction-to-dynamic-world-pt-1
+
+    Args:
+        region (ee.Geometry | ee.FeatureCollection): The region of interest.
+        start_date (str | ee.Date): The start date of the query. Default to "2021-01-01".
+        end_date (str | ee.Date): The end date of the query. Default to "2022-01-01".
+        clip (bool, optional): Whether to clip the image to the region. Default to True.
+        reducer (ee.Reducer, optional): The reducer to be used. Default to None.
+        projection (str, optional): The projection to be used for creating hillshade. Default to "EPSG:3857".
+        scale (int, optional): The scale to be used for creating hillshade. Default to 10.
+        return_type (str, optional): The type of image to be returned. Can be one of 'hillshade', 'visualize', 'class', or 'probability'. Default to "hillshade".
+
+    Raises:
+        ValueError: _description_
+
+    Returns:
+        _type_: _description_
+    """
+    # https://developers.google.com/earth-engine/tutorials/community/introduction-to-dynamic-world-pt-1
+
+    if return_type not in ["hillshade", "visualize", "class", "probability"]:
+        raise ValueError(
+            f"{return_type} must be one of 'hillshade', 'visualize', 'class', or 'probability'."
+        )
+
+    if reducer is None:
+        reducer = ee.Reducer.mode()
+
+    dw = (
+        ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
+        .filter(ee.Filter.date(start_date, end_date))
+        .filter(ee.Filter.bounds(region))
+    )
+
+    # Create a Mode Composite
+    classification = dw.select("label")
+    dwComposite = classification.reduce(reducer)
+    if clip:
+        if isinstance(region, ee.Geometry):
+            dwComposite = dwComposite.clip(region)
+        elif isinstance(region, ee.FeatureCollection):
+            dwComposite = dwComposite.clipToCollection(region)
+        elif isinstance(region, ee.Feature):
+            dwComposite = dwComposite.clip(region.geometry())
+
+    dwVisParams = {
+        "min": 0,
+        "max": 8,
+        "palette": [
+            "#419BDF",
+            "#397D49",
+            "#88B053",
+            "#7A87C6",
+            "#E49635",
+            "#DFC35A",
+            "#C4281B",
+            "#A59B8F",
+            "#B39FE1",
+        ],
+    }
+
+    if return_type == "class":
+        return dwComposite
+    elif return_type == "visualize":
+        return dwComposite.visualize(**dwVisParams)
+    else:
+        # Create a Top-1 Probability Hillshade Visualization
+        probabilityBands = [
+            "water",
+            "trees",
+            "grass",
+            "flooded_vegetation",
+            "crops",
+            "shrub_and_scrub",
+            "built",
+            "bare",
+            "snow_and_ice",
+        ]
+
+        # Select probability bands
+        probabilityCol = dw.select(probabilityBands)
+
+        # Create a multi-band image with the average pixel-wise probability
+        # for each band across the time-period
+        meanProbability = probabilityCol.reduce(ee.Reducer.mean())
+
+        # Composites have a default projection that is not suitable
+        # for hillshade computation.
+        # Set a EPSG:3857 projection with 10m scale
+        proj = ee.Projection(projection).atScale(scale)
+        meanProbability = meanProbability.setDefaultProjection(proj)
+
+        # Create the Top1 Probability Hillshade
+        top1Probability = meanProbability.reduce(ee.Reducer.max())
+
+        if return_type == "probability":
+            return top1Probability
+        else:
+
+            top1Confidence = top1Probability.multiply(100).int()
+            hillshade = ee.Terrain.hillshade(top1Confidence).divide(255)
+            rgbImage = dwComposite.visualize(**dwVisParams).divide(255)
+            probabilityHillshade = rgbImage.multiply(hillshade)
+
+            return probabilityHillshade
+
+
+def dynamic_world_s2(
+    region,
+    start_date="2021-01-01",
+    end_date="2022-01-01",
+    clip=True,
+    cloud_pct=0.35,
+    reducer=None,
+):
+    """Create Sentinel-2 composite for the Dynamic World Land Cover product.
+
+    Args:
+        region (ee.Geometry | ee.FeatureCollection): The region of interest.
+        start_date (str | ee.Date): The start date of the query. Default to "2021-01-01".
+        end_date (str | ee.Date): The end date of the query. Default to "2022-01-01".
+        clip (bool, optional): Whether to clip the image to the region. Default to True.
+        cloud_pct (float, optional): The percentage of cloud cover to be used for filtering. Default to 0.35.
+        reducer (ee.Reducer, optional): The reducer to be used for creating image composite. Default to None.
+
+    Returns:
+        _type_: _description_
+    """
+    s2 = (
+        ee.ImageCollection("COPERNICUS/S2_HARMONIZED")
+        .filterDate(start_date, end_date)
+        .filterBounds(region)
+        .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", cloud_pct * 100))
+    )
+
+    if reducer is None:
+        reducer = ee.Reducer.median()
+
+    image = s2.reduce(reducer).rename(s2.first().bandNames())
+
+    if clip:
+        if isinstance(region, ee.Geometry):
+            image = image.clip(region)
+        elif isinstance(region, ee.FeatureCollection):
+            image = image.clipToCollection(region)
+
+    return image
