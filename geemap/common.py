@@ -10853,7 +10853,7 @@ def dynamic_world(
     scale=10,
     return_type="hillshade",
 ):
-    """Create 10-m land cover composite based on Dynamic World. The source code is adapated from the following tutorial by Spatial Thoughts:
+    """Create 10-m land cover composite based on Dynamic World. The source code is adapted from the following tutorial by Spatial Thoughts:
     https://developers.google.com/earth-engine/tutorials/community/introduction-to-dynamic-world-pt-1
 
     Args:
