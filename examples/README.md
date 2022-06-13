@@ -132,6 +132,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 112. Adding basemaps to cartoee publication-quality maps ([notebook](https://geemap.org/notebooks/112_cartoee_basemap))
 113. Calculating global land cover area with only one line of code ([notebook](https://geemap.org/notebooks/113_image_area))
 114. Creating near real-time global 10-m land cover maps with Dynamic World ([notebook](https://geemap.org/notebooks/114_dynamic_world))
+115. Comparing Dynamic World with ESA and ESRI global land cover data ([notebook](https://geemap.org/notebooks/115_land_cover))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
