@@ -110,7 +110,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 90. Creating 1-m resolution NAIP imagery timelapse ([notebook](https://geemap.org/notebooks/90_naip_timelapse))
 91. Adding Planetary Computer STAC item to the map ([notebook](https://geemap.org/notebooks/91_planetary_computer))
 92. Using plotly with Earth Engine ([notebook](https://geemap.org/notebooks/92_plotly))
-93. Getting pixel values from COG/STAC using the Inspector tool ([notebook](https://leafmap.org/notebooks/93_cog_inspector))
+93. Getting pixel values from COG/STAC using the Inspector tool ([notebook](https://geemap.org/notebooks/93_cog_inspector))
 94. Using heremap with Earth Engine ([notebook](https://geemap.org/notebooks/94_heremap))
 95. Creating Cloud Optimized GeoTIFF (COG) ([notebook](https://geemap.org/notebooks/95_create_cog))
 96. Exporting thousands of image chips in a few minutes ([notebook](https://geemap.org/notebooks/96_image_chips))
