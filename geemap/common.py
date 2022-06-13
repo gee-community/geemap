@@ -10844,10 +10844,10 @@ def check_cmap(cmap):
 
 
 def dynamic_world(
-    region,
-    start_date="2021-01-01",
-    end_date="2022-01-01",
-    clip=True,
+    region=None,
+    start_date="2020-01-01",
+    end_date="2021-01-01",
+    clip=False,
     reducer=None,
     projection="EPSG:3857",
     scale=10,
@@ -10858,19 +10858,16 @@ def dynamic_world(
 
     Args:
         region (ee.Geometry | ee.FeatureCollection): The region of interest.
-        start_date (str | ee.Date): The start date of the query. Default to "2021-01-01".
-        end_date (str | ee.Date): The end date of the query. Default to "2022-01-01".
-        clip (bool, optional): Whether to clip the image to the region. Default to True.
+        start_date (str | ee.Date): The start date of the query. Default to "2020-01-01".
+        end_date (str | ee.Date): The end date of the query. Default to "2021-01-01".
+        clip (bool, optional): Whether to clip the image to the region. Default to False.
         reducer (ee.Reducer, optional): The reducer to be used. Default to None.
         projection (str, optional): The projection to be used for creating hillshade. Default to "EPSG:3857".
         scale (int, optional): The scale to be used for creating hillshade. Default to 10.
         return_type (str, optional): The type of image to be returned. Can be one of 'hillshade', 'visualize', 'class', or 'probability'. Default to "hillshade".
 
-    Raises:
-        ValueError: _description_
-
     Returns:
-        _type_: _description_
+        ee.Image: The image with the specified return_type.
     """
     # https://developers.google.com/earth-engine/tutorials/community/introduction-to-dynamic-world-pt-1
 
@@ -10882,16 +10879,19 @@ def dynamic_world(
     if reducer is None:
         reducer = ee.Reducer.mode()
 
-    dw = (
-        ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
-        .filter(ee.Filter.date(start_date, end_date))
-        .filter(ee.Filter.bounds(region))
+    dw = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1").filter(
+        ee.Filter.date(start_date, end_date)
     )
+
+    if isinstance(region, ee.FeatureCollection) or isinstance(region, ee.Geometry):
+        dw = dw.filterBounds(region)
+    else:
+        raise ValueError("region must be an ee.FeatureCollection or ee.Geometry.")
 
     # Create a Mode Composite
     classification = dw.select("label")
     dwComposite = classification.reduce(reducer)
-    if clip:
+    if clip and (region is not None):
         if isinstance(region, ee.Geometry):
             dwComposite = dwComposite.clip(region)
         elif isinstance(region, ee.FeatureCollection):
@@ -10962,39 +10962,43 @@ def dynamic_world(
 
 
 def dynamic_world_s2(
-    region,
-    start_date="2021-01-01",
-    end_date="2022-01-01",
-    clip=True,
+    region=None,
+    start_date="2020-01-01",
+    end_date="2021-01-01",
+    clip=False,
     cloud_pct=0.35,
     reducer=None,
 ):
     """Create Sentinel-2 composite for the Dynamic World Land Cover product.
 
     Args:
-        region (ee.Geometry | ee.FeatureCollection): The region of interest.
-        start_date (str | ee.Date): The start date of the query. Default to "2021-01-01".
-        end_date (str | ee.Date): The end date of the query. Default to "2022-01-01".
-        clip (bool, optional): Whether to clip the image to the region. Default to True.
+        region (ee.Geometry | ee.FeatureCollection): The region of interest. Default to None.
+        start_date (str | ee.Date): The start date of the query. Default to "2020-01-01".
+        end_date (str | ee.Date): The end date of the query. Default to "2021-01-01".
+        clip (bool, optional): Whether to clip the image to the region. Default to False.
         cloud_pct (float, optional): The percentage of cloud cover to be used for filtering. Default to 0.35.
         reducer (ee.Reducer, optional): The reducer to be used for creating image composite. Default to None.
 
     Returns:
-        _type_: _description_
+        ee.Image: The Sentinel-2 composite.
     """
     s2 = (
         ee.ImageCollection("COPERNICUS/S2_HARMONIZED")
         .filterDate(start_date, end_date)
-        .filterBounds(region)
         .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", cloud_pct * 100))
     )
+
+    if isinstance(region, ee.FeatureCollection) or isinstance(region, ee.Geometry):
+        s2 = s2.filterBounds(region)
+    else:
+        raise ValueError("region must be an ee.FeatureCollection or ee.Geometry.")
 
     if reducer is None:
         reducer = ee.Reducer.median()
 
     image = s2.reduce(reducer).rename(s2.first().bandNames())
 
-    if clip:
+    if clip and (region is not None):
         if isinstance(region, ee.Geometry):
             image = image.clip(region)
         elif isinstance(region, ee.FeatureCollection):
