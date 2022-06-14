@@ -2390,27 +2390,40 @@ class Map(ipyleaflet.Map):
     def ts_inspector(
         self,
         left_ts,
-        right_ts,
-        left_names,
-        right_names,
+        left_names=None,
         left_vis={},
-        right_vis={},
+        right_ts=None,
+        right_names=None,
+        right_vis=None,
         width="130px",
+        date_format="YYYY-MM-dd",
         **kwargs,
     ):
         """Creates a split-panel map for inspecting timeseries images.
 
         Args:
             left_ts (object): An ee.ImageCollection to show on the left panel.
-            right_ts (object): An ee.ImageCollection to show on the right panel.
             left_names (list): A list of names to show under the left dropdown.
-            right_names (list): A list of names to show under the right dropdown.
             left_vis (dict, optional): Visualization parameters for the left layer. Defaults to {}.
+            right_ts (object): An ee.ImageCollection to show on the right panel.
+            right_names (list): A list of names to show under the right dropdown.
             right_vis (dict, optional): Visualization parameters for the right layer. Defaults to {}.
             width (str, optional): The width of the dropdown list. Defaults to '130px'.
         """
         controls = self.controls
         layers = self.layers
+
+        if left_names is None:
+            left_names = image_dates(left_ts, date_format=date_format).getInfo()
+
+        if right_ts is None:
+            right_ts = left_ts
+
+        if right_names is None:
+            right_names = left_names
+
+        if right_vis is None:
+            right_vis = left_vis
 
         left_count = int(left_ts.size().getInfo())
         right_count = int(right_ts.size().getInfo())

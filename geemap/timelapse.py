@@ -1744,10 +1744,10 @@ def landsat_timeseries(
         # Bit 2 - Cirrus
         # Bit 3 - Cloud
         # Bit 4 - Cloud Shadow
-        qaMask = image.select('QA_PIXEL').bitwiseAnd(int('11111', 2)).eq(0)
+        qaMask = image.select("QA_PIXEL").bitwiseAnd(int("11111", 2)).eq(0)
 
         # Apply the scaling factors to the appropriate bands.
-        opticalBands = image.select('SR_B.').multiply(0.0000275).add(-0.2)
+        opticalBands = image.select("SR_B.").multiply(0.0000275).add(-0.2)
 
         # Replace the original bands with the scaled ones and apply the masks.
         return image.addBands(opticalBands, None, True).updateMask(qaMask)
@@ -1758,7 +1758,7 @@ def landsat_timeseries(
         if apply_fmask:
             img = fmask(img)
         else:
-            img = img.select('SR_B.').multiply(0.0000275).add(-0.2)
+            img = img.select("SR_B.").multiply(0.0000275).add(-0.2)
         img = renameOli(img)
         return ee.Image(img.copyProperties(orig, orig.propertyNames())).resample(
             "bicubic"
@@ -1770,7 +1770,7 @@ def landsat_timeseries(
         if apply_fmask:
             img = fmask(img)
         else:
-            img = img.select('SR_B.').multiply(0.0000275).add(-0.2)
+            img = img.select("SR_B.").multiply(0.0000275).add(-0.2)
         img = renameEtm(img)
         return ee.Image(img.copyProperties(orig, orig.propertyNames())).resample(
             "bicubic"
@@ -4130,3 +4130,138 @@ def modis_ocean_color_timelapse(
     )
 
     return out_gif
+
+
+def dynamic_world_timeseries(
+    region,
+    start_date="2016-01-01",
+    end_date="2021-12-31",
+    frequency="year",
+    reducer="mode",
+    drop_empty=True,
+    date_format=None,
+    return_type="hillshade",
+):
+    """Create Dynamic World timeseries.
+
+    Args:
+        region (ee.Geometry | ee.FeatureCollection): The region of interest.
+        start_date (str | ee.Date): The start date of the query. Default to "2016-01-01".
+        end_date (str | ee.Date): The end date of the query. Default to "2021-12-31".
+        frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
+        reducer (str, optional): The reducer to be used. Defaults to "mode".
+        drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
+        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
+        return_type (str, optional): The type of image to be returned. Can be one of 'hillshade', 'visualize', 'class', or 'probability'. Default to "hillshade".
+
+    Returns:
+        ee.ImageCollection: An ImageCollection of the Dynamic World land cover timeseries.
+    """
+    if return_type not in ["hillshade", "visualize", "class", "probability"]:
+        raise ValueError(
+            f"{return_type} must be one of 'hillshade', 'visualize', 'class', or 'probability'."
+        )
+
+    dw = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1").filter(
+        ee.Filter.date(start_date, end_date)
+    )
+
+    if isinstance(region, ee.FeatureCollection) or isinstance(region, ee.Geometry):
+        dw = dw.filterBounds(region)
+    else:
+        raise ValueError("region must be an ee.FeatureCollection or ee.Geometry.")
+
+    collection = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1").select("label")
+
+    dwVisParams = {
+        "min": 0,
+        "max": 8,
+        "palette": [
+            "#419BDF",
+            "#397D49",
+            "#88B053",
+            "#7A87C6",
+            "#E49635",
+            "#DFC35A",
+            "#C4281B",
+            "#A59B8F",
+            "#B39FE1",
+        ],
+    }
+
+    images = create_timeseries(
+        collection,
+        start_date,
+        end_date,
+        region,
+        None,
+        frequency,
+        reducer,
+        drop_empty,
+        date_format,
+    )
+
+    if return_type == "class":
+        return images
+    elif return_type == "visualize":
+        result = images.map(lambda img: img.visualize(**dwVisParams))
+        return result
+    else:
+        # Create a Top-1 Probability Hillshade Visualization
+        probabilityBands = [
+            "water",
+            "trees",
+            "grass",
+            "flooded_vegetation",
+            "crops",
+            "shrub_and_scrub",
+            "built",
+            "bare",
+            "snow_and_ice",
+        ]
+
+        # Select probability bands
+        probabilityCol = dw.select(probabilityBands)
+
+        prob_col = create_timeseries(
+            probabilityCol,
+            start_date,
+            end_date,
+            region,
+            None,
+            frequency,
+            "mean",
+            drop_empty,
+            date_format,
+        )
+
+        prob_images = ee.ImageCollection(
+            prob_col.map(
+                lambda img: img.reduce(ee.Reducer.max()).set(
+                    "system:time_start", img.get("system:time_start")
+                )
+            )
+        )
+
+        if return_type == "probability":
+            return prob_images
+
+        elif return_type == "hillshade":
+            count = prob_images.size()
+            nums = ee.List.sequence(0, count.subtract(1))
+
+            def create_hillshade(d):
+                proj = ee.Projection("EPSG:3857").atScale(10)
+                img = ee.Image(images.toList(images.size()).get(d))
+                prob_img = ee.Image(prob_images.toList(prob_images.size()).get(d))
+                prob_img = prob_img.setDefaultProjection(proj)
+                top1Confidence = prob_img.multiply(100).int()
+                hillshade = ee.Terrain.hillshade(top1Confidence).divide(255)
+                rgbImage = img.visualize(**dwVisParams).divide(255)
+                probabilityHillshade = rgbImage.multiply(hillshade)
+                return probabilityHillshade.set(
+                    "system:time_start", img.get("system:time_start")
+                )
+
+            result = ee.ImageCollection(nums.map(create_hillshade))
+            return result
