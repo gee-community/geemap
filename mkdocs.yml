@@ -198,6 +198,7 @@ nav:
           - notebooks/113_image_area.ipynb
           - notebooks/114_dynamic_world.ipynb
           - notebooks/115_land_cover.ipynb
+          - notebooks/116_land_cover_timeseries.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
