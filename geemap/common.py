@@ -10869,7 +10869,6 @@ def dynamic_world(
     Returns:
         ee.Image: The image with the specified return_type.
     """
-    # https://developers.google.com/earth-engine/tutorials/community/introduction-to-dynamic-world-pt-1
 
     if return_type not in ["hillshade", "visualize", "class", "probability"]:
         raise ValueError(
