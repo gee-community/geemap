@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.13.11 - Jun 14, 2022
+
+**New Features**:
+
+-   Added function for creating Dynamic World land cover timeseries [#1108](https://github.com/giswqs/geemap/pull/1108)
+-   Added land cover comparison notebook [#1106](https://github.com/giswqs/geemap/pull/1106)
+
 ## v0.13.10 - Jun 10, 2022
 
 **New Features**:
