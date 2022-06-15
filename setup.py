@@ -77,6 +77,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/giswqs/geemap",
-    version="0.13.10",
+    version="0.13.11",
     zip_safe=False,
 )
