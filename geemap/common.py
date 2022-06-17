@@ -6058,6 +6058,8 @@ def image_area_by_group(
     if not isinstance(groups, list):
         groups = groups.getInfo()
 
+    groups.sort(key=int)
+
     for group in groups:
         if verbose:
             print(f"Calculating area for group {group} ...")
