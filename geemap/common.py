@@ -11074,3 +11074,212 @@ def dynamic_world_s2(
             image = image.clipToCollection(region)
 
     return image
+
+
+def download_ee_image(
+    image,
+    filename,
+    region=None,
+    crs=None,
+    scale=None,
+    resampling=None,
+    dtype=None,
+    overwrite=True,
+    num_threads=None,
+    **kwargs,
+):
+    """Download an Earth Engine Image as a GeoTIFF. Images larger than the `Earth Engine size limit are split and downloaded as
+        separate tiles, then re-assembled into a single GeoTIFF. See https://github.com/dugalh/geedim/blob/main/geedim/download.py#L574
+
+    Args:
+        image (ee.Image): The image to be downloaded.
+        filename (str): Name of the destination file.
+        region (ee.Geometry, optional): Region defined by geojson polygon in WGS84. Defaults to the entire image granule.
+        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS.  Where image bands have different CRSs, all are
+            re-projected to this CRS. Defaults to the CRS of the minimum scale band.
+        scale (float, optional): Resample image(s) to this pixel scale (size) (m).  Where image bands have different scales,
+            all are resampled to this scale.  Defaults to the minimum scale of image bands.
+        resampling (ResamplingMethod, optional): Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
+        dtype (str, optional): Convert to this data type (`uint8`, `int8`, `uint16`, `int16`, `uint32`, `int32`, `float32`
+            or `float64`).  Defaults to auto select a minimum size type that can represent the range of pixel values.
+        overwrite (bool, optional): Overwrite the destination file if it exists. Defaults to True.
+        num_threads (int, optional): Number of tiles to download concurrently. Defaults to a sensible auto value.
+
+    """
+
+    try:
+        import geedim as gd
+    except ImportError:
+        raise ImportError(
+            "Please install geedim using `mamba install -c conda-forge geedim`"
+        )
+
+    if not isinstance(image, ee.Image):
+        raise ValueError("image must be an ee.Image.")
+
+    if region is not None:
+        kwargs["region"] = region
+
+    if crs is not None:
+        kwargs["crs"] = crs
+
+    if scale is not None:
+        kwargs["scale"] = scale
+
+    if resampling is not None:
+        kwargs["resampling"] = resampling
+
+    if dtype is not None:
+        kwargs["dtype"] = dtype
+
+    img = gd.download.BaseImage(image)
+    img.download(filename, overwrite=overwrite, num_threads=num_threads, **kwargs)
+
+
+def download_ee_image_tiles(
+    image,
+    features,
+    out_dir=None,
+    prefix=None,
+    crs=None,
+    scale=None,
+    resampling=None,
+    dtype=None,
+    overwrite=True,
+    num_threads=None,
+    **kwargs,
+):
+
+    """Download an Earth Engine Image as small tiles based on ee.FeatureCollection. Images larger than the `Earth Engine size limit are split and downloaded as
+        separate tiles, then re-assembled into a single GeoTIFF. See https://github.com/dugalh/geedim/blob/main/geedim/download.py#L574
+
+    Args:
+        image (ee.Image): The image to be downloaded.
+        features (ee.FeatureCollection): The features to loop through to download image.
+        out_dir (str, optional): The output directory. Defaults to None.
+        prefix (str, optional): The prefix for the output file. Defaults to None.
+        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS.  Where image bands have different CRSs, all are
+            re-projected to this CRS. Defaults to the CRS of the minimum scale band.
+        scale (float, optional): Resample image(s) to this pixel scale (size) (m).  Where image bands have different scales,
+            all are resampled to this scale.  Defaults to the minimum scale of image bands.
+        resampling (ResamplingMethod, optional): Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
+        dtype (str, optional): Convert to this data type (`uint8`, `int8`, `uint16`, `int16`, `uint32`, `int32`, `float32`
+            or `float64`).  Defaults to auto select a minimum size type that can represent the range of pixel values.
+        overwrite (bool, optional): Overwrite the destination file if it exists. Defaults to True.
+        num_threads (int, optional): Number of tiles to download concurrently. Defaults to a sensible auto value.
+
+    """
+
+    if not isinstance(features, ee.FeatureCollection):
+        raise ValueError("features must be an ee.FeatureCollection.")
+
+    if out_dir is None:
+        out_dir = os.getcwd()
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    if prefix is None:
+        prefix = ""
+
+    count = features.size().getInfo()
+    collection = features.toList(count)
+
+    for i in range(count):
+        region = ee.Feature(collection.get(i)).geometry()
+        filename = os.path.join(
+            out_dir, "{}{}.tif".format(prefix, str(i + 1).zfill(len(str(count))))
+        )
+        print(f"Downloading {i + 1}/{count}: {filename}")
+        download_ee_image(
+            image,
+            filename,
+            region,
+            crs,
+            scale,
+            resampling,
+            dtype,
+            overwrite,
+            num_threads,
+            **kwargs,
+        )
+
+
+def download_ee_image_collection(
+    collection,
+    out_dir=None,
+    filenames=None,
+    region=None,
+    crs=None,
+    scale=None,
+    resampling=None,
+    dtype=None,
+    overwrite=True,
+    num_threads=None,
+    **kwargs,
+):
+    """Download an Earth Engine ImageCollection as GeoTIFFs. Images larger than the `Earth Engine size limit are split and downloaded as
+        separate tiles, then re-assembled into a single GeoTIFF. See https://github.com/dugalh/geedim/blob/main/geedim/download.py#L574
+
+    Args:
+        collection (ee.ImageCollection): The image collection to be downloaded.
+        out_dir (str, optional): The directory to save the downloaded images. Defaults to the current directory.
+        filenames (list, optional): A list of filenames to use for the downloaded images. Defaults to the image ID.
+        region (ee.Geometry, optional): Region defined by geojson polygon in WGS84. Defaults to the entire image granule.
+        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS.  Where image bands have different CRSs, all are
+            re-projected to this CRS. Defaults to the CRS of the minimum scale band.
+        scale (float, optional): Resample image(s) to this pixel scale (size) (m).  Where image bands have different scales,
+            all are resampled to this scale.  Defaults to the minimum scale of image bands.
+        resampling (ResamplingMethod, optional): Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
+        dtype (str, optional): Convert to this data type (`uint8`, `int8`, `uint16`, `int16`, `uint32`, `int32`, `float32`
+            or `float64`).  Defaults to auto select a minimum size type that can represent the range of pixel values.
+        overwrite (bool, optional): Overwrite the destination file if it exists. Defaults to True.
+        num_threads (int, optional): Number of tiles to download concurrently. Defaults to a sensible auto value.
+
+    """
+
+    if not isinstance(collection, ee.ImageCollection):
+        raise ValueError("ee_object must be an ee.ImageCollection.")
+
+    if out_dir is None:
+        out_dir = os.getcwd()
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    try:
+
+        count = int(collection.size().getInfo())
+        print(f"Total number of images: {count}\n")
+
+        if filenames is not None:
+            if len(filenames) != count:
+                raise ValueError(
+                    f"The number of filenames must match the number of image: {count}"
+                )
+
+        for i in range(0, count):
+            image = ee.Image(collection.toList(count).get(i))
+            if filenames is not None:
+                name = filenames[i]
+                if not name.endswith(".tif"):
+                    name = name + ".tif"
+            else:
+                name = image.get("system:index").getInfo() + ".tif"
+            filename = os.path.join(os.path.abspath(out_dir), name)
+            print(f"Downloading {i + 1}/{count}: {name}")
+            download_ee_image(
+                image,
+                filename,
+                region,
+                crs,
+                scale,
+                resampling,
+                dtype,
+                overwrite,
+                num_threads,
+                **kwargs,
+            )
+
+    except Exception as e:
+        raise Exception(f"Error downloading image collection: {e}")
