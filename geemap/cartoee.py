@@ -1010,7 +1010,7 @@ def add_scale_bar_lite(
             if str(x)[0] in ["1", "2", "5"]:
                 return int(x)
             else:
-                return scale_number(x - 10 ** ndim)
+                return scale_number(x - 10**ndim)
 
         length = scale_number(length)
         num = length

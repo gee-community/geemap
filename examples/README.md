@@ -134,6 +134,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 114. Creating near real-time global 10-m land cover maps with Dynamic World ([notebook](https://geemap.org/notebooks/114_dynamic_world))
 115. Comparing Dynamic World with ESA and ESRI global land cover data ([notebook](https://geemap.org/notebooks/115_land_cover))
 116. Creating global land cover timeseries ([notebook](https://geemap.org/notebooks/116_land_cover_timeseries))
+117. Creating a fishnet based on an input vector dataset ([notebook](https://geemap.org/notebooks/117_fishnet))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 

@@ -2531,7 +2531,7 @@ def create_colorbar(
         heatmap.append(pair)
 
     def gaussian(x, a, b, c, d=0):
-        return a * math.exp(-((x - b) ** 2) / (2 * c ** 2)) + d
+        return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
 
     def pixel(x, width=100, map=[], spread=1):
         width = float(width)
@@ -6459,6 +6459,74 @@ def latlon_grid(lat_step=1.0, lon_step=1.0, west=-180, east=180, south=-85, nort
         return ee.FeatureCollection(longitudes.map(create_lon_features))
 
     return ee.FeatureCollection(latitudes.map(create_lat_feature)).flatten()
+
+
+def fishnet(
+    data,
+    h_interval=1.0,
+    v_interval=1.0,
+    rows=None,
+    cols=None,
+    delta=1.0,
+    intersect=True,
+    output=None,
+    **kwarges,
+):
+    """Create a fishnet (i.e., rectangular grid) based on an input vector dataset.
+
+    Args:
+        data (str | ee.Geometry | ee.Feature | ee.FeatureCollection): The input vector dataset. It can be a file path, HTTP URL, ee.Geometry, ee.Feature, or ee.FeatureCollection.
+        h_interval (float, optional): The horizontal interval in degrees. It will be ignored if rows and cols are specified. Defaults to 1.0.
+        v_interval (float, optional): The vertical interval in degrees. It will be ignored if rows and cols are specified. Defaults to 1.0.
+        rows (int, optional): The number of rows. Defaults to None.
+        cols (int, optional): The number of columns. Defaults to None.
+        delta (float, optional): The buffer distance in degrees. Defaults to 1.0.
+        intersect (bool, optional): If True, the output will be a feature collection of intersecting polygons. Defaults to True.
+        output (str, optional): The output file path. Defaults to None.
+
+
+    Returns:
+        ee.FeatureCollection: The fishnet as an ee.FeatureCollection.
+    """
+    if isinstance(data, str):
+
+        data = vector_to_ee(data, **kwarges)
+
+    if isinstance(data, ee.FeatureCollection) or isinstance(data, ee.Feature):
+        data = data.geometry()
+    elif isinstance(data, ee.Geometry):
+        pass
+    else:
+        raise ValueError(
+            "data must be a string, ee.FeatureCollection, ee.Feature, or ee.Geometry."
+        )
+
+    coords = data.bounds().coordinates().getInfo()
+
+    west = coords[0][0][0]
+    east = coords[0][1][0]
+    south = coords[0][0][1]
+    north = coords[0][2][1]
+
+    if rows is not None and cols is not None:
+        v_interval = (north - south) / rows
+        h_interval = (east - west) / cols
+
+    # west = west - delta * h_interval
+    east = east + delta * h_interval
+    # south = south - delta * v_interval
+    north = north + delta * v_interval
+
+    grids = latlon_grid(v_interval, h_interval, west, east, south, north)
+
+    if intersect:
+        grids = grids.filterBounds(data)
+
+    if output is not None:
+        ee_export_vector(grids, output)
+
+    else:
+        return grids
 
 
 def extract_values_to_points(
