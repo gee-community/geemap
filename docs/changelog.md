@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.13.11 - Jun 18, 2022
+
+**New Features**:
+
+-   Added fishnet function [#1111](https://github.com/giswqs/geemap/discussions/1111)
+-   Added download image with geedim [#1110](https://github.com/giswqs/geemap/pull/1113)
+
+**Improvement**:
+
+-   Improved zonal stats
+
 ## v0.13.11 - Jun 14, 2022
 
 **New Features**:
