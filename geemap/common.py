@@ -6470,7 +6470,7 @@ def fishnet(
     delta=1.0,
     intersect=True,
     output=None,
-    **kwarges,
+    **kwargs,
 ):
     """Create a fishnet (i.e., rectangular grid) based on an input vector dataset.
 
@@ -6490,7 +6490,7 @@ def fishnet(
     """
     if isinstance(data, str):
 
-        data = vector_to_ee(data, **kwarges)
+        data = vector_to_ee(data, **kwargs)
 
     if isinstance(data, ee.FeatureCollection) or isinstance(data, ee.Feature):
         data = data.geometry()
