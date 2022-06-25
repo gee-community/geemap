@@ -151,6 +151,7 @@ def ee_initialize(token_name="EARTHENGINE_TOKEN", auth_mode="notebook"):
         token_name (str, optional): The name of the Earth Engine token. Defaults to "EARTHENGINE_TOKEN".
         auth_mode (str, optional): The authentication mode, can be one of paste,notebook,gcloud,appdefault. Defaults to "notebook".
     """
+    import httplib2
 
     if ee.data._credentials is None:
         try:
@@ -184,10 +185,10 @@ def ee_initialize(token_name="EARTHENGINE_TOKEN", auth_mode="notebook"):
                     if is_drive_mounted():
                         copy_credentials_to_drive()
 
-            ee.Initialize()
+            ee.Initialize(http_transport=httplib2.Http())
         except Exception:
             ee.Authenticate(auth_mode=auth_mode)
-            ee.Initialize()
+            ee.Initialize(http_transport=httplib2.Http())
 
 
 def set_proxy(port=1080, ip="http://127.0.0.1", timeout=300):
