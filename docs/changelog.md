@@ -1,6 +1,13 @@
 # Changelog
 
-## v0.13.11 - Jun 18, 2022
+## v0.14.1 - Jun 26, 2022
+
+**Improvement**:
+
+-   Added support for Python 3.10 [#1119](https://github.com/giswqs/geemap/pull/1119)
+-   Made mapclassify pkg optional [#1120](https://github.com/giswqs/geemap/pull/1120)
+
+## v0.14.0 - Jun 18, 2022
 
 **New Features**:
 
