@@ -2171,8 +2171,7 @@ def ee_export_image(
     try:
         print("Generating URL ...")
         params = {"name": name, "filePerBand": file_per_band}
-        if scale is None:
-            scale = ee_object.projection().nominalScale().multiply(10)
+
         params["scale"] = scale
         if region is None:
             region = ee_object.geometry()
@@ -3379,7 +3378,7 @@ def create_colorbar(
         heatmap.append(pair)
 
     def gaussian(x, a, b, c, d=0):
-        return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
+        return a * math.exp(-((x - b) ** 2) / (2 * c ** 2)) + d
 
     def pixel(x, width=100, map=[], spread=1):
         width = float(width)
