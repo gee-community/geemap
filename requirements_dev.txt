@@ -11,6 +11,7 @@ ipynb-py-convert
 ipyvtklink
 laspy
 localtileserver
+mapclassify>=2.4.0
 mss
 netcdf4
 palettable

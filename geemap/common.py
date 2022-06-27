@@ -10685,12 +10685,18 @@ def classify(
         pd.DataFrame, dict: A pandas dataframe with the classification applied and a legend dictionary.
     """
 
-    import mapclassify
     import numpy as np
     import pandas as pd
     import geopandas as gpd
     import matplotlib as mpl
     import matplotlib.pyplot as plt
+
+    try:
+        import mapclassify
+    except ImportError:
+        raise ImportError(
+            'mapclassify is required for this function. Install with "pip install mapclassify".'
+        )
 
     if isinstance(data, gpd.GeoDataFrame) or isinstance(data, pd.DataFrame):
         df = data
