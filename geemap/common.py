@@ -1588,6 +1588,13 @@ def ee_export_vector_to_asset(
     if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
         return
 
+    if isinstance(assetId, str):
+        if assetId.startswith("users/") or assetId.startswith("projects/"):
+            pass
+        else:
+            assetId = f"{ee_user_id()}/{assetId}"
+
+    print(assetId)
     print(
         f"Exporting {description}... Please check the Task Manager from the JavaScript Code Editor."
     )
@@ -2426,6 +2433,12 @@ def ee_export_image_to_asset(
     if not isinstance(image, ee.Image):
         raise ValueError("Input image must be an instance of ee.Image")
 
+    if isinstance(assetId, str):
+        if assetId.startswith("users/") or assetId.startswith("projects/"):
+            pass
+        else:
+            assetId = f"{ee_user_id()}/{assetId}"
+
     task = ee.batch.Export.image.toAsset(
         image,
         description,
@@ -2644,7 +2657,7 @@ def ee_export_image_collection_to_drive(
 def ee_export_image_collection_to_asset(
     ee_object,
     descriptions=None,
-    assetId=None,
+    assetIds=None,
     pyramidingPolicy=None,
     dimensions=None,
     region=None,
@@ -2659,7 +2672,7 @@ def ee_export_image_collection_to_asset(
     Args:
         ee_object: The image collection to export.
         descriptions: A list of human-readable names of the tasks.
-        assetId: The destination asset ID.
+        assetIds: The destination asset ID.
         pyramidingPolicy: The pyramiding policy to apply to each band in the
             image, a dictionary keyed by band name. Values must be
             one of: "mean", "sample", "min", "max", or "mode".
@@ -2703,6 +2716,9 @@ def ee_export_image_collection_to_asset(
         if descriptions is None:
             descriptions = ee_object.aggregate_array("system:index").getInfo()
 
+        if assetIds is None:
+            assetIds = descriptions
+
         images = ee_object.toList(count)
 
         if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
@@ -2711,7 +2727,8 @@ def ee_export_image_collection_to_asset(
         for i in range(0, count):
             image = ee.Image(images.get(i))
             description = descriptions[i]
-            ee_export_image_to_drive(
+            assetId = assetIds[i]
+            ee_export_image_to_asset(
                 image,
                 description,
                 assetId,
@@ -3378,7 +3395,7 @@ def create_colorbar(
         heatmap.append(pair)
 
     def gaussian(x, a, b, c, d=0):
-        return a * math.exp(-((x - b) ** 2) / (2 * c ** 2)) + d
+        return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
 
     def pixel(x, width=100, map=[], spread=1):
         width = float(width)
