@@ -10098,12 +10098,16 @@ def get_local_tile_layer(
     nodata=None,
     attribution=None,
     tile_format="ipyleaflet",
-    layer_name=None,
-    get_center=False,
-    get_bounds=False,
+    layer_name="Local COG",
+    return_client=False,
     **kwargs,
 ):
     """Generate an ipyleaflet/folium TileLayer from a local raster dataset or remote Cloud Optimized GeoTIFF (COG).
+        If you are using this function in JupyterHub on a remote server (e.g., Binder, Microsoft Planetary Computer),
+        try adding to following two lines to the beginning of the notebook if the raster does not render properly.
+
+        import os
+        os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = f'{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}'
 
     Args:
         source (str): The path to the GeoTIFF file or the URL of the Cloud Optimized GeoTIFF.
@@ -10118,17 +10122,27 @@ def get_local_tile_layer(
         attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
         tile_format (str, optional): The tile layer format. Can be either ipyleaflet or folium. Defaults to "ipyleaflet".
         layer_name (str, optional): The layer name to use. Defaults to None.
-        get_center (bool, optional): If True, the center of the layer will be returned. Defaults to False.
-        get_bounds (bool, optional): If True, the bounds [minx, miny, maxx, maxy] of the layer will be returned. Defaults to False.
+        return_client (bool, optional): If True, the tile client will be returned. Defaults to False.
 
     Returns:
         ipyleaflet.TileLayer | folium.TileLayer: An ipyleaflet.TileLayer or folium.TileLayer.
     """
 
+    import warnings
+
     warnings.filterwarnings("ignore")
+
+    output = widgets.Output()
+
     check_package(
         "localtileserver", URL="https://github.com/banesullivan/localtileserver"
     )
+
+    # Make it compatible with binder and JupyterHub
+    if os.environ.get("JUPYTERHUB_SERVICE_PREFIX") is not None:
+        os.environ[
+            "LOCALTILESERVER_CLIENT_PREFIX"
+        ] = f"{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}"
 
     from localtileserver import (
         get_leaflet_tile_layer,
@@ -10138,16 +10152,18 @@ def get_local_tile_layer(
 
     if isinstance(source, str):
         if not source.startswith("http"):
-            source = os.path.abspath(source)
+            if source.startswith("~"):
+                source = os.path.expanduser(source)
+            else:
+                source = os.path.abspath(source)
             if not os.path.exists(source):
                 raise ValueError("The source path does not exist.")
     else:
         raise ValueError("The source must either be a string or TileClient")
 
     if isinstance(palette, str):
-        from .colormaps import get_palette
 
-        palette = get_palette(palette, hashtag=True)
+        palette = get_palette_colors(palette, hashtag=True)
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
@@ -10158,50 +10174,43 @@ def get_local_tile_layer(
         else:
             layer_name = "LocalTile_" + random_string(3)
 
-    tile_client = TileClient(source, port=port, debug=debug)
+    with output:
+        tile_client = TileClient(source, port=port, debug=debug)
 
-    if tile_format == "ipyleaflet":
-        tile_layer = get_leaflet_tile_layer(
-            tile_client,
-            port=port,
-            debug=debug,
-            projection=projection,
-            band=band,
-            palette=palette,
-            vmin=vmin,
-            vmax=vmax,
-            nodata=nodata,
-            attribution=attribution,
-            name=layer_name,
-            **kwargs,
-        )
-    else:
-        tile_layer = get_folium_tile_layer(
-            tile_client,
-            port=port,
-            debug=debug,
-            projection=projection,
-            band=band,
-            palette=palette,
-            vmin=vmin,
-            vmax=vmax,
-            nodata=nodata,
-            attr=attribution,
-            overlay=True,
-            name=layer_name,
-            **kwargs,
-        )
+        if tile_format == "ipyleaflet":
+            tile_layer = get_leaflet_tile_layer(
+                tile_client,
+                port=port,
+                debug=debug,
+                projection=projection,
+                band=band,
+                palette=palette,
+                vmin=vmin,
+                vmax=vmax,
+                nodata=nodata,
+                attribution=attribution,
+                name=layer_name,
+                **kwargs,
+            )
+        else:
+            tile_layer = get_folium_tile_layer(
+                tile_client,
+                port=port,
+                debug=debug,
+                projection=projection,
+                band=band,
+                palette=palette,
+                vmin=vmin,
+                vmax=vmax,
+                nodata=nodata,
+                attr=attribution,
+                overlay=True,
+                name=layer_name,
+                **kwargs,
+            )
 
-    center = tile_client.center()
-    bounds = tile_client.bounds()  # [ymin, ymax, xmin, xmax]
-    bounds = (bounds[2], bounds[0], bounds[3], bounds[1])  # [minx, miny, maxx, maxy]
-
-    if get_center and get_bounds:
-        return tile_layer, center, bounds
-    elif get_center:
-        return tile_layer, center
-    elif get_bounds:
-        return tile_layer, bounds
+    if return_client:
+        return tile_layer, tile_client
     else:
         return tile_layer
 
@@ -12153,3 +12162,24 @@ def download_ee_image_collection(
 
     except Exception as e:
         raise Exception(f"Error downloading image collection: {e}")
+
+
+def get_palette_colors(cmap_name=None, n_class=None, hashtag=False):
+    """Get a palette from a matplotlib colormap. See the list of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.
+
+    Args:
+        cmap_name (str, optional): The name of the matplotlib colormap. Defaults to None.
+        n_class (int, optional): The number of colors. Defaults to None.
+        hashtag (bool, optional): Whether to return a list of hex colors. Defaults to False.
+
+    Returns:
+        list: A list of hex colors.
+    """
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+
+    cmap = plt.cm.get_cmap(cmap_name, n_class)
+    colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
+    if hashtag:
+        colors = ["#" + i for i in colors]
+    return colors
