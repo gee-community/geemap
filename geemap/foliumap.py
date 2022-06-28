@@ -595,10 +595,16 @@ class Map(folium.Map):
         vmax=None,
         nodata=None,
         attribution=None,
-        layer_name=None,
+        layer_name="Local COG",
         **kwargs,
     ):
         """Add a local raster dataset to the map.
+
+            If you are using this function in JupyterHub on a remote server (e.g., Binder, Microsoft Planetary Computer),
+            try adding to following two lines to the beginning of the notebook if the raster does not render properly.
+
+            import os
+            os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = f'{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}'
 
         Args:
             source (str): The path to the GeoTIFF file or the URL of the Cloud Optimized GeoTIFF.
@@ -608,10 +614,10 @@ class Map(folium.Map):
             vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
             nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
             attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
-            layer_name (str, optional): The layer name to use. Defaults to None.
+            layer_name (str, optional): The layer name to use. Defaults to 'Local COG'.
         """
 
-        tile, bounds = get_local_tile_layer(
+        tile_layer, tile_client = get_local_tile_layer(
             source,
             band=band,
             palette=palette,
@@ -621,10 +627,18 @@ class Map(folium.Map):
             attribution=attribution,
             tile_format="folium",
             layer_name=layer_name,
-            get_bounds=True,
+            return_client=True,
             **kwargs,
         )
-        tile.add_to(self)
+        self.add_layer(tile_layer)
+
+        bounds = tile_client.bounds()  # [ymin, ymax, xmin, xmax]
+        bounds = (
+            bounds[2],
+            bounds[0],
+            bounds[3],
+            bounds[1],
+        )  # [minx, miny, maxx, maxy]
         self.zoom_to_bounds(bounds)
 
     add_raster = add_local_tile
