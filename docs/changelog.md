@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.14.2 - Jun 27, 2022
+
+**New Features**:
+
+-   Added more ee export functions [#1121](https://github.com/giswqs/geemap/pull/1121)
+-   Added COG/STAC Inspector GUI for getting pixel values interactively [#1123](https://github.com/giswqs/geemap/pull/1123)
+
 ## v0.14.1 - Jun 26, 2022
 
 **Improvement**:
