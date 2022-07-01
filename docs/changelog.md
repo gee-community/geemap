@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.14.3 - Jul 1, 2022
+
+**New Features**:
+
+-   Added plotting raster in 3D [#1127](https://github.com/giswqs/geemap/pull/1127)
+-   Added scooby report [#1127](https://github.com/giswqs/geemap/pull/1127)
+-   Added sankee datasets [#1126](https://github.com/giswqs/geemap/pull/1126)
+
 ## v0.14.2 - Jun 27, 2022
 
 **New Features**:
