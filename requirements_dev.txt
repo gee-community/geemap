@@ -22,7 +22,7 @@ plotly
 psycopg2
 pydeck
 pyntcloud[LAS]
-pyvista
+pyvista-xarray
 rio-cogeo
 rioxarray
 sqlalchemy

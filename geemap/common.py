@@ -12183,3 +12183,114 @@ def get_palette_colors(cmap_name=None, n_class=None, hashtag=False):
     if hashtag:
         colors = ["#" + i for i in colors]
     return colors
+
+
+def plot_raster(
+    image,
+    band=None,
+    cmap="terrain",
+    proj="EPSG:3857",
+    figsize=None,
+    open_kwargs={},
+    **kwargs,
+):
+    """Plot a raster image.
+
+    Args:
+        image (str | xarray.DataArray ): The input raster image, can be a file path, HTTP URL, or xarray.DataArray.
+        band (int, optional): The band index, starting from zero. Defaults to None.
+        cmap (str, optional): The matplotlib colormap to use. Defaults to "terrain".
+        proj (str, optional): The EPSG projection code. Defaults to "EPSG:3857".
+        figsize (tuple, optional): The figure size as a tuple, such as (10, 8). Defaults to None.
+        open_kwargs (dict, optional): The keyword arguments to pass to rioxarray.open_rasterio. Defaults to {}.
+        **kwargs: Additional keyword arguments to pass to xarray.DataArray.plot().
+
+    """
+    if os.environ.get("USE_MKDOCS") is not None:
+        return
+
+    try:
+        import pvxarray
+        import rioxarray
+        import xarray
+    except ImportError:
+        raise ImportError(
+            "pyxarray and rioxarray are required for plotting. Please install them using 'pip install rioxarray pyvista-xarray'."
+        )
+
+    if isinstance(image, str):
+        da = rioxarray.open_rasterio(image, **open_kwargs)
+    elif isinstance(image, xarray.DataArray):
+        da = image
+    else:
+        raise ValueError("image must be a string or xarray.Dataset.")
+
+    if band is not None:
+        da = da[dict(band=band)]
+
+    da = da.rio.reproject(proj)
+    kwargs["cmap"] = cmap
+    kwargs["figsize"] = figsize
+    da.plot(**kwargs)
+
+
+def plot_raster_3d(
+    image,
+    band=None,
+    cmap="terrain",
+    factor=1.0,
+    proj="EPSG:3857",
+    background=None,
+    open_kwargs={},
+    mesh_kwargs={},
+    **kwargs,
+):
+    """Plot a raster image in 3D.
+
+    Args:
+        image (str | xarray.DataArray ): The input raster image, can be a file path, HTTP URL, or xarray.DataArray.
+        band (int, optional): The band index, starting from zero. Defaults to None.
+        cmap (str, optional): The matplotlib colormap to use. Defaults to "terrain".
+        factor (float, optional): The scaling factor for the raster. Defaults to 1.0.
+        proj (str, optional): The EPSG projection code. Defaults to "EPSG:3857".
+        background (str, optional): The background color. Defaults to None.
+        open_kwargs (dict, optional): The keyword arguments to pass to rioxarray.open_rasterio. Defaults to {}.
+        mesh_kwargs (dict, optional): The keyword arguments to pass to pyvista.mesh.warp_by_scalar(). Defaults to {}.
+        **kwargs: Additional keyword arguments to pass to xarray.DataArray.plot().
+    """
+
+    if os.environ.get("USE_MKDOCS") is not None:
+        return
+
+    try:
+        import pvxarray
+        import pyvista
+        import rioxarray
+        import xarray
+    except ImportError:
+        raise ImportError(
+            "pyxarray and rioxarray are required for plotting. Please install them using 'pip install rioxarray pyvista-xarray'."
+        )
+
+    if isinstance(background, str):
+        pyvista.global_theme.background = background
+
+    if isinstance(image, str):
+        da = rioxarray.open_rasterio(image, **open_kwargs)
+    elif isinstance(image, xarray.DataArray):
+        da = image
+    else:
+        raise ValueError("image must be a string or xarray.Dataset.")
+
+    if band is not None:
+        da = da[dict(band=band)]
+
+    da = da.rio.reproject(proj)
+    mesh_kwargs["factor"] = factor
+    kwargs["cmap"] = cmap
+
+    # Grab the mesh object for use with PyVista
+    mesh = da.pyvista.mesh
+
+    # Warp top and plot in 3D
+    mesh.warp_by_scalar(**mesh_kwargs).plot(**kwargs)

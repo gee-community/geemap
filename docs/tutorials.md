@@ -86,7 +86,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 72. Creating time-series cloud-free composites with a few clicks (video | [gif](https://youtu.be/kEltQkNia6o) | [notebook](https://geemap.org/notebooks/72_time_slider_gui))
 73. Generating transects along lines with Earth Engine without coding (video | [gif](https://youtu.be/0TNXSs6fwrg) | [notebook](https://geemap.org/notebooks/73_transect))
 74. Creating points from CSV without coding (video | gif | [notebook](https://geemap.org/notebooks/74_csv_to_points))
-75. Visualizing land cover change with inteactive Sankey diagrams (video | gif | [notebook](https://geemap.org/notebooks/75_sankee))
+75. Visualizing land cover change with interactive Sankey diagrams (video | gif | [notebook](https://geemap.org/notebooks/75_sankee))
 76. Downloading and visualizing OpenStreetMap data (video | gif | [notebook](https://geemap.org/notebooks/76_osm_to_ee))
 77. Adding Planet global monthly and quarterly mosaic (video | gif | [notebook](https://geemap.org/notebooks/77_planet_imagery))
 78. Using timeseries inspector with one click (video | [gif](https://i.imgur.com/s1GoEOV.gif) | [notebook](https://geemap.org/notebooks/78_ts_inspector))
@@ -130,3 +130,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 116. Creating global land cover timeseries ([notebook](https://geemap.org/notebooks/116_land_cover_timeseries))
 117. Creating a fishnet based on an input vector dataset ([notebook](https://geemap.org/notebooks/117_fishnet))
 118. Downloading images directly to a local computer ([notebook](https://geemap.org/notebooks/118_download_image))
+119. Plotting raster data in 3D without only one line of code ([notebook](https://geemap.org/notebooks/119_plot_raster))

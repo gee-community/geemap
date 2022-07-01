@@ -21,5 +21,6 @@ pycrs
 pyshp>=2.1.3
 python-box
 sankee>=0.1.0
+scooby
 whiteboxgui>=0.6.0
 xyzservices
