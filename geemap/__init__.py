@@ -34,3 +34,5 @@ else:
         from google.colab import output
 
         output.enable_custom_widget_manager()
+
+from .report import Report
