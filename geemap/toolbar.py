@@ -2664,7 +2664,7 @@ def sankee_gui(m=None):
         sankee.datasets.LCMS_LU,
         sankee.datasets.LCMS_LC,
     ]
-    dataset_options = {dataset.name:dataset for dataset in sankee_datasets}
+    dataset_options = {dataset.name: dataset for dataset in sankee_datasets}
     default_dataset = sankee_datasets[0]
 
     dataset = widgets.Dropdown(
@@ -3002,7 +3002,7 @@ def sankee_gui(m=None):
                         region=geom,
                         max_classes=classes.value,
                         n=int(samples.value),
-                        title=plot_title
+                        title=plot_title,
                     )
 
                     output.clear_output()
