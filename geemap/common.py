@@ -11258,7 +11258,12 @@ def clip_image(image, mask, output):
 
     output = check_file_path(output)
 
+    if isinstance(mask, ee.Geometry):
+        mask = mask.coordinates().getInfo()[0]
+
     if isinstance(mask, str):
+        if mask.startswith("http"):
+            mask = download_file(mask, output)
         if not os.path.exists(mask):
             raise FileNotFoundError(f"{mask} does not exist.")
     elif isinstance(mask, list) or isinstance(mask, dict):
@@ -12241,6 +12246,11 @@ def plot_raster_3d(
     factor=1.0,
     proj="EPSG:3857",
     background=None,
+    x=None,
+    y=None,
+    z=None,
+    order=None,
+    component=None,
     open_kwargs={},
     mesh_kwargs={},
     **kwargs,
@@ -12248,12 +12258,17 @@ def plot_raster_3d(
     """Plot a raster image in 3D.
 
     Args:
-        image (str | xarray.DataArray ): The input raster image, can be a file path, HTTP URL, or xarray.DataArray.
+        image (str | xarray.DataArray): The input raster image, can be a file path, HTTP URL, or xarray.DataArray.
         band (int, optional): The band index, starting from zero. Defaults to None.
         cmap (str, optional): The matplotlib colormap to use. Defaults to "terrain".
         factor (float, optional): The scaling factor for the raster. Defaults to 1.0.
         proj (str, optional): The EPSG projection code. Defaults to "EPSG:3857".
         background (str, optional): The background color. Defaults to None.
+        x (str, optional): The x coordinate. Defaults to None.
+        y (str, optional): The y coordinate. Defaults to None.
+        z (str, optional): The z coordinate. Defaults to None.
+        order (str, optional): The order of the coordinates. Defaults to None.
+        component (str, optional): The component of the coordinates. Defaults to None.
         open_kwargs (dict, optional): The keyword arguments to pass to rioxarray.open_rasterio. Defaults to {}.
         mesh_kwargs (dict, optional): The keyword arguments to pass to pyvista.mesh.warp_by_scalar(). Defaults to {}.
         **kwargs: Additional keyword arguments to pass to xarray.DataArray.plot().
@@ -12289,8 +12304,28 @@ def plot_raster_3d(
     mesh_kwargs["factor"] = factor
     kwargs["cmap"] = cmap
 
+    coords = list(da.coords)
+
+    if x is None:
+        if "x" in coords:
+            x = "x"
+        elif "lon" in coords:
+            x = "lon"
+    if y is None:
+        if "y" in coords:
+            y = "y"
+        elif "lat" in coords:
+            y = "lat"
+    if z is None:
+        if "z" in coords:
+            z = "z"
+        elif "elevation" in coords:
+            z = "elevation"
+        elif "band" in coords:
+            z = "band"
+
     # Grab the mesh object for use with PyVista
-    mesh = da.pyvista.mesh
+    mesh = da.pyvista.mesh(x=x, y=y, z=z, order=order, component=component)
 
     # Warp top and plot in 3D
     mesh.warp_by_scalar(**mesh_kwargs).plot(**kwargs)
