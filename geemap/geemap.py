@@ -623,12 +623,12 @@ class Map(ipyleaflet.Map):
                     tool_output.clear_output()
                     self.toolbar_button.value = False
                     time.sleep(1)
-                    screen_capture(outfile=file_path)
+                    screen_capture(filename=file_path)
                 elif save_type.value == "JPG" and ext.upper() == ".JPG":
                     tool_output.clear_output()
                     self.toolbar_button.value = False
                     time.sleep(1)
-                    screen_capture(outfile=file_path)
+                    screen_capture(filename=file_path)
                 else:
                     label = widgets.Label(
                         value="The selected file extension does not match the selected exporting type."
@@ -3290,7 +3290,7 @@ class Map(ipyleaflet.Map):
 
     def to_html(
         self,
-        outfile=None,
+        filename=None,
         title="My Map",
         width="100%",
         height="880px",
@@ -3300,7 +3300,7 @@ class Map(ipyleaflet.Map):
         """Saves the map as an HTML file.
 
         Args:
-            outfile (str, optional): The output file path to the HTML file.
+            filename (str, optional): The output file path to the HTML file.
             title (str, optional): The title of the HTML file. Defaults to 'My Map'.
             width (str, optional): The width of the map in pixels or percentage. Defaults to '100%'.
             height (str, optional): The height of the map in pixels. Defaults to '880px'.
@@ -3310,15 +3310,15 @@ class Map(ipyleaflet.Map):
         try:
 
             save = True
-            if outfile is not None:
-                if not outfile.endswith(".html"):
+            if filename is not None:
+                if not filename.endswith(".html"):
                     raise ValueError("The output file extension must be html.")
-                outfile = os.path.abspath(outfile)
-                out_dir = os.path.dirname(outfile)
+                filename = os.path.abspath(filename)
+                out_dir = os.path.dirname(filename)
                 if not os.path.exists(out_dir):
                     os.makedirs(out_dir)
             else:
-                outfile = os.path.abspath(random_string() + ".html")
+                filename = os.path.abspath(random_string() + ".html")
                 save = False
 
             if add_layer_control and self.layer_control is None:
@@ -3348,43 +3348,43 @@ class Map(ipyleaflet.Map):
             self.layout.width = width
             self.layout.height = height
 
-            self.save(outfile, title=title, **kwargs)
+            self.save(filename, title=title, **kwargs)
 
             self.layout.width = before_width
             self.layout.height = before_height
 
             if not save:
                 out_html = ""
-                with open(outfile) as f:
+                with open(filename) as f:
                     lines = f.readlines()
                     out_html = "".join(lines)
-                os.remove(outfile)
+                os.remove(filename)
                 return out_html
 
         except Exception as e:
             raise Exception(e)
 
-    def to_image(self, outfile=None, monitor=1):
+    def to_image(self, filename=None, monitor=1):
         """Saves the map as a PNG or JPG image.
 
         Args:
-            outfile (str, optional): The output file path to the image. Defaults to None.
+            filename (str, optional): The output file path to the image. Defaults to None.
             monitor (int, optional): The monitor to take the screenshot. Defaults to 1.
         """
-        if outfile is None:
-            outfile = os.path.join(os.getcwd(), "my_map.png")
+        if filename is None:
+            filename = os.path.join(os.getcwd(), "my_map.png")
 
-        if outfile.endswith(".png") or outfile.endswith(".jpg"):
+        if filename.endswith(".png") or filename.endswith(".jpg"):
             pass
         else:
             print("The output file must be a PNG or JPG image.")
             return
 
-        work_dir = os.path.dirname(outfile)
+        work_dir = os.path.dirname(filename)
         if not os.path.exists(work_dir):
             os.makedirs(work_dir)
 
-        screenshot = screen_capture(outfile, monitor)
+        screenshot = screen_capture(filename, monitor)
         self.screenshot = screenshot
 
     def toolbar_reset(self):
