@@ -392,41 +392,41 @@ class Map(keplergl.KeplerGl):
 
     def to_html(
         self,
-        outfile=None,
+        filename=None,
         read_only=False,
         **kwargs,
     ):
         """Saves the map as a HTML file.
 
         Args:
-            outfile (str, optional): The output file path to the HTML file.
+            filename (str, optional): The output file path to the HTML file.
             read_only (bool, optional): Whether to hide the side panel to disable map customization. Defaults to False.
 
         """
         try:
 
             save = True
-            if outfile is not None:
-                if not outfile.endswith(".html"):
+            if filename is not None:
+                if not filename.endswith(".html"):
                     raise ValueError("The output file extension must be html.")
-                outfile = os.path.abspath(outfile)
-                out_dir = os.path.dirname(outfile)
+                filename = os.path.abspath(filename)
+                out_dir = os.path.dirname(filename)
                 if not os.path.exists(out_dir):
                     os.makedirs(out_dir)
             else:
-                outfile = os.path.abspath(random_string() + ".html")
+                filename = os.path.abspath(random_string() + ".html")
                 save = False
 
             output = widgets.Output()
             with output:
-                self.save_to_html(file_name=outfile, read_only=read_only)
+                self.save_to_html(file_name=filename, read_only=read_only)
 
             if not save:
                 out_html = ""
-                with open(outfile) as f:
+                with open(filename) as f:
                     lines = f.readlines()
                     out_html = "".join(lines)
-                os.remove(outfile)
+                os.remove(filename)
                 return out_html
 
         except Exception as e:
