@@ -16,7 +16,7 @@ import zipfile
 
 import ee
 import ipywidgets as widgets
-from IPython.display import display
+from IPython.display import display, IFrame
 from ipytree import Node, Tree
 
 
@@ -1227,11 +1227,12 @@ def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
         raise Exception(e)
 
 
-def ee_to_geojson(ee_object, out_json=None):
+def ee_to_geojson(ee_object, filename=None, indent=2, **kwargs):
     """Converts Earth Engine object to geojson.
 
     Args:
         ee_object (object): An Earth Engine object.
+        filename (str, optional): The file path to save the geojson. Defaults to None.
 
     Returns:
         object: GeoJSON object.
@@ -1247,25 +1248,28 @@ def ee_to_geojson(ee_object, out_json=None):
             or isinstance(ee_object, ee.featurecollection.FeatureCollection)
         ):
             json_object = ee_object.getInfo()
-            if out_json is not None:
-                out_json = os.path.abspath(out_json)
-                if not os.path.exists(os.path.dirname(out_json)):
-                    os.makedirs(os.path.dirname(out_json))
-                with open(out_json, "w") as geojson:
-                    geojson.write(json.dumps(json_object, indent=2) + "\n")
-            return json_object
+            if filename is not None:
+                filename = os.path.abspath(filename)
+                if not os.path.exists(os.path.dirname(filename)):
+                    os.makedirs(os.path.dirname(filename))
+                with open(filename, "w") as geojson:
+                    geojson.write(
+                        json.dumps(json_object, indent=indent, **kwargs) + "\n"
+                    )
+            else:
+                return json_object
         else:
             print("Could not convert the Earth Engine object to geojson")
     except Exception as e:
-        print(e)
+        raise Exception(e)
 
 
-def shp_to_geojson(in_shp, out_json=None, **kwargs):
+def shp_to_geojson(in_shp, filename=None, **kwargs):
     """Converts a shapefile to GeoJSON.
 
     Args:
         in_shp (str): File path of the input shapefile.
-        out_json (str, optional): File path of the output GeoJSON. Defaults to None.
+        filename (str, optional): File path of the output GeoJSON. Defaults to None.
 
     Returns:
         object: The json object representing the shapefile.
@@ -1277,14 +1281,14 @@ def shp_to_geojson(in_shp, out_json=None, **kwargs):
 
         in_shp = os.path.abspath(in_shp)
 
-        if out_json is not None:
-            ext = os.path.splitext(out_json)[1]
+        if filename is not None:
+            ext = os.path.splitext(filename)[1]
             print(ext)
             if ext.lower() not in [".json", ".geojson"]:
                 raise TypeError("The output file extension must the .json or .geojson.")
 
-            if not os.path.exists(os.path.dirname(out_json)):
-                os.makedirs(os.path.dirname(out_json))
+            if not os.path.exists(os.path.dirname(filename)):
+                os.makedirs(os.path.dirname(filename))
 
         if not is_GCS(in_shp):
             try:
@@ -1333,10 +1337,10 @@ def shp_to_geojson(in_shp, out_json=None, **kwargs):
 
         # out_dict = {"type": "FeatureCollection", "features": buffer}
 
-        if out_json is not None:
+        if filename is not None:
             # from json import dumps
 
-            with open(out_json, "w") as geojson:
+            with open(filename, "w") as geojson:
                 geojson.write(json.dumps(out_dict, indent=2) + "\n")
         else:
             return out_dict
@@ -3249,11 +3253,11 @@ def download_ee_video(collection, video_args, out_gif, timeout=300, proxies=None
         print(e)
 
 
-def screen_capture(outfile, monitor=1):
+def screen_capture(filename, monitor=1):
     """Takes a full screenshot of the selected monitor.
 
     Args:
-        outfile (str): The output file path to the screenshot.
+        filename (str): The output file path to the screenshot.
         monitor (int, optional): The monitor to take the screenshot. Defaults to 1.
     """
     try:
@@ -3261,7 +3265,7 @@ def screen_capture(outfile, monitor=1):
     except ImportError:
         raise ImportError("Please install mss package using 'pip install mss'")
 
-    out_dir = os.path.dirname(outfile)
+    out_dir = os.path.dirname(filename)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
@@ -3271,8 +3275,8 @@ def screen_capture(outfile, monitor=1):
 
     try:
         with mss() as sct:
-            sct.shot(output=outfile, mon=monitor)
-            return outfile
+            sct.shot(output=filename, mon=monitor)
+            return filename
 
     except Exception as e:
         print(e)
@@ -11076,6 +11080,7 @@ def download_file(
     fuzzy=False,
     resume=False,
     unzip=True,
+    overwrite=False,
 ):
     """Download a file from URL, including Google Drive shared URL.
 
@@ -11091,12 +11096,20 @@ def download_file(
         fuzzy (bool, optional): Fuzzy extraction of Google Drive's file Id. Defaults to False.
         resume (bool, optional): Resume the download from existing tmp file if possible. Defaults to False.
         unzip (bool, optional): Unzip the file. Defaults to True.
+        overwrite (bool, optional): Overwrite the file if it already exists. Defaults to False.
 
     Returns:
         str: The output file path.
     """
 
     import gdown
+
+    if isinstance(url, str):
+        if os.path.exists(os.path.abspath(output)) and (not overwrite):
+            print(
+                f"{output} already exists. Skip downloading. Set overwrite=True to overwrite."
+            )
+            return
 
     if "https://drive.google.com/file/d/" in url:
         fuzzy = True
@@ -12329,3 +12342,16 @@ def plot_raster_3d(
 
     # Warp top and plot in 3D
     mesh.warp_by_scalar(**mesh_kwargs).plot(**kwargs)
+
+
+def display_html(src, width=950, height=600):
+    """Display an HTML file in a Jupyter Notebook.
+
+    Args
+        src (str): File path to HTML file.
+        width (int, optional): Width of the map. Defaults to 950.
+        height (int, optional): Height of the map. Defaults to 600.
+    """
+    if not os.path.isfile(src):
+        raise ValueError(f"{src} is not a valid file path.")
+    display(IFrame(src=src, width=width, height=height))
