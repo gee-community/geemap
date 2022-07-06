@@ -1754,11 +1754,11 @@ class Map(folium.Map):
         except Exception as e:
             raise Exception(e)
 
-    def to_html(self, outfile=None, **kwargs):
+    def to_html(self, filename=None, **kwargs):
         """Exports a map as an HTML file.
 
         Args:
-            outfile (str, optional): File path to the output HTML. Defaults to None.
+            filename (str, optional): File path to the output HTML. Defaults to None.
 
         Raises:
             ValueError: If it is an invalid HTML file.
@@ -1767,22 +1767,22 @@ class Map(folium.Map):
             str: A string containing the HTML code.
         """
 
-        if outfile is not None:
-            if not outfile.endswith(".html"):
+        if filename is not None:
+            if not filename.endswith(".html"):
                 raise ValueError("The output file extension must be html.")
-            outfile = os.path.abspath(outfile)
-            out_dir = os.path.dirname(outfile)
+            filename = os.path.abspath(filename)
+            out_dir = os.path.dirname(filename)
             if not os.path.exists(out_dir):
                 os.makedirs(out_dir)
-            self.save(outfile, **kwargs)
+            self.save(filename, **kwargs)
         else:
-            outfile = os.path.abspath(random_string() + ".html")
-            self.save(outfile, **kwargs)
+            filename = os.path.abspath(random_string() + ".html")
+            self.save(filename, **kwargs)
             out_html = ""
-            with open(outfile) as f:
+            with open(filename) as f:
                 lines = f.readlines()
                 out_html = "".join(lines)
-            os.remove(outfile)
+            os.remove(filename)
             return out_html
 
     def to_streamlit(
