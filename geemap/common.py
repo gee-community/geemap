@@ -12355,3 +12355,32 @@ def display_html(src, width=950, height=600):
     if not os.path.isfile(src):
         raise ValueError(f"{src} is not a valid file path.")
     display(IFrame(src=src, width=width, height=height))
+
+
+def bbox_coords(geometry, decimals=4):
+    """Get the bounding box coordinates of a geometry.
+
+    Args:
+        geometry (ee.Geometry | ee.FeatureCollection): The input geometry.
+        decimals (int, optional): The number of decimals to round to. Defaults to 4.
+
+    Returns:
+        list: The bounding box coordinates in the form [west, south, east, north].
+    """
+    if isinstance(geometry, ee.FeatureCollection):
+        geometry = geometry.geometry()
+
+    if geometry is not None:
+        if not isinstance(geometry, ee.Geometry):
+            raise ValueError("geometry must be an ee.Geometry.")
+
+        coords = geometry.bounds().coordinates().getInfo()[0]
+        x = [p[0] for p in coords]
+        y = [p[1] for p in coords]
+        west = round(min(x), decimals)
+        east = round(max(x), decimals)
+        south = round(min(y), decimals)
+        north = round(max(y), decimals)
+        return [west, south, east, north]
+    else:
+        return None
