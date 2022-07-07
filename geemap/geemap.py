@@ -6829,6 +6829,14 @@ class Map(ipyleaflet.Map):
         if add_legend:
             self.add_legend(title=legend_title, legend_dict=legend_dict)
 
+    def user_roi_coords(self, decimals=4):
+        """Return the bounding box of the ROI as a list of coordinates.
+
+        Args:
+            decimals (int, optional): Number of decimals to round the coordinates to. Defaults to 4.
+        """
+        return bbox_coords(self.user_roi, decimals=decimals)
+
 
 # The functions below are outside the Map class.
 
