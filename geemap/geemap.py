@@ -1402,6 +1402,8 @@ class Map(ipyleaflet.Map):
             image = ee_object.mosaic()
 
         if "palette" in vis_params:
+            if isinstance(vis_params["palette"], tuple):
+                vis_params["palette"] = list(vis_params["palette"])
             if isinstance(vis_params["palette"], Box):
                 try:
                     vis_params["palette"] = vis_params["palette"]["default"]
