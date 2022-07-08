@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.15.0 - Jul 8, 2022
+
+**New Features**:
+
+-   Added support for changing geojson layer opacity [#1135](https://github.com/giswqs/geemap/pull/1135)
+-   Added Map user roi bbox function [#1134](https://github.com/giswqs/geemap/pull/1134)
+
+**Improvement**:
+
+-   Fixed colormap bug [#1133](https://github.com/giswqs/geemap/issues/1133)
+-   Cleaned notebook output [#1129](https://github.com/giswqs/geemap/pull/1129)
+-   Fixed clip image bug
+
 ## v0.14.3 - Jul 1, 2022
 
 **New Features**:
