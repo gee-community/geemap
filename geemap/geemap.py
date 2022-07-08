@@ -997,10 +997,10 @@ class Map(ipyleaflet.Map):
                 layers = [
                     lyr
                     for lyr in self.layers[1:]
-                    if (
-                        isinstance(lyr, ipyleaflet.TileLayer)
-                        or isinstance(lyr, ipyleaflet.WMSLayer)
-                    )
+                    # if (
+                    #     isinstance(lyr, ipyleaflet.TileLayer)
+                    #     or isinstance(lyr, ipyleaflet.WMSLayer)
+                    # )
                 ]
 
                 # if the layers contain unsupported layers (e.g., GeoJSON, GeoData), adds the ipyleaflet built-in LayerControl
@@ -1020,8 +1020,19 @@ class Map(ipyleaflet.Map):
                         layout=widgets.Layout(height="18px"),
                     )
                     layer_chk.layout.width = "25ex"
+
+                    if layer in self.geojson_layers:
+                        try:
+                            opacity = max(
+                                layer.style["opacity"], layer.style["fillOpacity"]
+                            )
+                        except KeyError:
+                            opacity = 1.0
+                    else:
+                        opacity = layer.opacity
+
                     layer_opacity = widgets.FloatSlider(
-                        value=layer.opacity,
+                        value=opacity,
                         min=0,
                         max=1,
                         step=0.01,
@@ -1035,6 +1046,13 @@ class Map(ipyleaflet.Map):
                             width="25px", height="25px", padding="0px 0px 0px 5px"
                         ),
                     )
+
+                    def layer_opacity_changed(change):
+                        if change["new"]:
+                            layer.style = {
+                                "opacity": change["new"],
+                                "fillOpacity": change["new"],
+                            }
 
                     def layer_vis_on_click(change):
                         if change["new"]:
@@ -1095,7 +1113,11 @@ class Map(ipyleaflet.Map):
                     layer_chk.observe(layer_chk_changed, "value")
 
                     widgets.jslink((layer_chk, "value"), (layer, "visible"))
-                    widgets.jsdlink((layer_opacity, "value"), (layer, "opacity"))
+
+                    if layer in self.geojson_layers:
+                        layer_opacity.observe(layer_opacity_changed, "value")
+                    else:
+                        widgets.jsdlink((layer_opacity, "value"), (layer, "opacity"))
                     hbox = widgets.HBox(
                         [layer_chk, layer_settings, layer_opacity],
                         layout=widgets.Layout(padding="0px 8px 0px 8px"),
@@ -5228,6 +5250,17 @@ class Map(ipyleaflet.Map):
 
         self.add_layer(geojson)
         self.geojson_layers.append(geojson)
+
+        if not hasattr(self, "json_layer_dict"):
+            self.json_layer_dict = {}
+
+        params = {
+            "data": geojson,
+            "style": style,
+            "hover_style": hover_style,
+            "style_callback": style_callback,
+        }
+        self.json_layer_dict[layer_name] = params
 
     def add_kml(
         self,
