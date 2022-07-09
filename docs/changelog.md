@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.15.1 - Jul 8, 2022
+
+**New Features**:
+
+-   Added support for Open Earth Engine Library (OEEL) #1137
+
 ## v0.15.0 - Jul 8, 2022
 
 **New Features**:
