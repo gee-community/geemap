@@ -10162,6 +10162,8 @@ def get_local_tile_layer(
                 source = os.path.abspath(source)
             if not os.path.exists(source):
                 raise ValueError("The source path does not exist.")
+        else:
+            source = github_raw_url(source)
     else:
         raise ValueError("The source must either be a string or TileClient")
 
@@ -12448,3 +12450,18 @@ def setupJS():
         raise Exception(
             f"Error installing npm packages: {e}. Make sure that you have installed nodejs. See https://nodejs.org/"
         )
+
+
+def github_raw_url(url):
+    """Get the raw URL for a GitHub file.
+
+    Args:
+        url (str): The GitHub URL.
+    Returns:
+        str: The raw URL.
+    """
+    if isinstance(url, str) and url.startswith("https://github.com/") and "blob" in url:
+        url = url.replace("github.com", "raw.githubusercontent.com").replace(
+            "blob/", ""
+        )
+    return url
