@@ -12384,3 +12384,55 @@ def bbox_coords(geometry, decimals=4):
         return [west, south, east, north]
     else:
         return None
+
+
+def requireJS(lib_path=None, Map=None):
+    """Import Earth Engine JavaScript libraries. Based on the Open Earth Engine Library (OEEL).
+        For more info, visit https://www.open-geocomputing.org/OpenEarthEngineLibrary.
+
+    Args:
+        lib_path (str, optional): A local file path or HTTP URL to a JavaScript library. It can also be in a format like 'users/gena/packages:grid'. Defaults to None.
+        Map (geemap.Map, optional): An geemap.Map object. Defaults to None.
+
+    Returns:
+        object: oeel object.
+    """
+    try:
+        from oeel import oeel
+    except ImportError:
+        raise ImportError(
+            "oeel is required for requireJS. Please install it using 'pip install oeel'."
+        )
+
+    if lib_path is None:
+        return oeel
+    elif isinstance(lib_path, str):
+        if lib_path.startswith("http"):
+            if lib_path.startswith("https://github.com") and "blob" in lib_path:
+                lib_path = lib_path.replace("blob", "raw")
+            basemap = os.path.basename(lib_path)
+            r = requests.get(lib_path, allow_redirects=True)
+            open(basemap, "wb").write(r.content)
+            lib_path = basemap
+
+        if os.path.exists(lib_path):
+            if Map is not None:
+                oeel.setMap(Map)
+
+            return oeel.requireJS(lib_path)
+        elif lib_path.startswith("user"):
+            repo = f'https://earthengine.googlesource.com/{lib_path.split(":")[0]}'
+            start_index = lib_path.index("/", 6) + 1
+            lib_path = lib_path[start_index:].replace(":", "/")
+            if not os.path.exists(lib_path):
+                cmd = f"git clone {repo}"
+                os.system(cmd)
+
+            if Map is not None:
+                oeel.setMap(Map)
+            return oeel.requireJS(lib_path)
+
+        else:
+            raise ValueError(f"{lib_path} does not exist.")
+    else:
+        raise ValueError("lib_path must be a string.")
