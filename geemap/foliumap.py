@@ -973,6 +973,7 @@ class Map(folium.Map):
             if isinstance(in_geojson, str):
 
                 if in_geojson.startswith("http"):
+                    in_geojson = github_raw_url(in_geojson)
                     data = requests.get(in_geojson).json()
                 else:
                     in_geojson = os.path.abspath(in_geojson)

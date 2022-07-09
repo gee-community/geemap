@@ -5119,6 +5119,7 @@ class Map(ipyleaflet.Map):
             if isinstance(in_geojson, str):
 
                 if in_geojson.startswith("http"):
+                    in_geojson = github_raw_url(in_geojson)
                     data = requests.get(in_geojson).json()
                 else:
                     in_geojson = os.path.abspath(in_geojson)
@@ -5335,6 +5336,8 @@ class Map(ipyleaflet.Map):
         """
         if not filename.startswith("http"):
             filename = os.path.abspath(filename)
+        else:
+            filename = github_raw_url(filename)
         if to_ee:
 
             fc = vector_to_ee(
