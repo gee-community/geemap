@@ -202,6 +202,7 @@ nav:
           - notebooks/117_fishnet.ipynb
           - notebooks/118_download_image.ipynb
           - notebooks/119_plot_raster.ipynb
+          - notebooks/120_javascript.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
