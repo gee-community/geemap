@@ -12436,3 +12436,15 @@ def requireJS(lib_path=None, Map=None):
             raise ValueError(f"{lib_path} does not exist.")
     else:
         raise ValueError("lib_path must be a string.")
+
+
+def setupJS():
+    """Install npm packages for Earth Engine JavaScript libraries. Based on the Open Earth Engine Library (OEEL)."""
+    try:
+        os.system("npm install @google/earthengine")
+        os.system("npm install zeromq@6.0.0-beta.6")
+        os.system("npm install request")
+    except Exception as e:
+        raise Exception(
+            f"Error installing npm packages: {e}. Make sure that you have installed nodejs. See https://nodejs.org/"
+        )
