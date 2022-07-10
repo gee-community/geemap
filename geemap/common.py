@@ -8678,6 +8678,8 @@ def vector_to_geojson(
 
     if not filename.startswith("http"):
         filename = os.path.abspath(filename)
+    else:
+        filename = github_raw_url(filename)
     ext = os.path.splitext(filename)[1].lower()
     if ext == ".kml":
         gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
@@ -11106,12 +11108,18 @@ def download_file(
 
     import gdown
 
+    if output is None:
+        if isinstance(url, str) and url.startswith("http"):
+            output = os.path.basename(url)
+
     if isinstance(url, str):
         if os.path.exists(os.path.abspath(output)) and (not overwrite):
             print(
                 f"{output} already exists. Skip downloading. Set overwrite=True to overwrite."
             )
-            return
+            return os.path.abspath(output)
+        else:
+            url = github_raw_url(url)
 
     if "https://drive.google.com/file/d/" in url:
         fuzzy = True

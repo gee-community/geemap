@@ -5058,7 +5058,7 @@ class Map(ipyleaflet.Map):
         styled_vector = vector_styling(ee_object, column, palette, **kwargs)
         self.addLayer(styled_vector.style(**{"styleProperty": "style"}), {}, layer_name)
 
-    def add_shapefile(
+    def add_shp(
         self,
         in_shp,
         layer_name="Untitled",
@@ -5099,6 +5099,9 @@ class Map(ipyleaflet.Map):
             info_mode,
             encoding,
         )
+
+    add_shapefile = add_shp
+    
 
     def add_geojson(
         self,
@@ -5308,6 +5311,10 @@ class Map(ipyleaflet.Map):
         Raises:
             FileNotFoundError: The provided KML file could not be found.
         """
+
+        if isinstance(in_kml, str) and in_kml.startswith("http"):
+            in_kml = github_raw_url(in_kml)
+            in_kml = download_file(in_kml)
 
         in_kml = os.path.abspath(in_kml)
         if not os.path.exists(in_kml):
