@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.15.2 - Jul 9, 2022
+
+**New Features**:
+
+-   Improved support for loading JavaScript modules with `require()` functions [#1140](https://github.com/giswqs/geemap/pull/1140)
+
 ## v0.15.1 - Jul 8, 2022
 
 **New Features**:
