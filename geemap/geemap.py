@@ -1637,6 +1637,27 @@ class Map(ipyleaflet.Map):
 
     getScale = get_scale
 
+    def get_bounds(self, asGeoJSON=False):
+        """Returns the bounds of the current map view, as a list in the format [west, south, east, north] in degrees.
+
+        Args:
+            asGeoJSON (bool, optional): If true, returns map bounds as GeoJSON. Defaults to False.
+
+        Returns:
+            list | dict: A list in the format [west, south, east, north] in degrees.
+        """
+        bounds = self.bounds
+        coords = [bounds[0][1], bounds[0][0], bounds[1][1], bounds[1][0]]
+
+        if asGeoJSON:
+            return ee.Geometry.BBox(
+                bounds[0][1], bounds[0][0], bounds[1][1], bounds[1][0]
+            ).getInfo()
+        else:
+            return coords
+
+    getBounds = get_bounds
+
     def add_basemap(self, basemap="HYBRID"):
         """Adds a basemap to the map.
 
