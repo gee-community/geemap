@@ -12407,35 +12407,16 @@ def requireJS(lib_path=None, Map=None):
         )
 
     if lib_path is None:
+        if Map is not None:
+            oeel.setMap(Map)
         return oeel
     elif isinstance(lib_path, str):
-        if lib_path.startswith("http"):
-            if lib_path.startswith("https://github.com") and "blob" in lib_path:
-                lib_path = lib_path.replace("blob", "raw")
-            basemap = os.path.basename(lib_path)
-            r = requests.get(lib_path, allow_redirects=True)
-            open(basemap, "wb").write(r.content)
-            lib_path = basemap
+        lib_path = change_require(lib_path)
 
-        if os.path.exists(lib_path):
-            if Map is not None:
-                oeel.setMap(Map)
+        if Map is not None:
+            oeel.setMap(Map)
+        return oeel.requireJS(lib_path)
 
-            return oeel.requireJS(lib_path)
-        elif lib_path.startswith("user"):
-            repo = f'https://earthengine.googlesource.com/{lib_path.split(":")[0]}'
-            start_index = lib_path.index("/", 6) + 1
-            lib_path = lib_path[start_index:].replace(":", "/")
-            if not os.path.exists(lib_path):
-                cmd = f"git clone {repo}"
-                os.system(cmd)
-
-            if Map is not None:
-                oeel.setMap(Map)
-            return oeel.requireJS(lib_path)
-
-        else:
-            raise ValueError(f"{lib_path} does not exist.")
     else:
         raise ValueError("lib_path must be a string.")
 
@@ -12465,3 +12446,58 @@ def github_raw_url(url):
             "blob/", ""
         )
     return url
+
+
+def change_require(lib_path):
+
+    if not isinstance(lib_path, str):
+        raise ValueError("lib_path must be a string.")
+
+    if lib_path.startswith("http"):
+        if lib_path.startswith("https://github.com") and "blob" in lib_path:
+            lib_path = lib_path.replace("blob", "raw")
+        basename = os.path.basename(lib_path)
+        r = requests.get(lib_path, allow_redirects=True)
+        open(basename, "wb").write(r.content)
+        lib_path = basename
+
+    elif (
+        lib_path.startswith("user") or lib_path.startswith("projects")
+    ) and ":" in lib_path:
+        repo = f'https://earthengine.googlesource.com/{lib_path.split(":")[0]}'
+        start_index = lib_path.index("/", lib_path.index("/") + 1) + 1
+        lib_path = lib_path[start_index:].replace(":", "/")
+        if not os.path.exists(lib_path):
+            cmd = f"git clone {repo}"
+            os.system(cmd)
+
+    if not os.path.exists(lib_path):
+        raise ValueError(f"{lib_path} does not exist.")
+
+    output = []
+    with open(lib_path, "r") as f:
+        lines = f.readlines()
+
+    for line in lines:
+        if "require(" in line and ":" in line and (not line.strip().startswith("//")):
+            new_line = "// " + line
+            output.append(new_line)
+
+            if "users/" in line:
+                start_index = line.index("users/")
+                end_index = line.index("/", start_index + 6)
+            elif "projects" in line:
+                start_index = line.index("projects/")
+                end_index = line.index("/", start_index + 9)
+
+            header = line[start_index:end_index]
+            new_line = line.replace(header, os.getcwd()).replace(":", "/")
+            output.append(new_line)
+
+        else:
+            output.append(line)
+
+    with open(lib_path, "w") as f:
+        f.writelines(output)
+
+    return lib_path
