@@ -465,7 +465,7 @@
 
 **New Features**:
 
--   Added pandas_to_geojson [#557](https://github.com/giswqs/geemap/discussions/557)
+-   Added df_to_geojson [#557](https://github.com/giswqs/geemap/discussions/557)
 -   Added feature_histogram function to chart module [#553](https://github.com/giswqs/geemap/pull/553)
 -   Added feature_groups function to chart module [#539](https://github.com/giswqs/geemap/pull/539)
 -   Added random forest probability output [#550](https://github.com/giswqs/geemap/pull/550)

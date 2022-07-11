@@ -2639,8 +2639,8 @@ class Map(ipyleaflet.Map):
         self,
         title="Legend",
         legend_dict=None,
-        legend_keys=None,
-        legend_colors=None,
+        labels=None,
+        colors=None,
         position="bottomright",
         builtin_legend=None,
         layer_name=None,
@@ -2651,8 +2651,8 @@ class Map(ipyleaflet.Map):
         Args:
             title (str, optional): Title of the legend. Defaults to 'Legend'.
             legend_dict (dict, optional): A dictionary containing legend items as keys and color as values. If provided, legend_keys and legend_colors will be ignored. Defaults to None.
-            legend_keys (list, optional): A list of legend keys. Defaults to None.
-            legend_colors (list, optional): A list of legend colors. Defaults to None.
+            labels (list, optional): A list of legend keys. Defaults to None.
+            colors (list, optional): A list of legend colors. Defaults to None.
             position (str, optional): Position of the legend. Defaults to 'bottomright'.
             builtin_legend (str, optional): Name of the builtin legend to add to the map. Defaults to None.
             layer_name (str, optional): Layer name of the legend to be associated with. Defaults to None.
@@ -2698,33 +2698,31 @@ class Map(ipyleaflet.Map):
             print("The legend template does not exist.")
             return
 
-        if legend_keys is not None:
-            if not isinstance(legend_keys, list):
+        if labels is not None:
+            if not isinstance(labels, list):
                 print("The legend keys must be a list.")
                 return
         else:
-            legend_keys = ["One", "Two", "Three", "Four", "etc"]
+            labels = ["One", "Two", "Three", "Four", "etc"]
 
-        if legend_colors is not None:
-            if not isinstance(legend_colors, list):
+        if colors is not None:
+            if not isinstance(colors, list):
                 print("The legend colors must be a list.")
                 return
-            elif all(isinstance(item, tuple) for item in legend_colors):
+            elif all(isinstance(item, tuple) for item in colors):
                 try:
-                    legend_colors = [rgb_to_hex(x) for x in legend_colors]
+                    colors = [rgb_to_hex(x) for x in colors]
                 except Exception as e:
                     print(e)
-            elif all(
-                (item.startswith("#") and len(item) == 7) for item in legend_colors
-            ):
+            elif all((item.startswith("#") and len(item) == 7) for item in colors):
                 pass
-            elif all((len(item) == 6) for item in legend_colors):
+            elif all((len(item) == 6) for item in colors):
                 pass
             else:
                 print("The legend colors must be a list of tuples.")
                 return
         else:
-            legend_colors = [
+            colors = [
                 "#8DD3C7",
                 "#FFFFB3",
                 "#BEBADA",
@@ -2732,7 +2730,7 @@ class Map(ipyleaflet.Map):
                 "#80B1D3",
             ]
 
-        if len(legend_keys) != len(legend_colors):
+        if len(labels) != len(colors):
             print("The legend keys and values must be the same length.")
             return
 
@@ -2747,19 +2745,19 @@ class Map(ipyleaflet.Map):
                 return
             else:
                 legend_dict = builtin_legends[builtin_legend]
-                legend_keys = list(legend_dict.keys())
-                legend_colors = list(legend_dict.values())
+                labels = list(legend_dict.keys())
+                colors = list(legend_dict.values())
 
         if legend_dict is not None:
             if not isinstance(legend_dict, dict):
                 print("The legend dict must be a dictionary.")
                 return
             else:
-                legend_keys = list(legend_dict.keys())
-                legend_colors = list(legend_dict.values())
-                if all(isinstance(item, tuple) for item in legend_colors):
+                labels = list(legend_dict.keys())
+                colors = list(legend_dict.values())
+                if all(isinstance(item, tuple) for item in colors):
                     try:
-                        legend_colors = [rgb_to_hex(x) for x in legend_colors]
+                        colors = [rgb_to_hex(x) for x in colors]
                     except Exception as e:
                         print(e)
 
@@ -2787,8 +2785,8 @@ class Map(ipyleaflet.Map):
             header = lines[:6]
             footer = lines[11:]
 
-        for index, key in enumerate(legend_keys):
-            color = legend_colors[index]
+        for index, key in enumerate(labels):
+            color = colors[index]
             if not color.startswith("#"):
                 color = "#" + color
             item = "      <li><span style='background:{};'></span>{}</li>\n".format(
@@ -2821,7 +2819,7 @@ class Map(ipyleaflet.Map):
                 display(legend_widget)
 
             self.legend_widget = legend_output_widget
-            self.legend = legend_control
+            self.legend_control = legend_control
             self.add_control(legend_control)
 
             if not hasattr(self, "legends"):
@@ -6124,6 +6122,12 @@ class Map(ipyleaflet.Map):
         y="latitude",
         popup=None,
         layer_name="Marker Cluster",
+        color_column=None,
+        marker_colors=None,
+        icon_colors=["white"],
+        icon_names=["info"],
+        spin=False,
+        add_legend=True,
         **kwargs,
     ):
         """Adds a marker cluster to the map.
@@ -6134,9 +6138,39 @@ class Map(ipyleaflet.Map):
             y (str, optional): The column name for the y values. Defaults to "latitude".
             popup (list, optional): A list of column names to be used as the popup. Defaults to None.
             layer_name (str, optional): The name of the layer. Defaults to "Marker Cluster".
+            color_column (str, optional): The column name for the color values. Defaults to None.
+            marker_colors (list, optional): A list of colors to be used for the markers. Defaults to None.
+            icon_colors (list, optional): A list of colors to be used for the icons. Defaults to ['white'].
+            icon_names (list, optional): A list of names to be used for the icons. More icons can be found at https://fontawesome.com/v4/icons. Defaults to ['info'].
+            spin (bool, optional): If True, the icon will spin. Defaults to False.
+            add_legend (bool, optional): If True, a legend will be added to the map. Defaults to True.
 
         """
         import pandas as pd
+
+        data = github_raw_url(data)
+
+        color_options = [
+            "red",
+            "blue",
+            "green",
+            "purple",
+            "orange",
+            "darkred",
+            "lightred",
+            "beige",
+            "darkblue",
+            "darkgreen",
+            "cadetblue",
+            "darkpurple",
+            "white",
+            "pink",
+            "lightblue",
+            "lightgreen",
+            "gray",
+            "black",
+            "lightgray",
+        ]
 
         if isinstance(data, pd.DataFrame):
             df = data
@@ -6148,6 +6182,47 @@ class Map(ipyleaflet.Map):
         df = points_from_xy(df, x, y)
 
         col_names = df.columns.values.tolist()
+
+        if color_column is not None and color_column not in col_names:
+            raise ValueError(
+                f"The color column {color_column} does not exist in the dataframe."
+            )
+
+        if color_column is not None:
+            items = list(set(df[color_column]))
+
+        else:
+            items = None
+
+        if color_column is not None and marker_colors is None:
+            if len(items) > len(color_options):
+                raise ValueError(
+                    f"The number of unique values in the color column {color_column} is greater than the number of available colors."
+                )
+            else:
+                marker_colors = color_options[: len(items)]
+        elif color_column is not None and marker_colors is not None:
+            if len(items) != len(marker_colors):
+                raise ValueError(
+                    f"The number of unique values in the color column {color_column} is not equal to the number of available colors."
+                )
+
+        if items is not None:
+
+            if len(icon_colors) == 1:
+                icon_colors = icon_colors * len(items)
+            elif len(items) != len(icon_colors):
+                raise ValueError(
+                    f"The number of unique values in the color column {color_column} is not equal to the number of available colors."
+                )
+
+            if len(icon_names) == 1:
+                icon_names = icon_names * len(items)
+            elif len(items) != len(icon_names):
+                raise ValueError(
+                    f"The number of unique values in the color column {color_column} is not equal to the number of available colors."
+                )
+
         if "geometry" in col_names:
             col_names.remove("geometry")
 
@@ -6173,14 +6248,33 @@ class Map(ipyleaflet.Map):
         if popup is not None:
             if isinstance(popup, str):
                 labels = df[popup]
-                markers = [
-                    ipyleaflet.Marker(
+
+                markers = []
+                for index, point in enumerate(points):
+
+                    if items is not None:
+                        marker_color = marker_colors[
+                            items.index(df[color_column][index])
+                        ]
+                        icon_name = icon_names[items.index(df[color_column][index])]
+                        icon_color = icon_colors[items.index(df[color_column][index])]
+                        marker_icon = ipyleaflet.AwesomeIcon(
+                            name=icon_name,
+                            marker_color=marker_color,
+                            icon_color=icon_color,
+                            spin=spin,
+                        )
+                    else:
+                        marker_icon = None
+
+                    marker = ipyleaflet.Marker(
                         location=point,
                         draggable=False,
                         popup=widgets.HTML(str(labels[index])),
+                        icon=marker_icon,
                     )
-                    for index, point in enumerate(points)
-                ]
+                    markers.append(marker)
+
             elif isinstance(popup, list):
                 labels = []
                 for i in range(len(points)):
@@ -6198,25 +6292,63 @@ class Map(ipyleaflet.Map):
                     labels.append(label)
                 df["popup"] = labels
 
-                markers = [
-                    ipyleaflet.Marker(
+                markers = []
+                for index, point in enumerate(points):
+                    if items is not None:
+                        marker_color = marker_colors[
+                            items.index(df[color_column][index])
+                        ]
+                        icon_name = icon_names[items.index(df[color_column][index])]
+                        icon_color = icon_colors[items.index(df[color_column][index])]
+                        marker_icon = ipyleaflet.AwesomeIcon(
+                            name=icon_name,
+                            marker_color=marker_color,
+                            icon_color=icon_color,
+                            spin=spin,
+                        )
+                    else:
+                        marker_icon = None
+
+                    marker = ipyleaflet.Marker(
                         location=point,
                         draggable=False,
                         popup=widgets.HTML(labels[index]),
+                        icon=marker_icon,
                     )
-                    for index, point in enumerate(points)
-                ]
+                    markers.append(marker)
 
         else:
-            markers = [
-                ipyleaflet.Marker(location=point, draggable=False) for point in points
-            ]
+            markers = []
+            for point in points:
+                if items is not None:
+                    marker_color = marker_colors[items.index(df[color_column][index])]
+                    icon_name = icon_names[items.index(df[color_column][index])]
+                    icon_color = icon_colors[items.index(df[color_column][index])]
+                    marker_icon = ipyleaflet.AwesomeIcon(
+                        name=icon_name,
+                        marker_color=marker_color,
+                        icon_color=icon_color,
+                        spin=spin,
+                    )
+                else:
+                    marker_icon = None
+
+                marker = ipyleaflet.Marker(
+                    location=point, draggable=False, icon=marker_icon
+                )
+                markers.append(marker)
 
         marker_cluster = ipyleaflet.MarkerCluster(markers=markers, name=layer_name)
         self.add_layer(marker_cluster)
 
-        self.default_style = {"cursor": "default"}
+        if items is not None and add_legend:
+            marker_colors = [check_color(c) for c in marker_colors]
+            self.add_legend(
+                title=color_column.title(), colors=marker_colors, labels=items
+            )
 
+        self.default_style = {"cursor": "default"}
+        
     def add_circle_markers_from_xy(
         self,
         data,
