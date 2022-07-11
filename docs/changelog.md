@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.15.3 - Jul 11, 2022
+
+**Improvement**:
+
+-   Pin ipyleaflet version for Colab [#1132](https://github.com/giswqs/geemap/issues/1132) [#1143](https://github.com/giswqs/geemap/pull/1143)
+-   Improved add vector functions
+
 ## v0.15.2 - Jul 9, 2022
 
 **New Features**:
