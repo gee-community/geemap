@@ -1157,6 +1157,21 @@ def csv_to_gdf(in_csv, latitude="latitude", longitude="longitude", encoding="utf
     return gdf
 
 
+def csv_to_vector(in_csv, output, latitude="latitude", longitude="longitude", encoding="utf-8", **kwargs):
+    """Creates points for a CSV file and converts them to a vector dataset.
+
+    Args:
+        in_csv (str): The file path to the input CSV file.
+        output (str): The file path to the output vector dataset.
+        latitude (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
+        longitude (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
+        encoding (str, optional): The encoding of characters. Defaults to "utf-8".
+
+    """
+    gdf = csv_to_gdf(in_csv, latitude, longitude, encoding)
+    gdf.to_file(output, **kwargs)
+
+
 def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
     """Converts a geojson to ee.Geometry()
 
