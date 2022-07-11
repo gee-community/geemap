@@ -10487,6 +10487,8 @@ def points_from_xy(data, x="longitude", y="latitude", z=None, crs=None, **kwargs
     if crs is None:
         crs = "epsg:4326"
 
+    data = github_raw_url(data)
+
     if isinstance(data, pd.DataFrame):
         df = data
     elif isinstance(data, str):
