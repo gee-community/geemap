@@ -1603,6 +1603,8 @@ class Map(folium.Map):
         """
         import pandas as pd
 
+        data = github_raw_url(data)
+
         if isinstance(data, pd.DataFrame):
             df = data
         elif not data.startswith("http") and (not os.path.exists(data)):
