@@ -10800,6 +10800,7 @@ def ee_join_table(ee_object, data, src_key, dst_key=None):
     else:
         raise TypeError("The input data must be of type str or pandas.DataFrame.")
 
+    df[dst_key] = df[dst_key].astype(str)
     df.set_index(dst_key, inplace=True)
     df = df[~df.index.duplicated(keep="first")]
     table = ee.Dictionary(df.to_dict("index"))
