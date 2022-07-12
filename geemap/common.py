@@ -8682,7 +8682,7 @@ def vector_to_geojson(
     if not filename.startswith("http"):
         filename = os.path.abspath(filename)
     else:
-        filename = github_raw_url(filename)
+        filename = download_file(github_raw_url(filename))
     ext = os.path.splitext(filename)[1].lower()
     if ext == ".kml":
         gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
@@ -10735,6 +10735,7 @@ def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
     if isinstance(in_geojson, str):
 
         if in_geojson.startswith("http"):
+            in_geojson = github_raw_url(in_geojson)
             with urlopen(in_geojson) as f:
                 data = json.load(f)
         else:
@@ -10779,6 +10780,7 @@ def ee_join_table(ee_object, data, src_key, dst_key=None):
         dst_key = src_key
 
     if isinstance(data, str):
+        data = github_raw_url(data)
         if data.endswith(".csv"):
             df = pd.read_csv(data)
         elif data.endswith(".geojson"):
