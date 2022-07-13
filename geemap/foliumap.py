@@ -2149,7 +2149,7 @@ class Map(folium.Map):
                         overlay=True,
                     )
             elif isinstance(right_layer, folium.raster_layers.TileLayer) or isinstance(
-                left_layer, folium.WmsTileLayer
+                right_layer, folium.WmsTileLayer
             ):
                 pass
             else:
