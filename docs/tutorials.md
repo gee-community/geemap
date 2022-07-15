@@ -130,5 +130,5 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 116. Creating global land cover timeseries ([notebook](https://geemap.org/notebooks/116_land_cover_timeseries))
 117. Creating a fishnet based on an input vector dataset ([notebook](https://geemap.org/notebooks/117_fishnet))
 118. Downloading images directly to a local computer ([notebook](https://geemap.org/notebooks/118_download_image))
-119. Plotting raster data in 3D without only one line of code ([notebook](https://geemap.org/notebooks/119_plot_raster))
+119. Plotting raster data in 3D with only one line of code ([notebook](https://geemap.org/notebooks/119_plot_raster))
 120. Calling functions in Earth Engine JavaScript libraries from Python ([notebook](https://geemap.org/notebooks/120_javascript))
