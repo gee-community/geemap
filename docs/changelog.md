@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.15.4 - Jul 15, 2022
+
+**New Features**:
+
+-   Added support for vector styling [#1148](https://github.com/giswqs/geemap/pull/1148)
+-   Added csv_to_vector function [#1144](https://github.com/giswqs/geemap/pull/1144)
+
+**Improvement**:
+
+-   Improved add_legend and points_from_xy
+-   Updated data conversion functions
+-   Renamed datasets from hyphen to underscore
+-   Updated sample datasets
+-   Fixed folium split map bug
+
 ## v0.15.3 - Jul 11, 2022
 
 **Improvement**:
