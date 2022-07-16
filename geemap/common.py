@@ -11073,7 +11073,7 @@ def read_lidar(filename, **kwargs):
     """Read a LAS file.
 
     Args:
-        filename (str): Path to a LAS file.
+        filename (str): A local file path or HTTP URL to a LAS file.
 
     Returns:
         LasData: The LasData object return by laspy.read.
@@ -11082,11 +11082,82 @@ def read_lidar(filename, **kwargs):
         import laspy
     except ImportError:
         print(
-            "The laspy package is required for this function. Use pip install laspy to install it."
+            "The laspy package is required for this function. Use `pip install laspy[lazrs,laszip]` to install it."
         )
         return
 
+    if (
+        isinstance(filename, str)
+        and filename.startswith("http")
+        and (filename.endswith(".las") or filename.endswith(".laz"))
+    ):
+        filename = github_raw_url(filename)
+        filename = download_file(filename)
+
     return laspy.read(filename, **kwargs)
+
+
+def convert_lidar(
+    source, destination=None, point_format_id=None, file_version=None, **kwargs
+):
+    """Converts a Las from one point format to another Automatically upgrades the file version if source file version
+        is not compatible with the new point_format_id
+
+    Args:
+        source (str | laspy.lasdatas.base.LasBase): The source data to be converted.
+        destination (str, optional): The destination file path. Defaults to None.
+        point_format_id (int, optional): The new point format id (the default is None, which won't change the source format id).
+        file_version (str, optional): The new file version. None by default which means that the file_version may be upgraded
+            for compatibility with the new point_format. The file version will not be downgraded.
+
+    Returns:
+        aspy.lasdatas.base.LasBase: The converted LasData object.
+    """
+    try:
+        import laspy
+    except ImportError:
+        print(
+            "The laspy package is required for this function. Use `pip install laspy[lazrs,laszip]` to install it."
+        )
+        return
+
+    if isinstance(source, str):
+        source = read_lidar(source)
+
+    las = laspy.convert(
+        source, point_format_id=point_format_id, file_version=file_version
+    )
+
+    if destination is None:
+        return las
+    else:
+        destination = check_file_path(destination)
+        write_lidar(las, destination, **kwargs)
+        return destination
+
+
+def write_lidar(source, destination, do_compress=None, laz_backend=None):
+    """Writes to a stream or file.
+
+    Args:
+        source (str | laspy.lasdatas.base.LasBase): The source data to be written.
+        destination (str): The destination filepath.
+        do_compress (bool, optional): Flags to indicate if you want to compress the data. Defaults to None.
+        laz_backend (str, optional): The laz backend to use. Defaults to None.
+    """
+
+    try:
+        import laspy
+    except ImportError:
+        print(
+            "The laspy package is required for this function. Use `pip install laspy[lazrs,laszip]` to install it."
+        )
+        return
+
+    if isinstance(source, str):
+        source = read_lidar(source)
+
+    source.write(destination, do_compress=do_compress, laz_backend=laz_backend)
 
 
 def download_file(
