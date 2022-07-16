@@ -10,7 +10,7 @@ geocoder
 geojson
 ipyevents
 ipyfilechooser>=0.6.0
-ipyleaflet<0.17.0
+ipyleaflet>=0.17.0
 ipytree
 jupyterlab>=3
 matplotlib

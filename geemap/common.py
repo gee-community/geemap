@@ -994,7 +994,9 @@ def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude
     wbt.csv_points_to_vector(in_csv, out_shp, xfield=xfield, yfield=yfield, epsg=4326)
 
 
-def csv_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude", encoding="utf-8"):
+def csv_to_shp(
+    in_csv, out_shp, latitude="latitude", longitude="longitude", encoding="utf-8"
+):
     """Converts a csv file with latlon info to a point shapefile.
 
     Args:
@@ -1157,7 +1159,14 @@ def csv_to_gdf(in_csv, latitude="latitude", longitude="longitude", encoding="utf
     return gdf
 
 
-def csv_to_vector(in_csv, output, latitude="latitude", longitude="longitude", encoding="utf-8", **kwargs):
+def csv_to_vector(
+    in_csv,
+    output,
+    latitude="latitude",
+    longitude="longitude",
+    encoding="utf-8",
+    **kwargs,
+):
     """Creates points for a CSV file and converts them to a vector dataset.
 
     Args:
@@ -12517,3 +12526,114 @@ def change_require(lib_path):
         f.writelines(output)
 
     return lib_path
+
+
+def ee_vector_style(
+    collection,
+    column,
+    labels=None,
+    color="black",
+    pointSize=3,
+    pointShape="circle",
+    width=2,
+    fillColor=None,
+    lineType="solid",
+    neighborhood=5,
+    return_fc=False,
+):
+    """Create a vector style for a feature collection.
+
+    Args:
+        collection (ee.FeatureCollection): The input feature collection.
+        column (str): The name of the column to use for styling.
+        labels (list, optional): A list of labels to use for styling. Defaults to None.
+        color (str | list, optional): A default color (CSS 3.0 color value e.g. 'FF0000' or 'red') to use for drawing the features. Supports opacity (e.g.: 'FF000088' for 50% transparent red). Defaults to "black".
+        pointSize (int | list, optional): The default size in pixels of the point markers. Defaults to 3.
+        pointShape (str | list, optional): The default shape of the marker to draw at each point location. One of: circle, square, diamond, cross, plus, pentagram, hexagram, triangle, triangle_up, triangle_down, triangle_left, triangle_right, pentagon, hexagon, star5, star6. This argument also supports the following Matlab marker abbreviations: o, s, d, x, +, p, h, ^, v, <, >. Defaults to "circle".
+        width (int | list, optional): The default line width for lines and outlines for polygons and point shapes. Defaults to 2.
+        fillColor (str | list, optional): The color for filling polygons and point shapes. Defaults to 'color' at 0.66 opacity. Defaults to None.
+        lineType (str | list, optional): The default line style for lines and outlines of polygons and point shapes. Defaults to 'solid'. One of: solid, dotted, dashed. Defaults to "solid".
+        neighborhood (int, optional): If styleProperty is used and any feature has a pointSize or width larger than the defaults, tiling artifacts can occur. Specifies the maximum neighborhood (pointSize + width) needed for any feature. Defaults to 5.
+        return_fc (bool, optional): If True, return an ee.FeatureCollection with a style property. Otherwise, return a styled ee.Image. Defaults to False.
+
+    Returns:
+        ee.FeatureCollection | ee.Image: The styled Earth Engine FeatureCollection or Image.
+    """
+    if not isinstance(collection, ee.FeatureCollection):
+        raise ValueError("collection must be an ee.FeatureCollection.")
+
+    if not isinstance(column, str):
+        raise ValueError("column must be a string.")
+
+    prop_names = ee.Feature(collection.first()).propertyNames().getInfo()
+    if column not in prop_names:
+        raise ValueError(
+            f"{column} is not a property name of the collection. It must be one of {','.join(prop_names)}."
+        )
+
+    if labels is None:
+        labels = collection.aggregate_array(column).distinct().sort().getInfo()
+    elif isinstance(labels, list):
+        collection = collection.filter(ee.Filter.inList(column, labels))
+    elif not isinstance(labels, list):
+        raise ValueError("labels must be a list.")
+
+    size = len(labels)
+    if size != len(color):
+        raise ValueError("labels and color must be the same length.")
+
+    if isinstance(color, str):
+        color = [color] * size
+    elif not isinstance(color, list):
+        raise ValueError("color must be a string or a list.")
+
+    if isinstance(pointSize, int):
+        pointSize = [pointSize] * size
+    elif not isinstance(pointSize, list):
+        raise ValueError("pointSize must be an integer or a list.")
+
+    if isinstance(pointShape, str):
+        pointShape = [pointShape] * size
+    elif not isinstance(pointShape, list):
+        raise ValueError("pointShape must be a string or a list.")
+
+    if isinstance(width, int):
+        width = [width] * size
+    elif not isinstance(width, list):
+        raise ValueError("width must be an integer or a list.")
+
+    if fillColor is None:
+        fillColor = color
+    elif isinstance(fillColor, str):
+        fillColor = [fillColor] * size
+    elif not isinstance(fillColor, list):
+        raise ValueError("fillColor must be a list.")
+
+    if not isinstance(neighborhood, int):
+        raise ValueError("neighborhood must be an integer.")
+
+    if isinstance(lineType, str):
+        lineType = [lineType] * size
+    elif not isinstance(lineType, list):
+        raise ValueError("lineType must be a string or list.")
+
+    style_dict = {}
+
+    for i, label in enumerate(labels):
+        style_dict[label] = {
+            "color": color[i],
+            "pointSize": pointSize[i],
+            "pointShape": pointShape[i],
+            "width": width[i],
+            "fillColor": fillColor[i],
+            "lineType": lineType[i],
+        }
+
+    style = ee.Dictionary(style_dict)
+
+    result = collection.map(lambda f: f.set("style", style.get(f.get(column))))
+
+    if return_fc:
+        return result
+    else:
+        return result.style(**{"styleProperty": "style", "neighborhood": neighborhood})
