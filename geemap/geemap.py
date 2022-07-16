@@ -6348,7 +6348,7 @@ class Map(ipyleaflet.Map):
             )
 
         self.default_style = {"cursor": "default"}
-        
+
     def add_circle_markers_from_xy(
         self,
         data,

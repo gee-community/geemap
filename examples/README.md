@@ -138,6 +138,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 118. Downloading images directly to a local computer ([notebook](https://geemap.org/notebooks/118_download_image))
 119. Plotting raster data in 3D with only one line of code ([notebook](https://geemap.org/notebooks/119_plot_raster))
 120. Calling functions in Earth Engine JavaScript libraries from Python ([notebook](https://geemap.org/notebooks/120_javascript))
+121. Styling vector data based on attributes ([notebook](https://geemap.org/notebooks/121_vector_style))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 

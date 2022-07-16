@@ -30,9 +30,9 @@ if use_folium():
 else:
     from .geemap import *
 
-    if in_colab_shell():
-        from google.colab import output
+    # if in_colab_shell():
+    #     from google.colab import output
 
-        output.enable_custom_widget_manager()
+    #     output.enable_custom_widget_manager()
 
 from .report import Report

@@ -203,6 +203,7 @@ nav:
           - notebooks/118_download_image.ipynb
           - notebooks/119_plot_raster.ipynb
           - notebooks/120_javascript.ipynb
+          - notebooks/121_vector_style.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
