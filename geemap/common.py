@@ -11899,7 +11899,10 @@ def check_cmap(cmap):
         try:
             return get_palette(cmap)
         except Exception as e:
-            raise Exception(f"{cmap} is not a valid colormap.")
+            try:
+                return check_color(cmap)
+            except Exception as e:
+                raise Exception(f"{cmap} is not a valid colormap.")
     elif isinstance(cmap, Box):
         return list(cmap["default"])
     elif isinstance(cmap, list) or isinstance(cmap, tuple):
