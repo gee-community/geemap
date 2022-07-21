@@ -5070,6 +5070,9 @@ def load_GeoTIFF(URL):
 
     uri = URL.strip()
 
+    if uri.startswith("http"):
+        uri = get_direct_url(uri)
+
     if uri.startswith("https://storage.googleapis.com/"):
         uri = uri.replace("https://storage.googleapis.com/", "gs://")
     elif uri.startswith("https://storage.cloud.google.com/"):
@@ -5108,6 +5111,9 @@ def load_GeoTIFFs(URLs):
     URIs = []
     for URL in URLs:
         uri = URL.strip()
+
+        if uri.startswith("http"):
+            uri = get_direct_url(uri)
 
         if uri.startswith("https://storage.googleapis.com/"):
             uri = uri.replace("https://storage.googleapis.com/", "gs://")
@@ -10210,6 +10216,8 @@ def get_local_tile_layer(
                 nodata=nodata,
                 attribution=attribution,
                 name=layer_name,
+                max_zoom=30,
+                max_native_zoom=30,
                 **kwargs,
             )
         else:
@@ -10226,6 +10234,8 @@ def get_local_tile_layer(
                 attr=attribution,
                 overlay=True,
                 name=layer_name,
+                max_zoom=30,
+                max_native_zoom=30,
                 **kwargs,
             )
 
@@ -12731,3 +12741,33 @@ def get_direct_url(url):
 
     r = requests.head(url, allow_redirects=True)
     return r.url
+
+
+def add_crs(filename, epsg):
+    """Add a CRS to a raster dataset.
+
+    Args:
+        filename (str): The filename of the raster dataset.
+        epsg (int | str): The EPSG code of the CRS.
+
+    """
+    try:
+        import rasterio
+    except ImportError:
+        raise ImportError(
+            "rasterio is required for adding a CRS to a raster. Please install it using 'pip install rasterio'."
+        )
+
+    if not os.path.exists(filename):
+        raise ValueError("filename must exist.")
+
+    if isinstance(epsg, int):
+        epsg = f"EPSG:{epsg}"
+    elif isinstance(epsg, str):
+        epsg = "EPSG:" + epsg
+    else:
+        raise ValueError("epsg must be an integer or string.")
+
+    crs = rasterio.crs.CRS({"init": epsg})
+    with rasterio.open(filename, mode="r+") as src:
+        src.crs = crs
