@@ -12119,7 +12119,7 @@ def download_ee_image(
         import geedim as gd
     except ImportError:
         raise ImportError(
-            "Please install geedim using `mamba install -c conda-forge geedim`"
+            "Please install geedim using `pip install geedim` or `conda install -c conda-forge geedim`"
         )
 
     if not isinstance(image, ee.Image):
