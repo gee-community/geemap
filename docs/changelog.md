@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.15.5 - Jul 22, 2022
+
+**New Features**:
+
+-   Added get_direct_url function
+-   Added more lidar functions [#1149](https://github.com/giswqs/geemap/pull/1149)
+
+**Improvement**:
+
+-   Improved load_GeoTIFF function
+-   Fixed image palette bug
+-   Updated vector styling notebook
+
 ## v0.15.4 - Jul 15, 2022
 
 **New Features**:
