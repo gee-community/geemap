@@ -3,6 +3,7 @@ black[jupyter]
 codespell
 datapane
 deadlink
+geedim>=1.3.2
 geopandas
 here-map-widget-for-jupyter>=1.1.1
 keplergl

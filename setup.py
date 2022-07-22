@@ -36,6 +36,7 @@ extras_requires = {
         "rioxarray",
         "netcdf4",
         "xarray_leaflet",
+        "geedim",
     ],
     "sql": ["psycopg2", "sqlalchemy"],
     "apps": ["streamlit-folium", "voila"],
