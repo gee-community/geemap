@@ -8172,14 +8172,32 @@ def geometry_type(ee_object):
         )
 
 
-def vector_styling(ee_object, column, palette, **kwargs):
+def vector_styling(
+    ee_object, 
+    column, 
+    palette,
+    color = "000000",
+    colorOpacity = 1,
+    pointSize = 3,
+    pointShape = "circle",
+    width = 1,
+    lineType = "solid",
+    fillColorOpacity = 0.66):
+
     """Add a new property to each feature containing a stylying dictionary.
 
     Args:
         ee_object (object): An ee.FeatureCollection.
         column (str): The column name to use for styling.
         palette (list | dict): The palette (e.g., list of colors or a dict containing label and color pairs) to use for styling.
-
+        
+        color (str): color (str | list, optional): A default color (CSS 3.0 color value e.g. 'FF0000' or 'red') to use for drawing the features. Defaults to "black".
+        colorOpacity (float): Opacity 0-1 of the features.
+        pointSize (int | list, optional): The default size in pixels of the point markers. Defaults to 3.
+        pointShape (str | list, optional): The default shape of the marker to draw at each point location. One of: circle, square, diamond, cross, plus, pentagram, hexagram, triangle, triangle_up, triangle_down, triangle_left, triangle_right, pentagon, hexagon, star5, star6. This argument also supports the following Matlab marker abbreviations: o, s, d, x, +, p, h, ^, v, <, >. Defaults to "circle".
+        width (int | list, optional): The default line width for lines and outlines for polygons and point shapes. Defaults to 1.
+        lineType (str | list, optional): The default line style for lines and outlines of polygons and point shapes. Defaults to 'solid'. One of: solid, dotted, dashed. Defaults to "solid".
+        fillColorOpacity (float): Opacity 0-1 of the fill. Defaults to 0.66. Color of the fill is based on the palette. 
     Raises:
         ValueError: The provided column name is invalid.
         TypeError: The provided palette is invalid.
@@ -8220,32 +8238,9 @@ def vector_styling(ee_object, column, palette, **kwargs):
         if not isinstance(palette, list):
             raise TypeError("The palette must be a list.")
 
-        color = "000000"
-        color_opacity = 1
-        point_size = 3
-        point_shape = "circle"
-        line_width = 1
-        line_type = "solid"
-        fill_color_opacity = 0.66
-
-        if "color" in kwargs.keys():
-            color = kwargs["color"]
-        if "colorOpacity" in kwargs.keys():
-            color_opacity = kwargs["colorOpacity"]
-        if "pointSize" in kwargs.keys():
-            point_size = kwargs["pointSize"]
-        if "pointShape" in kwargs.keys():
-            point_shape = kwargs["pointShape"]
-        if "width" in kwargs.keys():
-            line_width = kwargs["width"]
-        if "lineType" in kwargs.keys():
-            line_type = kwargs["lineType"]
-        if "fillColorOpacity" in kwargs.keys():
-            fill_color_opacity = kwargs["fillColorOpacity"]
-
         colors = ee.List(
             [
-                color.strip() + str(hex(int(fill_color_opacity * 255)))[2:].zfill(2)
+                color.strip() + str(hex(int(fillColorOpacity * 255)))[2:].zfill(2)
                 for color in palette
             ]
         )
@@ -8256,11 +8251,11 @@ def vector_styling(ee_object, column, palette, **kwargs):
                 {
                     "style": {
                         "color": color
-                        + str(hex(int(color_opacity * 255)))[2:].zfill(2),
-                        "pointSize": point_size,
-                        "pointShape": point_shape,
-                        "width": line_width,
-                        "lineType": line_type,
+                        + str(hex(int(colorOpacity * 255)))[2:].zfill(2),
+                        "pointSize": pointSize,
+                        "pointShape": pointShape,
+                        "width": width,
+                        "lineType": lineType,
                         "fillColor": colors.get(
                             ee.Number(
                                 ee.Number(f.get("styleIndex")).divide(step)
