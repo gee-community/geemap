@@ -12549,7 +12549,7 @@ def github_raw_url(url):
     """
     if isinstance(url, str) and url.startswith("https://github.com/") and "blob" in url:
         url = url.replace("github.com", "raw.githubusercontent.com").replace(
-            "blob/", ""
+            "blob/", "", 1
         )
     return url
 
