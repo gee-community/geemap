@@ -12515,6 +12515,8 @@ def requireJS(lib_path=None, Map=None):
             "oeel is required for requireJS. Please install it using 'pip install oeel'."
         )
 
+    ee_initialize()
+
     if lib_path is None:
         if Map is not None:
             oeel.setMap(Map)
