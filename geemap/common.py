@@ -5158,6 +5158,8 @@ def cog_tile(
         tuple: Returns the COG Tile layer URL and bounds.
     """
 
+    url = get_direct_url(url)
+
     kwargs["url"] = url
 
     band_names = cog_bands(url, titiler_endpoint)
@@ -5321,6 +5323,8 @@ def cog_bounds(url, titiler_endpoint="https://titiler.xyz", timeout=300):
         list: A list of values representing [left, bottom, right, top]
     """
 
+    url = get_direct_url(url)
+
     r = requests.get(
         f"{titiler_endpoint}/cog/bounds", params={"url": url}, timeout=timeout
     ).json()
@@ -5342,6 +5346,8 @@ def cog_center(url, titiler_endpoint="https://titiler.xyz"):
     Returns:
         tuple: A tuple representing (longitude, latitude)
     """
+
+    url = get_direct_url(url)
     bounds = cog_bounds(url, titiler_endpoint)
     center = ((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2)  # (lat, lon)
     return center
@@ -5359,6 +5365,7 @@ def cog_bands(url, titiler_endpoint="https://titiler.xyz", timeout=300):
         list: A list of band names
     """
 
+    url = get_direct_url(url)
     r = requests.get(
         f"{titiler_endpoint}/cog/info",
         params={
@@ -5383,6 +5390,7 @@ def cog_stats(url, titiler_endpoint="https://titiler.xyz", timeout=300):
         list: A dictionary of band statistics.
     """
 
+    url = get_direct_url(url)
     r = requests.get(
         f"{titiler_endpoint}/cog/statistics",
         params={
@@ -5408,6 +5416,7 @@ def cog_info(
         list: A dictionary of band info.
     """
 
+    url = get_direct_url(url)
     info = "info"
     if return_geojson:
         info = "info.geojson"
@@ -5446,6 +5455,7 @@ def cog_pixel_value(
         list: A dictionary of band info.
     """
 
+    url = get_direct_url(url)
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     kwargs["url"] = url
     if bidx is not None:
@@ -5503,6 +5513,7 @@ def stac_tile(
         titiler_endpoint = "planetary-computer"
 
     if url is not None:
+        url = get_direct_url(url)
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
@@ -5643,6 +5654,7 @@ def stac_bounds(
         titiler_endpoint = "planetary-computer"
 
     if url is not None:
+        url = get_direct_url(url)
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
@@ -5675,6 +5687,12 @@ def stac_center(url=None, collection=None, item=None, titiler_endpoint=None, **k
     Returns:
         tuple: A tuple representing (longitude, latitude)
     """
+
+    if url is None and collection is None:
+        raise ValueError("Either url or collection must be specified.")
+
+    if isinstance(url, str):
+        url = get_direct_url(url)
     bounds = stac_bounds(url, collection, item, titiler_endpoint, **kwargs)
     center = ((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2)  # (lon, lat)
     return center
@@ -5703,6 +5721,7 @@ def stac_bands(
         titiler_endpoint = "planetary-computer"
 
     if url is not None:
+        url = get_direct_url(url)
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
@@ -5752,6 +5771,7 @@ def stac_stats(
         titiler_endpoint = "planetary-computer"
 
     if url is not None:
+        url = get_direct_url(url)
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
@@ -5803,6 +5823,7 @@ def stac_info(
         titiler_endpoint = "planetary-computer"
 
     if url is not None:
+        url = get_direct_url(url)
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
@@ -5854,6 +5875,7 @@ def stac_info_geojson(
         titiler_endpoint = "planetary-computer"
 
     if url is not None:
+        url = get_direct_url(url)
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
@@ -5898,6 +5920,7 @@ def stac_assets(
         titiler_endpoint = "planetary-computer"
 
     if url is not None:
+        url = get_direct_url(url)
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
@@ -5953,6 +5976,7 @@ def stac_pixel_value(
         titiler_endpoint = "planetary-computer"
 
     if url is not None:
+        url = get_direct_url(url)
         kwargs["url"] = url
     if collection is not None:
         kwargs["collection"] = collection
