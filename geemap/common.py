@@ -12516,6 +12516,10 @@ def requireJS(lib_path=None, Map=None):
             oeel.setMap(Map)
         return oeel
     elif isinstance(lib_path, str):
+
+        if lib_path.startswith("http"):
+            lib_path = get_direct_url(lib_path)
+
         lib_path = change_require(lib_path)
 
         if Map is not None:

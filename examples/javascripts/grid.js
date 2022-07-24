@@ -67,11 +67,12 @@ var generateGrid = function(xmin, ymin, xmax, ymax, dx, dy, marginx, marginy, op
 
 var grid_test = function() {
 
-    var gridVector = generateGrid(-180, -50, 180, 50, 10, 10, 0, 0)
-    Map.addLayer(gridVector, {}, 'Grid vector')
+    var gridRaster = generateRasterGrid(ee.Geometry.Point(0, 0), 10, 10, ee.Projection('EPSG:4326'));
+    Map.addLayer(gridRaster.select('id').randomVisualizer(), {}, 'Grid raster', true, 0.5);
 
-    var gridRaster = generateRasterGrid(ee.Geometry.Point(0, 0), 10, 10, ee.Projection('EPSG:4326'))
-    Map.addLayer(gridRaster.select('id').randomVisualizer(), {}, 'Grid raster')
+    var gridVector = generateGrid(-180, -70, 180, 70, 10, 10, 0, 0);
+    style = {'fillColor': '00000000'};
+    Map.addLayer(gridVector.style(style), {}, 'Grid vector');
 
 }
 
