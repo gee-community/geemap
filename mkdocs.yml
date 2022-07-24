@@ -43,6 +43,7 @@ extra:
 
 nav:
     - Home: index.md
+    - Book: https://book.geemap.org
     - Installation: installation.md
     - Get Started: get-started.md
     - Usage: usage.md
