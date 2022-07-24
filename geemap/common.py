@@ -8191,13 +8191,13 @@ def vector_styling(
         column (str): The column name to use for styling.
         palette (list | dict): The palette (e.g., list of colors or a dict containing label and color pairs) to use for styling.
         
-        color (str): color (str | list, optional): A default color (CSS 3.0 color value e.g. 'FF0000' or 'red') to use for drawing the features. Defaults to "black".
-        colorOpacity (float): Opacity 0-1 of the features.
-        pointSize (int | list, optional): The default size in pixels of the point markers. Defaults to 3.
-        pointShape (str | list, optional): The default shape of the marker to draw at each point location. One of: circle, square, diamond, cross, plus, pentagram, hexagram, triangle, triangle_up, triangle_down, triangle_left, triangle_right, pentagon, hexagon, star5, star6. This argument also supports the following Matlab marker abbreviations: o, s, d, x, +, p, h, ^, v, <, >. Defaults to "circle".
-        width (int | list, optional): The default line width for lines and outlines for polygons and point shapes. Defaults to 1.
-        lineType (str | list, optional): The default line style for lines and outlines of polygons and point shapes. Defaults to 'solid'. One of: solid, dotted, dashed. Defaults to "solid".
-        fillColorOpacity (float): Opacity 0-1 of the fill. Defaults to 0.66. Color of the fill is based on the palette. 
+        color (str, optional): A default color (CSS 3.0 color value e.g. 'FF0000' or 'red') to use for drawing the features. Defaults to "black".
+        colorOpacity (float, optional): Opacity between 0-1 of the features. Defaults to 1
+        pointSize (int, optional): The default size in pixels of the point markers. Defaults to 3.
+        pointShape (str, optional): The default shape of the marker to draw at each point location. One of: circle, square, diamond, cross, plus, pentagram, hexagram, triangle, triangle_up, triangle_down, triangle_left, triangle_right, pentagon, hexagon, star5, star6. This argument also supports the following Matlab marker abbreviations: o, s, d, x, +, p, h, ^, v, <, >. Defaults to "circle".
+        width (int, optional): The default line width for lines and outlines for polygons and point shapes. Defaults to 1.
+        lineType (str, optional): The default line style for lines and outlines of polygons and point shapes. Defaults to 'solid'. One of: solid, dotted, dashed. Defaults to "solid".
+        fillColorOpacity (float, optional): Opacity between 0-1 of the fill. Defaults to 0.66. Color of the fill is based on the column name or index in the palette. 
     Raises:
         ValueError: The provided column name is invalid.
         TypeError: The provided palette is invalid.
