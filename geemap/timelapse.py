@@ -1298,6 +1298,24 @@ def valid_roi(roi):
     geojson = adjust_longitude(geojson)
     return ee.Geometry(geojson)
 
+def sentinel1_defaults():
+    from datetime import date
+    year = date.today().year
+    roi = ee.Geometry.Polygon(
+            [
+                [
+                    [-115.471773, 35.892718],
+                    [-115.471773, 36.409454],
+                    [-114.271283, 36.409454],
+                    [-114.271283, 35.892718],
+                    [-115.471773, 35.892718],
+                ]
+            ],
+            None,
+            False,
+        )    
+    return year, roi
+
 def sentinel1_timeseries(
     roi=None, 
     start_year=2015, 
@@ -1310,10 +1328,10 @@ def sentinel1_timeseries(
     """
 	Generates a Sentinel 1 ImageCollection, 
 	based on mean composites following a steady frequency (f.e. 1 image per month)
+    Adapted from https://code.earthengine.google.com/?scriptPath=Examples:Datasets/COPERNICUS_S1_GRD
 	
     Args:
-
-        roi (object, optional): Region of interest to create the timelapse. Defaults to a polygon partially Las Vegas and Lake Mead.
+        roi (object, optional): Region of interest to create the timelapse. Defaults to a polygon partially covering Las Vegas and Lake Mead.
         start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
         end_year (int, optional): Ending year for the timelapse. Defaults to current year.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
@@ -1324,21 +1342,7 @@ def sentinel1_timeseries(
         object: Returns an ImageCollection of Sentinel 1 images.
     """
 
-    from datetime import date
-    CURRENT_YEAR = date.today().year
-    ROI_DEFAULT = ee.Geometry.Polygon(
-            [
-                [
-                    [-115.471773, 35.892718],
-                    [-115.471773, 36.409454],
-                    [-114.271283, 36.409454],
-                    [-114.271283, 35.892718],
-                    [-115.471773, 35.892718],
-                ]
-            ],
-            None,
-            False,
-        )
+    CURRENT_YEAR, ROI_DEFAULT = sentinel1_defaults()
     roi = roi or ROI_DEFAULT
     end_year = end_year or CURRENT_YEAR
     roi = valid_roi(roi)
@@ -1348,17 +1352,23 @@ def sentinel1_timeseries(
     
     dates = date_sequence(start, end, frequency)
 
+    def remove_outliers(image):
+        edge = image.lt(-30.)
+        maskedimage = image.mask().And(edge.Not())
+        return image.updateMask(maskedimage)
+
     col = ee.ImageCollection('COPERNICUS/S1_GRD').filterBounds(roi)\
                 .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))\
                 .filter(ee.Filter.eq('instrumentMode', 'IW'))\
                 .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING'))\
-                .select('VV')
+                .select('VV')\
+                .map(remove_outliers)
 	
     n = 1
     if frequency == "quarter":
         n = 3
         frequency='month'
-    
+
     def transform(date): #coll, frequency
         start = date
         end = ee.Date(date).advance(n,frequency).advance(-1,'day')
@@ -1367,6 +1377,7 @@ def sentinel1_timeseries(
                    .set(    {
                                 "system:time_start": ee.Date(start).millis(),
                                 "system:time_end": ee.Date(end).millis(),
+                                "system:date": start
                             }
                         )   
 
@@ -2919,6 +2930,189 @@ def landsat_timelapse_legacy(
     except Exception as e:
         raise Exception(e)
 
+def sentinel1_timelapse(
+    roi=None,
+    out_gif=None,
+    start_year=2015,
+    end_year=None,
+    start_date="01-01",
+    end_date="12-31",
+    vis_params=None,
+    dimensions=768,
+    frames_per_second=5,
+    crs="EPSG:3857",
+    overlay_data=None,
+    overlay_color="black",
+    overlay_width=1,
+    overlay_opacity=1.0,
+    frequency="year",
+    title=None,
+    title_xy=("2%", "90%"),
+    add_text=True,
+    text_xy=("2%", "2%"),
+    text_sequence=None,
+    font_type="arial.ttf",
+    font_size=20,
+    font_color="white",
+    add_progress_bar=True,
+    progress_bar_color="white",
+    progress_bar_height=5,
+    loop=0,
+    mp4=False,
+    fading=False,
+):
+    """Generates a Sentinel-1 timelapse animated GIF or MP4.
+
+    Args:
+        roi (object, optional): Region of interest to create the timelapse. Defaults to LV & Lake Mead.
+        out_gif (str, optional): File path to the output animated GIF. Defaults to user\Downloads\s1_ts_*.gif.
+        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
+        end_year (int, optional): Ending year for the timelapse. Defaults to current year.
+        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
+        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
+        vis_params (dict, optional): Visualization parameters. Defaults to {'min':-18, 'max': -4}.
+        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 5.
+        crs (str, optional): Coordinate reference system. Defaults to 'EPSG:3857'.
+        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
+        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
+        overlay_width (int, optional): Line width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'. Can be year, quarter or month. 
+        title (str, optional): The title of the timelapse. Defaults to None.
+        title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
+        title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to image start dates.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to 'white'.
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
+        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+
+    Returns:
+        str: File path to the output GIF image.
+    """
+
+    CURRENT_YEAR, ROI_DEFAULT = sentinel1_defaults()
+    roi = roi or ROI_DEFAULT
+    end_year = end_year or CURRENT_YEAR
+
+    col = sentinel1_timeseries(
+            roi=roi,
+            start_year=start_year,
+            end_year=end_year,
+            start_date=start_date,
+            end_date=end_date,
+            frequency=frequency,
+            clip=True
+        )
+
+    vis_params = vis_params or {'min':-25, 'max': 5}
+
+    if out_gif is None:
+        out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+        filename = "s1_ts_" + random_string() + ".gif"
+        out_gif = os.path.join(out_dir, filename)
+    elif not out_gif.endswith(".gif"):
+        print("The output file must end with .gif")
+        return
+    else:
+        out_gif = os.path.abspath(out_gif)
+        out_dir = os.path.dirname(out_gif)
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    if overlay_data is not None:
+            col = add_overlay(
+                col, overlay_data, overlay_color, overlay_width, overlay_opacity
+            )
+
+    if dimensions > 768:
+        count = col.size().getInfo()
+        basename = os.path.basename(out_gif)[:-4]
+        names = [
+            os.path.join(
+                out_dir, f"{basename}_{str(i+1).zfill(int(len(str(count))))}.jpg"
+            )
+            for i in range(count)
+        ]
+        get_image_collection_thumbnails(
+            col,
+            out_dir,
+            vis_params=vis_params,
+            dimensions=dimensions,
+            names=names,
+        )
+        make_gif(
+            names,
+            out_gif,
+            fps=frames_per_second,
+            loop=loop,
+            mp4=False,
+            clean_up=True,
+        )
+    else:
+
+            video_args = vis_params.copy()
+            video_args["dimensions"] = dimensions
+            video_args["region"] = roi
+            video_args["framesPerSecond"] = frames_per_second
+            video_args["crs"] = crs
+            video_args["min"] = vis_params["min"]
+            video_args["max"] = vis_params["max"]
+
+            download_ee_video(col, video_args, out_gif)
+
+    if os.path.exists(out_gif):
+        if title is not None and isinstance(title, str):
+            add_text_to_gif(
+                out_gif,
+                out_gif,
+                xy=title_xy,
+                text_sequence=title,
+                font_type=font_type,
+                font_size=font_size,
+                font_color=font_color,
+                add_progress_bar=add_progress_bar,
+                progress_bar_color=progress_bar_color,
+                progress_bar_height=progress_bar_height,
+                duration=1000 / frames_per_second,
+                loop=loop,
+            )
+        if add_text:
+            if text_sequence is None:
+                text_sequence = col.aggregate_array("system:date").getInfo()
+            add_text_to_gif(
+                out_gif,
+                out_gif,
+                xy=text_xy,
+                text_sequence=text_sequence,
+                font_type=font_type,
+                font_size=font_size,
+                font_color=font_color,
+                add_progress_bar=add_progress_bar,
+                progress_bar_color=progress_bar_color,
+                progress_bar_height=progress_bar_height,
+                duration=1000 / frames_per_second,
+                loop=loop,
+            )
+        if os.path.exists(out_gif):
+            reduce_gif_size(out_gif)
+        if isinstance(fading, bool):
+            fading = int(fading)
+        if fading > 0:
+            gif_fading(out_gif, out_gif, duration=fading, verbose=False)
+        if mp4:
+            out_mp4 = out_gif.replace(".gif", ".mp4")
+            gif_to_mp4(out_gif, out_mp4)
+
+    return out_gif
 
 def sentinel2_timelapse(
     roi=None,
