@@ -3467,6 +3467,10 @@ class Map(ipyleaflet.Map):
             layer_name (str, optional): The layer name to use. Defaults to None.
         """
 
+        if in_colab_shell():
+            print("This add_raster() function is not supported in Colab.")
+            return
+
         tile_layer, tile_client = get_local_tile_layer(
             source,
             band=band,
