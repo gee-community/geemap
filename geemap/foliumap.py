@@ -588,7 +588,7 @@ class Map(folium.Map):
         )
         self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
 
-    def add_local_tile(
+    def add_raster(
         self,
         source,
         band=None,
@@ -619,6 +619,10 @@ class Map(folium.Map):
             layer_name (str, optional): The layer name to use. Defaults to 'Local COG'.
         """
 
+        if in_colab_shell():
+            print("This add_raster() function is not supported in Colab.")
+            return
+
         tile_layer, tile_client = get_local_tile_layer(
             source,
             band=band,
@@ -643,7 +647,7 @@ class Map(folium.Map):
         )  # [minx, miny, maxx, maxy]
         self.zoom_to_bounds(bounds)
 
-    add_raster = add_local_tile
+    dd_local_tile = add_raster
 
     def add_remote_tile(
         self,
