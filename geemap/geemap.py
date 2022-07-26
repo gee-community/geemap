@@ -36,6 +36,10 @@ class Map(ipyleaflet.Map):
 
     def __init__(self, **kwargs):
 
+        import warnings
+
+        warnings.filterwarnings("ignore")
+
         # Authenticates Earth Engine and initializes an Earth Engine session
         if "ee_initialize" not in kwargs.keys():
             kwargs["ee_initialize"] = True
@@ -5139,6 +5143,9 @@ class Map(ipyleaflet.Map):
         import json
         import random
         import requests
+        import warnings
+
+        warnings.filterwarnings("ignore")
 
         style_callback_only = False
 
