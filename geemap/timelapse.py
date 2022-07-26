@@ -1437,10 +1437,10 @@ def sentinel2_timeseries(
             print(e)
             return
 
-        # Adjusts longitudes less than -180 degrees or greater than 180 degrees.
-        geojson = ee_to_geojson(roi)
-        geojson = adjust_longitude(geojson)
-        roi = ee.Geometry(geojson)
+    # Adjusts longitudes less than -180 degrees or greater than 180 degrees.
+    geojson = ee_to_geojson(roi)
+    geojson = adjust_longitude(geojson)
+    roi = ee.Geometry(geojson)
 
     feq_dict = {
         "year": "YYYY",
