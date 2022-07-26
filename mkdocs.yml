@@ -239,6 +239,7 @@ nav:
                 - notebooks/river_width.ipynb
                 - notebooks/select_features.ipynb
                 - notebooks/select_features_old.ipynb
+                - notebooks/sentinel1_timelapse.ipynb
                 - notebooks/surface_water_mapping.ipynb
                 - notebooks/template.ipynb
                 - notebooks/tn_surface_water.ipynb
