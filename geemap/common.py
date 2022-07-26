@@ -11032,6 +11032,10 @@ def view_lidar(filename, cmap="terrain", backend="pyvista", background=None, **k
         ValueError: If the backend is not supported.
     """
 
+    if in_colab_shell():
+        print("The view_lidar() function is not supported in Colab.")
+        return
+
     warnings.filterwarnings("ignore")
     filename = os.path.abspath(filename)
     if not os.path.exists(filename):
@@ -12354,6 +12358,10 @@ def plot_raster(
 
     """
     if os.environ.get("USE_MKDOCS") is not None:
+        return
+
+    if in_colab_shell():
+        print("The plot_raster_3d() function is not supported in Colab.")
         return
 
     try:

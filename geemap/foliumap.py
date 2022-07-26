@@ -2209,6 +2209,10 @@ class Map(folium.Map):
             lon (str, optional): Name of the longitude variable. Defaults to 'lon'.
         """
 
+        if in_colab_shell():
+            print("The add_netcdf() function is not supported in Colab.")
+            return
+
         tif, vars = netcdf_to_tif(
             filename, shift_lon=shift_lon, lat=lat, lon=lon, return_vars=True
         )

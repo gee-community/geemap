@@ -1285,6 +1285,7 @@ def naip_timelapse(
     except Exception as e:
         raise Exception(e)
 
+
 def valid_roi(roi):
     if not isinstance(roi, ee.Geometry):
         try:
@@ -1298,38 +1299,41 @@ def valid_roi(roi):
     geojson = adjust_longitude(geojson)
     return ee.Geometry(geojson)
 
+
 def sentinel1_defaults():
     from datetime import date
+
     year = date.today().year
     roi = ee.Geometry.Polygon(
+        [
             [
-                [
-                    [-115.471773, 35.892718],
-                    [-115.471773, 36.409454],
-                    [-114.271283, 36.409454],
-                    [-114.271283, 35.892718],
-                    [-115.471773, 35.892718],
-                ]
-            ],
-            None,
-            False,
-        )    
+                [-115.471773, 35.892718],
+                [-115.471773, 36.409454],
+                [-114.271283, 36.409454],
+                [-114.271283, 35.892718],
+                [-115.471773, 35.892718],
+            ]
+        ],
+        None,
+        False,
+    )
     return year, roi
 
+
 def sentinel1_timeseries(
-    roi=None, 
-    start_year=2015, 
-    end_year=None, 
-    start_date="01-01", 
-    end_date="12-31", 
+    roi=None,
+    start_year=2015,
+    end_year=None,
+    start_date="01-01",
+    end_date="12-31",
     frequency="year",
-    clip=False
+    clip=False,
 ):
     """
-	Generates a Sentinel 1 ImageCollection, 
-	based on mean composites following a steady frequency (f.e. 1 image per month)
+        Generates a Sentinel 1 ImageCollection,
+        based on mean composites following a steady frequency (f.e. 1 image per month)
     Adapted from https://code.earthengine.google.com/?scriptPath=Examples:Datasets/COPERNICUS_S1_GRD
-	
+
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to a polygon partially covering Las Vegas and Lake Mead.
         start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
@@ -1349,43 +1353,50 @@ def sentinel1_timeseries(
 
     start = f'{start_year}-{start_date}'
     end = f'{end_year}-{end_date}'
-    
+
     dates = date_sequence(start, end, frequency)
 
     def remove_outliers(image):
-        edge = image.lt(-30.)
+        edge = image.lt(-30.0)
         maskedimage = image.mask().And(edge.Not())
         return image.updateMask(maskedimage)
 
-    col = ee.ImageCollection('COPERNICUS/S1_GRD').filterBounds(roi)\
-                .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))\
-                .filter(ee.Filter.eq('instrumentMode', 'IW'))\
-                .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING'))\
-                .select('VV')\
-                .map(remove_outliers)
-	
+    col = (
+        ee.ImageCollection('COPERNICUS/S1_GRD')
+        .filterBounds(roi)
+        .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
+        .filter(ee.Filter.eq('instrumentMode', 'IW'))
+        .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING'))
+        .select('VV')
+        .map(remove_outliers)
+    )
+
     n = 1
     if frequency == "quarter":
         n = 3
-        frequency='month'
+        frequency = 'month'
 
-    def transform(date): #coll, frequency
+    def transform(date):  # coll, frequency
         start = date
-        end = ee.Date(date).advance(n,frequency).advance(-1,'day')
-        return col.filterDate(start, end)\
-                   .mean()\
-                   .set(    {
-                                "system:time_start": ee.Date(start).millis(),
-                                "system:time_end": ee.Date(end).millis(),
-                                "system:date": start
-                            }
-                        )   
+        end = ee.Date(date).advance(n, frequency).advance(-1, 'day')
+        return (
+            col.filterDate(start, end)
+            .mean()
+            .set(
+                {
+                    "system:time_start": ee.Date(start).millis(),
+                    "system:time_end": ee.Date(end).millis(),
+                    "system:date": start,
+                }
+            )
+        )
 
     imgList = dates.map(lambda date: transform(date))
     imgColl = ee.ImageCollection.fromImages(imgList)
     if clip:
         imgColl = imgColl.map(lambda img: img.clip(roi))
     return imgColl
+
 
 def sentinel2_timeseries(
     roi=None,
@@ -2930,6 +2941,7 @@ def landsat_timelapse_legacy(
     except Exception as e:
         raise Exception(e)
 
+
 def sentinel1_timelapse(
     roi=None,
     out_gif=None,
@@ -2978,7 +2990,7 @@ def sentinel1_timelapse(
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
         overlay_width (int, optional): Line width of the overlay. Defaults to 1.
         overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
-        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'. Can be year, quarter or month. 
+        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'. Can be year, quarter or month.
         title (str, optional): The title of the timelapse. Defaults to None.
         title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
         add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
@@ -3003,16 +3015,16 @@ def sentinel1_timelapse(
     end_year = end_year or CURRENT_YEAR
 
     col = sentinel1_timeseries(
-            roi=roi,
-            start_year=start_year,
-            end_year=end_year,
-            start_date=start_date,
-            end_date=end_date,
-            frequency=frequency,
-            clip=True
-        )
+        roi=roi,
+        start_year=start_year,
+        end_year=end_year,
+        start_date=start_date,
+        end_date=end_date,
+        frequency=frequency,
+        clip=True,
+    )
 
-    vis_params = vis_params or {'min':-25, 'max': 5}
+    vis_params = vis_params or {'min': -25, 'max': 5}
 
     if out_gif is None:
         out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
@@ -3029,9 +3041,9 @@ def sentinel1_timelapse(
         os.makedirs(out_dir)
 
     if overlay_data is not None:
-            col = add_overlay(
-                col, overlay_data, overlay_color, overlay_width, overlay_opacity
-            )
+        col = add_overlay(
+            col, overlay_data, overlay_color, overlay_width, overlay_opacity
+        )
 
     if dimensions > 768:
         count = col.size().getInfo()
@@ -3059,15 +3071,15 @@ def sentinel1_timelapse(
         )
     else:
 
-            video_args = vis_params.copy()
-            video_args["dimensions"] = dimensions
-            video_args["region"] = roi
-            video_args["framesPerSecond"] = frames_per_second
-            video_args["crs"] = crs
-            video_args["min"] = vis_params["min"]
-            video_args["max"] = vis_params["max"]
+        video_args = vis_params.copy()
+        video_args["dimensions"] = dimensions
+        video_args["region"] = roi
+        video_args["framesPerSecond"] = frames_per_second
+        video_args["crs"] = crs
+        video_args["min"] = vis_params["min"]
+        video_args["max"] = vis_params["max"]
 
-            download_ee_video(col, video_args, out_gif)
+        download_ee_video(col, video_args, out_gif)
 
     if os.path.exists(out_gif):
         if title is not None and isinstance(title, str):
@@ -3113,6 +3125,7 @@ def sentinel1_timelapse(
             gif_to_mp4(out_gif, out_mp4)
 
     return out_gif
+
 
 def sentinel2_timelapse(
     roi=None,
