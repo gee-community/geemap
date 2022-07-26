@@ -635,7 +635,7 @@ def remove_qgis_import(in_file):
                         return lines[start_index + i :]
                     else:
                         i = i + 1
-            elif "Map=geemap.Map()" in line:
+            elif "Map = geemap.Map()" in line:
                 return lines[index + 1 :]
 
 
@@ -782,6 +782,7 @@ def py_to_ipynb(
     if out_dir == os.path.dirname(in_file):
         out_py_file = os.path.splitext(out_file)[0] + "_tmp.py"
 
+    print(in_file)
     content = remove_qgis_import(in_file)
     if content[-1].strip() == "Map":
         content = content[:-1]
