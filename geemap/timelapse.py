@@ -1286,6 +1286,92 @@ def naip_timelapse(
         raise Exception(e)
 
 
+from datetime import date
+CURRENT_YEAR = date.today().year
+ROI_DEFAULT = ee.Geometry.Polygon(
+            [
+                [
+                    [-115.471773, 35.892718],
+                    [-115.471773, 36.409454],
+                    [-114.271283, 36.409454],
+                    [-114.271283, 35.892718],
+                    [-115.471773, 35.892718],
+                ]
+            ],
+            None,
+            False,
+        )
+
+def valid_roi(roi):
+    if not isinstance(roi, ee.Geometry):
+        try:
+            roi = roi.geometry()
+        except Exception as e:
+            print("Could not convert the provided roi to ee.Geometry")
+            print(e)
+            return
+    # Adjusts longitudes less than -180 degrees or greater than 180 degrees.
+    geojson = ee_to_geojson(roi)
+    geojson = adjust_longitude(geojson)
+    return ee.Geometry(geojson)
+
+def sentinel1_timeseries(
+    roi=ROI_DEFAULT, 
+    start_year=2015, 
+    end_year=CURRENT_YEAR, 
+    start_date="01-01", 
+    end_date="12-31", 
+    frequency="year",
+    clip=False
+):
+    """Generates a Sentinel 1 ImageCollection, based on mean composites following a steady frequency (f.e. 1 image per month)
+    Args:
+
+        roi (object, optional): Region of interest to create the timelapse. Defaults to a polygon covering Las Vegas metropolitan area.
+        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
+        end_year (int, optional): Ending year for the timelapse. Defaults to current year.
+        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
+        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
+        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.  Can be 'year', 'quarter' or 'month'.
+
+    Returns:
+        object: Returns an ImageCollection containing annual Sentinel 2 images.
+    """
+    roi = valid_roi(roi)
+
+    start = f'{start_year}-{start_date}'
+    end = f'{end_year}-{end_date}'
+    
+    dates = date_sequence(start, end, frequency)
+
+    col = ee.ImageCollection('COPERNICUS/S1_GRD').filterBounds(roi)\
+                .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))\
+                .filter(ee.Filter.eq('instrumentMode', 'IW'))\
+                .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING'))\
+                .select('VV')
+	
+    n = 1
+    if frequency == "quarter":
+        n = 3
+        frequency='month'
+    
+    def transform(date): #coll, frequency
+        start = date
+        end = ee.Date(date).advance(n,frequency).advance(-1,'day')
+        return col.filterDate(start, end)\
+                   .mean()\
+                   .set(    {
+                                "system:time_start": ee.Date(start).millis(),
+                                "system:time_end": ee.Date(end).millis(),
+                            }
+                        )   
+
+    imgList = dates.map(lambda date: transform(date))
+    imgColl = ee.ImageCollection.fromImages(imgList)
+    if clip:
+        imgColl = imgColl.map(lambda img: img.clip(roi))
+    return imgColl
+
 def sentinel2_timeseries(
     roi=None,
     start_year=2015,
@@ -1316,6 +1402,7 @@ def sentinel2_timeseries(
 
     ################################################################################
     # Input and output parameters.
+
     import re
 
     # import datetime
@@ -1350,10 +1437,10 @@ def sentinel2_timeseries(
             print(e)
             return
 
-    # Adjusts longitudes less than -180 degrees or greater than 180 degrees.
-    geojson = ee_to_geojson(roi)
-    geojson = adjust_longitude(geojson)
-    roi = ee.Geometry(geojson)
+        # Adjusts longitudes less than -180 degrees or greater than 180 degrees.
+        geojson = ee_to_geojson(roi)
+        geojson = adjust_longitude(geojson)
+        roi = ee.Geometry(geojson)
 
     feq_dict = {
         "year": "YYYY",
