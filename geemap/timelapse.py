@@ -1288,7 +1288,7 @@ def naip_timelapse(
 
 from datetime import date
 CURRENT_YEAR = date.today().year
-ROI_DEFAULT = ee.Geometry.Polygon(
+ROI_DEFAULT = (
             [
                 [
                     [-115.471773, 35.892718],
