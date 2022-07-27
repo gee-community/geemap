@@ -206,6 +206,7 @@ nav:
           - notebooks/120_javascript.ipynb
           - notebooks/121_vector_style.ipynb
           - notebooks/122_lidar.ipynb
+          - notebooks/123_sentinel1_timelapse.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
