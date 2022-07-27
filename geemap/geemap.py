@@ -7078,7 +7078,6 @@ class ImageOverlay(ipyleaflet.ImageOverlay):
 
         try:
             url = kwargs.get("url")
-            print(url)
             if not url.startswith("http"):
 
                 url = os.path.abspath(url)
