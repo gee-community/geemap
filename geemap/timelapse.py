@@ -1351,8 +1351,8 @@ def sentinel1_timeseries(
     end_year = end_year or CURRENT_YEAR
     roi = valid_roi(roi)
 
-    start = f'{start_year}-{start_date}'
-    end = f'{end_year}-{end_date}'
+    start = f"{start_year}-{start_date}"
+    end = f"{end_year}-{end_date}"
 
     dates = date_sequence(start, end, frequency)
 
@@ -1362,23 +1362,23 @@ def sentinel1_timeseries(
         return image.updateMask(maskedimage)
 
     col = (
-        ee.ImageCollection('COPERNICUS/S1_GRD')
+        ee.ImageCollection("COPERNICUS/S1_GRD")
         .filterBounds(roi)
-        .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
-        .filter(ee.Filter.eq('instrumentMode', 'IW'))
-        .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING'))
-        .select('VV')
+        .filter(ee.Filter.listContains("transmitterReceiverPolarisation", "VV"))
+        .filter(ee.Filter.eq("instrumentMode", "IW"))
+        .filter(ee.Filter.eq("orbitProperties_pass", "ASCENDING"))
+        .select("VV")
         .map(remove_outliers)
     )
 
     n = 1
     if frequency == "quarter":
         n = 3
-        frequency = 'month'
+        frequency = "month"
 
     def transform(date):  # coll, frequency
         start = date
-        end = ee.Date(date).advance(n, frequency).advance(-1, 'day')
+        end = ee.Date(date).advance(n, frequency).advance(-1, "day")
         return (
             col.filterDate(start, end)
             .mean()
@@ -2942,7 +2942,7 @@ def landsat_timelapse_legacy(
         raise Exception(e)
 
 
-def sentinel1_timelapse(
+def sentinel1_timelapse_legacy(
     roi=None,
     out_gif=None,
     start_year=2015,
@@ -3024,7 +3024,7 @@ def sentinel1_timelapse(
         clip=True,
     )
 
-    vis_params = vis_params or {'min': -25, 'max': 5}
+    vis_params = vis_params or {"min": -25, "max": 5}
 
     if out_gif is None:
         out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
@@ -4563,3 +4563,166 @@ def dynamic_world_timeseries(
 
             result = ee.ImageCollection(nums.map(create_hillshade))
             return result
+
+
+def sentinel1_timelapse(
+    roi,
+    out_gif=None,
+    start_year=2015,
+    end_year=None,
+    start_date="01-01",
+    end_date="12-31",
+    bands=["VV"],
+    frequency="year",
+    reducer="median",
+    date_format=None,
+    palette="Greys",
+    vis_params=None,
+    dimensions=768,
+    frames_per_second=10,
+    crs="EPSG:3857",
+    overlay_data=None,
+    overlay_color="black",
+    overlay_width=1,
+    overlay_opacity=1.0,
+    title=None,
+    title_xy=("2%", "90%"),
+    add_text=True,
+    text_xy=("2%", "2%"),
+    text_sequence=None,
+    font_type="arial.ttf",
+    font_size=20,
+    font_color="white",
+    add_progress_bar=True,
+    progress_bar_color="white",
+    progress_bar_height=5,
+    add_colorbar=False,
+    colorbar_width=6.0,
+    colorbar_height=0.4,
+    colorbar_label=None,
+    colorbar_label_size=12,
+    colorbar_label_weight="normal",
+    colorbar_tick_size=10,
+    colorbar_bg_color=None,
+    colorbar_orientation="horizontal",
+    colorbar_dpi="figure",
+    colorbar_xy=None,
+    colorbar_size=(300, 300),
+    loop=0,
+    mp4=False,
+    fading=False,
+):
+    """Create a timelapse from any ee.ImageCollection.
+
+    Args:
+        roi (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
+        out_gif (str): The output gif file path. Defaults to None.
+        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
+        end_year (int, optional): Ending year for the timelapse. Defaults to the current year.
+        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
+        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
+        bands (list, optional): A list of band names to use in the timelapse. Defaults to None.
+        frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
+        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
+        drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
+        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
+        palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
+        vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
+        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
+        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
+        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
+        overlay_width (int, optional): Width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        title (str, optional): The title of the timelapse. Defaults to None.
+        title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
+        title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
+        add_colorbar (bool, optional): Whether to add a colorbar to the timelapse. Defaults to False.
+        colorbar_width (float, optional): Width of the colorbar. Defaults to 6.0.
+        colorbar_height (float, optional): Height of the colorbar. Defaults to 0.4.
+        colorbar_label (str, optional): Label for the colorbar. Defaults to None.
+        colorbar_label_size (int, optional): Font size for the colorbar label. Defaults to 12.
+        colorbar_label_weight (str, optional): Font weight for the colorbar label. Defaults to 'normal'.
+        colorbar_tick_size (int, optional): Font size for the colorbar ticks. Defaults to 10.
+        colorbar_bg_color (str, optional): Background color for the colorbar, can be color like "white", "black". Defaults to None.
+        colorbar_orientation (str, optional): Orientation of the colorbar. Defaults to 'horizontal'.
+        colorbar_dpi (str, optional): DPI for the colorbar, can be numbers like 100, 300. Defaults to 'figure'.
+        colorbar_xy (tuple, optional): Lower left corner of the colorbar. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        colorbar_size (tuple, optional): Size of the colorbar. It can be formatted like this: (300, 300). Defaults to (300, 300).
+        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+
+    Returns:
+        str: File path to the timelapse gif.
+    """
+    from datetime import date
+
+    if end_year is None:
+        end_year = date.today().year
+
+    start = f"{start_year}-{start_date}"
+    end = f"{end_year}-{end_date}"
+
+    if vis_params is None:
+        vis_params = {"min": -30, "max": 0}
+
+    collection = (
+        ee.ImageCollection("COPERNICUS/S1_GRD").filterDate(start, end).filterBounds(roi)
+    )
+
+    return create_timelapse(
+        collection,
+        start,
+        end,
+        roi,
+        bands,
+        frequency,
+        reducer,
+        date_format,
+        out_gif,
+        palette,
+        vis_params,
+        dimensions,
+        frames_per_second,
+        crs,
+        overlay_data,
+        overlay_color,
+        overlay_width,
+        overlay_opacity,
+        title,
+        title_xy,
+        add_text,
+        text_xy,
+        text_sequence,
+        font_type,
+        font_size,
+        font_color,
+        add_progress_bar,
+        progress_bar_color,
+        progress_bar_height,
+        add_colorbar,
+        colorbar_width,
+        colorbar_height,
+        colorbar_label,
+        colorbar_label_size,
+        colorbar_label_weight,
+        colorbar_tick_size,
+        colorbar_bg_color,
+        colorbar_orientation,
+        colorbar_dpi,
+        colorbar_xy,
+        colorbar_size,
+        loop,
+        mp4,
+        fading,
+    )
