@@ -1168,7 +1168,7 @@ def naip_timeseries(roi=None, start_year=2003, end_year=2022, RGBN=False):
 
 
 def naip_timelapse(
-    region,
+    roi,
     start_year=2003,
     end_year=2022,
     out_gif=None,
@@ -1200,7 +1200,7 @@ def naip_timelapse(
     """Create a timelapse from NAIP imagery.
 
     Args:
-        region (ee.Geometry): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
+        roi (ee.Geometry): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
         start_year (int | str, optional): The start year of the timeseries. It must be formatted like this: 'YYYY'. Defaults to 2003.
         end_year (int | str, optional): The end year of the timeseries. It must be formatted like this: 'YYYY'. Defaults to 2022.
         out_gif (str): The output gif file path. Defaults to None.
@@ -1251,7 +1251,7 @@ def naip_timelapse(
             collection,
             start_date,
             end_date,
-            region,
+            roi,
             bands,
             frequency,
             reducer,
@@ -3696,12 +3696,12 @@ def goes_fire_timeseries(
 
 
 def goes_timelapse(
-    out_gif,
+    roi=None,
+    out_gif=None,
     start_date="2021-10-24T14:00:00",
     end_date="2021-10-25T01:00:00",
     data="GOES-17",
     scan="full_disk",
-    region=None,
     dimensions=768,
     framesPerSecond=10,
     date_format="YYYY-MM-dd HH:mm",
@@ -3732,7 +3732,7 @@ def goes_timelapse(
         end_date (str, optional): The end date of the time series. Defaults to "2021-10-25T01:00:00".
         data (str, optional): The GOES satellite data to use. Defaults to "GOES-17".
         scan (str, optional): The GOES scan to use. Defaults to "full_disk".
-        region (ee.Geometry, optional): The region of interest. Defaults to None.
+        roi (ee.Geometry, optional): The region of interest. Defaults to None.
         dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         date_format (str, optional): The date format to use. Defaults to "YYYY-MM-dd HH:mm".
@@ -3757,13 +3757,19 @@ def goes_timelapse(
 
     try:
 
+        if "region" in kwargs:
+            roi = kwargs["region"]
+
+        if out_gif is None:
+            out_gif = os.path.abspath(f"goes_{random_string(3)}.gif")
+
         bands = ["CMI_C02", "CMI_GREEN", "CMI_C01"]
         visParams = {
             "bands": bands,
             "min": 0,
             "max": 0.8,
         }
-        col = goes_timeseries(start_date, end_date, data, scan, region)
+        col = goes_timeseries(start_date, end_date, data, scan, roi)
         col = col.select(bands).map(
             lambda img: img.visualize(**visParams).set(
                 {
@@ -3776,8 +3782,8 @@ def goes_timelapse(
                 col, overlay_data, overlay_color, overlay_width, overlay_opacity
             )
 
-        if region is None:
-            region = ee.Geometry.Polygon(
+        if roi is None:
+            roi = ee.Geometry.Polygon(
                 [
                     [
                         [-159.5954, 60.4088],
@@ -3799,7 +3805,7 @@ def goes_timelapse(
             "max": 255,
             "dimensions": dimensions,
             "framesPerSecond": framesPerSecond,
-            "region": region,
+            "region": roi,
             "crs": crs,
         }
 
@@ -3840,17 +3846,19 @@ def goes_timelapse(
                 out_mp4 = out_gif.replace(".gif", ".mp4")
                 gif_to_mp4(out_gif, out_mp4)
 
+            return out_gif
+
     except Exception as e:
         raise Exception(e)
 
 
 def goes_fire_timelapse(
-    out_gif,
+    roi=None,
+    out_gif=None,
     start_date="2020-09-05T15:00",
     end_date="2020-09-06T02:00",
     data="GOES-17",
     scan="full_disk",
-    region=None,
     dimensions=768,
     framesPerSecond=10,
     date_format="YYYY-MM-dd HH:mm",
@@ -3908,10 +3916,16 @@ def goes_fire_timelapse(
 
     try:
 
-        if region is None:
-            region = ee.Geometry.BBox(-123.17, 36.56, -118.22, 40.03)
+        if "region" in kwargs:
+            roi = kwargs["region"]
 
-        col = goes_fire_timeseries(start_date, end_date, data, scan, region)
+        if out_gif is None:
+            out_gif = os.path.abspath(f"goes_fire_{random_string(3)}.gif")
+
+        if roi is None:
+            roi = ee.Geometry.BBox(-123.17, 36.56, -118.22, 40.03)
+
+        col = goes_fire_timeseries(start_date, end_date, data, scan, roi)
         if overlay_data is not None:
             col = add_overlay(
                 col, overlay_data, overlay_color, overlay_width, overlay_opacity
@@ -3933,7 +3947,7 @@ def goes_fire_timelapse(
         cmiFdcVisParams = {
             "dimensions": dimensions,
             "framesPerSecond": framesPerSecond,
-            "region": region,
+            "region": roi,
             "crs": crs,
         }
 
@@ -3972,6 +3986,8 @@ def goes_fire_timelapse(
             if mp4:
                 out_mp4 = out_gif.replace(".gif", ".mp4")
                 gif_to_mp4(out_gif, out_mp4)
+
+            return out_gif
 
     except Exception as e:
         raise Exception(e)
@@ -4047,12 +4063,12 @@ def modis_ndvi_doy_ts(
 
 
 def modis_ndvi_timelapse(
-    out_gif,
+    roi=None,
+    out_gif=None,
     data="Terra",
     band="NDVI",
     start_date=None,
     end_date=None,
-    region=None,
     dimensions=768,
     framesPerSecond=10,
     crs="EPSG:3857",
@@ -4076,12 +4092,12 @@ def modis_ndvi_timelapse(
     """Create MODIS NDVI timelapse. The source code is adapted from https://developers.google.com/earth-engine/tutorials/community/modis-ndvi-time-series-animation.
 
     Args:
-        out_gif (str): The output gif file path.
+        roi (ee.Geometry, optional): The geometry used to filter the image collection. Defaults to None.
+        out_gif (str): The output gif file path. Defaults to None.
         data (str, optional): Either "Terra" or "Aqua". Defaults to "Terra".
         band (str, optional): Either the "NDVI" or "EVI" band. Defaults to "NDVI".
         start_date (str, optional): The start date used to filter the image collection, e.g., "2013-01-01". Defaults to None.
         end_date (str, optional): The end date used to filter the image collection. Defaults to None.
-        region (ee.Geometry, optional): The geometry used to filter the image collection. Defaults to None.
         dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
@@ -4103,8 +4119,8 @@ def modis_ndvi_timelapse(
 
     """
 
-    if region is None:
-        region = ee.Geometry.Polygon(
+    if roi is None:
+        roi = ee.Geometry.Polygon(
             [
                 [
                     [-18.6983, 38.1446],
@@ -4117,8 +4133,11 @@ def modis_ndvi_timelapse(
             False,
         )
 
+    if out_gif is None:
+        out_gif = os.path.abspath(f"modis_ndvi_{random_string(3)}.gif")
+
     try:
-        col = modis_ndvi_doy_ts(data, band, start_date, end_date, region)
+        col = modis_ndvi_doy_ts(data, band, start_date, end_date, roi)
 
         # Define RGB visualization parameters.
         visParams = {
@@ -4146,7 +4165,7 @@ def modis_ndvi_timelapse(
         }
 
         # Create RGB visualization images for use as animation frames.
-        rgbVis = col.map(lambda img: img.visualize(**visParams).clip(region))
+        rgbVis = col.map(lambda img: img.visualize(**visParams).clip(roi))
 
         if overlay_data is not None:
             rgbVis = add_overlay(
@@ -4155,12 +4174,12 @@ def modis_ndvi_timelapse(
                 overlay_color,
                 overlay_width,
                 overlay_opacity,
-                region,
+                roi,
             )
 
         # Define GIF visualization arguments.
         videoArgs = {
-            "region": region,
+            "region": roi,
             "dimensions": dimensions,
             "crs": crs,
             "framesPerSecond": framesPerSecond,
@@ -4202,6 +4221,8 @@ def modis_ndvi_timelapse(
         if mp4:
             out_mp4 = out_gif.replace(".gif", ".mp4")
             gif_to_mp4(out_gif, out_mp4)
+
+        return out_gif
 
     except Exception as e:
         raise Exception(e)
@@ -4273,7 +4294,7 @@ def modis_ocean_color_timelapse(
     satellite,
     start_date,
     end_date,
-    region=None,
+    roi=None,
     bands=None,
     frequency="year",
     reducer="median",
@@ -4321,7 +4342,7 @@ def modis_ocean_color_timelapse(
         satellite (str): The satellite to use, can be either "Terra" or "Aqua".
         start_date (str): The start date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
         end_date (str): The end date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
-        region (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
+        roi (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
         bands (list, optional): A list of band names to use in the timelapse. Defaults to None.
         frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
         reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
@@ -4368,7 +4389,7 @@ def modis_ocean_color_timelapse(
         str: File path to the timelapse gif.
     """
     collection = modis_ocean_color_timeseries(
-        satellite, start_date, end_date, region, bands, frequency, reducer, date_format
+        satellite, start_date, end_date, roi, bands, frequency, reducer, date_format
     )
 
     if bands is None:
@@ -4377,14 +4398,14 @@ def modis_ocean_color_timelapse(
     if len(bands) == 1 and palette is None:
         palette = "coolwarm"
 
-    if region is None:
-        region = ee.Geometry.BBox(-99.755133, 18.316722, -79.761194, 31.206929)
+    if roi is None:
+        roi = ee.Geometry.BBox(-99.755133, 18.316722, -79.761194, 31.206929)
 
     out_gif = create_timelapse(
         collection,
         start_date,
         end_date,
-        region,
+        roi,
         bands,
         frequency,
         reducer,
