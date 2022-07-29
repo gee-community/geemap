@@ -4455,6 +4455,7 @@ def dynamic_world_timeseries(
     region,
     start_date="2016-01-01",
     end_date="2021-12-31",
+    cloud_pct=30,
     frequency="year",
     reducer="mode",
     drop_empty=True,
@@ -4467,6 +4468,7 @@ def dynamic_world_timeseries(
         region (ee.Geometry | ee.FeatureCollection): The region of interest.
         start_date (str | ee.Date): The start date of the query. Default to "2016-01-01".
         end_date (str | ee.Date): The end date of the query. Default to "2021-12-31".
+        cloud_pct (int, optional): The cloud percentage threshold (<=). Defaults to 30.
         frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
         reducer (str, optional): The reducer to be used. Defaults to "mode".
         drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
@@ -4481,16 +4483,34 @@ def dynamic_world_timeseries(
             f"{return_type} must be one of 'hillshade', 'visualize', 'class', or 'probability'."
         )
 
-    dw = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1").filter(
-        ee.Filter.date(start_date, end_date)
+    if (
+        isinstance(region, ee.FeatureCollection)
+        or isinstance(region, ee.Feature)
+        or isinstance(region, ee.Geometry)
+    ):
+        pass
+    else:
+        raise ValueError(
+            f"{region} must be one of ee.FeatureCollection, ee.Feature, or ee.Geometry."
+        )
+
+    if cloud_pct < 0 or cloud_pct > 100:
+        raise ValueError(f"{cloud_pct} must be between 0 and 100.")
+
+    s2 = (
+        ee.ImageCollection("COPERNICUS/S2_HARMONIZED")
+        .filterDate(start_date, end_date)
+        .filterBounds(region)
+        .filter(ee.Filter.lte("CLOUDY_PIXEL_PERCENTAGE", cloud_pct))
     )
 
-    if isinstance(region, ee.FeatureCollection) or isinstance(region, ee.Geometry):
-        dw = dw.filterBounds(region)
-    else:
-        raise ValueError("region must be an ee.FeatureCollection or ee.Geometry.")
+    ids = s2.aggregate_array("system:index")
 
-    collection = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1").select("label")
+    dw = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1").filter(
+        ee.Filter.inList("system:index", ids)
+    )
+
+    collection = dw.select("label")
 
     dwVisParams = {
         "min": 0,
