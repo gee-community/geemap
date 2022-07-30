@@ -1385,6 +1385,7 @@ def sentinel1_timeseries(
     end_date="12-31",
     frequency="year",
     clip=False,
+    band='VV',
     **kwargs
 ):
     """
@@ -1399,6 +1400,7 @@ def sentinel1_timeseries(
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
         frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.  Can be 'year', 'quarter' or 'month'.
+        band (str): Collection band. Can be one of ['HH','HV','VV','VH']. Defaults to 'VV' which is most commonly available on land. 
         **kwargs: Arguments for sentinel1_filtering(). 
 
     Returns:
@@ -1415,7 +1417,7 @@ def sentinel1_timeseries(
 
     dates = date_sequence(start, end, frequency)
     col = ee.ImageCollection("COPERNICUS/S1_GRD").filterBounds(roi)
-    col = sentinel1_filtering(col, **kwargs)
+    col = sentinel1_filtering(col, band=band, **kwargs).select(band)
 
     n = 1
     if frequency == "quarter":
