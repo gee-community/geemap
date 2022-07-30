@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.16.0 - Jul 30, 2022
+
+**New Features**:
+
+-   Added support for creating S1 timelapse [#752](https://github.com/giswqs/geemap/issues/752) [#1168](https://github.com/giswqs/geemap/pull/1168)
+-   Added cloud_pct option for dynamic world ts [#1165](https://github.com/giswqs/geemap/issues/1165)
+-   Added get_ee_path function
+
+**Improvement**:
+
+-   Renamed region to roi for timelapse func
+-   Added lidar tutorial
+-   Improved support for Colab
+-   Fixed js py conversion bug
+-   Improved COG and STAC for short URL
+-   Improved requireJS function
+-   Added book link
+-   Added vector_styling explicit args [#1155](https://github.com/giswqs/geemap/pull/1155)
+
 ## v0.15.5 - Jul 22, 2022
 
 **New Features**:
