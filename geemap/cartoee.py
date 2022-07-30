@@ -1036,6 +1036,33 @@ def add_scale_bar_lite(
     return
 
 
+def create_legend(
+    linewidth=None,
+    linestyle=None,
+    color=None,
+    marker=None,
+    markersize=None,
+    markeredgewidth=None,
+    markeredgecolor=None,
+    markerfacecolor=None,
+    markerfacecoloralt=None,
+    fillstyle=None,
+    antialiased=None,
+    dash_capstyle=None,
+    solid_capstyle=None,
+    dash_joinstyle=None,
+    solid_joinstyle=None,
+    pickradius=5,
+    drawstyle=None,
+    markevery=None,
+    **kwargs,
+):
+    if linewidth is None and marker is None:
+        raise ValueError("Either linewidth or marker must be specified.")
+
+    pass
+
+
 def add_legend(
     ax,
     legend_elements=None,
@@ -1044,10 +1071,14 @@ def add_legend(
     font_weight="normal",
     font_color="black",
     font_family=None,
+    title=None,
+    title_fontize=16,
+    title_fontproperties=None,
 ):
     """Adds a legend to the map. The legend elements can be formatted as:
     legend_elements = [Line2D([], [], color='#00ffff', lw=2, label='Coastline'),
         Line2D([], [], marker='o', color='#A8321D', label='City', markerfacecolor='#A8321D', markersize=10, ls ='')]
+        For more legend properties, see: https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html
 
     Args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object.
@@ -1081,7 +1112,14 @@ def add_legend(
             fontdict = {"family": font_family, "size": font_size, "weight": font_weight}
         else:
             fontdict = {"size": font_size, "weight": font_weight}
-        leg = ax.legend(handles=legend_elements, loc=loc, prop=fontdict)
+        leg = ax.legend(
+            handles=legend_elements,
+            loc=loc,
+            prop=fontdict,
+            title=title,
+            title_fontize=title_fontize,
+            title_fontproperties=title_fontproperties,
+        )
 
         # Change font color If default color is changed.
         if font_color != "black":
