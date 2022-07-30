@@ -33,6 +33,19 @@ def get_path(name):
         )
 
 
+def get_ee_path(name):
+    """Get the Earth Engine asset ID of an example dataset.
+
+    Args:
+        name (str): The name of the dataset, such as contents, countries, us_cities, us_states,
+            china, CONUS_HU8, chn_admin_level0, chn_admin_level1, chn_admin_level2, chn_admin_line
+
+    Returns:
+        str: The Earth Engine asset ID of the dataset.
+    """
+    return f"{'users/giswqs/public/'}{name}"
+
+
 def get_names():
     """Get a list of names of the example datasets.
 
