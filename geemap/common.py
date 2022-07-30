@@ -590,9 +590,7 @@ def show_image(img_path, width=None, height=None, verbose=True):
         display(out)
         with out:
             if isinstance(img_path, str) and img_path.startswith("http"):
-                ext = os.path.splitext(img_path)[1]
-                file_path = temp_file_path(ext)
-                download_from_url(img_path, file_path, verbose=verbose)
+                file_path = download_file(img_path)
             else:
                 file_path = img_path
             file = open(file_path, "rb")
