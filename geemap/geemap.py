@@ -2975,10 +2975,10 @@ class Map(ipyleaflet.Map):
             ax, norm=norm, alpha=alpha, cmap=cmap, orientation=orientation, **kwargs
         )
 
-        if "bands" in vis_keys:
-            cb.set_label(vis_params["bands"])
-        elif label is not None:
+        if label is not None:
             cb.set_label(label)
+        elif "bands" in vis_keys:
+            cb.set_label(vis_params["bands"])
 
         output = widgets.Output()
         colormap_ctrl = ipyleaflet.WidgetControl(
