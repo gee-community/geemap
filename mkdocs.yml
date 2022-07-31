@@ -75,6 +75,7 @@ nav:
           - legends module: legends.md
           - ml module: ml.md
           - osm module: osm.md
+          - plot module: plot.md
           - plotlymap module: plotlymap.md
           - timelapse module: timelapse.md
           - toolbar module: toolbar.md
