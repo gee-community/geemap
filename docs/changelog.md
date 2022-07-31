@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.16.1 - Jul 31, 2022
+
+**New Features**:
+
+-   Added support for plotly.express charts (bar, line, histogram, pie) [#1170](https://github.com/giswqs/geemap/pull/1170)
+
 ## v0.16.0 - Jul 30, 2022
 
 **New Features**:
