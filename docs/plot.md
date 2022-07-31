@@ -1,0 +1,3 @@
+# plot module
+
+::: geemap.plot
