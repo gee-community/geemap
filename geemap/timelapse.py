@@ -1321,28 +1321,28 @@ def sentinel1_defaults():
 
 
 def sentinel1_filtering(
-    collection, 
+    collection,
     band='VV',
-    instrumentMode=None, 
+    instrumentMode=None,
     orbitProperties_pass='ASCENDING',
     transmitterReceiverPolarisation=None,
     remove_outliers=True,
-    **kwargs
+    **kwargs,
 ):
     """
-    Sentinel-1 data is collected with several different instrument configurations, resolutions, 
-    band combinations during both ascending and descending orbits. Because of this heterogeneity, 
+    Sentinel-1 data is collected with several different instrument configurations, resolutions,
+    band combinations during both ascending and descending orbits. Because of this heterogeneity,
     it's usually necessary to filter the data down to a homogeneous subset before starting processing.
 
     For more details, see https://developers.google.com/earth-engine/guides/sentinel1
 
     Args:
         collection: A Sentinel1 ImageCollection to filter.
-        band (str): Collection band. Can be one of ['HH','HV','VV','VH']. Defaults to 'VV' which is most commonly available on land. 
+        band (str): Collection band. Can be one of ['HH','HV','VV','VH']. Defaults to 'VV' which is most commonly available on land.
         instrumentMode (str, optional): Collection property. Can be one of ['IW','EW','SM']. Defaults to band default availability (IW for ['VV','VH'], EW for ['HH','HV']). IW is typically available for land. EW for icy regions.
-        orbitProperties_pass (str|None, optional): Collection property. Can be one of ['ASCENDING', 'DESCENDING', None]. Default to 'ASCENDING'. 
+        orbitProperties_pass (str|None, optional): Collection property. Can be one of ['ASCENDING', 'DESCENDING', None]. Default to 'ASCENDING'.
             Will return mixed property if set to None, which dampen elevation, and increase surface roughness/fractality visibility.
-        transmitterReceiverPolarisation: Collection property List contains this value. Can be one of ['HH','HV','VV','VH']. Defaults to band. 
+        transmitterReceiverPolarisation: Collection property List contains this value. Can be one of ['HH','HV','VV','VH']. Defaults to band.
         remove_outliers (bool, optional): Remove pixels with extreme values (< -30). These can occur near the edge of an image. Default to True.
         **kwargs (dict, optional): All other arguments will be applied as filters to collection properties. F.e. {'resolution_meters':10}
             Full list properties: https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S1_GRD#image-properties
@@ -1352,10 +1352,9 @@ def sentinel1_filtering(
     """
 
     transmitterReceiverPolarisation = transmitterReceiverPolarisation or band
-    instrumentMode = instrumentMode or {'VV':'IW',
-                                        'VH':'IW',
-                                        'HH':'EW',
-                                        'HV':'EW'}[band]
+    instrumentMode = (
+        instrumentMode or {'VV': 'IW', 'VH': 'IW', 'HH': 'EW', 'HV': 'EW'}[band]
+    )
 
     def remove_outliers(image):
         if not remove_outliers:
@@ -1364,18 +1363,22 @@ def sentinel1_filtering(
         maskedimage = image.mask().And(edge.Not())
         return image.updateMask(maskedimage)
 
-    col=(
-        collection
-        .filter(ee.Filter.eq("instrumentMode", instrumentMode))
-        .filter(ee.Filter.listContains("transmitterReceiverPolarisation", transmitterReceiverPolarisation))
+    col = (
+        collection.filter(ee.Filter.eq("instrumentMode", instrumentMode))
+        .filter(
+            ee.Filter.listContains(
+                "transmitterReceiverPolarisation", transmitterReceiverPolarisation
+            )
+        )
         .map(remove_outliers)
-    ) 
-    for k,v in kwargs.items():
-         col = col.filter(ee.Filter.eq(k, v))
+    )
+    for k, v in kwargs.items():
+        col = col.filter(ee.Filter.eq(k, v))
     if orbitProperties_pass:
-         col = col.filter(ee.Filter.eq("orbitProperties_pass", orbitProperties_pass))
+        col = col.filter(ee.Filter.eq("orbitProperties_pass", orbitProperties_pass))
 
     return col
+
 
 def sentinel1_timeseries(
     roi=None,
@@ -1386,7 +1389,7 @@ def sentinel1_timeseries(
     frequency="year",
     clip=False,
     band='VV',
-    **kwargs
+    **kwargs,
 ):
     """
         Generates a Sentinel 1 ImageCollection,
@@ -1400,8 +1403,8 @@ def sentinel1_timeseries(
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
         frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.  Can be 'year', 'quarter' or 'month'.
-        band (str): Collection band. Can be one of ['HH','HV','VV','VH']. Defaults to 'VV' which is most commonly available on land. 
-        **kwargs: Arguments for sentinel1_filtering(). 
+        band (str): Collection band. Can be one of ['HH','HV','VV','VH']. Defaults to 'VV' which is most commonly available on land.
+        **kwargs: Arguments for sentinel1_filtering().
 
     Returns:
         object: Returns an ImageCollection of Sentinel 1 images.
@@ -4700,7 +4703,7 @@ def sentinel1_timelapse(
     loop=0,
     mp4=False,
     fading=False,
-    **kwargs
+    **kwargs,
 ):
     """Create a timelapse from any ee.ImageCollection.
 
@@ -4751,17 +4754,25 @@ def sentinel1_timelapse(
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
         fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
-        **kwargs: Arguments for sentinel1_filtering(). Same filters will be applied to all bands. 
+        **kwargs: Arguments for sentinel1_filtering(). Same filters will be applied to all bands.
 
     Returns:
         str: File path to the timelapse gif.
     """
     from datetime import date
 
-    assert bands in (['VV'],['VH'],['HH'],['HV'],['VV','VH'],['HH','HV'],['VH','VV'],['HV','HH']),\
-         'Not all Sentinel1 bands are available together.'
-    if bands in (['VH','VV'],['HV','HH']):
-        bands[0],bands[1] = bands[1],bands[0]
+    assert bands in (
+        ['VV'],
+        ['VH'],
+        ['HH'],
+        ['HV'],
+        ['VV', 'VH'],
+        ['HH', 'HV'],
+        ['VH', 'VV'],
+        ['HV', 'HH'],
+    ), 'Not all Sentinel1 bands are available together.'
+    if bands in (['VH', 'VV'], ['HV', 'HH']):
+        bands[0], bands[1] = bands[1], bands[0]
     band = bands[0]
 
     if end_year is None:
@@ -4776,7 +4787,7 @@ def sentinel1_timelapse(
     collection = (
         ee.ImageCollection("COPERNICUS/S1_GRD").filterDate(start, end).filterBounds(roi)
     )
-    collection = sentinel1_filtering(collection, band, **kwargs) 
+    collection = sentinel1_filtering(collection, band, **kwargs)
 
     return create_timelapse(
         collection,
