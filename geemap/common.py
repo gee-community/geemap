@@ -2199,12 +2199,12 @@ def ee_export_image(
             region = ee_object.geometry()
         if dimensions is not None:
             params["dimensions"] = dimensions
-        params["region"] = region
+        if region is not None:
+            params["region"] = region
         if crs is not None:
             params["crs"] = crs
         if crs_transform is not None:
             params["crs_transform"] = crs_transform
-
         params["format"] = format
 
         try:
@@ -7170,6 +7170,77 @@ def image_value_list(img, region=None, scale=None, return_hist=False, **kwargs):
         return hist
     else:
         return hist.keys()
+
+
+def image_histogram(
+    img,
+    region=None,
+    scale=None,
+    x_label=None,
+    y_label=None,
+    title=None,
+    width=None,
+    height=500,
+    plot_args={},
+    layout_args={},
+    return_df=False,
+    **kwargs,
+):
+    """Create a histogram of an image.
+
+    Args:
+        img (ee.Image): The image to calculate the histogram.
+        region (ee.Geometry | ee.FeatureCollection, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
+        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+        x_label (str, optional): Label for the x axis. Defaults to None.
+        y_label (str, optional): Label for the y axis. Defaults to None.
+        title (str, optional): Title for the plot. Defaults to None.
+        width (int, optional): Width of the plot in pixels. Defaults to None.
+        height (int, optional): Height of the plot in pixels. Defaults to 500.
+        layout_args (dict, optional): Layout arguments for the plot to be passed to fig.update_layout(),
+        return_df (bool, optional): If True, return a pandas dataframe. Defaults to False.
+
+    Returns:
+        pandas DataFrame | plotly figure object: A dataframe or plotly figure object.
+    """
+    import pandas as pd
+    import plotly.express as px
+
+    hist = image_value_list(img, region, scale, return_hist=True, **kwargs).getInfo()
+    keys = sorted(hist, key=int)
+    values = [hist.get(key) for key in keys]
+
+    data = pd.DataFrame({"key": keys, "value": values})
+
+    if return_df:
+        return data
+    else:
+
+        labels = {}
+
+        if x_label is not None:
+            labels["key"] = x_label
+        if y_label is not None:
+            labels["value"] = y_label
+
+        try:
+            fig = px.bar(
+                data,
+                x="key",
+                y="value",
+                labels=labels,
+                title=title,
+                width=width,
+                height=height,
+                **plot_args,
+            )
+
+            if isinstance(layout_args, dict):
+                fig.update_layout(**layout_args)
+
+            return fig
+        except Exception as e:
+            raise Exception(e)
 
 
 def image_stats_by_zone(
@@ -12801,3 +12872,123 @@ def add_crs(filename, epsg):
     crs = rasterio.crs.CRS({"init": epsg})
     with rasterio.open(filename, mode="r+") as src:
         src.crs = crs
+
+
+def jrc_hist_monthly_history(
+    collection=None,
+    region=None,
+    start_date="1984-03-16",
+    end_date=None,
+    start_month=1,
+    end_month=12,
+    scale=None,
+    frequency="year",
+    reducer="mean",
+    denominator=1e4,
+    x_label=None,
+    y_label=None,
+    title=None,
+    width=None,
+    height=None,
+    layout_args={},
+    return_df=False,
+    **kwargs,
+):
+    """Create a JRC monthly history plot.
+
+    Args:
+        collection (ee.ImageCollection, optional): The image collection of JRC surface water monthly history.
+            Default to ee.ImageCollection('JRC/GSW1_3/MonthlyHistory')
+        region (ee.Geometry | ee.FeatureCollection, optional): The region to plot. Default to None.
+        start_date (str, optional): The start date of the plot. Default to '1984-03-16'.
+        end_date (str, optional): The end date of the plot. Default to the current date.
+        start_month (int, optional): The start month of the plot. Default to 1.
+        end_month (int, optional): The end month of the plot. Default to 12.
+        scale (float, optional): The scale to compute the statistics. Default to None.
+        frequency (str, optional): The frequency of the plot. Can be either 'year' or 'month', Default to 'year'.
+        reducer (str, optional): The reducer to compute the statistics. Can be either 'mean', 'min', 'max', 'median', etc. Default to 'mean'.
+        denominator (int, optional): The denominator to convert area from square meters to other units. Default to 1e4, converting to hectares.
+        x_label (str, optional): Label for the x axis. Defaults to None.
+        y_label (str, optional): Label for the y axis. Defaults to None.
+        title (str, optional): Title for the plot. Defaults to None.
+        width (int, optional): Width of the plot in pixels. Defaults to None.
+        height (int, optional): Height of the plot in pixels. Defaults to 500.
+        layout_args (dict, optional): Layout arguments for the plot to be passed to fig.update_layout(),
+        return_df (bool, optional): _description_. Defaults to False.
+
+    Returns:
+        pd.DataFrame: Pandas dataframe of the plot.
+    """
+
+    from datetime import date
+    import pandas as pd
+    import plotly.express as px
+
+    if end_date is None:
+        end_date = date.today().strftime("%Y-%m-%d")
+
+    if collection is None:
+        collection = ee.ImageCollection("JRC/GSW1_3/MonthlyHistory")
+
+    if frequency not in ["year", "month"]:
+        raise ValueError("frequency must be 'year' or 'month'.")
+
+    images = (
+        collection.filterDate(start_date, end_date)
+        .filter(ee.Filter.calendarRange(start_month, end_month, "month"))
+        .map(lambda img: img.eq(2).selfMask())
+    )
+
+    def cal_area(img):
+        pixel_area = img.multiply(ee.Image.pixelArea()).divide(denominator)
+        img_area = pixel_area.reduceRegion(
+            **{
+                "geometry": region,
+                "reducer": ee.Reducer.sum(),
+                "scale": scale,
+                "maxPixels": 1e12,
+                "bestEffort": True,
+            }
+        )
+        return img.set({"area": img_area})
+
+    areas = images.map(cal_area)
+    stats = areas.aggregate_array("area").getInfo()
+    values = [item["water"] for item in stats]
+    labels = areas.aggregate_array("system:index").getInfo()
+
+    if frequency == "month":
+        area_df = pd.DataFrame({"Month": labels, "Area": values})
+    else:
+        dates = [d[:4] for d in labels]
+        data_dict = {"Date": labels, "Year": dates, "Area": values}
+        df = pd.DataFrame(data_dict)
+        result = df.groupby("Year").agg(reducer)
+        area_df = pd.DataFrame({"Year": result.index, "Area": result["Area"]})
+        area_df = area_df.reset_index(drop=True)
+
+    if return_df:
+        return area_df
+    else:
+
+        labels = {}
+
+        if x_label is not None:
+            labels[frequency.title()] = x_label
+        if y_label is not None:
+            labels["Area"] = y_label
+
+        fig = px.bar(
+            area_df,
+            x=frequency.title(),
+            y="Area",
+            labels=labels,
+            title=title,
+            width=width,
+            height=height,
+            **kwargs,
+        )
+
+        fig.update_layout(**layout_args)
+
+        return fig
