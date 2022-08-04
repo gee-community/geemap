@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.16.2 - Aug 4, 2022
+
+**New Features**:
+
+-   Added image_histogram and jrc_hist_monthly_history functions
+
 ## v0.16.1 - Jul 31, 2022
 
 **New Features**:
