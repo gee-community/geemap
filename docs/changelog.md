@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.16.3 - Aug 9, 2022
+
+**Improvement**:
+
+-   Fixed colab import issue [#1192](https://github.com/giswqs/geemap/issues/1192)
+-   Allow single color rather than list [#1191](https://github.com/giswqs/geemap/pull/1191)
+-   Use json to parse the gee credentials [#1178](https://github.com/giswqs/geemap/pull/1178)
+
 ## v0.16.2 - Aug 4, 2022
 
 **New Features**:
