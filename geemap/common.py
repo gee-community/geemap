@@ -12693,11 +12693,10 @@ def ee_vector_style(
         raise ValueError("labels must be a list.")
 
     size = len(labels)
-    if size != len(color):
-        raise ValueError("labels and color must be the same length.")
-
     if isinstance(color, str):
         color = [color] * size
+    elif size != len(color):
+        raise ValueError("labels and color must be the same length.")
     elif not isinstance(color, list):
         raise ValueError("color must be a string or a list.")
 
