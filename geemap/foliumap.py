@@ -16,9 +16,12 @@ from .common import *
 from .conversion import *
 from .legends import builtin_legends
 from .osm import *
-from .plot import *
 from .timelapse import *
 from . import examples
+
+
+if not in_colab_shell():
+    from .plot import *
 
 
 basemaps = Box(xyz_to_folium(), frozen_box=True)
