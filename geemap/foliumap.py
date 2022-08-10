@@ -1800,9 +1800,8 @@ class Map(folium.Map):
 
     def to_streamlit(
         self,
-        width=1000,
-        height=650,
-        responsive=True,
+        width=None,
+        height=600,
         scrolling=False,
         add_layer_control=True,
         bidirectional=False,
@@ -1811,9 +1810,8 @@ class Map(folium.Map):
         """Renders `folium.Figure` or `folium.Map` in a Streamlit app. This method is a static Streamlit Component, meaning, no information is passed back from Leaflet on browser interaction.
 
         Args:
-            width (int, optional): Width of the map. Defaults to 1000.
-            height (int, optional): Height of the map. Defaults to 650.
-            responsive (bool, optional): Whether to make the map responsive. Defaults to True.
+            width (int, optional): Width of the map. Defaults to None.
+            height (int, optional): Height of the map. Defaults to 600.
             scrolling (bool, optional): Whether to allow the map to scroll. Defaults to False.
             add_layer_control (bool, optional): Whether to add the layer control. Defaults to True.
             bidirectional (bool, optional): Whether to add bidirectional functionality to the map. The streamlit-folium package is required to use the bidirectional functionality. Defaults to False.
@@ -1826,7 +1824,6 @@ class Map(folium.Map):
         """
 
         try:
-            import streamlit as st
             import streamlit.components.v1 as components
 
             if add_layer_control:
@@ -1839,13 +1836,13 @@ class Map(folium.Map):
                 return output
             else:
 
-                if responsive:
-                    make_map_responsive = """
-                    <style>
-                    [title~="st.iframe"] { width: 100%}
-                    </style>
-                    """
-                    st.markdown(make_map_responsive, unsafe_allow_html=True)
+                # if responsive:
+                #     make_map_responsive = """
+                #     <style>
+                #     [title~="st.iframe"] { width: 100%}
+                #     </style>
+                #     """
+                #     st.markdown(make_map_responsive, unsafe_allow_html=True)
                 return components.html(
                     self.to_html(), width=width, height=height, scrolling=scrolling
                 )
