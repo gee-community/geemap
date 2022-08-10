@@ -63,20 +63,20 @@ def update_data_list(out_dir="."):
 
 
 def get_data_list():
-    """Gets the list of the Earth Engine datasets.
+    """Gets a list of Earth Engine datasets.
 
     Returns:
-        list: The list of datasets.
+        list: The list of dataset ids.
     """
 
     datasets = get_ee_stac_list()
+    extra_datasets = get_geemap_data_list()
+    community_datasets = get_community_data_list()
 
-    extra_datasets = get_user_data_list()
-
-    return datasets + extra_datasets
+    return datasets + extra_datasets + community_datasets
 
 
-def get_user_data_list():
+def get_geemap_data_list():
     """Gets the list of the public datasets from GEE users.
 
     Returns:
@@ -92,9 +92,18 @@ def get_user_data_list():
         "chn_admin_level2",
     ]
 
-    extra_datasets = ["users/giswqs/public/" + uid for uid in extra_ids]
+    extra_datasets = [f"users/giswqs/public/{uid}" for uid in extra_ids]
     return extra_datasets
 
+def get_community_data_list():
+    """Gets the list community datasets
+        from https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
+
+    Returns:
+        list: The list of Earth Engine asset IDs.
+    """
+    collections = search_ee_data('.*', regex=True, source='community')
+    return [collection.get('id',None) for collection in collections]
 
 def get_ee_stac_list():
     """Gets the STAC list of the Earth Engine Data Catalog.
@@ -129,19 +138,7 @@ def merge_dict(dict1, dict2):
     Returns:
         dict: The merged dictionary.
     """
-    for key, val in dict1.items():
-        if type(val) == dict:
-            if key in dict2 and type(dict2[key] == dict):
-                merge_dict(dict1[key], dict2[key])
-        else:
-            if key in dict2:
-                dict1[key] = dict2[key]
-
-    for key, val in dict2.items():
-        if not key in dict1:
-            dict1[key] = val
-
-    return dict1
+    return {**dict1, **dict2}
 
 
 def get_data_dict():
@@ -168,17 +165,18 @@ def get_data_dict():
     return data_dict
 
 
-def get_metadata(asset_id):
+def get_metadata(asset_id, source='ee'):
     """Gets metadata about an Earth Engine asset.
 
     Args:
         asset_id (str): The Earth Engine asset id.
+        source (str): 'ee', 'community' or 'all'.
 
     Raises:
         Exception: If search fails.
     """
     try:
-        ee_assets = search_ee_data(asset_id)
+        ee_assets = search_ee_data(asset_id, source=source)
         html = ee_data_html(ee_assets[0])
         html_widget = widgets.HTML()
         html_widget.value = html
