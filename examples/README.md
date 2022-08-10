@@ -141,6 +141,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 121. Styling vector data based on attributes ([notebook](https://geemap.org/notebooks/121_vector_style))
 122. LiDAR data analysis and visualization with whitebox and geemap ([notebook](https://geemap.org/notebooks/122_lidar))
 123. Creating Sentinel-1 SAR imagery timelapse ([notebook](https://geemap.org/notebooks/123_sentinel1_timelapse))
+124. Searching for awesome GEE community datasets ([notebook](https://geemap.org/notebooks/124_more_datasets))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
