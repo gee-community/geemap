@@ -3823,14 +3823,16 @@ def latlon_from_text(location):
         return None
 
 
-def search_ee_data(keywords, regex=False, source='ee'):
+def search_ee_data(keywords, regex=False, source='ee', types=['image_collection'], keys=['id','provider','tags','title']):
     """Searches Earth Engine data catalog.
 
     Args:
         keywords (str|lst): Keywords to search for can be id, provider, tag and so on. Split by space if string, e.g. "1 2" becomes ['1','2'].
         regex (bool): Allow searching for regular expressions. Defaults to false.
-        source (str): Can be 'ee' or 'community'. 'ee' will search in ee datasets. 'community' will look a large repository of other usefull datasets.
+        source (str): Can be 'ee', 'community' or 'all'. 'ee' will search in ee datasets. 'community' will look a large repository of other usefull datasets.
             For more details, see https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
+        types (lst): List of valid collection types. Defaults to ['image_collection']
+        keys (lst): List of metadata fields to search from.  Defaults to ['id','provider','tags','title']
 
     Returns:
         list: Returns a list of assets.
@@ -3839,32 +3841,39 @@ def search_ee_data(keywords, regex=False, source='ee'):
         keywords = keywords.split(' ')
 
     import re
+    from functools import reduce
 
-    def search_collection(pattern, dict_, keys=['id','provider','tags','title'], regex=False):
+    def search_collection(pattern, dict_):
         if regex:
             if any(re.match(pattern, dict_[key]) for key in keys):
                 return dict_
         elif any(pattern in dict_[key] for key in keys):
             return dict_
-        return None
+        return {}
 
-    def search_all(pattern, regex=False, types=['image_collection']):
+    def search_all(pattern):
         #updated daily
-        sources = {'ee':'https://raw.githubusercontent.com/samapriya/Earth-Engine-Datasets-List/master/gee_catalog.json',
-                   'community':'https://raw.githubusercontent.com/samapriya/awesome-gee-community-datasets/master/community_datasets.json'}       
-        r= requests.get(sources[source])
-        catalog_list = r.json()
-        matches = [search_collection(pattern, x) for x in catalog_list]
+        a = 'https://raw.githubusercontent.com/samapriya/Earth-Engine-Datasets-List/master/gee_catalog.json'
+        b = 'https://raw.githubusercontent.com/samapriya/awesome-gee-community-datasets/master/community_datasets.json'
+        sources = {'ee':[a],
+                   'community':[b],
+                   'all':[a,b]}       
+        matches = []
+        for link in sources[source]:
+            r= requests.get(link)
+            catalog_list = r.json()
+            matches += [search_collection(pattern, x) for x in catalog_list]
         return [x for x in matches if x and x['type'] in types]
-
+    
     try:
-        assets = set(json.dumps(match) for k in keywords 
-                                       for match in search_all(pattern=k,regex=regex))
+        assets = list({json.dumps(match) for match in search_all(pattern=k)}
+                       for k in keywords)
+        assets = reduce(set.intersection, assets)
         assets = [json.loads(x) for x in assets]
 
         results = []
         for asset in assets:
-            asset_dates = asset.get("start_date","1900-01-01") + " - " + asset.get("end_date","1900-01-01")
+            asset_dates = asset.get("start_date","Unknown") + " - " + asset.get("end_date","Unknown")
             asset_snippet = asset["id"]
             if "ee." in asset_snippet:
                 start_index = asset_snippet.index("'") + 1
@@ -3934,33 +3943,55 @@ def ee_data_html(asset):
     Returns:
         str: A string containing HTML.
     """
-    template = """
-        <html>
-        <body>
-            <h3>asset_title</h3>
-            <h4>Dataset Availability</h4>
-                <p style="margin-left: 40px">asset_dates</p>
-            <h4>Earth Engine Snippet</h4>
-                <p style="margin-left: 40px">ee_id_snippet</p>
-            <h4>Earth Engine Data Catalog</h4>
-                <p style="margin-left: 40px"><a href="asset_url" target="_blank">asset_id</a></p>
-            <h4>Dataset Thumbnail</h4>
-                <img src="thumbnail_url">
-        </body>
-        </html>
-    """
-
     try:
+        asset_title = asset.get("title","Unknown")
+        asset_dates = asset.get("dates","Unknown")
+        ee_id_snippet = asset.get("id","Unknown")
+        asset_uid = asset.get("uid",None)
+        asset_url = asset.get("asset_url","")
+        code_url = asset.get("sample_code",None)
+        thumbnail_url = asset.get("thumbnail_url",None)   
 
-        text = template.replace("asset_title", asset["title"])
-        text = text.replace("asset_dates", asset["dates"])
-        text = text.replace("ee_id_snippet", asset["ee_id_snippet"])
-        text = text.replace("asset_id", asset["id"])
-        text = text.replace("asset_url", asset["asset_url"])
-        # asset['thumbnail'] = ee_data_thumbnail(asset['id'])
-        text = text.replace("thumbnail_url", asset["thumbnail_url"])
+        if not code_url and asset_uid:
+            coder_url = f"""https://code.earthengine.google.com/?scriptPath=Examples%3ADatasets%2F{asset_uid}"""
+        else: 
+            coder_url = code_url
 
-        return text
+        ## ee datasets always have a asset_url, and should have a thumbnail
+        catalog = bool(asset_url) * f"""
+                    <h4>Data Catalog</h4>
+                        <p style="margin-left: 40px"><a href="{asset_url.replace('terms-of-use','description')}" target="_blank">Description</a></p>
+                        <p style="margin-left: 40px"><a href="{asset_url.replace('terms-of-use','bands')}" target="_blank">Bands</a></p>
+                        <p style="margin-left: 40px"><a href="{asset_url.replace('terms-of-use','image-properties')}" target="_blank">Properties</a></p>
+                        <p style="margin-left: 40px"><a href="{coder_url}" target="_blank">Example</a></p>
+                    """
+        thumbnail = bool(thumbnail_url) * f"""
+                    <h4>Dataset Thumbnail</h4>
+                    <img src="{thumbnail_url}">  
+                    """
+        ## only community datasets have a code_url
+        alternative = bool(code_url) * f"""
+                    <h4>Community Catalog</h4>
+                        <p style="margin-left: 40px">{asset.get('provider','Provider unknown')}</p>
+                        <p style="margin-left: 40px">{asset.get('tags','Tags unknown')}</p>
+                        <p style="margin-left: 40px"><a href="{coder_url}" target="_blank">Example</a></p>
+                    """
+
+        template = f"""
+            <html>
+            <body>
+                <h3>{asset_title}</h3>
+                <h4>Dataset Availability</h4>
+                    <p style="margin-left: 40px">{asset_dates}</p>
+                <h4>Earth Engine Snippet</h4>
+                    <p style="margin-left: 40px">{ee_id_snippet}</p>
+                {catalog}
+                {alternative}
+                {thumbnail}
+            </body>
+            </html>
+        """
+        return template
 
     except Exception as e:
         print(e)
