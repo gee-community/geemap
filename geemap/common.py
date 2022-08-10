@@ -3823,14 +3823,14 @@ def latlon_from_text(location):
         return None
 
 
-def search_ee_data(keywords, regex=False, source='ee', types=['image_collection'], keys=['id','provider','tags','title']):
+def search_ee_data(keywords, regex=False, source='ee', types=None, keys=['id','provider','tags','title']):
     """Searches Earth Engine data catalog.
 
     Args:
         keywords (str | list): Keywords to search for can be id, provider, tag and so on. Split by space if string, e.g. "1 2" becomes ['1','2'].
         regex (bool, optional): Allow searching for regular expressions. Defaults to false.
         source (str, optional): Can be 'ee', 'community' or 'all'. Defaults to 'ee'. For more details, see https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
-        types (list, optional): List of valid collection types. Defaults to ['image_collection']
+        types (list, optional): List of valid collection types. Defaults to None so no filter is applied. A possible filter ['image_collection']
         keys (list, optional): List of metadata fields to search from.  Defaults to ['id','provider','tags','title']
 
     Returns:
@@ -3862,7 +3862,10 @@ def search_ee_data(keywords, regex=False, source='ee', types=['image_collection'
             r= requests.get(link)
             catalog_list = r.json()
             matches += [search_collection(pattern, x) for x in catalog_list]
-        return [x for x in matches if x and x['type'] in types]
+        matches = [x for x in matches if x] 
+        if types:
+            return [x for x in matches if x['type'] in types]
+        return matches
     
     try:
         assets = list({json.dumps(match) for match in search_all(pattern=k)}
