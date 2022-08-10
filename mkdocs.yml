@@ -208,6 +208,7 @@ nav:
           - notebooks/121_vector_style.ipynb
           - notebooks/122_lidar.ipynb
           - notebooks/123_sentinel1_timelapse.ipynb
+          - notebooks/124_more_datasets.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
