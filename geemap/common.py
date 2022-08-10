@@ -3827,12 +3827,12 @@ def search_ee_data(keywords, regex=False, source='ee', types=['image_collection'
     """Searches Earth Engine data catalog.
 
     Args:
-        keywords (str|lst): Keywords to search for can be id, provider, tag and so on. Split by space if string, e.g. "1 2" becomes ['1','2'].
-        regex (bool): Allow searching for regular expressions. Defaults to false.
-        source (str): Can be 'ee', 'community' or 'all'. 'ee' will search in ee datasets. 'community' will look a large repository of other usefull datasets.
+        keywords (str | list): Keywords to search for can be id, provider, tag and so on. Split by space if string, e.g. "1 2" becomes ['1','2'].
+        regex (bool, optional): Allow searching for regular expressions. Defaults to false.
+        source (str, optional): Can be 'ee', 'community' or 'all'. 'ee' will search in ee datasets. 'community' will look a large repository of other usefull datasets.
             For more details, see https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
-        types (lst): List of valid collection types. Defaults to ['image_collection']
-        keys (lst): List of metadata fields to search from.  Defaults to ['id','provider','tags','title']
+        types (list, optional): List of valid collection types. Defaults to ['image_collection']
+        keys (list, optional): List of metadata fields to search from.  Defaults to ['id','provider','tags','title']
 
     Returns:
         list: Returns a list of assets.
