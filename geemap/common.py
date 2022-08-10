@@ -3823,25 +3823,49 @@ def latlon_from_text(location):
         return None
 
 
-def search_ee_data(keywords):
+def search_ee_data(keywords, regex=False, source='ee'):
     """Searches Earth Engine data catalog.
 
     Args:
-        keywords (str): Keywords to search for can be id, provider, tag and so on
+        keywords (str|lst): Keywords to search for can be id, provider, tag and so on. Split by space if string, e.g. "1 2" becomes ['1','2'].
+        regex (bool): Allow searching for regular expressions. Defaults to false.
+        source (str): Can be 'ee' or 'community'. 'ee' will search in ee datasets. 'community' will look a large repository of other usefull datasets.
+            For more details, see https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
 
     Returns:
-        list: Returns a lit of assets.
+        list: Returns a list of assets.
     """
+    if isinstance(keywords, str):
+        keywords = keywords.split(' ')
+
+    import re
+
+    def search_collection(pattern, dict_, keys=['id','provider','tags','title'], regex=False):
+        if regex:
+            if any(re.match(pattern, dict_[key]) for key in keys):
+                return dict_
+        elif any(pattern in dict_[key] for key in keys):
+            return dict_
+        return None
+
+    def search_all(pattern, regex=False, types=['image_collection']):
+        #updated daily
+        sources = {'ee':'https://raw.githubusercontent.com/samapriya/Earth-Engine-Datasets-List/master/gee_catalog.json',
+                   'community':'https://raw.githubusercontent.com/samapriya/awesome-gee-community-datasets/master/community_datasets.json'}       
+        r= requests.get(sources[source])
+        catalog_list = r.json()
+        matches = [search_collection(pattern, x) for x in catalog_list]
+        return [x for x in matches if x and x['type'] in types]
+
     try:
-        cmd = f'geeadd search --keywords "{str(keywords)}"'
-        output = os.popen(cmd).read()
-        start_index = output.index("[")
-        assets = eval(output[start_index:])
+        assets = set(json.dumps(match) for k in keywords 
+                                       for match in search_all(pattern=k,regex=regex))
+        assets = [json.loads(x) for x in assets]
 
         results = []
         for asset in assets:
-            asset_dates = asset["start_date"] + " - " + asset["end_date"]
-            asset_snippet = asset["ee_id_snippet"]
+            asset_dates = asset.get("start_date","1900-01-01") + " - " + asset.get("end_date","1900-01-01")
+            asset_snippet = asset["id"]
             if "ee." in asset_snippet:
                 start_index = asset_snippet.index("'") + 1
                 end_index = asset_snippet.index("'", start_index)
@@ -3852,9 +3876,7 @@ def search_ee_data(keywords):
             asset["dates"] = asset_dates
             asset["id"] = asset_id
             asset["uid"] = asset_id.replace("/", "_")
-            # asset['url'] = 'https://developers.google.com/earth-engine/datasets/catalog/' + asset['uid']
-            # asset['thumbnail'] = 'https://mw1.google.com/ges/dd/images/{}_sample.png'.format(
-            #     asset['uid'])
+
             results.append(asset)
 
         return results
