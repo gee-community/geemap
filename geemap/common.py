@@ -3870,7 +3870,7 @@ def search_ee_data(keywords, regex=False, source='ee', types=None, keys=['id','p
     try:
         assets = list({json.dumps(match) for match in search_all(pattern=k)}
                        for k in keywords)
-        assets = reduce(set.intersection, assets)
+        assets = sorted(list(reduce(set.intersection, assets)))
         assets = [json.loads(x) for x in assets]
 
         results = []
