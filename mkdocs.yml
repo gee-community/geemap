@@ -209,6 +209,7 @@ nav:
           - notebooks/122_lidar.ipynb
           - notebooks/123_sentinel1_timelapse.ipynb
           - notebooks/124_more_datasets.ipynb
+          - notebooks/125_example_code.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb

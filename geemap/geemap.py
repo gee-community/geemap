@@ -5,7 +5,7 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 
 import math
 import os
-import sys
+import pkg_resources
 import time
 
 import ee
@@ -261,25 +261,32 @@ class Map(ipyleaflet.Map):
 
         def get_ee_example(asset_id):
             try:
-                with open(os.path.join(os.path.dirname(__file__),'gee_f.json'), 
-                          encoding="utf-8") as f:
+                pkg_dir = os.path.dirname(
+                    pkg_resources.resource_filename("geemap", "geemap.py")
+                )
+                with open(
+                    os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8"
+                ) as f:
                     functions = json.load(f)
-                details = [dataset['code'] 
-                            for x in functions['examples'] 
-                            for dataset in x['contents'] 
-                            if x['name'] == 'Datasets'
-                            if dataset['name'] == asset_id.replace('/','_')
-                            ]
-                
-                return js_snippet_to_py(details[0], 
-                                            add_new_cell=False, 
-                                            import_ee=False, 
-                                            import_geemap=False, 
-                                            show_map=False)
+                details = [
+                    dataset["code"]
+                    for x in functions["examples"]
+                    for dataset in x["contents"]
+                    if x["name"] == "Datasets"
+                    if dataset["name"] == asset_id.replace("/", "_")
+                ]
+
+                return js_snippet_to_py(
+                    details[0],
+                    add_new_cell=False,
+                    import_ee=False,
+                    import_geemap=False,
+                    show_map=False,
+                )
 
             except Exception as e:
-                print(f'No code example found')
-            return  
+                pass
+            return
 
         def import_btn_clicked(b):
             if assets_dropdown.value is not None:
@@ -287,24 +294,32 @@ class Map(ipyleaflet.Map):
                 dataset = datasets[assets_dropdown.index]
                 id_ = dataset["id"]
                 code = get_ee_example(id_)
+
                 if not code:
                     dataset_uid = "dataset_" + random_string(string_length=3)
-                    translate = {'image_collection': 'ImageCollection',
-                            'image': 'Image',
-                            'table': 'Feature',
-                            'table_collection': 'FeatureCollection'}
-                    datatype = translate[dataset['type']]
+                    translate = {
+                        "image_collection": "ImageCollection",
+                        "image": "Image",
+                        "table": "FeatureCollection",
+                        "table_collection": "FeatureCollection",
+                    }
+                    datatype = translate[dataset["type"]]
                     id_ = dataset["id"]
                     line1 = "{} = ee.{}('{}')".format(dataset_uid, datatype, id_)
-                    action = {'image_collection': f"Map.addLayer({dataset_uid}.first(), {{}}, '{id_}')",
-                            'image': f"Map.addLayer({dataset_uid}, {{}}, '{id_}')",
-                            'table': f"pass",
-                            'table_collection': f"pass"}
-                    line2 = action[dataset['type']]
+                    action = {
+                        "image_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "image": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "table": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "table_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                    }
+                    line2 = action[dataset["type"]]
                     code = [line1, line2]
 
-                contents = "\n".join(['import ee'] + code)
+                contents = "".join(code).strip()
                 create_code_cell(contents)
+                with search_output:
+                    search_output.clear_output(wait=True)
+                    print(contents)
 
         import_btn.on_click(import_btn_clicked)
 
