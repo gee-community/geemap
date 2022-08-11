@@ -5,7 +5,6 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 
 import math
 import os
-import sys
 import time
 
 import ee
@@ -261,6 +260,7 @@ class Map(ipyleaflet.Map):
 
         def get_ee_example(asset_id):
             try:
+                ## ee datasets
                 with open(os.path.join(os.path.dirname(__file__),'gee_f.json'), 
                           encoding="utf-8") as f:
                     functions = json.load(f)
@@ -270,16 +270,31 @@ class Map(ipyleaflet.Map):
                             if x['name'] == 'Datasets'
                             if dataset['name'] == asset_id.replace('/','_')
                             ]
-                
-                return js_snippet_to_py(details[0], 
-                                            add_new_cell=False, 
-                                            import_ee=False, 
-                                            import_geemap=False, 
-                                            show_map=False)
+                if details:                
+                    return js_snippet_to_py(details[0], 
+                                                add_new_cell=False, 
+                                                import_ee=False, 
+                                                import_geemap=False, 
+                                                show_map=False)
+                ## community datasets
+
 
             except Exception as e:
                 print(f'No code example found')
             return  
+
+        # Requires auth, Might be possible using ee.oauth.get_credentials_arguments.
+        # Afraid it's a different api auth
+        # Requires manual fallback to selenium for pdates. 
+        # code_link can be used to retrieve a f.json containing relevant JS.
+        def get_community_example(asset_id):
+            asset_info = search_ee_data(asset_id, source='community')
+            code_link = asset_info["sample_code"]
+            code_link = code_link.replace('https://code.earthengine.google.com/',
+                                          'https://code.earthengine.google.com/scripts/public/load?id=')
+            # requests.get(code_link)
+            return code_link
+
 
         def import_btn_clicked(b):
             if assets_dropdown.value is not None:
