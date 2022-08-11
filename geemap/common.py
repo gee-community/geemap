@@ -6514,7 +6514,7 @@ def adjust_longitude(in_fc):
 def zonal_stats(
     in_value_raster,
     in_zone_vector,
-    out_file_path,
+    out_file_path=None,
     statistics_type="MEAN",
     scale=None,
     crs=None,
@@ -6551,6 +6551,9 @@ def zonal_stats(
     if not isinstance(in_zone_vector, ee.FeatureCollection):
         print("The input zone data must be an ee.FeatureCollection.")
         return
+
+    if out_file_path is None:
+        out_file_path = os.path.join(os.getcwd(), "zonal_stats.csv")
 
     allowed_formats = ["csv", "geojson", "kml", "kmz", "shp"]
     filename = os.path.abspath(out_file_path)
@@ -6650,7 +6653,7 @@ zonal_statistics = zonal_stats
 def zonal_stats_by_group(
     in_value_raster,
     in_zone_vector,
-    out_file_path,
+    out_file_path=None,
     statistics_type="SUM",
     decimal_places=0,
     denominator=1.0,
@@ -6688,6 +6691,9 @@ def zonal_stats_by_group(
     if not isinstance(in_value_raster, ee.Image):
         print("The input raster must be an ee.Image.")
         return
+
+    if out_file_path is None:
+        out_file_path = os.path.join(os.getcwd(), "zonal_stats_by_group.csv")
 
     band_count = in_value_raster.bandNames().size().getInfo()
 
