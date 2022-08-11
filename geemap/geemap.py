@@ -239,7 +239,7 @@ class Map(ipyleaflet.Map):
         search_output = widgets.Output(
             layout={
                 "max_width": "340px",
-                "max_height": "250px",
+                "max_height": "350px",
                 "overflow": "scroll",
             }
         )
@@ -387,7 +387,7 @@ class Map(ipyleaflet.Map):
                     with search_output:
                         print("Searching ...")
                     self.default_style = {"cursor": "wait"}
-                    ee_assets = search_ee_data(text.value, source='all')
+                    ee_assets = search_ee_data(text.value, source="all")
                     self.search_datasets = ee_assets
                     asset_titles = [x["title"] for x in ee_assets]
                     assets_dropdown.options = asset_titles

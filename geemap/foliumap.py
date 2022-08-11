@@ -863,6 +863,7 @@ class Map(folium.Map):
         label="",
         categorical=False,
         step=None,
+        background_color=None,
         **kwargs,
     ):
         """Add a colorbar to the map.
@@ -890,7 +891,7 @@ class Map(folium.Map):
         if "max" not in vis_params:
             vis_params["max"] = 1
 
-        colors = vis_params["palette"]
+        colors = to_hex_colors(check_cmap(vis_params["palette"]))
         vmin = vis_params["min"]
         vmax = vis_params["max"]
 
@@ -915,6 +916,13 @@ class Map(folium.Map):
                 colormap = colormap.to_step(len(index) - 1)
             else:
                 colormap = colormap.to_step(3)
+
+        if background_color is not None:
+            svg_style = (
+                "<style>svg {background-color: " + background_color + ";}</style>"
+            )
+
+            self.get_root().header.add_child(folium.Element(svg_style))
 
         self.add_child(colormap)
 

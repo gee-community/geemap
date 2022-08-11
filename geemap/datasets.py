@@ -95,6 +95,7 @@ def get_geemap_data_list():
     extra_datasets = [f"users/giswqs/public/{uid}" for uid in extra_ids]
     return extra_datasets
 
+
 def get_community_data_list():
     """Gets the list community datasets
         from https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
@@ -103,7 +104,8 @@ def get_community_data_list():
         list: The list of Earth Engine asset IDs.
     """
     collections = search_ee_data('.*', regex=True, source='community')
-    return [collection.get('id',None) for collection in collections]
+    return [collection.get('id', None) for collection in collections]
+
 
 def get_ee_stac_list():
     """Gets the STAC list of the Earth Engine Data Catalog.
