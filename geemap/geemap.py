@@ -285,7 +285,7 @@ class Map(ipyleaflet.Map):
                 )
 
             except Exception as e:
-                print(f"No code example found")
+                pass
             return
 
         def import_btn_clicked(b):
@@ -294,27 +294,28 @@ class Map(ipyleaflet.Map):
                 dataset = datasets[assets_dropdown.index]
                 id_ = dataset["id"]
                 code = get_ee_example(id_)
+
                 if not code:
                     dataset_uid = "dataset_" + random_string(string_length=3)
                     translate = {
                         "image_collection": "ImageCollection",
                         "image": "Image",
-                        "table": "Feature",
+                        "table": "FeatureCollection",
                         "table_collection": "FeatureCollection",
                     }
                     datatype = translate[dataset["type"]]
                     id_ = dataset["id"]
                     line1 = "{} = ee.{}('{}')".format(dataset_uid, datatype, id_)
                     action = {
-                        "image_collection": f"Map.addLayer({dataset_uid}.first(), {{}}, '{id_}')",
-                        "image": f"Map.addLayer({dataset_uid}, {{}}, '{id_}')",
-                        "table": f"pass",
-                        "table_collection": f"pass",
+                        "image_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "image": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "table": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "table_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
                     }
                     line2 = action[dataset["type"]]
                     code = [line1, line2]
 
-                contents = "".join(["import ee\n"] + code)
+                contents = "".join(code).strip()
                 create_code_cell(contents)
                 with search_output:
                     search_output.clear_output(wait=True)
