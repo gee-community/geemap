@@ -276,7 +276,9 @@ def check_map_functions(input_lines):
     return output_lines
 
 
-def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
+def js_to_python(
+    in_file, out_file=None, use_qgis=True, github_repo=None, show_map=True
+):
     """Converts an Earth Engine JavaScript to Python script.
 
     Args:
@@ -284,6 +286,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
         out_file (str, optional): File path of the output Python script. Defaults to None.
         use_qgis (bool, optional): Whether to add "from ee_plugin import Map \n" to the output script. Defaults to True.
         github_repo (str, optional): GitHub repo url. Defaults to None.
+        show_map (bool, optional): Whether to add "Map" to the output script. Defaults to True.
 
     Returns:
         list: Python script
@@ -303,8 +306,8 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
     import_str = ""
     if use_qgis:
         import_str = "from ee_plugin import Map\n"
-    else:
-        import_str = "import geemap\n\nMap = geemap.Map()\n"
+    # else:
+    #     import_str = "import geemap\n\nMap = geemap.Map()\n"
 
     github_url = ""
     if github_repo is not None:
@@ -471,7 +474,7 @@ def js_to_python(in_file, out_file=None, use_qgis=True, github_repo=None):
                 else:
                     output += line + "\n"
 
-    if not use_qgis:
+    if show_map:
         output += "Map"
 
     out_dir = os.path.dirname(out_file)
@@ -522,7 +525,7 @@ def js_snippet_to_py(
     try:
         with open(in_js, "w") as f:
             f.write(in_js_snippet)
-        js_to_python(in_js, out_file=out_py, use_qgis=False)
+        js_to_python(in_js, out_file=out_py, use_qgis=False, show_map=show_map)
 
         out_lines = []
         if import_ee:
@@ -550,14 +553,11 @@ def js_snippet_to_py(
                 elif index == (len(lines) - 1) and lines[index].strip() != "":
                     out_lines.append(line)
 
-        if show_map:
-            out_lines.append("Map\n")
-
         os.remove(in_js)
         os.remove(out_py)
 
         if add_new_cell:
-            contents = "".join(out_lines)
+            contents = "".join(out_lines).strip()
             create_new_cell(contents)
         else:
             return out_lines
