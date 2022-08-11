@@ -260,12 +260,23 @@ class Map(ipyleaflet.Map):
 
         def import_btn_clicked(b):
             if assets_dropdown.value is not None:
+
+                dataset_uid = "dataset_" + random_string(string_length=3)
                 datasets = self.search_datasets
                 dataset = datasets[assets_dropdown.index]
-                dataset_uid = "dataset_" + random_string(string_length=3)
-                line1 = "{} = {}\n".format(dataset_uid, dataset["ee_id_snippet"])
-                line2 = "Map.addLayer(" + dataset_uid + ', {}, "' + dataset["id"] + '")'
-                contents = "".join([line1, line2])
+                translate = {'image_collection': 'ImageCollection',
+                            'image': 'Image',
+                            'table': 'Feature',
+                            'table_collection': 'FeatureCollection'}
+                datatype = translate[dataset['type']]
+                id_ = dataset["id"]
+                line1 = "{} = ee.{}('{}')".format(dataset_uid, datatype, id_)
+                action = {'image_collection': f"Map.addLayer({dataset_uid}.first(), {{}}, '{id_}')",
+                          'image': f"Map.addLayer({dataset_uid}, {{}}, '{id_}')",
+                          'table': f"pass",
+                          'table_collection': f"pass"}
+                line2 = action[dataset['type']]
+                contents = "\n".join([line1, line2])
                 create_code_cell(contents)
 
         import_btn.on_click(import_btn_clicked)
@@ -315,12 +326,14 @@ class Map(ipyleaflet.Map):
         def search_type_changed(change):
             search_box.value = ""
             search_output.clear_output()
-            if change["new"] == "name/address":
-                search_box.placeholder = "Search by place name or address, e.g., Paris"
-                assets_dropdown.options = []
+            if change["new"] == "data":
+                search_box.placeholder = (
+                    "Search GEE data catalog by keywords, e.g., elevation"
+                )
                 search_result_widget.children = [
                     search_type,
                     search_box,
+                    assets_combo,
                     search_output,
                 ]
             elif change["new"] == "lat-lon":
@@ -331,14 +344,12 @@ class Map(ipyleaflet.Map):
                     search_box,
                     search_output,
                 ]
-            elif change["new"] == "data":
-                search_box.placeholder = (
-                    "Search GEE data catalog by keywords, e.g., elevation"
-                )
+            elif change["new"] == "name/address":
+                search_box.placeholder = "Search by place name or address, e.g., Paris"
+                assets_dropdown.options = []
                 search_result_widget.children = [
                     search_type,
                     search_box,
-                    assets_combo,
                     search_output,
                 ]
 
