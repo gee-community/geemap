@@ -3823,7 +3823,13 @@ def latlon_from_text(location):
         return None
 
 
-def search_ee_data(keywords, regex=False, source='ee', types=None, keys=['id','provider','tags','title']):
+def search_ee_data(
+    keywords,
+    regex=False,
+    source="ee",
+    types=None,
+    keys=["id", "provider", "tags", "title"],
+):
     """Searches Earth Engine data catalog.
 
     Args:
@@ -3837,7 +3843,7 @@ def search_ee_data(keywords, regex=False, source='ee', types=None, keys=['id','p
         list: Returns a list of assets.
     """
     if isinstance(keywords, str):
-        keywords = keywords.split(' ')
+        keywords = keywords.split(" ")
 
     import re
     from functools import reduce
@@ -3851,31 +3857,34 @@ def search_ee_data(keywords, regex=False, source='ee', types=None, keys=['id','p
         return {}
 
     def search_all(pattern):
-        #updated daily
-        a = 'https://raw.githubusercontent.com/samapriya/Earth-Engine-Datasets-List/master/gee_catalog.json'
-        b = 'https://raw.githubusercontent.com/samapriya/awesome-gee-community-datasets/master/community_datasets.json'
-        sources = {'ee':[a],
-                   'community':[b],
-                   'all':[a,b]}       
+        # updated daily
+        a = "https://raw.githubusercontent.com/samapriya/Earth-Engine-Datasets-List/master/gee_catalog.json"
+        b = "https://raw.githubusercontent.com/samapriya/awesome-gee-community-datasets/master/community_datasets.json"
+        sources = {"ee": [a], "community": [b], "all": [a, b]}
         matches = []
         for link in sources[source]:
-            r= requests.get(link)
+            r = requests.get(link)
             catalog_list = r.json()
             matches += [search_collection(pattern, x) for x in catalog_list]
-        matches = [x for x in matches if x] 
+        matches = [x for x in matches if x]
         if types:
-            return [x for x in matches if x['type'] in types]
+            return [x for x in matches if x["type"] in types]
         return matches
-    
+
     try:
-        assets = list({json.dumps(match) for match in search_all(pattern=k)}
-                       for k in keywords)
+        assets = list(
+            {json.dumps(match) for match in search_all(pattern=k)} for k in keywords
+        )
         assets = sorted(list(reduce(set.intersection, assets)))
         assets = [json.loads(x) for x in assets]
 
         results = []
         for asset in assets:
-            asset_dates = asset.get("start_date","Unknown") + " - " + asset.get("end_date","Unknown")
+            asset_dates = (
+                asset.get("start_date", "Unknown")
+                + " - "
+                + asset.get("end_date", "Unknown")
+            )
             asset_snippet = asset["id"]
             if "ee." in asset_snippet:
                 start_index = asset_snippet.index("'") + 1
@@ -3946,38 +3955,47 @@ def ee_data_html(asset):
         str: A string containing HTML.
     """
     try:
-        asset_title = asset.get("title","Unknown")
-        asset_dates = asset.get("dates","Unknown")
-        ee_id_snippet = asset.get("id","Unknown")
-        asset_uid = asset.get("uid",None)
-        asset_url = asset.get("asset_url","")
-        code_url = asset.get("sample_code",None)
-        thumbnail_url = asset.get("thumbnail_url",None)   
+        asset_title = asset.get("title", "Unknown")
+        asset_dates = asset.get("dates", "Unknown")
+        ee_id_snippet = asset.get("id", "Unknown")
+        asset_uid = asset.get("uid", None)
+        asset_url = asset.get("asset_url", "")
+        code_url = asset.get("sample_code", None)
+        thumbnail_url = asset.get("thumbnail_url", None)
 
         if not code_url and asset_uid:
             coder_url = f"""https://code.earthengine.google.com/?scriptPath=Examples%3ADatasets%2F{asset_uid}"""
-        else: 
+        else:
             coder_url = code_url
 
         ## ee datasets always have a asset_url, and should have a thumbnail
-        catalog = bool(asset_url) * f"""
+        catalog = (
+            bool(asset_url)
+            * f"""
                     <h4>Data Catalog</h4>
                         <p style="margin-left: 40px"><a href="{asset_url.replace('terms-of-use','description')}" target="_blank">Description</a></p>
                         <p style="margin-left: 40px"><a href="{asset_url.replace('terms-of-use','bands')}" target="_blank">Bands</a></p>
                         <p style="margin-left: 40px"><a href="{asset_url.replace('terms-of-use','image-properties')}" target="_blank">Properties</a></p>
                         <p style="margin-left: 40px"><a href="{coder_url}" target="_blank">Example</a></p>
                     """
-        thumbnail = bool(thumbnail_url) * f"""
+        )
+        thumbnail = (
+            bool(thumbnail_url)
+            * f"""
                     <h4>Dataset Thumbnail</h4>
                     <img src="{thumbnail_url}">  
                     """
+        )
         ## only community datasets have a code_url
-        alternative = bool(code_url) * f"""
+        alternative = (
+            bool(code_url)
+            * f"""
                     <h4>Community Catalog</h4>
                         <p style="margin-left: 40px">{asset.get('provider','Provider unknown')}</p>
                         <p style="margin-left: 40px">{asset.get('tags','Tags unknown')}</p>
                         <p style="margin-left: 40px"><a href="{coder_url}" target="_blank">Example</a></p>
                     """
+        )
 
         template = f"""
             <html>
@@ -13081,3 +13099,39 @@ def html_to_streamlit(
 
     f.close()
     return components.html(html, width=width, height=height, scrolling=scrolling)
+
+
+def image_convolution(
+    image, kernel=None, resample=None, projection="EPSG:3857", **kwargs
+):
+    """Performs a convolution on an image.
+
+    Args:
+        image (ee.Image | ee.ImageCollection): The image to convolve.
+        kernel (ee.Kernel, optional): The kernel to convolve with. Defaults to None, a 7x7 gaussian kernel.
+        resample (str, optional): The resample method to use. It can be either 'bilinear' or 'bicubic'". Defaults to None, which uses the image's resample method.
+        projection (str, optional): The projection to use. Defaults to 'EPSG:3857'.
+
+    Returns:
+        ee.Image: The convolved image.
+    """
+    if isinstance(image, ee.ImageCollection):
+        image = image.mosaic()
+    elif not isinstance(image, ee.Image):
+        raise ValueError("image must be an ee.Image or ee.ImageCollection.")
+
+    if kernel is None:
+        kernel = ee.Kernel.gaussian(radius=3, sigma=2, units="pixels", normalize=True)
+    elif not isinstance(kernel, ee.Kernel):
+        raise ValueError("kernel must be an ee.Kernel.")
+
+    if resample is not None:
+        if resample not in ["bilinear", "bicubic"]:
+            raise ValueError("resample must be one of 'bilinear' or 'bicubic'")
+
+    result = image.convolve(kernel)
+
+    if resample is not None:
+        result = result.resample(resample)
+
+    return result.setDefaultProjection(projection)
