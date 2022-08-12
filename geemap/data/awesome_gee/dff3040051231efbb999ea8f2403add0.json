@@ -1,1 +1,0 @@
-{"code": "Map.addLayer(nematode)\r\nprint(nematode.size())\r\n", "environment": "[{\"type\":\"table\",\"name\":\"nematode\",\"record\":{\"id\":\"projects/sat-io/open-datasets/global-nematode\"}}]", "location": "17.446452097550207,16.551961721972525,3"}

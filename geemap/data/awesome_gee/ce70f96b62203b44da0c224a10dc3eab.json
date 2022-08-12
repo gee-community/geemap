@@ -1,1 +1,0 @@
-{"code": "Map.addLayer(\r\n  ee.FeatureCollection(rwi),{},'Relative Wealth Index'\r\n);", "environment": "[{\"type\":\"table\",\"name\":\"rwi\",\"record\":{\"id\":\"projects/sat-io/open-datasets/facebook/relative_wealth_index\"}}]", "location": "90.59278041533975,22.278598600814608,9"}

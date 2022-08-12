@@ -297,10 +297,10 @@ class Map(ipyleaflet.Map):
                     pkg_resources.resource_filename("geemap", "geemap.py")
                 )
                 with open(
-                    os.path.join(pkg_dir, f"data/awesome_gee/{code_id}.json"), encoding="utf-8"
+                    os.path.join(pkg_dir, f"data/community_f.json"), encoding="utf-8"
                 ) as f:
                     functions = json.load(f)
-                details = functions['code']
+                details = functions[code_id]
                 return js_snippet_to_py(
                     details,
                     add_new_cell=False,

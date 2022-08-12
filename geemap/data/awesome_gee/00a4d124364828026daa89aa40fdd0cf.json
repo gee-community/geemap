@@ -1,1 +1,0 @@
-{"code": "Map.addLayer(ee.FeatureCollection(gpw),{},'gpw-v4-admin-center-points-rev11')\n", "environment": "[{\"type\":\"table\",\"name\":\"gpw\",\"record\":{\"id\":\"projects/sat-io/open-datasets/sedac/gpw-v4-admin-unit-center-points-population-estimates-rev11\"}}]", "location": "-49.12351695669224,-1.9842176804440004,10"}
