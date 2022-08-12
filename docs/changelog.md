@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.16.4 - Aug 11, 2022
+
+**New Features**:
+
+-   Added support for searching Awesome GEE Community Datasets [#1197](https://github.com/giswqs/geemap/pull/1197) [#1201](https://github.com/giswqs/geemap/pull/1201) [#1202](https://github.com/giswqs/geemap/pull/1202)
+-   Added support for retrieving GEE JS code examples and converting to Python
+-   Added colorbar background color and image convolution
+-   Added html_to_streamlit function
+
+**Improvement**:
+
+-   Improved the search data GUI
+
 ## v0.16.3 - Aug 9, 2022
 
 **Improvement**:

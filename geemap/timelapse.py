@@ -1322,9 +1322,9 @@ def sentinel1_defaults():
 
 def sentinel1_filtering(
     collection,
-    band='VV',
+    band="VV",
     instrumentMode=None,
-    orbitProperties_pass='ASCENDING',
+    orbitProperties_pass="ASCENDING",
     transmitterReceiverPolarisation=None,
     remove_outliers=True,
     **kwargs,
@@ -1353,7 +1353,7 @@ def sentinel1_filtering(
 
     transmitterReceiverPolarisation = transmitterReceiverPolarisation or band
     instrumentMode = (
-        instrumentMode or {'VV': 'IW', 'VH': 'IW', 'HH': 'EW', 'HV': 'EW'}[band]
+        instrumentMode or {"VV": "IW", "VH": "IW", "HH": "EW", "HV": "EW"}[band]
     )
 
     def remove_outliers(image):
@@ -1388,7 +1388,7 @@ def sentinel1_timeseries(
     end_date="12-31",
     frequency="year",
     clip=False,
-    band='VV',
+    band="VV",
     **kwargs,
 ):
     """
@@ -1450,6 +1450,84 @@ def sentinel1_timeseries(
 
 
 def sentinel2_timeseries(
+    roi,
+    start_year=2015,
+    end_year=None,
+    start_date="01-01",
+    end_date="12-31",
+    bands=None,
+    mask_cloud=True,
+    cloud_pct=30,
+    frequency="year",
+    reducer="median",
+    drop_empty=True,
+    date_format=None,
+):
+    """Generates an annual Sentinel 2 ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
+       Images include both level 1C and level 2A imagery.
+    Args:
+
+        roi (object, optional): Region of interest to create the timelapse. Defaults to None.
+        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
+        end_year (int, optional): Ending year for the timelapse. Defaults to 2022.
+        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
+        mask_cloud (bool, optional): Whether to mask clouds. Defaults to True.
+        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
+        bands (list, optional): The list of bands to use to create the timeseries. It must be a list of strings. Defaults to None.
+        cloud_pct (int, optional): Maximum cloud percentage to include in the timelapse. Defaults to 30.
+        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.
+        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
+        drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
+        date_format (str, optional): Format of the date. Defaults to None.
+
+    Returns:
+        object: Returns an ImageCollection containing annual Sentinel 2 images.
+    """
+    if end_year is None:
+        end_year = datetime.date.today().year
+
+    def maskS2clouds(image):
+        qa = image.select("QA60")
+
+        # Bits 10 and 11 are clouds and cirrus, respectively.
+        cloudBitMask = 1 << 10
+        cirrusBitMask = 1 << 11
+
+        # Both flags should be set to zero, indicating clear conditions.
+        mask = qa.bitwiseAnd(cloudBitMask).eq(0).And(qa.bitwiseAnd(cirrusBitMask).eq(0))
+
+        return (
+            image.updateMask(mask)
+            .divide(10000)
+            .set(image.toDictionary(image.propertyNames()))
+        )
+
+    start = f"{start_year}-{start_date}"
+    end = f"{end_year}-{end_date}"
+    doy_start = ee.Number.parse(ee.Date(start).format("D"))
+    doy_end = ee.Number.parse(ee.Date(end).format("D"))
+    collection = (
+        ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+        .filterDate(start, end)
+        .filter(ee.Filter.calendarRange(doy_start, doy_end, "day_of_year"))
+        .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", cloud_pct))
+        .filterBounds(roi)
+    )
+
+    if bands is not None:
+        collection = collection.select(bands)
+
+    if mask_cloud:
+        collection = collection.map(maskS2clouds)
+    print(collection.size().getInfo())
+
+    ts = create_timeseries(
+        collection, start, end, roi, bands, frequency, reducer, drop_empty, date_format
+    )
+    return ts
+
+
+def sentinel2_timeseries_legacy(
     roi=None,
     start_year=2015,
     end_year=2022,
@@ -3182,7 +3260,7 @@ def sentinel2_timelapse(
     roi=None,
     out_gif=None,
     start_year=2015,
-    end_year=2022,
+    end_year=None,
     start_date="06-10",
     end_date="09-20",
     bands=["NIR", "Red", "Green"],
@@ -3319,7 +3397,7 @@ def sentinel2_timelapse(
             vis_params["min"] = 0
             vis_params["max"] = 4000
             vis_params["gamma"] = [1, 1, 1]
-        col = sentinel2_timeseries(
+        col = sentinel2_timeseries_legacy(
             roi,
             start_year,
             end_year,
@@ -4762,16 +4840,16 @@ def sentinel1_timelapse(
     from datetime import date
 
     assert bands in (
-        ['VV'],
-        ['VH'],
-        ['HH'],
-        ['HV'],
-        ['VV', 'VH'],
-        ['HH', 'HV'],
-        ['VH', 'VV'],
-        ['HV', 'HH'],
-    ), 'Not all Sentinel1 bands are available together.'
-    if bands in (['VH', 'VV'], ['HV', 'HH']):
+        ["VV"],
+        ["VH"],
+        ["HH"],
+        ["HV"],
+        ["VV", "VH"],
+        ["HH", "HV"],
+        ["VH", "VV"],
+        ["HV", "HH"],
+    ), "Not all Sentinel1 bands are available together."
+    if bands in (["VH", "VV"], ["HV", "HH"]):
         bands[0], bands[1] = bands[1], bands[0]
     band = bands[0]
 
