@@ -288,18 +288,29 @@ class Map(ipyleaflet.Map):
                 pass
             return
 
-        # Requires auth, Might be possible using ee.oauth.get_credentials_arguments.
-        # Afraid it's a different api auth
-        # Requires manual fallback to selenium for pdates. 
-        # code_link can be used to retrieve a f.json containing relevant JS.
         def get_community_example(asset_id):
             asset_info = search_ee_data(asset_id, source='community')
             code_link = asset_info["sample_code"]
-            code_link = code_link.replace('https://code.earthengine.google.com/',
-                                          'https://code.earthengine.google.com/scripts/public/load?id=')
-            # requests.get(code_link)
-            return code_link
-
+            code_id = code_link.replace('https://code.earthengine.google.com/','')
+            try:
+                pkg_dir = os.path.dirname(
+                    pkg_resources.resource_filename("geemap", "geemap.py")
+                )
+                with open(
+                    os.path.join(pkg_dir, f"data/awesome_gee/{code_id}.json"), encoding="utf-8"
+                ) as f:
+                    functions = json.load(f)
+                details = functions['code']
+                return js_snippet_to_py(
+                    details,
+                    add_new_cell=False,
+                    import_ee=False,
+                    import_geemap=False,
+                    show_map=False,
+                )
+            except Exception as e:
+                pass
+            return
 
         def import_btn_clicked(b):
             if assets_dropdown.value is not None:
@@ -307,7 +318,8 @@ class Map(ipyleaflet.Map):
                 dataset = datasets[assets_dropdown.index]
                 id_ = dataset["id"]
                 code = get_ee_example(id_)
-
+                if not code:
+                    code = get_community_example(id_)
                 if not code:
                     dataset_uid = "dataset_" + random_string(string_length=3)
                     translate = {
