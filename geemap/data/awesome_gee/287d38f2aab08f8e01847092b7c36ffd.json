@@ -1,0 +1,1 @@
+{"code": "print(global_cement.first())\n\nMap.addLayer(global_cement,{'color':'red'},'Global Cement Database')", "environment": "[{\"type\":\"table\",\"name\":\"global_cement\",\"record\":{\"id\":\"projects/sat-io/open-datasets/SFI/global_cement_database_20210701\"}}]", "location": "NaN,39.09641966023908,7"}

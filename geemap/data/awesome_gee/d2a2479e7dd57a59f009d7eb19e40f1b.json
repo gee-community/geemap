@@ -1,0 +1,1 @@
+{"code": "var gowt = ee.FeatureCollection(\"projects/sat-io/open-datasets/global_offshore_wind_turbine_v1-3\");\r\nMap.setCenter(30.290751107548992,26.158890852053972,3)\r\nMap.addLayer(gowt, {\"palette\":\"FF0000\"}, 'Global Offshore Wind Turbines')\r\n", "environment": "[]", "location": "NaN,26.158890852053972,3"}

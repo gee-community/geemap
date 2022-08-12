@@ -1,0 +1,1 @@
+{"code": "print('Total events 1985-2016',flood_events.size())\nMap.addLayer(flood_events,{},'Flood Events 1985-2016')", "environment": "[{\"type\":\"table\",\"name\":\"flood_events\",\"record\":{\"id\":\"projects/sat-io/open-datasets/events/large_flood_events_1985-2016\"}}]", "location": "18.325267822109517,3.077033930315117,3"}

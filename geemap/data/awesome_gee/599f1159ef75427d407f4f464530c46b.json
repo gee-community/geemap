@@ -1,0 +1,1 @@
+{"code": "print(global_steel.first())\n\nMap.addLayer(global_steel,{'color':'red'},'Global Iron and Steel Database')", "environment": "[{\"type\":\"table\",\"name\":\"global_steel\",\"record\":{\"id\":\"projects/sat-io/open-datasets/SFI/global_steel_database_20210701\"}}]", "location": "NaN,24.406261590619213,5"}

@@ -1,0 +1,1 @@
+{"code": "print(gdis.size())\r\nMap.addLayer(gdis)\r\n\r\n", "environment": "[{\"type\":\"table\",\"name\":\"gdis\",\"record\":{\"id\":\"projects/sat-io/open-datasets/gdis_1960-2018\"}}]", "location": "18.471139201490416,14.246607257993373,3"}

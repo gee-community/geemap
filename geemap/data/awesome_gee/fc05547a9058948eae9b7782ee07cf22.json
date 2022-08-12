@@ -1,0 +1,1 @@
+{"code": "print('Global Landslide Catalog 1970-2019',glc.size())\nMap.addLayer(glc,{},'Landslide Catalog Events 1985-2016')", "environment": "[{\"type\":\"table\",\"name\":\"glc\",\"record\":{\"id\":\"projects/sat-io/open-datasets/events/global_landslide_1970-2019\"}}]", "location": "-1.879968596924546,17.357901090193735,3"}

@@ -1,0 +1,1 @@
+{"code": "var vis={min: 1, max: 5, palette: [\"08306b\",\"08519c\",\"2171b5\",\"4292c6\",\"6baed6\"]};\r\nMap.addLayer(osm_water.median(),vis,'OSM Water Global')", "environment": "[{\"type\":\"imageCollection\",\"name\":\"osm_water\",\"record\":{\"id\":\"projects/sat-io/open-datasets/OSM_waterLayer\"}}]", "location": "-274.0766328552322,30.822811124605924,7"}

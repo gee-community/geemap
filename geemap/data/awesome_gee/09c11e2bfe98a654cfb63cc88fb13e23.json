@@ -1,0 +1,1 @@
+{"code": "// Load packages for basemap\nvar style = require('users/gena/packages:style')\n\nMap.addLayer(gisa.mosaic(),{},'GISA 1972-2019')\n\nstyle.SetMapStyleGrey()", "environment": "[{\"type\":\"imageCollection\",\"name\":\"gisa\",\"record\":{\"id\":\"projects/sat-io/open-datasets/GISA_1972_2019\"}}]", "location": "NaN,28.472507760024378,3"}

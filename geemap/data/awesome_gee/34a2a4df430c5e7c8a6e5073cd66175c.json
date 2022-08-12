@@ -1,0 +1,1 @@
+{"code": "var BP = ee.Image('users/keikonomura/fire/LBA_CU_2019_20200415_C01_V01_BP_L8');\n\nMap.addLayer(BP.updateMask(BP.lte(100)).selfMask(),{min:0,max:100, palette:['white','orange','red','black']},'Burn Probability');\nMap.setCenter(-122.62, 40.72, 10);", "environment": "[]", "location": "237.38,40.72,10"}

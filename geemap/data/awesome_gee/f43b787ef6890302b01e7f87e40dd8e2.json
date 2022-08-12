@@ -1,0 +1,1 @@
+{"code": "print('Total Features',argo.size())\nprint('Distinct Platform Id: ',argo.aggregate_count_distinct('pid'))\n\nMap.addLayer(argo,{},'Argo Float Subset')\n", "environment": "[{\"type\":\"table\",\"name\":\"argo\",\"record\":{\"id\":\"projects/sat-io/open-datasets/argo-subset\"}}]", "location": "NaN,26.021935908542012,3"}

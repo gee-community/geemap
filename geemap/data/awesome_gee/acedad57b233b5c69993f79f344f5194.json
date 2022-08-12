@@ -1,0 +1,1 @@
+{"code": "Map.addLayer(\n  realsat.style({\n    fillColor: '00000000',\n    color: '008D97',\n  }),{},'RealSAT'\n);", "environment": "[{\"type\":\"table\",\"name\":\"realsat\",\"record\":{\"id\":\"projects/sat-io/open-datasets/ReaLSAT/ReaLSAT-1_4\"}}]", "location": "262.1684981761802,25.8497518893079,10"}
