@@ -8,9 +8,12 @@ labels: bug
 
 ### Environment Information
 
--   geemap version:
--   Python version:
--   Operating System:
+Please run the following code on your computer and share the output with us so that we can better debug your issue:
+
+```python
+import geemap
+geemap.Report()
+```
 
 ### Description
 
