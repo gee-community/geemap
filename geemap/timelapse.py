@@ -1324,7 +1324,7 @@ def sentinel1_filtering(
     collection,
     band="VV",
     instrumentMode=None,
-    orbitProperties_pass="ASCENDING",
+    orbitProperties_pass=None,
     transmitterReceiverPolarisation=None,
     remove_outliers=True,
     **kwargs,
