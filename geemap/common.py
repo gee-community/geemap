@@ -2445,7 +2445,9 @@ def ee_export_image_to_asset(
             such as 'crs_transform'.
     """
 
-    if not isinstance(image, ee.Image):
+    if isinstance(image, ee.Image) or isinstance(image, ee.image.Image):
+        pass
+    else:
         raise ValueError("Input image must be an instance of ee.Image")
 
     if isinstance(assetId, str):
