@@ -12017,12 +12017,15 @@ def classify(
     return df, legend_dict
 
 
-def image_count(collection, region=None, start_date=None, end_date=None, clip=False):
+def image_count(
+    collection, region=None, band=None, start_date=None, end_date=None, clip=False
+):
     """Create an image with the number of available images for a specific region.
     Args:
         collection (ee.ImageCollection): The collection to be queried.
         region (ee.Geometry | ee.FeatureCollection, optional): The region to be queried.
         start_date (str | ee.Date, optional): The start date of the query.
+        band (str, optional): The band to be queried.
         end_date (str | ee.Date, optional): The end date of the query.
         clip (bool, optional): Whether to clip the image to the region.
 
@@ -12045,8 +12048,9 @@ def image_count(collection, region=None, start_date=None, end_date=None, clip=Fa
     else:
         raise ValueError("start_date and end_date must be provided.")
 
-    first_image = collection.first()
-    first_band = first_image.bandNames().get(0)
+    if band is None:
+        first_image = collection.first()
+        band = first_image.bandNames().get(0)
 
     if region is not None:
         collection = collection.filterBounds(region)
@@ -12054,7 +12058,11 @@ def image_count(collection, region=None, start_date=None, end_date=None, clip=Fa
     if start_date is not None and end_date is not None:
         collection = collection.filterDate(start_date, end_date)
 
-    image = collection.select([first_band]).reduce(ee.Reducer.count())
+    image = (
+        collection.filter(ee.Filter.listContains("system:band_names", band))
+        .select([band])
+        .reduce(ee.Reducer.count())
+    )
 
     if clip:
         image = image.clip(region)
