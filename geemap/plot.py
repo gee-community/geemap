@@ -953,22 +953,22 @@ def pie_chart(
 
     try:
         fig = px.pie(
-            data,
-            names,
-            values,
-            color,
-            color_discrete_sequence,
-            color_discrete_map,
-            hover_name,
-            hover_data,
-            custom_data,
-            labels,
-            title,
-            template,
-            width,
-            height,
-            opacity,
-            hole,
+            data_frame=data,
+            names=names,
+            values=values,
+            color=color,
+            color_discrete_sequence=color_discrete_sequence,
+            color_discrete_map=color_discrete_map,
+            hover_name=hover_name,
+            hover_data=hover_data,
+            custom_data=custom_data,
+            labels=labels,
+            title=title,
+            template=template,
+            width=width,
+            height=height,
+            opacity=opacity,
+            hole=hole,
             **kwargs,
         )
 
@@ -977,4 +977,4 @@ def pie_chart(
 
         return fig
     except Exception as e:
-        raise ValueError(f"Could not create bar plot. {e}")
+        raise Exception(f"Could not create pie chart. {e}")
