@@ -1067,13 +1067,15 @@ class Map(folium.Map):
         )
         geojson.add_to(self)
 
-    def add_kml(self, in_kml, layer_name="Untitled", info_mode="on_hover", fields=None, **kwargs):
+    def add_kml(
+        self, in_kml, layer_name="Untitled", info_mode="on_hover", fields=None, **kwargs
+    ):
         """Adds a KML file to the map.
 
         Args:
             in_kml (str): The input file path to the KML.
             layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click. 
+            info_mode (str, optional): Displays the attributes by either on_hover or on_click.
                 Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
             fields (list, optional): The fields to be displayed in the popup. Defaults to None.
 
@@ -1096,7 +1098,9 @@ class Map(folium.Map):
 
         data = kml_to_geojson(in_kml)
 
-        self.add_geojson(data, layer_name=layer_name, info_mode=info_mode, fields=fields, **kwargs)
+        self.add_geojson(
+            data, layer_name=layer_name, info_mode=info_mode, fields=fields, **kwargs
+        )
 
     def add_gdf(
         self,
