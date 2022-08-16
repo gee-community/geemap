@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.16.5 - Aug 16, 2022
+
+**Improvement**:
+
+-   Add band param for image_count [#1209](https://github.com/giswqs/geemap/issues/1209)
+-   Improved exporting image to asset [#1208](https://github.com/giswqs/geemap/issues/1208)
+-   Fixed Sentinel-1 timelapse bug [#1210](https://github.com/giswqs/geemap/issues/1210)
+-   Fixed pie chart Windows bug
+-   Added popup fields for add_geojson
+-   Updated zonal stats function
+
 ## v0.16.4 - Aug 11, 2022
 
 **New Features**:
