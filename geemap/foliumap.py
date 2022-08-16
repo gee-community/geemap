@@ -967,6 +967,7 @@ class Map(folium.Map):
         layer_name="Untitled",
         encoding="utf-8",
         info_mode="on_hover",
+        fields=None,
         **kwargs,
     ):
         """Adds a GeoJSON file to the map.
@@ -976,6 +977,7 @@ class Map(folium.Map):
             layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
             encoding (str, optional): The encoding of the GeoJSON file. Defaults to "utf-8".
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
+            fields (list, optional): The fields to be displayed in the popup. Defaults to None.
 
         Raises:
             FileNotFoundError: The provided GeoJSON file could not be found.
@@ -1053,24 +1055,27 @@ class Map(folium.Map):
         tooltip = None
         popup = None
         if info_mode is not None:
-            props = list(data["features"][0]["properties"].keys())
+            if fields is None:
+                fields = list(data["features"][0]["properties"].keys())
             if info_mode == "on_hover":
-                tooltip = folium.GeoJsonTooltip(fields=props)
+                tooltip = folium.GeoJsonTooltip(fields=fields)
             elif info_mode == "on_click":
-                popup = folium.GeoJsonPopup(fields=props)
+                popup = folium.GeoJsonPopup(fields=fields)
 
         geojson = folium.GeoJson(
             data=data, name=layer_name, tooltip=tooltip, popup=popup, **kwargs
         )
         geojson.add_to(self)
 
-    def add_kml(self, in_kml, layer_name="Untitled", info_mode="on_hover", **kwargs):
+    def add_kml(self, in_kml, layer_name="Untitled", info_mode="on_hover", fields=None, **kwargs):
         """Adds a KML file to the map.
 
         Args:
             in_kml (str): The input file path to the KML.
             layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
+            info_mode (str, optional): Displays the attributes by either on_hover or on_click. 
+                Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
+            fields (list, optional): The fields to be displayed in the popup. Defaults to None.
 
         Raises:
             FileNotFoundError: The provided KML file could not be found.
@@ -1091,7 +1096,7 @@ class Map(folium.Map):
 
         data = kml_to_geojson(in_kml)
 
-        self.add_geojson(data, layer_name=layer_name, info_mode=info_mode, **kwargs)
+        self.add_geojson(data, layer_name=layer_name, info_mode=info_mode, fields=fields, **kwargs)
 
     def add_gdf(
         self,
@@ -1099,6 +1104,7 @@ class Map(folium.Map):
         layer_name="Untitled",
         zoom_to_layer=True,
         info_mode="on_hover",
+        fields=None,
         **kwargs,
     ):
         """Adds a GeoPandas GeoDataFrame to the map.
@@ -1107,13 +1113,17 @@ class Map(folium.Map):
             gdf (GeoDataFrame): A GeoPandas GeoDataFrame.
             layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
             zoom_to_layer (bool, optional): Whether to zoom to the layer.
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
+            info_mode (str, optional): Displays the attributes by either on_hover or on_click.
+                Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
+            fields (list, optional): The fields to be displayed in the popup. Defaults to None.
 
         """
 
         data = gdf_to_geojson(gdf, epsg="4326")
 
-        self.add_geojson(data, layer_name=layer_name, info_mode=info_mode, **kwargs)
+        self.add_geojson(
+            data, layer_name=layer_name, info_mode=info_mode, fields=fields, **kwargs
+        )
 
         if zoom_to_layer:
             import numpy as np
