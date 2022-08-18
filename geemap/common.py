@@ -13218,3 +13218,56 @@ def download_ned(region, out_dir=None, return_url=False, download_args={}, **kwa
         for index, link in enumerate(links):
             print(f"Downloading {index + 1} of {len(links)}: {os.path.basename(link)}")
             download_file(link, filepaths[index], **download_args)
+
+
+def mosaic(images, output, merge_args={}, verbose=True, **kwargs):
+    """Mosaics a list of images into a single image.
+
+    Args:
+        images (str | list): An input directory containing images or a list of images.
+        output (str): The output image filepath.
+        merge_args (dict, optional): A dictionary of arguments to pass to the rasterio.merge function. Defaults to {}.
+        verbose (bool, optional): Whether to print progress. Defaults to True.
+
+    """
+    from rasterio.merge import merge
+    import rasterio as rio
+    from pathlib import Path
+
+    output = os.path.abspath(output)
+
+    if isinstance(images, str):
+        path = Path(images)
+        raster_files = list(path.iterdir())
+    elif isinstance(images, list):
+        raster_files = images
+    else:
+        raise ValueError("images must be a list of raster files.")
+
+    raster_to_mosiac = []
+
+    if not os.path.exists(os.path.dirname(output)):
+        os.makedirs(os.path.dirname(output))
+
+    for index, p in enumerate(raster_files):
+        if verbose:
+            print(f"Reading {index+1}/{len(raster_files)}: {os.path.basename(p)}")
+        raster = rio.open(p, **kwargs)
+        raster_to_mosiac.append(raster)
+
+    if verbose:
+        print("Merging rasters...")
+    arr, transform = merge(raster_to_mosiac, **merge_args)
+
+    output_meta = raster.meta.copy()
+    output_meta.update(
+        {
+            "driver": "GTiff",
+            "height": arr.shape[1],
+            "width": arr.shape[2],
+            "transform": transform,
+        }
+    )
+
+    with rio.open(output, "w", **output_meta) as m:
+        m.write(arr)
