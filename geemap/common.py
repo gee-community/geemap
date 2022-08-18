@@ -13151,3 +13151,70 @@ def image_convolution(
         result = result.resample(resample)
 
     return result.setDefaultProjection(projection)
+
+
+def download_ned(region, out_dir=None, return_url=False, download_args={}, **kwargs):
+    """Download the US National Elevation Datasets (NED) for a region.
+
+    Args:
+        region (str | list): A filepath to a vector dataset or a list of bounds in the form of [minx, miny, maxx, maxy].
+        out_dir (str, optional): The directory to download the files to. Defaults to None, which uses the current working directory.
+        return_url (bool, optional): Whether to return the download URLs of the files. Defaults to False.
+        download_args (dict, optional): A dictionary of arguments to pass to the download_file function. Defaults to {}.
+
+    Returns:
+        list: A list of the download URLs of the files if return_url is True.
+    """
+    import geopandas as gpd
+
+    if out_dir is None:
+        out_dir = os.getcwd()
+    else:
+        out_dir = os.path.abspath(out_dir)
+
+    if isinstance(region, str):
+        if region.startswith("http"):
+            region = github_raw_url(region)
+            region = download_file(region)
+        elif not os.path.exists(region):
+            raise ValueError("region must be a path or a URL to a vector dataset.")
+
+        roi = gpd.read_file(region, **kwargs)
+        roi = roi.to_crs(epsg=4326)
+        bounds = roi.total_bounds
+
+    elif isinstance(region, list):
+        bounds = region
+
+    else:
+        raise ValueError(
+            "region must be a filepath or a list of bounds in the form of [minx, miny, maxx, maxy]."
+        )
+    minx, miny, maxx, maxy = [float(x) for x in bounds]
+    tiles = []
+    left = abs(math.floor(minx))
+    right = abs(math.floor(maxx)) - 1
+    upper = math.ceil(maxy)
+    bottom = math.ceil(miny) - 1
+
+    for y in range(upper, bottom, -1):
+        for x in range(left, right, -1):
+            tile_id = "n{}w{}".format(str(y).zfill(2), str(x).zfill(3))
+            tiles.append(tile_id)
+
+    links = []
+    filepaths = []
+
+    for index, tile in enumerate(tiles):
+        tif_url = f"https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/13/TIFF/current/{tile}/USGS_13_{tile}.tif"
+
+        tif = os.path.join(out_dir, os.path.basename(tif_url))
+        links.append(tif_url)
+        filepaths.append(tif)
+
+    if return_url:
+        return links
+    else:
+        for index, link in enumerate(links):
+            print(f"Downloading {index + 1} of {len(links)}: {os.path.basename(link)}")
+            download_file(link, filepaths[index], **download_args)
