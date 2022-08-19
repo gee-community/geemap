@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.16.6 - Aug 19, 2022
+
+**New Features**:
+
+-   Added auth support for ee service account [#1220](https://github.com/giswqs/geemap/pull/1220)
+-   Added a mosaic function [#1219](https://github.com/giswqs/geemap/pull/1219)
+-   Added download_ned function [#1218](https://github.com/giswqs/geemap/pull/1218)
+
 ## v0.16.5 - Aug 16, 2022
 
 **Improvement**:
