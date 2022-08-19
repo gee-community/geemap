@@ -13253,7 +13253,7 @@ def download_ned(region, out_dir=None, return_url=False, download_args={}, **kwa
 
 
 def mosaic(images, output, merge_args={}, verbose=True, **kwargs):
-    """Mosaics a list of images into a single image.
+    """Mosaics a list of images into a single image. Inspried by https://bit.ly/3A6roDK.
 
     Args:
         images (str | list): An input directory containing images or a list of images.
