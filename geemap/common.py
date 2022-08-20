@@ -164,32 +164,21 @@ def ee_initialize(
                 credential_file_path = os.path.expanduser(
                     "~/.config/earthengine/private-key.json"
                 )
-                if not os.path.exists(credential_file_path):
 
-                    if ee_token.strip().startswith("{") and ee_token.strip().endswith(
-                        "}"
-                    ):
-                        token_dict = json.loads(ee_token, strict=False)
-                        if (
-                            "type" in token_dict
-                            and token_dict["type"] == "service_account"
-                        ):
-                            os.makedirs(
-                                os.path.dirname(credential_file_path), exist_ok=True
-                            )
-                            with open(credential_file_path, "w") as f:
-                                f.write(json.dumps(token_dict))
-                    else:
-                        raise Exception("Invalid service account token.")
-                
+                if os.path.exists(credential_file_path):
+                    with open(credential_file_path) as f:
+                        token_dict = json.load(f)
+                else:
+                    token_name = "EARTHENGINE_TOKEN"
+                    ee_token = os.environ.get(token_name)
+                    token_dict = json.loads(ee_token, strict=False)
+                service_account = token_dict["client_email"]
+                private_key = token_dict["private_key"]
 
-                with open(credential_file_path, "r") as f:
-                    token_dict = json.load(f)
-                    service_account = token_dict["client_email"]
-                    credentials = ee.ServiceAccountCredentials(
-                        service_account, credential_file_path
-                    )
-                    ee.Initialize(credentials)
+                credentials = ee.ServiceAccountCredentials(
+                    service_account, key_data=private_key
+                )
+                ee.Initialize(credentials)
 
             except Exception as e:
                 raise Exception(e)

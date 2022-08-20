@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.16.7 - Aug 19, 2022
+
+**Improvement**:
+
+-   Fixed ee service account authentication bug
+
 ## v0.16.6 - Aug 19, 2022
 
 **New Features**:
