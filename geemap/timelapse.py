@@ -3831,6 +3831,7 @@ def goes_timelapse(
     end_date="2021-10-25T01:00:00",
     data="GOES-17",
     scan="full_disk",
+    bands=["CMI_C02", "CMI_GREEN", "CMI_C01"],
     dimensions=768,
     framesPerSecond=10,
     date_format="YYYY-MM-dd HH:mm",
@@ -3856,12 +3857,13 @@ def goes_timelapse(
     Credits to Justin Braaten. See also https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
 
     Args:
+        roi (ee.Geometry, optional): The region of interest. Defaults to None.
         out_gif (str): The file path to save the gif.
         start_date (str, optional): The start date of the time series. Defaults to "2021-10-24T14:00:00".
         end_date (str, optional): The end date of the time series. Defaults to "2021-10-25T01:00:00".
         data (str, optional): The GOES satellite data to use. Defaults to "GOES-17".
         scan (str, optional): The GOES scan to use. Defaults to "full_disk".
-        roi (ee.Geometry, optional): The region of interest. Defaults to None.
+        bands (list, optional): The bands to visualize. Defaults to ["CMI_C02", "CMI_GREEN", "CMI_C01"].
         dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         date_format (str, optional): The date format to use. Defaults to "YYYY-MM-dd HH:mm".
@@ -3892,7 +3894,6 @@ def goes_timelapse(
         if out_gif is None:
             out_gif = os.path.abspath(f"goes_{random_string(3)}.gif")
 
-        bands = ["CMI_C02", "CMI_GREEN", "CMI_C01"]
         visParams = {
             "bands": bands,
             "min": 0,
