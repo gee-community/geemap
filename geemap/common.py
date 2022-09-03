@@ -12301,11 +12301,16 @@ def download_ee_image(
     filename,
     region=None,
     crs=None,
+    crs_transform=None,
     scale=None,
-    resampling=None,
+    resampling="near",
     dtype=None,
     overwrite=True,
     num_threads=None,
+    max_tile_size=None,
+    max_tile_dim=None,
+    shape=None,
+    scale_offset=False,
     **kwargs,
 ):
     """Download an Earth Engine Image as a GeoTIFF. Images larger than the `Earth Engine size limit are split and downloaded as
@@ -12317,6 +12322,10 @@ def download_ee_image(
         region (ee.Geometry, optional): Region defined by geojson polygon in WGS84. Defaults to the entire image granule.
         crs (str, optional): Reproject image(s) to this EPSG or WKT CRS.  Where image bands have different CRSs, all are
             re-projected to this CRS. Defaults to the CRS of the minimum scale band.
+        crs_transform (list, optional): tuple of float, list of float, rio.Affine, optional
+            List of 6 numbers specifying an affine transform in the specified CRS.  In row-major order:
+            [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation].  All bands are re-projected to
+            this transform.
         scale (float, optional): Resample image(s) to this pixel scale (size) (m).  Where image bands have different scales,
             all are resampled to this scale.  Defaults to the minimum scale of image bands.
         resampling (ResamplingMethod, optional): Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
@@ -12324,7 +12333,14 @@ def download_ee_image(
             or `float64`).  Defaults to auto select a minimum size type that can represent the range of pixel values.
         overwrite (bool, optional): Overwrite the destination file if it exists. Defaults to True.
         num_threads (int, optional): Number of tiles to download concurrently. Defaults to a sensible auto value.
-
+        max_tile_size: int, optional
+            Maximum tile size (MB).  If None, defaults to the Earth Engine download size limit (32 MB).
+        max_tile_dim: int, optional
+            Maximum tile width/height (pixels).  If None, defaults to Earth Engine download limit (10000).
+        shape: tuple of int, optional
+            (height, width) dimensions to export (pixels).
+        scale_offset: bool, optional
+            Whether to apply any EE band scales and offsets to the image.
     """
 
     try:
@@ -12343,6 +12359,9 @@ def download_ee_image(
     if crs is not None:
         kwargs["crs"] = crs
 
+    if crs_transform is not None:
+        kwargs["crs_transform"] = crs_transform
+
     if scale is not None:
         kwargs["scale"] = scale
 
@@ -12351,6 +12370,18 @@ def download_ee_image(
 
     if dtype is not None:
         kwargs["dtype"] = dtype
+
+    if max_tile_size is not None:
+        kwargs["max_tile_size"] = max_tile_size
+
+    if max_tile_dim is not None:
+        kwargs["max_tile_dim"] = max_tile_dim
+
+    if shape is not None:
+        kwargs["shape"] = shape
+
+    if scale_offset:
+        kwargs["scale_offset"] = scale_offset
 
     img = gd.download.BaseImage(image)
     img.download(filename, overwrite=overwrite, num_threads=num_threads, **kwargs)
@@ -12362,11 +12393,16 @@ def download_ee_image_tiles(
     out_dir=None,
     prefix=None,
     crs=None,
+    crs_transform=None,
     scale=None,
-    resampling=None,
+    resampling="near",
     dtype=None,
     overwrite=True,
     num_threads=None,
+    max_tile_size=None,
+    max_tile_dim=None,
+    shape=None,
+    scale_offset=False,
     **kwargs,
 ):
 
@@ -12380,6 +12416,10 @@ def download_ee_image_tiles(
         prefix (str, optional): The prefix for the output file. Defaults to None.
         crs (str, optional): Reproject image(s) to this EPSG or WKT CRS.  Where image bands have different CRSs, all are
             re-projected to this CRS. Defaults to the CRS of the minimum scale band.
+        crs_transform (list, optional): tuple of float, list of float, rio.Affine, optional
+            List of 6 numbers specifying an affine transform in the specified CRS.  In row-major order:
+            [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation].  All bands are re-projected to
+            this transform.
         scale (float, optional): Resample image(s) to this pixel scale (size) (m).  Where image bands have different scales,
             all are resampled to this scale.  Defaults to the minimum scale of image bands.
         resampling (ResamplingMethod, optional): Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
@@ -12387,7 +12427,14 @@ def download_ee_image_tiles(
             or `float64`).  Defaults to auto select a minimum size type that can represent the range of pixel values.
         overwrite (bool, optional): Overwrite the destination file if it exists. Defaults to True.
         num_threads (int, optional): Number of tiles to download concurrently. Defaults to a sensible auto value.
-
+        max_tile_size: int, optional
+            Maximum tile size (MB).  If None, defaults to the Earth Engine download size limit (32 MB).
+        max_tile_dim: int, optional
+            Maximum tile width/height (pixels).  If None, defaults to Earth Engine download limit (10000).
+        shape: tuple of int, optional
+            (height, width) dimensions to export (pixels).
+        scale_offset: bool, optional
+            Whether to apply any EE band scales and offsets to the image.
     """
 
     if not isinstance(features, ee.FeatureCollection):
@@ -12416,11 +12463,16 @@ def download_ee_image_tiles(
             filename,
             region,
             crs,
+            crs_transform,
             scale,
             resampling,
             dtype,
             overwrite,
             num_threads,
+            max_tile_size,
+            max_tile_dim,
+            shape,
+            scale_offset,
             **kwargs,
         )
 
@@ -12431,11 +12483,16 @@ def download_ee_image_collection(
     filenames=None,
     region=None,
     crs=None,
+    crs_transform=None,
     scale=None,
-    resampling=None,
+    resampling="near",
     dtype=None,
     overwrite=True,
     num_threads=None,
+    max_tile_size=None,
+    max_tile_dim=None,
+    shape=None,
+    scale_offset=False,
     **kwargs,
 ):
     """Download an Earth Engine ImageCollection as GeoTIFFs. Images larger than the `Earth Engine size limit are split and downloaded as
@@ -12448,6 +12505,10 @@ def download_ee_image_collection(
         region (ee.Geometry, optional): Region defined by geojson polygon in WGS84. Defaults to the entire image granule.
         crs (str, optional): Reproject image(s) to this EPSG or WKT CRS.  Where image bands have different CRSs, all are
             re-projected to this CRS. Defaults to the CRS of the minimum scale band.
+        crs_transform (list, optional): tuple of float, list of float, rio.Affine, optional
+            List of 6 numbers specifying an affine transform in the specified CRS.  In row-major order:
+            [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation].  All bands are re-projected to
+            this transform.
         scale (float, optional): Resample image(s) to this pixel scale (size) (m).  Where image bands have different scales,
             all are resampled to this scale.  Defaults to the minimum scale of image bands.
         resampling (ResamplingMethod, optional): Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
@@ -12455,7 +12516,14 @@ def download_ee_image_collection(
             or `float64`).  Defaults to auto select a minimum size type that can represent the range of pixel values.
         overwrite (bool, optional): Overwrite the destination file if it exists. Defaults to True.
         num_threads (int, optional): Number of tiles to download concurrently. Defaults to a sensible auto value.
-
+        max_tile_size: int, optional
+            Maximum tile size (MB).  If None, defaults to the Earth Engine download size limit (32 MB).
+        max_tile_dim: int, optional
+            Maximum tile width/height (pixels).  If None, defaults to Earth Engine download limit (10000).
+        shape: tuple of int, optional
+            (height, width) dimensions to export (pixels).
+        scale_offset: bool, optional
+            Whether to apply any EE band scales and offsets to the image.
     """
 
     if not isinstance(collection, ee.ImageCollection):
@@ -12493,11 +12561,16 @@ def download_ee_image_collection(
                 filename,
                 region,
                 crs,
+                crs_transform,
                 scale,
                 resampling,
                 dtype,
                 overwrite,
                 num_threads,
+                max_tile_size,
+                max_tile_dim,
+                shape,
+                scale_offset,
                 **kwargs,
             )
 
