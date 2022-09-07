@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.16.8 - Sep 6, 2022
+
+**Improvement**:
+
+-   Added bands param goes_timelapse [#1242](https://github.com/giswqs/geemap/issues/1242)
+-   Improved download image function [#1238](https://github.com/giswqs/geemap/discussions/1238)
+-   Improved download NED function
+
 ## v0.16.7 - Aug 19, 2022
 
 **Improvement**:
