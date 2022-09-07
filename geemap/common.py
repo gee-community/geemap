@@ -13313,9 +13313,14 @@ def download_ned(region, out_dir=None, return_url=False, download_args={}, **kwa
     for index, tile in enumerate(tiles):
         tif_url = f"https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/13/TIFF/current/{tile}/USGS_13_{tile}.tif"
 
-        tif = os.path.join(out_dir, os.path.basename(tif_url))
-        links.append(tif_url)
-        filepaths.append(tif)
+        r = requests.head(tif_url)
+        if r.status_code == 200:
+            links.append(tif_url)
+            tif = os.path.join(out_dir, os.path.basename(tif_url))
+            links.append(tif_url)
+            filepaths.append(tif)
+        else:
+            print(f"{tif_url} does not exist.")
 
     if return_url:
         return links
