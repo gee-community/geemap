@@ -1775,6 +1775,18 @@ class Map(ipyleaflet.Map):
 
         return None
 
+    def show_layer(self, name, show=True):
+        """Shows or hides a layer on the map.
+
+        Args:
+            name (str): Name of the layer to show/hide.
+            show (bool, optional): Whether to show or hide the layer. Defaults to True.
+        """
+        layer = self.find_layer(name)
+
+        if layer is not None:
+            layer.visible = show
+
     def find_layer_index(self, name):
         """Finds layer index by name
 
@@ -1792,16 +1804,16 @@ class Map(ipyleaflet.Map):
 
         return -1
 
-    def layer_opacity(self, name, value=1.0):
+    def layer_opacity(self, name, opacity=1.0):
         """Changes layer opacity.
 
         Args:
             name (str): The name of the layer to change opacity.
-            value (float, optional): The opacity value to set. Defaults to 1.0.
+            opacity (float, optional): The opacity value to set. Defaults to 1.0.
         """
         layer = self.find_layer(name)
         try:
-            layer.opacity = value
+            layer.opacity = opacity
         except Exception as e:
             raise Exception(e)
 
