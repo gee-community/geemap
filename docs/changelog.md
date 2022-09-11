@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.17.0 - Sep 11, 2022
+
+**New Features**:
+
+-   Added reproject image function [#1245](https://github.com/giswqs/geemap/pull/1245)
+-   Added Map.show_layer() function
+-   Added plotly charts to import
+-   Added cropland mapping notebook [#1251](https://github.com/giswqs/geemap/pull/1251)
+
+**Improvement**:
+
+-   Improved chart and legend and colormap [#1250](https://github.com/giswqs/geemap/pull/1250)
+
 ## v0.16.9 - Sep 6, 2022
 
 **Improvement**:
