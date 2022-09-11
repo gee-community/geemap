@@ -17,6 +17,7 @@ from .conversion import *
 from .legends import builtin_legends
 from .osm import *
 from .timelapse import *
+from .plot import *
 from . import examples
 
 
