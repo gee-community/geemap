@@ -83,6 +83,7 @@ nav:
           - workshops/GeoPython_2021.ipynb
           - workshops/GEE_Workshop_2021.ipynb
           - workshops/SRM_Workshop_2022.ipynb
+          - workshops/Crop_Mapping_2022.ipynb
     - Notebooks:
           - notebooks/00_geemap_key_features.ipynb
           - notebooks/01_geemap_intro.ipynb
