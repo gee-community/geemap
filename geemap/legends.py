@@ -56,6 +56,18 @@ builtin_legends = {
         "9 Snow/Ice": "F2FAFF",
         "10 Clouds": "C8C8C8",
     },
+    # https://samapriya.github.io/awesome-gee-community-datasets/projects/S2TSLULC/
+    "ESRI_LandCover_TS": {
+        "1 Water": "1A5BAB",
+        "2 Trees": "358221",
+        "4 Flooded Vegetation": "87D19E",
+        "5 Crops": "FFDB5C",
+        "7 Built Area": "ED022A",
+        "8 Bare Ground": "EDE9E4",
+        "9 Snow/Ice": "F2FAFF",
+        "10 Clouds": "C8C8C8",
+        "11 Rangeland": "C6AD8D",
+    },
     "Dynamic_World": {
         "0 Water": "419BDF",
         "1 Trees": "397D49",
