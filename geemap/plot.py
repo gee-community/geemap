@@ -10,10 +10,12 @@ def bar_chart(
     y=None,
     color=None,
     descending=True,
+    sort_column=None,
     max_rows=None,
     x_label=None,
     y_label=None,
     title=None,
+    legend_title=None,
     width=None,
     height=500,
     layout_args=None,
@@ -46,10 +48,12 @@ def bar_chart(
             array_like object. Values from this column or array_like are used to
             assign color to marks.
         descending (bool, optional): Whether to sort the data in descending order. Defaults to True.
+        sort_column (str, optional): The column to sort the data. Defaults to None.
         max_rows (int, optional): Maximum number of rows to display. Defaults to None.
         x_label (str, optional): Label for the x axis. Defaults to None.
         y_label (str, optional): Label for the y axis. Defaults to None.
         title (str, optional): Title for the plot. Defaults to None.
+        legend_title (str, optional): Title for the legend. Defaults to None.
         width (int, optional): Width of the plot in pixels. Defaults to None.
         height (int, optional): Height of the plot in pixels. Defaults to 500.
         layout_args (dict, optional): Layout arguments for the plot to be passed to fig.update_layout(),
@@ -241,13 +245,21 @@ def bar_chart(
         )
 
     if descending is not None:
-        data.sort_values([y, x], ascending=not (descending), inplace=True)
+        if sort_column is None:
+            if isinstance(y, str):
+                sort_column = y
+            elif isinstance(y, list):
+                sort_column = y[0]
+        data.sort_values([sort_column, x], ascending=not (descending), inplace=True)
+        if "barmode" not in kwargs:
+            kwargs["barmode"] = "group"
 
     if isinstance(max_rows, int):
         data = data.head(max_rows)
 
     if "labels" in kwargs:
         labels = kwargs["labels"]
+        kwargs.pop("labels")
     else:
         labels = {}
 
@@ -255,6 +267,9 @@ def bar_chart(
         labels[x] = x_label
     if y_label is not None:
         labels[y] = y_label
+
+    if isinstance(legend_title, str):
+        labels["variable"] = legend_title
 
     try:
         fig = px.bar(
