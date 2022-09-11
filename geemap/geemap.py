@@ -22,12 +22,10 @@ from .conversion import *
 from .legends import builtin_legends
 from .timelapse import *
 from .osm import *
+from .plot import *
 
 from . import examples
 
-
-if not in_colab_shell():
-    from .plot import *
 
 basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
