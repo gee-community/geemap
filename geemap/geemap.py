@@ -2418,12 +2418,15 @@ class Map(ipyleaflet.Map):
 
     addLayerControl = add_layer_control
 
-    def split_map(self, left_layer="HYBRID", right_layer="ROADMAP"):
+    def split_map(
+        self, left_layer="HYBRID", right_layer="ROADMAP", add_close_button=False
+    ):
         """Adds split map.
 
         Args:
             left_layer (str, optional): The layer tile layer. Defaults to 'HYBRID'.
             right_layer (str, optional): The right tile layer. Defaults to 'ROADMAP'.
+            add_close_button (bool, optional): Whether to add a close button. Defaults to False.
         """
         try:
             controls = self.controls
@@ -2503,7 +2506,8 @@ class Map(ipyleaflet.Map):
             )
 
             self.add_control(control)
-            self.add_control(close_control)
+            if add_close_button:
+                self.add_control(close_control)
 
         except Exception as e:
             print("The provided layers are invalid!")

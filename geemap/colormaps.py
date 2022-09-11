@@ -76,7 +76,7 @@ def get_palette(cmap_name=None, n_class=None, hashtag=False):
         list: A list of hex colors.
     """
 
-    if cmap_name in ["dem", "ndvi", "ndwi"]:
+    if cmap_name in _palette_dict.keys():
         colors = _palette_dict[cmap_name]
     else:
         cmap = plt.cm.get_cmap(cmap_name, n_class)
