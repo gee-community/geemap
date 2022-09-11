@@ -2516,11 +2516,14 @@ class Map(ipyleaflet.Map):
         left_ts,
         left_names=None,
         left_vis={},
+        left_index=0,
         right_ts=None,
         right_names=None,
         right_vis=None,
+        right_index=-1,
         width="130px",
         date_format="YYYY-MM-dd",
+        add_close_button=False,
         **kwargs,
     ):
         """Creates a split-panel map for inspecting timeseries images.
@@ -2529,10 +2532,14 @@ class Map(ipyleaflet.Map):
             left_ts (object): An ee.ImageCollection to show on the left panel.
             left_names (list): A list of names to show under the left dropdown.
             left_vis (dict, optional): Visualization parameters for the left layer. Defaults to {}.
+            left_index (int, optional): The index of the left layer to show. Defaults to 0.
             right_ts (object): An ee.ImageCollection to show on the right panel.
             right_names (list): A list of names to show under the right dropdown.
             right_vis (dict, optional): Visualization parameters for the right layer. Defaults to {}.
+            right_index (int, optional): The index of the right layer to show. Defaults to -1.
             width (str, optional): The width of the dropdown list. Defaults to '130px'.
+            date_format (str, optional): The date format to show in the dropdown. Defaults to 'YYYY-MM-dd'.
+            add_close_button (bool, optional): Whether to show the close button. Defaults to False.
         """
         controls = self.controls
         layers = self.layers
@@ -2658,6 +2665,11 @@ class Map(ipyleaflet.Map):
 
         right_dropdown.observe(right_dropdown_change, names="value")
 
+        if left_index is not None:
+            left_dropdown.value = left_names[left_index]
+        if right_index is not None:
+            right_dropdown.value = right_names[right_index]
+
         close_button = widgets.ToggleButton(
             value=False,
             tooltip="Close the tool",
@@ -2686,7 +2698,8 @@ class Map(ipyleaflet.Map):
             )
             self.add_control(split_control)
 
-            self.add_control(close_control)
+            if add_close_button:
+                self.add_control(close_control)
 
         except Exception as e:
             raise Exception(e)
