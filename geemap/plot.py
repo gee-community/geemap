@@ -18,7 +18,7 @@ def bar_chart(
     legend_title=None,
     width=None,
     height=500,
-    layout_args=None,
+    layout_args={},
     **kwargs,
 ):
     """Create a bar chart with plotly.express,
@@ -269,7 +269,9 @@ def bar_chart(
         labels[y] = y_label
 
     if isinstance(legend_title, str):
-        labels["variable"] = legend_title
+        if "legend" not in layout_args:
+            layout_args["legend"] = {}
+        layout_args["legend"]["title"] = legend_title
 
     try:
         fig = px.bar(
@@ -302,9 +304,10 @@ def line_chart(
     x_label=None,
     y_label=None,
     title=None,
+    legend_title=None,
     width=None,
     height=500,
-    layout_args=None,
+    layout_args={},
     **kwargs,
 ):
     """Create a line chart with plotly.express,
@@ -338,6 +341,7 @@ def line_chart(
         x_label (str, optional): Label for the x axis. Defaults to None.
         y_label (str, optional): Label for the y axis. Defaults to None.
         title (str, optional): Title for the plot. Defaults to None.
+        legend_title (str, optional): Title for the legend. Defaults to None.
         width (int, optional): Width of the plot in pixels. Defaults to None.
         height (int, optional): Height of the plot in pixels. Defaults to 500.
         layout_args (dict, optional): Layout arguments for the plot to be passed to fig.update_layout(),
@@ -536,6 +540,7 @@ def line_chart(
 
     if "labels" in kwargs:
         labels = kwargs["labels"]
+        kwargs.pop("labels")
     else:
         labels = {}
 
@@ -543,6 +548,11 @@ def line_chart(
         labels[x] = x_label
     if y_label is not None:
         labels[y] = y_label
+
+    if isinstance(legend_title, str):
+        if "legend" not in layout_args:
+            layout_args["legend"] = {}
+        layout_args["legend"]["title"] = legend_title
 
     try:
         fig = px.line(
@@ -577,7 +587,7 @@ def histogram(
     title=None,
     width=None,
     height=500,
-    layout_args=None,
+    layout_args={},
     **kwargs,
 ):
     """Create a line chart with plotly.express,
@@ -853,12 +863,13 @@ def pie_chart(
     custom_data=None,
     labels=None,
     title=None,
+    legend_title=None,
     template=None,
     width=None,
     height=None,
     opacity=None,
     hole=None,
-    layout_args=None,
+    layout_args={},
     **kwargs,
 ):
     """Create a plotly pie chart.
@@ -965,6 +976,11 @@ def pie_chart(
         max_rows = min(len(data), max_rows) - 2
         value = data.iloc[max_rows][values]
         data.loc[data[values] < value, names] = other_label
+
+    if isinstance(legend_title, str):
+        if "legend" not in layout_args:
+            layout_args["legend"] = {}
+        layout_args["legend"]["title"] = legend_title
 
     try:
         fig = px.pie(
