@@ -8664,12 +8664,13 @@ def csv_to_df(in_csv, **kwargs):
         raise Exception(e)
 
 
-def ee_to_df(ee_object, col_names=None, **kwargs):
+def ee_to_df(ee_object, col_names=None, sort_columns=False, **kwargs):
     """Converts an ee.FeatureCollection to pandas dataframe.
 
     Args:
         ee_object (ee.FeatureCollection): ee.FeatureCollection.
         col_names (list): List of column names. Defaults to None.
+        sort_columns (bool): Whether to sort the column names. Defaults to False.
 
     Raises:
         TypeError: ee_object must be an ee.FeatureCollection
@@ -8697,6 +8698,9 @@ def ee_to_df(ee_object, col_names=None, **kwargs):
             raise TypeError("col_names must be a list")
 
         df = df[col_names]
+
+        if sort_columns:
+            df = df.reindex(sorted(df.columns), axis=1)
 
         return df
     except Exception as e:
