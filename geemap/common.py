@@ -10356,8 +10356,6 @@ def get_local_tile_layer(
         ipyleaflet.TileLayer | folium.TileLayer: An ipyleaflet.TileLayer or folium.TileLayer.
     """
 
-    import warnings
-
     warnings.filterwarnings("ignore")
 
     output = widgets.Output()
