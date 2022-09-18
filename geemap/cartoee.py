@@ -196,8 +196,6 @@ def add_layer(
         ValueError: If `ax` if not of type cartopy.mpl.geoaxes.GeoAxesSubplot '
     """
 
-    import warnings
-
     if (
         isinstance(ee_object, ee.geometry.Geometry)
         or isinstance(ee_object, ee.feature.Feature)
@@ -1059,8 +1057,6 @@ def create_legend(
 ):
     if linewidth is None and marker is None:
         raise ValueError("Either linewidth or marker must be specified.")
-
-    pass
 
 
 def add_legend(

@@ -2746,7 +2746,6 @@ class Map(ipyleaflet.Map):
             layer_name (str, optional): Layer name of the legend to be associated with. Defaults to None.
 
         """
-        import pkg_resources
         from IPython.display import display
 
         pkg_dir = os.path.dirname(
