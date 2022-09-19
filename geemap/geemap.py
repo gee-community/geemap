@@ -16,6 +16,7 @@ from box import Box
 from bqplot import pyplot as plt
 from ipyfilechooser import FileChooser
 from IPython.display import display
+from ipytree import Node, Tree
 from .basemaps import xyz_to_leaflet
 from .common import *
 from .conversion import *
@@ -208,6 +209,9 @@ class Map(ipyleaflet.Map):
         self.tool_output_ctrl = None
         self.layer_control = None
         self.convert_ctrl = None
+        self._expand_point = False
+        self._expand_pixels = True
+        self._expand_objects = False
 
         # Adds search button and search box
         search_button = widgets.ToggleButton(
@@ -627,9 +631,17 @@ class Map(ipyleaflet.Map):
         self.plot_checked = False
         self.inspector_checked = False
 
-        inspector_output = widgets.Output(layout={"border": "1px solid black"})
+        inspector_output = widgets.Output(
+            layout={
+                "border": "1px solid black",
+                "max_width": "600px",
+                "max_height": "530px",
+                "overflow": "auto",
+            }
+        )
         inspector_output_control = ipyleaflet.WidgetControl(
-            widget=inspector_output, position="topright"
+            widget=inspector_output,
+            position="topright",
         )
         tool_output = widgets.Output()
         self.tool_output = tool_output
@@ -1207,6 +1219,54 @@ class Map(ipyleaflet.Map):
         )
         # self.add_control(tool_output_control)
 
+        expand_label = widgets.Label(
+            "Expand   ",
+            layout=widgets.Layout(padding="0px 0px 0px 4px"),
+        )
+
+        expand_point = widgets.Checkbox(
+            description="Point",
+            indent=False,
+            value=self._expand_point,
+            layout=widgets.Layout(width="65px"),
+        )
+
+        expand_pixels = widgets.Checkbox(
+            description="Pixels",
+            indent=False,
+            value=self._expand_pixels,
+            layout=widgets.Layout(width="65px"),
+        )
+
+        expand_objects = widgets.Checkbox(
+            description="Objects",
+            indent=False,
+            value=self._expand_objects,
+            layout=widgets.Layout(width="70px"),
+        )
+
+        def expand_point_changed(change):
+            self._expand_point = change["new"]
+
+        def expand_pixels_changed(change):
+            self._expand_pixels = change["new"]
+
+        def expand_objects_changed(change):
+            self._expand_objects = change["new"]
+
+        expand_point.observe(expand_point_changed, "value")
+        expand_pixels.observe(expand_pixels_changed, "value")
+        expand_objects.observe(expand_objects_changed, "value")
+
+        inspector_checks = widgets.HBox()
+        inspector_checks.children = [
+            expand_label,
+            widgets.Label(""),
+            expand_point,
+            expand_pixels,
+            expand_objects,
+        ]
+
         def handle_interaction(**kwargs):
             latlon = kwargs.get("coordinates")
             if kwargs.get("type") == "click" and self.inspector_checked:
@@ -1218,86 +1278,8 @@ class Map(ipyleaflet.Map):
 
                 with inspector_output:
                     inspector_output.clear_output(wait=True)
-                    print(
-                        f"Point ({latlon[1]:.4f}, {latlon[0]:.4f}) at {int(self.get_scale())}m/px"
-                    )
-                    xy = ee.Geometry.Point(latlon[::-1])
-                    for index, ee_object in enumerate(layers):
-                        layer_names = self.ee_layer_names
-                        layer_name = layer_names[index]
-                        object_type = ee_object.__class__.__name__
-
-                        if not self.ee_layer_dict[layer_name]["ee_layer"].visible:
-                            continue
-
-                        try:
-                            if isinstance(ee_object, ee.ImageCollection):
-                                ee_object = ee_object.mosaic()
-                            elif (
-                                isinstance(ee_object, ee.geometry.Geometry)
-                                or isinstance(ee_object, ee.feature.Feature)
-                                or isinstance(
-                                    ee_object,
-                                    ee.featurecollection.FeatureCollection,
-                                )
-                            ):
-                                ee_object = ee.FeatureCollection(ee_object)
-
-                            if isinstance(ee_object, ee.Image):
-                                item = ee_object.reduceRegion(
-                                    ee.Reducer.first(), xy, sample_scale
-                                ).getInfo()
-                                b_name = "band"
-                                if len(item) > 1:
-                                    b_name = "bands"
-                                print(
-                                    "{}: {} ({} {})".format(
-                                        layer_name,
-                                        object_type,
-                                        len(item),
-                                        b_name,
-                                    )
-                                )
-                                keys = item.keys()
-                                for key in keys:
-                                    print(f"  {key}: {item[key]}")
-                            elif isinstance(ee_object, ee.FeatureCollection):
-
-                                # Check geometry type
-                                geom_type = (
-                                    ee.Feature(ee_object.first()).geometry().type()
-                                )
-                                lat, lon = latlon
-                                delta = 0.005
-                                bbox = ee.Geometry.BBox(
-                                    lon - delta,
-                                    lat - delta,
-                                    lon + delta,
-                                    lat + delta,
-                                )
-                                # Create a bounding box to filter points
-                                xy = ee.Algorithms.If(
-                                    geom_type.compareTo(ee.String("Point")),
-                                    xy,
-                                    bbox,
-                                )
-
-                                filtered = ee_object.filterBounds(xy)
-                                size = filtered.size().getInfo()
-                                if size > 0:
-                                    first = filtered.first()
-                                    props = first.toDictionary().getInfo()
-                                    b_name = "property"
-                                    if len(props) > 1:
-                                        b_name = "properties"
-                                    print(
-                                        f"{layer_name}: Feature ({len(props)} {b_name})"
-                                    )
-                                    keys = props.keys()
-                                    for key in keys:
-                                        print(f"  {key}: {props[key]}")
-                        except Exception as e:
-                            print(e)
+                    display(inspector_checks)
+                    display(self.inspector(latlon))
 
                 self.default_style = {"cursor": "crosshair"}
             if (
@@ -7136,6 +7118,187 @@ class Map(ipyleaflet.Map):
             decimals (int, optional): Number of decimals to round the coordinates to. Defaults to 4.
         """
         return bbox_coords(self.user_roi, decimals=decimals)
+
+    def _point_info(self, latlon, decimals=3, return_node=False):
+        """Create the ipytree widget for displaying the mouse clicking info.
+
+        Args:
+            latlon (list | tuple): The coordinates (lat, lon) of the point.
+            decimals (int, optional): Number of decimals to round the coordinates to. Defaults to 3.
+            return_node (bool, optional): If True, return the ipytree node.
+                Otherwise, return the ipytree tree widget. Defaults to False.
+
+        Returns:
+            ipytree.Node | ipytree.Tree: The ipytree node or tree widget.
+        """
+        point_nodes = [
+            Node(f"Longitude: {latlon[1]}"),
+            Node(f"Latitude: {latlon[0]}"),
+            Node(f"Zoom Level: {self.zoom}"),
+            Node(f"Scale (approx. m/px): {self.get_scale()}"),
+        ]
+        label = f"Point ({latlon[1]:.{decimals}f}, {latlon[0]:.{decimals}f}) at {int(self.get_scale())}m/px"
+        root_node = Node(
+            label, nodes=point_nodes, icon="map", opened=self._expand_point
+        )
+
+        root_node.open_icon = "plus-square"
+        root_node.open_icon_style = "success"
+        root_node.close_icon = "minus-square"
+        root_node.close_icon_style = "info"
+
+        if return_node:
+            return root_node
+        else:
+            return Tree(nodes=[root_node])
+
+    def _pixels_info(self, latlon, return_node=False):
+        """Create the ipytree widget for displaying the pixel values at the mouse clicking point.
+
+        Args:
+            latlon (list | tuple): The coordinates (lat, lon) of the point.
+            return_node (bool, optional): If True, return the ipytree node.
+                Otherwise, return the ipytree tree widget. Defaults to False.
+
+        Returns:
+            ipytree.Node | ipytree.Tree: The ipytree node or tree widget.
+        """
+        layers = self.ee_layers
+        xy = ee.Geometry.Point(latlon[::-1])
+        sample_scale = self.getScale()
+
+        root_node = Node("Pixels", icon="archive")
+
+        nodes = []
+
+        for index, ee_object in enumerate(layers):
+            layer_names = self.ee_layer_names
+            layer_name = layer_names[index]
+            object_type = ee_object.__class__.__name__
+
+            if not self.ee_layer_dict[layer_name]["ee_layer"].visible:
+                continue
+
+            try:
+                if isinstance(ee_object, ee.ImageCollection):
+                    ee_object = ee_object.mosaic()
+
+                if isinstance(ee_object, ee.Image):
+                    item = ee_object.reduceRegion(
+                        ee.Reducer.first(), xy, sample_scale
+                    ).getInfo()
+                    b_name = "band"
+                    if len(item) > 1:
+                        b_name = "bands"
+
+                    label = f"{layer_name}: {object_type} ({len(item)} {b_name})"
+                    layer_node = Node(label, opened=self._expand_pixels)
+
+                    keys = sorted(item.keys())
+                    for key in keys:
+                        layer_node.add_node(Node(f"{key}: {item[key]}", icon="file"))
+
+                    nodes.append(layer_node)
+            except:
+                pass
+
+        root_node.nodes = nodes
+
+        root_node.open_icon = "plus-square"
+        root_node.open_icon_style = "success"
+        root_node.close_icon = "minus-square"
+        root_node.close_icon_style = "info"
+
+        if return_node:
+            return root_node
+        else:
+            return Tree(nodes=[root_node])
+
+    def _objects_info(self, latlon, return_node=False):
+        """Create the ipytree widget for displaying the Earth Engine objects at the mouse clicking point.
+
+        Args:
+            latlon (list | tuple): The coordinates (lat, lon) of the point.
+            return_node (bool, optional): If True, return the ipytree node.
+                Otherwise, return the ipytree tree widget. Defaults to False.
+
+        Returns:
+            ipytree.Node | ipytree.Tree: The ipytree node or tree widget.
+        """
+        layers = self.ee_layers
+        xy = ee.Geometry.Point(latlon[::-1])
+        root_node = Node("Objects", icon="archive")
+
+        nodes = []
+
+        for index, ee_object in enumerate(layers):
+            layer_names = self.ee_layer_names
+            layer_name = layer_names[index]
+
+            if not self.ee_layer_dict[layer_name]["ee_layer"].visible:
+                continue
+
+            if isinstance(ee_object, ee.FeatureCollection):
+
+                # Check geometry type
+                geom_type = ee.Feature(ee_object.first()).geometry().type()
+                lat, lon = latlon
+                delta = 0.005
+                bbox = ee.Geometry.BBox(
+                    lon - delta,
+                    lat - delta,
+                    lon + delta,
+                    lat + delta,
+                )
+                # Create a bounding box to filter points
+                xy = ee.Algorithms.If(
+                    geom_type.compareTo(ee.String("Point")),
+                    xy,
+                    bbox,
+                )
+
+                ee_object = ee_object.filterBounds(xy).first()
+
+            try:
+                node = get_info(
+                    ee_object, layer_name, opened=self._expand_objects, return_node=True
+                )
+                nodes.append(node)
+            except:
+                pass
+
+        root_node.nodes = nodes
+
+        root_node.open_icon = "plus-square"
+        root_node.open_icon_style = "success"
+        root_node.close_icon = "minus-square"
+        root_node.close_icon_style = "info"
+
+        if return_node:
+            return root_node
+        else:
+            return Tree(nodes=[root_node])
+
+    def inspector(self, latlon):
+        """Create the Inspector GUI.
+
+        Args:
+            latlon (list | tuple): The coordinates (lat, lon) of the point.
+        Returns:
+            ipytree.Tree: The ipytree tree widget for the Inspector GUI.
+        """
+        tree = Tree()
+        nodes = []
+        point_node = self._point_info(latlon, return_node=True)
+        nodes.append(point_node)
+        pixels_node = self._pixels_info(latlon, return_node=True)
+        if pixels_node.nodes:
+            nodes.append(pixels_node)
+        objects_node = self._objects_info(latlon, return_node=True)
+        if objects_node.nodes:
+            nodes.append(objects_node)
+        tree.nodes = nodes
+        return tree
 
 
 # The functions below are outside the Map class.

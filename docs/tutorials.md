@@ -136,4 +136,5 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 122. LiDAR data analysis and visualization with whitebox and geemap ([notebook](https://geemap.org/notebooks/122_lidar))
 123. Creating Sentinel-1 SAR imagery timelapse ([notebook](https://geemap.org/notebooks/123_sentinel1_timelapse))
 124. Searching for awesome GEE community datasets ([notebook](https://geemap.org/notebooks/124_more_datasets))
-125. Using Earth Engine datasets example code ([notebook](125_example_code))
+125. Using Earth Engine datasets example code ([notebook](https://geemap.org/notebooks/125_example_code))
+126. Using the improved Inspector GUI ([notebook](https://geemap.org/notebooks/126_inspector))
