@@ -6399,6 +6399,9 @@ def image_props(img, date_format="YYYY-MM-dd"):
 
     keys = img.propertyNames().remove("system:footprint").remove("system:bands")
     values = keys.map(lambda p: img.get(p))
+    props = ee.Dictionary.fromLists(keys, values)
+
+    names = keys.getInfo()
 
     bands = img.bandNames()
     scales = bands.map(lambda b: img.select([b]).projection().nominalScale())
@@ -6407,27 +6410,31 @@ def image_props(img, date_format="YYYY-MM-dd"):
         ee.Dictionary.fromLists(bands.getInfo(), scales),
         scales.get(0),
     )
-    image_date = ee.Date(img.get("system:time_start")).format(date_format)
-    time_start = ee.Date(img.get("system:time_start")).format("YYYY-MM-dd HH:mm:ss")
-    # time_end = ee.Date(img.get('system:time_end')).format('YYYY-MM-dd HH:mm:ss')
-    time_end = ee.Algorithms.If(
-        ee.List(img.propertyNames()).contains("system:time_end"),
-        ee.Date(img.get("system:time_end")).format("YYYY-MM-dd HH:mm:ss"),
-        time_start,
-    )
-    asset_size = (
-        ee.Number(img.get("system:asset_size"))
-        .divide(1e6)
-        .format()
-        .cat(ee.String(" MB"))
-    )
 
-    props = ee.Dictionary.fromLists(keys, values)
-    props = props.set("system:time_start", time_start)
-    props = props.set("system:time_end", time_end)
-    props = props.set("system:asset_size", asset_size)
     props = props.set("NOMINAL_SCALE", scale)
-    props = props.set("IMAGE_DATE", image_date)
+
+    if "system:time_start" in names:
+        image_date = ee.Date(img.get("system:time_start")).format(date_format)
+        time_start = ee.Date(img.get("system:time_start")).format("YYYY-MM-dd HH:mm:ss")
+        # time_end = ee.Date(img.get('system:time_end')).format('YYYY-MM-dd HH:mm:ss')
+        time_end = ee.Algorithms.If(
+            ee.List(img.propertyNames()).contains("system:time_end"),
+            ee.Date(img.get("system:time_end")).format("YYYY-MM-dd HH:mm:ss"),
+            time_start,
+        )
+        props = props.set("system:time_start", time_start)
+        props = props.set("system:time_end", time_end)
+        props = props.set("IMAGE_DATE", image_date)
+
+    if "system:asset_size" in names:
+        asset_size = (
+            ee.Number(img.get("system:asset_size"))
+            .divide(1e6)
+            .format()
+            .cat(ee.String(" MB"))
+        )
+
+        props = props.set("system:asset_size", asset_size)
 
     return props
 
@@ -12121,7 +12128,10 @@ def check_cmap(cmap):
 
     if isinstance(cmap, str):
         try:
-            return get_palette(cmap)
+            palette = get_palette(cmap)
+            if isinstance(palette, dict):
+                palette = palette["default"]
+            return palette
         except Exception as e:
             try:
                 return check_color(cmap)
@@ -13433,3 +13443,108 @@ def reproject(image, output, dst_crs="EPSG:4326", resampling="nearest", **kwargs
                     resampling=resampling,
                     **kwargs,
                 )
+
+
+def get_info(ee_object, layer_name="", opened=False, return_node=False):
+    """Print out the information for an Earth Engine object using a tree structure. The source code
+        was adapted from https://github.com/google/earthengine-jupyter. Credits to Tyler Erickson.
+
+    Args:
+        ee_object (object): The Earth Engine object.
+        layer_name (str, optional): The name of the layer. Defaults to "".
+        opened (bool, optional): Whether to expand the tree. Defaults to False.
+        return_node (bool, optional): Whether to return the widget as ipytree.Node.
+            If False, returns the widget as ipytree.Tree. Defaults to False.
+    """
+
+    def _order_items(item_dict, ordering_list):
+        """Orders dictionary items in a specified order.
+        Adapted from https://github.com/google/earthengine-jupyter.
+        """
+        list_of_tuples = [
+            (key, item_dict[key])
+            for key in [x for x in ordering_list if x in item_dict.keys()]
+        ]
+
+        return dict(list_of_tuples)
+
+    def _process_info(info):
+        node_list = []
+        if isinstance(info, list):
+            for count, item in enumerate(info):
+                if isinstance(item, (list, dict)):
+                    if "id" in item:
+                        count = f"{count}: \"{item['id']}\""
+                    if "data_type" in item:
+                        count = f"{count}, {item['data_type']['precision']}"
+                    if "crs" in item:
+                        count = f"{count}, {item['crs']}"
+                    if "dimensions" in item:
+                        dimensions = item["dimensions"]
+                        count = f"{count}, {dimensions[0]}x{dimensions[1]} px"
+                    node_list.append(
+                        Node(f"{count}", nodes=_process_info(item), opened=opened)
+                    )
+                else:
+                    node_list.append(Node(f"{count}: {item}", icon="file"))
+        elif isinstance(info, dict):
+            for k, v in info.items():
+                if isinstance(v, (list, dict)):
+                    if k == "properties":
+                        k = f"properties: Object ({len(v)} properties)"
+                    elif k == "bands":
+                        k = f"bands: List ({len(v)} elements)"
+                    node_list.append(
+                        Node(f"{k}", nodes=_process_info(v), opened=opened)
+                    )
+                else:
+                    node_list.append(Node(f"{k}: {v}", icon="file"))
+        else:
+            node_list.append(Node(f"{info}", icon="file"))
+        return node_list
+
+    if isinstance(ee_object, ee.FeatureCollection):
+        ee_object = ee_object.map(lambda f: ee.Feature(None, f.toDictionary()))
+    layer_info = ee_object.getInfo()
+    props = layer_info.get("properties", {})
+    layer_info["properties"] = dict(sorted(props.items()))
+
+    ordering_list = []
+    if "type" in layer_info:
+        ordering_list.append("type")
+        ee_type = layer_info["type"]
+    else:
+        ee_type = ""
+
+    if "id" in layer_info:
+        ordering_list.append("id")
+        ee_id = layer_info["id"]
+    else:
+        ee_id = ""
+
+    ordering_list.append("version")
+    ordering_list.append("bands")
+    ordering_list.append("properties")
+
+    layer_info = _order_items(layer_info, ordering_list)
+    nodes = _process_info(layer_info)
+
+    if len(layer_name) > 0:
+        layer_name = f"{layer_name}: "
+
+    if "bands" in layer_info:
+        band_info = f' ({len(layer_info["bands"])} bands)'
+    else:
+        band_info = ""
+    root_node = Node(f"{layer_name}{ee_type} {band_info}", nodes=nodes, opened=opened)
+    # root_node.open_icon = "plus-square"
+    # root_node.open_icon_style = "success"
+    # root_node.close_icon = "minus-square"
+    # root_node.close_icon_style = "info"
+
+    if return_node:
+        return root_node
+    else:
+        tree = Tree()
+        tree.add_node(root_node)
+        return tree

@@ -13,7 +13,7 @@ builtin_legends = {
         "21 Developed, Open Space": "dec5c5",
         "22 Developed, Low Intensity": "d99282",
         "23 Developed, Medium Intensity": "eb0000",
-        "24 Developed High Intensity": "ab0000",
+        "24 Developed, High Intensity": "ab0000",
         "31 Barren Land (Rock/Sand/Clay)": "b3ac9f",
         "41 Deciduous Forest": "68ab5f",
         "42 Evergreen Forest": "1c5f2c",

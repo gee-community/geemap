@@ -211,6 +211,7 @@ nav:
           - notebooks/123_sentinel1_timelapse.ipynb
           - notebooks/124_more_datasets.ipynb
           - notebooks/125_example_code.ipynb
+          - notebooks/126_inspector.ipynb
           - miscellaneous:
                 - notebooks/cartoee_colab.ipynb
                 - notebooks/cartoee_colorbar.ipynb
