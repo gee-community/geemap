@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.17.1 - Sep 18, 2022
+
+**New Features**:
+
+-   Added new Inspector GUI [#1264](https://github.com/giswqs/geemap/pull/1264)
+-   Added more sample datasets
+-   Added codeql.yml
+-   Added dependency-review.yml
+
+**Improvement**:
+
+-   Improved chart options
+
 ## v0.17.0 - Sep 11, 2022
 
 **New Features**:
