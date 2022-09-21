@@ -51,7 +51,7 @@ geemap
 * GEE Tutorials on YouTube: https://www.youtube.com/c/QiushengWu
 * Free software: MIT license
 
-**Acknowledgment:** This material is based upon work supported by the National Aeronautics and Space Administration under Grant No. 80NSSC22K1742 issued through the `Open Source Tools, Frameworks, and Libraries 2020 Program <https://bit.ly/3RVBRcQ>`__.
+**Acknowledgment:** This material is based upon work supported by the National Aeronautics and Space Administration (NASA) under Grant No. 80NSSC22K1742 issued through the `Open Source Tools, Frameworks, and Libraries 2020 Program <https://bit.ly/3RVBRcQ>`__.
 
 **Contents**
 
