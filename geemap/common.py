@@ -2188,6 +2188,7 @@ def ee_export_image(
     dimensions=None,
     file_per_band=False,
     format="ZIPPED_GEO_TIFF",
+    unmask_value=None,
     timeout=300,
     proxies=None,
 ):
@@ -2204,6 +2205,8 @@ def ee_export_image(
         file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
         format (str, optional):  One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file, default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If "GEO_TIFF" or "NPY",
             filePerBand and all band-level transformations will be ignored. Loading a NumPy output results in a structured array.
+        unmask_value (float, optional): The value to use for pixels that are masked in the input image.
+            If the exported image contains zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
         timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
         proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
     """
@@ -2211,6 +2214,13 @@ def ee_export_image(
     if not isinstance(ee_object, ee.Image):
         print("The ee_object must be an ee.Image.")
         return
+
+    if unmask_value is not None:
+        ee_object = ee_object.selfMask().unmask(unmask_value)
+        if isinstance(region, ee.Geometry):
+            ee_object = ee_object.clip(region)
+        elif isinstance(region, ee.FeatureCollection):
+            ee_object = ee_object.clipToCollection(region)
 
     filename = os.path.abspath(filename)
     basename = os.path.basename(filename)
@@ -2284,6 +2294,7 @@ def ee_export_image_collection(
     dimensions=None,
     file_per_band=False,
     format="ZIPPED_GEO_TIFF",
+    unmask_value=None,
     timeout=300,
     proxies=None,
 ):
@@ -2300,6 +2311,8 @@ def ee_export_image_collection(
         file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
         format (str, optional):  One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file, default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If "GEO_TIFF" or "NPY",
             filePerBand and all band-level transformations will be ignored. Loading a NumPy output results in a structured array.
+        unmask_value (float, optional): The value to use for pixels that are masked in the input image.
+            If the exported image contains zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
         timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
         proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
     """
@@ -2331,6 +2344,7 @@ def ee_export_image_collection(
                 dimensions=dimensions,
                 file_per_band=file_per_band,
                 format=format,
+                unmask_value=unmask_value,
                 timeout=timeout,
                 proxies=proxies,
             )
@@ -12323,6 +12337,7 @@ def download_ee_image(
     max_tile_dim=None,
     shape=None,
     scale_offset=False,
+    unmask_value=None,
     **kwargs,
 ):
     """Download an Earth Engine Image as a GeoTIFF. Images larger than the `Earth Engine size limit are split and downloaded as
@@ -12353,6 +12368,9 @@ def download_ee_image(
             (height, width) dimensions to export (pixels).
         scale_offset: bool, optional
             Whether to apply any EE band scales and offsets to the image.
+        unmask_value (float, optional): The value to use for pixels that are masked in the input image. If the exported image contains
+            zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
+
     """
 
     try:
@@ -12364,6 +12382,13 @@ def download_ee_image(
 
     if not isinstance(image, ee.Image):
         raise ValueError("image must be an ee.Image.")
+
+    if unmask_value is not None:
+        image = image.selfMask().unmask(unmask_value)
+        if isinstance(region, ee.Geometry):
+            image = image.clip(region)
+        elif isinstance(region, ee.FeatureCollection):
+            image = image.clipToCollection(region)
 
     if region is not None:
         kwargs["region"] = region
@@ -12415,6 +12440,7 @@ def download_ee_image_tiles(
     max_tile_dim=None,
     shape=None,
     scale_offset=False,
+    unmask_value=None,
     **kwargs,
 ):
 
@@ -12447,6 +12473,9 @@ def download_ee_image_tiles(
             (height, width) dimensions to export (pixels).
         scale_offset: bool, optional
             Whether to apply any EE band scales and offsets to the image.
+        unmask_value (float, optional): The value to use for pixels that are masked in the input image. If the exported image contains zero values,
+            you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
+
     """
 
     if not isinstance(features, ee.FeatureCollection):
@@ -12485,6 +12514,7 @@ def download_ee_image_tiles(
             max_tile_dim,
             shape,
             scale_offset,
+            unmask_value,
             **kwargs,
         )
 
@@ -12505,6 +12535,7 @@ def download_ee_image_collection(
     max_tile_dim=None,
     shape=None,
     scale_offset=False,
+    unmask_value=None,
     **kwargs,
 ):
     """Download an Earth Engine ImageCollection as GeoTIFFs. Images larger than the `Earth Engine size limit are split and downloaded as
@@ -12536,6 +12567,8 @@ def download_ee_image_collection(
             (height, width) dimensions to export (pixels).
         scale_offset: bool, optional
             Whether to apply any EE band scales and offsets to the image.
+        unmask_value (float, optional): The value to use for pixels that are masked in the input image. If the exported image contains zero values,
+            you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
     """
 
     if not isinstance(collection, ee.ImageCollection):
@@ -12583,6 +12616,7 @@ def download_ee_image_collection(
                 max_tile_dim,
                 shape,
                 scale_offset,
+                unmask_value,
                 **kwargs,
             )
 
