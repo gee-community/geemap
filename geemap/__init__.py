@@ -28,11 +28,16 @@ def use_folium():
 if use_folium():
     from .foliumap import *
 else:
-    from .geemap import *
-
-    # if in_colab_shell():
-    #     from google.colab import output
-
-    #     output.enable_custom_widget_manager()
+    try:
+        from .geemap import *
+    except NotImplementedError as e:
+        if in_colab_shell():
+            print(
+                "Please restart runtime after installing geemap if you encounter errors."
+            )
+        raise NotImplementedError(e)
+    except Exception as e:
+        print("Please restart kernel after installing geemap.")
+        raise Exception(e)
 
 from .report import Report
