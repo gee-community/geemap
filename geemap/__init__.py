@@ -30,14 +30,11 @@ if use_folium():
 else:
     try:
         from .geemap import *
-    except NotImplementedError as e:
-        if in_colab_shell():
-            print(
-                "Please restart runtime after installing geemap if you encounter errors."
-            )
-        raise NotImplementedError(e)
     except Exception as e:
-        print("Please restart kernel after installing geemap.")
+        if in_colab_shell():
+            print("Please restart Colab runtime after installation if you encounter any errors when importing geemap.")
+        else:
+            print("Please restart Jupyter kernel after installation if you encounter any errors when importing geemap.")
         raise Exception(e)
 
 from .report import Report
