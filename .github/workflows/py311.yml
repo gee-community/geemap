@@ -6,32 +6,32 @@ on:
         branches:
             - master
 
-name: Linux build
+name: Test Python 3.11
 jobs:
     test-ubuntu:
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
-                python-version: ["3.7", "3.8", "3.9", "3.10"]
+                python-version: ["3.11-dev"]
         steps:
             - uses: actions/checkout@v3
             - name: Set up Python
               uses: actions/setup-python@v4
               with:
                   python-version: ${{ matrix.python-version }}
-            - name: Install GDAL
-              run: |
-                  python -m pip install --upgrade pip
-                  pip install --no-cache-dir Cython
-                  pip install --find-links=https://girder.github.io/large_image_wheels --no-cache GDAL
-            - name: Test GDAL installation
-              run: |
-                  python -c "from osgeo import gdal"
-                  gdalinfo --version
+            # - name: Install GDAL
+            #   run: |
+            #       python -m pip install --upgrade pip
+            #       pip install --no-cache-dir Cython
+            #       pip install --find-links=https://girder.github.io/large_image_wheels --no-cache GDAL
+            # - name: Test GDAL installation
+            #   run: |
+            #       python -c "from osgeo import gdal"
+            #       gdalinfo --version
             - name: Install dependencies
               run: |
-                  pip install -r requirements.txt -r requirements_dev.txt
+                  pip install -r requirements.txt
                   pip install .
             - name: Discover typos with codespell
               run: codespell --skip="*.csv,*.geojson,*.json,*.yml*.js,*.html,*cff" --ignore-words-list="aci,acount,acounts,fallow,ges,hart,hist,nd,ned,ois,wqs,watermask"
