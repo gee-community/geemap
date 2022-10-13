@@ -4010,6 +4010,14 @@ def ee_data_html(asset):
         asset_url = asset.get("asset_url", "")
         code_url = asset.get("sample_code", None)
         thumbnail_url = asset.get("thumbnail_url", None)
+        asset_type = asset.get("type", "Unknown")
+
+        if asset_type == "image":
+            ee_id_snippet = "ee.Image('{}')".format(ee_id_snippet)
+        elif asset_type == "image_collection":
+            ee_id_snippet = "ee.ImageCollection('{}')".format(ee_id_snippet)
+        elif asset_type == "table":
+            ee_id_snippet = "ee.FeatureCollection('{}')".format(ee_id_snippet)
 
         if not code_url and asset_uid:
             coder_url = f"""https://code.earthengine.google.com/?scriptPath=Examples%3ADatasets%2F{asset_uid}"""
