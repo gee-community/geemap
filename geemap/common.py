@@ -6681,6 +6681,8 @@ def zonal_stats(
             maxBuckets=max_buckets, minBucketWidth=min_bucket_width, maxRaw=max_raw
         ),
         "FIXED_HIST": ee.Reducer.fixedHistogram(hist_min, hist_max, hist_steps),
+        "COMBINED_MEAN_COUNT": ee.Reducer.mean().combine(ee.Reducer.count(), sharedInputs=True),
+        "COMBINED_MEAN_COUNT_COUNT_EVERY": ee.Reducer.mean().combine(ee.Reducer.count(), sharedInputs=True).combine(ee.Reducer.countEvery(), sharedInputs=True),
     }
 
     if not (statistics_type.upper() in allowed_statistics.keys()):
