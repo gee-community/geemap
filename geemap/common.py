@@ -6668,6 +6668,7 @@ def zonal_stats(
     allowed_statistics = {
         "COUNT": ee.Reducer.count(),
         "MEAN": ee.Reducer.mean(),
+        "MEAN_UNWEIGHTED": ee.Reducer.mean().unweighted(),
         "MAXIMUM": ee.Reducer.max(),
         "MEDIAN": ee.Reducer.median(),
         "MINIMUM": ee.Reducer.min(),
@@ -6682,6 +6683,7 @@ def zonal_stats(
         "FIXED_HIST": ee.Reducer.fixedHistogram(hist_min, hist_max, hist_steps),
         "COMBINED_MEAN_COUNT": ee.Reducer.mean().combine(ee.Reducer.count(), sharedInputs=True),
         "COMBINED_COUNT_MEAN": ee.Reducer.count().combine(ee.Reducer.mean(), sharedInputs=True),
+        "COMBINED_COUNT_MEAN_UNWEIGHTED": ee.Reducer.count().combine(ee.Reducer.mean().unweighted(), sharedInputs=True),
     }
 
     if not (statistics_type.upper() in allowed_statistics.keys()):
