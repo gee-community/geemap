@@ -1861,6 +1861,12 @@ class Map(ipyleaflet.Map):
             opacity (float, optional): The opacity of the layer. Defaults to 1.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
         """
+
+        if "max_zoom" not in kwargs:
+            kwargs["max_zoom"] = 100
+        if "max_native_zoom" not in kwargs:
+            kwargs["max_native_zoom"] = 100
+
         try:
             tile_layer = ipyleaflet.TileLayer(
                 url=url,
