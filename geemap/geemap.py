@@ -2407,7 +2407,7 @@ class Map(ipyleaflet.Map):
     addLayerControl = add_layer_control
 
     def split_map(
-        self, left_layer="HYBRID", right_layer="ROADMAP", add_close_button=False
+        self, left_layer="HYBRID", right_layer="ROADMAP", add_close_button=False, **kwargs
     ):
         """Adds split map.
 
@@ -2416,6 +2416,10 @@ class Map(ipyleaflet.Map):
             right_layer (str, optional): The right tile layer. Defaults to 'ROADMAP'.
             add_close_button (bool, optional): Whether to add a close button. Defaults to False.
         """
+        if "max_zoom" not in kwargs:
+            kwargs["max_zoom"] = 100
+        if "max_native_zoom" not in kwargs:
+            kwargs["max_native_zoom"] = 100
         try:
             controls = self.controls
             layers = self.layers
@@ -2432,12 +2436,14 @@ class Map(ipyleaflet.Map):
                         url=url,
                         name="Left Layer",
                         attribution=" ",
+                        **kwargs,
                     )
                 else:
                     left_layer = ipyleaflet.TileLayer(
                         url=left_layer,
                         name="Left Layer",
                         attribution=" ",
+                        **kwargs,
                     )
             elif isinstance(left_layer, ipyleaflet.TileLayer):
                 pass
@@ -2455,12 +2461,14 @@ class Map(ipyleaflet.Map):
                         url=url,
                         name="Right Layer",
                         attribution=" ",
+                        **kwargs,
                     )
                 else:
                     right_layer = ipyleaflet.TileLayer(
                         url=right_layer,
                         name="Right Layer",
                         attribution=" ",
+                        **kwargs,
                     )
             elif isinstance(right_layer, ipyleaflet.TileLayer):
                 pass
