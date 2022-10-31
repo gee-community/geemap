@@ -2306,6 +2306,11 @@ class Map(folium.Map):
             left_layer (str, optional): The layer tile layer. Defaults to 'TERRAIN'.
             right_layer (str, optional): The right tile layer. Defaults to 'OpenTopoMap'.
         """
+        if "max_zoom" not in kwargs:
+            kwargs["max_zoom"] = 100
+        if "max_native_zoom" not in kwargs:
+            kwargs["max_native_zoom"] = 100
+
         try:
             if left_layer in basemaps.keys():
                 left_layer = basemaps[left_layer]
@@ -2317,6 +2322,7 @@ class Map(folium.Map):
                         name="Left Layer",
                         attr=" ",
                         overlay=True,
+                        **kwargs,
                     )
                 else:
                     left_layer = folium.raster_layers.TileLayer(
@@ -2324,6 +2330,7 @@ class Map(folium.Map):
                         name="Left Layer",
                         attr=" ",
                         overlay=True,
+                        **kwargs,
                     )
             elif isinstance(left_layer, folium.raster_layers.TileLayer) or isinstance(
                 left_layer, folium.WmsTileLayer
@@ -2344,6 +2351,7 @@ class Map(folium.Map):
                         name="Right Layer",
                         attr=" ",
                         overlay=True,
+                        **kwargs,
                     )
                 else:
                     right_layer = folium.raster_layers.TileLayer(
@@ -2351,6 +2359,7 @@ class Map(folium.Map):
                         name="Right Layer",
                         attr=" ",
                         overlay=True,
+                        **kwargs,
                     )
             elif isinstance(right_layer, folium.raster_layers.TileLayer) or isinstance(
                 right_layer, folium.WmsTileLayer
