@@ -2407,7 +2407,11 @@ class Map(ipyleaflet.Map):
     addLayerControl = add_layer_control
 
     def split_map(
-        self, left_layer="HYBRID", right_layer="ROADMAP", add_close_button=False, **kwargs
+        self,
+        left_layer="HYBRID",
+        right_layer="ROADMAP",
+        add_close_button=False,
+        **kwargs,
     ):
         """Adds split map.
 
@@ -3538,6 +3542,12 @@ class Map(ipyleaflet.Map):
         **kwargs,
     ):
         """Add a local raster dataset to the map.
+
+            If you are using this function in JupyterHub on a remote server and the raster does not render properly, try
+            running the following two lines before calling this function:
+
+            import os
+            os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = 'proxy/{port}'
 
         Args:
             source (str): The path to the GeoTIFF file or the URL of the Cloud Optimized GeoTIFF.

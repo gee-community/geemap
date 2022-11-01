@@ -6681,8 +6681,12 @@ def zonal_stats(
             maxBuckets=max_buckets, minBucketWidth=min_bucket_width, maxRaw=max_raw
         ),
         "FIXED_HIST": ee.Reducer.fixedHistogram(hist_min, hist_max, hist_steps),
-        "COMBINED_COUNT_MEAN": ee.Reducer.count().combine(ee.Reducer.mean(), sharedInputs=True),
-        "COMBINED_COUNT_MEAN_UNWEIGHTED": ee.Reducer.count().combine(ee.Reducer.mean().unweighted(), sharedInputs=True),
+        "COMBINED_COUNT_MEAN": ee.Reducer.count().combine(
+            ee.Reducer.mean(), sharedInputs=True
+        ),
+        "COMBINED_COUNT_MEAN_UNWEIGHTED": ee.Reducer.count().combine(
+            ee.Reducer.mean().unweighted(), sharedInputs=True
+        ),
     }
 
     if not (statistics_type.upper() in allowed_statistics.keys()):
@@ -13594,3 +13598,16 @@ def get_info(ee_object, layer_name="", opened=False, return_node=False):
         tree = Tree()
         tree.add_node(root_node)
         return tree
+
+
+def download_3dep_lidar(region, filename, scale=1.0, crs="EPSG:3857"):
+
+    dataset = ee.ImageCollection("USGS/3DEP/1m")
+
+    if isinstance(region, ee.Geometry) or isinstance(region, ee.Feature):
+        region = ee.FeatureCollection([region])
+
+    if isinstance(region, ee.FeatureCollection):
+        image = dataset.filterBounds(region).mosaic().clipToCollection(region)
+
+    download_ee_image(image, filename, region=region.geometry(), scale=scale, crs=crs)
