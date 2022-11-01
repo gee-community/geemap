@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.17.2 - Oct 31, 2022
+
+**Improvement**:
+
+-   Added NASA funding acknowledgment
+-   Added unmask_value parameter to download image [#1270](https://github.com/giswqs/geemap/pull/1270)
+-   Added Japan GEE workshop notebook
+-   Improved Colab error message
+-   Added support for Python 3.11
+-   Added asset type to search result
+-   zonal_stats: additions to allowed_statistics [#1308](https://github.com/giswqs/geemap/pull/1308)
+-   Fixed max zoom bug
+-   Improved split control
+-   Improved local tile
+
 ## v0.17.1 - Sep 18, 2022
 
 **New Features**:
