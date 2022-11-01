@@ -32,9 +32,13 @@ else:
         from .geemap import *
     except Exception as e:
         if in_colab_shell():
-            print("Please restart Colab runtime after installation if you encounter any errors when importing geemap.")
+            print(
+                "Please restart Colab runtime after installation if you encounter any errors when importing geemap."
+            )
         else:
-            print("Please restart Jupyter kernel after installation if you encounter any errors when importing geemap.")
+            print(
+                "Please restart Jupyter kernel after installation if you encounter any errors when importing geemap."
+            )
         raise Exception(e)
 
 from .report import Report
