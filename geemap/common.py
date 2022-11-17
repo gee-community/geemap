@@ -8576,10 +8576,11 @@ def kml_to_shp(in_kml, out_shp, **kwargs):
     check_package(name="geopandas", URL="https://geopandas.org")
 
     import geopandas as gpd
+    import fiona
 
     # import fiona
     # print(fiona.supported_drivers)
-    gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
+    fiona.drvsupport.supported_drivers["KML"] = "rw"
     df = gpd.read_file(in_kml, driver="KML", **kwargs)
     df.to_file(out_shp, **kwargs)
 
@@ -8615,10 +8616,9 @@ def kml_to_geojson(in_kml, out_geojson=None, **kwargs):
     check_package(name="geopandas", URL="https://geopandas.org")
 
     import geopandas as gpd
-
-    # import fiona
+    import fiona
     # print(fiona.supported_drivers)
-    gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
+    fiona.drvsupport.supported_drivers["KML"] = "rw"
     gdf = gpd.read_file(in_kml, driver="KML", **kwargs)
 
     if out_geojson is not None:
@@ -8934,6 +8934,7 @@ def vector_to_geojson(
     warnings.filterwarnings("ignore")
     check_package(name="geopandas", URL="https://geopandas.org")
     import geopandas as gpd
+    import fiona
 
     if not filename.startswith("http"):
         filename = os.path.abspath(filename)
@@ -8941,7 +8942,7 @@ def vector_to_geojson(
         filename = download_file(github_raw_url(filename))
     ext = os.path.splitext(filename)[1].lower()
     if ext == ".kml":
-        gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
+        fiona.drvsupport.supported_drivers["KML"] = "rw"
         df = gpd.read_file(
             filename, bbox=bbox, mask=mask, rows=rows, driver="KML", **kwargs
         )
