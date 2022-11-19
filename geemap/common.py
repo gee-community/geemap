@@ -595,6 +595,7 @@ def open_image_from_url(url, timeout=300, proxies=None):
     # from urllib.parse import urlparse
 
     try:
+        url = get_direct_url(url)
         response = requests.get(url, timeout=timeout, proxies=proxies)
         img = Image.open(io.BytesIO(response.content))
         return img
@@ -8617,6 +8618,7 @@ def kml_to_geojson(in_kml, out_geojson=None, **kwargs):
 
     import geopandas as gpd
     import fiona
+
     # print(fiona.supported_drivers)
     fiona.drvsupport.supported_drivers["KML"] = "rw"
     gdf = gpd.read_file(in_kml, driver="KML", **kwargs)
@@ -12281,6 +12283,14 @@ def dynamic_world(
         # Create the Top1 Probability Hillshade
         top1Probability = meanProbability.reduce(ee.Reducer.max())
 
+        if clip and (region is not None):
+            if isinstance(region, ee.Geometry):
+                top1Probability = top1Probability.clip(region)
+            elif isinstance(region, ee.FeatureCollection):
+                top1Probability = top1Probability.clipToCollection(region)
+            elif isinstance(region, ee.Feature):
+                top1Probability = top1Probability.clip(region.geometry())
+
         if return_type == "probability":
             return top1Probability
         else:
@@ -13212,9 +13222,10 @@ def jrc_hist_monthly_history(
     stats = areas.aggregate_array("area").getInfo()
     values = [item["water"] for item in stats]
     labels = areas.aggregate_array("system:index").getInfo()
+    months = [label.split("_")[1] for label in labels]
 
     if frequency == "month":
-        area_df = pd.DataFrame({"Month": labels, "Area": values})
+        area_df = pd.DataFrame({"Month": labels, "Area": values, "month": months})
     else:
         dates = [d[:4] for d in labels]
         data_dict = {"Date": labels, "Year": dates, "Area": values}

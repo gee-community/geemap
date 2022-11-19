@@ -85,6 +85,8 @@ nav:
           - workshops/SRM_Workshop_2022.ipynb
           - workshops/Crop_Mapping_2022.ipynb
           - workshops/Japan_2022.ipynb
+          - workshops/GEE_Workshop_2022_Part1.ipynb
+          - workshops/GEE_Workshop_2022_Part2.ipynb
     - Notebooks:
           - notebooks/00_geemap_key_features.ipynb
           - notebooks/01_geemap_intro.ipynb
