@@ -19,7 +19,7 @@ theme:
     custom_dir: "docs/overrides"
 
 plugins:
-    - search
+    # - search
     - mkdocstrings
     - git-revision-date
     # - pdf-export
