@@ -266,7 +266,10 @@ def bar_chart(
     if x_label is not None:
         labels[x] = x_label
     if y_label is not None:
-        labels[y] = y_label
+        if isinstance(y, str):
+            labels[y] = y_label
+        elif isinstance(y, list):
+            labels[y[0]] = y_label
 
     if isinstance(legend_title, str):
         if "legend" not in layout_args:

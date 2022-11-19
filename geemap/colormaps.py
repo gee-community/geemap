@@ -76,13 +76,14 @@ def get_palette(cmap_name=None, n_class=None, hashtag=False):
         list: A list of hex colors.
     """
 
-    if cmap_name in _palette_dict.keys():
+    if cmap_name in ["ndvi", "ndwi", "dem", "dw", "esri_lulc"]:
         colors = _palette_dict[cmap_name]
     else:
         cmap = plt.cm.get_cmap(cmap_name, n_class)
         colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
     if hashtag:
         colors = ["#" + i for i in colors]
+
     return colors
 
 
