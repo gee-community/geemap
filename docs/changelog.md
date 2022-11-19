@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.17.3 - Nov 19, 2022
+
+**Improvement**:
+
+-   Added GEE workshop notebooks ([#1337](https://github.com/giswqs/geemap/pull/1337))
+-   Updated KML methods ([#1335](https://github.com/giswqs/geemap/pull/1335))
+-   Fixed ipyleaflet.Map broken link ([#1321](https://github.com/giswqs/geemap/pull/1321))
+
 ## v0.17.2 - Oct 31, 2022
 
 **Improvement**:
