@@ -4,7 +4,8 @@ flake8
 grip
 ipykernel
 livereload
-nbconvert
+nbconvert==6.5.3
+nbformat==5.4.0
 pip
 sphinx
 tox
@@ -19,5 +20,5 @@ mkdocs-pdf-export-plugin
 mkdocstrings
 mkdocstrings-crystal
 mkdocstrings-python-legacy
-pygments>=2.10,<2.12
-pymdown-extensions<9.4
+pygments
+pymdown-extensions
