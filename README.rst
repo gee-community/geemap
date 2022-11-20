@@ -8,6 +8,9 @@ geemap
 .. image:: https://mybinder.org/badge_logo.svg
         :target: https://gishub.org/geemap-binder
 
+.. image:: https://studiolab.sagemaker.aws/studiolab.svg
+        :target: https://studiolab.sagemaker.aws/import/github/giswqs/geemap/blob/master/examples/notebooks/00_geemap_key_features.ipynb
+
 .. image:: https://renkulab.io/renku-badge.svg
         :target: https://renkulab.io/projects/renku-stories/geemap/sessions/new?autostart=1
 
@@ -24,7 +27,7 @@ geemap
         :target: https://geemap.org
 
 .. image:: https://img.shields.io/badge/YouTube-Channel-red   
-        :target: https://www.youtube.com/c/QiushengWu
+        :target: https://youtube.com/@giswqs
 
 .. image:: https://img.shields.io/lgtm/grade/python/g/giswqs/geemap.svg?logo=lgtm&logoWidth=18
         :target: https://lgtm.com/projects/g/giswqs/geemap/context:python
@@ -48,7 +51,7 @@ geemap
 * PyPI: https://pypi.org/project/geemap/
 * Conda-forge: https://anaconda.org/conda-forge/geemap
 * 360+ GEE notebook examples: https://github.com/giswqs/earthengine-py-notebooks
-* GEE Tutorials on YouTube: https://www.youtube.com/c/QiushengWu
+* GEE Tutorials on YouTube: https://youtube.com/@giswqs
 * Free software: MIT license
 
 **Acknowledgment:** This material is based upon work supported by the National Aeronautics and Space Administration (NASA) under Grant No. 80NSSC22K1742 issued through the `Open Source Tools, Frameworks, and Libraries 2020 Program <https://bit.ly/3RVBRcQ>`__.
@@ -69,13 +72,13 @@ geemap
 Introduction
 ------------
 
-**geemap** is a Python package for interactive mapping with `Google Earth Engine <https://earthengine.google.com/>`__ (GEE), which is a cloud computing platform with a `multi-petabyte catalog <https://developers.google.com/earth-engine/datasets/>`__ of satellite imagery and geospatial datasets. During the past few years, 
+**Geemap** is a Python package for interactive mapping with `Google Earth Engine <https://earthengine.google.com/>`__ (GEE), which is a cloud computing platform with a `multi-petabyte catalog <https://developers.google.com/earth-engine/datasets/>`__ of satellite imagery and geospatial datasets. During the past few years, 
 GEE has become very popular in the geospatial community and it has empowered numerous environmental applications at local, regional, and global scales. GEE provides both JavaScript and Python APIs for 
 making computational requests to the Earth Engine servers. Compared with the comprehensive `documentation <https://developers.google.com/earth-engine>`__ and interactive IDE (i.e., `GEE JavaScript Code Editor <https://code.earthengine.google.com/>`__) of the GEE JavaScript API, 
 the GEE Python API has relatively little documentation and limited functionality for visualizing results interactively. The **geemap** Python package was created to fill this gap. It is built upon `ipyleaflet <https://github.com/jupyter-widgets/ipyleaflet>`__ and `ipywidgets <https://github.com/jupyter-widgets/ipywidgets>`__, and enables users to 
 analyze and visualize Earth Engine datasets interactively within a Jupyter-based environment.
 
-**geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python `conversion module <https://github.com/giswqs/geemap/blob/master/geemap/conversion.py>`__ of the **geemap** package
+**Geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python `conversion module <https://github.com/giswqs/geemap/blob/master/geemap/conversion.py>`__ of the **geemap** package
 can greatly reduce the time needed to convert existing GEE JavaScripts to Python scripts and Jupyter notebooks.
 
 For video tutorials and notebook examples, please visit `<https://geemap.org/tutorials>`__. For complete documentation on geemap modules and methods, please visit `<https://geemap.org/geemap>`_.
@@ -132,14 +135,14 @@ To use **geemap**, you must first `sign up <https://earthengine.google.com/signu
 .. image:: https://i.imgur.com/ng0FzUT.png
         :target: https://earthengine.google.com
 
-**geemap** is available on `PyPI <https://pypi.org/project/geemap/>`__. To install **geemap**, run this command in your terminal:
+**Geemap** is available on `PyPI <https://pypi.org/project/geemap/>`__. To install **geemap**, run this command in your terminal:
 
 .. code:: python
 
   pip install geemap
 
 
-**geemap** is also available on `conda-forge <https://anaconda.org/conda-forge/geemap>`__. If you have `Anaconda <https://www.anaconda.com/distribution/#download-section>`__ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`__ installed on your computer, you can create a conda Python environment to install geemap:
+**Geemap** is also available on `conda-forge <https://anaconda.org/conda-forge/geemap>`__. If you have `Anaconda <https://www.anaconda.com/distribution/#download-section>`__ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`__ installed on your computer, you can create a conda Python environment to install geemap:
 
 .. code:: python
 
@@ -205,12 +208,12 @@ Note that `Google Colab <https://colab.research.google.com/>`__ currently does n
 you can use `import geemap <https://github.com/giswqs/geemap/blob/master/geemap/geemap.py>`__, which provides more functionalities for capturing user input (e.g.,
 mouse-clicking and moving).
 
-More GEE Tutorials are available on my `YouTube channel <https://www.youtube.com/c/QiushengWu>`__.
+More GEE Tutorials are available on my `YouTube channel <https://youtube.com/@giswqs>`__.
 
 |YouTube|
 
 .. |YouTube| image:: https://wetlands.io/file/images/youtube.png
-   :target: https://www.youtube.com/c/QiushengWu
+   :target: https://youtube.com/@giswqs
 
 To create an ipyleaflet-based interactive map:
 
