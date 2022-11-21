@@ -20,9 +20,9 @@ jobs:
             SDKROOT: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
         steps:
             - name: CHECKOUT CODE
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
             - name: SETUP PYTHON
-              uses: actions/setup-python@v2
+              uses: actions/setup-python@v4
               with:
                   python-version: ${{ matrix.config.py }}
             - name: Install dependencies
@@ -39,4 +39,3 @@ jobs:
             #   env:
             #       HEREMAPS_API_KEY: ${{ secrets.HEREMAPS_API_KEY }}
             #       PLANET_API_KEY: ${{ secrets.PLANET_API_KEY }}
-
