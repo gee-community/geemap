@@ -1,8 +1,5 @@
 name: docs-build
 on:
-    push:
-        branches:
-            - master
     pull_request:
         branches:
             - master
@@ -10,14 +7,16 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-python@v2
+            - uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+            - uses: actions/setup-python@v4
               with:
                   python-version: 3.9
             - name: Install GDAL
               run: |
                   python -m pip install --upgrade pip
-                  pip install --find-links=https://girder.github.io/large_image_wheels --no-cache GDAL
+                  pip install --find-links=https://girder.github.io/large_image_wheels --no-cache GDAL pyproj
             - name: Test GDAL installation
               run: |
                   python -c "from osgeo import gdal"
@@ -38,6 +37,8 @@ jobs:
               run: |
                   python -m unittest discover tests/
             - run: pip install -r requirements_docs.txt
+            - run: cp -R examples/data docs/data
             - run: mkdocs build
               env:
                   USE_FOLIUM: ${{ secrets.USE_FOLIUM }}
+                  USE_MKDOCS: ${{ secrets.USE_MKDOCS }}

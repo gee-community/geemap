@@ -3,6 +3,20 @@ __pycache__/
 *.py[cod]
 *$py.class
 docs/data/
+docs/notebooks/*.json
+docs/notebooks/*.js
+docs/notebooks/*.tif
+docs/notebooks/*.xml
+docs/notebooks/*.zip
+docs/notebooks/*.las
+docs/notebooks/*.csv
+docs/notebooks/*.gif
+docs/notebooks/*.laz
+docs/notebooks/*.nc
+docs/notebooks/*.html
+docs/notebooks/countries.*
+docs/notebooks/cache/*
+
 
 # C extensions
 *.so

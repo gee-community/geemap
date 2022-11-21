@@ -12400,6 +12400,9 @@ def download_ee_image(
 
     """
 
+    if os.environ.get("USE_MKDOCS") is not None:
+        return
+
     try:
         import geedim as gd
     except ImportError:
@@ -12504,6 +12507,8 @@ def download_ee_image_tiles(
             you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
 
     """
+    if os.environ.get("USE_MKDOCS") is not None:
+        return
 
     if not isinstance(features, ee.FeatureCollection):
         raise ValueError("features must be an ee.FeatureCollection.")
@@ -13623,3 +13628,15 @@ def download_3dep_lidar(region, filename, scale=1.0, crs="EPSG:3857"):
         image = dataset.filterBounds(region).mosaic().clipToCollection(region)
 
     download_ee_image(image, filename, region=region.geometry(), scale=scale, crs=crs)
+
+
+def use_mkdocs():
+    """Test if the current notebook is running in mkdocs.
+
+    Returns:
+        bool: True if the notebook is running in mkdocs.
+    """
+    if os.environ.get("USE_MKDOCS") is not None:
+        return True
+    else:
+        return False

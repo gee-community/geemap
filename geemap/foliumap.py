@@ -767,7 +767,7 @@ class Map(folium.Map):
         from branca.element import Template, MacroElement
 
         pkg_dir = os.path.dirname(
-            pkg_resources.resource_filename("leafmap", "leafmap.py")
+            pkg_resources.resource_filename("geemap", "geemap.py")
         )
         legend_template = os.path.join(pkg_dir, "data/template/legend.txt")
 
