@@ -15,6 +15,7 @@ localtileserver
 mapclassify>=2.4.0
 mss
 netcdf4
+oeel
 palettable
 osmnx
 owslib
