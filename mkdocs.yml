@@ -256,6 +256,8 @@ nav:
           - notebooks/124_more_datasets.ipynb
           - notebooks/125_example_code.ipynb
           - notebooks/126_inspector.ipynb
+          - notebooks/127_create_legend.ipynb
+          - notebooks/128_add_widget.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
