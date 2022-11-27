@@ -1,8 +1,23 @@
 # Changelog
 
+## v0.18.0 - Nov 27, 2022
+
+**New Features**
+
+-   Added functions for creating legends and adding widgets to the map ([#1345](https://github.com/giswqs/geemap/pull/1345))([#1346](https://github.com/giswqs/geemap/pull/1346))
+-   New functions include `create_legend()`, `add_legend()`, `add_text()`, `add_image()`, `add_html()`, and `add_widget()`
+-   Added two notebook examples for using newly added functions
+-   Split-map now supports adding multiple legends
+-   Added ESA World Cover 2021 basemaps
+-   Added mkdocs dark mode ([#1338](https://github.com/giswqs/geemap/pull/1338))
+
+**Improvement**
+
+-   Removed misc notebook to reduce mkdocs size
+
 ## v0.17.3 - Nov 19, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Added GEE workshop notebooks ([#1337](https://github.com/giswqs/geemap/pull/1337))
 -   Updated KML methods ([#1335](https://github.com/giswqs/geemap/pull/1335))
@@ -10,7 +25,7 @@
 
 ## v0.17.2 - Oct 31, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Added NASA funding acknowledgment
 -   Added unmask_value parameter to download image [#1270](https://github.com/giswqs/geemap/pull/1270)
@@ -32,7 +47,7 @@
 -   Added codeql.yml
 -   Added dependency-review.yml
 
-**Improvement**:
+**Improvement**
 
 -   Improved chart options
 
@@ -45,19 +60,19 @@
 -   Added plotly charts to import
 -   Added cropland mapping notebook [#1251](https://github.com/giswqs/geemap/pull/1251)
 
-**Improvement**:
+**Improvement**
 
 -   Improved chart and legend and colormap [#1250](https://github.com/giswqs/geemap/pull/1250)
 
 ## v0.16.9 - Sep 6, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Fixed download NED bug
 
 ## v0.16.8 - Sep 6, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Added bands param goes_timelapse [#1242](https://github.com/giswqs/geemap/issues/1242)
 -   Improved download image function [#1238](https://github.com/giswqs/geemap/discussions/1238)
@@ -65,7 +80,7 @@
 
 ## v0.16.7 - Aug 19, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Fixed ee service account authentication bug
 
@@ -79,7 +94,7 @@
 
 ## v0.16.5 - Aug 16, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Add band param for image_count [#1209](https://github.com/giswqs/geemap/issues/1209)
 -   Improved exporting image to asset [#1208](https://github.com/giswqs/geemap/issues/1208)
@@ -97,13 +112,13 @@
 -   Added colorbar background color and image convolution
 -   Added html_to_streamlit function
 
-**Improvement**:
+**Improvement**
 
 -   Improved the search data GUI
 
 ## v0.16.3 - Aug 9, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Fixed colab import issue [#1192](https://github.com/giswqs/geemap/issues/1192)
 -   Allow single color rather than list [#1191](https://github.com/giswqs/geemap/pull/1191)
@@ -129,7 +144,7 @@
 -   Added cloud_pct option for dynamic world ts [#1165](https://github.com/giswqs/geemap/issues/1165)
 -   Added get_ee_path function
 
-**Improvement**:
+**Improvement**
 
 -   Renamed region to roi for timelapse func
 -   Added lidar tutorial
@@ -147,7 +162,7 @@
 -   Added get_direct_url function
 -   Added more lidar functions [#1149](https://github.com/giswqs/geemap/pull/1149)
 
-**Improvement**:
+**Improvement**
 
 -   Improved load_GeoTIFF function
 -   Fixed image palette bug
@@ -160,7 +175,7 @@
 -   Added support for vector styling [#1148](https://github.com/giswqs/geemap/pull/1148)
 -   Added csv_to_vector function [#1144](https://github.com/giswqs/geemap/pull/1144)
 
-**Improvement**:
+**Improvement**
 
 -   Improved add_legend and points_from_xy
 -   Updated data conversion functions
@@ -170,7 +185,7 @@
 
 ## v0.15.3 - Jul 11, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Pin ipyleaflet version for Colab [#1132](https://github.com/giswqs/geemap/issues/1132) [#1143](https://github.com/giswqs/geemap/pull/1143)
 -   Improved add vector functions
@@ -194,7 +209,7 @@
 -   Added support for changing geojson layer opacity [#1135](https://github.com/giswqs/geemap/pull/1135)
 -   Added Map user roi bbox function [#1134](https://github.com/giswqs/geemap/pull/1134)
 
-**Improvement**:
+**Improvement**
 
 -   Fixed colormap bug [#1133](https://github.com/giswqs/geemap/issues/1133)
 -   Cleaned notebook output [#1129](https://github.com/giswqs/geemap/pull/1129)
@@ -217,7 +232,7 @@
 
 ## v0.14.1 - Jun 26, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Added support for Python 3.10 [#1119](https://github.com/giswqs/geemap/pull/1119)
 -   Made mapclassify pkg optional [#1120](https://github.com/giswqs/geemap/pull/1120)
@@ -229,7 +244,7 @@
 -   Added fishnet function [#1111](https://github.com/giswqs/geemap/discussions/1111)
 -   Added download image with geedim [#1110](https://github.com/giswqs/geemap/pull/1113)
 
-**Improvement**:
+**Improvement**
 
 -   Improved zonal stats
 
@@ -248,7 +263,7 @@
 
 ## v0.13.9 - Jun 7, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Improved palette support, accepting a string palette (e.g., terrain, ndvi) vis_params for Map.addLayer().
 
@@ -260,7 +275,7 @@
 -   Added ESA and USGS basemaps [#1089](https://github.com/giswqs/geemap/pull/1089)
 -   Added Earth Engine support for pydeck [#1090](https://github.com/giswqs/geemap/pull/1090)
 
-**Improvement**:
+**Improvement**
 
 -   Fixed add local tile bug
 -   Fixed image_area_by_group bug
@@ -276,7 +291,7 @@
 
 -   Added image_area_by_group function [#1073](https://github.com/giswqs/geemap/pull/1073)
 
-**Improvement**:
+**Improvement**
 
 -   Updated cartoee basemap notebook [#1067](https://github.com/giswqs/geemap/issues/1067)
 -   Refactored basemap [#1075](https://github.com/giswqs/geemap/pull/1075)
@@ -286,14 +301,14 @@
 
 ## v0.13.6 - May 22, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Added cartoee basemap support [#1067](https://github.com/giswqs/geemap/issues/1067)
 -   Updated Landsat LE7_TOA_5YEAR Image ID
 
 ## v0.13.5 - May 17, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Improved JS-PY conversion [#1061](https://github.com/giswqs/geemap/pull/1061)
 -   Updated FAQ
@@ -317,7 +332,7 @@
 -   Added creating coordinate grids notebook
 -   Added image zonal stats notebook
 
-**Improvement**:
+**Improvement**
 
 -   Improved chart module [#1026](https://github.com/giswqs/geemap/pull/1026)
 -   Improved chart histogram [#1032](https://github.com/giswqs/geemap/discussions/1032)
@@ -331,7 +346,7 @@
 -   Added support for creating grids [#1014](https://github.com/giswqs/geemap/pull/1014)
 -   Added landforms legend
 
-**Improvement**:
+**Improvement**
 
 -   Updated cartoee add_colorbar [#1006](https://github.com/giswqs/geemap/pull/1006)
 -   Added layer control for ipyleaflet [#1017](https://github.com/giswqs/geemap/issues/1017)
@@ -340,13 +355,13 @@
 
 ## v0.13.1 - Apr 2, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Fixed heremap import error
 
 ## v0.13.0 - Apr 2, 2022
 
-**Improvement**:
+**Improvement**
 
 -   Reduced number of dependencies, making plotting backends optional except ipyleaflet and folium [#1003](https://github.com/giswqs/geemap/pull/1003)
 -   Improved cartoee.add_legend [#997](https://github.com/giswqs/geemap/pull/997)
@@ -361,7 +376,7 @@
 
 -   Added support for pydeck and kepler.gl [#993](https://github.com/giswqs/geemap/pull/993)
 
-**Improvement**:
+**Improvement**
 
 -   Renamed basemaps
 -   Added GEE-Courses link
@@ -377,7 +392,7 @@
 -   Added clip image by mask [#986](https://github.com/giswqs/geemap/pull/986)
 -   Added streamlit bidirectional functionality [#985](https://github.com/giswqs/geemap/pull/985)
 
-**Improvement**:
+**Improvement**
 
 -   Added requests timeout [#989](https://github.com/giswqs/geemap/issues/989)
 -   Renamed folium basemaps [#978](https://github.com/giswqs/geemap/pull/978)
@@ -391,7 +406,7 @@
 -   Added split map for folium and streamlit [#970](https://github.com/giswqs/geemap/pull/970)
 -   Updated Landsat timelapse to Collection 2 [#974](https://github.com/giswqs/geemap/pull/974)
 
-**Improvement**:
+**Improvement**
 
 -   Fixed typos and broken links [#971](https://github.com/giswqs/geemap/issues/971)
 -   Updated netCDF notebook
@@ -402,7 +417,7 @@
 
 -   Added blend function for creating shaded relief maps blended with hillshade
 
-**Improvement**:
+**Improvement**
 
 -   Added mode reducer to zonal stats [#960](https://github.com/giswqs/geemap/issues/960)
 
@@ -413,7 +428,7 @@
 -   Added support for visualizing LiDAR data in 3D [#957](https://github.com/giswqs/geemap/pull/957)
 -   Added date option for gdf_to_ee [#950](https://github.com/giswqs/geemap/issues/950)
 
-**Improvement**:
+**Improvement**
 
 -   Improved chart histogram [#953](https://github.com/giswqs/geemap/pull/953)
 -   Fixed LGTM false alarm [#939](https://github.com/giswqs/geemap/pull/939)
@@ -427,7 +442,7 @@
 -   Added [Landsat 9 notebook](https://geemap.org/notebooks/99_landsat_9)
 -   Added ESRI Global Land Cover legend
 
-**Improvement**:
+**Improvement**
 
 -   Fixed stac tile bug [#944](https://github.com/giswqs/geemap/pull/944)
 -   Added None to vis_params as optional [#943](https://github.com/giswqs/geemap/pull/943)
@@ -453,7 +468,7 @@
 -   Added remove_colorbars function [#881](https://github.com/giswqs/geemap/discussions/881)
 -   Added remove_legends function [#881](https://github.com/giswqs/geemap/discussions/881)
 
-**Improvement**:
+**Improvement**
 
 -   Update get_image_collection_gif() [#905](https://github.com/giswqs/geemap/pull/905)
 -   Fixed timelapse ND bug [#904](https://github.com/giswqs/geemap/issues/904)
@@ -470,7 +485,7 @@
 -   Added heremap plotting backend [#382](https://github.com/giswqs/geemap/issues/382)
 -   Added COG Inspector GUI [#841](https://github.com/giswqs/geemap/issues/841)
 
-**Improvement**:
+**Improvement**
 
 -   Improved GitHub workflows [#879](https://github.com/giswqs/geemap/pull/879)
 -   Fixed ee_stac_list bug [#873](https://github.com/giswqs/geemap/issues/873)
@@ -496,7 +511,7 @@
 -   Added Planetary Computer STAC support
 -   Added bbox_to_gdf function
 
-**Improvement**:
+**Improvement**
 
 -   Fixed cartoee projection bug [#843](https://github.com/giswqs/geemap/discussions/843)
 -   Improved COG visualization [#844](https://github.com/giswqs/geemap/issues/844)
@@ -514,7 +529,7 @@
 -   Added add_labels function [#815](https://github.com/giswqs/geemap/issues/815)
 -   Added NAIP timelapse [#789](https://github.com/giswqs/geemap/issues/789)
 
-**Improvement**:
+**Improvement**
 
 -   Improved js_to_py function [#805](https://github.com/giswqs/geemap/discussions/805)
 -   Renamed popups to popup [#812](https://github.com/giswqs/geemap/issues/812)
@@ -524,7 +539,7 @@
 
 ## v0.10.1 - Dec 6, 2021
 
-**Improvement**:
+**Improvement**
 
 -   A temporary fix for ipyleaflet basemap error [#795](https://github.com/giswqs/geemap/issues/795)
 
@@ -559,7 +574,7 @@
 -   Added zoom to bounds function
 -   Added streamlit download button
 
-**Improvement**:
+**Improvement**
 
 -   Fixed encoding bug [#747](https://github.com/giswqs/geemap/issues/747)
 
@@ -570,7 +585,7 @@
 -   Made streamlit map width responsive [#713](https://github.com/giswqs/geemap/issues/713)
 -   Added function read file from url
 
-**Improvement**:
+**Improvement**
 
 -   Fixed map width bug [#712](https://github.com/giswqs/geemap/issues/712)
 -   Fixed algorithms module bug
@@ -588,7 +603,7 @@
 -   Added river width module notebook
 -   Added GEE workshop notebook
 
-**Improvement**:
+**Improvement**
 
 -   Fixed geojson style callback bug [#692](https://github.com/giswqs/geemap/issues/692)
 -   Fixed open vector bug [#124](https://github.com/giswqs/geemap/issues/124)
@@ -603,7 +618,7 @@
 -   Added [NLCD notebook](https://geemap.org/notebooks/nlcd_app/)
 -   Added a close button to timeseries inspector
 
-**Improvement**:
+**Improvement**
 
 -   Fixed hover countries notebook [#686](https://github.com/giswqs/geemap/pull/686)
 -   Improved cartoee colorbar with custom label size [#681](https://github.com/giswqs/geemap/discussions/681)
@@ -620,7 +635,7 @@
 
 -   Get current device latlon [#618](https://github.com/giswqs/geemap/issues/618)
 
-**Improvement**:
+**Improvement**
 
 -   Improved Colab support [#661](https://github.com/giswqs/geemap/issues/661)
 -   Improved folium colorbar [#586](https://github.com/giswqs/geemap/issues/586)
@@ -638,7 +653,7 @@
 -   Added feature_groups function to chart module [#539](https://github.com/giswqs/geemap/pull/539)
 -   Added random forest probability output [#550](https://github.com/giswqs/geemap/pull/550)
 
-**Improvement**:
+**Improvement**
 
 -   Renamed eefolium module to foliumap
 -   Changed COG and STAC to lowercase
@@ -655,7 +670,7 @@
 -   Add LCMS dataset option for sankee [#517](https://github.com/giswqs/geemap/issues/517)
 -   Added add_osm function [#503](https://github.com/giswqs/geemap/discussions/503)
 
-**Improvement**:
+**Improvement**
 
 -   Added otsu example [#535](https://github.com/giswqs/geemap/discussions/535)
 -   Fixed timeseries plotting bug [#513](https://github.com/giswqs/geemap/discussions/513)
@@ -677,7 +692,7 @@
 -   Added csv_to_ee and csv_to_makers [#461](https://github.com/giswqs/geemap/issues/461)
 -   Added geopandas support [#455](https://github.com/giswqs/geemap/issues/455)
 
-**Improvement**:
+**Improvement**
 
 -   Improved geojson style [#459](https://github.com/giswqs/geemap/issues/459) [#460](https://github.com/giswqs/geemap/issues/460)
 -   Improved vector support [#455](https://github.com/giswqs/geemap/issues/455)
@@ -687,7 +702,7 @@
 
 ## v0.8.15 - Apr 28, 2021
 
-**Improvement**:
+**Improvement**
 
 -   Improved shp_to_geojson function [#430](https://github.com/giswqs/geemap/discussions/430)
 -   Improved add_styled_vector function [#432](https://github.com/giswqs/geemap/discussions/432)
@@ -701,7 +716,7 @@
 -   Added timelapse GUI [#359](https://github.com/giswqs/geemap/issues/359)
 -   Added timeslider GUI [#359](https://github.com/giswqs/geemap/issues/359) [#387](https://github.com/giswqs/geemap/issues/387)
 
-**Improvement**:
+**Improvement**
 
 -   Improved add_geojson function [731e59e](https://github.com/giswqs/geemap/commit/731e59efc4a1f629db13f6b6cc4e9ef6b06cbe8f)
 -   Added GeoPython workshop notebook [6efd5e](https://geemap.org/workshops/GeoPython_2021)
@@ -719,7 +734,7 @@
 -   Added GEE Toolbox GUI [#362](https://github.com/giswqs/geemap/issues/362)
 -   Added support for multiple legends [#365](https://github.com/giswqs/geemap/discussions/365)
 
-**Improvement**:
+**Improvement**
 
 -   Improved dataset module to use GEE STAC [#346](https://github.com/giswqs/geemap/issues/346)
 -   Improved training sample tool [#326](https://github.com/giswqs/geemap/issues/326)
@@ -742,7 +757,7 @@
 -   Added vertical colorbar support [#322](https://github.com/giswqs/geemap/issues/322)
 -   Added GUI for creating training samples [#326](https://github.com/giswqs/geemap/issues/326)
 
-**Improvement**:
+**Improvement**
 
 -   Added layer control by default to folium map [#323](https://github.com/giswqs/geemap/issues/323)
 -   Added geemap matplotlib example [#319](https://github.com/giswqs/geemap/discussions/319)
@@ -760,7 +775,7 @@
 -   Added extract pixel values function [#315](https://github.com/giswqs/geemap/issues/315)
 -   Visualizing Earth Engine image with >200 matplotlib colormaps via dot notation ([example](https://geemap.org/notebooks/60_colormaps/))
 
-**Improvement**:
+**Improvement**
 
 -   Improved the basemap module accessible via dot notation [#302](https://github.com/giswqs/geemap/issues/302)
 -   Added googledrivedownloader and python-box to requirements [#310](https://github.com/giswqs/geemap/discussions/310)
@@ -776,7 +791,7 @@
 -   Added geemap cheat sheet [#276](https://github.com/giswqs/geemap/issues/276)
 -   Added `Map.zoomToObject()` method [#303](https://github.com/giswqs/geemap/issues/303)
 
-**Improvement**:
+**Improvement**
 
 -   Improved `Map.centerObject()` method [#303](https://github.com/giswqs/geemap/issues/303)
 
@@ -786,7 +801,7 @@
 
 -   Added [whiteboxgui](https://github.com/giswqs/whiteboxgui) with 477 geoprocessing tools [#254](https://github.com/giswqs/geemap/issues/254)
 
-**Improvement**:
+**Improvement**
 
 -   Fixed file open encoding bug
 
@@ -798,7 +813,7 @@
 -   Added KML/KMZ support [#247](https://github.com/giswqs/geemap/issues/247)
 -   Added Code of Conduct
 
-**Improvement**:
+**Improvement**
 
 -   Fixed CSV encoding bug [#267](https://github.com/giswqs/geemap/issues/267)
 -   Improved downloading shp support [#263](https://github.com/giswqs/geemap/issues/263)
@@ -823,7 +838,7 @@
 -   Added mouse click observe to toolbar [#215](https://github.com/giswqs/geemap/issues/215)
 -   Added new tool for opening local data [#239](https://github.com/giswqs/geemap/issues/239)
 
-**Improvement**:
+**Improvement**
 
 -   Fixed COG mosaic bug [#236](https://github.com/giswqs/geemap/issues/236) and [#237](https://github.com/giswqs/geemap/issues/237)
 
@@ -838,7 +853,7 @@
 -   Added `get_image_collection_gif()` function [#225](https://github.com/giswqs/geemap/issues/225)
 -   Added `image_dates()` function [#216](https://github.com/giswqs/geemap/issues/216)
 
-**Improvement**:
+**Improvement**
 
 -   Added `max_zoom` parameter to `add_tile_layer()` [#227](https://github.com/giswqs/geemap/issues/227)
 -   Added mouse latlon to insepctor tool [#229](https://github.com/giswqs/geemap/discussions/229)
@@ -859,7 +874,7 @@
 -   Add cartoee scale bar and north arrow [#191](https://github.com/giswqs/geemap/issues/191)
 -   Add support for COG mosaic [#200](https://github.com/giswqs/geemap/issues/200)
 
-**Improvement**:
+**Improvement**
 
 -   Improve support for locally trained models [#210](https://github.com/giswqs/geemap/issues/210)
 -   Add verbose option of downloading functions [#197](https://github.com/giswqs/geemap/pull/197)
