@@ -2410,7 +2410,14 @@ class Map(ipyleaflet.Map):
         self,
         left_layer="HYBRID",
         right_layer="ROADMAP",
+        zoom_control=True,
+        fullscreen_control=True,
         add_close_button=False,
+        left_label=None,
+        right_label=None,
+        left_position="bottomleft",
+        right_position="bottomright",
+        widget_layout=None,
         **kwargs,
     ):
         """Adds split map.
@@ -2418,7 +2425,15 @@ class Map(ipyleaflet.Map):
         Args:
             left_layer (str, optional): The layer tile layer. Defaults to 'HYBRID'.
             right_layer (str, optional): The right tile layer. Defaults to 'ROADMAP'.
+            zoom_control (bool, optional): Whether to show the zoom control. Defaults to True.
+            fullscreen_control (bool, optional): Whether to show the full screen control. Defaults to True.
             add_close_button (bool, optional): Whether to add a close button. Defaults to False.
+            left_label (str, optional): The label for the left map. Defaults to None.
+            right_label (str, optional): The label for the right map. Defaults to None.
+            left_position (str, optional): The position of the left label. Defaults to 'bottomleft'.
+            right_position (str, optional): The position of the right label. Defaults to 'bottomright'.
+            widget_layout (str, optional): The layout of the label widget, such as ipywidgets.Layout(padding="0px 4px 0px 4px"). Defaults to None.
+            kwargs: Other arguments for ipyleaflet.TileLayer.
         """
         if "max_zoom" not in kwargs:
             kwargs["max_zoom"] = 100
@@ -2429,8 +2444,24 @@ class Map(ipyleaflet.Map):
             layers = self.layers
             self.clear_controls()
 
-            self.add_control(ipyleaflet.ZoomControl())
-            self.add_control(ipyleaflet.FullScreenControl())
+            if zoom_control:
+                self.add_control(ipyleaflet.ZoomControl())
+            if fullscreen_control:
+                self.add_control(ipyleaflet.FullScreenControl())
+
+            if left_label is not None:
+                left_name = left_label
+            else:
+                left_name = "Left Layer"
+
+            if right_label is not None:
+                right_name = right_label
+            else:
+                right_name = "Right Layer"
+
+            if "attribution" not in kwargs:
+                kwargs["attribution"] = " "
+
             if left_layer in basemaps.keys():
                 left_layer = basemaps[left_layer]
             elif isinstance(left_layer, str):
@@ -2438,15 +2469,13 @@ class Map(ipyleaflet.Map):
                     url = cog_tile(left_layer)
                     left_layer = ipyleaflet.TileLayer(
                         url=url,
-                        name="Left Layer",
-                        attribution=" ",
+                        name=left_name,
                         **kwargs,
                     )
                 else:
                     left_layer = ipyleaflet.TileLayer(
                         url=left_layer,
-                        name="Left Layer",
-                        attribution=" ",
+                        name=left_name,
                         **kwargs,
                     )
             elif isinstance(left_layer, ipyleaflet.TileLayer):
@@ -2463,15 +2492,13 @@ class Map(ipyleaflet.Map):
                     url = cog_tile(right_layer)
                     right_layer = ipyleaflet.TileLayer(
                         url=url,
-                        name="Right Layer",
-                        attribution=" ",
+                        name=right_name,
                         **kwargs,
                     )
                 else:
                     right_layer = ipyleaflet.TileLayer(
                         url=right_layer,
-                        name="Right Layer",
-                        attribution=" ",
+                        name=right_name,
                         **kwargs,
                     )
             elif isinstance(right_layer, ipyleaflet.TileLayer):
@@ -2484,6 +2511,28 @@ class Map(ipyleaflet.Map):
             control = ipyleaflet.SplitMapControl(
                 left_layer=left_layer, right_layer=right_layer
             )
+
+            self.add_control(control)
+
+            if left_label is not None:
+                if widget_layout is None:
+                    widget_layout = widgets.Layout(padding="0px 4px 0px 4px")
+                left_widget = widgets.HTML(value=left_label, layout=widget_layout)
+
+                left_control = ipyleaflet.WidgetControl(
+                    widget=left_widget, position=left_position
+                )
+                self.add_control(left_control)
+
+            if right_label is not None:
+
+                if widget_layout is None:
+                    widget_layout = widgets.Layout(padding="0px 4px 0px 4px")
+                right_widget = widgets.HTML(value=right_label, layout=widget_layout)
+                right_control = ipyleaflet.WidgetControl(
+                    widget=right_widget, position=right_position
+                )
+                self.add_control(right_control)
 
             close_button = widgets.ToggleButton(
                 value=False,
@@ -2500,12 +2549,17 @@ class Map(ipyleaflet.Map):
                     self.layers = layers[:-1]
                     self.add_layer(layers[-1])
 
+                if left_label is not None:
+                    self.remove_control(left_control)
+
+                if right_label is not None:
+                    self.remove_control(right_control)
+
             close_button.observe(close_btn_click, "value")
             close_control = ipyleaflet.WidgetControl(
                 widget=close_button, position="bottomright"
             )
 
-            self.add_control(control)
             if add_close_button:
                 self.add_control(close_control)
 
@@ -7323,6 +7377,69 @@ class Map(ipyleaflet.Map):
             nodes.append(objects_node)
         tree.nodes = nodes
         return tree
+
+    def add_widget(self, content, position="bottomright", **kwargs):
+        """Add a widget (e.g., text, HTML, figure) to the map.
+
+        Args:
+            content (str | ipywidgets.Widget | object): The widget to add.
+            position (str, optional): The position of the widget. Defaults to "bottomright".
+            **kwargs: Other keyword arguments for ipywidgets.HTML().
+        """
+
+        allowed_positions = ["topleft", "topright", "bottomleft", "bottomright"]
+
+        if position not in allowed_positions:
+            raise Exception(f"position must be one of {allowed_positions}")
+
+        if "layout" not in kwargs:
+            kwargs["layout"] = widgets.Layout(padding="0px 4px 0px 4px")
+        try:
+            if isinstance(content, str):
+                widget = widgets.HTML(value=content, **kwargs)
+                control = ipyleaflet.WidgetControl(widget=widget, position=position)
+            else:
+                output = widgets.Output(**kwargs)
+                with output:
+                    display(content)
+                control = ipyleaflet.WidgetControl(widget=output, position=position)
+            self.add_control(control)
+
+        except Exception as e:
+            raise Exception(f"Error adding widget: {e}")
+
+    def add_image(self, image, position="bottomright", **kwargs):
+        """Add an image to the map.
+
+        Args:
+            image (str | ipywidgets.Image): The image to add.
+            position (str, optional): The position of the image, can be one of "topleft",
+                "topright", "bottomleft", "bottomright". Defaults to "bottomright".
+
+        """
+
+        if isinstance(image, str):
+            if image.startswith("http"):
+                image = widgets.Image(value=requests.get(image).content, **kwargs)
+            elif os.path.exists(image):
+                with open(image, "rb") as f:
+                    image = widgets.Image(value=f.read(), **kwargs)
+        elif isinstance(image, widgets.Image):
+            pass
+        else:
+            raise Exception("Invalid image")
+
+        self.add_widget(image, position=position)
+
+    def add_html(self, html, position="bottomright", **kwargs):
+        """Add HTML to the map.
+
+        Args:
+            html (str): The HTML to add.
+            position (str, optional): The position of the HTML, can be one of "topleft",
+                "topright", "bottomleft", "bottomright". Defaults to "bottomright".
+        """
+        self.add_widget(html, position=position, **kwargs)
 
 
 # The functions below are outside the Map class.

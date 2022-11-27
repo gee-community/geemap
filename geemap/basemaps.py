@@ -196,6 +196,30 @@ wms_tiles = {
         "format": "image/png",
         "transparent": True,
     },
+    "ESA WorldCover 2021": {
+        "url": "https://services.terrascope.be/wms/v2",
+        "layers": "WORLDCOVER_2021_MAP",
+        "name": "ESA Worldcover 2021",
+        "attribution": "ESA",
+        "format": "image/png",
+        "transparent": True,
+    },
+    "ESA WorldCover 2021 S2 FCC": {
+        "url": "https://services.terrascope.be/wms/v2",
+        "layers": "WORLDCOVER_2021_S2_FCC",
+        "name": "ESA Worldcover 2021 S2 FCC",
+        "attribution": "ESA",
+        "format": "image/png",
+        "transparent": True,
+    },
+    "ESA WorldCover 2021 S2 TCC": {
+        "url": "https://services.terrascope.be/wms/v2",
+        "layers": "WORLDCOVER_2021_S2_TCC",
+        "name": "ESA Worldcover 2021 S2 TCC",
+        "attribution": "ESA",
+        "format": "image/png",
+        "transparent": True,
+    },
 }
 
 
