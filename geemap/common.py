@@ -603,14 +603,13 @@ def open_image_from_url(url, timeout=300, proxies=None):
         print(e)
 
 
-def show_image(img_path, width=None, height=None, verbose=True):
+def show_image(img_path, width=None, height=None):
     """Shows an image within Jupyter notebook.
 
     Args:
         img_path (str): The image file path.
         width (int, optional): Width of the image in pixels. Defaults to None.
         height (int, optional): Height of the image in pixels. Defaults to None.
-        verbose (bool, optional): If True, print the progress. Defaults to True.
 
     """
     from IPython.display import display
@@ -637,6 +636,33 @@ def show_image(img_path, width=None, height=None, verbose=True):
                 return
     except Exception as e:
         print(e)
+
+
+def show_html(html):
+    """Shows HTML within Jupyter notebook.
+
+    Args:
+        html (str): File path or HTML string.
+
+    Raises:
+        FileNotFoundError: If the file does not exist.
+
+    Returns:
+        ipywidgets.HTML: HTML widget.
+    """
+    if os.path.exists(html):
+
+        with open(html, "r") as f:
+            content = f.read()
+
+        widget = widgets.HTML(value=content)
+        return widget
+    else:
+        try:
+            widget = widgets.HTML(value=html)
+            return widget
+        except Exception as e:
+            raise Exception(e)
 
 
 def has_transparency(img):
@@ -13640,3 +13666,251 @@ def use_mkdocs():
         return True
     else:
         return False
+
+
+def create_legend(
+    title="Legend",
+    labels=None,
+    colors=None,
+    legend_dict=None,
+    builtin_legend=None,
+    opacity=1.0,
+    position="bottomright",
+    draggable=True,
+    output=None,
+    style={},
+):
+
+    """Create a legend in HTML format. Reference: https://bit.ly/3oV6vnH
+
+    Args:
+        title (str, optional): Title of the legend. Defaults to 'Legend'. Defaults to "Legend".
+        colors (list, optional): A list of legend colors. Defaults to None.
+        labels (list, optional): A list of legend labels. Defaults to None.
+        legend_dict (dict, optional): A dictionary containing legend items as keys and color as values.
+            If provided, legend_keys and legend_colors will be ignored. Defaults to None.
+        builtin_legend (str, optional): Name of the builtin legend to add to the map. Defaults to None.
+        opacity (float, optional): The opacity of the legend. Defaults to 1.0.
+        position (str, optional): The position of the legend, can be one of the following:
+            "topleft", "topright", "bottomleft", "bottomright". Defaults to "bottomright".
+        draggable (bool, optional): If True, the legend can be dragged to a new position. Defaults to True.
+        output (str, optional): The output file path (*.html) to save the legend. Defaults to None.
+        style: Additional keyword arguments to style the legend, such as position, bottom, right, z-index,
+            border, background-color, border-radius, padding, font-size, etc. The default style is:
+            style = {
+                'position': 'fixed',
+                'z-index': '9999',
+                'border': '2px solid grey',
+                'background-color': 'rgba(255, 255, 255, 0.8)',
+                'border-radius': '5px',
+                'padding': '10px',
+                'font-size': '14px',
+                'bottom': '20px',
+                'right': '5px'
+            }
+
+    Returns:
+        str: The HTML code of the legend.
+    """
+
+    import pkg_resources
+    from .legends import builtin_legends
+
+    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    legend_template = os.path.join(pkg_dir, "data/template/legend_style.html")
+
+    if draggable:
+        legend_template = os.path.join(pkg_dir, "data/template/legend.txt")
+
+    if not os.path.exists(legend_template):
+        raise FileNotFoundError("The legend template does not exist.")
+
+    if labels is not None:
+        if not isinstance(labels, list):
+            print("The legend keys must be a list.")
+            return
+    else:
+        labels = ["One", "Two", "Three", "Four", "etc"]
+
+    if colors is not None:
+        if not isinstance(colors, list):
+            print("The legend colors must be a list.")
+            return
+        elif all(isinstance(item, tuple) for item in colors):
+            try:
+                colors = [rgb_to_hex(x) for x in colors]
+            except Exception as e:
+                print(e)
+        elif all((item.startswith("#") and len(item) == 7) for item in colors):
+            pass
+        elif all((len(item) == 6) for item in colors):
+            pass
+        else:
+            print("The legend colors must be a list of tuples.")
+            return
+    else:
+        colors = [
+            "#8DD3C7",
+            "#FFFFB3",
+            "#BEBADA",
+            "#FB8072",
+            "#80B1D3",
+        ]
+
+    if len(labels) != len(colors):
+        print("The legend keys and values must be the same length.")
+        return
+
+    allowed_builtin_legends = builtin_legends.keys()
+    if builtin_legend is not None:
+        if builtin_legend not in allowed_builtin_legends:
+            print(
+                "The builtin legend must be one of the following: {}".format(
+                    ", ".join(allowed_builtin_legends)
+                )
+            )
+            return
+        else:
+            legend_dict = builtin_legends[builtin_legend]
+            labels = list(legend_dict.keys())
+            colors = list(legend_dict.values())
+
+    if legend_dict is not None:
+        if not isinstance(legend_dict, dict):
+            print("The legend dict must be a dictionary.")
+            return
+        else:
+            labels = list(legend_dict.keys())
+            colors = list(legend_dict.values())
+            if all(isinstance(item, tuple) for item in colors):
+                try:
+                    colors = [rgb_to_hex(x) for x in colors]
+                except Exception as e:
+                    print(e)
+
+    allowed_positions = [
+        "topleft",
+        "topright",
+        "bottomleft",
+        "bottomright",
+    ]
+    if position not in allowed_positions:
+        raise ValueError(
+            "The position must be one of the following: {}".format(
+                ", ".join(allowed_positions)
+            )
+        )
+
+    if position == "bottomright":
+        if "bottom" not in style:
+            style["bottom"] = "20px"
+        if "right" not in style:
+            style["right"] = "5px"
+        if "left" in style:
+            del style["left"]
+        if "top" in style:
+            del style["top"]
+    elif position == "bottomleft":
+        if "bottom" not in style:
+            style["bottom"] = "5px"
+        if "left" not in style:
+            style["left"] = "5px"
+        if "right" in style:
+            del style["right"]
+        if "top" in style:
+            del style["top"]
+    elif position == "topright":
+        if "top" not in style:
+            style["top"] = "5px"
+        if "right" not in style:
+            style["right"] = "5px"
+        if "left" in style:
+            del style["left"]
+        if "bottom" in style:
+            del style["bottom"]
+    elif position == "topleft":
+        if "top" not in style:
+            style["top"] = "5px"
+        if "left" not in style:
+            style["left"] = "5px"
+        if "right" in style:
+            del style["right"]
+        if "bottom" in style:
+            del style["bottom"]
+
+    if "position" not in style:
+        style["position"] = "fixed"
+    if "z-index" not in style:
+        style["z-index"] = "9999"
+    if "background-color" not in style:
+        style["background-color"] = "rgba(255, 255, 255, 0.8)"
+    if "padding" not in style:
+        style["padding"] = "10px"
+    if "border-radius" not in style:
+        style["border-radius"] = "5px"
+    if "font-size" not in style:
+        style["font-size"] = "14px"
+
+    content = []
+
+    with open(legend_template) as f:
+        lines = f.readlines()
+
+    if draggable:
+
+        for index, line in enumerate(lines):
+            if index < 36:
+                content.append(line)
+            elif index == 36:
+                line = lines[index].replace("Legend", title)
+                content.append(line)
+            elif index < 39:
+                content.append(line)
+            elif index == 39:
+                for i, color in enumerate(colors):
+                    item = f"    <li><span style='background:{check_color(color)};opacity:{opacity};'></span>{labels[i]}</li>\n"
+                    content.append(item)
+            elif index > 41:
+                content.append(line)
+        content = content[3:-1]
+
+    else:
+
+        for index, line in enumerate(lines):
+
+            if index < 8:
+                content.append(line)
+            elif index == 8:
+                for key, value in style.items():
+                    content.append(
+                        "              {}: {};\n".format(key.replace("_", "-"), value)
+                    )
+            elif index < 17:
+                pass
+            elif index < 19:
+                content.append(line)
+            elif index == 19:
+                content.append(line.replace("Legend", title))
+            elif index < 22:
+                content.append(line)
+            elif index == 22:
+                for index, key in enumerate(labels):
+                    color = colors[index]
+                    if not color.startswith("#"):
+                        color = "#" + color
+                    item = "                    <li><span style='background:{};opacity:{};'></span>{}</li>\n".format(
+                        color, opacity, key
+                    )
+                    content.append(item)
+            elif index < 33:
+                pass
+            else:
+                content.append(line)
+
+    legend_text = "".join(content)
+
+    if output is not None:
+        with open(output, "w") as f:
+            f.write(legend_text)
+    else:
+        return legend_text
