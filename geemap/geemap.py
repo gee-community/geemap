@@ -7441,6 +7441,43 @@ class Map(ipyleaflet.Map):
         """
         self.add_widget(html, position=position, **kwargs)
 
+    def add_text(
+        self,
+        text,
+        fontsize=20,
+        fontcolor="black",
+        bold=False,
+        padding="5px",
+        background=True,
+        bg_color="white",
+        border_radius="5px",
+        position="bottomright",
+        **kwargs,
+    ):
+        """Add text to the map.
+
+        Args:
+            text (str): The text to add.
+            fontsize (int, optional): The font size. Defaults to 20.
+            fontcolor (str, optional): The font color. Defaults to "black".
+            bold (bool, optional): Whether to use bold font. Defaults to False.
+            padding (str, optional): The padding. Defaults to "5px".
+            background (bool, optional): Whether to use background. Defaults to True.
+            bg_color (str, optional): The background color. Defaults to "white".
+            border_radius (str, optional): The border radius. Defaults to "5px".
+            position (str, optional): The position of the widget. Defaults to "bottomright".
+        """
+
+        if background:
+            text = f"""<div style="font-size: {fontsize}px; color: {fontcolor}; font-weight: {'bold' if bold else 'normal'}; 
+            padding: {padding}; background-color: {bg_color}; 
+            border-radius: {border_radius};">{text}</div>"""
+        else:
+            text = f"""<div style="font-size: {fontsize}px; color: {fontcolor}; font-weight: {'bold' if bold else 'normal'}; 
+            padding: {padding};">{text}</div>"""
+
+        self.add_html(text, position=position, **kwargs)
+
 
 # The functions below are outside the Map class.
 
