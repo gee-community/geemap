@@ -2585,6 +2585,15 @@ class Map(folium.Map):
         """
         import base64
 
+        if position == "bottomleft":
+            position = (5, 5)
+        elif position == "bottomright":
+            position = (80, 5)
+        elif position == "topleft":
+            position = (5, 60)
+        elif position == "topright":
+            position = (80, 60)
+
         if isinstance(image, str):
             if image.startswith("http"):
                 image = download_file(image)
@@ -2611,14 +2620,32 @@ class Map(folium.Map):
             position (str, optional): The position of the widget. Defaults to "bottomright".
         """
 
+        from matplotlib import figure
+        import base64
+        from io import BytesIO
+
         allowed_positions = ["topleft", "topright", "bottomleft", "bottomright"]
 
         if position not in allowed_positions:
             raise Exception(f"position must be one of {allowed_positions}")
 
         try:
-            widget = CustomControl(content, position=position)
-            widget.add_to(self)
+
+            if isinstance(content, str):
+                widget = CustomControl(content, position=position)
+                widget.add_to(self)
+            elif isinstance(content, figure.Figure):
+                buf = BytesIO()
+                content.savefig(buf, format="png")
+                buf.seek(0)
+                b64_content = base64.b64encode(buf.read()).decode("utf-8")
+                widget = CustomControl(
+                    f"""<img src="data:image/png;base64,{b64_content}">""",
+                    position=position,
+                )
+                widget.add_to(self)
+            else:
+                raise Exception("The content must be a string or a matplotlib figure")
 
         except Exception as e:
             raise Exception(f"Error adding widget: {e}")
