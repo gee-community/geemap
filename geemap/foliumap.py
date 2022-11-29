@@ -763,29 +763,29 @@ class Map(folium.Map):
             If you want to add multiple legends to the map, you need to set the `draggable` argument to False.
 
         Args:
-        title (str, optional): Title of the legend. Defaults to 'Legend'. Defaults to "Legend".
-        colors (list, optional): A list of legend colors. Defaults to None.
-        labels (list, optional): A list of legend labels. Defaults to None.
-        legend_dict (dict, optional): A dictionary containing legend items as keys and color as values.
-            If provided, legend_keys and legend_colors will be ignored. Defaults to None.
-        builtin_legend (str, optional): Name of the builtin legend to add to the map. Defaults to None.
-        opacity (float, optional): The opacity of the legend. Defaults to 1.0.
-        position (str, optional): The position of the legend, can be one of the following:
-            "topleft", "topright", "bottomleft", "bottomright". Defaults to "bottomright".
-        draggable (bool, optional): If True, the legend can be dragged to a new position. Defaults to True.
-        style: Additional keyword arguments to style the legend, such as position, bottom, right, z-index,
-            border, background-color, border-radius, padding, font-size, etc. The default style is:
-            style = {
-                'position': 'fixed',
-                'z-index': '9999',
-                'border': '2px solid grey',
-                'background-color': 'rgba(255, 255, 255, 0.8)',
-                'border-radius': '5px',
-                'padding': '10px',
-                'font-size': '14px',
-                'bottom': '20px',
-                'right': '5px'
-            }
+            title (str, optional): Title of the legend. Defaults to 'Legend'. Defaults to "Legend".
+            colors (list, optional): A list of legend colors. Defaults to None.
+            labels (list, optional): A list of legend labels. Defaults to None.
+            legend_dict (dict, optional): A dictionary containing legend items as keys and color as values.
+                If provided, legend_keys and legend_colors will be ignored. Defaults to None.
+            builtin_legend (str, optional): Name of the builtin legend to add to the map. Defaults to None.
+            opacity (float, optional): The opacity of the legend. Defaults to 1.0.
+            position (str, optional): The position of the legend, can be one of the following:
+                "topleft", "topright", "bottomleft", "bottomright". Defaults to "bottomright".
+            draggable (bool, optional): If True, the legend can be dragged to a new position. Defaults to True.
+            style: Additional keyword arguments to style the legend, such as position, bottom, right, z-index,
+                border, background-color, border-radius, padding, font-size, etc. The default style is:
+                style = {
+                    'position': 'fixed',
+                    'z-index': '9999',
+                    'border': '2px solid grey',
+                    'background-color': 'rgba(255, 255, 255, 0.8)',
+                    'border-radius': '5px',
+                    'padding': '10px',
+                    'font-size': '14px',
+                    'bottom': '20px',
+                    'right': '5px'
+                }
 
         """
         content = create_legend(

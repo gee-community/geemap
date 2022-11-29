@@ -10,6 +10,7 @@ keplergl
 ipygany
 ipynb-py-convert
 ipyvtklink
+jupyterlab>=3
 laspy
 localtileserver
 mapclassify>=2.4.0
