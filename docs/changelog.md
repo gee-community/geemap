@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.18.1 - Nov 28, 2022
+
+**New Features**
+
+-   Added `vector_to_gif()` function ([#1348](https://github.com/giswqs/geemap/pull/1348))
+-   Changed jupyterlab dependency to optional. Now compatiable with Colab. No need to restart runtime after installation ([#1347](https://github.com/giswqs/geemap/pull/1347))
+
 ## v0.18.0 - Nov 27, 2022
 
 **New Features**
