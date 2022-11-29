@@ -140,3 +140,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 126. Using the improved Inspector GUI ([notebook](https://geemap.org/notebooks/126_inspector))
 127. Creating multiple legends and add them to the map ([notebook](https://geemap.org/notebooks/127_create_legend))
 128. Adding text, images, HTML, and widgets to the map ([notebook](https://geemap.org/notebooks/128_add_widget))
+129. Creating animated GIF from vector data with only one line of code ([notebook](https://geemap.org/notebooks/129_vector_to_gif))
