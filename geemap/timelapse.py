@@ -4914,3 +4914,250 @@ def sentinel1_timelapse(
         mp4,
         fading,
     )
+
+
+def add_progress_bar_to_gif(
+    in_gif,
+    out_gif,
+    progress_bar_color="blue",
+    progress_bar_height=5,
+    duration=100,
+    loop=0,
+):
+    """Adds a progress bar to a GIF image.
+
+    Args:
+        in_gif (str): The file path to the input GIF image.
+        out_gif (str): The file path to the output GIF image.
+        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
+        duration (int, optional): controls how long each frame will be displayed for, in milliseconds. It is the inverse of the frame rate. Setting it to 100 milliseconds gives 10 frames per second. You can decrease the duration to give a smoother animation.. Defaults to 100.
+        loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+
+    """
+    import io
+    import warnings
+
+    from PIL import Image, ImageDraw, ImageSequence
+
+    warnings.simplefilter("ignore")
+
+    in_gif = os.path.abspath(in_gif)
+    out_gif = os.path.abspath(out_gif)
+
+    if not os.path.exists(in_gif):
+        print("The input gif file does not exist.")
+        return
+
+    if not os.path.exists(os.path.dirname(out_gif)):
+        os.makedirs(os.path.dirname(out_gif))
+
+    progress_bar_color = check_color(progress_bar_color)
+
+    try:
+        image = Image.open(in_gif)
+    except Exception as e:
+        raise Exception("An error occurred while opening the gif.")
+
+    count = image.n_frames
+    W, H = image.size
+    progress_bar_widths = [i * 1.0 / count * W for i in range(1, count + 1)]
+    progress_bar_shapes = [
+        [(0, H - progress_bar_height), (x, H)] for x in progress_bar_widths
+    ]
+
+    try:
+
+        frames = []
+        # Loop over each frame in the animated image
+        for index, frame in enumerate(ImageSequence.Iterator(image)):
+            # Draw the text on the frame
+            frame = frame.convert("RGB")
+            draw = ImageDraw.Draw(frame)
+            # w, h = draw.textsize(text[index])
+            draw.rectangle(progress_bar_shapes[index], fill=progress_bar_color)
+            del draw
+
+            b = io.BytesIO()
+            frame.save(b, format="GIF")
+            frame = Image.open(b)
+
+            frames.append(frame)
+        # https://www.pythoninformer.com/python-libraries/pillow/creating-animated-gif/
+        # Save the frames as a new image
+
+        frames[0].save(
+            out_gif,
+            save_all=True,
+            append_images=frames[1:],
+            duration=duration,
+            loop=loop,
+            optimize=True,
+        )
+    except Exception as e:
+        raise Exception(e)
+
+
+def vector_to_gif(
+    filename,
+    out_gif,
+    colname,
+    vmin=None,
+    vmax=None,
+    step=1,
+    facecolor="black",
+    figsize=(10, 8),
+    padding=3,
+    title=None,
+    add_text=True,
+    xy=("1%", "1%"),
+    fontsize=20,
+    add_progress_bar=True,
+    progress_bar_color="blue",
+    progress_bar_height=5,
+    dpi=300,
+    fps=10,
+    loop=0,
+    mp4=False,
+    keep_png=False,
+    verbose=True,
+    open_args={},
+    plot_args={},
+):
+    """Convert a vector to a gif.
+
+    Args:
+        filename (str): The input vector file. Can be a directory path or http URL, e.g., "https://i.imgur.com/ZWSZC5z.gif"
+        out_gif (str): The output gif file.
+        colname (str): The column name of the vector that contains numerical values.
+        vmin (float, optional): The minimum value to filter the data. Defaults to None.
+        vmax (float, optional): The maximum value to filter the data. Defaults to None.
+        step (float, optional): The step to filter the data. Defaults to 1.
+        facecolor (str, optional): The color to visualize the data. Defaults to "black".
+        figsize (tuple, optional): The figure size. Defaults to (10, 8).
+        padding (int, optional): The padding of the figure tight_layout. Defaults to 3.
+        title (str, optional): The title of the figure. Defaults to None.
+        add_text (bool, optional): Whether to add text to the figure. Defaults to True.
+        xy (tuple, optional): The position of the text from the lower-left corner. Defaults to ("1%", "1%").
+        fontsize (int, optional): The font size of the text. Defaults to 20.
+        add_progress_bar (bool, optional): Whether to add a progress bar to the figure. Defaults to True.
+        progress_bar_color (str, optional): The color of the progress bar. Defaults to "blue".
+        progress_bar_height (int, optional): The height of the progress bar. Defaults to 5.
+        dpi (int, optional): The dpi of the figure. Defaults to 300.
+        fps (int, optional): The frames per seconc (fps) of the gif. Defaults to 10.
+        loop (int, optional): The number of loops of the gif. Defaults to 0, infinite loop.
+        mp4 (bool, optional): Whether to convert the gif to mp4. Defaults to False.
+        keep_png (bool, optional): Whether to keep the png files. Defaults to False.
+        verbose (bool, optional): Whether to print the progress. Defaults to True.
+        open_args (dict, optional): The arguments for the geopandas.read_file() function. Defaults to {}.
+        plot_args (dict, optional): The arguments for the geopandas.GeoDataFrame.plot() function. Defaults to {}.
+
+    """
+    import geopandas as gpd
+    import matplotlib.pyplot as plt
+
+    out_dir = os.path.dirname(out_gif)
+    tmp_dir = os.path.join(out_dir, "tmp_png")
+    if not os.path.exists(tmp_dir):
+        os.makedirs(tmp_dir)
+
+    if isinstance(filename, str):
+        gdf = gpd.read_file(filename, **open_args)
+    elif isinstance(filename, gpd.GeoDataFrame):
+        gdf = filename
+    else:
+        raise ValueError(
+            "filename must be a string or a geopandas.GeoDataFrame object."
+        )
+
+    bbox = gdf.total_bounds
+
+    if colname not in gdf.columns:
+        raise Exception(
+            f"{colname} is not in the columns of the GeoDataFrame. It must be one of {gdf.columns}"
+        )
+
+    values = gdf[colname].unique().tolist()
+    values.sort()
+
+    if vmin is None:
+        vmin = values[0]
+    if vmax is None:
+        vmax = values[-1]
+
+    options = range(vmin, vmax + step, step)
+
+    W = bbox[2] - bbox[0]
+    H = bbox[3] - bbox[1]
+
+    if xy is None:
+        # default text location is 5% width and 5% height of the image.
+        xy = (int(0.05 * W), int(0.05 * H))
+    elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
+        raise Exception("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
+
+    elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):
+        x, y = xy
+        if (x > 0) and (x < W) and (y > 0) and (y < H):
+            pass
+        else:
+            print(
+                f"xy is out of bounds. x must be within [0, {W}], and y must be within [0, {H}]"
+            )
+            return
+    elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
+        x, y = xy
+        if ("%" in x) and ("%" in y):
+            try:
+                x = float(x.replace("%", "")) / 100.0 * W
+                y = float(y.replace("%", "")) / 100.0 * H
+            except Exception:
+                raise Exception(
+                    "The specified xy is invalid. It must be formatted like this ('10%', '10%')"
+                )
+    else:
+        raise Exception(
+            "The specified xy is invalid. It must be formatted like this: (10, 10) or ('10%', '10%')"
+        )
+
+    x = bbox[0] + x
+    y = bbox[1] + y
+
+    for index, v in enumerate(options):
+        if verbose:
+            print(f"Processing {index+1}/{len(options)}: {v}...")
+        yrdf = gdf[gdf[colname] <= v]
+        fig, ax = plt.subplots()
+        ax = yrdf.plot(facecolor=facecolor, figsize=figsize, **plot_args)
+        ax.set_title(title, fontsize=fontsize)
+        ax.set_axis_off()
+        ax.set_xlim([bbox[0], bbox[2]])
+        ax.set_ylim([bbox[1], bbox[3]])
+        if add_text:
+            ax.text(x, y, v, fontsize=fontsize)
+        fig = ax.get_figure()
+        plt.tight_layout(pad=padding)
+        fig.savefig(tmp_dir + os.sep + "%s.png" % v, dpi=dpi)
+        plt.clf()
+        plt.close("all")
+
+    png_to_gif(tmp_dir, out_gif, fps=fps, loop=loop)
+
+    if add_progress_bar:
+        add_progress_bar_to_gif(
+            out_gif,
+            out_gif,
+            progress_bar_color,
+            progress_bar_height,
+            duration=1000 / fps,
+            loop=loop,
+        )
+
+    if mp4:
+        gif_to_mp4(out_gif, out_gif.replace(".gif", ".mp4"))
+
+    if not keep_png:
+        shutil.rmtree(tmp_dir)
+
+    if verbose:
+        print(f"Done. The GIF is saved to {out_gif}.")
