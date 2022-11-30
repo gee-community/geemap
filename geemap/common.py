@@ -1274,11 +1274,12 @@ def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
             return features
         elif geo_json["type"] == "Feature":
             geom = None
-            keys = geo_json["properties"]["style"].keys()
-            if "radius" in keys:  # Checks whether it is a circle
-                geom = ee.Geometry(geo_json["geometry"])
-                radius = geo_json["properties"]["style"]["radius"]
-                geom = geom.buffer(radius)
+            if "style" in geo_json["properties"]:
+                keys = geo_json["properties"]["style"].keys()
+                if "radius" in keys:  # Checks whether it is a circle
+                    geom = ee.Geometry(geo_json["geometry"])
+                    radius = geo_json["properties"]["style"]["radius"]
+                    geom = geom.buffer(radius)
             elif (
                 geo_json["geometry"]["type"] == "Point"
             ):  # Checks whether it is a point
