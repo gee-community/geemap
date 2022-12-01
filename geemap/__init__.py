@@ -25,6 +25,19 @@ def use_folium():
         return False
 
 
+def _use_eerepr(token="USE_EEREPR"):
+    """Whether to use eerepr for printing Earth Engine objects.
+
+    Returns:
+        bool: True if eerepr is used for printing Earth Engine objects.
+    """
+
+    if os.environ.get(token) is None:
+        return True
+    else:
+        return False
+
+
 if use_folium():
     from .foliumap import *
 else:
@@ -40,5 +53,8 @@ else:
                 "Please restart Jupyter kernel after installation if you encounter any errors when importing geemap."
             )
         raise Exception(e)
+
+if _use_eerepr():
+    import eerepr
 
 from .report import Report
