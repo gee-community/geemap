@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.18.2 - Dec 1, 2022
+
+**New Features**
+
+-   Added support for print objects using eerepr ([#1354](https://github.com/giswqs/geemap/pull/1354))
+-   Added support for using custom TiTiler endpoint ([#1353](https://github.com/giswqs/geemap/pull/1353))
+
+**Improvement**
+
+-   Fixed `geojson_to_ee` bug ([#1351](https://github.com/giswqs/geemap/pull/1351))
+
 ## v0.18.1 - Nov 28, 2022
 
 **New Features**
