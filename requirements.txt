@@ -2,6 +2,7 @@ bqplot
 colour
 earthengine-api>=0.1.304
 ee_extra>=0.0.10
+eerepr>=0.0.4
 ffmpeg-python
 folium>=0.11.0
 gdown
