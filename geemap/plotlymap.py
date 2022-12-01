@@ -495,7 +495,7 @@ class Map(go.FigureWidget):
         attribution="",
         opacity=1.0,
         bands=None,
-        titiler_endpoint="https://titiler.xyz",
+        titiler_endpoint=None,
         **kwargs,
     ):
         """Adds a COG TileLayer to the map.
