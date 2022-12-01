@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.18.3 - Dec 1, 2022
+
+**Improvement**
+
+-   Fixed draw control bug ([#1352](https://github.com/giswqs/geemap/pull/1352))
+
 ## v0.18.2 - Dec 1, 2022
 
 **New Features**
