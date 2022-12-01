@@ -129,10 +129,13 @@ def check_titiler_endpoint(titiler_endpoint=None):
         object: A titiler endpoint.
     """
     if titiler_endpoint is None:
-        if os.environ.get("TITILER_ENDPOINT") == "planetary-computer":
-            titiler_endpoint = PlanetaryComputerEndpoint()
+        if os.environ.get("TITILER_ENDPOINT") is not None:
+            titiler_endpoint = os.environ.get("TITILER_ENDPOINT")
+
+            if titiler_endpoint == "planetary-computer":
+                titiler_endpoint = PlanetaryComputerEndpoint()
         else:
-            titiler_endpoint = TitilerEndpoint()
+            titiler_endpoint = "https://titiler.xyz"
     elif titiler_endpoint in ["planetary-computer", "pc"]:
         titiler_endpoint = PlanetaryComputerEndpoint()
 
@@ -5295,7 +5298,7 @@ def load_GeoTIFFs(URLs):
 def cog_tile(
     url,
     bands=None,
-    titiler_endpoint="https://titiler.xyz",
+    titiler_endpoint=None,
     timeout=300,
     proxies=None,
     **kwargs,
@@ -5313,6 +5316,7 @@ def cog_tile(
         tuple: Returns the COG Tile layer URL and bounds.
     """
 
+    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
 
     kwargs["url"] = url
@@ -5357,7 +5361,7 @@ def cog_tile(
 
 def cog_mosaic(
     links,
-    titiler_endpoint="https://titiler.xyz",
+    titiler_endpoint=None,
     username="anonymous",
     layername=None,
     overwrite=False,
@@ -5383,6 +5387,7 @@ def cog_mosaic(
         str: The tile URL for the COG mosaic.
     """
 
+    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     if layername is None:
         layername = "layer_" + random_string(5)
 
@@ -5425,7 +5430,7 @@ def cog_mosaic(
 def cog_mosaic_from_file(
     filepath,
     skip_rows=0,
-    titiler_endpoint="https://titiler.xyz",
+    titiler_endpoint=None,
     username="anonymous",
     layername=None,
     overwrite=False,
@@ -5448,6 +5453,7 @@ def cog_mosaic_from_file(
     """
     import urllib
 
+    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     links = []
     if filepath.startswith("http"):
         data = urllib.request.urlopen(filepath)
@@ -5466,7 +5472,7 @@ def cog_mosaic_from_file(
     return mosaic
 
 
-def cog_bounds(url, titiler_endpoint="https://titiler.xyz", timeout=300):
+def cog_bounds(url, titiler_endpoint=None, timeout=300):
     """Get the bounding box of a Cloud Optimized GeoTIFF (COG).
 
     Args:
@@ -5478,6 +5484,7 @@ def cog_bounds(url, titiler_endpoint="https://titiler.xyz", timeout=300):
         list: A list of values representing [left, bottom, right, top]
     """
 
+    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
 
     r = requests.get(
@@ -5491,7 +5498,7 @@ def cog_bounds(url, titiler_endpoint="https://titiler.xyz", timeout=300):
     return bounds
 
 
-def cog_center(url, titiler_endpoint="https://titiler.xyz"):
+def cog_center(url, titiler_endpoint=None):
     """Get the centroid of a Cloud Optimized GeoTIFF (COG).
 
     Args:
@@ -5502,13 +5509,14 @@ def cog_center(url, titiler_endpoint="https://titiler.xyz"):
         tuple: A tuple representing (longitude, latitude)
     """
 
+    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
     bounds = cog_bounds(url, titiler_endpoint)
     center = ((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2)  # (lat, lon)
     return center
 
 
-def cog_bands(url, titiler_endpoint="https://titiler.xyz", timeout=300):
+def cog_bands(url, titiler_endpoint=None, timeout=300):
     """Get band names of a Cloud Optimized GeoTIFF (COG).
 
     Args:
@@ -5520,6 +5528,7 @@ def cog_bands(url, titiler_endpoint="https://titiler.xyz", timeout=300):
         list: A list of band names
     """
 
+    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
     r = requests.get(
         f"{titiler_endpoint}/cog/info",
@@ -5533,7 +5542,7 @@ def cog_bands(url, titiler_endpoint="https://titiler.xyz", timeout=300):
     return bands
 
 
-def cog_stats(url, titiler_endpoint="https://titiler.xyz", timeout=300):
+def cog_stats(url, titiler_endpoint=None, timeout=300):
     """Get band statistics of a Cloud Optimized GeoTIFF (COG).
 
     Args:
@@ -5544,7 +5553,8 @@ def cog_stats(url, titiler_endpoint="https://titiler.xyz", timeout=300):
     Returns:
         list: A dictionary of band statistics.
     """
-
+    
+    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
     r = requests.get(
         f"{titiler_endpoint}/cog/statistics",
@@ -5558,7 +5568,7 @@ def cog_stats(url, titiler_endpoint="https://titiler.xyz", timeout=300):
 
 
 def cog_info(
-    url, titiler_endpoint="https://titiler.xyz", return_geojson=False, timeout=300
+    url, titiler_endpoint=None, return_geojson=False, timeout=300
 ):
     """Get band statistics of a Cloud Optimized GeoTIFF (COG).
 
@@ -5571,6 +5581,7 @@ def cog_info(
         list: A dictionary of band info.
     """
 
+    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
     info = "info"
     if return_geojson:
@@ -5592,7 +5603,7 @@ def cog_pixel_value(
     lat,
     url,
     bidx=None,
-    titiler_endpoint="https://titiler.xyz",
+    titiler_endpoint=None,
     timeout=300,
     **kwargs,
 ):
@@ -5610,6 +5621,7 @@ def cog_pixel_value(
         list: A dictionary of band info.
     """
 
+    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     kwargs["url"] = url
