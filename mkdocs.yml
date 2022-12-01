@@ -259,6 +259,7 @@ nav:
           - notebooks/127_create_legend.ipynb
           - notebooks/128_add_widget.ipynb
           - notebooks/129_vector_to_gif.ipynb
+          - notebooks/130_print_objects.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb

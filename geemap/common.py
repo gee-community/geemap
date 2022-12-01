@@ -5553,7 +5553,7 @@ def cog_stats(url, titiler_endpoint=None, timeout=300):
     Returns:
         list: A dictionary of band statistics.
     """
-    
+
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
     r = requests.get(
@@ -5567,9 +5567,7 @@ def cog_stats(url, titiler_endpoint=None, timeout=300):
     return r
 
 
-def cog_info(
-    url, titiler_endpoint=None, return_geojson=False, timeout=300
-):
+def cog_info(url, titiler_endpoint=None, return_geojson=False, timeout=300):
     """Get band statistics of a Cloud Optimized GeoTIFF (COG).
 
     Args:
