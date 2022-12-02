@@ -1283,6 +1283,8 @@ def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
                     geom = ee.Geometry(geo_json["geometry"])
                     radius = geo_json["properties"]["style"]["radius"]
                     geom = geom.buffer(radius)
+                else:
+                    geom = ee.Geometry(geo_json["geometry"])
             elif (
                 geo_json["geometry"]["type"] == "Point"
             ):  # Checks whether it is a point
