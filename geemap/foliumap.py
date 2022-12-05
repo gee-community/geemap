@@ -279,8 +279,9 @@ class Map(folium.Map):
         if name[0].isdigit():
             name = "Layer " + name
 
+        url = map_id_dict["tile_fetcher"].url_format
         folium.raster_layers.TileLayer(
-            tiles=map_id_dict["tile_fetcher"].url_format,
+            tiles=url,
             attr="Google Earth Engine",
             name=name,
             overlay=True,
@@ -291,9 +292,11 @@ class Map(folium.Map):
             **kwargs,
         ).add_to(self)
 
+        arc_add_layer(url, name, shown, opacity)
+
     addLayer = add_layer
 
-    def _repr_mimebundle_(self, include, exclude, **kwargs):
+    def _repr_mimebundle_(self, include=None, exclude=None):
         """Adds Layer control to the map. Reference: https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_
 
         Args:
@@ -311,6 +314,9 @@ class Map(folium.Map):
             zoom (int, optional): The zoom level, from 1 to 24. Defaults to 10.
         """
         self.fit_bounds([[lat, lon], [lat, lon]], max_zoom=zoom)
+
+        if is_arcpy():
+            arc_zoom_to_extent(lon, lat, lon, lat)
 
     setCenter = set_center
 
@@ -361,6 +367,10 @@ class Map(folium.Map):
                 lat = centroid[1]
                 lon = centroid[0]
                 self.set_center(lon, lat, zoom)
+
+                if is_arcpy():
+                    arc_zoom_to_extent(lon, lat, lon, lat)
+
         else:
             coordinates = geometry.bounds(maxError).getInfo()["coordinates"][0]
             x = [c[0] for c in coordinates]
@@ -371,6 +381,9 @@ class Map(folium.Map):
             ymax = max(y)
             bounds = [[ymin, xmin], [ymax, xmax]]
             self.fit_bounds(bounds)
+
+            if is_arcpy():
+                arc_zoom_to_extent(xmin, ymin, xmax, ymax)
 
     centerObject = center_object
 

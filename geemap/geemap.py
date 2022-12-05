@@ -1487,8 +1487,9 @@ class Map(ipyleaflet.Map):
                 )
 
         map_id_dict = ee.Image(image).getMapId(vis_params)
+        url = map_id_dict["tile_fetcher"].url_format
         tile_layer = ipyleaflet.TileLayer(
-            url=map_id_dict["tile_fetcher"].url_format,
+            url=url,
             attribution="Google Earth Engine",
             name=name,
             opacity=opacity,
@@ -1546,6 +1547,8 @@ class Map(ipyleaflet.Map):
             self.ee_vector_layers.append(ee_object)
             self.ee_vector_layer_names.append(name)
 
+        arc_add_layer(url, name, shown, opacity)
+
     addLayer = add_ee_layer
 
     def remove_ee_layer(self, name):
@@ -1592,6 +1595,9 @@ class Map(ipyleaflet.Map):
         if zoom is not None:
             self.zoom = zoom
 
+        if is_arcpy():
+            arc_zoom_to_extent(lon, lat, lon, lat)
+
     setCenter = set_center
 
     def center_object(self, ee_object, zoom=None):
@@ -1622,6 +1628,10 @@ class Map(ipyleaflet.Map):
                 lat = centroid[1]
                 lon = centroid[0]
                 self.set_center(lon, lat, zoom)
+
+                if is_arcpy():
+                    arc_zoom_to_extent(lon, lat, lon, lat)
+
         else:
             coordinates = geometry.bounds(maxError).getInfo()["coordinates"][0]
             x = [c[0] for c in coordinates]
@@ -1632,6 +1642,9 @@ class Map(ipyleaflet.Map):
             ymax = max(y)
             bounds = [[ymin, xmin], [ymax, xmax]]
             self.fit_bounds(bounds)
+
+            if is_arcpy():
+                arc_zoom_to_extent(xmin, ymin, xmax, ymax)
 
     centerObject = center_object
 
@@ -1714,6 +1727,9 @@ class Map(ipyleaflet.Map):
         try:
             if basemap in basemaps.keys() and basemaps[basemap] not in self.layers:
                 self.add_layer(basemaps[basemap])
+
+                if is_arcpy():
+                    arc_add_layer(basemaps[basemap].url, basemap)
 
         except Exception:
             raise ValueError(

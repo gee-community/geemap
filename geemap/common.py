@@ -16,8 +16,12 @@ import zipfile
 
 import ee
 import ipywidgets as widgets
-from IPython.display import display, IFrame
 from ipytree import Node, Tree
+
+try:
+    from IPython.display import display, IFrame
+except ImportError:
+    pass
 
 
 class TitilerEndpoint:
@@ -13927,3 +13931,94 @@ def create_legend(
             f.write(legend_text)
     else:
         return legend_text
+
+
+def is_arcpy():
+    """Check if arcpy is available.
+
+    Returns:
+        book: True if arcpy is available, False otherwise.
+    """
+    import sys
+
+    if "arcpy" in sys.modules:
+        return True
+    else:
+        return False
+
+
+def arc_active_map():
+    """Get the active map in ArcGIS Pro.
+
+    Returns:
+        arcpy.Map: The active map in ArcGIS Pro.
+    """
+    if is_arcpy():
+        import arcpy
+
+        aprx = arcpy.mp.ArcGISProject("CURRENT")
+        m = aprx.activeMap
+        return m
+    else:
+        return None
+
+
+def arc_active_view():
+    """Get the active view in ArcGIS Pro.
+
+    Returns:
+        arcpy.MapView: The active view in ArcGIS Pro.
+    """
+    if is_arcpy():
+        import arcpy
+
+        aprx = arcpy.mp.ArcGISProject("CURRENT")
+        view = aprx.activeView
+        return view
+    else:
+        return None
+
+
+def arc_add_layer(url, name=None, shown=True, opacity=1.0):
+    """Add a layer to the active map in ArcGIS Pro.
+
+    Args:
+        url (str): The URL of the tile layer to add.
+        name (str, optional): The name of the layer. Defaults to None.
+        shown (bool, optional): Whether the layer is shown. Defaults to True.
+        opacity (float, optional): The opacity of the layer. Defaults to 1.0.
+    """
+    if is_arcpy():
+        m = arc_active_map()
+        m.addDataFromPath(url)
+        if isinstance(name, str):
+            layers = m.listLayers('Tiled service layer')
+            if len(layers) > 0:
+                layer = layers[0]
+                layer.name = name
+                layer.visible = shown
+                layer.transparency = 100 - (opacity * 100)
+
+
+def arc_zoom_to_extent(xmin, ymin, xmax, ymax):
+    """Zoom to an extent in ArcGIS Pro.
+
+    Args:
+        xmin (float): The minimum x value of the extent.
+        ymin (float): The minimum y value of the extent.
+        xmax (float): The maximum x value of the extent.
+        ymax (float): The maximum y value of the extent.
+    """
+    if is_arcpy():
+        import arcpy
+
+        view = arc_active_view()
+        view.camera.setExtent(
+            arcpy.Extent(
+                xmin, ymin, xmax, ymax, spatial_reference=arcpy.SpatialReference(4326)
+            )
+        )
+
+        # if isinstance(zoom, int):
+        #     scale = 156543.04 * math.cos(0) / math.pow(2, zoom)
+        #     view.camera.scale = scale  # Not working properly
