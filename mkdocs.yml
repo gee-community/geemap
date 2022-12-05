@@ -260,6 +260,7 @@ nav:
           - notebooks/128_add_widget.ipynb
           - notebooks/129_vector_to_gif.ipynb
           - notebooks/130_print_objects.ipynb
+          - notebooks/131_arcgis.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
