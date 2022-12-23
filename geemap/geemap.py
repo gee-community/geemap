@@ -3000,6 +3000,8 @@ class Map(ipyleaflet.Map):
         position="bottomright",
         transparent_bg=False,
         layer_name=None,
+        font_size=9,
+        axis_off=False,
         **kwargs,
     ):
         """Add a matplotlib colorbar to the map
@@ -3013,6 +3015,8 @@ class Map(ipyleaflet.Map):
             position (str, optional): Position of the colorbar on the map. It can be one of: topleft, topright, bottomleft, and bottomright. Defaults to "bottomright".
             transparent_bg (bool, optional): Whether to use transparent background. Defaults to False.
             layer_name (str, optional): The layer name associated with the colorbar. Defaults to None.
+            font_size (int, optional): Font size for the colorbar. Defaults to 9.
+            axis_off (bool, optional): Whether to turn off the axis. Defaults to False.
 
         Raises:
             TypeError: If the vis_params is not a dictionary.
@@ -3058,9 +3062,9 @@ class Map(ipyleaflet.Map):
             raise ValueError("The orientation must be either horizontal or vertical.")
 
         if orientation == "horizontal":
-            width, height = 6.0, 0.4
+            width, height = 3.0, 0.3
         else:
-            width, height = 0.4, 4.0
+            width, height = 0.3, 3.0
 
         if "width" in kwargs:
             width = kwargs["width"]
@@ -3129,9 +3133,13 @@ class Map(ipyleaflet.Map):
         )
 
         if label is not None:
-            cb.set_label(label)
+            cb.set_label(label, fontsize=font_size)
         elif "bands" in vis_keys:
-            cb.set_label(vis_params["bands"])
+            cb.set_label(vis_params["bands"], fontsize=font_size)
+
+        if axis_off:
+            ax.set_axis_off()
+        ax.tick_params(labelsize=font_size)
 
         output = widgets.Output()
         colormap_ctrl = ipyleaflet.WidgetControl(
