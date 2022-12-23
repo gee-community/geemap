@@ -900,6 +900,78 @@ class Map(folium.Map):
 
     add_colorbar_branca = add_colorbar
 
+    def add_colormap(
+        self,
+        width=4.0,
+        height=0.3,
+        vmin=0,
+        vmax=1.0,
+        palette=None,
+        vis_params=None,
+        cmap="gray",
+        discrete=False,
+        label=None,
+        label_size=10,
+        label_weight="normal",
+        tick_size=8,
+        bg_color="white",
+        orientation="horizontal",
+        dpi="figure",
+        transparent=False,
+        position=(70, 5),
+        **kwargs,
+    ):
+        """Add a colorbar to the map. Under the hood, it uses matplotlib to generate the colorbar, save it as a png file, and add it to the map using m.add_image().
+
+        Args:
+            width (float): Width of the colorbar in inches. Default is 4.0.
+            height (float): Height of the colorbar in inches. Default is 0.3.
+            vmin (float): Minimum value of the colorbar. Default is 0.
+            vmax (float): Maximum value of the colorbar. Default is 1.0.
+            palette (list): List of colors to use for the colorbar. It can also be a cmap name, such as ndvi, ndwi, dem, coolwarm. Default is None.
+            vis_params (dict): Visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.
+            cmap (str, optional): Matplotlib colormap. Defaults to "gray". See https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py for options.
+            discrete (bool, optional): Whether to create a discrete colorbar. Defaults to False.
+            label (str, optional): Label for the colorbar. Defaults to None.
+            label_size (int, optional): Font size for the colorbar label. Defaults to 12.
+            label_weight (str, optional): Font weight for the colorbar label, can be "normal", "bold", etc. Defaults to "normal".
+            tick_size (int, optional): Font size for the colorbar tick labels. Defaults to 10.
+            bg_color (str, optional): Background color for the colorbar. Defaults to "white".
+            orientation (str, optional): Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
+            dpi (float | str, optional): The resolution in dots per inch.  If 'figure', use the figure's dpi value. Defaults to "figure".
+            transparent (bool, optional): Whether to make the background transparent. Defaults to False.
+            position (tuple, optional): The position of the colormap in the format of (x, y),
+                the percentage ranging from 0 to 100, starting from the lower-left corner. Defaults to (0, 0).
+            **kwargs: Other keyword arguments to pass to matplotlib.pyplot.savefig().
+
+        Returns:
+            str: Path to the output image.
+        """
+
+        colorbar = save_colorbar(
+            None,
+            width,
+            height,
+            vmin,
+            vmax,
+            palette,
+            vis_params,
+            cmap,
+            discrete,
+            label,
+            label_size,
+            label_weight,
+            tick_size,
+            bg_color,
+            orientation,
+            dpi,
+            transparent,
+            show_colorbar=False,
+            **kwargs,
+        )
+
+        self.add_image(colorbar, position=position)
+
     def add_styled_vector(
         self, ee_object, column, palette, layer_name="Untitled", **kwargs
     ):
@@ -2598,20 +2670,24 @@ class Map(folium.Map):
         """
         import base64
 
-        if position == "bottomleft":
-            position = (5, 5)
-        elif position == "bottomright":
-            position = (80, 5)
-        elif position == "topleft":
-            position = (5, 60)
-        elif position == "topright":
-            position = (80, 60)
-
         if isinstance(image, str):
             if image.startswith("http"):
-                image = download_file(image)
+                html = f'<img src="{image}">'
+                if isinstance(position, tuple):
+                    position = "bottomright"
+                self.add_html(html, position=position, **kwargs)
 
-            if os.path.exists(image):
+            elif os.path.exists(image):
+
+                if position == "bottomleft":
+                    position = (5, 5)
+                elif position == "bottomright":
+                    position = (80, 5)
+                elif position == "topleft":
+                    position = (5, 60)
+                elif position == "topright":
+                    position = (80, 60)
+
                 with open(image, "rb") as lf:
                     # open in binary mode, read bytes, encode, decode obtained bytes as utf-8 string
                     b64_content = base64.b64encode(lf.read()).decode("utf-8")
