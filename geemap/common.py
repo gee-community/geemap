@@ -3632,8 +3632,8 @@ def create_colorbar(
 
 def save_colorbar(
     out_fig=None,
-    width=6.0,
-    height=0.4,
+    width=4.0,
+    height=0.3,
     vmin=0,
     vmax=1.0,
     palette=None,
@@ -3641,12 +3641,13 @@ def save_colorbar(
     cmap="gray",
     discrete=False,
     label=None,
-    label_size=12,
+    label_size=10,
     label_weight="normal",
-    tick_size=10,
-    bg_color=None,
+    tick_size=8,
+    bg_color="white",
     orientation="horizontal",
     dpi="figure",
+    transparent=False,
     show_colorbar=True,
     **kwargs,
 ):
@@ -3654,8 +3655,8 @@ def save_colorbar(
 
     Args:
         out_fig (str): Path to the output image.
-        width (float): Width of the colorbar in inches. Default is 6.0.
-        height (float): Height of the colorbar in inches. Default is 0.4.
+        width (float): Width of the colorbar in inches. Default is 4.0.
+        height (float): Height of the colorbar in inches. Default is 0.3.
         vmin (float): Minimum value of the colorbar. Default is 0.
         vmax (float): Maximum value of the colorbar. Default is 1.0.
         palette (list): List of colors to use for the colorbar. It can also be a cmap name, such as ndvi, ndwi, dem, coolwarm. Default is None.
@@ -3666,10 +3667,12 @@ def save_colorbar(
         label_size (int, optional): Font size for the colorbar label. Defaults to 12.
         label_weight (str, optional): Font weight for the colorbar label, can be "normal", "bold", etc. Defaults to "normal".
         tick_size (int, optional): Font size for the colorbar tick labels. Defaults to 10.
-        bg_color (str, optional): Background color for the colorbar. Defaults to None.
+        bg_color (str, optional): Background color for the colorbar. Defaults to "white".
         orientation (str, optional): Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
-        dpi (float | str, optional): The resolution in dots per inch.  If 'figure', use the figure's dpi value.. Defaults to "figure".
+        dpi (float | str, optional): The resolution in dots per inch.  If 'figure', use the figure's dpi value. Defaults to "figure".
+        transparent (bool, optional): Whether to make the background transparent. Defaults to False.
         show_colorbar (bool, optional): Whether to show the colorbar. Defaults to True.
+        **kwargs: Other keyword arguments to pass to matplotlib.pyplot.savefig().
 
     Returns:
         str: Path to the output image.
@@ -3704,8 +3707,6 @@ def save_colorbar(
         alpha = vis_params["opacity"]
         if type(alpha) not in (int, float):
             raise ValueError("The provided opacity value must be type scalar.")
-    elif "alpha" in kwargs:
-        alpha = kwargs["alpha"]
     else:
         alpha = 1
 
@@ -3744,7 +3745,16 @@ def save_colorbar(
     if label is not None:
         cb.set_label(label=label, size=label_size, weight=label_weight)
     cb.ax.tick_params(labelsize=tick_size)
-    fig.savefig(out_fig, dpi=dpi, facecolor=bg_color, bbox_inches="tight")
+
+    if transparent:
+        bg_color = None
+
+    if bg_color is not None:
+        kwargs["facecolor"] = bg_color
+    if "bbox_inches" not in kwargs:
+        kwargs["bbox_inches"] = "tight"
+
+    fig.savefig(out_fig, dpi=dpi, transparent=transparent, **kwargs)
     if not show_colorbar:
         plt.close(fig)
     return out_fig
@@ -13992,7 +14002,7 @@ def arc_add_layer(url, name=None, shown=True, opacity=1.0):
         m = arc_active_map()
         m.addDataFromPath(url)
         if isinstance(name, str):
-            layers = m.listLayers('Tiled service layer')
+            layers = m.listLayers("Tiled service layer")
             if len(layers) > 0:
                 layer = layers[0]
                 layer.name = name
