@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.19.1 - Dec 22, 2022
+
+**New Features**
+
+-   Added colorbar support for folium ([#1372](https://github.com/giswqs/geemap/pull/1372))
+
 ## v0.19.0 - Dec 5, 2022
 
 **New Features**
