@@ -261,6 +261,7 @@ nav:
           - notebooks/129_vector_to_gif.ipynb
           - notebooks/130_print_objects.ipynb
           - notebooks/131_arcgis.ipynb
+          - notebooks/132_folium_colorbar.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
