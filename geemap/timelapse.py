@@ -5024,7 +5024,8 @@ def vector_to_gif(
     open_args={},
     plot_args={},
 ):
-    """Convert a vector to a gif.
+    """Convert a vector to a gif. This function was inspired by by Johannes Uhl's shapefile2gif repo at 
+            https://github.com/johannesuhl/shapefile2gif. Credits to Johannes Uhl.
 
     Args:
         filename (str): The input vector file. Can be a directory path or http URL, e.g., "https://i.imgur.com/ZWSZC5z.gif"

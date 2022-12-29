@@ -16,7 +16,7 @@ docs/notebooks/*.nc
 docs/notebooks/*.html
 docs/notebooks/countries.*
 docs/notebooks/cache/*
-
+**/.DS_Store
 
 # C extensions
 *.so
