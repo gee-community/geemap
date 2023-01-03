@@ -1070,6 +1070,7 @@ def add_legend(
     title=None,
     title_fontize=16,
     title_fontproperties=None,
+    **kwargs,
 ):
     """Adds a legend to the map. The legend elements can be formatted as:
     legend_elements = [Line2D([], [], color='#00ffff', lw=2, label='Coastline'),
@@ -1088,6 +1089,13 @@ def add_legend(
         Exception: If the legend fails to add.
     """
     from matplotlib.lines import Line2D
+
+    if title_fontize is not None and (title_fontproperties is not None):
+        raise ValueError("title_fontize and title_fontproperties cannot be both set.")
+    elif title_fontize is not None:
+        kwargs["title_fontsize"] = title_fontize
+    elif title_fontproperties is not None:
+        kwargs["title_fontproperties"] = title_fontproperties
 
     try:
         if legend_elements is None:
@@ -1113,8 +1121,7 @@ def add_legend(
             loc=loc,
             prop=fontdict,
             title=title,
-            title_fontize=title_fontize,
-            title_fontproperties=title_fontproperties,
+            **kwargs,
         )
 
         # Change font color If default color is changed.
@@ -1166,7 +1173,7 @@ def get_image_collection_gif(
         verbose (bool, optional): Whether or not to print text when the program is running. Defaults to True.
     """
 
-    from .geemap import png_to_gif
+    from .geemap import png_to_gif, jpg_to_gif
 
     out_dir = os.path.abspath(out_dir)
     if not os.path.exists(out_dir):
@@ -1181,13 +1188,14 @@ def get_image_collection_gif(
     dates = ee_ic.aggregate_array("system:time_start")
     dates = dates.map(lambda d: ee.Date(d).format(date_format)).getInfo()
 
+    digits = len(str(len(dates)))
+
     # list of file name
     img_list = []
 
     for i, date in enumerate(dates):
         image = ee.Image(images.get(i))
-        name = str(names[i])
-        name = name + "." + file_format
+        name = str(i + 1).zfill(digits) + "." + file_format
         out_img = os.path.join(out_dir, name)
         img_list.append(out_img)
 
@@ -1230,7 +1238,10 @@ def get_image_collection_gif(
         plt.close()
 
     out_gif = os.path.abspath(out_gif)
-    png_to_gif(out_dir, out_gif, fps)
+    if file_format == "png":
+        png_to_gif(out_dir, out_gif, fps)
+    elif file_format == "jpg":
+        jpg_to_gif(out_dir, out_gif, fps)
     if verbose:
         print(f"GIF saved to {out_gif}")
 
@@ -1290,3 +1301,19 @@ def get_image_collection_gif(
 
         if verbose:
             print(f"MP4 saved to {output_video_file_name}")
+
+
+def savefig(fig, fname, dpi="figure", bbox_inches="tight", **kwargs):
+    """Save figure to file. It wraps the matplotlib.pyplot.savefig() function.
+            See https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html for more details.
+
+    Args:
+        fig (matplotlib.figure.Figure): The figure to save.
+        fname (str): A path to a file, or a Python file-like object.
+        dpi (int | str, optional): The resolution in dots per inch. If 'figure', use the figure's dpi value. Defaults to 'figure'.
+        bbox_inches (str, optional): Bounding box in inches: only the given portion of the figure is saved.
+            If 'tight', try to figure out the tight bbox of the figure.
+        kwargs (dict, optional): Additional keyword arguments are passed on to the savefig() method.
+    """
+
+    fig.savefig(fname=fname, dpi=dpi, bbox_inches=bbox_inches, **kwargs)
