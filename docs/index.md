@@ -8,7 +8,6 @@
 [![image](https://pepy.tech/badge/geemap)](https://pepy.tech/project/geemap)
 [![image](https://github.com/giswqs/geemap/workflows/docs/badge.svg)](https://geemap.org)
 [![image](https://github.com/giswqs/geemap/workflows/build/badge.svg)](https://github.com/giswqs/geemap/actions?query=workflow%3Abuild)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/giswqs/geemap.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/giswqs/geemap/context:python)
 [![image](https://img.shields.io/badge/YouTube-Channel-red)](https://youtube.com/@giswqs)
 [![image](https://img.shields.io/twitter/follow/giswqs?style=social)](https://twitter.com/giswqs)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
