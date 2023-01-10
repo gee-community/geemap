@@ -1105,7 +1105,8 @@ class Map(ipyleaflet.Map):
                         except KeyError:
                             opacity = 1.0
                     else:
-                        opacity = layer.opacity
+                        if hasattr(layer, "opacity"):
+                            opacity = layer.opacity
 
                     layer_opacity = widgets.FloatSlider(
                         value=opacity,
@@ -1193,7 +1194,7 @@ class Map(ipyleaflet.Map):
 
                     if layer in self.geojson_layers:
                         layer_opacity.observe(layer_opacity_changed, "value")
-                    else:
+                    elif hasattr(layer, "opacity"):
                         widgets.jsdlink((layer_opacity, "value"), (layer, "opacity"))
                     hbox = widgets.HBox(
                         [layer_chk, layer_settings, layer_opacity],
