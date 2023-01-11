@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.19.2 - Jan 11, 2023
+
+**Improvement**
+
+-   Fixed add_labels bug ([#1391](https://github.com/giswqs/geemap/pull/1391))
+-   Removed LGTM badge ([#1389](https://github.com/giswqs/geemap/pull/1389))
+-   Improved cartoee legend and savefig ([#1380](https://github.com/giswqs/geemap/pull/1380))
+-   Updated vector_to_gif notebook
+
 ## v0.19.1 - Dec 22, 2022
 
 **New Features**
