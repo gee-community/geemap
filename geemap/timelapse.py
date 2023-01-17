@@ -1117,18 +1117,21 @@ def create_timelapse(
     return out_gif
 
 
-def naip_timeseries(roi=None, start_year=2003, end_year=2022, RGBN=False):
+def naip_timeseries(roi=None, start_year=2003, end_year=None, RGBN=False):
     """Creates NAIP annual timeseries
 
     Args:
         roi (object, optional): An ee.Geometry representing the region of interest. Defaults to None.
         start_year (int, optional): Starting year for the timeseries. Defaults to 2003.
-        end_year (int, optional): Ending year for the timeseries. Defaults to 2022.
+        end_year (int, optional): Ending year for the timeseries. Defaults to None, which will use the current year.
         RGBN (bool, optional): Whether to retrieve 4-band NAIP imagery only.
     Returns:
         object: An ee.ImageCollection representing annual NAIP imagery.
     """
     try:
+
+        if end_year is None:
+            end_year = datetime.datetime.now().year
 
         def get_annual_NAIP(year):
             try:
@@ -1170,7 +1173,7 @@ def naip_timeseries(roi=None, start_year=2003, end_year=2022, RGBN=False):
 def naip_timelapse(
     roi,
     start_year=2003,
-    end_year=2022,
+    end_year=None,
     out_gif=None,
     bands=None,
     palette=None,
@@ -1202,7 +1205,7 @@ def naip_timelapse(
     Args:
         roi (ee.Geometry): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
         start_year (int | str, optional): The start year of the timeseries. It must be formatted like this: 'YYYY'. Defaults to 2003.
-        end_year (int | str, optional): The end year of the timeseries. It must be formatted like this: 'YYYY'. Defaults to 2022.
+        end_year (int | str, optional): The end year of the timeseries. It must be formatted like this: 'YYYY'. Defaults to None, which will use the current year.
         out_gif (str): The output gif file path. Defaults to None.
         bands (list, optional): A list of band names to use in the timelapse. Defaults to None.
         palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
@@ -1235,6 +1238,10 @@ def naip_timelapse(
     """
 
     try:
+
+        if end_year is None:
+            end_year = datetime.datetime.now().year
+
         collection = ee.ImageCollection("USDA/NAIP/DOQQ")
         start_date = str(start_year) + "-01-01"
         end_date = str(end_year) + "-12-31"
@@ -1469,7 +1476,7 @@ def sentinel2_timeseries(
 
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
-        end_year (int, optional): Ending year for the timelapse. Defaults to 2022.
+        end_year (int, optional): Ending year for the timelapse. Defaults to None, which will use the current year.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
         mask_cloud (bool, optional): Whether to mask clouds. Defaults to True.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
@@ -1530,7 +1537,7 @@ def sentinel2_timeseries(
 def sentinel2_timeseries_legacy(
     roi=None,
     start_year=2015,
-    end_year=2022,
+    end_year=None,
     start_date="01-01",
     end_date="12-31",
     apply_fmask=True,
@@ -1543,7 +1550,7 @@ def sentinel2_timeseries_legacy(
 
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
-        end_year (int, optional): Ending year for the timelapse. Defaults to 2022.
+        end_year (int, optional): Ending year for the timelapse. Defaults to None, which will use the current year.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
         apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
@@ -1561,6 +1568,9 @@ def sentinel2_timeseries_legacy(
     import re
 
     # import datetime
+
+    if end_year is None:
+        end_year = datetime.date.today().year
 
     if roi is None:
         # roi = ee.Geometry.Polygon(
@@ -1611,16 +1621,24 @@ def sentinel2_timeseries_legacy(
 
     ################################################################################
     # Setup vars to get dates.
-    if isinstance(start_year, int) and (start_year >= 2015) and (start_year <= 2022):
+    if (
+        isinstance(start_year, int)
+        and (start_year >= 2015)
+        and (start_year <= get_current_year())
+    ):
         pass
     else:
         print("The start year must be an integer >= 2015.")
         return
 
-    if isinstance(end_year, int) and (end_year >= 2015) and (end_year <= 2022):
+    if (
+        isinstance(end_year, int)
+        and (end_year >= 2015)
+        and (end_year <= get_current_year())
+    ):
         pass
     else:
-        print("The end year must be an integer <= 2022.")
+        print(f"The end year must be an integer <= {get_current_year()}.")
         return
 
     if re.match("[0-9]{2}\-[0-9]{2}", start_date) and re.match(
@@ -1853,7 +1871,7 @@ def sentinel2_timeseries_legacy(
 def landsat_timeseries(
     roi=None,
     start_year=1984,
-    end_year=2022,
+    end_year=None,
     start_date="06-10",
     end_date="09-20",
     apply_fmask=True,
@@ -1865,7 +1883,7 @@ def landsat_timeseries(
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to 2022.
+        end_year (int, optional): Ending year for the timelapse. Defaults to None, which means the current year.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
         apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
@@ -1893,6 +1911,9 @@ def landsat_timeseries(
             False,
         )
 
+    if end_year is None:
+        end_year = get_current_year()
+
     if not isinstance(roi, ee.Geometry):
 
         try:
@@ -1915,16 +1936,24 @@ def landsat_timeseries(
         raise ValueError("frequency must be year, quarter, or month.")
 
     # Setup vars to get dates.
-    if isinstance(start_year, int) and (start_year >= 1984) and (start_year < 2022):
+    if (
+        isinstance(start_year, int)
+        and (start_year >= 1984)
+        and (start_year < get_current_year())
+    ):
         pass
     else:
         print("The start year must be an integer >= 1984.")
         return
 
-    if isinstance(end_year, int) and (end_year > 1984) and (end_year <= 2022):
+    if (
+        isinstance(end_year, int)
+        and (end_year > 1984)
+        and (end_year <= get_current_year())
+    ):
         pass
     else:
-        print("The end year must be an integer <= 2022.")
+        print(f"The end year must be an integer <= {get_current_year()}.")
         return
 
     if re.match("[0-9]{2}\-[0-9]{2}", start_date) and re.match(
@@ -2476,7 +2505,7 @@ def modis_timeseries(
     band_name=None,
     roi=None,
     start_year=2001,
-    end_year=2022,
+    end_year=None,
     start_date="01-01",
     end_date="12-31",
 ):
@@ -2486,7 +2515,7 @@ def modis_timeseries(
         band_name (str, optional): The band name of the image to use.
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to 2020.
+        end_year (int, optional): Ending year for the timelapse. Defaults to None, which is the current year.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
     Returns:
@@ -2494,6 +2523,10 @@ def modis_timeseries(
     """
 
     try:
+
+        if end_year is None:
+            end_year = datetime.datetime.now().year
+
         collection = ee.ImageCollection(asset_id)
         if band_name is None:
             band_name = collection.first().bandNames().getInfo()[0]
@@ -2529,7 +2562,7 @@ def landsat_timelapse(
     roi=None,
     out_gif=None,
     start_year=1984,
-    end_year=2022,
+    end_year=None,
     start_date="06-10",
     end_date="09-20",
     bands=["NIR", "Red", "Green"],
@@ -2568,7 +2601,7 @@ def landsat_timelapse(
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
         out_gif (str, optional): File path to the output animated GIF. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to 2022.
+        end_year (int, optional): Ending year for the timelapse. Defaults to None, which will use the current year.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
         bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']. Defaults to ['NIR', 'Red', 'Green'].
@@ -2636,6 +2669,9 @@ def landsat_timelapse(
 
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
+
+    if end_year is None:
+        end_year = get_current_year()
 
     allowed_bands = ["Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2", "pixel_qa"]
 
@@ -2802,7 +2838,7 @@ def landsat_timelapse_legacy(
     roi=None,
     out_gif=None,
     start_year=1984,
-    end_year=2022,
+    end_year=None,
     start_date="06-10",
     end_date="09-20",
     bands=["NIR", "Red", "Green"],
@@ -2841,7 +2877,7 @@ def landsat_timelapse_legacy(
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
         out_gif (str, optional): File path to the output animated GIF. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to 2022.
+        end_year (int, optional): Ending year for the timelapse. Defaults to None, which means the current year.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
         bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']. Defaults to ['NIR', 'Red', 'Green'].
@@ -2877,6 +2913,9 @@ def landsat_timelapse_legacy(
     Returns:
         str: File path to the output GIF image.
     """
+
+    if end_year is None:
+        end_year = get_current_year()
 
     if roi is None:
         roi = ee.Geometry.Polygon(
@@ -3296,7 +3335,7 @@ def sentinel2_timelapse(
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
         out_gif (str, optional): File path to the output animated GIF. Defaults to None.
         start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
-        end_year (int, optional): Ending year for the timelapse. Defaults to 2022.
+        end_year (int, optional): Ending year for the timelapse. Defaults to None, which means the current year.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
         bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'Red Edge 1', 'Red Edge 2', 'Red Edge 3', 'Red Edge 4']. Defaults to ['NIR', 'Red', 'Green'].
@@ -3329,6 +3368,9 @@ def sentinel2_timelapse(
     Returns:
         str: File path to the output GIF image.
     """
+
+    if end_year is None:
+        end_year = datetime.datetime.now().year
 
     if roi is None:
         roi = ee.Geometry.Polygon(
@@ -5024,7 +5066,7 @@ def vector_to_gif(
     open_args={},
     plot_args={},
 ):
-    """Convert a vector to a gif. This function was inspired by by Johannes Uhl's shapefile2gif repo at 
+    """Convert a vector to a gif. This function was inspired by by Johannes Uhl's shapefile2gif repo at
             https://github.com/johannesuhl/shapefile2gif. Credits to Johannes Uhl.
 
     Args:

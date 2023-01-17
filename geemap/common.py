@@ -14080,3 +14080,13 @@ def arc_zoom_to_extent(xmin, ymin, xmax, ymax):
         # if isinstance(zoom, int):
         #     scale = 156543.04 * math.cos(0) / math.pow(2, zoom)
         #     view.camera.scale = scale  # Not working properly
+
+
+def get_current_year():
+    """Get the current year.
+
+    Returns:
+        int: The current year.
+    """
+    today = datetime.date.today()
+    return today.year
