@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.19.3 - Jan 17, 2023
+
+**Improvement**
+
+-   Updated timelapse default end year [#1400](https://github.com/giswqs/geemap/pull/1400)
+
 ## v0.19.2 - Jan 11, 2023
 
 **Improvement**
