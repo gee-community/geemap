@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.19.4 - Jan 19, 2023
+
+**Improvement**
+
+-   Added layer control to split map ([#1405](https://github.com/giswqs/geemap/pull/1405))
+-   Improved JavaScript to Python conversion ([#1405](https://github.com/giswqs/geemap/pull/1405))
+
 ## v0.19.3 - Jan 17, 2023
 
 **Improvement**
