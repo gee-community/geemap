@@ -209,6 +209,7 @@ class Map(ipyleaflet.Map):
         self.tool_output_ctrl = None
         self.layer_control = None
         self.convert_ctrl = None
+        self.toolbar_ctrl = None
         self._expand_point = False
         self._expand_pixels = True
         self._expand_objects = False
@@ -1214,6 +1215,7 @@ class Map(ipyleaflet.Map):
 
         if kwargs.get("toolbar_ctrl"):
             self.add_control(toolbar_control)
+            self.toolbar_ctrl = toolbar_control
 
         tool_output_control = ipyleaflet.WidgetControl(
             widget=tool_output, position="topright"
@@ -2429,6 +2431,7 @@ class Map(ipyleaflet.Map):
         right_layer="ROADMAP",
         zoom_control=True,
         fullscreen_control=True,
+        layer_control=True,
         add_close_button=False,
         left_label=None,
         right_label=None,
@@ -2444,6 +2447,7 @@ class Map(ipyleaflet.Map):
             right_layer (str, optional): The right tile layer. Defaults to 'ROADMAP'.
             zoom_control (bool, optional): Whether to show the zoom control. Defaults to True.
             fullscreen_control (bool, optional): Whether to show the full screen control. Defaults to True.
+            layer_control (bool, optional): Whether to show the layer control. Defaults to True.
             add_close_button (bool, optional): Whether to add a close button. Defaults to False.
             left_label (str, optional): The label for the left map. Defaults to None.
             right_label (str, optional): The label for the right map. Defaults to None.
@@ -2579,6 +2583,9 @@ class Map(ipyleaflet.Map):
 
             if add_close_button:
                 self.add_control(close_control)
+
+            if layer_control:
+                self.addLayerControl()
 
         except Exception as e:
             print("The provided layers are invalid!")
