@@ -444,6 +444,9 @@ def js_to_python(
                 line = line.replace("= new", "=")
                 line = line.rstrip()
 
+                if ".style(" in line and ".style(**" not in line:
+                    line = line.replace(".style(", ".style(**")
+
                 if line.endswith("+"):
                     line = line + " \\"
                 elif line.endswith(";"):
@@ -548,6 +551,9 @@ def js_snippet_to_py(
                     next_line = lines[index + 1]
                     if line.strip() == "" and next_line.strip() == "":
                         continue
+                    elif ".style(" in line and (".style(**" not in line):
+                        line = line.replace(".style(", ".style(**")
+                        out_lines.append(line)
                     else:
                         out_lines.append(line)
                 elif index == (len(lines) - 1) and lines[index].strip() != "":
