@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.19.5 - Jan 19, 2023
+
+**Improvement**
+
+-   Pin ipywidgets version <8.0 as VS Code does not support ipywidgets 8.x ([#1408](https://github.com/giswqs/geemap/pull/1408))
+
 ## v0.19.4 - Jan 19, 2023
 
 **Improvement**
