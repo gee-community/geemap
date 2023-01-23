@@ -600,8 +600,10 @@ def convert_js2py(m):
                 )
                 if len(out_lines) > 0 and len(out_lines[0].strip()) == 0:
                     out_lines = out_lines[1:]
-                text_widget.value = "".join(out_lines)
-                create_code_cell(text_widget.value)
+
+                prefix = "# The code has been copied to the clipboard. \n# Press Ctrl+V to in a code cell to paste it.\n"
+                text_widget.value = "".join([prefix] + out_lines)
+                create_code_cell("".join(out_lines))
 
         elif change["new"] == "Clear":
             text_widget.value = ""

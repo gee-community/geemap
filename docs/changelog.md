@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.19.6 - Jan 23, 2023
+
+**Improvement**
+
+-   Automatically copy converted JavaScript to Python script to clipboard ([#1411](https://github.com/giswqs/geemap/issues/1411))
+
 ## v0.19.5 - Jan 19, 2023
 
 **Improvement**

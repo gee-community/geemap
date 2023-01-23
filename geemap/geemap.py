@@ -322,6 +322,9 @@ class Map(ipyleaflet.Map):
                 create_code_cell(contents)
                 with search_output:
                     search_output.clear_output(wait=True)
+                    print(
+                        "# The code has been copied to the clipboard. \n# Press Ctrl+V in a new cell to paste it."
+                    )
                     print(contents)
 
         import_btn.on_click(import_btn_clicked)
