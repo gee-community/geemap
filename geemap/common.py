@@ -4129,8 +4129,14 @@ def create_code_cell(code="", where="below"):
     """
 
     import base64
+    import pyperclip
 
     from IPython.display import Javascript, display
+
+    try:
+        pyperclip.copy(str(code))
+    except Exception as e:
+        pass
 
     encoded_code = (base64.b64encode(str.encode(code))).decode()
     display(
