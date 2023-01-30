@@ -6887,6 +6887,7 @@ def zonal_stats_by_group(
             bestEffort=True,
             crs=crs,
             scale=scale,
+            tile_scale=tile_scale
         )
         class_values = (
             ee.Dictionary(hist.get(band_name))
