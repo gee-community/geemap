@@ -6885,7 +6885,9 @@ def zonal_stats_by_group(
             ee.Reducer.frequencyHistogram(),
             geometry=geometry,
             bestEffort=True,
+            crs=crs,
             scale=scale,
+            tile_scale=tile_scale
         )
         class_values = (
             ee.Dictionary(hist.get(band_name))
