@@ -13300,7 +13300,7 @@ def jrc_hist_monthly_history(
 
     Args:
         collection (ee.ImageCollection, optional): The image collection of JRC surface water monthly history.
-            Default to ee.ImageCollection('JRC/GSW1_3/MonthlyHistory')
+            Default to ee.ImageCollection('JRC/GSW1_4/MonthlyHistory')
         region (ee.Geometry | ee.FeatureCollection, optional): The region to plot. Default to None.
         start_date (str, optional): The start date of the plot. Default to '1984-03-16'.
         end_date (str, optional): The end date of the plot. Default to the current date.
@@ -13316,7 +13316,7 @@ def jrc_hist_monthly_history(
         width (int, optional): Width of the plot in pixels. Defaults to None.
         height (int, optional): Height of the plot in pixels. Defaults to 500.
         layout_args (dict, optional): Layout arguments for the plot to be passed to fig.update_layout(),
-        return_df (bool, optional): _description_. Defaults to False.
+        return_df (bool, optional): Whether to return the dataframe of the plot. Defaults to False.
 
     Returns:
         pd.DataFrame: Pandas dataframe of the plot.
@@ -13330,7 +13330,7 @@ def jrc_hist_monthly_history(
         end_date = date.today().strftime("%Y-%m-%d")
 
     if collection is None:
-        collection = ee.ImageCollection("JRC/GSW1_3/MonthlyHistory")
+        collection = ee.ImageCollection("JRC/GSW1_4/MonthlyHistory")
 
     if frequency not in ["year", "month"]:
         raise ValueError("frequency must be 'year' or 'month'.")
