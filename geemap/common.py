@@ -14120,3 +14120,483 @@ def get_current_year():
     """
     today = datetime.date.today()
     return today.year
+
+
+def html_to_gradio(html, width='100%', height='500px', **kwargs):
+    """Converts the map to an HTML string that can be used in Gradio. Removes unsupported elements, such as
+        attribution and any code blocks containing functions. See https://github.com/gradio-app/gradio/issues/3190
+
+    Args:
+        width (str, optional): The width of the map. Defaults to '100%'.
+        height (str, optional): The height of the map. Defaults to '500px'.
+
+    Returns:
+        str: The HTML string to use in Gradio.
+    """
+
+    if isinstance(width, int):
+        width = f"{width}px"
+
+    if isinstance(height, int):
+        height = f"{height}px"
+
+    if isinstance(html, str):
+        with open(html, 'r') as f:
+            lines = f.readlines()
+    elif isinstance(html, list):
+        lines = html
+    else:
+        raise TypeError("html must be a file path or a list of strings")
+
+    output = []
+    skipped_lines = []
+    for index, line in enumerate(lines):
+        if index in skipped_lines:
+            continue
+        if line.lstrip().startswith('{"attribution":'):
+            continue
+        elif 'on(L.Draw.Event.CREATED, function(e)' in line:
+            for i in range(14):
+                skipped_lines.append(index + i)
+        elif 'L.Control.geocoder' in line:
+            for i in range(5):
+                skipped_lines.append(index + i)
+        elif 'function(e)' in line:
+            print(
+                f"Warning: The folium plotting backend does not support functions in code blocks. Please delete line {index + 1}."
+            )
+        else:
+            output.append(line + "\n")
+
+    return f"""<iframe style="width: {width}; height: {height}" name="result" allow="midi; geolocation; microphone; camera; 
+    display-capture; encrypted-media;" sandbox="allow-modals allow-forms 
+    allow-scripts allow-same-origin allow-popups 
+    allow-top-navigation-by-user-activation allow-downloads" allowfullscreen="" 
+    allowpaymentrequest="" frameborder="0" srcdoc='{"".join(output)}'></iframe>"""
+
+
+def image_check(image):
+    from localtileserver import TileClient
+
+    if isinstance(image, str):
+        if image.startswith("http") or os.path.exists(image):
+            pass
+        else:
+            raise ValueError("image must be a URL or filepath.")
+    elif isinstance(image, TileClient):
+        pass
+    else:
+        raise ValueError("image must be a URL or filepath.")
+
+
+def image_client(image, **kwargs):
+    """Get a LocalTileserver TileClient from an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        TileClient: A LocalTileserver TileClient.
+    """
+    image_check(image)
+
+    _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    return client
+
+
+def image_center(image, **kwargs):
+    """Get the center of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        tuple: A tuple of (latitude, longitude).
+    """
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    return client.center()
+
+
+def image_bounds(image, **kwargs):
+    """Get the bounds of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        list: A list of bounds in the form of [(south, west), (north, east)].
+    """
+
+    image_check(image)
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    bounds = client.bounds()
+    return [(bounds[0], bounds[2]), (bounds[1], bounds[3])]
+
+
+def image_metadata(image, **kwargs):
+    """Get the metadata of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        dict: A dictionary of image metadata.
+    """
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    return client.metadata()
+
+
+def image_bandcount(image, **kwargs):
+    """Get the number of bands in an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        int: The number of bands in the image.
+    """
+
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    return len(client.metadata()["bands"])
+
+
+def image_size(image, **kwargs):
+    """Get the size (width, height) of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        tuple: A tuple of (width, height).
+    """
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+
+    metadata = client.metadata()
+    return metadata["sourceSizeX"], metadata["sourceSizeY"]
+
+
+def image_projection(image, **kwargs):
+    """Get the projection of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        str: The projection of the image.
+    """
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    return client.metadata()["Projection"]
+
+
+def image_set_crs(image, epsg):
+    """Define the CRS of an image.
+
+    Args:
+        image (str): The input image filepath
+        epsg (int): The EPSG code of the CRS to set.
+    """
+
+    from rasterio.crs import CRS
+    import rasterio
+
+    with rasterio.open(image, "r+") as rds:
+        rds.crs = CRS.from_epsg(epsg)
+
+
+def image_geotransform(image, **kwargs):
+    """Get the geotransform of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        list: A list of geotransform values.
+    """
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    return client.metadata()["GeoTransform"]
+
+
+def image_resolution(image, **kwargs):
+    """Get the resolution of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        float: The resolution of the image.
+    """
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    return client.metadata()["GeoTransform"][1]
+
+
+def find_files(input_dir, ext=None, fullpath=True, recursive=True):
+    """Find files in a directory.
+
+    Args:
+        input_dir (str): The input directory.
+        ext (str, optional): The file extension to match. Defaults to None.
+        fullpath (bool, optional): Whether to return the full path. Defaults to True.
+        recursive (bool, optional): Whether to search recursively. Defaults to True.
+
+    Returns:
+        list: A list of matching files.
+    """
+
+    from pathlib import Path
+
+    files = []
+
+    if ext is None:
+        ext = "*"
+    else:
+        ext = ext.replace(".", "")
+
+    ext = f"*.{ext}"
+
+    if recursive:
+        if fullpath:
+            files = [str(path.joinpath()) for path in Path(input_dir).rglob(ext)]
+        else:
+            files = [str(path.name) for path in Path(input_dir).rglob(ext)]
+    else:
+        if fullpath:
+            files = [str(path.joinpath()) for path in Path(input_dir).glob(ext)]
+        else:
+            files = [path.name for path in Path(input_dir).glob(ext)]
+
+    return files
+
+
+def zoom_level_resolution(zoom, latitude=0):
+    """Returns the approximate pixel scale based on zoom level and latutude.
+        See https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
+
+    Args:
+        zoom (int): The zoom level.
+        latitude (float, optional): The latitude. Defaults to 0.
+
+    Returns:
+        float: Map resolution in meters.
+    """
+    import math
+
+    resolution = 156543.04 * math.cos(latitude) / math.pow(2, zoom)
+    return abs(resolution)
+
+
+def lnglat_to_meters(longitude, latitude):
+    """coordinate conversion between lat/lon in decimal degrees to web mercator
+
+    Args:
+        longitude (float): The longitude.
+        latitude (float): The latitude.
+
+    Returns:
+        tuple: A tuple of (x, y) in meters.
+    """
+    import numpy as np
+
+    origin_shift = np.pi * 6378137
+    easting = longitude * origin_shift / 180.0
+    northing = np.log(np.tan((90 + latitude) * np.pi / 360.0)) * origin_shift / np.pi
+
+    if np.isnan(easting):
+        if longitude > 0:
+            easting = 20026376
+        else:
+            easting = -20026376
+
+    if np.isnan(northing):
+        if latitude > 0:
+            northing = 20048966
+        else:
+            northing = -20048966
+
+    return (easting, northing)
+
+
+def meters_to_lnglat(x, y):
+    """coordinate conversion between web mercator to lat/lon in decimal degrees
+
+    Args:
+        x (float): The x coordinate.
+        y (float): The y coordinate.
+
+    Returns:
+        tuple: A tuple of (longitude, latitude) in decimal degrees.
+    """
+    import numpy as np
+
+    origin_shift = np.pi * 6378137
+    longitude = (x / origin_shift) * 180.0
+    latitude = (y / origin_shift) * 180.0
+    latitude = (
+        180 / np.pi * (2 * np.arctan(np.exp(latitude * np.pi / 180.0)) - np.pi / 2.0)
+    )
+    return (longitude, latitude)
+
+
+def bounds_to_xy_range(bounds):
+    """Convert bounds to x and y range to be used as input to bokeh map.
+
+    Args:
+        bounds (list): A list of bounds in the form [(south, west), (north, east)] or [xmin, ymin, xmax, ymax].
+
+    Returns:
+        tuple: A tuple of (x_range, y_range).
+    """
+
+    if isinstance(bounds, tuple):
+        bounds = list(bounds)
+    elif not isinstance(bounds, list):
+        raise TypeError("bounds must be a list")
+
+    if len(bounds) == 4:
+        west, south, east, north = bounds
+    elif len(bounds) == 2:
+        south, west = bounds[0]
+        north, east = bounds[1]
+
+    xmin, ymin = lnglat_to_meters(west, south)
+    xmax, ymax = lnglat_to_meters(east, north)
+    x_range = (xmin, xmax)
+    y_range = (ymin, ymax)
+    return x_range, y_range
+
+
+def center_zoom_to_xy_range(center, zoom):
+    """Convert center and zoom to x and y range to be used as input to bokeh map.
+
+    Args:
+        center (tuple): A tuple of (latitude, longitude).
+        zoom (int): The zoom level.
+
+    Returns:
+        tuple: A tuple of (x_range, y_range).
+    """
+
+    if isinstance(center, tuple) or isinstance(center, list):
+        pass
+    else:
+        raise TypeError("center must be a tuple or list")
+
+    if not isinstance(zoom, int):
+        raise TypeError("zoom must be an integer")
+
+    latitude, longitude = center
+    x_range = (-179, 179)
+    y_range = (-70, 70)
+    x_full_length = x_range[1] - x_range[0]
+    y_full_length = y_range[1] - y_range[0]
+
+    x_length = x_full_length / 2 ** (zoom - 2)
+    y_length = y_full_length / 2 ** (zoom - 2)
+
+    south = latitude - y_length / 2
+    north = latitude + y_length / 2
+    west = longitude - x_length / 2
+    east = longitude + x_length / 2
+
+    xmin, ymin = lnglat_to_meters(west, south)
+    xmax, ymax = lnglat_to_meters(east, north)
+
+    x_range = (xmin, xmax)
+    y_range = (ymin, ymax)
+
+    return x_range, y_range
+
+
+def get_geometry_coords(row, geom, coord_type, shape_type, mercator=False):
+    """
+    Returns the coordinates ('x' or 'y') of edges of a Polygon exterior.
+
+    :param: (GeoPandas Series) row : The row of each of the GeoPandas DataFrame.
+    :param: (str) geom : The column name.
+    :param: (str) coord_type : Whether it's 'x' or 'y' coordinate.
+    :param: (str) shape_type
+    """
+
+    # Parse the exterior of the coordinate
+    if shape_type.lower() in ["polygon", "multipolygon"]:
+        exterior = row[geom].geoms[0].exterior
+        if coord_type == "x":
+            # Get the x coordinates of the exterior
+            coords = list(exterior.coords.xy[0])
+            if mercator:
+                coords = [lnglat_to_meters(x, 0)[0] for x in coords]
+            return coords
+
+        elif coord_type == "y":
+            # Get the y coordinates of the exterior
+            coords = list(exterior.coords.xy[1])
+            if mercator:
+                coords = [lnglat_to_meters(0, y)[1] for y in coords]
+            return coords
+
+    elif shape_type.lower() in ["linestring", "multilinestring"]:
+        if coord_type == "x":
+            coords = list(row[geom].coords.xy[0])
+            if mercator:
+                coords = [lnglat_to_meters(x, 0)[0] for x in coords]
+            return coords
+        elif coord_type == "y":
+            coords = list(row[geom].coords.xy[1])
+            if mercator:
+                coords = [lnglat_to_meters(0, y)[1] for y in coords]
+            return coords
+
+    elif shape_type.lower() in ["point", "multipoint"]:
+        exterior = row[geom]
+
+        if coord_type == "x":
+            # Get the x coordinates of the exterior
+            coords = exterior.coords.xy[0][0]
+            if mercator:
+                coords = lnglat_to_meters(coords, 0)[0]
+            return coords
+
+        elif coord_type == "y":
+            # Get the y coordinates of the exterior
+            coords = exterior.coords.xy[1][0]
+            if mercator:
+                coords = lnglat_to_meters(0, coords)[1]
+            return coords
+
