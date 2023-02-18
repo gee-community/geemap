@@ -39,7 +39,6 @@ class Map(ipyleaflet.Map):
     """
 
     def __init__(self, **kwargs):
-
         import warnings
 
         warnings.filterwarnings("ignore")
@@ -404,7 +403,6 @@ class Map(ipyleaflet.Map):
         search_type.observe(search_type_changed, names="value")
 
         def search_box_callback(text):
-
             if text.value != "":
                 if search_type.value == "name/address":
                     g = geocode(text.value)
@@ -490,7 +488,6 @@ class Map(ipyleaflet.Map):
         )
 
         def handle_search_event(event):
-
             if event["type"] == "mouseenter":
                 search_widget.children = [search_button, search_result_widget]
                 # search_type.value = "name/address"
@@ -832,7 +829,6 @@ class Map(ipyleaflet.Map):
         self.toolbar = toolbar_grid
 
         def tool_callback(change):
-
             if change["new"]:
                 current_tool = change["owner"]
                 for tool in toolbar_grid.children:
@@ -1025,7 +1021,6 @@ class Map(ipyleaflet.Map):
         )
 
         def handle_toolbar_event(event):
-
             if event["type"] == "mouseenter":
                 toolbar_widget.children = [toolbar_header, toolbar_footer]
             elif event["type"] == "mouseleave":
@@ -1048,7 +1043,6 @@ class Map(ipyleaflet.Map):
 
         def layers_btn_click(change):
             if change["new"]:
-
                 layers_hbox = []
                 all_layers_chk = widgets.Checkbox(
                     value=False,
@@ -1165,7 +1159,6 @@ class Map(ipyleaflet.Map):
                     layer_settings.observe(layer_vis_on_click, "value")
 
                     def layer_chk_changed(change):
-
                         layer_name = change["owner"].description
                         if layer_name in self.ee_layer_names:
                             if change["new"]:
@@ -1505,7 +1498,6 @@ class Map(ipyleaflet.Map):
 
         layer = self.find_layer(name=name)
         if layer is not None:
-
             existing_object = self.ee_layer_dict[name]["ee_object"]
 
             if isinstance(existing_object, ee.Image) or isinstance(
@@ -2549,7 +2541,6 @@ class Map(ipyleaflet.Map):
                 self.add_control(left_control)
 
             if right_label is not None:
-
                 if widget_layout is None:
                     widget_layout = widgets.Layout(padding="0px 4px 0px 4px")
                 right_widget = widgets.HTML(value=right_label, layout=widget_layout)
@@ -2775,7 +2766,6 @@ class Map(ipyleaflet.Map):
         )
 
         try:
-
             split_control = ipyleaflet.SplitMapControl(
                 left_layer=left_layer, right_layer=right_layer
             )
@@ -2966,7 +2956,6 @@ class Map(ipyleaflet.Map):
         legend_text = "".join(legend_html)
 
         try:
-
             legend_output_widget = widgets.Output(
                 layout={
                     # "border": "1px solid black",
@@ -3111,7 +3100,6 @@ class Map(ipyleaflet.Map):
             alpha = 1
 
         if cmap is not None:
-
             cmap = mpl.pyplot.get_cmap(cmap)
             norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
@@ -3129,7 +3117,6 @@ class Map(ipyleaflet.Map):
                 norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
         elif cmap is not None:
-
             cmap = mpl.pyplot.get_cmap(cmap)
             norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
@@ -3296,7 +3283,6 @@ class Map(ipyleaflet.Map):
 
         try:
             if not url.startswith("http"):
-
                 if not os.path.exists(url):
                     print("The provided file does not exist.")
                     return
@@ -3399,7 +3385,6 @@ class Map(ipyleaflet.Map):
 
         """
         try:
-
             if roi is None:
                 if self.draw_last_feature is not None:
                     feature = self.draw_last_feature
@@ -3533,7 +3518,6 @@ class Map(ipyleaflet.Map):
 
         """
         try:
-
             save = True
             if filename is not None:
                 if not filename.endswith(".html"):
@@ -4060,7 +4044,6 @@ class Map(ipyleaflet.Map):
                 if change["new"]:
                     selected = change["owner"].value
                     if colormap.value is not None:
-
                         n_class = None
                         if selected != "Any":
                             n_class = int(classes.value)
@@ -4225,7 +4208,6 @@ class Map(ipyleaflet.Map):
             legend_vbox = widgets.VBox()
 
             def linear_chk_changed(change):
-
                 if change["new"]:
                     step_chk.value = False
                     legend_vbox.children = [colormap_hbox]
@@ -4233,7 +4215,6 @@ class Map(ipyleaflet.Map):
                     step_chk.value = True
 
             def step_chk_changed(change):
-
                 if change["new"]:
                     linear_chk.value = False
                     if len(layer_palette) > 0:
@@ -4256,7 +4237,6 @@ class Map(ipyleaflet.Map):
 
             def colormap_changed(change):
                 if change["new"]:
-
                     n_class = None
                     if classes.value != "Any":
                         n_class = int(classes.value)
@@ -4325,7 +4305,6 @@ class Map(ipyleaflet.Map):
             )
 
             def import_btn_clicked(b):
-
                 vis = {}
                 if radio1.index == 0:
                     vis["bands"] = [band1_dropdown.value]
@@ -4346,7 +4325,6 @@ class Map(ipyleaflet.Map):
                 create_code_cell(f"vis_params = {str(vis)}")
 
             def apply_btn_clicked(b):
-
                 vis = {}
                 if radio1.index == 0:
                     vis["bands"] = [band1_dropdown.value]
@@ -4404,7 +4382,6 @@ class Map(ipyleaflet.Map):
                                 layer_name=layer_name,
                             )
                     elif step_chk.value:
-
                         if len(palette.value) > 0 and "," in palette.value:
                             colors = to_hex_colors(
                                 [color.strip() for color in palette.value.split(",")]
@@ -4500,7 +4477,6 @@ class Map(ipyleaflet.Map):
             ]
 
             def legend_chk_changed(change):
-
                 if change["new"]:
                     linear_chk.value = True
                     legend_vbox.children = [
@@ -4628,7 +4604,6 @@ class Map(ipyleaflet.Map):
             return vis_widget
 
         elif isinstance(ee_object, ee.FeatureCollection):
-
             vis_widget = widgets.VBox(
                 layout=widgets.Layout(padding="5px 5px 5px 8px", width="330px")
             )
@@ -4848,7 +4823,6 @@ class Map(ipyleaflet.Map):
                 if change["new"]:
                     selected = change["owner"].value
                     if colormap.value is not None:
-
                         n_class = None
                         if selected != "Any":
                             n_class = int(classes.value)
@@ -4896,7 +4870,6 @@ class Map(ipyleaflet.Map):
 
             def colormap_changed(change):
                 if change["new"]:
-
                     n_class = None
                     if classes.value != "Any":
                         n_class = int(classes.value)
@@ -4980,9 +4953,7 @@ class Map(ipyleaflet.Map):
             style_vbox = widgets.VBox([widgets.HBox([style_chk, compute_label])])
 
             def style_chk_changed(change):
-
                 if change["new"]:
-
                     if (
                         self.colorbar_ctrl is not None
                         and self.colorbar_ctrl in self.controls
@@ -5074,7 +5045,6 @@ class Map(ipyleaflet.Map):
             legend_chk.observe(legend_chk_changed, "value")
 
             def field_changed(change):
-
                 if change["new"]:
                     compute_label.value = "Computing ..."
                     options = ee_object.aggregate_array(field.value).getInfo()
@@ -5088,7 +5058,6 @@ class Map(ipyleaflet.Map):
             field.observe(field_changed, "value")
 
             def get_vis_params():
-
                 vis = {}
                 vis["color"] = color.value[1:] + str(
                     hex(int(color_opacity.value * 255))
@@ -5105,12 +5074,10 @@ class Map(ipyleaflet.Map):
                 return vis
 
             def import_btn_clicked(b):
-
                 vis = get_vis_params()
                 create_code_cell(f"vis_params = {str(vis)}")
 
             def apply_btn_clicked(b):
-
                 compute_label.value = "Computing ..."
 
                 if new_layer_name.value in self.ee_layer_names:
@@ -5331,9 +5298,7 @@ class Map(ipyleaflet.Map):
             style_callback_only = True
 
         try:
-
             if isinstance(in_geojson, str):
-
                 if in_geojson.startswith("http"):
                     in_geojson = github_raw_url(in_geojson)
                     data = requests.get(in_geojson).json()
@@ -5432,7 +5397,6 @@ class Map(ipyleaflet.Map):
         close_button.observe(close_btn_click, "value")
 
         def update_html(feature, **kwargs):
-
             value = [
                 "<b>{}: </b>{}<br>".format(prop, feature["properties"][prop])
                 for prop in feature["properties"].keys()
@@ -5559,7 +5523,6 @@ class Map(ipyleaflet.Map):
         else:
             filename = github_raw_url(filename)
         if to_ee:
-
             fc = vector_to_ee(
                 filename,
                 bbox=bbox,
@@ -5571,7 +5534,6 @@ class Map(ipyleaflet.Map):
 
             self.addLayer(fc, {}, layer_name)
         else:
-
             ext = os.path.splitext(filename)[1].lower()
             if ext == ".shp":
                 self.add_shapefile(
@@ -6182,7 +6144,6 @@ class Map(ipyleaflet.Map):
         slider_widget = widgets.HBox([slider, label, play_btn, pause_btn, close_btn])
 
         def play_click(b):
-
             play_chk.value = True
 
             def work(slider):
@@ -6397,7 +6358,6 @@ class Map(ipyleaflet.Map):
                 )
 
         if items is not None:
-
             if len(icon_colors) == 1:
                 icon_colors = icon_colors * len(items)
             elif len(items) != len(icon_colors):
@@ -6440,7 +6400,6 @@ class Map(ipyleaflet.Map):
 
                 markers = []
                 for index, point in enumerate(points):
-
                     if items is not None:
                         marker_color = marker_colors[
                             items.index(df[color_column][index])
@@ -6843,7 +6802,6 @@ class Map(ipyleaflet.Map):
         from ipyleaflet import Heatmap
 
         try:
-
             if isinstance(data, str):
                 df = pd.read_csv(data)
                 data = df[[latitude, longitude, value]].values.tolist()
@@ -7352,7 +7310,6 @@ class Map(ipyleaflet.Map):
                 continue
 
             if isinstance(ee_object, ee.FeatureCollection):
-
                 # Check geometry type
                 geom_type = ee.Feature(ee_object.first()).geometry().type()
                 lat, lon = latlon
@@ -7513,6 +7470,22 @@ class Map(ipyleaflet.Map):
 
         self.add_html(text, position=position, **kwargs)
 
+    def to_gradio(self, width="100%", height="500px", **kwargs):
+        """Converts the map to an HTML string that can be used in Gradio. Removes unsupported elements, such as
+            attribution and any code blocks containing functions. See https://github.com/gradio-app/gradio/issues/3190
+
+        Args:
+            width (str, optional): The width of the map. Defaults to '100%'.
+            height (str, optional): The height of the map. Defaults to '500px'.
+
+        Returns:
+            str: The HTML string to use in Gradio.
+        """
+
+        print(
+            "The ipyleaflet plotting backend does not support this function. Please use the folium backend instead."
+        )
+
 
 # The functions below are outside the Map class.
 
@@ -7527,7 +7500,6 @@ class ImageOverlay(ipyleaflet.ImageOverlay):
     """
 
     def __init__(self, **kwargs):
-
         from base64 import b64encode
         from PIL import Image, ImageSequence
         from io import BytesIO
@@ -7535,7 +7507,6 @@ class ImageOverlay(ipyleaflet.ImageOverlay):
         try:
             url = kwargs.get("url")
             if not url.startswith("http"):
-
                 url = os.path.abspath(url)
                 if not os.path.exists(url):
                     raise FileNotFoundError("The provided file does not exist.")
@@ -7749,7 +7720,6 @@ def ts_inspector(
     zoom=4,
     **kwargs,
 ):
-
     add_zoom = True
     add_fullscreen = True
 

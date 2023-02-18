@@ -321,7 +321,6 @@ def feature_histogram(
         return bin_size
 
     try:
-
         raw_data = pd.to_numeric(
             pd.Series(features.aggregate_array(property).getInfo())
         )

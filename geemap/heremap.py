@@ -49,7 +49,6 @@ class Map(here_map_widget.Map):
     """
 
     def __init__(self, api_key=None, **kwargs):
-
         # Authenticates Earth Engine and initializes an Earth Engine session
         if "ee_initialize" not in kwargs.keys():
             kwargs["ee_initialize"] = True
@@ -414,7 +413,6 @@ class Map(here_map_widget.Map):
         close_button.observe(_close_btn_click, "value")
 
         def _update_html(feature, **_):
-
             value = [
                 "<h5><b>{}: </b>{}</h5>".format(prop, feature["properties"][prop])
                 for prop in feature["properties"].keys()
