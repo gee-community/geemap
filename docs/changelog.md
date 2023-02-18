@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.20.0 - Feb 18, 2023
+
+**New Features**
+
+-   Added support for gradio for developing interactive web apps ([#1436](https://github.com/giswqs/geemap/pull/1436))
+
+**Improvement**
+
+-   Updated JRC water product to v1.4 ([#1428](https://github.com/giswqs/geemap/pull/1428))
+-   Fixed tar file bug CVE-2007-4559 ([#1419](https://github.com/giswqs/geemap/pull/1419))
+-   zonal_stats_by_group patch ([#1418](https://github.com/giswqs/geemap/pull/1418))
+
 ## v0.19.6 - Jan 23, 2023
 
 **Improvement**
