@@ -14,7 +14,6 @@ from .timelapse import *
 
 
 def tool_template(m=None):
-
     widget_width = "250px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
 
@@ -126,7 +125,6 @@ def tool_template(m=None):
     )
 
     def handle_toolbar_event(event):
-
         if event["type"] == "mouseenter":
             toolbar_widget.children = [toolbar_header, toolbar_footer]
         elif event["type"] == "mouseleave":
@@ -356,7 +354,6 @@ def open_data_widget(m):
     bands.observe(bands_changed, "value")
 
     def chooser_callback(chooser):
-
         filepath.value = file_chooser.selected
 
         if file_type.value == "CSV":
@@ -623,7 +620,6 @@ def convert_js2py(m):
 
 
 def collect_samples(m):
-
     full_widget = widgets.VBox()
     layout = widgets.Layout(width="100px")
     prop_label = widgets.Label(
@@ -661,7 +657,6 @@ def collect_samples(m):
 
     def button_clicked(change):
         if change["new"] == "Apply":
-
             if len(color.value) != 7:
                 color.value = "#3388ff"
             draw_control = ipyleaflet.DrawControl(
@@ -778,7 +773,6 @@ def collect_samples(m):
 
 
 def get_tools_dict():
-
     import pandas as pd
     import pkg_resources
 
@@ -851,7 +845,6 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
         required_params = required_inputs.copy()
         args2 = []
         for arg in args:
-
             line = ""
             if isinstance(args[arg], FileChooser):
                 if arg in required_params and args[arg].selected is None:
@@ -1292,7 +1285,6 @@ def timelapse_gui(m=None):
     )
 
     def submit_clicked(b):
-
         if start_year.value > end_year.value:
             print("The end year must be great than the start year.")
             return
@@ -1317,7 +1309,6 @@ def timelapse_gui(m=None):
         temp_output = widgets.Output()
 
         if m is not None:
-
             out_dir = os.path.expanduser("~/Downloads")
             if not os.path.exists(out_dir):
                 os.makedirs(out_dir)
@@ -1420,7 +1411,6 @@ def timelapse_gui(m=None):
     )
 
     def handle_toolbar_event(event):
-
         if event["type"] == "mouseenter":
             toolbar_widget.children = [toolbar_header, toolbar_footer]
         elif event["type"] == "mouseleave":
@@ -1703,7 +1693,6 @@ def time_slider(m=None):
         if change["new"]:
             selected = change["owner"].value
             if colormap.value is not None:
-
                 n_class = None
                 if selected != "Any":
                     n_class = int(classes.value)
@@ -1785,7 +1774,6 @@ def time_slider(m=None):
 
     def colormap_changed(change):
         if change["new"]:
-
             n_class = None
             if classes.value != "Any":
                 n_class = int(classes.value)
@@ -1877,9 +1865,7 @@ def time_slider(m=None):
 
     def year_change(change):
         if change["new"]:
-
             if collection.value != "MOD13A2.006 Terra Vegetation Indices":
-
                 labels.value = ", ".join(
                     str(i)
                     for i in range(int(start_year.value), int(end_year.value) + 1)
@@ -1955,7 +1941,6 @@ def time_slider(m=None):
     )
 
     def submit_clicked(b):
-
         output.clear_output()
         with output:
             if start_year.value > end_year.value:
@@ -1966,7 +1951,6 @@ def time_slider(m=None):
                 return
 
         if m is not None:
-
             roi = None
             if region.value == "User-drawn ROI" and (m.user_roi is not None):
                 roi = m.user_roi
@@ -2058,7 +2042,6 @@ def time_slider(m=None):
                         cloud.value,
                     )
                 elif collection.value == "USDA NAIP Imagery":
-
                     if int(start_year.value) < 2009 and (
                         band1_dropdown.value == "N"
                         or band2_dropdown.value == "N"
@@ -2130,7 +2113,6 @@ def time_slider(m=None):
     close_btn.on_click(close_click)
 
     def collection_changed(change):
-
         if change["new"]:
             selected = change["owner"].value
             if selected in m.ee_layer_dict:
@@ -2150,7 +2132,6 @@ def time_slider(m=None):
                     bands_hbox.children = []
 
                 elif isinstance(ee_object, ee.ImageCollection):
-
                     first = ee.Image(ee_object.first())
                     band_names = first.bandNames().getInfo()
                     band_count = len(band_names)
@@ -2309,7 +2290,6 @@ def time_slider(m=None):
     )
 
     def handle_toolbar_event(event):
-
         if event["type"] == "mouseenter":
             toolbar_widget.children = [toolbar_header, toolbar_footer]
         elif event["type"] == "mouseleave":
@@ -2360,7 +2340,6 @@ def time_slider(m=None):
 
 
 def plot_transect(m=None):
-
     from bqplot import pyplot as plt
 
     widget_width = "250px"
@@ -2501,7 +2480,6 @@ def plot_transect(m=None):
     layer.observe(layer_changed, "value")
 
     def handle_toolbar_event(event):
-
         if event["type"] == "mouseenter":
             toolbar_widget.children = [toolbar_header, toolbar_footer]
         elif event["type"] == "mouseleave":
@@ -2607,7 +2585,6 @@ def plot_transect(m=None):
 
 
 def sankee_gui(m=None):
-
     import sankee
 
     widget_width = "250px"
@@ -2781,7 +2758,6 @@ def sankee_gui(m=None):
         )
 
         def plot_reset_btn_clicked(b):
-
             m.sankee_plot.update_layout(
                 width=600,
                 height=250,
@@ -2802,7 +2778,6 @@ def sankee_gui(m=None):
         )
 
         def plot_fullscreen_btn_clicked(b):
-
             m.sankee_plot.update_layout(
                 width=1030,
                 height=int(m.layout.height[:-2]) - 60,
@@ -2871,7 +2846,6 @@ def sankee_gui(m=None):
 
         def width_changed(change):
             if change["new"]:
-
                 m.sankee_plot.update_layout(
                     width=width_slider.value,
                     margin=dict(l=10, r=10, b=10, t=50, pad=5),
@@ -2899,7 +2873,6 @@ def sankee_gui(m=None):
 
         def height_changed(change):
             if change["new"]:
-
                 m.sankee_plot.update_layout(
                     height=height_slider.value,
                     margin=dict(l=10, r=10, b=10, t=50, pad=5),
@@ -2921,7 +2894,6 @@ def sankee_gui(m=None):
         m.sankee_control = sankee_control
 
     def handle_toolbar_event(event):
-
         if event["type"] == "mouseenter":
             toolbar_widget.children = [toolbar_header, toolbar_footer]
         elif event["type"] == "mouseleave":
@@ -2975,7 +2947,6 @@ def sankee_gui(m=None):
                 if region.value != "User-drawn ROI" or (
                     region.value == "User-drawn ROI" and m.user_roi is not None
                 ):
-
                     if region.value == "User-drawn ROI":
                         geom = m.user_roi
                         image1 = image1.clip(geom)
@@ -3079,7 +3050,6 @@ def sankee_gui(m=None):
 def split_basemaps(
     m, layers_dict=None, left_name=None, right_name=None, width="120px", **kwargs
 ):
-
     from .geemap import basemaps
 
     controls = m.controls
@@ -3244,7 +3214,6 @@ def plotly_toolbar(
     canvas.toolbar = toolbar_grid
 
     def tool_callback(change):
-
         if change["new"]:
             current_tool = change["owner"]
             for tool in toolbar_grid.children:
@@ -3304,7 +3273,6 @@ def plotly_toolbar(
     )
 
     def handle_toolbar_event(event):
-
         if event["type"] == "mouseenter":
             toolbar_widget.children = [toolbar_header, toolbar_footer]
             # map_widget.layout.width = "85%"
@@ -3340,7 +3308,6 @@ def plotly_toolbar(
 
     def layers_btn_click(change):
         if change["new"]:
-
             layer_names = list(m.get_layers().keys())
             layers_hbox = []
             all_layers_chk = widgets.Checkbox(
@@ -3397,7 +3364,6 @@ def plotly_toolbar(
                 )
 
                 def layer_chk_change(change):
-
                     if change["new"]:
                         m.set_layer_visibility(change["owner"].description, True)
                     else:
@@ -3442,7 +3408,6 @@ def plotly_toolbar(
 
 
 def plotly_tool_template(canvas):
-
     container_widget = canvas.container_widget
     map_widget = canvas.map_widget
     map_width = "70%"
@@ -3484,7 +3449,6 @@ def plotly_tool_template(canvas):
     )
 
     def handle_toolbar_event(event):
-
         if event["type"] == "mouseenter":
             toolbar_widget.children = [toolbar_header, toolbar_footer]
             map_widget.layout.width = map_width
@@ -3697,7 +3661,6 @@ def plotly_search_basemaps(canvas):
     )
 
     def handle_toolbar_event(event):
-
         if event["type"] == "mouseenter":
             toolbar_widget.children = [toolbar_header, toolbar_footer]
         elif event["type"] == "mouseleave":
@@ -3755,7 +3718,6 @@ def plotly_search_basemaps(canvas):
 
 
 def plotly_whitebox_gui(canvas):
-
     import whiteboxgui.whiteboxgui as wbt
 
     container_widget = canvas.container_widget
@@ -3806,7 +3768,6 @@ def plotly_whitebox_gui(canvas):
     )
 
     def handle_toolbar_event(event):
-
         if event["type"] == "mouseenter":
             toolbar_widget.children = [toolbar_header, toolbar_footer]
             map_widget.layout.width = map_width
@@ -3859,7 +3820,6 @@ def inspector_gui(m=None):
     style = {"description_width": "initial"}
 
     if m is not None:
-
         marker_cluster = ipyleaflet.MarkerCluster(name="Inspector Markers")
         setattr(m, "pixel_values", [])
         setattr(m, "marker_cluster", marker_cluster)
@@ -3981,7 +3941,6 @@ def inspector_gui(m=None):
     bands_chk.observe(chk_change, "value")
 
     def handle_toolbar_event(event):
-
         if event["type"] == "mouseenter":
             toolbar_widget.children = [toolbar_header, toolbar_footer]
         elif event["type"] == "mouseleave":
@@ -4203,7 +4162,6 @@ def inspector_gui(m=None):
         m.add_layer(marker_cluster)
 
         if not m.interact_mode:
-
             m.on_interaction(handle_interaction)
             m.interact_mode = True
 

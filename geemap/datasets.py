@@ -34,7 +34,6 @@ def update_data_list(out_dir="."):
         Exception: If the CSV file fails to save.
     """
     try:
-
         url = (
             "https://github.com/samapriya/Earth-Engine-Datasets-List/archive/master.zip"
         )

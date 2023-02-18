@@ -284,7 +284,6 @@ def xyz_to_leaflet():
         )
 
     if os.environ.get("PLANET_API_KEY") is not None:
-
         planet_dict = planet_tiles(tile_format="ipyleaflet")
         leaflet_dict.update(planet_dict)
 
@@ -312,7 +311,6 @@ def xyz_to_pydeck():
         pydeck_dict[key] = url
 
         if os.environ.get("PLANET_API_KEY") is not None:
-
             planet_dict = planet_tiles(tile_format="ipyleaflet")
             for id_, tile in planet_dict.items():
                 pydeck_dict[id_] = tile.url
@@ -371,7 +369,6 @@ def xyz_to_folium():
         )
 
     if os.environ.get("PLANET_API_KEY") is not None:
-
         planet_dict = planet_tiles(tile_format="folium")
         folium_dict.update(planet_dict)
 
@@ -522,14 +519,12 @@ def search_qms(keywords, limit=10):
 
 
 def get_qms(service_id):
-
     QMS_API = "https://qms.nextgis.com/api/v1/geoservices"
     service_details = requests.get(f"{QMS_API}/{service_id}")
     return service_details.json()
 
 
 def qms_to_geemap(service_id):
-
     service_details = get_qms(service_id)
     name = service_details["name"]
     url = service_details["url"]

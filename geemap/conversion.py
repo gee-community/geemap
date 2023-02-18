@@ -231,9 +231,7 @@ def check_map_functions(input_lines):
     """
     output_lines = []
     for index, line in enumerate(input_lines):
-
         if (".map(function" in line) or (".map (function") in line:
-
             bracket_index = line.index("{")
             matching_line_index, matching_char_index = find_matching_bracket(
                 input_lines, index, bracket_index
@@ -335,7 +333,6 @@ def js_to_python(
     if is_python:  # only update the GitHub URL if it is already a GEE Python script
         output = github_url + "".join(map(str, lines))
     else:  # deal with JavaScript
-
         header = github_url + "import ee \n" + math_import_str + import_str
         # function_defs = []
         output = header + "\n"
@@ -796,7 +793,6 @@ def py_to_ipynb(
     footer = template_footer(template_file)
 
     if (github_username is not None) and (github_repo is not None):
-
         out_py_path = str(out_file).split("/")
         index = out_py_path.index(github_repo)
         out_py_relative_path = "/".join(out_py_path[index + 1 :])
@@ -1068,7 +1064,6 @@ def download_gee_app(url, out_file=None):
         raise Exception("The URL is invalid. Please double check the URL.")
 
     with open(out_file_path, "w") as f1:
-
         with open(json_path, encoding="utf-8") as f2:
             lines = f2.readlines()
             for line in lines:
@@ -1111,7 +1106,6 @@ def download_gee_app(url, out_file=None):
 
 
 if __name__ == "__main__":
-
     # Create a temporary working directory
     work_dir = os.path.join(os.path.expanduser("~"), "geemap")
     # Get Earth Engine JavaScript examples. There are five examples in the geemap package data folder.

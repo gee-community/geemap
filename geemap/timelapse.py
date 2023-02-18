@@ -494,7 +494,6 @@ def add_text_to_gif(
         text = [str(x) for x in text_sequence]
 
     try:
-
         frames = []
         # Loop over each frame in the animated image
         for index, frame in enumerate(ImageSequence.Iterator(image)):
@@ -644,7 +643,6 @@ def add_image_to_gif(
         )
 
     try:
-
         frames = []
         for _, frame in enumerate(ImageSequence.Iterator(gif)):
             frame = frame.convert("RGBA")
@@ -784,7 +782,6 @@ def create_timeseries(
         ).rename(bands)
 
     try:
-
         images = ee.ImageCollection(dates.map(create_image))
         if drop_empty:
             return images.filterMetadata("empty", "equals", 0)
@@ -1129,7 +1126,6 @@ def naip_timeseries(roi=None, start_year=2003, end_year=None, RGBN=False):
         object: An ee.ImageCollection representing annual NAIP imagery.
     """
     try:
-
         if end_year is None:
             end_year = datetime.datetime.now().year
 
@@ -1238,7 +1234,6 @@ def naip_timelapse(
     """
 
     try:
-
         if end_year is None:
             end_year = datetime.datetime.now().year
 
@@ -1594,7 +1589,6 @@ def sentinel2_timeseries_legacy(
         )
 
     if not isinstance(roi, ee.Geometry):
-
         try:
             roi = roi.geometry()
         except Exception as e:
@@ -1915,7 +1909,6 @@ def landsat_timeseries(
         end_year = get_current_year()
 
     if not isinstance(roi, ee.Geometry):
-
         try:
             roi = roi.geometry()
         except Exception as e:
@@ -2078,7 +2071,6 @@ def landsat_timeseries(
 
     # Get monthly median collection.
     def getMonthlyComp(startDate):
-
         startDate = ee.Date(startDate)
         endDate = startDate.advance(1, "month")
 
@@ -2105,7 +2097,6 @@ def landsat_timeseries(
 
     # Get quarterly median collection.
     def getQuarterlyComp(startDate):
-
         startDate = ee.Date(startDate)
 
         endDate = startDate.advance(3, "month")
@@ -2208,7 +2199,6 @@ def landsat_timeseries_legacy(
         )
 
     if not isinstance(roi, ee.Geometry):
-
         try:
             roi = roi.geometry()
         except Exception as e:
@@ -2372,7 +2362,6 @@ def landsat_timeseries_legacy(
 
     # Get monthly median collection.
     def getMonthlyComp(startDate):
-
         startDate = ee.Date(startDate)
         endDate = startDate.advance(1, "month")
 
@@ -2398,7 +2387,6 @@ def landsat_timeseries_legacy(
 
     # Get quarterly median collection.
     def getQuarterlyComp(startDate):
-
         startDate = ee.Date(startDate)
 
         endDate = startDate.advance(3, "month")
@@ -2523,7 +2511,6 @@ def modis_timeseries(
     """
 
     try:
-
         if end_year is None:
             end_year = datetime.datetime.now().year
 
@@ -2547,7 +2534,6 @@ def modis_timeseries(
         seq = date_sequence(start, end, "month")
 
         def monthly_modis(start_d):
-
             end_d = ee.Date(start_d).advance(1, "month")
             return ee.Image(collection.filterDate(start_d, end_d).mean())
 
@@ -2695,7 +2681,6 @@ def landsat_timelapse(
             )
 
     try:
-
         if vis_params is None:
             vis_params = {}
             vis_params["bands"] = bands
@@ -2768,7 +2753,6 @@ def landsat_timelapse(
             download_ee_video(col, video_args, out_gif)
 
         if os.path.exists(out_gif):
-
             if title is not None and isinstance(title, str):
                 add_text_to_gif(
                     out_gif,
@@ -2971,7 +2955,6 @@ def landsat_timelapse_legacy(
             )
 
     try:
-
         if vis_params is None:
             vis_params = {}
             vis_params["bands"] = bands
@@ -3044,7 +3027,6 @@ def landsat_timelapse_legacy(
             download_ee_video(col, video_args, out_gif)
 
         if os.path.exists(out_gif):
-
             if title is not None and isinstance(title, str):
                 add_text_to_gif(
                     out_gif,
@@ -3238,7 +3220,6 @@ def sentinel1_timelapse_legacy(
             clean_up=True,
         )
     else:
-
         video_args = vis_params.copy()
         video_args["dimensions"] = dimensions
         video_args["region"] = roi
@@ -3432,7 +3413,6 @@ def sentinel2_timelapse(
         )
 
     try:
-
         if vis_params is None:
             vis_params = {}
             vis_params["bands"] = bands
@@ -3492,7 +3472,6 @@ def sentinel2_timelapse(
                 clean_up=True,
             )
         else:
-
             video_args = vis_params.copy()
             video_args["dimensions"] = dimensions
             video_args["region"] = roi
@@ -3929,7 +3908,6 @@ def goes_timelapse(
     """
 
     try:
-
         if "region" in kwargs:
             roi = kwargs["region"]
 
@@ -3987,7 +3965,6 @@ def goes_timelapse(
         download_ee_video(col, videoParams, out_gif)
 
         if os.path.exists(out_gif):
-
             add_text_to_gif(
                 out_gif,
                 out_gif,
@@ -4087,7 +4064,6 @@ def goes_fire_timelapse(
     """
 
     try:
-
         if "region" in kwargs:
             roi = kwargs["region"]
 
@@ -4129,7 +4105,6 @@ def goes_fire_timelapse(
         download_ee_video(col, cmiFdcVisParams, out_gif)
 
         if os.path.exists(out_gif):
-
             add_text_to_gif(
                 out_gif,
                 out_gif,
@@ -4364,7 +4339,6 @@ def modis_ndvi_timelapse(
             text_sequence = [d.replace("_", "-")[5:] for d in text]
 
         if os.path.exists(out_gif):
-
             add_text_to_gif(
                 out_gif,
                 out_gif,
@@ -5009,7 +4983,6 @@ def add_progress_bar_to_gif(
     ]
 
     try:
-
         frames = []
         # Loop over each frame in the animated image
         for index, frame in enumerate(ImageSequence.Iterator(image)):
