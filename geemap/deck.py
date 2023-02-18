@@ -78,7 +78,6 @@ class Map(pdk.Deck):
         """
 
         try:
-
             if isinstance(layer, str) and layer.startswith("http"):
                 pdk.settings.custom_libraries = [
                     {
@@ -193,7 +192,6 @@ class Map(pdk.Deck):
                 self.add_layer(url, name)
 
             elif basemap in basemaps:
-
                 pdk.settings.custom_libraries = [
                     {
                         "libraryName": "MyTileLayerLibrary",
@@ -295,7 +293,6 @@ class Map(pdk.Deck):
         """
 
         try:
-
             import geopandas as gpd
 
             if not filename.startswith("http"):

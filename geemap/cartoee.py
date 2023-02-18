@@ -18,7 +18,6 @@ from matplotlib import font_manager as mfonts
 from .basemaps import xyz_tiles
 
 try:
-
     import cartopy.crs as ccrs
     import cartopy.io.img_tiles as cimgt
     from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
@@ -26,7 +25,6 @@ try:
     from PIL import Image
 
 except ImportError:
-
     print(
         "cartopy is not installed. Please see https://scitools.org.uk/cartopy/docs/latest/installing.html#installing for instructions on how to install cartopy.\n"
     )
@@ -1246,7 +1244,6 @@ def get_image_collection_gif(
         print(f"GIF saved to {out_gif}")
 
     if mp4:
-
         video_filename = out_gif.replace(".gif", ".mp4")
 
         try:

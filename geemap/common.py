@@ -164,7 +164,6 @@ def ee_initialize(
     import httplib2
 
     if ee.data._credentials is None:
-
         ee_token = os.environ.get(token_name)
         if service_account:
             try:
@@ -191,7 +190,6 @@ def ee_initialize(
                 raise Exception(e)
 
         else:
-
             try:
                 if ee_token is not None:
                     credential_file_path = os.path.expanduser(
@@ -239,7 +237,6 @@ def set_proxy(port=1080, ip="http://127.0.0.1", timeout=300):
         timeout (int, optional): The timeout in seconds. Defaults to 300.
     """
     try:
-
         if not ip.startswith("http"):
             ip = "http://" + ip
         proxy = "{}:{}".format(ip, port)
@@ -390,7 +387,6 @@ def update_package():
 
 
 def check_package(name, URL=""):
-
     try:
         __import__(name.lower())
     except Exception:
@@ -522,7 +518,6 @@ def clone_google_repo(url, out_dir=None):
         return
 
     if check_git_install():
-
         cmd = f'git clone "{url}" "{out_dir}"'
         os.popen(cmd).read()
 
@@ -658,7 +653,6 @@ def show_html(html):
         ipywidgets.HTML: HTML widget.
     """
     if os.path.exists(html):
-
         with open(html, "r") as f:
             content = f.read()
 
@@ -717,7 +711,6 @@ def upload_to_imgur(in_gif):
         if (
             (IMGUR_API_ID is not None) and (IMGUR_API_SECRET is not None)
         ) or os.path.exists(credentials_path):
-
             proc = subprocess.Popen(["imgur-uploader", in_gif], stdout=subprocess.PIPE)
             for _ in range(0, 2):
                 line = proc.stdout.readline()
@@ -781,7 +774,6 @@ def check_color(in_color):
 
     out_color = "#000000"  # default black color
     if isinstance(in_color, tuple) and len(in_color) == 3:
-
         # rescale color if necessary
         if all(isinstance(item, int) for item in in_color):
             in_color = [c / 255.0 for c in in_color]
@@ -789,7 +781,6 @@ def check_color(in_color):
         return colour.Color(rgb=tuple(in_color)).hex_l
 
     else:
-
         # try to guess the color system
         try:
             return colour.Color(in_color).hex_l
@@ -907,7 +898,6 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
                 with tarfile.open(out_file_path, "r") as tar_ref:
 
                     def is_within_directory(directory, target):
-
                         abs_directory = os.path.abspath(directory)
                         abs_target = os.path.abspath(target)
 
@@ -918,7 +908,6 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
                     def safe_extract(
                         tar, path=".", members=None, *, numeric_owner=False
                     ):
-
                         for member in tar.getmembers():
                             member_path = os.path.join(path, member.name)
                             if not is_within_directory(path, member_path):
@@ -1280,7 +1269,6 @@ def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
     """
 
     try:
-
         if isinstance(geo_json, str):
             if geo_json.startswith("http") and geo_json.endswith(".geojson"):
                 geo_json = github_raw_url(geo_json)
@@ -1826,7 +1814,6 @@ def ee_export_video_to_dirve(
     maxFrames=None,
     **kwargs,
 ):
-
     """Creates a task to export an ImageCollection as a video to Drive.
 
     Args:
@@ -1907,7 +1894,6 @@ def ee_export_video_to_cloud_storage(
     maxFrames=None,
     **kwargs,
 ):
-
     """Creates a task to export an ImageCollection as a video to Cloud Storage.
 
     Args:
@@ -1987,7 +1973,6 @@ def ee_export_map_to_cloud_storage(
     mapsApiKey=None,
     **kwargs,
 ):
-
     """Creates a task to export an Image as a pyramid of map tiles.
 
     Exports a rectangular pyramid of map tiles for use with web map
@@ -2384,7 +2369,6 @@ def ee_export_image_collection(
         os.makedirs(out_dir)
 
     try:
-
         count = int(ee_object.size().getInfo())
         print(f"Total number of images: {count}\n")
 
@@ -3135,7 +3119,6 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat"):
     import numpy as np
 
     try:
-
         if not isinstance(nc_file, str):
             print("The input file must be a string.")
             return
@@ -3230,7 +3213,6 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
         return
 
     try:
-
         projection = ee.Projection(crs, transform, transformWkt)
         coords = ee.Image.pixelCoordinates(projection).floor().int32()
         x = coords.select("x")
@@ -3293,7 +3275,6 @@ def ee_to_numpy(
         region = ee_object.geometry()
 
     try:
-
         if bands is not None:
             ee_object = ee_object.select(bands)
         else:
@@ -3339,7 +3320,6 @@ def download_ee_video(collection, video_args, out_gif, timeout=300, proxies=None
         roi = video_args["region"]
 
         if not isinstance(roi, ee.Geometry):
-
             try:
                 roi = roi.geometry()
             except Exception as e:
@@ -3589,7 +3569,6 @@ def create_colorbar(
         return
 
     if add_labels:
-
         default_font = os.path.join(pkg_dir, "data/fonts/arial.ttf")
         if font_type == "arial.ttf":
             font = ImageFont.truetype(default_font, font_size)
@@ -3631,7 +3610,6 @@ def create_colorbar(
         background.paste(im, xy, im)
 
         for index, label in enumerate(labels):
-
             w_tmp, h_tmp = draw.textsize(label, font)
 
             if vertical:
@@ -3733,7 +3711,6 @@ def save_colorbar(
         alpha = 1
 
     if cmap is not None:
-
         cmap = mpl.pyplot.get_cmap(cmap)
         norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
@@ -3751,7 +3728,6 @@ def save_colorbar(
             norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
     elif cmap is not None:
-
         cmap = mpl.pyplot.get_cmap(cmap)
         norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
@@ -3827,7 +3803,6 @@ def geocode(location, max_rows=10, reverse=False):
         return None
 
     if not reverse:
-
         locations = []
         addresses = set()
         g = geocoder.arcgis(location, maxRows=max_rows)
@@ -4204,7 +4179,6 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
     url = "https://developers.google.com/earth-engine/api_docs"
 
     try:
-
         r = requests.get(url, timeout=timeout, proxies=proxies)
         soup = BeautifulSoup(r.content, "html.parser")
 
@@ -4319,7 +4293,6 @@ def read_api_csv():
         csv_reader = csv.DictReader(f, delimiter="\t")
 
         for line in csv_reader:
-
             out_html_lines = copy.copy(in_html_lines)
             out_html_lines[65] = in_html_lines[65].replace(
                 "function_name", line["name"]
@@ -4597,7 +4570,6 @@ def ee_search(asset_limit=100):
     search_type.observe(search_type_changed, names="value")
 
     def search_box_callback(text):
-
         if search_type.value == "Docs":
             with tree_widget:
                 if text.value == "":
@@ -4643,7 +4615,6 @@ def ee_user_id():
 
 
 def build_asset_tree(limit=100):
-
     import geeadd.ee_report as geeadd
 
     warnings.filterwarnings("ignore")
@@ -4838,7 +4809,6 @@ def build_repo_tree(out_dir=None, name="gee_repos"):
         node.observe(handle_folder_click, "selected")
 
     def handle_clone_click(b):
-
         url = path_widget.value
         default_dir = os.path.join(repo_dir, "Examples")
         if url == "":
@@ -4987,7 +4957,6 @@ def file_browser(
     import_btn.on_click(import_btn_clicked)
 
     def search_box_callback(text):
-
         with tree_widget:
             if text.value == "":
                 print("Loading...")
@@ -5045,7 +5014,6 @@ def file_browser(
         root_node.observe(handle_folder_click, "selected")
 
     for root, d_names, f_names in os.walk(in_dir):
-
         if not show_hidden:
             folders = root.split(sep)
             for folder in folders:
@@ -5788,7 +5756,6 @@ def stac_tile(
                 titiler_endpoint=titiler_endpoint,
             )
             if "detail" not in stats:
-
                 try:
                     percentile_2 = min([stats[s]["percentile_2"] for s in stats])
                     percentile_98 = max([stats[s]["percentile_98"] for s in stats])
@@ -6584,11 +6551,9 @@ def adjust_longitude(in_fc):
         dict: A dictionary containing the converted longitudes
     """
     try:
-
         keys = in_fc.keys()
 
         if "geometry" in keys:
-
             coordinates = in_fc["geometry"]["coordinates"]
 
             if in_fc["geometry"]["type"] == "Point":
@@ -6619,7 +6584,6 @@ def adjust_longitude(in_fc):
                     in_fc["geometry"]["coordinates"][index][0] = longitude
 
         elif "type" in keys:
-
             coordinates = in_fc["coordinates"]
 
             if in_fc["type"] == "Point":
@@ -6898,7 +6862,6 @@ def zonal_stats_by_group(
         scale = in_value_raster.projection().nominalScale().multiply(10)
 
     try:
-
         if verbose:
             print("Computing ... ")
         geometry = in_zone_vector.geometry()
@@ -7449,7 +7412,6 @@ def image_histogram(
     if return_df:
         return data
     else:
-
         labels = {}
 
         if x_label is not None:
@@ -7703,7 +7665,6 @@ def fishnet(
         ee.FeatureCollection: The fishnet as an ee.FeatureCollection.
     """
     if isinstance(data, str):
-
         data = vector_to_ee(data, **kwargs)
 
     if isinstance(data, ee.FeatureCollection) or isinstance(data, ee.Feature):
@@ -8276,7 +8237,6 @@ def nwi_add_color(fc):
 
 
 def nwi_rename(names):
-
     name_dict = ee.Dictionary(
         {
             "Freshwater Emergent Wetland": "Emergent",
@@ -8559,7 +8519,6 @@ def vector_styling(
     lineType="solid",
     fillColorOpacity=0.66,
 ):
-
     """Add a new property to each feature containing a stylying dictionary.
 
     Args:
@@ -8584,7 +8543,6 @@ def vector_styling(
     from box import Box
 
     if isinstance(ee_object, ee.FeatureCollection):
-
         prop_names = ee.Feature(ee_object.first()).propertyNames().getInfo()
         arr = ee_object.aggregate_array(column).distinct().sort()
 
@@ -8647,7 +8605,6 @@ def vector_styling(
 
 
 def is_GCS(in_shp):
-
     import pycrs
 
     if not os.path.exists(in_shp):
@@ -8664,7 +8621,6 @@ def is_GCS(in_shp):
         )
         return True
     else:
-
         with open(in_prj) as f:
             esri_wkt = f.read()
         epsg4326 = pycrs.parse.from_epsg_code(4326).to_proj4()
@@ -9084,7 +9040,6 @@ def vector_to_geojson(
     gdf = df.to_crs(epsg=epsg)
 
     if out_geojson is not None:
-
         if not out_geojson.lower().endswith(".geojson"):
             raise ValueError("The output file must have a geojson file extension.")
 
@@ -9182,7 +9137,6 @@ def list_vars(var_type=None):
     result = []
 
     for var in globals():
-
         reserved_vars = [
             "In",
             "Out",
@@ -9243,7 +9197,6 @@ def extract_transect(
         ee.FeatureCollection: The FeatureCollection containing the transect with distance and reducer values.
     """
     try:
-
         geom_type = line.type().getInfo()
         if geom_type != "LineString":
             raise TypeError("The geometry type must be LineString.")
@@ -9473,7 +9426,6 @@ def planet_monthly_tropical(api_key=None, token_name="PLANET_API_KEY"):
     subfix = "_mosaic/gmap/{z}/{x}/{y}.png?api_key="
 
     for year in range(2020, year_now + 1):
-
         for month in range(1, 13):
             m_str = str(year) + "-" + str(month).zfill(2)
 
@@ -9692,7 +9644,6 @@ def planet_monthly(api_key=None, token_name="PLANET_API_KEY"):
     subfix = "_mosaic/gmap/{z}/{x}/{y}.png?api_key="
 
     for year in range(2016, year_now + 1):
-
         for month in range(1, 13):
             m_str = str(year) + "_" + str(month).zfill(2)
 
@@ -9735,7 +9686,6 @@ def planet_quarterly(api_key=None, token_name="PLANET_API_KEY"):
     subfix = "_mosaic/gmap/{z}/{x}/{y}.png?api_key="
 
     for year in range(2016, year_now + 1):
-
         for quarter in range(1, 5):
             m_str = str(year) + "q" + str(quarter)
 
@@ -10110,7 +10060,6 @@ def get_census_dict(reset=False):
     census_data = os.path.join(pkg_dir, "data/census_data.json")
 
     if reset:
-
         try:
             from owslib.wms import WebMapService
         except ImportError:
@@ -10168,7 +10117,6 @@ def get_census_dict(reset=False):
             json.dump(census_dict, f, indent=4)
 
     else:
-
         with open(census_data, "r") as f:
             census_dict = json.load(f)
 
@@ -10311,7 +10259,6 @@ def create_download_button(
         import pandas as pd
 
         if isinstance(data, str):
-
             if file_name is None:
                 file_name = data.split("/")[-1]
 
@@ -10449,7 +10396,6 @@ def create_contours(
         if isinstance(region, ee.FeatureCollection) or isinstance(region, ee.Geometry):
             pass
         else:
-
             raise TypeError(
                 "The region must be an ee.Geometry or ee.FeatureCollection."
             )
@@ -10561,7 +10507,6 @@ def get_local_tile_layer(
         raise ValueError("The source must either be a string or TileClient")
 
     if isinstance(palette, str):
-
         palette = get_palette_colors(palette, hashtag=True)
 
     if tile_format not in ["ipyleaflet", "folium"]:
@@ -10663,7 +10608,6 @@ def get_palettable(types=None):
     palettes = []
 
     if "cartocolors" in types:
-
         cartocolors_diverging = [
             f"cartocolors.diverging.{c}"
             for c in dir(palettable.cartocolors.diverging)[:-19]
@@ -10685,7 +10629,6 @@ def get_palettable(types=None):
         )
 
     if "cmocean" in types:
-
         cmocean_diverging = [
             f"cmocean.diverging.{c}" for c in dir(palettable.cmocean.diverging)[:-19]
         ]
@@ -10696,7 +10639,6 @@ def get_palettable(types=None):
         palettes = palettes + cmocean_diverging + cmocean_sequential
 
     if "colorbrewer" in types:
-
         colorbrewer_diverging = [
             f"colorbrewer.diverging.{c}"
             for c in dir(palettable.colorbrewer.diverging)[:-19]
@@ -11125,7 +11067,6 @@ def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
     from urllib.request import urlopen
 
     if isinstance(in_geojson, str):
-
         if in_geojson.startswith("http"):
             in_geojson = github_raw_url(in_geojson)
             with urlopen(in_geojson) as f:
@@ -11398,7 +11339,6 @@ def view_lidar(filename, cmap="terrain", backend="pyvista", background=None, **k
 
     backend = backend.lower()
     if backend in ["pyvista", "ipygany", "panel"]:
-
         try:
             import pyntcloud
         except ImportError:
@@ -11604,7 +11544,6 @@ def download_file(
     )
 
     if unzip and output.endswith(".zip"):
-
         with zipfile.ZipFile(output, "r") as zip_ref:
             if not quiet:
                 print("Extracting files...")
@@ -11765,7 +11704,6 @@ def clip_image(image, mask, output):
         if not os.path.exists(mask):
             raise FileNotFoundError(f"{mask} does not exist.")
     elif isinstance(mask, list) or isinstance(mask, dict):
-
         if isinstance(mask, list):
             geojson = {
                 "type": "FeatureCollection",
@@ -12425,7 +12363,6 @@ def dynamic_world(
         if return_type == "probability":
             return top1Probability
         else:
-
             top1Confidence = top1Probability.multiply(100).int()
             hillshade = ee.Terrain.hillshade(top1Confidence).divide(255)
             rgbImage = dwComposite.visualize(**dwVisParams).divide(255)
@@ -12604,7 +12541,6 @@ def download_ee_image_tiles(
     unmask_value=None,
     **kwargs,
 ):
-
     """Download an Earth Engine Image as small tiles based on ee.FeatureCollection. Images larger than the `Earth Engine size limit are split and downloaded as
         separate tiles, then re-assembled into a single GeoTIFF. See https://github.com/dugalh/geedim/blob/main/geedim/download.py#L574
 
@@ -12744,7 +12680,6 @@ def download_ee_image_collection(
         os.makedirs(out_dir)
 
     try:
-
         count = int(collection.size().getInfo())
         print(f"Total number of images: {count}\n")
 
@@ -13020,7 +12955,6 @@ def requireJS(lib_path=None, Map=None):
             oeel.setMap(Map)
         return oeel
     elif isinstance(lib_path, str):
-
         if lib_path.startswith("http"):
             lib_path = get_direct_url(lib_path)
 
@@ -13062,7 +12996,6 @@ def github_raw_url(url):
 
 
 def change_require(lib_path):
-
     if not isinstance(lib_path, str):
         raise ValueError("lib_path must be a string.")
 
@@ -13373,7 +13306,6 @@ def jrc_hist_monthly_history(
     if return_df:
         return area_df
     else:
-
         labels = {}
 
         if x_label is not None:
@@ -13400,7 +13332,6 @@ def jrc_hist_monthly_history(
 def html_to_streamlit(
     filename, width=None, height=None, scrolling=False, replace_dict={}
 ):
-
     """Renders an HTML file as a Streamlit component.
     Args:
         filename (str): The filename of the HTML file.
@@ -13749,7 +13680,6 @@ def get_info(ee_object, layer_name="", opened=False, return_node=False):
 
 
 def download_3dep_lidar(region, filename, scale=1.0, crs="EPSG:3857"):
-
     dataset = ee.ImageCollection("USGS/3DEP/1m")
 
     if isinstance(region, ee.Geometry) or isinstance(region, ee.Feature):
@@ -13785,7 +13715,6 @@ def create_legend(
     output=None,
     style={},
 ):
-
     """Create a legend in HTML format. Reference: https://bit.ly/3oV6vnH
 
     Args:
@@ -13962,7 +13891,6 @@ def create_legend(
         lines = f.readlines()
 
     if draggable:
-
         for index, line in enumerate(lines):
             if index < 36:
                 content.append(line)
@@ -13980,9 +13908,7 @@ def create_legend(
         content = content[3:-1]
 
     else:
-
         for index, line in enumerate(lines):
-
             if index < 8:
                 content.append(line)
             elif index == 8:
@@ -14120,3 +14046,482 @@ def get_current_year():
     """
     today = datetime.date.today()
     return today.year
+
+
+def html_to_gradio(html, width='100%', height='500px', **kwargs):
+    """Converts the map to an HTML string that can be used in Gradio. Removes unsupported elements, such as
+        attribution and any code blocks containing functions. See https://github.com/gradio-app/gradio/issues/3190
+
+    Args:
+        width (str, optional): The width of the map. Defaults to '100%'.
+        height (str, optional): The height of the map. Defaults to '500px'.
+
+    Returns:
+        str: The HTML string to use in Gradio.
+    """
+
+    if isinstance(width, int):
+        width = f"{width}px"
+
+    if isinstance(height, int):
+        height = f"{height}px"
+
+    if isinstance(html, str):
+        with open(html, 'r') as f:
+            lines = f.readlines()
+    elif isinstance(html, list):
+        lines = html
+    else:
+        raise TypeError("html must be a file path or a list of strings")
+
+    output = []
+    skipped_lines = []
+    for index, line in enumerate(lines):
+        if index in skipped_lines:
+            continue
+        if line.lstrip().startswith('{"attribution":'):
+            continue
+        elif 'on(L.Draw.Event.CREATED, function(e)' in line:
+            for i in range(14):
+                skipped_lines.append(index + i)
+        elif 'L.Control.geocoder' in line:
+            for i in range(5):
+                skipped_lines.append(index + i)
+        elif 'function(e)' in line:
+            print(
+                f"Warning: The folium plotting backend does not support functions in code blocks. Please delete line {index + 1}."
+            )
+        else:
+            output.append(line + "\n")
+
+    return f"""<iframe style="width: {width}; height: {height}" name="result" allow="midi; geolocation; microphone; camera; 
+    display-capture; encrypted-media;" sandbox="allow-modals allow-forms 
+    allow-scripts allow-same-origin allow-popups 
+    allow-top-navigation-by-user-activation allow-downloads" allowfullscreen="" 
+    allowpaymentrequest="" frameborder="0" srcdoc='{"".join(output)}'></iframe>"""
+
+
+def image_check(image):
+    from localtileserver import TileClient
+
+    if isinstance(image, str):
+        if image.startswith("http") or os.path.exists(image):
+            pass
+        else:
+            raise ValueError("image must be a URL or filepath.")
+    elif isinstance(image, TileClient):
+        pass
+    else:
+        raise ValueError("image must be a URL or filepath.")
+
+
+def image_client(image, **kwargs):
+    """Get a LocalTileserver TileClient from an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        TileClient: A LocalTileserver TileClient.
+    """
+    image_check(image)
+
+    _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    return client
+
+
+def image_center(image, **kwargs):
+    """Get the center of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        tuple: A tuple of (latitude, longitude).
+    """
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    return client.center()
+
+
+def image_bounds(image, **kwargs):
+    """Get the bounds of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        list: A list of bounds in the form of [(south, west), (north, east)].
+    """
+
+    image_check(image)
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    bounds = client.bounds()
+    return [(bounds[0], bounds[2]), (bounds[1], bounds[3])]
+
+
+def image_metadata(image, **kwargs):
+    """Get the metadata of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        dict: A dictionary of image metadata.
+    """
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    return client.metadata()
+
+
+def image_bandcount(image, **kwargs):
+    """Get the number of bands in an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        int: The number of bands in the image.
+    """
+
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    return len(client.metadata()["bands"])
+
+
+def image_size(image, **kwargs):
+    """Get the size (width, height) of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        tuple: A tuple of (width, height).
+    """
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+
+    metadata = client.metadata()
+    return metadata["sourceSizeX"], metadata["sourceSizeY"]
+
+
+def image_projection(image, **kwargs):
+    """Get the projection of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        str: The projection of the image.
+    """
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    return client.metadata()["Projection"]
+
+
+def image_set_crs(image, epsg):
+    """Define the CRS of an image.
+
+    Args:
+        image (str): The input image filepath
+        epsg (int): The EPSG code of the CRS to set.
+    """
+
+    from rasterio.crs import CRS
+    import rasterio
+
+    with rasterio.open(image, "r+") as rds:
+        rds.crs = CRS.from_epsg(epsg)
+
+
+def image_geotransform(image, **kwargs):
+    """Get the geotransform of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        list: A list of geotransform values.
+    """
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    return client.metadata()["GeoTransform"]
+
+
+def image_resolution(image, **kwargs):
+    """Get the resolution of an image.
+
+    Args:
+        image (str): The input image filepath or URL.
+
+    Returns:
+        float: The resolution of the image.
+    """
+    image_check(image)
+
+    if isinstance(image, str):
+        _, client = get_local_tile_layer(image, return_client=True, **kwargs)
+    else:
+        client = image
+    return client.metadata()["GeoTransform"][1]
+
+
+def find_files(input_dir, ext=None, fullpath=True, recursive=True):
+    """Find files in a directory.
+
+    Args:
+        input_dir (str): The input directory.
+        ext (str, optional): The file extension to match. Defaults to None.
+        fullpath (bool, optional): Whether to return the full path. Defaults to True.
+        recursive (bool, optional): Whether to search recursively. Defaults to True.
+
+    Returns:
+        list: A list of matching files.
+    """
+
+    from pathlib import Path
+
+    files = []
+
+    if ext is None:
+        ext = "*"
+    else:
+        ext = ext.replace(".", "")
+
+    ext = f"*.{ext}"
+
+    if recursive:
+        if fullpath:
+            files = [str(path.joinpath()) for path in Path(input_dir).rglob(ext)]
+        else:
+            files = [str(path.name) for path in Path(input_dir).rglob(ext)]
+    else:
+        if fullpath:
+            files = [str(path.joinpath()) for path in Path(input_dir).glob(ext)]
+        else:
+            files = [path.name for path in Path(input_dir).glob(ext)]
+
+    return files
+
+
+def zoom_level_resolution(zoom, latitude=0):
+    """Returns the approximate pixel scale based on zoom level and latutude.
+        See https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
+
+    Args:
+        zoom (int): The zoom level.
+        latitude (float, optional): The latitude. Defaults to 0.
+
+    Returns:
+        float: Map resolution in meters.
+    """
+    import math
+
+    resolution = 156543.04 * math.cos(latitude) / math.pow(2, zoom)
+    return abs(resolution)
+
+
+def lnglat_to_meters(longitude, latitude):
+    """coordinate conversion between lat/lon in decimal degrees to web mercator
+
+    Args:
+        longitude (float): The longitude.
+        latitude (float): The latitude.
+
+    Returns:
+        tuple: A tuple of (x, y) in meters.
+    """
+    import numpy as np
+
+    origin_shift = np.pi * 6378137
+    easting = longitude * origin_shift / 180.0
+    northing = np.log(np.tan((90 + latitude) * np.pi / 360.0)) * origin_shift / np.pi
+
+    if np.isnan(easting):
+        if longitude > 0:
+            easting = 20026376
+        else:
+            easting = -20026376
+
+    if np.isnan(northing):
+        if latitude > 0:
+            northing = 20048966
+        else:
+            northing = -20048966
+
+    return (easting, northing)
+
+
+def meters_to_lnglat(x, y):
+    """coordinate conversion between web mercator to lat/lon in decimal degrees
+
+    Args:
+        x (float): The x coordinate.
+        y (float): The y coordinate.
+
+    Returns:
+        tuple: A tuple of (longitude, latitude) in decimal degrees.
+    """
+    import numpy as np
+
+    origin_shift = np.pi * 6378137
+    longitude = (x / origin_shift) * 180.0
+    latitude = (y / origin_shift) * 180.0
+    latitude = (
+        180 / np.pi * (2 * np.arctan(np.exp(latitude * np.pi / 180.0)) - np.pi / 2.0)
+    )
+    return (longitude, latitude)
+
+
+def bounds_to_xy_range(bounds):
+    """Convert bounds to x and y range to be used as input to bokeh map.
+
+    Args:
+        bounds (list): A list of bounds in the form [(south, west), (north, east)] or [xmin, ymin, xmax, ymax].
+
+    Returns:
+        tuple: A tuple of (x_range, y_range).
+    """
+
+    if isinstance(bounds, tuple):
+        bounds = list(bounds)
+    elif not isinstance(bounds, list):
+        raise TypeError("bounds must be a list")
+
+    if len(bounds) == 4:
+        west, south, east, north = bounds
+    elif len(bounds) == 2:
+        south, west = bounds[0]
+        north, east = bounds[1]
+
+    xmin, ymin = lnglat_to_meters(west, south)
+    xmax, ymax = lnglat_to_meters(east, north)
+    x_range = (xmin, xmax)
+    y_range = (ymin, ymax)
+    return x_range, y_range
+
+
+def center_zoom_to_xy_range(center, zoom):
+    """Convert center and zoom to x and y range to be used as input to bokeh map.
+
+    Args:
+        center (tuple): A tuple of (latitude, longitude).
+        zoom (int): The zoom level.
+
+    Returns:
+        tuple: A tuple of (x_range, y_range).
+    """
+
+    if isinstance(center, tuple) or isinstance(center, list):
+        pass
+    else:
+        raise TypeError("center must be a tuple or list")
+
+    if not isinstance(zoom, int):
+        raise TypeError("zoom must be an integer")
+
+    latitude, longitude = center
+    x_range = (-179, 179)
+    y_range = (-70, 70)
+    x_full_length = x_range[1] - x_range[0]
+    y_full_length = y_range[1] - y_range[0]
+
+    x_length = x_full_length / 2 ** (zoom - 2)
+    y_length = y_full_length / 2 ** (zoom - 2)
+
+    south = latitude - y_length / 2
+    north = latitude + y_length / 2
+    west = longitude - x_length / 2
+    east = longitude + x_length / 2
+
+    xmin, ymin = lnglat_to_meters(west, south)
+    xmax, ymax = lnglat_to_meters(east, north)
+
+    x_range = (xmin, xmax)
+    y_range = (ymin, ymax)
+
+    return x_range, y_range
+
+
+def get_geometry_coords(row, geom, coord_type, shape_type, mercator=False):
+    """
+    Returns the coordinates ('x' or 'y') of edges of a Polygon exterior.
+
+    :param: (GeoPandas Series) row : The row of each of the GeoPandas DataFrame.
+    :param: (str) geom : The column name.
+    :param: (str) coord_type : Whether it's 'x' or 'y' coordinate.
+    :param: (str) shape_type
+    """
+
+    # Parse the exterior of the coordinate
+    if shape_type.lower() in ["polygon", "multipolygon"]:
+        exterior = row[geom].geoms[0].exterior
+        if coord_type == "x":
+            # Get the x coordinates of the exterior
+            coords = list(exterior.coords.xy[0])
+            if mercator:
+                coords = [lnglat_to_meters(x, 0)[0] for x in coords]
+            return coords
+
+        elif coord_type == "y":
+            # Get the y coordinates of the exterior
+            coords = list(exterior.coords.xy[1])
+            if mercator:
+                coords = [lnglat_to_meters(0, y)[1] for y in coords]
+            return coords
+
+    elif shape_type.lower() in ["linestring", "multilinestring"]:
+        if coord_type == "x":
+            coords = list(row[geom].coords.xy[0])
+            if mercator:
+                coords = [lnglat_to_meters(x, 0)[0] for x in coords]
+            return coords
+        elif coord_type == "y":
+            coords = list(row[geom].coords.xy[1])
+            if mercator:
+                coords = [lnglat_to_meters(0, y)[1] for y in coords]
+            return coords
+
+    elif shape_type.lower() in ["point", "multipoint"]:
+        exterior = row[geom]
+
+        if coord_type == "x":
+            # Get the x coordinates of the exterior
+            coords = exterior.coords.xy[0][0]
+            if mercator:
+                coords = lnglat_to_meters(coords, 0)[0]
+            return coords
+
+        elif coord_type == "y":
+            # Get the y coordinates of the exterior
+            coords = exterior.coords.xy[1][0]
+            if mercator:
+                coords = lnglat_to_meters(0, coords)[1]
+            return coords

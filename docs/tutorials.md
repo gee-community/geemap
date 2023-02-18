@@ -144,3 +144,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 130. Printing Earth Engine objects without using the getInfo() function ([notebook](https://geemap.org/notebooks/130_print_objects))
 131. Using Earth Engine with ArcGIS Pro ([notebook](https://geemap.org/notebooks/131_arcgis))
 132. Adding colorbars to a folium map ([notebook](https://geemap.org/notebooks/132_folium_colorbar))
+133. Developing interactive web apps with gradio and geemap ([notebook](https://geemap.org/notebooks/133_gradio))

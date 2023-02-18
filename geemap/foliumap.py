@@ -37,7 +37,6 @@ class Map(folium.Map):
     """
 
     def __init__(self, **kwargs):
-
         import logging
 
         logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
@@ -83,8 +82,8 @@ class Map(folium.Map):
             kwargs["Draw_export"] = False
         if "plugin_MiniMap" not in kwargs.keys():
             kwargs["plugin_MiniMap"] = False
-        if "plugin_LayerControl" not in kwargs.keys():
-            kwargs["plugin_LayerControl"] = False
+        # if "plugin_LayerControl" not in kwargs.keys():
+        #     kwargs["plugin_LayerControl"] = False
         if "locate_control" not in kwargs:
             kwargs["locate_control"] = False
         if "search_control" not in kwargs:
@@ -155,6 +154,11 @@ class Map(folium.Map):
             plugins.LocateControl().add_to(self)
         if kwargs["search_control"]:
             plugins.Geocoder(collapsed=True, position="topleft").add_to(self)
+
+        if "plugin_LayerControl" not in kwargs:
+            self.options["layersControl"] = True
+        else:
+            self.options["layersControl"] = kwargs["plugin_LayerControl"]
 
         self.fit_bounds([latlon, latlon], max_zoom=zoom)
 
@@ -296,14 +300,10 @@ class Map(folium.Map):
 
     addLayer = add_layer
 
-    def _repr_mimebundle_(self, include=None, exclude=None):
-        """Adds Layer control to the map. Reference: https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_
-
-        Args:
-            include ([type]): [description]
-            exclude ([type]): [description]
-        """
-        self.add_layer_control()
+    def _repr_mimebundle_(self, **kwargs):
+        """Adds Layer control to the map. Reference: https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_"""
+        if self.options["layersControl"]:
+            self.add_layer_control()
 
     def set_center(self, lon, lat, zoom=10):
         """Centers the map view at a given coordinates with the given zoom level.
@@ -743,7 +743,6 @@ class Map(folium.Map):
         import pandas as pd
 
         try:
-
             if isinstance(data, str):
                 df = pd.read_csv(data)
                 data = df[[latitude, longitude, value]].values.tolist()
@@ -1031,9 +1030,7 @@ class Map(folium.Map):
         import random
 
         try:
-
             if isinstance(in_geojson, str):
-
                 if in_geojson.startswith("http"):
                     in_geojson = github_raw_url(in_geojson)
                     data = requests.get(in_geojson).json()
@@ -1594,7 +1591,6 @@ class Map(folium.Map):
                 )
 
         if items is not None:
-
             if len(icon_colors) == 1:
                 icon_colors = icon_colors * len(items)
             elif len(items) != len(icon_colors):
@@ -1846,7 +1842,6 @@ class Map(folium.Map):
                 )
 
         if items is not None:
-
             if len(icon_colors) == 1:
                 icon_colors = icon_colors * len(items)
             elif len(items) != len(icon_colors):
@@ -1990,7 +1985,6 @@ class Map(folium.Map):
             )
 
         try:
-
             dp.Report(dp.Plot(self)).upload(
                 name=name,
                 description=description,
@@ -2016,6 +2010,9 @@ class Map(folium.Map):
         Returns:
             str: A string containing the HTML code.
         """
+
+        if self.options["layersControl"]:
+            self.add_layer_control()
 
         if filename is not None:
             if not filename.endswith(".html"):
@@ -2072,7 +2069,6 @@ class Map(folium.Map):
                 output = st_folium(self, width=width, height=height)
                 return output
             else:
-
                 # if responsive:
                 #     make_map_responsive = """
                 #     <style>
@@ -2134,7 +2130,6 @@ class Map(folium.Map):
             import streamlit as st
 
             if "map_bounds" in st.session_state:
-
                 bounds = st.session_state["map_bounds"]
 
                 self.fit_bounds(bounds)
@@ -2341,6 +2336,8 @@ class Map(folium.Map):
         self,
         left_layer="TERRAIN",
         right_layer="OpenTopoMap",
+        left_args={},
+        right_args={},
         left_label=None,
         right_label=None,
         left_position="bottomleft",
@@ -2350,16 +2347,30 @@ class Map(folium.Map):
         """Adds a split-panel map.
 
         Args:
-            left_layer (str, optional): The layer tile layer. Defaults to 'TERRAIN'.
-            right_layer (str, optional): The right tile layer. Defaults to 'OpenTopoMap'.
+            left_layer (str, optional): The left tile layer. Can be a local file path, HTTP URL, or a basemap name. Defaults to 'TERRAIN'.
+            right_layer (str, optional): The right tile layer. Can be a local file path, HTTP URL, or a basemap name. Defaults to 'OpenTopoMap'.
+            left_args (dict, optional): The arguments for the left tile layer. Defaults to {}.
+            right_args (dict, optional): The arguments for the right tile layer. Defaults to {}.
         """
-        if "max_zoom" not in kwargs:
-            kwargs["max_zoom"] = 100
-        if "max_native_zoom" not in kwargs:
-            kwargs["max_native_zoom"] = 100
+        if "max_zoom" not in left_args:
+            left_args["max_zoom"] = 100
+        if "max_native_zoom" not in left_args:
+            left_args["max_native_zoom"] = 100
+
+        if "max_zoom" not in right_args:
+            right_args["max_zoom"] = 100
+        if "max_native_zoom" not in right_args:
+            right_args["max_native_zoom"] = 100
+
+        if "layer_name" not in left_args:
+            left_args["layer_name"] = "Left Layer"
+
+        if "layer_name" not in right_args:
+            right_args["layer_name"] = "Right Layer"
+
+        bounds = None
 
         try:
-
             if left_label is not None:
                 left_name = left_label
             else:
@@ -2374,21 +2385,31 @@ class Map(folium.Map):
                 left_layer = basemaps[left_layer]
             elif isinstance(left_layer, str):
                 if left_layer.startswith("http") and left_layer.endswith(".tif"):
-                    url = cog_tile(left_layer)
+                    url = cog_tile(left_layer, **left_args)
+                    bbox = cog_bounds(left_layer)
+                    bounds = [(bbox[1], bbox[0]), (bbox[3], bbox[2])]
                     left_layer = folium.raster_layers.TileLayer(
                         tiles=url,
                         name=left_name,
                         attr=" ",
                         overlay=True,
-                        **kwargs,
                     )
+                elif os.path.exists(left_layer):
+                    left_layer, left_client = get_local_tile_layer(
+                        left_layer,
+                        tile_format="folium",
+                        return_client=True,
+                        **left_args,
+                    )
+                    bounds = image_bounds(left_client)
+
                 else:
                     left_layer = folium.raster_layers.TileLayer(
                         tiles=left_layer,
                         name=left_name,
                         attr=" ",
                         overlay=True,
-                        **kwargs,
+                        **left_args,
                     )
             elif isinstance(left_layer, folium.raster_layers.TileLayer) or isinstance(
                 left_layer, folium.WmsTileLayer
@@ -2403,24 +2424,33 @@ class Map(folium.Map):
                 right_layer = basemaps[right_layer]
             elif isinstance(right_layer, str):
                 if right_layer.startswith("http") and right_layer.endswith(".tif"):
-                    url = cog_tile(right_layer)
+                    url = cog_tile(right_layer, **right_args)
+                    bbox = cog_bounds(right_layer)
+                    bounds = [(bbox[1], bbox[0]), (bbox[3], bbox[2])]
                     right_layer = folium.raster_layers.TileLayer(
                         tiles=url,
                         name=right_name,
                         attr=" ",
                         overlay=True,
-                        **kwargs,
                     )
+                elif os.path.exists(right_layer):
+                    right_layer, right_client = get_local_tile_layer(
+                        right_layer,
+                        tile_format="folium",
+                        return_client=True,
+                        **right_args,
+                    )
+                    bounds = image_bounds(right_client)
                 else:
                     right_layer = folium.raster_layers.TileLayer(
                         tiles=right_layer,
                         name=right_name,
                         attr=" ",
                         overlay=True,
-                        **kwargs,
+                        **right_args,
                     )
             elif isinstance(right_layer, folium.raster_layers.TileLayer) or isinstance(
-                right_layer, folium.WmsTileLayer
+                left_layer, folium.WmsTileLayer
             ):
                 pass
             else:
@@ -2442,6 +2472,8 @@ class Map(folium.Map):
                 if "<" not in right_label:
                     right_label = f"<h4>{right_label}</h4>"
                 self.add_html(right_label, position=right_position)
+            if bounds is not None:
+                self.fit_bounds(bounds)
 
         except Exception as e:
             print("The provided layers are invalid!")
@@ -2678,7 +2710,6 @@ class Map(folium.Map):
                 self.add_html(html, position=position, **kwargs)
 
             elif os.path.exists(image):
-
                 if position == "bottomleft":
                     position = (5, 5)
                 elif position == "bottomright":
@@ -2719,7 +2750,6 @@ class Map(folium.Map):
             raise Exception(f"position must be one of {allowed_positions}")
 
         try:
-
             if isinstance(content, str):
                 widget = CustomControl(content, position=position)
                 widget.add_to(self)
@@ -2785,6 +2815,51 @@ class Map(folium.Map):
             padding: {padding};">{text}</div>"""
 
         self.add_html(text, position=position, **kwargs)
+
+    def to_gradio(self, width="100%", height="500px", **kwargs):
+        """Converts the map to an HTML string that can be used in Gradio. Removes unsupported elements, such as
+            attribution and any code blocks containing functions. See https://github.com/gradio-app/gradio/issues/3190
+
+        Args:
+            width (str, optional): The width of the map. Defaults to '100%'.
+            height (str, optional): The height of the map. Defaults to '500px'.
+
+        Returns:
+            str: The HTML string to use in Gradio.
+        """
+
+        if isinstance(width, int):
+            width = f"{width}px"
+        if isinstance(height, int):
+            height = f"{height}px"
+
+        html = self.to_html()
+        lines = html.split("\n")
+        output = []
+        skipped_lines = []
+        for index, line in enumerate(lines):
+            if index in skipped_lines:
+                continue
+            if line.lstrip().startswith('{"attribution":'):
+                continue
+            elif "on(L.Draw.Event.CREATED, function(e)" in line:
+                for i in range(14):
+                    skipped_lines.append(index + i)
+            elif "L.Control.geocoder" in line:
+                for i in range(5):
+                    skipped_lines.append(index + i)
+            elif "function(e)" in line:
+                print(
+                    f"Warning: The folium plotting backend does not support functions in code blocks. Please delete line {index + 1}."
+                )
+            else:
+                output.append(line + "\n")
+
+        return f"""<iframe style="width: {width}; height: {height}" name="result" allow="midi; geolocation; microphone; camera; 
+        display-capture; encrypted-media;" sandbox="allow-modals allow-forms 
+        allow-scripts allow-same-origin allow-popups 
+        allow-top-navigation-by-user-activation allow-downloads" allowfullscreen="" 
+        allowpaymentrequest="" frameborder="0" srcdoc='{"".join(output)}'></iframe>"""
 
     def remove_labels(self, **kwargs):
         """Removes a layer from the map."""
