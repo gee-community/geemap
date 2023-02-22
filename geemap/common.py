@@ -6776,6 +6776,9 @@ def zonal_stats_by_group(
     denominator=1.0,
     scale=None,
     crs=None,
+    crs_transform=None,
+    best_effort=True,
+    max_pixels=1e7,
     tile_scale=1.0,
     return_fc=False,
     verbose=True,
@@ -6794,6 +6797,9 @@ def zonal_stats_by_group(
         denominator (float, optional): To convert area units (e.g., from square meters to square kilometers). Defaults to 1.0.
         scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
         crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
+        crs_transform (list, optional): The list of CRS transform values. This is a row-major ordering of the 3x2 transform matrix. This option is mutually exclusive with 'scale', and replaces any transform already set on the projection.
+        best_effort (bool, optional): If the polygon would contain too many pixels at the given scale, compute and use a larger scale which would allow the operation to succeed.
+        max_pixels (int, optional): The maximum number of pixels to reduce. Defaults to 1e7.
         tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
         verbose (bool, optional): Whether to print descriptive text when the programming is running. Default to True.
         return_fc (bool, optional): Whether to return the results as an ee.FeatureCollection. Defaults to False.
@@ -6869,10 +6875,12 @@ def zonal_stats_by_group(
         hist = in_value_raster.reduceRegion(
             ee.Reducer.frequencyHistogram(),
             geometry=geometry,
-            bestEffort=True,
-            crs=crs,
             scale=scale,
-            tile_scale=tile_scale,
+            crs=crs,
+            crsTransform=crs_transform,
+            bestEffort=best_effort,
+            maxPixels=max_pixels,
+            tileScale=tile_scale,
         )
         class_values = (
             ee.Dictionary(hist.get(band_name))
@@ -14048,7 +14056,7 @@ def get_current_year():
     return today.year
 
 
-def html_to_gradio(html, width='100%', height='500px', **kwargs):
+def html_to_gradio(html, width="100%", height="500px", **kwargs):
     """Converts the map to an HTML string that can be used in Gradio. Removes unsupported elements, such as
         attribution and any code blocks containing functions. See https://github.com/gradio-app/gradio/issues/3190
 
@@ -14067,7 +14075,7 @@ def html_to_gradio(html, width='100%', height='500px', **kwargs):
         height = f"{height}px"
 
     if isinstance(html, str):
-        with open(html, 'r') as f:
+        with open(html, "r") as f:
             lines = f.readlines()
     elif isinstance(html, list):
         lines = html
@@ -14081,13 +14089,13 @@ def html_to_gradio(html, width='100%', height='500px', **kwargs):
             continue
         if line.lstrip().startswith('{"attribution":'):
             continue
-        elif 'on(L.Draw.Event.CREATED, function(e)' in line:
+        elif "on(L.Draw.Event.CREATED, function(e)" in line:
             for i in range(14):
                 skipped_lines.append(index + i)
-        elif 'L.Control.geocoder' in line:
+        elif "L.Control.geocoder" in line:
             for i in range(5):
                 skipped_lines.append(index + i)
-        elif 'function(e)' in line:
+        elif "function(e)" in line:
             print(
                 f"Warning: The folium plotting backend does not support functions in code blocks. Please delete line {index + 1}."
             )
