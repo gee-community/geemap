@@ -13,6 +13,8 @@
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![image](https://joss.theoj.org/papers/10.21105/joss.02305/status.svg)](https://joss.theoj.org/papers/10.21105/joss.02305)
 
+[![logo](https://i.imgur.com/9OOSpDm.png)](https://github.com/giswqs/geemap/blob/master/docs/assets/logo.png)
+
 **A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.**
 
 -   GitHub repo: <https://github.com/giswqs/geemap>

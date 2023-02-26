@@ -24,6 +24,8 @@ theme:
     name: material
     icon:
         repo: fontawesome/brands/github
+    logo: assets/logo.png
+    favicon: assets/favicon.png
     features:
         - navigation.instant
         - navigation.tracking
