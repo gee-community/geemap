@@ -5,7 +5,7 @@
   </head>
   <body>
     <iframe
-      src="https://geemap.org/search.html"
+      src="https://geemap.org/search_docs.html"
       frameborder="0"
       marginheight="0"
       marginwidth="0"
