@@ -86,7 +86,7 @@ extra:
 
 nav:
     - Home: index.md
-    - Search: search.html
+    - Search: search.md
     - Book: https://book.geemap.org
     - Installation: installation.md
     - Get Started: get-started.md
