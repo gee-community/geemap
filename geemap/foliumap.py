@@ -1961,6 +1961,7 @@ class Map(folium.Map):
         source_file=None,
         open=True,
         formatting=None,
+        token=None,
         **kwargs,
     ):
         """Publish the map to datapane.com
@@ -1973,19 +1974,37 @@ class Map(folium.Map):
             source_file (str, optional): Path of jupyter notebook file to upload. Defaults to None.
             open (bool, optional): Whether to open the map. Defaults to True.
             formatting (ReportFormatting, optional): Set the basic styling for your report.
+            token (str, optional): The token to use to datapane to publish the map. See https://docs.datapane.com/tut-getting-started. Defaults to None.
         """
         import webbrowser
+        import warnings
 
+        if os.environ.get("USE_MKDOCS") is not None:
+            return
+
+        warnings.filterwarnings("ignore")
         try:
             import datapane as dp
         except Exception:
-            webbrowser.open_new_tab("https://docs.datapane.com/tut-getting-started")
+            webbrowser.open_new_tab("https://docs.datapane.com/")
             raise ImportError(
                 "The datapane Python package is not installed. You need to install and authenticate datapane first."
             )
 
+        if token is None:
+            try:
+                _ = dp.ping(verbose=False)
+            except Exception as e:
+                if os.environ.get("DP_TOKEN") is not None:
+                    dp.login(token=os.environ.get("DP_TOKEN"))
+                else:
+                    raise Exception(e)
+        else:
+            dp.login(token)
+
         try:
-            dp.Report(dp.Plot(self)).upload(
+            dp.upload_report(
+                dp.Plot(self),
                 name=name,
                 description=description,
                 source_url=source_url,
@@ -1993,6 +2012,7 @@ class Map(folium.Map):
                 source_file=source_file,
                 open=open,
                 formatting=formatting,
+                **kwargs,
             )
 
         except Exception as e:
