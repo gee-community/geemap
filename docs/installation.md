@@ -85,8 +85,8 @@ To install the development version from GitHub directly within Jupyter notebook 
 
 ## Use Docker
 
-To use geemap in a Docker container, check out the following docker containers with geemap installed.
+You can also use [Docker](https://hub.docker.com/r/giswqs/leafmap/tags) to run geemap:
 
--   [gee-community/ee-jupyter-contrib](https://github.com/gee-community/ee-jupyter-contrib/tree/master/docker/gcp_ai_deep_learning_platform)
--   [bkavlak/geemap](https://hub.docker.com/r/bkavlak/geemap)
--   [giswqs/geemap](https://hub.docker.com/r/giswqs/geemap)
+```bash
+    docker run -it -p 8888:8888 giswqs/geemap:latest
+```
