@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.20.1 - Mar 6, 2023
+
+**New Features**
+
+-   Added geemap docker image ([#1456](https://github.com/giswqs/geemap/pull/1456))
+-   Added geemap logo ([#1448](https://github.com/giswqs/geemap/pull/1448))
+
+**Improvement**
+
+-   Added Google Search for website ([#1453](https://github.com/giswqs/geemap/pull/1453))
+-   Fixed datapane bug #1450 ([#1452](https://github.com/giswqs/geemap/pull/1452))
+-   Fixed zonal stats by group bug ([#1441](https://github.com/giswqs/geemap/pull/1441))
+-   Disable docs search due to large file [#1437](https://github.com/giswqs/geemap/issues/1437)
+
 ## v0.20.0 - Feb 18, 2023
 
 **New Features**
