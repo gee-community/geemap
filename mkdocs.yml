@@ -30,15 +30,15 @@ theme:
         - navigation.instant
         - navigation.tracking
         - navigation.top
-        # - search.highlight
-        # - search.share
+        - search.highlight
+        - search.share
     custom_dir: "docs/overrides"
     font:
         text: Google Sans
         code: Regular
 
 plugins:
-    # - search
+    - search
     - mkdocstrings
     - git-revision-date
     - git-revision-date-localized:
@@ -86,7 +86,7 @@ extra:
 
 nav:
     - Home: index.md
-    - Search: search.md
+    - Search: search_bk.md
     - Book: https://book.geemap.org
     - Installation: installation.md
     - Get Started: get-started.md
