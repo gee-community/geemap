@@ -30,15 +30,15 @@ theme:
         - navigation.instant
         - navigation.tracking
         - navigation.top
-        # - search.highlight
-        # - search.share
+        - search.highlight
+        - search.share
     custom_dir: "docs/overrides"
     font:
         text: Google Sans
         code: Regular
 
 plugins:
-    # - search
+    - search
     - mkdocstrings
     - git-revision-date
     - git-revision-date-localized:
@@ -51,8 +51,7 @@ plugins:
           allow_errors: false
           ignore: ["conf.py"]
           execute: False
-          # execute_ignore: "workshops/*.ipynb"
-          execute_ignore: "notebooks/*_X.ipynb"
+          execute_ignore: ["notebooks/*.ipynb", "workshops/*.ipynb"]
 
 markdown_extensions:
     - admonition
@@ -86,7 +85,7 @@ extra:
 
 nav:
     - Home: index.md
-    - Search: search.md
+    # - Search: search_bk.md
     - Book: https://book.geemap.org
     - Installation: installation.md
     - Get Started: get-started.md

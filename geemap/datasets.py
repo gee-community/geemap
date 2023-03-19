@@ -28,7 +28,7 @@ def update_data_list(out_dir="."):
     """Updates the Earth Engine Data Catalog dataset list.
 
     Args:
-        out_dir (str, optional): The output directory to save the GitHub repositor. Defaults to ".".
+        out_dir (str, optional): The output directory to save the GitHub repository. Defaults to ".".
 
     Raises:
         Exception: If the CSV file fails to save.
@@ -102,8 +102,8 @@ def get_community_data_list():
     Returns:
         list: The list of Earth Engine asset IDs.
     """
-    collections = search_ee_data('.*', regex=True, source='community')
-    return [collection.get('id', None) for collection in collections]
+    collections = search_ee_data(".*", regex=True, source="community")
+    return [collection.get("id", None) for collection in collections]
 
 
 def get_ee_stac_list():
@@ -166,7 +166,7 @@ def get_data_dict():
     return data_dict
 
 
-def get_metadata(asset_id, source='ee'):
+def get_metadata(asset_id, source="ee"):
     """Gets metadata about an Earth Engine asset.
 
     Args:
