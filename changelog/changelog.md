@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.20.2 - Mar 19, 2023
+
+**New Features**
+
+-   Added AmericaView workshop notebook ([#1459](https://github.com/giswqs/geemap/pull/1459))
+-   Added geemap docker image ([#1456](https://github.com/giswqs/geemap/pull/1456))
+-   Added geemap logo ([#1448](https://github.com/giswqs/geemap/pull/1448))
+
+**Improvement**
+
+-   Cleaned up notebooks ([#1469](https://github.com/giswqs/geemap/pull/1469))
+-   Fixed zonal stats by group bug ([#1441](https://github.com/giswqs/geemap/pull/1441))
+-   Disable docs search due to large file [#1437](https://github.com/giswqs/geemap/issues/1437)
+-   Fixed datapane bug #1450 ([#1452](https://github.com/giswqs/geemap/pull/1452))
+
 ## v0.20.0 - Feb 18, 2023
 
 **New Features**
