@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.20.1 - Mar 19, 2023
+## v0.20.2 - Mar 19, 2023
 
 **New Features**
 
