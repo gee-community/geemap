@@ -1,11 +1,10 @@
 bump2version
 coverage
 flake8
-grip
 ipykernel
 livereload
-nbconvert==6.5.3
-nbformat==5.4.0
+nbconvert
+nbformat
 pip
 sphinx
 tox
@@ -15,8 +14,8 @@ wheel
 mkdocs
 mkdocs-git-revision-date-plugin 
 mkdocs-git-revision-date-localized-plugin
-mkdocs-jupyter 
-mkdocs-material 
+mkdocs-jupyter>=0.24.0
+mkdocs-material>=9.1.3 
 mkdocs-pdf-export-plugin
 mkdocstrings
 mkdocstrings-crystal

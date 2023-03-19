@@ -3155,7 +3155,7 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat"):
 
         data_np = np.array(data)
 
-        do_transpose = True  # To do: figure out if we need to tranpose the data or not
+        do_transpose = True  # To do: figure out if we need to transpose the data or not
         if do_transpose:
             try:
                 data_np = np.transpose(data_np, (0, 2, 1))
