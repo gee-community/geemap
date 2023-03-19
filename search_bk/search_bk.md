@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search</title>
+  </head>
+  <body>
+    <iframe
+      src="https://geemap.org/search_docs.html"
+      frameborder="0"
+      marginheight="0"
+      marginwidth="0"
+      width="100%"
+      height="800"
+      scrolling="auto"
+      allow="geolocation"
+    >
+    </iframe>
+  </body>
+</html>

@@ -1,0 +1,3 @@
+# legends module
+
+::: geemap.legends
