@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.20.3 - Mar 22, 2023
+
+**Improvement**
+
+-   Fixed ipywidgets comm error ([#1474](https://github.com/giswqs/geemap/pull/1474))
+
 ## v0.20.2 - Mar 19, 2023
 
 **New Features**
