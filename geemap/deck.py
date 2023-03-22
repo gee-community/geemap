@@ -1,4 +1,5 @@
 import os
+import ipykernel.ipkernel
 from .common import *
 from .osm import *
 from .geemap import basemaps

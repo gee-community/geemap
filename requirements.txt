@@ -11,6 +11,7 @@ geocoder
 geojson
 ipyevents
 ipyfilechooser>=0.6.0
+ipykernel
 ipyleaflet>=0.17.0
 ipytree
 ipywidgets<8.0.0
