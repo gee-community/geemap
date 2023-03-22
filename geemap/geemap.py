@@ -12,6 +12,7 @@ import ee
 import ipyevents
 import ipyleaflet
 import ipywidgets as widgets
+import ipykernel.ipkernel
 from box import Box
 from bqplot import pyplot as plt
 from ipyfilechooser import FileChooser
