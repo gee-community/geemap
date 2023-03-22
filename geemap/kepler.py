@@ -3,6 +3,7 @@ import os
 import sys
 import requests
 import ipywidgets as widgets
+import ipykernel.ipkernel
 import pandas as pd
 from IPython.display import display, HTML
 from .common import *
