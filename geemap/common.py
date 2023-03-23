@@ -2339,6 +2339,7 @@ def ee_export_image_collection(
     file_per_band=False,
     format="ZIPPED_GEO_TIFF",
     unmask_value=None,
+    filenames=None,
     timeout=300,
     proxies=None,
 ):
@@ -2357,6 +2358,7 @@ def ee_export_image_collection(
             filePerBand and all band-level transformations will be ignored. Loading a NumPy output results in a structured array.
         unmask_value (float, optional): The value to use for pixels that are masked in the input image.
             If the exported image contains zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
+        filenames (list | int, optional): A list of filenames to use for the exported images. Defaults to None.
         timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
         proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
     """
@@ -2372,11 +2374,22 @@ def ee_export_image_collection(
         count = int(ee_object.size().getInfo())
         print(f"Total number of images: {count}\n")
 
+        if filenames is None:
+            filenames = ee_object.aggregate_array("system:index").getInfo()
+        elif isinstance(filenames, int):
+            filenames = [str(f + filenames) for f in range(0, count)]
+
+        if len(filenames) != count:
+            raise Exception(
+                "The number of filenames must be equal to the number of images."
+            )
+
+        filenames = [str(f) + ".tif" for f in filenames if not str(f).endswith(".tif")]
+
         for i in range(0, count):
             image = ee.Image(ee_object.toList(count).get(i))
-            name = image.get("system:index").getInfo() + ".tif"
-            filename = os.path.join(os.path.abspath(out_dir), name)
-            print(f"Exporting {i + 1}/{count}: {name}")
+            filename = os.path.join(out_dir, filenames[i])
+            print(f"Exporting {i + 1}/{count}: {filename}")
             ee_export_image(
                 image,
                 filename=filename,
