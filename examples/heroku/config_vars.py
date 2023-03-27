@@ -11,7 +11,6 @@ def set_heroku_vars(token_name="EARTHENGINE_TOKEN"):
         token_name (str, optional): Name of the Earth Engine token. Defaults to 'EARTHENGINE_TOKEN'.
     """
     try:
-
         ee_token_dir = os.path.expanduser("~/.config/earthengine/")
         ee_token_file = os.path.join(ee_token_dir, "credentials")
 
@@ -42,5 +41,4 @@ def set_heroku_vars(token_name="EARTHENGINE_TOKEN"):
 
 
 if __name__ == "__main__":
-
     set_heroku_vars(token_name="EARTHENGINE_TOKEN")

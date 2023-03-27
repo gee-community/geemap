@@ -9,7 +9,7 @@ import json
 import random
 import requests
 import ipywidgets as widgets
-import ipykernel.ipkernel
+
 from box import Box
 from .basemaps import xyz_to_heremap
 from .common import *
