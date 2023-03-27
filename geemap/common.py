@@ -2232,6 +2232,7 @@ def ee_export_image(
     dimensions=None,
     file_per_band=False,
     format="ZIPPED_GEO_TIFF",
+    unzip=True,
     unmask_value=None,
     timeout=300,
     proxies=None,
@@ -2249,6 +2250,7 @@ def ee_export_image(
         file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
         format (str, optional):  One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file, default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If "GEO_TIFF" or "NPY",
             filePerBand and all band-level transformations will be ignored. Loading a NumPy output results in a structured array.
+        unzip (bool, optional): Whether to unzip the downloaded file. Defaults to True.
         unmask_value (float, optional): The value to use for pixels that are masked in the input image.
             If the exported image contains zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
         timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
@@ -2291,7 +2293,8 @@ def ee_export_image(
             params["crs"] = crs
         if crs_transform is not None:
             params["crs_transform"] = crs_transform
-        params["format"] = format
+        if format != "ZIPPED_GEO_TIFF":
+            params["format"] = format
 
         try:
             url = ee_object.getDownloadURL(params)
@@ -2316,9 +2319,10 @@ def ee_export_image(
         return
 
     try:
-        with zipfile.ZipFile(filename_zip) as z:
-            z.extractall(os.path.dirname(filename))
-        os.remove(filename_zip)
+        if unzip:
+            with zipfile.ZipFile(filename_zip) as z:
+                z.extractall(os.path.dirname(filename))
+            os.remove(filename_zip)
 
         if file_per_band:
             print(f"Data downloaded to {os.path.dirname(filename)}")

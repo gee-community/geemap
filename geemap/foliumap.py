@@ -6,7 +6,7 @@ import ee
 import folium
 from box import Box
 from folium import plugins
-import ipykernel.ipkernel
+
 
 from branca.element import Figure, JavascriptLink, MacroElement
 from folium.elements import JSCSSMixin
