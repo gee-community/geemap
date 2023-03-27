@@ -21,7 +21,7 @@
         <link rel="next" href="../datasets/">
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.4">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.c4a75a56.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.240905d7.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -4210,7 +4210,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 <h2 id="geemap.conversion.js_snippet_to_py" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">js_snippet_to_py</span><span class="p">(</span><span class="n">in_js_snippet</span><span class="p">,</span> <span class="n">add_new_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_ee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">js_snippet_to_py</span><span class="p">(</span><span class="n">in_js_snippet</span><span class="p">,</span> <span class="n">add_new_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_ee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.js_snippet_to_py" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -4251,8 +4251,8 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
       <tr>
         <td><code>import_geemap</code></td>
         <td><code>bool</code></td>
-        <td><p>Whether to import geemap. Defaults to True.</p></td>
-        <td><code>True</code></td>
+        <td><p>Whether to import geemap. Defaults to False.</p></td>
+        <td><code>False</code></td>
       </tr>
       <tr>
         <td><code>show_map</code></td>
@@ -4283,7 +4283,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="n">in_js_snippet</span><span class="p">,</span>
     <span class="n">add_new_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">import_ee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">import_geemap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an Earth Engine JavaScript snippet wrapped in triple quotes to Python directly on a Jupyter notebook.</span>
@@ -4292,7 +4292,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 <span class="sd">        in_js_snippet (str): Earth Engine JavaScript within triple quotes.</span>
 <span class="sd">        add_new_cell (bool, optional): Whether add the converted Python to a new cell.</span>
 <span class="sd">        import_ee (bool, optional): Whether to import ee. Defaults to True.</span>
-<span class="sd">        import_geemap (bool, optional): Whether to import geemap. Defaults to True.</span>
+<span class="sd">        import_geemap (bool, optional): Whether to import geemap. Defaults to False.</span>
 <span class="sd">        show_map (bool, optional): Whether to show the map. Defaults to True.</span>
 
 <span class="sd">    Returns:</span>
@@ -4416,8 +4416,8 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="n">import_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="n">use_qgis</span><span class="p">:</span>
         <span class="n">import_str</span> <span class="o">=</span> <span class="s2">&quot;from ee_plugin import Map</span><span class="se">\n</span><span class="s2">&quot;</span>
-    <span class="c1"># else:</span>
-    <span class="c1">#     import_str = &quot;import geemap\n\nMap = geemap.Map()\n&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">import_str</span> <span class="o">=</span> <span class="s2">&quot;import geemap</span><span class="se">\n\n</span><span class="s2">Map = geemap.Map()</span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="n">github_url</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="n">github_repo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -4760,7 +4760,6 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="k">if</span> <span class="n">out_dir</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">in_file</span><span class="p">):</span>
         <span class="n">out_py_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">out_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_tmp.py&quot;</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
     <span class="n">content</span> <span class="o">=</span> <span class="n">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">content</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Map&quot;</span><span class="p">:</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -5559,7 +5558,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      <script src="../assets/javascripts/bundle.19047be9.min.js"></script>
       
         <script src="../js/timeago.min.js"></script>
       

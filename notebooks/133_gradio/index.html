@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.3">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.4">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.c4a75a56.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.240905d7.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -3942,7 +3942,7 @@ Licensed under the Apache License, Version 2.0.
     init_mathjax();
     </script>
     <!-- End of mathjax configuration --><div class="jupyter-wrapper">
-<div id="cell-id=cc420dc7" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=2a74e9cd" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3956,7 +3956,7 @@ Licensed under the Apache License, Version 2.0.
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=aa66ac57" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=d0426d94" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -3988,7 +3988,7 @@ Licensed under the Apache License, Version 2.0.
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=80647435" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=f2887cd1" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4024,7 +4024,7 @@ import geemap.foliumap as geemap</div>
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=6b9e9483" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=4ed26961" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4072,7 +4072,7 @@ Map</div>
 
 </div>
 </div>
-<div id="cell-id=1e0831d9" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=131ad75b" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4084,7 +4084,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=fe4e52d7" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=3e2aacdc" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4105,7 +4105,6 @@ Map</div>
                 </clipboard-copy>
             </div>
             <div class="highlight-ipynb hl-python "><pre><span></span><span class="k">def</span> <span class="nf">viz_dem</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">palette</span><span class="p">):</span>
-
     <span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
     <span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;USGS/SRTMGL1_003&#39;</span><span class="p">)</span>
     <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
@@ -4116,6 +4115,7 @@ Map</div>
     <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">&#39;SRTM&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Map</span><span class="o">.</span><span class="n">to_gradio</span><span class="p">()</span>
 
+
 <span class="n">vmin</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Min value&quot;</span><span class="p">)</span>
 <span class="n">vmax</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">6000</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Max value&quot;</span><span class="p">)</span>
 <span class="n">palette</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Textbox</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;terrain&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Palette&quot;</span><span class="p">)</span>
@@ -4124,7 +4124,6 @@ Map</div>
 <span class="n">demo</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
 </pre></div>
 <div id="cell-4" class="clipboard-copy-txt">def viz_dem(vmin, vmax, palette):
-
     Map = geemap.Map()
     image = ee.Image('USGS/SRTMGL1_003')
     vis_params = {
@@ -4134,6 +4133,7 @@ Map</div>
     }
     Map.addLayer(image, vis_params, 'SRTM')
     return Map.to_gradio()
+
 
 vmin = gr.Number(value=0, label="Min value")
 vmax = gr.Number(value=6000, label="Max value")
@@ -4150,7 +4150,7 @@ demo.launch()</div>
 
 </div>
 </div>
-<div id="cell-id=75da8bc2" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=a79ab52b" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4162,7 +4162,7 @@ demo.launch()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=2e97e1ae" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=6c3f2d8b" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4186,12 +4186,17 @@ demo.launch()</div>
     <span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">),</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
 
     <span class="n">nlcd_left</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;USGS/NLCD_RELEASES/2019_REL/NLCD/</span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;landcover&#39;</span><span class="p">)</span>
-    <span class="n">nlcd_right</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;USGS/NLCD_RELEASES/2019_REL/NLCD/</span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;landcover&#39;</span><span class="p">)</span>
+    <span class="n">nlcd_right</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;USGS/NLCD_RELEASES/2019_REL/NLCD/</span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+        <span class="s1">&#39;landcover&#39;</span>
+    <span class="p">)</span>
 
     <span class="n">left_layer</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_tile_layer</span><span class="p">(</span><span class="n">nlcd_left</span><span class="p">,</span> <span class="p">{},</span> <span class="sa">f</span><span class="s1">&#39;NLCD </span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">right_layer</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_tile_layer</span><span class="p">(</span><span class="n">nlcd_right</span><span class="p">,</span> <span class="p">{},</span> <span class="sa">f</span><span class="s1">&#39;NLCD </span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="n">Map</span><span class="o">.</span><span class="n">split_map</span><span class="p">(</span><span class="n">left_layer</span><span class="p">,</span> <span class="n">right_layer</span><span class="p">,)</span>
+    <span class="n">Map</span><span class="o">.</span><span class="n">split_map</span><span class="p">(</span>
+        <span class="n">left_layer</span><span class="p">,</span>
+        <span class="n">right_layer</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">Map</span><span class="o">.</span><span class="n">to_gradio</span><span class="p">()</span>
 
 
@@ -4206,12 +4211,17 @@ demo.launch()</div>
     Map = geemap.Map(center=(40, -100), zoom=4, height=600)
 
     nlcd_left = ee.Image(f'USGS/NLCD_RELEASES/2019_REL/NLCD/{left}').select('landcover')
-    nlcd_right = ee.Image(f'USGS/NLCD_RELEASES/2019_REL/NLCD/{right}').select('landcover')
+    nlcd_right = ee.Image(f'USGS/NLCD_RELEASES/2019_REL/NLCD/{right}').select(
+        'landcover'
+    )
 
     left_layer = geemap.ee_tile_layer(nlcd_left, {}, f'NLCD {left}')
     right_layer = geemap.ee_tile_layer(nlcd_right, {}, f'NLCD {right}')
 
-    Map.split_map(left_layer, right_layer,)
+    Map.split_map(
+        left_layer,
+        right_layer,
+    )
     return Map.to_gradio()
 
 
@@ -4230,7 +4240,7 @@ demo.launch()</div>
 
 </div>
 </div>
-<div id="cell-id=38faac41" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=f71132ed" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4242,7 +4252,7 @@ demo.launch()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=fd7c8ed2" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=6d8492c6" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4309,7 +4319,7 @@ demo.launch()</div>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-03-19T20:45:47+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-03-19</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-03-27T13:41:02+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-03-27</span>
       
         <br>
         Created:
@@ -4429,7 +4439,7 @@ demo.launch()</div>
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.efa0ade1.min.js"></script>
+      <script src="../../assets/javascripts/bundle.19047be9.min.js"></script>
       
         <script src="../../js/timeago.min.js"></script>
       

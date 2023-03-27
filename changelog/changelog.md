@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.20.4 - Mar 27, 2023
+
+**Improvement**
+
+-   Fixed image export file per band bug (#1481)
+-   Added filenames parameter to export image collection (#1478)
+-   Removed ipykernel import
+
 ## v0.20.3 - Mar 22, 2023
 
 **Improvement**
