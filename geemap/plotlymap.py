@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import ipywidgets as widgets
-import ipykernel.ipkernel
+
 from .basemaps import xyz_to_plotly
 from .common import *
 from .osm import *

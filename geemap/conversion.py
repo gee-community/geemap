@@ -304,8 +304,8 @@ def js_to_python(
     import_str = ""
     if use_qgis:
         import_str = "from ee_plugin import Map\n"
-    # else:
-    #     import_str = "import geemap\n\nMap = geemap.Map()\n"
+    else:
+        import_str = "import geemap\n\nMap = geemap.Map()\n"
 
     github_url = ""
     if github_repo is not None:
@@ -503,7 +503,7 @@ def js_snippet_to_py(
     in_js_snippet,
     add_new_cell=True,
     import_ee=True,
-    import_geemap=True,
+    import_geemap=False,
     show_map=True,
 ):
     """Converts an Earth Engine JavaScript snippet wrapped in triple quotes to Python directly on a Jupyter notebook.
@@ -512,7 +512,7 @@ def js_snippet_to_py(
         in_js_snippet (str): Earth Engine JavaScript within triple quotes.
         add_new_cell (bool, optional): Whether add the converted Python to a new cell.
         import_ee (bool, optional): Whether to import ee. Defaults to True.
-        import_geemap (bool, optional): Whether to import geemap. Defaults to True.
+        import_geemap (bool, optional): Whether to import geemap. Defaults to False.
         show_map (bool, optional): Whether to show the map. Defaults to True.
 
     Returns:
@@ -785,7 +785,6 @@ def py_to_ipynb(
     if out_dir == os.path.dirname(in_file):
         out_py_file = os.path.splitext(out_file)[0] + "_tmp.py"
 
-    print(in_file)
     content = remove_qgis_import(in_file)
     if content[-1].strip() == "Map":
         content = content[:-1]
