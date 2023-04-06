@@ -1,6 +1,5 @@
 datapane
 geedim>=1.3.2
-geopandas
 gradio
 keplergl
 ipygany
@@ -17,7 +16,6 @@ palettable
 osmnx
 owslib
 panel
-plotly
 psycopg2
 pydeck
 pyntcloud[LAS]
