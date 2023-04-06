@@ -7,13 +7,13 @@ little bit helps, and credit will always be given. You can contribute in many wa
 
 ### Report Bugs
 
-Report bugs at <https://github.com/giswqs/geemap/issues>.
+Report bugs at <https://github.com/gee-community/geemap/issues>.
 
 If you are reporting a bug, please include:
 
-- Your operating system name and version.
-- Any details about your local setup that might be helpful in troubleshooting.
-- Detailed steps to reproduce the bug.
+-   Your operating system name and version.
+-   Any details about your local setup that might be helpful in troubleshooting.
+-   Detailed steps to reproduce the bug.
 
 ### Fix Bugs
 
@@ -29,19 +29,19 @@ geemap could always use more documentation, whether as part of the official geem
 
 ### Submit Feedback
 
-The best way to send feedback is to file an issue at <https://github.com/giswqs/geemap/issues>.
+The best way to send feedback is to file an issue at <https://github.com/gee-community/geemap/issues>.
 
 If you are proposing a feature:
 
-- Explain in detail how it would work.
-- Keep the scope as narrow as possible, to make it easier to implement.
-- Remember that this is a volunteer-driven project, and that contributions are welcome :)
+-   Explain in detail how it would work.
+-   Keep the scope as narrow as possible, to make it easier to implement.
+-   Remember that this is a volunteer-driven project, and that contributions are welcome :)
 
 ## Get Started
 
 Ready to contribute? Here's how to set up _geemap_ for local development.
 
-1. Fork the [geemap](https://github.com/giswqs/geemap) repo on GitHub.
+1. Fork the [geemap](https://github.com/gee-community/geemap) repo on GitHub.
 
 2. Clone your fork locally:
 
@@ -58,7 +58,7 @@ Ready to contribute? Here's how to set up _geemap_ for local development.
     ```
     conda activate geemap-test
     ```
-    
+
     ```
     cd geemap/
     ```
@@ -109,4 +109,4 @@ Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests.
 2. If the pull request adds functionality, the docs should be updated. Put your new functionality into a function with a docstring, and add the feature to the list in README.rst.
-3. The pull request should work for Python 3.6, 3.7 and 3.8, and for PyPy. Check <https://github.com/giswqs/geemap/actions> and make sure that the tests pass for all supported Python versions.
+3. The pull request should work for Python 3.6, 3.7 and 3.8, and for PyPy. Check <https://github.com/gee-community/geemap/actions> and make sure that the tests pass for all supported Python versions.

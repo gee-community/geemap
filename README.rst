@@ -9,7 +9,7 @@ geemap
         :target: https://gishub.org/geemap-binder
 
 .. image:: https://studiolab.sagemaker.aws/studiolab.svg
-        :target: https://studiolab.sagemaker.aws/import/github/giswqs/geemap/blob/master/examples/notebooks/00_geemap_key_features.ipynb
+        :target: https://studiolab.sagemaker.aws/import/github/gee-community/geemap/blob/master/examples/notebooks/00_geemap_key_features.ipynb
 
 .. image:: https://renkulab.io/renku-badge.svg
         :target: https://renkulab.io/projects/renku-stories/geemap/sessions/new?autostart=1
@@ -23,14 +23,11 @@ geemap
 .. image:: https://pepy.tech/badge/geemap
         :target: https://pepy.tech/project/geemap
 
-.. image:: https://github.com/giswqs/geemap/workflows/docs/badge.svg
+.. image:: https://github.com/gee-community/geemap/workflows/docs/badge.svg
         :target: https://geemap.org
 
 .. image:: https://img.shields.io/badge/YouTube-Channel-red   
         :target: https://youtube.com/@giswqs
-        
-.. image:: https://img.shields.io/twitter/follow/giswqs?style=social   	
-        :target: https://twitter.com/giswqs
 
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
         :target: https://opensource.org/licenses/MIT
@@ -43,7 +40,7 @@ geemap
 
 **A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.**
 
-* GitHub repo: https://github.com/giswqs/geemap
+* GitHub repo: https://github.com/gee-community/geemap
 * Documentation: https://geemap.org
 * PyPI: https://pypi.org/project/geemap/
 * Conda-forge: https://anaconda.org/conda-forge/geemap
@@ -75,7 +72,7 @@ making computational requests to the Earth Engine servers. Compared with the com
 the GEE Python API has relatively little documentation and limited functionality for visualizing results interactively. The **geemap** Python package was created to fill this gap. It is built upon `ipyleaflet <https://github.com/jupyter-widgets/ipyleaflet>`__ and `ipywidgets <https://github.com/jupyter-widgets/ipywidgets>`__, and enables users to 
 analyze and visualize Earth Engine datasets interactively within a Jupyter-based environment.
 
-**Geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python `conversion module <https://github.com/giswqs/geemap/blob/master/geemap/conversion.py>`__ of the **geemap** package
+**Geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python `conversion module <https://github.com/gee-community/geemap/blob/master/geemap/conversion.py>`__ of the **geemap** package
 can greatly reduce the time needed to convert existing GEE JavaScripts to Python scripts and Jupyter notebooks.
 
 For video tutorials and notebook examples, please visit `<https://geemap.org/tutorials>`__. For complete documentation on geemap modules and methods, please visit `<https://geemap.org/geemap>`_.
@@ -93,7 +90,7 @@ Check out the geemap workshop I presented at the GeoPython Conference 2021. This
 Features
 --------
 
-Below is a partial list of features available for the geemap package. Please check the `examples <https://github.com/giswqs/geemap/tree/master/examples>`__ page for notebook examples, GIF animations, and video tutorials.
+Below is a partial list of features available for the geemap package. Please check the `examples <https://github.com/gee-community/geemap/tree/master/examples>`__ page for notebook examples, GIF animations, and video tutorials.
 
 * Convert Earth Engine JavaScripts to Python scripts and Jupyter notebooks.
 * Display Earth Engine data layers for interactive mapping.
@@ -174,7 +171,7 @@ To install the development version from GitHub using `Git <https://git-scm.com/>
 
 .. code:: python
 
-  pip install git+https://github.com/giswqs/geemap
+  pip install git+https://github.com/gee-community/geemap
 
 
 To install the development version from GitHub directly within Jupyter notebook without using Git, run the following code:
@@ -188,7 +185,7 @@ To use geemap in a Docker container, check out the following docker containers w
 
 *   `gee-community/ee-jupyter-contrib <https://github.com/gee-community/ee-jupyter-contrib/tree/master/docker/gcp_ai_deep_learning_platform>`__
 *   `bkavlak/geemap <https://hub.docker.com/r/bkavlak/geemap>`__
-*   `giswqs/geemap <https://hub.docker.com/r/giswqs/geemap>`__
+*   `gee-community/geemap <https://hub.docker.com/r/gee-community/geemap>`__
 
 To use geemap in a Docker container, check out `ee-jupyter-contrib <https://github.com/gee-community/ee-jupyter-contrib/tree/master/docker/gcp_ai_deep_learning_platform>`__ or this `page <https://hub.docker.com/r/bkavlak/geemap>`__.
 
@@ -201,8 +198,8 @@ communication between the front-end and the backend enabling the use of the map 
 static data only (`source <https://blog.jupyter.org/interactive-gis-in-jupyter-with-ipyleaflet-52f9657fa7a>`__).
 Note that `Google Colab <https://colab.research.google.com/>`__ currently does not support ipyleaflet
 (`source <https://github.com/googlecolab/colabtools/issues/60#issuecomment-596225619>`__). Therefore, if you are using geemap with Google Colab, you should use
-`import geemap.foliumap <https://github.com/giswqs/geemap/blob/master/geemap/foliumap.py>`__. If you are using geemap with `binder <https://mybinder.org/>`__ or a local Jupyter notebook server,
-you can use `import geemap <https://github.com/giswqs/geemap/blob/master/geemap/geemap.py>`__, which provides more functionalities for capturing user input (e.g.,
+`import geemap.foliumap <https://github.com/gee-community/geemap/blob/master/geemap/foliumap.py>`__. If you are using geemap with `binder <https://mybinder.org/>`__ or a local Jupyter notebook server,
+you can use `import geemap <https://github.com/gee-community/geemap/blob/master/geemap/geemap.py>`__, which provides more functionalities for capturing user input (e.g.,
 mouse-clicking and moving).
 
 More GEE Tutorials are available on my `YouTube channel <https://youtube.com/@giswqs>`__.
@@ -524,10 +521,10 @@ Converting GEE JavaScripts to Python scripts and Jupyter notebooks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Launch an interactive notebook with **Google Colab**. Keep in mind that the conversion might not always work perfectly. Additional manual changes might still be needed. ``ui`` and ``chart`` are not supported. 
-The source code for this automated conversion module can be found at `conversion.py <https://github.com/giswqs/geemap/blob/master/geemap/conversion.py>`__.
+The source code for this automated conversion module can be found at `conversion.py <https://github.com/gee-community/geemap/blob/master/geemap/conversion.py>`__.
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
-        :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/notebooks/08_ee_js_to_ipynb.ipynb
+        :target: https://colab.research.google.com/github/gee-community/geemap/blob/master/examples/notebooks/08_ee_js_to_ipynb.ipynb
 
 
 .. code:: python
@@ -562,7 +559,7 @@ Interactive mapping using GEE Python API and geemap
 Launch an interactive notebook with **Google Colab**. Note that **Google Colab** currently does not support ipyleaflet. Therefore, you should use ``import geemap.foliumap`` instead of ``import geemap``.
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
-        :target: https://colab.research.google.com/github/giswqs/geemap/blob/master/examples/notebooks/geemap_and_folium.ipynb
+        :target: https://colab.research.google.com/github/gee-community/geemap/blob/master/examples/notebooks/geemap_and_folium.ipynb
 
 .. code:: python
 
@@ -652,7 +649,7 @@ You can contribute in many ways:
 Report Bugs
 ^^^^^^^^^^^
 
-Report bugs at https://github.com/giswqs/geemap/issues.
+Report bugs at https://github.com/gee-community/geemap/issues.
 
 If you are reporting a bug, please include:
 
@@ -682,7 +679,7 @@ articles, and such.
 Submit Feedback
 ^^^^^^^^^^^^^^^
 
-The best way to send feedback is to file an issue at https://github.com/giswqs/geemap/issues.
+The best way to send feedback is to file an issue at https://github.com/gee-community/geemap/issues.
 
 If you are proposing a feature:
 
@@ -740,7 +737,7 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
 3. The pull request should work for Python 3.6, 3.7 and 3.8, and for PyPy. Check
-   https://travis-ci.com/giswqs/geemap/pull_requests
+   https://travis-ci.com/gee-community/geemap/pull_requests
    and make sure that the tests pass for all supported Python versions.
 
 Tips

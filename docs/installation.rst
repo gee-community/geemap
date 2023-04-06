@@ -32,13 +32,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/giswqs/geemap
+    $ git clone git://github.com/gee-community/geemap
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/giswqs/geemap/tarball/master
+    $ curl -OJL https://github.com/gee-community/geemap/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/giswqs/geemap
-.. _tarball: https://github.com/giswqs/geemap/tarball/master
+.. _Github repo: https://github.com/gee-community/geemap
+.. _tarball: https://github.com/gee-community/geemap/tarball/master

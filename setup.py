@@ -9,9 +9,6 @@ from setuptools import setup, find_packages
 with open("README.rst") as readme_file:
     readme = readme_file.read()
 
-with open("HISTORY.rst") as history_file:
-    history = history_file.read()
-
 here = op.abspath(op.dirname(__file__))
 
 # get the dependencies and installs
@@ -83,7 +80,7 @@ setup(
     extras_require=extras_requires,
     dependency_links=dependency_links,
     license="MIT license",
-    long_description=readme + "\n\n" + history,
+    long_description=readme,
     include_package_data=True,
     keywords="geemap",
     name="geemap",
@@ -91,7 +88,7 @@ setup(
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,
-    url="https://github.com/giswqs/geemap",
+    url="https://github.com/gee-community/geemap",
     version="0.20.4",
     zip_safe=False,
 )

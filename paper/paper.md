@@ -39,7 +39,7 @@ enabling GEE users to analyze and visualize Earth Engine datasets interactively 
 
 **geemap** is intended for students and researchers who would like to utilize the Python ecosystem of diverse libraries and
 tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE
-JavaScript API to a Python API. The automated JavaScript-to-Python [conversion module](https://github.com/giswqs/geemap/blob/master/geemap/conversion.py)
+JavaScript API to a Python API. The automated JavaScript-to-Python [conversion module](https://github.com/gee-community/geemap/blob/master/geemap/conversion.py)
 of the **geemap** package can greatly reduce the time needed to convert existing GEE JavaScripts to Python scripts and Jupyter notebooks.
 
 # geemap Functionality
@@ -62,7 +62,7 @@ The key functionality of **geemap** is organized into several modules:
 
 Various tutorials and documentation are available for using **geemap**, including:
 
--   [20+ video tutorials with corresponding notebook examples](https://github.com/giswqs/geemap/tree/master/examples)
+-   [20+ video tutorials with corresponding notebook examples](https://github.com/gee-community/geemap/tree/master/examples)
 -   [360+ Jupyter notebook examples for using Google Earth Engine](https://github.com/giswqs/earthengine-py-notebooks)
 -   [Complete documentation on geemap modules and methods](https://geemap.readthedocs.io/en/latest/source/geemap.html)
 

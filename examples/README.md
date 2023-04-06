@@ -7,7 +7,6 @@
 [![image](https://pepy.tech/badge/geemap)](https://pepy.tech/project/geemap)
 [![image](https://readthedocs.org/projects/geemap/badge/?version=latest)](https://geemap.org/geemap)
 [![image](https://img.shields.io/badge/YouTube-GEE%20Tutorials-red)](https://gishub.org/geemap)
-[![image](https://img.shields.io/twitter/follow/giswqs?style=social)](https://twitter.com/giswqs)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## YouTube Channel
