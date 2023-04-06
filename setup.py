@@ -16,19 +16,23 @@ here = op.abspath(op.dirname(__file__))
 
 # get the dependencies and installs
 with io.open(op.join(here, "requirements.txt"), encoding="utf-8") as f:
-    all_reqs = f.read().split("\n")
+    core_reqs = f.read().split("\n")
     if platform.system() == "Windows":
-        all_reqs.append("pywin32")
+        core_reqs.append("pywin32")
 
-with io.open(op.join(here, "requirements_dev.txt"), encoding="utf-8") as f:
-    dev_reqs = [x.strip() for x in f.read().split("\n")]
+with io.open(op.join(here, "requirements_extra.txt"), encoding="utf-8") as f:
+    extra_reqs = [x.strip() for x in f.read().split("\n")]
 
-install_requires = [x.strip() for x in all_reqs if "git+" not in x]
-dependency_links = [x.strip().replace("git+", "") for x in all_reqs if "git+" not in x]
+with io.open(op.join(here, "requirements_all.txt"), encoding="utf-8") as f:
+    all_reqs = [x.strip() for x in f.read().split("\n")]
+
+install_requires = [x.strip() for x in core_reqs if "git+" not in x]
+dependency_links = [x.strip().replace("git+", "") for x in core_reqs if "git+" not in x]
 
 extras_requires = {
-    "all": dev_reqs,
-    "backends": ["keplergl", "pydeck", "plotly", "here-map-widget-for-jupyter"],
+    "extra": extra_reqs,
+    "all": all_reqs,
+    "backends": ["keplergl", "pydeck", "plotly"],
     "lidar": [
         "ipygany",
         "ipyvtklink",
@@ -46,7 +50,6 @@ extras_requires = {
         "rioxarray",
         "netcdf4",
         "pyvista-xarray",
-        "xarray_leaflet",
     ],
     "sql": ["psycopg2", "sqlalchemy"],
     "apps": ["streamlit-folium", "voila"],
