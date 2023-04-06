@@ -1,3 +1,0 @@
-# heremap module
-
-::: geemap.heremap

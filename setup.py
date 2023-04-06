@@ -52,7 +52,7 @@ extras_requires = {
         "pyvista-xarray",
     ],
     "sql": ["psycopg2", "sqlalchemy"],
-    "apps": ["streamlit-folium", "voila"],
+    "apps": ["gradio", "streamlit-folium", "voila"],
     "vector": ["geopandas", "osmnx"],
 }
 
