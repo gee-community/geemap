@@ -2,7 +2,6 @@ datapane
 geedim>=1.3.2
 geopandas
 gradio
-here-map-widget-for-jupyter>=1.1.1
 keplergl
 ipygany
 ipynb-py-convert
