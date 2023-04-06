@@ -2,22 +2,21 @@
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://gishub.org/geemap-colab)
 [![Open in Binder](https://mybinder.org/badge_logo.svg)](https://gishub.org/geemap-binder)
-[![Open In Studio Lab](https://studiolab.sagemaker.aws/studiolab.svg)](https://studiolab.sagemaker.aws/import/github/giswqs/geemap/blob/master/examples/notebooks/00_geemap_key_features.ipynb)
+[![Open In Studio Lab](https://studiolab.sagemaker.aws/studiolab.svg)](https://studiolab.sagemaker.aws/import/github/gee-community/geemap/blob/master/examples/notebooks/00_geemap_key_features.ipynb)
 [![image](https://img.shields.io/pypi/v/geemap.svg)](https://pypi.python.org/pypi/geemap)
 [![image](https://img.shields.io/conda/vn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
 [![image](https://pepy.tech/badge/geemap)](https://pepy.tech/project/geemap)
-[![image](https://github.com/giswqs/geemap/workflows/docs/badge.svg)](https://geemap.org)
-[![image](https://github.com/giswqs/geemap/workflows/build/badge.svg)](https://github.com/giswqs/geemap/actions?query=workflow%3Abuild)
+[![image](https://github.com/gee-community/geemap/workflows/docs/badge.svg)](https://geemap.org)
+[![image](https://github.com/gee-community/geemap/workflows/build/badge.svg)](https://github.com/gee-community/geemap/actions?query=workflow%3Abuild)
 [![image](https://img.shields.io/badge/YouTube-Channel-red)](https://youtube.com/@giswqs)
-[![image](https://img.shields.io/twitter/follow/giswqs?style=social)](https://twitter.com/giswqs)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![image](https://joss.theoj.org/papers/10.21105/joss.02305/status.svg)](https://joss.theoj.org/papers/10.21105/joss.02305)
 
-[![logo](https://i.imgur.com/9OOSpDm.png)](https://github.com/giswqs/geemap/blob/master/docs/assets/logo.png)
+[![logo](https://i.imgur.com/9OOSpDm.png)](https://github.com/gee-community/geemap/blob/master/docs/assets/logo.png)
 
 **A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.**
 
--   GitHub repo: <https://github.com/giswqs/geemap>
+-   GitHub repo: <https://github.com/gee-community/geemap>
 -   Documentation: <https://geemap.org>
 -   PyPI: <https://pypi.org/project/geemap>
 -   Conda-forge: <https://anaconda.org/conda-forge/geemap>
@@ -31,9 +30,9 @@
 
 **Geemap** is a Python package for interactive mapping with [Google Earth Engine](https://earthengine.google.com/) (GEE), which is a cloud computing platform with a [multi-petabyte catalog](https://developers.google.com/earth-engine/datasets/) of satellite imagery and geospatial datasets. During the past few years, GEE has become very popular in the geospatial community and it has empowered numerous environmental applications at local, regional, and global scales. GEE provides both JavaScript and Python APIs for making computational requests to the Earth Engine servers. Compared with the comprehensive [documentation](https://developers.google.com/earth-engine) and interactive IDE (i.e., [GEE JavaScript Code Editor](https://code.earthengine.google.com/)) of the GEE JavaScript API, the GEE Python API has relatively little documentation and limited functionality for visualizing results interactively. The geemap Python package was created to fill this gap. It is built upon [ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet) and [ipywidgets](https://github.com/jupyter-widgets/ipywidgets), and enables users to analyze and visualize Earth Engine datasets interactively within a Jupyter-based environment.
 
-**Geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python [conversion module](https://github.com/giswqs/geemap/blob/master/geemap/conversion.py) of the geemap package can greatly reduce the time needed to convert existing GEE JavaScripts to Python scripts and Jupyter notebooks.
+**Geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python [conversion module](https://github.com/gee-community/geemap/blob/master/geemap/conversion.py) of the geemap package can greatly reduce the time needed to convert existing GEE JavaScripts to Python scripts and Jupyter notebooks.
 
-For video tutorials and notebook examples, please visit the [examples page](https://github.com/giswqs/geemap/tree/master/examples). For complete documentation on geemap modules and methods, please visit the [API Reference](https://geemap.org/geemap/).
+For video tutorials and notebook examples, please visit the [examples page](https://github.com/gee-community/geemap/tree/master/examples). For complete documentation on geemap modules and methods, please visit the [API Reference](https://geemap.org/geemap/).
 
 If you find geemap useful in your research, please consider citing the following papers to support my work. Thank you for your support.
 
@@ -46,7 +45,7 @@ Check out the geemap workshop I presented at the GeoPython Conference 2021. This
 
 ## Key Features
 
-Below is a partial list of features available for the geemap package. Please check the [examples](https://github.com/giswqs/geemap/tree/master/examples) page for notebook examples, GIF animations, and video tutorials.
+Below is a partial list of features available for the geemap package. Please check the [examples](https://github.com/gee-community/geemap/tree/master/examples) page for notebook examples, GIF animations, and video tutorials.
 
 -   Convert Earth Engine JavaScripts to Python scripts and Jupyter notebooks.
 -   Display Earth Engine data layers for interactive mapping.
@@ -78,6 +77,6 @@ Below is a partial list of features available for the geemap package. Please che
 
 ## YouTube Channel
 
-I have created a [YouTube Channel](https://youtube.com/@giswqs) for sharing **geemap** tutorials. You can subscribe to my channel for regular updates. If there is any specific tutorial you would like to see, please submit a feature request [here](https://github.com/giswqs/geemap/issues).
+I have created a [YouTube Channel](https://youtube.com/@giswqs) for sharing **geemap** tutorials. You can subscribe to my channel for regular updates. If there is any specific tutorial you would like to see, please submit a feature request [here](https://github.com/gee-community/geemap/issues).
 
 [![Earth Engine Tutorials on YouTube](https://wetlands.io/file/images/youtube.png)](https://youtube.com/@giswqs)
