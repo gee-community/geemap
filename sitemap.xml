@@ -91,11 +91,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://geemap.org/heremap/</loc>
-         <lastmod>2023-04-06</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://geemap.org/installation/</loc>
          <lastmod>2023-04-06</lastmod>
          <changefreq>daily</changefreq>
