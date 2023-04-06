@@ -2,7 +2,7 @@
 
 ## How do I report an issue or make a feature request
 
-Please go to <https://github.com/giswqs/geemap/issues>.
+Please go to <https://github.com/gee-community/geemap/issues>.
 
 ## How do I cite geemap in publications
 

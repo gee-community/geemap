@@ -33,7 +33,7 @@ jobs:
               uses: docker/metadata-action@v4
               with:
                   images: |
-                      giswqs/geemap
+                      gee-community/geemap
                       ghcr.io/${{ github.repository }}
 
             - name: Build and push Docker images

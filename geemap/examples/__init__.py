@@ -4,7 +4,7 @@ import pkg_resources
 
 _pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
 _datasets_path = os.path.join(_pkg_dir, "examples/datasets.txt")
-_baseurl = "https://raw.githubusercontent.com/giswqs/geemap/master/examples/data/"
+_baseurl = "https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/"
 
 with open(_datasets_path) as f:
     _names = [line.strip() for line in f.readlines()]

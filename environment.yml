@@ -7,24 +7,20 @@ dependencies:
     - flask>=2.0.0
     - flask-caching
     - gdal
-    - geemap>=0.11.0
+    - geemap>=0.20.0
     - geopandas
     - imageio
     - ipyvtklink
     - keplergl
     - laspy
-    - leafmap>=0.7.2
+    - leafmap>=0.18.0
     - localtileserver>=0.4.0
     - osmnx
     - pip
     - pydeck
     - pyntcloud
-    - python>=3.8
+    - python>=3.9
     - pyvista
     - requests
     - rio-cogeo
     - tifffile
-    - xarray_leaflet
-    # - pip:
-    #     - git+https://github.com/giswqs/leafmap
-    #     - git+https://github.com/giswqs/geemap
