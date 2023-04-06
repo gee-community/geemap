@@ -113,7 +113,6 @@ nav:
           - examples module: examples.md
           - foliumap module: foliumap.md
           - geemap module: geemap.md
-          - heremap module: heremap.md
           - kepler module: kepler.md
           - legends module: legends.md
           - ml module: ml.md
