@@ -402,7 +402,7 @@ def clone_repo(out_dir=".", unzip=True):
         out_dir (str, optional): Output folder for the repo. Defaults to '.'.
         unzip (bool, optional): Whether to unzip the repository. Defaults to True.
     """
-    url = "https://github.com/giswqs/geemap/archive/master.zip"
+    url = "https://github.com/gee-community/geemap/archive/master.zip"
     filename = "geemap-master.zip"
     download_from_url(url, out_file_name=filename, out_dir=out_dir, unzip=unzip)
 
@@ -530,7 +530,7 @@ def open_github(subdir=None):
     """
     import webbrowser
 
-    url = "https://github.com/giswqs/geemap"
+    url = "https://github.com/gee-community/geemap"
 
     if subdir == "source":
         url += "/tree/master/geemap/"
@@ -3180,7 +3180,7 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat"):
                 data_np = np.transpose(data_np)
 
         # Figure out if we need to roll the data or not
-        # (see https://github.com/giswqs/geemap/issues/285#issuecomment-791385176)
+        # (see https://github.com/gee-community/geemap/issues/285#issuecomment-791385176)
         if np.max(lon_data) > 180:
             data_np = np.roll(data_np, 180, axis=axis_for_roll)
             west_lon = lon_data[0] - 180
@@ -4770,7 +4770,7 @@ def build_repo_tree(out_dir=None, name="gee_repos"):
     URLs = {
         # 'Owner': 'https://earthengine.googlesource.com/{ee_user_id()}/default',
         "Writer": "",
-        "Reader": "https://github.com/giswqs/geemap",
+        "Reader": "https://github.com/gee-community/geemap",
         "Examples": "https://github.com/giswqs/earthengine-py-examples",
         "Archive": "https://earthengine.googlesource.com/EGU2017-EE101",
     }
