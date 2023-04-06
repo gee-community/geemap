@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.20.5 - Apr 6, 2023
+
+**Improvement**
+
+-   Moved the repo to gee-community and updated the Repo URL (#1490)
+-   Reorganized dependencies (#1489)
+-   Dropped support for Python 3.7 (#1486)
+
 ## v0.20.4 - Mar 27, 2023
 
 **Improvement**
