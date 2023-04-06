@@ -27,7 +27,7 @@ jobs:
               run: |
                   python -m pip install --upgrade pip
                   pip install --user --no-cache-dir Cython
-                  pip install codespell -r requirements.txt -r requirements_dev.txt
+                  pip install codespell -r requirements.txt -r requirements_extra.txt -r requirements_all.txt
                   pip install .
             - name: Discover typos with codespell
               run: codespell --skip="*.csv,*.geojson,*.json,*.yml*.js,*.html,*cff,*.pdf" --ignore-words-list="aci,acount,acounts,fallow,ges,hart,hist,nd,ned,ois,wqs,watermask"

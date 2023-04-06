@@ -32,9 +32,9 @@ conda install -n base mamba -c conda-forge
 mamba create -n gee geemap geopandas localtileserver python -c conda-forge
 ```
 
-All the optional dependencies are listed in [requirements_dev.txt](https://github.com/giswqs/geemap/blob/master/requirements_dev.txt), which can be installed using one of the following:
+All the optional dependencies are listed in [requirements_all.txt](https://github.com/giswqs/geemap/blob/master/requirements_all.txt), which can be installed using one of the following:
 
--   `pip install geemap[all]`: installing all optional dependencies listed in [requirements_dev.txt](https://github.com/giswqs/geemap/blob/master/requirements_dev.txt).
+-   `pip install geemap[all]`: installing all optional dependencies listed in [requirements_all.txt](https://github.com/giswqs/geemap/blob/master/requirements_all.txt).
 -   `pip install geemap[backends]`: installing keplergl, pydeck.
 -   `pip install geemap[lidar]`: installing ipygany, ipyvtklink, laspy, panel, pyntcloud[LAS], pyvista.
 -   `pip install geemap[raster]`: installing localtileserver, rio-cogeo, rioxarray, netcdf4, xarray_leaflet.
