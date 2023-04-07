@@ -525,9 +525,9 @@ def js_snippet_to_py(
     Returns:
         list: A list of Python script.
     """
-    work_dir = os.path.expanduser("~")
-    in_js = os.path.join(work_dir, "tmp_js_snippet.js")
-    out_py = os.path.join(work_dir, "tmp_py_snippet.py")
+
+    in_js = temp_file_path(".js")
+    out_py = temp_file_path(".py")
 
     try:
         with open(in_js, "w") as f:
@@ -540,18 +540,14 @@ def js_snippet_to_py(
         if import_geemap:
             out_lines.append("import geemap\n\n")
             out_lines.append("Map = geemap.Map()\n")
-        # if import_ee:
-        #     out_lines.append("ee.Initialize()\n")
+
         with open(out_py, encoding="utf-8") as f:
             lines = f.readlines()
             for index, line in enumerate(lines):
                 if index < (len(lines) - 1):
                     if line.strip() == "import ee":
                         continue
-                    # elif import_ee and (line.strip() == 'import ee'):
-                    #     out_lines.append(line)
-                    #     out_lines.append('ee.Initialize()\n')
-                    #     continue
+
                     next_line = lines[index + 1]
                     if line.strip() == "" and next_line.strip() == "":
                         continue
@@ -563,8 +559,8 @@ def js_snippet_to_py(
                 elif index == (len(lines) - 1) and lines[index].strip() != "":
                     out_lines.append(line)
 
-        # os.remove(in_js)
-        # os.remove(out_py)
+        os.remove(in_js)
+        os.remove(out_py)
 
         if add_new_cell:
             contents = "".join(out_lines).strip()
