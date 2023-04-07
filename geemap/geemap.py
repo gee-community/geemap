@@ -3915,6 +3915,10 @@ class Map(ipyleaflet.Map):
         import matplotlib.pyplot as plt
 
         ee_object = layer_dict["ee_object"]
+
+        if isinstance(ee_object, ee.Geometry) or isinstance(ee_object, ee.Feature):
+            ee_object = ee.FeatureCollection(ee_object)
+
         ee_layer = layer_dict["ee_layer"]
         vis_params = layer_dict["vis_params"]
 
@@ -4641,7 +4645,13 @@ class Map(ipyleaflet.Map):
                 style={"description_width": "initial"},
                 layout=widgets.Layout(padding="0px"),
             )
-            widgets.jslink((color_opacity, "value"), (color_opacity_label, "value"))
+
+            def color_opacity_change(change):
+                color_opacity_label.value = str(change["new"])
+
+            color_opacity.observe(color_opacity_change, names="value")
+
+            # widgets.jslink((color_opacity, "value"), (color_opacity_label, "value"))
 
             point_size = widgets.IntText(
                 value=3,
@@ -4716,10 +4726,16 @@ class Map(ipyleaflet.Map):
                 style={"description_width": "initial"},
                 layout=widgets.Layout(padding="0px"),
             )
-            widgets.jslink(
-                (fill_color_opacity, "value"),
-                (fill_color_opacity_label, "value"),
-            )
+
+            def fill_color_opacity_change(change):
+                fill_color_opacity_label.value = str(change["new"])
+
+            fill_color_opacity.observe(fill_color_opacity_change, names="value")
+
+            # widgets.jslink(
+            #     (fill_color_opacity, "value"),
+            #     (fill_color_opacity_label, "value"),
+            # )
 
             color_picker = widgets.ColorPicker(
                 concise=False,
@@ -5103,65 +5119,75 @@ class Map(ipyleaflet.Map):
                 elif (
                     style_chk.value and len(palette.value) > 0 and "," in palette.value
                 ):
-                    colors = ee.List(
-                        [
-                            color.strip()
-                            + str(hex(int(fill_color_opacity.value * 255)))[2:].zfill(2)
-                            for color in palette.value.split(",")
-                        ]
-                    )
-                    arr = ee_object.aggregate_array(field.value).distinct().sort()
-                    fc = ee_object.map(
-                        lambda f: f.set({"styleIndex": arr.indexOf(f.get(field.value))})
-                    )
-                    step = arr.size().divide(colors.size()).ceil()
-                    fc = fc.map(
-                        lambda f: f.set(
-                            {
-                                "style": {
-                                    "color": color.value[1:]
-                                    + str(hex(int(color_opacity.value * 255)))[
-                                        2:
-                                    ].zfill(2),
-                                    "pointSize": point_size.value,
-                                    "pointShape": point_shape.value,
-                                    "width": line_width.value,
-                                    "lineType": line_type.value,
-                                    "fillColor": colors.get(
-                                        ee.Number(
-                                            ee.Number(f.get("styleIndex")).divide(step)
-                                        ).floor()
-                                    ),
+                    try:
+                        colors = ee.List(
+                            [
+                                color.strip()
+                                + str(hex(int(fill_color_opacity.value * 255)))[
+                                    2:
+                                ].zfill(2)
+                                for color in palette.value.split(",")
+                            ]
+                        )
+                        arr = ee_object.aggregate_array(field.value).distinct().sort()
+                        fc = ee_object.map(
+                            lambda f: f.set(
+                                {"styleIndex": arr.indexOf(f.get(field.value))}
+                            )
+                        )
+                        step = arr.size().divide(colors.size()).ceil()
+                        fc = fc.map(
+                            lambda f: f.set(
+                                {
+                                    "style": {
+                                        "color": color.value[1:]
+                                        + str(hex(int(color_opacity.value * 255)))[
+                                            2:
+                                        ].zfill(2),
+                                        "pointSize": point_size.value,
+                                        "pointShape": point_shape.value,
+                                        "width": line_width.value,
+                                        "lineType": line_type.value,
+                                        "fillColor": colors.get(
+                                            ee.Number(
+                                                ee.Number(f.get("styleIndex")).divide(
+                                                    step
+                                                )
+                                            ).floor()
+                                        ),
+                                    }
                                 }
-                            }
+                            )
                         )
-                    )
 
-                    self.addLayer(
-                        fc.style(**{"styleProperty": "style"}),
-                        {},
-                        f"{new_layer_name.value}",
-                    )
-
-                    if (
-                        len(palette.value)
-                        and legend_chk.value
-                        and len(legend_labels.value) > 0
-                    ):
-                        legend_colors = [
-                            color.strip() for color in palette.value.split(",")
-                        ]
-                        legend_keys = [
-                            label.strip() for label in legend_labels.value.split(",")
-                        ]
-                        self.add_legend(
-                            title=legend_title.value,
-                            legend_keys=legend_keys,
-                            legend_colors=legend_colors,
-                            layer_name=new_layer_name.value,
+                        self.addLayer(
+                            fc.style(**{"styleProperty": "style"}),
+                            {},
+                            f"{new_layer_name.value}",
                         )
-                ee_layer.visible = False
-                compute_label.value = ""
+
+                        if (
+                            len(palette.value)
+                            and legend_chk.value
+                            and len(legend_labels.value) > 0
+                        ):
+                            legend_colors = [
+                                color.strip() for color in palette.value.split(",")
+                            ]
+                            legend_keys = [
+                                label.strip()
+                                for label in legend_labels.value.split(",")
+                            ]
+                            self.add_legend(
+                                title=legend_title.value,
+                                legend_keys=legend_keys,
+                                legend_colors=legend_colors,
+                                layer_name=new_layer_name.value,
+                            )
+                    except Exception as e:
+                        compute_label.value = "Error: " + str(e)
+                    ee_layer.visible = False
+                    compute_label.value = ""
 
             def close_btn_clicked(b):
                 self.remove_control(self.vis_control)
