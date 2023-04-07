@@ -275,7 +275,7 @@ def check_map_functions(input_lines):
 
 
 def js_to_python(
-    in_file, out_file=None, use_qgis=True, github_repo=None, show_map=True
+    in_file, out_file=None, use_qgis=True, github_repo=None, show_map=True, import_geemap=False
 ):
     """Converts an Earth Engine JavaScript to Python script.
 
@@ -285,6 +285,7 @@ def js_to_python(
         use_qgis (bool, optional): Whether to add "from ee_plugin import Map \n" to the output script. Defaults to True.
         github_repo (str, optional): GitHub repo url. Defaults to None.
         show_map (bool, optional): Whether to add "Map" to the output script. Defaults to True.
+        import_geemap (bool, optional): Whether to add "import geemap" to the output script. Defaults to False.
 
     Returns:
         list: Python script
@@ -301,10 +302,16 @@ def js_to_python(
 
     is_python = False
     # add_github_url = False
+
+    if use_qgis and import_geemap:
+        raise Exception(
+            "use_qgis and import_geemap cannot be both True. Please set one of them to False."
+        )
+
     import_str = ""
     if use_qgis:
         import_str = "from ee_plugin import Map\n"
-    else:
+    if import_geemap:
         import_str = "import geemap\n\nMap = geemap.Map()\n"
 
     github_url = ""
@@ -518,14 +525,14 @@ def js_snippet_to_py(
     Returns:
         list: A list of Python script.
     """
-    work_dir = os.path.expanduser("~")
-    in_js = os.path.join(work_dir, "tmp_js_snippet.js")
-    out_py = os.path.join(work_dir, "tmp_py_snippet.py")
+
+    in_js = temp_file_path(".js")
+    out_py = temp_file_path(".py")
 
     try:
         with open(in_js, "w") as f:
             f.write(in_js_snippet)
-        js_to_python(in_js, out_file=out_py, use_qgis=False, show_map=show_map)
+        js_to_python(in_js, out_file=out_py, use_qgis=False, show_map=show_map, import_geemap=import_geemap)
 
         out_lines = []
         if import_ee:
@@ -533,18 +540,14 @@ def js_snippet_to_py(
         if import_geemap:
             out_lines.append("import geemap\n\n")
             out_lines.append("Map = geemap.Map()\n")
-        # if import_ee:
-        #     out_lines.append("ee.Initialize()\n")
+
         with open(out_py, encoding="utf-8") as f:
             lines = f.readlines()
             for index, line in enumerate(lines):
                 if index < (len(lines) - 1):
                     if line.strip() == "import ee":
                         continue
-                    # elif import_ee and (line.strip() == 'import ee'):
-                    #     out_lines.append(line)
-                    #     out_lines.append('ee.Initialize()\n')
-                    #     continue
+
                     next_line = lines[index + 1]
                     if line.strip() == "" and next_line.strip() == "":
                         continue
