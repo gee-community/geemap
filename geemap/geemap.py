@@ -319,11 +319,11 @@ class Map(ipyleaflet.Map):
                     code = [line1, line2]
 
                 contents = "".join(code).strip()
-                create_code_cell(contents)
+                # create_code_cell(contents)
                 with search_output:
                     search_output.clear_output(wait=True)
                     print(
-                        "# The code has been copied to the clipboard. \n# Press Ctrl+V in a new cell to paste it."
+                        "# The code has been copied to the clipboard. \n# Press Ctrl+V in a new cell to paste it.\n"
                     )
                     print(contents)
 
@@ -440,7 +440,10 @@ class Map(ipyleaflet.Map):
                     assets_dropdown.options = asset_titles
                     search_output.clear_output()
                     if len(ee_assets) > 0:
+                        assets_dropdown.index = 0
                         html_widget.value = ee_data_html(ee_assets[0])
+                    else:
+                        html_widget.value = "No results found."
                     with search_output:
                         display(html_widget)
                     self.default_style = {"cursor": "default"}

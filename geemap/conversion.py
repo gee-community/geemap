@@ -275,7 +275,7 @@ def check_map_functions(input_lines):
 
 
 def js_to_python(
-    in_file, out_file=None, use_qgis=True, github_repo=None, show_map=True
+    in_file, out_file=None, use_qgis=True, github_repo=None, show_map=True, import_geemap=False
 ):
     """Converts an Earth Engine JavaScript to Python script.
 
@@ -285,6 +285,7 @@ def js_to_python(
         use_qgis (bool, optional): Whether to add "from ee_plugin import Map \n" to the output script. Defaults to True.
         github_repo (str, optional): GitHub repo url. Defaults to None.
         show_map (bool, optional): Whether to add "Map" to the output script. Defaults to True.
+        import_geemap (bool, optional): Whether to add "import geemap" to the output script. Defaults to False.
 
     Returns:
         list: Python script
@@ -301,10 +302,16 @@ def js_to_python(
 
     is_python = False
     # add_github_url = False
+
+    if use_qgis and import_geemap:
+        raise Exception(
+            "use_qgis and import_geemap cannot be both True. Please set one of them to False."
+        )
+
     import_str = ""
     if use_qgis:
         import_str = "from ee_plugin import Map\n"
-    else:
+    if import_geemap:
         import_str = "import geemap\n\nMap = geemap.Map()\n"
 
     github_url = ""
@@ -525,7 +532,7 @@ def js_snippet_to_py(
     try:
         with open(in_js, "w") as f:
             f.write(in_js_snippet)
-        js_to_python(in_js, out_file=out_py, use_qgis=False, show_map=show_map)
+        js_to_python(in_js, out_file=out_py, use_qgis=False, show_map=show_map, import_geemap=import_geemap)
 
         out_lines = []
         if import_ee:
@@ -556,8 +563,8 @@ def js_snippet_to_py(
                 elif index == (len(lines) - 1) and lines[index].strip() != "":
                     out_lines.append(line)
 
-        os.remove(in_js)
-        os.remove(out_py)
+        # os.remove(in_js)
+        # os.remove(out_py)
 
         if add_new_cell:
             contents = "".join(out_lines).strip()
