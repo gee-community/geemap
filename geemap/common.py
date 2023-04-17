@@ -14550,3 +14550,47 @@ def get_geometry_coords(row, geom, coord_type, shape_type, mercator=False):
             if mercator:
                 coords = lnglat_to_meters(0, coords)[1]
             return coords
+
+
+def landsat_scaling(image, thermal_bands=True, apply_fmask=False):
+    """Apply scaling factors to a Landsat image. See an example at
+        https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC09_C02_T1_L2
+
+    Args:
+        image (ee.Image): The input Landsat image.
+        thermal_bands (bool, optional): Whether to apply scaling to thermal bands. Defaults to True.
+        apply_fmask (bool, optional): Whether to apply Fmask cloud mask. Defaults to False.
+
+    Returns:
+        ee.Image: The scaled Landsat image.
+    """
+
+    # Apply the scaling factors to the appropriate bands.
+    opticalBands = image.select("SR_B.").multiply(0.0000275).add(-0.2)
+    if thermal_bands:
+        thermalBands = image.select("ST_B.*").multiply(0.00341802).add(149)
+
+    if apply_fmask:
+        # Replace the original bands with the scaled ones and apply the masks.
+        # Bit 0 - Fill
+        # Bit 1 - Dilated Cloud
+        # Bit 2 - Cirrus
+        # Bit 3 - Cloud
+        # Bit 4 - Cloud Shadow
+        qaMask = image.select("QA_PIXEL").bitwiseAnd(int("11111", 2)).eq(0)
+        if thermal_bands:
+            return (
+                image.addBands(thermalBands, None, True)
+                .addBands(opticalBands, None, True)
+                .updateMask(qaMask)
+            )
+        else:
+            return image.addBands(opticalBands, None, True).updateMask(qaMask)
+
+    else:
+        if thermal_bands:
+            return image.addBands(thermalBands, None, True).addBands(
+                opticalBands, None, True
+            )
+        else:
+            return image.addBands(opticalBands, None, True)
