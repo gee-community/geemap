@@ -275,7 +275,12 @@ def check_map_functions(input_lines):
 
 
 def js_to_python(
-    in_file, out_file=None, use_qgis=True, github_repo=None, show_map=True, import_geemap=False
+    in_file,
+    out_file=None,
+    use_qgis=True,
+    github_repo=None,
+    show_map=True,
+    import_geemap=False,
 ):
     """Converts an Earth Engine JavaScript to Python script.
 
@@ -532,7 +537,13 @@ def js_snippet_to_py(
     try:
         with open(in_js, "w") as f:
             f.write(in_js_snippet)
-        js_to_python(in_js, out_file=out_py, use_qgis=False, show_map=show_map, import_geemap=import_geemap)
+        js_to_python(
+            in_js,
+            out_file=out_py,
+            use_qgis=False,
+            show_map=show_map,
+            import_geemap=import_geemap,
+        )
 
         out_lines = []
         if import_ee:

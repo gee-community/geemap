@@ -11,6 +11,7 @@ ipytree
 matplotlib
 numpy
 pandas
+plotly
 pyperclip
 python-box
 scooby
