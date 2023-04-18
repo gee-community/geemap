@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.20.6 - Apr 18, 2023
+
+**New Features**
+
+-   Added landsat_scaling function (#1503)
+
+**Improvement**
+
+-   Improved data catalog search GUI (#1496)
+-   Fixed ee.Geometry visualization bug (#1495)
+-   Fixed plotly import error
+-   Updated docker image url
 ## v0.20.5 - Apr 6, 2023
 
 **Improvement**
