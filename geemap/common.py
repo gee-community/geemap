@@ -2303,6 +2303,9 @@ def ee_export_image(
             print(e)
             return
         print(f"Downloading data from {url}\nPlease wait ...")
+        # Need to initialize r to something because of how we currently handle errors
+        # We should aim to refactor the code such that only one try block is needed
+        r = None
         r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
         if r.status_code != 200:
@@ -2315,7 +2318,8 @@ def ee_export_image(
 
     except Exception as e:
         print("An error occurred while downloading.")
-        print(r.json()["error"]["message"])
+        if r is not None:
+            print(r.json()["error"]["message"])
         return
 
     try:
