@@ -1560,6 +1560,7 @@ def ee_export_vector(
         )
         if verbose:
             print(f"Downloading data from {url}\nPlease wait ...")
+        r = None
         r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
         if r.status_code != 200:
@@ -1581,7 +1582,7 @@ def ee_export_vector(
                 fd.write(chunk)
     except Exception as e:
         print("An error occurred while downloading.")
-        print(r.json()["error"]["message"])
+        if r is not None: print(r.json()["error"]["message"])
         raise ValueError(e)
 
     try:
@@ -2094,6 +2095,7 @@ def ee_export_geojson(
             filetype=filetype, selectors=selectors, filename=name
         )
         # print('Downloading data from {}\nPlease wait ...'.format(url))
+        r = None
         r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
         if r.status_code != 200:
@@ -2114,7 +2116,7 @@ def ee_export_geojson(
                 fd.write(chunk)
     except Exception as e:
         print("An error occurred while downloading.")
-        print(r.json()["error"]["message"])
+        if r is not None: print(r.json()["error"]["message"])
 
         return
 
@@ -2303,6 +2305,9 @@ def ee_export_image(
             print(e)
             return
         print(f"Downloading data from {url}\nPlease wait ...")
+        # Need to initialize r to something because of how we currently handle errors
+        # We should aim to refactor the code such that only one try block is needed
+        r = None
         r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
         if r.status_code != 200:
@@ -2315,7 +2320,7 @@ def ee_export_image(
 
     except Exception as e:
         print("An error occurred while downloading.")
-        print(r.json()["error"]["message"])
+        if r is not None: print(r.json()["error"]["message"])
         return
 
     try:
@@ -3024,7 +3029,12 @@ def get_image_thumbnail(
     vis_params["crs"] = crs
     url = ee_object.getThumbURL(vis_params)
 
-    r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
+    try:
+        r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
+    except Exception as e:
+        print("An error occurred while downloading.")
+        print(e)
+
     if r.status_code != 200:
         print("An error occurred while downloading.")
         print(r.json()["error"]["message"])
