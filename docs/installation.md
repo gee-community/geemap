@@ -50,7 +50,7 @@ conda install jupyter_contrib_nbextensions -c conda-forge
 
 Check the **YouTube** video below on how to install geemap using conda.
 
-[![geemap](http://img.youtube.com/vi/h0pz3S6Tvx0/0.jpg)](http://www.youtube.com/watch?v=h0pz3S6Tvx0 "Install geemap")
+[![geemap](https://img.youtube.com/vi/h0pz3S6Tvx0/0.jpg)](https://www.youtube.com/watch?v=h0pz3S6Tvx0 "Install geemap")
 
 ## Install from GitHub
 
