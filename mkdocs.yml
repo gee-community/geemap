@@ -265,6 +265,7 @@ nav:
           - notebooks/131_arcgis.ipynb
           - notebooks/132_folium_colorbar.ipynb
           - notebooks/133_gradio.ipynb
+          - notebooks/134_ee_to_geotiff.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
