@@ -14039,14 +14039,15 @@ def arc_add_layer(url, name=None, shown=True, opacity=1.0):
     """
     if is_arcpy():
         m = arc_active_map()
-        m.addDataFromPath(url)
-        if isinstance(name, str):
-            layers = m.listLayers("Tiled service layer")
-            if len(layers) > 0:
-                layer = layers[0]
-                layer.name = name
-                layer.visible = shown
-                layer.transparency = 100 - (opacity * 100)
+        if m is not None:
+            m.addDataFromPath(url)
+            if isinstance(name, str):
+                layers = m.listLayers("Tiled service layer")
+                if len(layers) > 0:
+                    layer = layers[0]
+                    layer.name = name
+                    layer.visible = shown
+                    layer.transparency = 100 - (opacity * 100)
 
 
 def arc_zoom_to_extent(xmin, ymin, xmax, ymax):
@@ -14062,11 +14063,12 @@ def arc_zoom_to_extent(xmin, ymin, xmax, ymax):
         import arcpy
 
         view = arc_active_view()
-        view.camera.setExtent(
-            arcpy.Extent(
-                xmin, ymin, xmax, ymax, spatial_reference=arcpy.SpatialReference(4326)
+        if view is not None:
+            view.camera.setExtent(
+                arcpy.Extent(
+                    xmin, ymin, xmax, ymax, spatial_reference=arcpy.SpatialReference(4326)
+                )
             )
-        )
 
         # if isinstance(zoom, int):
         #     scale = 156543.04 * math.cos(0) / math.pow(2, zoom)
