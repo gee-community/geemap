@@ -396,6 +396,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://geemap.org/notebooks/134_ee_to_geotiff/</loc>
+         <lastmod>2023-04-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://geemap.org/notebooks/13_zonal_statistics_by_group/</loc>
          <lastmod>2023-04-25</lastmod>
          <changefreq>daily</changefreq>

@@ -12,20 +12,18 @@
         <meta name="author" content="Qiusheng Wu">
       
       
-        <link rel="canonical" href="https://geemap.org/notebooks/112_cartoee_basemap_X/">
+        <link rel="canonical" href="https://geemap.org/notebooks/134_ee_to_geotiff/">
       
       
-        <link rel="prev" href="../111_image_count/">
+        <link rel="prev" href="../133_gradio/">
       
-      
-        <link rel="next" href="../113_image_area/">
       
       <link rel="icon" href="../../assets/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.8">
     
     
       
-        <title>112 cartoee basemap X - geemap</title>
+        <title>134 ee to geotiff - geemap</title>
       
     
     
@@ -92,11 +90,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#import-libraries" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -127,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              112 cartoee basemap X
+              134 ee to geotiff
             
           </span>
         </div>
@@ -2549,104 +2542,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          112 cartoee basemap X
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../112_cartoee_basemap_X/" class="md-nav__link">
         112 cartoee basemap X
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#import-libraries" class="md-nav__link">
-    Import libraries
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#initialize-earth-engine" class="md-nav__link">
-    Initialize Earth Engine
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#add-earth-engine-dataset" class="md-nav__link">
-    Add Earth Engine dataset
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-google-basemap" class="md-nav__link">
-    Use Google basemap
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-stamen-terrain-basemap" class="md-nav__link">
-    Use Stamen Terrain basemap
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-openstreetmap-basemap" class="md-nav__link">
-    Use OpenStreetMap basemap
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-other-basemaps" class="md-nav__link">
-    Use other basemaps
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#add-text" class="md-nav__link">
-    Add text
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#global-scale-maps" class="md-nav__link">
-    Global-scale maps
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2950,11 +2850,19 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../134_ee_to_geotiff/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         134 ee to geotiff
       </a>
+      
     </li>
   
 
@@ -2984,77 +2892,6 @@
   
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#import-libraries" class="md-nav__link">
-    Import libraries
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#initialize-earth-engine" class="md-nav__link">
-    Initialize Earth Engine
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#add-earth-engine-dataset" class="md-nav__link">
-    Add Earth Engine dataset
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-google-basemap" class="md-nav__link">
-    Use Google basemap
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-stamen-terrain-basemap" class="md-nav__link">
-    Use Stamen Terrain basemap
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-openstreetmap-basemap" class="md-nav__link">
-    Use OpenStreetMap basemap
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#use-other-basemaps" class="md-nav__link">
-    Use other basemaps
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#add-text" class="md-nav__link">
-    Add text
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#global-scale-maps" class="md-nav__link">
-    Global-scale maps
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -3066,7 +2903,7 @@
               <article class="md-content__inner md-typeset">
                 
 
-    <a href="/notebooks/112_cartoee_basemap_X/112_cartoee_basemap_X.ipynb" title="Download Notebook" class="md-content__button md-icon">
+    <a href="/notebooks/134_ee_to_geotiff/134_ee_to_geotiff.ipynb" title="Download Notebook" class="md-content__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7 7-7Z"/></svg>
     </a>
 
@@ -3078,7 +2915,7 @@
   
 
 
-  <h1>112 cartoee basemap X</h1>
+  <h1>134 ee to geotiff</h1>
 
 <script>
 (function (global, factory) {
@@ -4111,38 +3948,21 @@ Licensed under the Apache License, Version 2.0.
     init_mathjax();
     </script>
     <!-- End of mathjax configuration --><div class="jupyter-wrapper">
-<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=0e355c25" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/112_cartoee_basemap.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></p>
-<p>Uncomment the following line to install <a href="https://geemap.org">geemap</a> and <a href="https://scitools.org.uk/cartopy/docs/latest/installing.html#installing">cartopy</a> if needed. Keep in mind that cartopy can be challenging to install. If you are unable to install cartopy on your computer, you can try Google Colab with this the <a href="https://colab.research.google.com/github/gee-community/geemap/blob/master/examples/notebooks/cartoee_colab.ipynb">notebook example</a>.</p>
-<p>See below the commands to install cartopy and geemap using conda/mamba:</p>
-<pre><code>conda create -n gee python=3.9
-conda activate gee
-conda install mamba -c conda-forge
-mamba install cartopy scipy -c conda-forge
-mamba install geemap -c conda-forge
-</code></pre>
+<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/134_ee_to_geotiff.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></p>
+<p><strong>Download Earth Engine map tiles as a GeoTIFF</strong></p>
+<p>Uncomment the following line to install <a href="https://geemap.org">geemap</a> if needed.</p>
 
 </div>
 </div>
 </div>
-</div>
-<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="import-libraries">Import libraries<a class="anchor-link" href="#import-libraries">&#182;</a></h2>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=93e48054" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4162,23 +3982,9 @@ mamba install geemap -c conda-forge
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="o">%</span><span class="n">pylab</span> <span class="n">inline</span>
-
-<span class="kn">import</span> <span class="nn">ee</span>
-<span class="kn">import</span> <span class="nn">geemap</span>
-
-<span class="c1"># import the cartoee functionality from geemap</span>
-<span class="kn">from</span> <span class="nn">geemap</span> <span class="kn">import</span> <span class="n">cartoee</span>
-<span class="kn">import</span> <span class="nn">cartopy.io.img_tiles</span> <span class="k">as</span> <span class="nn">cimgt</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="c1"># !pip install -U geemap</span>
 </pre></div>
-<div id="cell-1" class="clipboard-copy-txt">%pylab inline
-
-import ee
-import geemap
-
-# import the cartoee functionality from geemap
-from geemap import cartoee
-import cartopy.io.img_tiles as cimgt</div>
+<div id="cell-1" class="clipboard-copy-txt"># !pip install -U geemap</div>
         
         </div>
     </div>
@@ -4187,19 +3993,8 @@ import cartopy.io.img_tiles as cimgt</div>
 </div>
 
 </div>
-</div>
-<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="initialize-earth-engine">Initialize Earth Engine<a class="anchor-link" href="#initialize-earth-engine">&#182;</a></h2>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=a79f90a6" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4219,9 +4014,11 @@ import cartopy.io.img_tiles as cimgt</div>
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">ee_initialize</span><span class="p">()</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="kn">import</span> <span class="nn">ee</span>
+<span class="kn">import</span> <span class="nn">geemap</span>
 </pre></div>
-<div id="cell-2" class="clipboard-copy-txt">geemap.ee_initialize()</div>
+<div id="cell-2" class="clipboard-copy-txt">import ee
+import geemap</div>
         
         </div>
     </div>
@@ -4230,19 +4027,8 @@ import cartopy.io.img_tiles as cimgt</div>
 </div>
 
 </div>
-</div>
-<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="add-earth-engine-dataset">Add Earth Engine dataset<a class="anchor-link" href="#add-earth-engine-dataset">&#182;</a></h2>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=87f49815" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4262,17 +4048,31 @@ import cartopy.io.img_tiles as cimgt</div>
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="c1"># get a landsat image to visualize</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LC08/C01/T1_SR/LC08_044034_20140318&#39;</span><span class="p">)</span>
-
-<span class="c1"># define the visualization parameters to view</span>
-<span class="n">vis</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;bands&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span> <span class="s1">&#39;B4&#39;</span><span class="p">,</span> <span class="s1">&#39;B3&#39;</span><span class="p">],</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="mi">5000</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mf">1.3</span><span class="p">}</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
+<span class="n">point</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="o">-</span><span class="mf">99.2222</span><span class="p">,</span> <span class="mf">46.7816</span><span class="p">)</span>
+<span class="n">collection</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;USDA/NAIP/DOQQ&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="s1">&#39;2008-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-01-01&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">listContains</span><span class="p">(</span><span class="s2">&quot;system:band_names&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">&#39;NAIP&#39;</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="n">Map</span>
 </pre></div>
-<div id="cell-3" class="clipboard-copy-txt"># get a landsat image to visualize
-image = ee.Image('LANDSAT/LC08/C01/T1_SR/LC08_044034_20140318')
-
-# define the visualization parameters to view
-vis = {"bands": ['B5', 'B4', 'B3'], "min": 0, "max": 5000, "gamma": 1.3}</div>
+<div id="cell-3" class="clipboard-copy-txt">Map = geemap.Map()
+point = ee.Geometry.Point(-99.2222, 46.7816)
+collection = (
+    ee.ImageCollection('USDA/NAIP/DOQQ')
+    .filterBounds(point)
+    .filterDate('2008-01-01', '2018-01-01')
+    .filter(ee.Filter.listContains("system:band_names", "N"))
+)
+image = collection.first()
+Map.addLayer(image, {}, 'NAIP')
+Map.centerObject(image)
+Map</div>
         
         </div>
     </div>
@@ -4281,19 +4081,8 @@ vis = {"bands": ['B5', 'B4', 'B3'], "min": 0, "max": 5000, "gamma": 1.3}</div>
 </div>
 
 </div>
-</div>
-<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="use-google-basemap">Use Google basemap<a class="anchor-link" href="#use-google-basemap">&#182;</a></h2>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=6dec8570" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4313,37 +4102,13 @@ vis = {"bands": ['B5', 'B4', 'B3'], "min": 0, "max": 5000, "gamma": 1.3}</div>
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-
-<span class="c1"># use cartoee to get a map</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">basemap</span><span class="o">=</span><span class="s1">&#39;ROADMAP&#39;</span><span class="p">,</span> <span class="n">zoom_level</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-
-<span class="c1"># pad the view for some visual appeal</span>
-<span class="n">cartoee</span><span class="o">.</span><span class="n">pad_view</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
-
-<span class="c1"># add the gridlines and specify that the xtick labels be rotated 45 degrees</span>
-<span class="n">cartoee</span><span class="o">.</span><span class="n">add_gridlines</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">xtick_rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
-
-<span class="c1"># add the coastline</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_geotiff</span><span class="p">(</span>
+    <span class="n">image</span><span class="p">,</span> <span class="s1">&#39;naip.tif&#39;</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;bands&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">]}</span>
+<span class="p">)</span>
 </pre></div>
-<div id="cell-4" class="clipboard-copy-txt">fig = plt.figure(figsize=(15, 10))
-
-# use cartoee to get a map
-ax = cartoee.get_map(image, vis_params=vis, basemap='ROADMAP', zoom_level=8)
-
-# pad the view for some visual appeal
-cartoee.pad_view(ax)
-
-# add the gridlines and specify that the xtick labels be rotated 45 degrees
-cartoee.add_gridlines(ax, interval=0.5, xtick_rotation=0, linestyle=":")
-
-# add the coastline
-ax.coastlines(color="yellow")
-
-plt.show()</div>
+<div id="cell-4" class="clipboard-copy-txt">geemap.ee_to_geotiff(
+    image, 'naip.tif', resolution=5, vis_params={'bands': ['N', 'R', 'G']}
+)</div>
         
         </div>
     </div>
@@ -4352,19 +4117,8 @@ plt.show()</div>
 </div>
 
 </div>
-</div>
-<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="use-stamen-terrain-basemap">Use Stamen Terrain basemap<a class="anchor-link" href="#use-stamen-terrain-basemap">&#182;</a></h2>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=a8e0ba39" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4384,9 +4138,29 @@ plt.show()</div>
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">basemap</span> <span class="o">=</span> <span class="n">cimgt</span><span class="o">.</span><span class="n">Stamen</span><span class="p">(</span><span class="s1">&#39;terrain-background&#39;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
+
+<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">&#39;LANDSAT/LC08/C02/T1_TOA/LC08_044034_20140318&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;B5&#39;</span><span class="p">,</span> <span class="s1">&#39;B4&#39;</span><span class="p">,</span> <span class="s1">&#39;B3&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}</span>
+
+<span class="n">Map</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">&#39;Landsat&#39;</span><span class="p">)</span>
+<span class="n">Map</span>
 </pre></div>
-<div id="cell-5" class="clipboard-copy-txt">basemap = cimgt.Stamen('terrain-background')</div>
+<div id="cell-5" class="clipboard-copy-txt">Map = geemap.Map()
+
+image = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_044034_20140318').select(
+    ['B5', 'B4', 'B3']
+)
+
+vis_params = {'min': 0, 'max': 0.5, 'gamma': [0.95, 1.1, 1]}
+
+Map.centerObject(image)
+Map.addLayer(image, vis_params, 'Landsat')
+Map</div>
         
         </div>
     </div>
@@ -4396,7 +4170,7 @@ plt.show()</div>
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=dbcdaf9a" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4416,37 +4190,13 @@ plt.show()</div>
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-
-<span class="c1"># use cartoee to get a map</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">basemap</span><span class="o">=</span><span class="n">basemap</span><span class="p">,</span> <span class="n">zoom_level</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-
-<span class="c1"># pad the view for some visual appeal</span>
-<span class="n">cartoee</span><span class="o">.</span><span class="n">pad_view</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
-
-<span class="c1"># add the gridlines and specify that the xtick labels be rotated 45 degrees</span>
-<span class="n">cartoee</span><span class="o">.</span><span class="n">add_gridlines</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">xtick_rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
-
-<span class="c1"># add the coastline</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">bbox</span> <span class="o">=</span> <span class="n">Map</span><span class="o">.</span><span class="n">user_roi_coords</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">bbox</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">bbox</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">122.5955</span><span class="p">,</span> <span class="mf">37.5339</span><span class="p">,</span> <span class="o">-</span><span class="mf">122.0982</span><span class="p">,</span> <span class="mf">37.8252</span><span class="p">]</span>
 </pre></div>
-<div id="cell-6" class="clipboard-copy-txt">fig = plt.figure(figsize=(15, 10))
-
-# use cartoee to get a map
-ax = cartoee.get_map(image, vis_params=vis, basemap=basemap, zoom_level=8)
-
-# pad the view for some visual appeal
-cartoee.pad_view(ax)
-
-# add the gridlines and specify that the xtick labels be rotated 45 degrees
-cartoee.add_gridlines(ax, interval=0.5, xtick_rotation=0, linestyle=":")
-
-# add the coastline
-ax.coastlines(color="yellow")
-
-plt.show()</div>
+<div id="cell-6" class="clipboard-copy-txt">bbox = Map.user_roi_coords()
+if bbox is None:
+    bbox = [-122.5955, 37.5339, -122.0982, 37.8252]</div>
         
         </div>
     </div>
@@ -4455,19 +4205,8 @@ plt.show()</div>
 </div>
 
 </div>
-</div>
-<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="use-openstreetmap-basemap">Use OpenStreetMap basemap<a class="anchor-link" href="#use-openstreetmap-basemap">&#182;</a></h2>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=ac42bf38" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4487,9 +4226,9 @@ plt.show()</div>
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">basemap</span> <span class="o">=</span> <span class="n">cimgt</span><span class="o">.</span><span class="n">OSM</span><span class="p">()</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_geotiff</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s1">&#39;landsat.tif&#39;</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
-<div id="cell-7" class="clipboard-copy-txt">basemap = cimgt.OSM()</div>
+<div id="cell-7" class="clipboard-copy-txt">geemap.ee_to_geotiff(image, 'landsat.tif', bbox, vis_params, resolution=30)</div>
         
         </div>
     </div>
@@ -4497,444 +4236,6 @@ plt.show()</div>
 </div>
 </div>
 
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-            <div class="zeroclipboard-container">
-                <clipboard-copy for="cell-8">
-                <div>
-                    <span class="notice" hidden>Copied!</span>
-                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                        <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                        <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                    </svg>
-                    </div>
-                </clipboard-copy>
-            </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-
-<span class="c1"># use cartoee to get a map</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">basemap</span><span class="o">=</span><span class="n">basemap</span><span class="p">,</span> <span class="n">zoom_level</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-
-<span class="c1"># pad the view for some visual appeal</span>
-<span class="n">cartoee</span><span class="o">.</span><span class="n">pad_view</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
-
-<span class="c1"># add the gridlines and specify that the xtick labels be rotated 45 degrees</span>
-<span class="n">cartoee</span><span class="o">.</span><span class="n">add_gridlines</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">xtick_rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
-
-<span class="c1"># add the coastline</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-<div id="cell-8" class="clipboard-copy-txt">fig = plt.figure(figsize=(15, 10))
-
-# use cartoee to get a map
-ax = cartoee.get_map(image, vis_params=vis, basemap=basemap, zoom_level=8)
-
-# pad the view for some visual appeal
-cartoee.pad_view(ax)
-
-# add the gridlines and specify that the xtick labels be rotated 45 degrees
-cartoee.add_gridlines(ax, interval=0.5, xtick_rotation=0, linestyle=":")
-
-# add the coastline
-ax.coastlines(color="yellow")
-
-plt.show()</div>
-        
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div>
-<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="use-other-basemaps">Use other basemaps<a class="anchor-link" href="#use-other-basemaps">&#182;</a></h2><p>For more basemaps, see <a href="https://scitools.org.uk/cartopy/docs/v0.19/cartopy/io/img_tiles.html">https://scitools.org.uk/cartopy/docs/v0.19/cartopy/io/img_tiles.html</a></p>
-
-</div>
-</div>
-</div>
-</div>
-<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="add-text">Add text<a class="anchor-link" href="#add-text">&#182;</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-            <div class="zeroclipboard-container">
-                <clipboard-copy for="cell-9">
-                <div>
-                    <span class="notice" hidden>Copied!</span>
-                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                        <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                        <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                    </svg>
-                    </div>
-                </clipboard-copy>
-            </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib.transforms</span> <span class="kn">import</span> <span class="n">offset_copy</span>
-<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
-</pre></div>
-<div id="cell-9" class="clipboard-copy-txt">from matplotlib.transforms import offset_copy
-import cartopy.crs as ccrs</div>
-        
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-            <div class="zeroclipboard-container">
-                <clipboard-copy for="cell-10">
-                <div>
-                    <span class="notice" hidden>Copied!</span>
-                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                        <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                        <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                    </svg>
-                    </div>
-                </clipboard-copy>
-            </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-
-<span class="c1"># use cartoee to get a map</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">basemap</span><span class="o">=</span><span class="s1">&#39;SATELLITE&#39;</span><span class="p">,</span> <span class="n">zoom_level</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-
-<span class="c1"># pad the view for some visual appeal</span>
-<span class="n">cartoee</span><span class="o">.</span><span class="n">pad_view</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
-
-<span class="c1"># add the gridlines and specify that the xtick labels be rotated 45 degrees</span>
-<span class="n">cartoee</span><span class="o">.</span><span class="n">add_gridlines</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">xtick_rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
-
-<span class="c1"># add the coastline</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="o">-</span><span class="mf">122.4457</span><span class="p">,</span>
-    <span class="mf">37.7574</span><span class="p">,</span>
-    <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
-    <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
-    <span class="n">transform</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">Geodetic</span><span class="p">(),</span>
-<span class="p">)</span>
-
-<span class="c1"># Use the cartopy interface to create a matplotlib transform object</span>
-<span class="c1"># for the Geodetic coordinate system. We will use this along with</span>
-<span class="c1"># matplotlib&#39;s offset_copy function to define a coordinate system which</span>
-<span class="c1"># translates the text by 25 pixels to the left.</span>
-<span class="n">geodetic_transform</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">Geodetic</span><span class="p">()</span><span class="o">.</span><span class="n">_as_mpl_transform</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">text_transform</span> <span class="o">=</span> <span class="n">offset_copy</span><span class="p">(</span><span class="n">geodetic_transform</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;dots&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=-</span><span class="mi">25</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-    <span class="o">-</span><span class="mf">122.4457</span><span class="p">,</span>
-    <span class="mf">37.7574</span><span class="p">,</span>
-    <span class="sa">u</span><span class="s1">&#39;San Francisco&#39;</span><span class="p">,</span>
-    <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
-    <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>
-    <span class="n">transform</span><span class="o">=</span><span class="n">text_transform</span><span class="p">,</span>
-    <span class="n">fontsize</span><span class="o">=</span><span class="s1">&#39;large&#39;</span><span class="p">,</span>
-    <span class="n">fontweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
-    <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;sandybrown&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">boxstyle</span><span class="o">=</span><span class="s1">&#39;round&#39;</span><span class="p">),</span>
-<span class="p">)</span>
-
-<span class="c1"># Save the plot by calling plt.savefig() BEFORE plt.show()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;sfo.pdf&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;sfo.jpg&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-<div id="cell-10" class="clipboard-copy-txt">fig = plt.figure(figsize=(15, 10))
-
-# use cartoee to get a map
-ax = cartoee.get_map(image, vis_params=vis, basemap='SATELLITE', zoom_level=8)
-
-# pad the view for some visual appeal
-cartoee.pad_view(ax)
-
-# add the gridlines and specify that the xtick labels be rotated 45 degrees
-cartoee.add_gridlines(ax, interval=0.5, xtick_rotation=0, linestyle=":")
-
-# add the coastline
-ax.coastlines(color="yellow")
-
-plt.plot(
-    -122.4457,
-    37.7574,
-    marker='o',
-    color='blue',
-    markersize=10,
-    alpha=0.7,
-    transform=ccrs.Geodetic(),
-)
-
-# Use the cartopy interface to create a matplotlib transform object
-# for the Geodetic coordinate system. We will use this along with
-# matplotlib's offset_copy function to define a coordinate system which
-# translates the text by 25 pixels to the left.
-geodetic_transform = ccrs.Geodetic()._as_mpl_transform(ax)
-text_transform = offset_copy(geodetic_transform, units='dots', x=-25)
-
-plt.text(
-    -122.4457,
-    37.7574,
-    u'San Francisco',
-    verticalalignment='center',
-    horizontalalignment='right',
-    transform=text_transform,
-    fontsize='large',
-    fontweight='bold',
-    color='white',
-    bbox=dict(facecolor='sandybrown', alpha=0.5, boxstyle='round'),
-)
-
-# Save the plot by calling plt.savefig() BEFORE plt.show()
-plt.savefig('sfo.pdf')
-plt.savefig('sfo.jpg', dpi=300)
-
-plt.show()</div>
-        
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div>
-<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><img src="https://i.imgur.com/Yw2N42R.png" alt="" /></p>
-
-</div>
-</div>
-</div>
-</div>
-<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="global-scale-maps">Global-scale maps<a class="anchor-link" href="#global-scale-maps">&#182;</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-            <div class="zeroclipboard-container">
-                <clipboard-copy for="cell-11">
-                <div>
-                    <span class="notice" hidden>Copied!</span>
-                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                        <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                        <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                    </svg>
-                    </div>
-                </clipboard-copy>
-            </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="c1"># get an earth engine image of ocean data for Jan-Mar 2018</span>
-<span class="n">ocean</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;NASA/OCEANDATA/MODIS-Terra/L3SMI&#39;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="s1">&#39;2018-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-03-01&#39;</span><span class="p">))</span>
-    <span class="o">.</span><span class="n">median</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s2">&quot;sst&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;SST&quot;</span><span class="p">])</span>
-<span class="p">)</span>
-</pre></div>
-<div id="cell-11" class="clipboard-copy-txt"># get an earth engine image of ocean data for Jan-Mar 2018
-ocean = (
-    ee.ImageCollection('NASA/OCEANDATA/MODIS-Terra/L3SMI')
-    .filter(ee.Filter.date('2018-01-01', '2018-03-01'))
-    .median()
-    .select(["sst"], ["SST"])
-)</div>
-        
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-            <div class="zeroclipboard-container">
-                <clipboard-copy for="cell-12">
-                <div>
-                    <span class="notice" hidden>Copied!</span>
-                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                        <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                        <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                    </svg>
-                    </div>
-                </clipboard-copy>
-            </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="c1"># set parameters for plotting</span>
-<span class="c1"># will plot the Sea Surface Temp with specific range and colormap</span>
-<span class="n">visualization</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bands&#39;</span><span class="p">:</span> <span class="s2">&quot;SST&quot;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">}</span>
-<span class="c1"># specify region to focus on</span>
-<span class="n">bbox</span> <span class="o">=</span> <span class="p">[</span><span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">88</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">88</span><span class="p">]</span>
-</pre></div>
-<div id="cell-12" class="clipboard-copy-txt"># set parameters for plotting
-# will plot the Sea Surface Temp with specific range and colormap
-visualization = {'bands': "SST", 'min': -2, 'max': 30}
-# specify region to focus on
-bbox = [180, -88, -180, 88]</div>
-        
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div  class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-        
-        
-        <div class="CodeMirror cm-s-jupyter">
-            <div class="zeroclipboard-container">
-                <clipboard-copy for="cell-13">
-                <div>
-                    <span class="notice" hidden>Copied!</span>
-                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
-                        <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
-                        <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
-                    </svg>
-                    </div>
-                </clipboard-copy>
-            </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-
-<span class="c1"># plot the result with cartoee using a PlateCarre projection (default)</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span>
-    <span class="n">ocean</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">,</span>
-    <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span>
-    <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span>
-    <span class="n">basemap</span><span class="o">=</span><span class="n">cimgt</span><span class="o">.</span><span class="n">Stamen</span><span class="p">(</span><span class="s1">&#39;terrain&#39;</span><span class="p">),</span>
-    <span class="n">zoom_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Sea Surface Temperature&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
-
-<span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">()</span>
-
-<span class="c1"># Save the plot by calling plt.savefig() BEFORE plt.show()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;sst.pdf&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;sst.jpg&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-<div id="cell-13" class="clipboard-copy-txt">fig = plt.figure(figsize=(15, 10))
-
-# plot the result with cartoee using a PlateCarre projection (default)
-ax = cartoee.get_map(
-    ocean,
-    cmap='plasma',
-    vis_params=visualization,
-    region=bbox,
-    basemap=cimgt.Stamen('terrain'),
-    zoom_level=2,
-)
-cb = cartoee.add_colorbar(ax, vis_params=visualization, loc='right', cmap='plasma')
-
-ax.set_title(label='Sea Surface Temperature', fontsize=15)
-
-ax.coastlines()
-
-# Save the plot by calling plt.savefig() BEFORE plt.show()
-plt.savefig('sst.pdf')
-plt.savefig('sst.jpg', dpi=300)
-
-plt.show()</div>
-        
-        </div>
-    </div>
-
-</div>
-</div>
-
-</div>
-</div>
-<div  class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><img src="https://i.imgur.com/CYNUy6R.png" alt="" /></p>
-
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -4946,11 +4247,11 @@ plt.show()</div>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-25T02:33:41+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-25</span>
       
         <br>
         Created:
-        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2022-05-23T02:42:34+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2022-05-23</span>
+        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-25T02:33:41+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-25</span>
       
     
   </small>
