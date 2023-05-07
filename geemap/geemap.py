@@ -18,7 +18,6 @@ from ipytree import Node, Tree
 from .basemaps import xyz_to_leaflet
 from .common import *
 from .conversion import *
-from .legends import builtin_legends
 from .timelapse import *
 from .plot import *
 
@@ -29,9 +28,9 @@ basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class Map(ipyleaflet.Map):
-    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map 
-        can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html. 
-        By default, the Map will add Google Maps as the basemap. Set add_google_map = False 
+    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map
+        can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html.
+        By default, the Map will add Google Maps as the basemap. Set add_google_map = False
         to use OpenStreetMap as the basemap.
 
     Returns:
@@ -51,10 +50,10 @@ class Map(ipyleaflet.Map):
             ee_initialize()
 
         # Default map center location (lat, lon) and zoom level
-        latlon = [20, 0]
+        center = [20, 0]
         zoom = 2
 
-        # Interchangeable parameters between ipyleaflet and folium
+        # Set map width and height
         if "height" not in kwargs.keys():
             kwargs["height"] = "600px"
         elif isinstance(kwargs["height"], int):
@@ -66,7 +65,7 @@ class Map(ipyleaflet.Map):
             kwargs["center"] = kwargs["location"]
             kwargs.pop("location")
         if "center" not in kwargs.keys():
-            kwargs["center"] = latlon
+            kwargs["center"] = center
 
         if "zoom_start" in kwargs.keys():
             kwargs["zoom"] = kwargs["zoom_start"]
@@ -2828,8 +2827,8 @@ class Map(ipyleaflet.Map):
 
         """
         import pkg_resources
-
         from IPython.display import display
+        from .legends import builtin_legends
 
         pkg_dir = os.path.dirname(
             pkg_resources.resource_filename("geemap", "geemap.py")

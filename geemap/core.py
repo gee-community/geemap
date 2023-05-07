@@ -16,7 +16,6 @@ from ipytree import Node, Tree
 from .basemaps import xyz_to_leaflet
 from .common import *
 from .conversion import *
-from .legends import builtin_legends
 from .timelapse import *
 from .plot import *
 
@@ -26,9 +25,9 @@ basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class Map(ipyleaflet.Map):
-    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map 
-        can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html. 
-        By default, the Map will add Google Maps as the basemap. Set add_google_map = False 
+    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map
+        can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html.
+        By default, the Map will add Google Maps as the basemap. Set add_google_map = False
         to use OpenStreetMap as the basemap.
 
     Returns:
@@ -36,10 +35,6 @@ class Map(ipyleaflet.Map):
     """
 
     def __init__(self, **kwargs):
-        import warnings
-
-        warnings.filterwarnings("ignore")
-
         # Authenticates Earth Engine and initializes an Earth Engine session
         if "ee_initialize" not in kwargs.keys():
             kwargs["ee_initialize"] = True
@@ -48,10 +43,10 @@ class Map(ipyleaflet.Map):
             ee_initialize()
 
         # Default map center location (lat, lon) and zoom level
-        latlon = [20, 0]
+        center = [20, 0]
         zoom = 2
 
-        # Interchangeable parameters between ipyleaflet and folium
+        # Set map width and height
         if "height" not in kwargs.keys():
             kwargs["height"] = "600px"
         elif isinstance(kwargs["height"], int):
@@ -59,63 +54,23 @@ class Map(ipyleaflet.Map):
         if "width" in kwargs.keys() and isinstance(kwargs["width"], int):
             kwargs["width"] = str(kwargs["width"]) + "px"
 
-        if "location" in kwargs.keys():
-            kwargs["center"] = kwargs["location"]
-            kwargs.pop("location")
+        # Set map center location and zoom level
         if "center" not in kwargs.keys():
-            kwargs["center"] = latlon
-
-        if "zoom_start" in kwargs.keys():
-            kwargs["zoom"] = kwargs["zoom_start"]
-            kwargs.pop("zoom_start")
+            kwargs["center"] = center
         if "zoom" not in kwargs.keys():
             kwargs["zoom"] = zoom
         if "max_zoom" not in kwargs.keys():
             kwargs["max_zoom"] = 24
 
-        if "add_google_map" not in kwargs.keys() and "basemap" not in kwargs.keys():
-            kwargs["add_google_map"] = True
+        # Enable scroll wheel zoom by default
         if "scroll_wheel_zoom" not in kwargs.keys():
             kwargs["scroll_wheel_zoom"] = True
 
-        if "lite_mode" not in kwargs.keys():
-            kwargs["lite_mode"] = False
+        # Add Google Maps as the default basemap
+        if "add_google_map" not in kwargs.keys() and "basemap" not in kwargs.keys():
+            kwargs["add_google_map"] = True
 
-        if kwargs["lite_mode"]:
-            kwargs["data_ctrl"] = False
-            kwargs["zoom_ctrl"] = True
-            kwargs["fullscreen_ctrl"] = False
-            kwargs["draw_ctrl"] = False
-            kwargs["search_ctrl"] = False
-            kwargs["measure_ctrl"] = False
-            kwargs["scale_ctrl"] = False
-            kwargs["layer_ctrl"] = False
-            kwargs["toolbar_ctrl"] = False
-            kwargs["attribution_ctrl"] = False
-
-        if "data_ctrl" not in kwargs.keys():
-            kwargs["data_ctrl"] = True
-        if "zoom_ctrl" not in kwargs.keys():
-            kwargs["zoom_ctrl"] = True
-        if "fullscreen_ctrl" not in kwargs.keys():
-            kwargs["fullscreen_ctrl"] = True
-        if "draw_ctrl" not in kwargs.keys():
-            kwargs["draw_ctrl"] = True
-        if "search_ctrl" not in kwargs.keys():
-            kwargs["search_ctrl"] = False
-        if "measure_ctrl" not in kwargs.keys():
-            kwargs["measure_ctrl"] = True
-        if "scale_ctrl" not in kwargs.keys():
-            kwargs["scale_ctrl"] = True
-        if "layer_ctrl" not in kwargs.keys():
-            kwargs["layer_ctrl"] = False
-        if "toolbar_ctrl" not in kwargs.keys():
-            kwargs["toolbar_ctrl"] = True
-        if "attribution_ctrl" not in kwargs.keys():
-            kwargs["attribution_ctrl"] = True
-        if "use_voila" not in kwargs.keys():
-            kwargs["use_voila"] = False
-
+        # Users can also specify any basemap from the basemap module, such as OpenTopoMap
         if (
             "basemap" in kwargs.keys()
             and isinstance(kwargs["basemap"], str)
@@ -123,8 +78,34 @@ class Map(ipyleaflet.Map):
         ):
             kwargs["basemap"] = basemaps[kwargs["basemap"]]
 
-        if os.environ.get("USE_VOILA") is not None:
-            kwargs["use_voila"] = True
+        # Available controls. The first two are custom controls. The rest are native ipyleaflet controls.
+        controls = [
+            "data_ctrl",
+            "toolbar_ctrl",
+            "zoom_ctrl",
+            "fullscreen_ctrl",
+            "draw_ctrl",
+            "search_ctrl",
+            "measure_ctrl",
+            "scale_ctrl",
+            "layer_ctrl",
+            "attribution_ctrl",
+        ]
+
+        if "lite_mode" not in kwargs.keys():
+            kwargs["lite_mode"] = False
+        # Hide all controls if lite_mode is True
+        if kwargs["lite_mode"]:
+            for control in controls:
+                kwargs[control] = False
+
+        # Controls to be displayed by default
+        for control in controls:
+            if control not in kwargs.keys():
+                if control in ["search_ctrl", "layer_ctrl"]:
+                    kwargs[control] = False
+                else:
+                    kwargs[control] = True
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
