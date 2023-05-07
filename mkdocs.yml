@@ -108,6 +108,7 @@ nav:
           - colormaps module: colormaps.md
           - common module: common.md
           - conversion module: conversion.md
+          - core module: core.md
           - datasets module: datasets.md
           - deck module: deck.md
           - examples module: examples.md
