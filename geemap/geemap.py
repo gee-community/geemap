@@ -3,10 +3,7 @@ Keep in mind that Earth Engine functions use both camel case and snake case, suc
 ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), add_minimap().
 """
 
-import math
 import os
-import pkg_resources
-import time
 
 import ee
 import ipyevents
@@ -23,7 +20,6 @@ from .common import *
 from .conversion import *
 from .legends import builtin_legends
 from .timelapse import *
-from .osm import *
 from .plot import *
 
 from . import examples
@@ -33,7 +29,10 @@ basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class Map(ipyleaflet.Map):
-    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html. By default, the Map will add Google Maps as the basemap. Set add_google_map = False to use OpenStreetMap as the basemap.
+    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map 
+        can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html. 
+        By default, the Map will add Google Maps as the basemap. Set add_google_map = False 
+        to use OpenStreetMap as the basemap.
 
     Returns:
         object: ipyleaflet map object.
@@ -263,6 +262,8 @@ class Map(ipyleaflet.Map):
         )
 
         def get_ee_example(asset_id):
+            import pkg_resources
+
             try:
                 pkg_dir = os.path.dirname(
                     pkg_resources.resource_filename("geemap", "geemap.py")
@@ -689,6 +690,8 @@ class Map(ipyleaflet.Map):
             save_map_widget.children = [save_type, file_chooser, ok_cancel]
 
         def ok_cancel_clicked(change):
+            import time
+
             if change["new"] == "OK":
                 file_path = file_chooser.selected
                 ext = os.path.splitext(file_path)[1]
@@ -808,7 +811,8 @@ class Map(ipyleaflet.Map):
         icon_width = "32px"
         icon_height = "32px"
         n_cols = 3
-        n_rows = math.ceil(len(icons) / n_cols)
+        # n_rows = math.ceil(len(icons) / n_cols)
+        n_rows = -int(-(len(icons) / n_cols))
 
         toolbar_grid = widgets.GridBox(
             children=[
@@ -1692,6 +1696,8 @@ class Map(ipyleaflet.Map):
         Returns:
             float: Map resolution in meters.
         """
+        import math
+
         zoom_level = self.zoom
         # Reference: https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
         resolution = 156543.04 * math.cos(0) / math.pow(2, zoom_level)
@@ -2198,7 +2204,7 @@ class Map(ipyleaflet.Map):
             min_height (int, optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
             max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.
         """
-
+        import time
         import numpy as np
 
         if self.random_marker is not None:
@@ -2821,6 +2827,8 @@ class Map(ipyleaflet.Map):
             layer_name (str, optional): Layer name of the legend to be associated with. Defaults to None.
 
         """
+        import pkg_resources
+
         from IPython.display import display
 
         pkg_dir = os.path.dirname(
@@ -5640,6 +5648,7 @@ class Map(ipyleaflet.Map):
             geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
 
         """
+        from .osm import osm_to_gdf
 
         gdf = osm_to_gdf(
             query, which_result=which_result, by_osmid=by_osmid, buffer_dist=buffer_dist
@@ -5691,6 +5700,7 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_geocode
 
         gdf = osm_gdf_from_geocode(
             query, which_result=which_result, by_osmid=by_osmid, buffer_dist=buffer_dist
@@ -5734,6 +5744,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_address
+
         gdf = osm_gdf_from_address(address, tags, dist)
         geojson = gdf.__geo_interface__
 
@@ -5776,6 +5788,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_place
+
         gdf = osm_gdf_from_place(query, tags, which_result, buffer_dist)
         geojson = gdf.__geo_interface__
 
@@ -5816,6 +5830,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_point
+
         gdf = osm_gdf_from_point(center_point, tags, dist)
         geojson = gdf.__geo_interface__
 
@@ -5854,6 +5870,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_polygon
+
         gdf = osm_gdf_from_polygon(polygon, tags)
         geojson = gdf.__geo_interface__
 
@@ -5899,6 +5917,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_bbox
+
         gdf = osm_gdf_from_bbox(north, south, east, west, tags)
         geojson = gdf.__geo_interface__
 
@@ -5935,6 +5955,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_bbox
+
         bounds = self.bounds
         if len(bounds) == 0:
             bounds = (
@@ -6082,6 +6104,7 @@ class Map(ipyleaflet.Map):
             TypeError: If the ee_object is not ee.Image | ee.ImageCollection.
         """
         import threading
+        import time
 
         if isinstance(ee_object, ee.Image):
             if region is not None:
