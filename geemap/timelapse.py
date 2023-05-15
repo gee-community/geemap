@@ -852,7 +852,7 @@ def create_timelapse(
         out_gif (str): The output gif file path. Defaults to None.
         palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
         vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
-        dimensions (int, optional): a number or pair of numbers ((in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
