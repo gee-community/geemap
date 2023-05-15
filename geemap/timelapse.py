@@ -852,7 +852,7 @@ def create_timelapse(
         out_gif (str): The output gif file path. Defaults to None.
         palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
         vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
-        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers ((in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
@@ -1017,7 +1017,7 @@ def create_timelapse(
     else:
         video_args["bands"] = ["vis-gray"]
 
-    if dimensions > 768:
+    if isinstance(dimensions, int) and dimensions > 768 or isinstance(dimensions, str) and any(dim>768 for dim in list(map(int,dimensions.split('x')))):
         count = col.size().getInfo()
         basename = os.path.basename(out_gif)[:-4]
         names = [
@@ -1206,7 +1206,7 @@ def naip_timelapse(
         bands (list, optional): A list of band names to use in the timelapse. Defaults to None.
         palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
         vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
-        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
@@ -2592,7 +2592,7 @@ def landsat_timelapse(
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
         bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']. Defaults to ['NIR', 'Red', 'Green'].
         vis_params (dict, optional): Visualization parameters. Defaults to None.
-        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 5.
         crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
         apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
@@ -2711,7 +2711,7 @@ def landsat_timelapse(
                 col, overlay_data, overlay_color, overlay_width, overlay_opacity
             )
 
-        if dimensions > 768:
+        if isinstance(dimensions, int) and dimensions > 768 or isinstance(dimensions, str) and any(dim>768 for dim in list(map(int,dimensions.split('x')))):
             count = col.size().getInfo()
             basename = os.path.basename(out_gif)[:-4]
             names = [
@@ -2866,7 +2866,7 @@ def landsat_timelapse_legacy(
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
         bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']. Defaults to ['NIR', 'Red', 'Green'].
         vis_params (dict, optional): Visualization parameters. Defaults to None.
-        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 5.
         crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
         apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
@@ -2985,7 +2985,7 @@ def landsat_timelapse_legacy(
                 col, overlay_data, overlay_color, overlay_width, overlay_opacity
             )
 
-        if dimensions > 768:
+        if isinstance(dimensions, int) and dimensions > 768 or isinstance(dimensions, str) and any(dim>768 for dim in list(map(int,dimensions.split('x')))):
             count = col.size().getInfo()
             basename = os.path.basename(out_gif)[:-4]
             names = [
@@ -3133,7 +3133,7 @@ def sentinel1_timelapse_legacy(
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
         vis_params (dict, optional): Visualization parameters. Defaults to {'min':-18, 'max': -4}.
-        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 5.
         crs (str, optional): Coordinate reference system. Defaults to 'EPSG:3857'.
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
@@ -3195,7 +3195,7 @@ def sentinel1_timelapse_legacy(
             col, overlay_data, overlay_color, overlay_width, overlay_opacity
         )
 
-    if dimensions > 768:
+    if isinstance(dimensions, int) and dimensions > 768 or isinstance(dimensions, str) and any(dim>768 for dim in list(map(int,dimensions.split('x')))):
         count = col.size().getInfo()
         basename = os.path.basename(out_gif)[:-4]
         names = [
@@ -3321,7 +3321,7 @@ def sentinel2_timelapse(
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
         bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'Red Edge 1', 'Red Edge 2', 'Red Edge 3', 'Red Edge 4']. Defaults to ['NIR', 'Red', 'Green'].
         vis_params (dict, optional): Visualization parameters. Defaults to None.
-        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         crs (str, optional): Coordinate reference system. Defaults to 'EPSG:3857'.
         apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
@@ -3443,7 +3443,7 @@ def sentinel2_timelapse(
                 col, overlay_data, overlay_color, overlay_width, overlay_opacity
             )
 
-        if dimensions > 768:
+        if isinstance(dimensions, int) and dimensions > 768 or isinstance(dimensions, str) and any(dim>768 for dim in list(map(int,dimensions.split('x')))):
             count = col.size().getInfo()
             basename = os.path.basename(out_gif)[:-4]
             names = [
@@ -3570,7 +3570,7 @@ def landsat_ts_norm_diff_gif(
         out_gif (str, optional): File path to the output animated GIF. Defaults to None.
         vis_params (dict, optional): Visualization parameters. Defaults to None.
         palette (list, optional): The palette to use for visualizing the timelapse. Defaults to ['black', 'blue']. The first color in the list is the background color.
-        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         mp4 (bool, optional): If True, the output gif will be converted to mp4. Defaults to False.
 
@@ -3885,7 +3885,7 @@ def goes_timelapse(
         data (str, optional): The GOES satellite data to use. Defaults to "GOES-17".
         scan (str, optional): The GOES scan to use. Defaults to "full_disk".
         bands (list, optional): The bands to visualize. Defaults to ["CMI_C02", "CMI_GREEN", "CMI_C01"].
-        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         date_format (str, optional): The date format to use. Defaults to "YYYY-MM-dd HH:mm".
         xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
@@ -4039,7 +4039,7 @@ def goes_fire_timelapse(
         data (str, optional): The GOES satellite data to use. Defaults to "GOES-17".
         scan (str, optional): The GOES scan to use. Defaults to "full_disk".
         region (ee.Geometry, optional): The region of interest. Defaults to None.
-        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         date_format (str, optional): The date format to use. Defaults to "YYYY-MM-dd HH:mm".
         xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
@@ -4245,7 +4245,7 @@ def modis_ndvi_timelapse(
         band (str, optional): Either the "NDVI" or "EVI" band. Defaults to "NDVI".
         start_date (str, optional): The start date used to filter the image collection, e.g., "2013-01-01". Defaults to None.
         end_date (str, optional): The end date used to filter the image collection. Defaults to None.
-        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
         xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
@@ -4497,7 +4497,7 @@ def modis_ocean_color_timelapse(
         out_gif (str): The output gif file path. Defaults to None.
         palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
         vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
-        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
@@ -4816,7 +4816,7 @@ def sentinel1_timelapse(
         date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
         palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
         vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
-        dimensions (int, optional): a number or pair of numbers in format WIDTHxHEIGHT) Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
