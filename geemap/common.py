@@ -162,6 +162,9 @@ def ee_initialize(
         service_account (bool, optional): If True, use a service account. Defaults to False.
     """
     import httplib2
+    from .__init__ import __version__
+
+    user_agent = f"geemap/{__version__}"
 
     if ee.data._credentials is None:
         ee_token = os.environ.get(token_name)
@@ -223,9 +226,12 @@ def ee_initialize(
                             copy_credentials_to_drive()
 
                 ee.Initialize(http_transport=httplib2.Http())
+
             except Exception:
                 ee.Authenticate(auth_mode=auth_mode)
                 ee.Initialize(http_transport=httplib2.Http())
+
+        ee.data.setUserAgent(user_agent)
 
 
 def set_proxy(port=1080, ip="http://127.0.0.1", timeout=300):
@@ -1376,7 +1382,7 @@ def ee_to_bbox(ee_object):
             "The ee_object must be an ee.Image, ee.Feature, ee.FeatureCollection or ee.Geometry object."
         )
 
-    bounds = geometry.bounds().getInfo()['coordinates'][0]
+    bounds = geometry.bounds().getInfo()["coordinates"][0]
     xmin = bounds[0][0]
     ymin = bounds[0][1]
     xmax = bounds[1][0]
