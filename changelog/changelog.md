@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.20.7 - May 16, 2023
+
+**New Features**
+
+-   Added ee_to_geotiff function (#1519)
+-   Added netlify deployment for pull requests (#1516)
+
+**Improvement**
+
+-   Added ee.data.setUserAgent (#1535)
+-   Fixed dimensions in timelapse module not accepting number pairs (#1534)
+-   Fixed ArcGIS add layer bug (#1518)
+-   Fixed for faulty exception handling when request.get raises an exception
+
 ## v0.20.6 - Apr 18, 2023
 
 **New Features**
@@ -12,6 +26,7 @@
 -   Fixed ee.Geometry visualization bug (#1495)
 -   Fixed plotly import error
 -   Updated docker image url
+
 ## v0.20.5 - Apr 6, 2023
 
 **Improvement**
