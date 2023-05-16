@@ -89,6 +89,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/gee-community/geemap",
-    version="0.20.6",
+    version="0.20.7",
     zip_safe=False,
 )
