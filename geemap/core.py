@@ -346,6 +346,19 @@ class Map(ipyleaflet.Map):
         tools = {
             "info": {"name": "inspector", "tooltip": "Inspector"},
             "bar-chart": {"name": "plotting", "tooltip": "Plotting"},
+            "retweet": {
+                "name": "convert_js",
+                "tooltip": "Convert Earth Engine JavaScript to Python",
+            },
+            "map": {
+                "name": "basemap",
+                "tooltip": "Change basemap",
+            },
+            "globe": {
+                "name": "timelapse",
+                "tooltip": "Create timelapse",
+            },
+
             "camera": {
                 "name": "to_image",
                 "tooltip": "Save map as HTML or image",
@@ -358,10 +371,6 @@ class Map(ipyleaflet.Map):
                 "name": "open_data",
                 "tooltip": "Open local vector/raster data",
             },
-            "retweet": {
-                "name": "convert_js",
-                "tooltip": "Convert Earth Engine JavaScript to Python",
-            },
             "gears": {
                 "name": "whitebox",
                 "tooltip": "WhiteboxTools for local geoprocessing",
@@ -370,14 +379,7 @@ class Map(ipyleaflet.Map):
                 "name": "geetoolbox",
                 "tooltip": "GEE Toolbox for cloud computing",
             },
-            "map": {
-                "name": "basemap",
-                "tooltip": "Change basemap",
-            },
-            "globe": {
-                "name": "timelapse",
-                "tooltip": "Create timelapse",
-            },
+
             "fast-forward": {
                 "name": "timeslider",
                 "tooltip": "Activate timeslider",
@@ -403,8 +405,8 @@ class Map(ipyleaflet.Map):
                 "tooltip": "Get COG/STAC pixel value",
             },
             "spinner": {
-                "name": "placehold2",
-                "tooltip": "This is a placehold",
+                "name": "placeholder2",
+                "tooltip": "This is a placeholder",
             },
             "question": {
                 "name": "help",
