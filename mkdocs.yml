@@ -267,6 +267,7 @@ nav:
           - notebooks/132_folium_colorbar.ipynb
           - notebooks/133_gradio.ipynb
           - notebooks/134_ee_to_geotiff.ipynb
+          - notebooks/135_segmentation.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
