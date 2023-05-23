@@ -108,7 +108,8 @@ nav:
           - colormaps module: colormaps.md
           - common module: common.md
           - conversion module: conversion.md
-          - core module: core.md
+          - core modules:
+                - core: core-core.md
           - datasets module: datasets.md
           - deck module: deck.md
           - examples module: examples.md
@@ -244,7 +245,7 @@ nav:
           - notebooks/109_coordinate_grids.ipynb
           - notebooks/110_choropleth.ipynb
           - notebooks/111_image_count.ipynb
-          - notebooks/112_cartoee_basemap_X.ipynb
+          - notebooks/112_cartoee_basemap.ipynb
           - notebooks/113_image_area.ipynb
           - notebooks/114_dynamic_world.ipynb
           - notebooks/115_land_cover.ipynb

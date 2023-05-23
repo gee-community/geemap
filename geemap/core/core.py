@@ -13,13 +13,13 @@ from bqplot import pyplot as plt
 from ipyfilechooser import FileChooser
 from IPython.display import display
 from ipytree import Node, Tree
-from .basemaps import xyz_to_leaflet
-from .common import *
-from .conversion import *
-from .timelapse import *
-from .plot import *
+from ..basemaps import xyz_to_leaflet
+from ..common import *
+from ..conversion import *
+from ..timelapse import *
+from ..plot import *
 
-from . import examples
+from .. import examples
 
 basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
@@ -187,7 +187,7 @@ class Map(ipyleaflet.Map):
 
         # Add to search data control to the topleft corner
         if kwargs.get("data_ctrl"):
-            from .toolbar import search_data_gui
+            from ..toolbar import search_data_gui
 
             search_data_gui(self)
 
@@ -358,7 +358,6 @@ class Map(ipyleaflet.Map):
                 "name": "timelapse",
                 "tooltip": "Create timelapse",
             },
-
             "camera": {
                 "name": "to_image",
                 "tooltip": "Save map as HTML or image",
@@ -379,7 +378,6 @@ class Map(ipyleaflet.Map):
                 "name": "geetoolbox",
                 "tooltip": "GEE Toolbox for cloud computing",
             },
-
             "fast-forward": {
                 "name": "timeslider",
                 "tooltip": "Activate timeslider",
@@ -481,11 +479,11 @@ class Map(ipyleaflet.Map):
                         self.remove_control(self.draw_control)
                     self.add(self.draw_control_lite)
                 elif tool_name == "open_data":
-                    from .toolbar import open_data_widget
+                    from ..toolbar import open_data_widget
 
                     open_data_widget(self)
                 elif tool_name == "convert_js":
-                    from .toolbar import convert_js2py
+                    from ..toolbar import convert_js2py
 
                     convert_js2py(self)
                 elif tool_name == "whitebox":
@@ -504,7 +502,7 @@ class Map(ipyleaflet.Map):
                     self.whitebox = wbt_control
                     self.add(wbt_control)
                 elif tool_name == "geetoolbox":
-                    from .toolbar import build_toolbox, get_tools_dict
+                    from ..toolbar import build_toolbox, get_tools_dict
 
                     tools_dict = get_tools_dict()
                     gee_toolbox = build_toolbox(
@@ -517,39 +515,39 @@ class Map(ipyleaflet.Map):
                     self.add(geetoolbox_control)
 
                 elif tool_name == "basemap":
-                    from .toolbar import change_basemap
+                    from ..toolbar import change_basemap
 
                     change_basemap(self)
                 elif tool_name == "timelapse":
-                    from .toolbar import timelapse_gui
+                    from ..toolbar import timelapse_gui
 
                     timelapse_gui(self)
                     self.toolbar_reset()
                 elif tool_name == "timeslider":
-                    from .toolbar import time_slider
+                    from ..toolbar import time_slider
 
                     time_slider(self)
                     self.toolbar_reset()
                 elif tool_name == "draw":
-                    from .toolbar import collect_samples
+                    from ..toolbar import collect_samples
 
                     self.training_ctrl = None
                     collect_samples(self)
                 elif tool_name == "transect":
-                    from .toolbar import plot_transect
+                    from ..toolbar import plot_transect
 
                     plot_transect(self)
                 elif tool_name == "sankee":
-                    from .toolbar import sankee_gui
+                    from ..toolbar import sankee_gui
 
                     sankee_gui(self)
                 elif tool_name == "planet":
-                    from .toolbar import split_basemaps
+                    from ..toolbar import split_basemaps
 
                     split_basemaps(self, layers_dict=planet_tiles())
                     self.toolbar_reset()
                 elif tool_name == "cog-inspector":
-                    from .toolbar import inspector_gui
+                    from ..toolbar import inspector_gui
 
                     inspector_gui(self)
 
