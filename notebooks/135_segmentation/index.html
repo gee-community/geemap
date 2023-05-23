@@ -12,20 +12,18 @@
         <meta name="author" content="Qiusheng Wu">
       
       
-        <link rel="canonical" href="https://geemap.org/notebooks/15_convert_js_to_py/">
+        <link rel="canonical" href="https://geemap.org/notebooks/135_segmentation/">
       
       
-        <link rel="prev" href="../14_legends/">
+        <link rel="prev" href="../134_ee_to_geotiff/">
       
-      
-        <link rel="next" href="../16_add_animated_text/">
       
       <link rel="icon" href="../../assets/favicon.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.14">
     
     
       
-        <title>15 convert js to py - geemap</title>
+        <title>135 segmentation - geemap</title>
       
     
     
@@ -122,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              15 convert js to py
+              135 segmentation
             
           </span>
         </div>
@@ -1200,19 +1198,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../15_convert_js_to_py/" class="md-nav__link">
         15 convert js to py
       </a>
-      
     </li>
   
 
@@ -2888,11 +2878,19 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../135_segmentation/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         135 segmentation
       </a>
+      
     </li>
   
 
@@ -2933,7 +2931,7 @@
               <article class="md-content__inner md-typeset">
                 
 
-    <a href="/notebooks/15_convert_js_to_py/15_convert_js_to_py.ipynb" title="Download Notebook" class="md-content__button md-icon">
+    <a href="/notebooks/135_segmentation/135_segmentation.ipynb" title="Download Notebook" class="md-content__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7 7-7Z"/></svg>
     </a>
 
@@ -2945,7 +2943,7 @@
   
 
 
-  <h1>15 convert js to py</h1>
+  <h1>135 segmentation</h1>
 
 <script>
 (function (global, factory) {
@@ -3978,20 +3976,21 @@ Licensed under the Apache License, Version 2.0.
     init_mathjax();
     </script>
     <!-- End of mathjax configuration --><div class="jupyter-wrapper">
-<div id="cell-id=015e7e05" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=84a0cc6b" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/15_convert_js_to_py.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></p>
+<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/135_segmentation.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"/></a></p>
+<p><strong>Earth Engine Image Segmentation with the Segment Anything Model</strong></p>
 <p>Uncomment the following line to install <a href="https://geemap.org">geemap</a> if needed.</p>
 
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=2b850a2b" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=fed00ec2" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4011,9 +4010,9 @@ Licensed under the Apache License, Version 2.0.
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="c1"># !pip install geemap</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="c1"># !pip install -U geemap</span>
 </pre></div>
-<div id="cell-1" class="clipboard-copy-txt"># !pip install geemap</div>
+<div id="cell-1" class="clipboard-copy-txt"># !pip install -U geemap</div>
         
         </div>
     </div>
@@ -4023,7 +4022,7 @@ Licensed under the Apache License, Version 2.0.
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=33380f8f" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=aa4efef5" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4043,11 +4042,9 @@ Licensed under the Apache License, Version 2.0.
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="kn">import</span> <span class="nn">ee</span>
-<span class="kn">import</span> <span class="nn">geemap</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="c1"># %pip install segment-geospatial</span>
 </pre></div>
-<div id="cell-2" class="clipboard-copy-txt">import ee
-import geemap</div>
+<div id="cell-2" class="clipboard-copy-txt"># %pip install segment-geospatial</div>
         
         </div>
     </div>
@@ -4057,7 +4054,7 @@ import geemap</div>
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=f9ef9f9a" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=58a00fff" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4077,9 +4074,13 @@ import geemap</div>
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">show_youtube</span><span class="p">(</span><span class="s1">&#39;nAzZjKKd4w0&#39;</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="kn">import</span> <span class="nn">ee</span>
+<span class="kn">import</span> <span class="nn">geemap</span>
+<span class="kn">from</span> <span class="nn">samgeo</span> <span class="kn">import</span> <span class="n">SamGeo</span>
 </pre></div>
-<div id="cell-3" class="clipboard-copy-txt">geemap.show_youtube('nAzZjKKd4w0')</div>
+<div id="cell-3" class="clipboard-copy-txt">import ee
+import geemap
+from samgeo import SamGeo</div>
         
         </div>
     </div>
@@ -4088,21 +4089,8 @@ import geemap</div>
 </div>
 
 </div>
-</div>
-<div id="cell-id=c3560437" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>You can simply copy and paste your GEE JavaScripts into a code block wrapped with trip quotes and pass it to a variable.</p>
-<p>For example, you can grap GEE JavaScripts from <a href="https://developers.google.com/earth-engine/image_visualization">GEE Documentation</a>.</p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=019a9f12" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=fb9a198c" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4122,41 +4110,31 @@ import geemap</div>
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">js_snippet</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">// Load an image.</span>
-<span class="s2">var image = ee.Image(&#39;LANDSAT/LC08/C01/T1_TOA/LC08_044034_20140318&#39;);</span>
-
-<span class="s2">// Define the visualization parameters.</span>
-<span class="s2">var vizParams = {</span>
-<span class="s2">  bands: [&#39;B5&#39;, &#39;B4&#39;, &#39;B3&#39;],</span>
-<span class="s2">  min: 0,</span>
-<span class="s2">  max: 0.5,</span>
-<span class="s2">  gamma: [0.95, 1.1, 1]</span>
-<span class="s2">};</span>
-
-<span class="s2">// Center the map and display the image.</span>
-<span class="s2">Map.setCenter(-122.1899, 37.5010, 10); // San Francisco Bay</span>
-<span class="s2">Map.addLayer(image, vizParams, &#39;false color composite&#39;);</span>
-
-<span class="s2">&quot;&quot;&quot;</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
+<span class="n">point</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="o">-</span><span class="mf">122.259679</span><span class="p">,</span> <span class="mf">37.871838</span><span class="p">)</span>
+<span class="n">collection</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">&#39;USDA/NAIP/DOQQ&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="s1">&#39;2008-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-01-01&#39;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">listContains</span><span class="p">(</span><span class="s2">&quot;system:band_names&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">&#39;NAIP&#39;</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+<span class="n">Map</span>
 </pre></div>
-<div id="cell-4" class="clipboard-copy-txt">js_snippet = """
-// Load an image.
-var image = ee.Image('LANDSAT/LC08/C01/T1_TOA/LC08_044034_20140318');
-
-// Define the visualization parameters.
-var vizParams = {
-  bands: ['B5', 'B4', 'B3'],
-  min: 0,
-  max: 0.5,
-  gamma: [0.95, 1.1, 1]
-};
-
-// Center the map and display the image.
-Map.setCenter(-122.1899, 37.5010, 10); // San Francisco Bay
-Map.addLayer(image, vizParams, 'false color composite');
-
-"""</div>
+<div id="cell-4" class="clipboard-copy-txt">Map = geemap.Map()
+point = ee.Geometry.Point(-122.259679, 37.871838)
+collection = (
+    ee.ImageCollection('USDA/NAIP/DOQQ')
+    .filterBounds(point)
+    .filterDate('2008-01-01', '2018-01-01')
+    .filter(ee.Filter.listContains("system:band_names", "N"))
+)
+image = collection.first()
+Map.addLayer(image, {}, 'NAIP')
+Map.centerObject(point, 16)
+Map</div>
         
         </div>
     </div>
@@ -4166,7 +4144,7 @@ Map.addLayer(image, vizParams, 'false color composite');
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=0815aa0d" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=aacf549d" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4186,13 +4164,13 @@ Map.addLayer(image, vizParams, 'false color composite');
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">js_snippet_to_py</span><span class="p">(</span>
-    <span class="n">js_snippet</span><span class="p">,</span> <span class="n">add_new_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_ee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">bbox</span> <span class="o">=</span> <span class="n">Map</span><span class="o">.</span><span class="n">user_roi_coords</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">bbox</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">bbox</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">122.2666</span><span class="p">,</span> <span class="mf">37.8682</span><span class="p">,</span> <span class="o">-</span><span class="mf">122.252</span><span class="p">,</span> <span class="mf">37.8752</span><span class="p">]</span>
 </pre></div>
-<div id="cell-5" class="clipboard-copy-txt">geemap.js_snippet_to_py(
-    js_snippet, add_new_cell=True, import_ee=True, import_geemap=True, show_map=True
-)</div>
+<div id="cell-5" class="clipboard-copy-txt">bbox = Map.user_roi_coords()
+if bbox is None:
+    bbox = [-122.2666, 37.8682, -122.252, 37.8752]</div>
         
         </div>
     </div>
@@ -4202,7 +4180,7 @@ Map.addLayer(image, vizParams, 'false color composite');
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=90110f26" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=78dc33c6" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4222,29 +4200,13 @@ Map.addLayer(image, vizParams, 'false color composite');
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">js_snippet</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-
-<span class="s2">// Load an image.</span>
-<span class="s2">var image = ee.Image(&#39;LANDSAT/LC08/C01/T1_TOA/LC08_044034_20140318&#39;);</span>
-
-<span class="s2">// Create an NDWI image, define visualization parameters and display.</span>
-<span class="s2">var ndwi = image.normalizedDifference([&#39;B3&#39;, &#39;B5&#39;]);</span>
-<span class="s2">var ndwiViz = {min: 0.5, max: 1, palette: [&#39;00FFFF&#39;, &#39;0000FF&#39;]};</span>
-<span class="s2">Map.addLayer(ndwi, ndwiViz, &#39;NDWI&#39;, false);</span>
-
-<span class="s2">&quot;&quot;&quot;</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_geotiff</span><span class="p">(</span>
+    <span class="n">image</span><span class="p">,</span> <span class="s1">&#39;naip.tif&#39;</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;bands&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">]}</span>
+<span class="p">)</span>
 </pre></div>
-<div id="cell-6" class="clipboard-copy-txt">js_snippet = """
-
-// Load an image.
-var image = ee.Image('LANDSAT/LC08/C01/T1_TOA/LC08_044034_20140318');
-
-// Create an NDWI image, define visualization parameters and display.
-var ndwi = image.normalizedDifference(['B3', 'B5']);
-var ndwiViz = {min: 0.5, max: 1, palette: ['00FFFF', '0000FF']};
-Map.addLayer(ndwi, ndwiViz, 'NDWI', false);
-
-"""</div>
+<div id="cell-6" class="clipboard-copy-txt">geemap.ee_to_geotiff(
+    image, 'naip.tif', bbox, zoom=17, vis_params={'bands': ['R', 'G', 'B']}
+)</div>
         
         </div>
     </div>
@@ -4254,7 +4216,7 @@ Map.addLayer(ndwi, ndwiViz, 'NDWI', false);
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=5856695b" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=25a4b7ab" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4274,9 +4236,19 @@ Map.addLayer(ndwi, ndwiViz, 'NDWI', false);
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">js_snippet_to_py</span><span class="p">(</span><span class="n">js_snippet</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">sam</span> <span class="o">=</span> <span class="n">SamGeo</span><span class="p">(</span>
+    <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;vit_h&quot;</span><span class="p">,</span>
+    <span class="n">checkpoint</span><span class="o">=</span><span class="s2">&quot;sam_vit_h_4b8939.pth&quot;</span><span class="p">,</span>
+    <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">sam_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
-<div id="cell-7" class="clipboard-copy-txt">geemap.js_snippet_to_py(js_snippet)</div>
+<div id="cell-7" class="clipboard-copy-txt">sam = SamGeo(
+    model_type="vit_h",
+    checkpoint="sam_vit_h_4b8939.pth",
+    device=None,
+    sam_kwargs=None,
+)</div>
         
         </div>
     </div>
@@ -4286,7 +4258,7 @@ Map.addLayer(ndwi, ndwiViz, 'NDWI', false);
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=a94e7e60" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=098c8aa2" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4306,61 +4278,9 @@ Map.addLayer(ndwi, ndwiViz, 'NDWI', false);
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">js_snippet</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-
-<span class="s2">// Load 2012 MODIS land cover and select the IGBP classification.</span>
-<span class="s2">var cover = ee.Image(&#39;MODIS/051/MCD12Q1/2012_01_01&#39;)</span>
-<span class="s2">  .select(&#39;Land_Cover_Type_1&#39;);</span>
-
-<span class="s2">// Define a palette for the 18 distinct land cover classes.</span>
-<span class="s2">var igbpPalette = [</span>
-<span class="s2">  &#39;aec3d4&#39;, // water</span>
-<span class="s2">  &#39;152106&#39;, &#39;225129&#39;, &#39;369b47&#39;, &#39;30eb5b&#39;, &#39;387242&#39;, // forest</span>
-<span class="s2">  &#39;6a2325&#39;, &#39;c3aa69&#39;, &#39;b76031&#39;, &#39;d9903d&#39;, &#39;91af40&#39;,  // shrub, grass</span>
-<span class="s2">  &#39;111149&#39;, // wetlands</span>
-<span class="s2">  &#39;cdb33b&#39;, // croplands</span>
-<span class="s2">  &#39;cc0013&#39;, // urban</span>
-<span class="s2">  &#39;33280d&#39;, // crop mosaic</span>
-<span class="s2">  &#39;d7cdcc&#39;, // snow and ice</span>
-<span class="s2">  &#39;f7e084&#39;, // barren</span>
-<span class="s2">  &#39;6f6f6f&#39;  // tundra</span>
-<span class="s2">];</span>
-
-<span class="s2">// Specify the min and max labels and the color palette matching the labels.</span>
-<span class="s2">Map.setCenter(-99.229, 40.413, 5);</span>
-<span class="s2">Map.addLayer(cover,</span>
-<span class="s2">             {min: 0, max: 17, palette: igbpPalette},</span>
-<span class="s2">             &#39;IGBP classification&#39;);</span>
-
-<span class="s2">&quot;&quot;&quot;</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">sam</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="s2">&quot;naip.tif&quot;</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;masks.tif&quot;</span><span class="p">,</span> <span class="n">foreground</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
-<div id="cell-8" class="clipboard-copy-txt">js_snippet = """
-
-// Load 2012 MODIS land cover and select the IGBP classification.
-var cover = ee.Image('MODIS/051/MCD12Q1/2012_01_01')
-  .select('Land_Cover_Type_1');
-
-// Define a palette for the 18 distinct land cover classes.
-var igbpPalette = [
-  'aec3d4', // water
-  '152106', '225129', '369b47', '30eb5b', '387242', // forest
-  '6a2325', 'c3aa69', 'b76031', 'd9903d', '91af40',  // shrub, grass
-  '111149', // wetlands
-  'cdb33b', // croplands
-  'cc0013', // urban
-  '33280d', // crop mosaic
-  'd7cdcc', // snow and ice
-  'f7e084', // barren
-  '6f6f6f'  // tundra
-];
-
-// Specify the min and max labels and the color palette matching the labels.
-Map.setCenter(-99.229, 40.413, 5);
-Map.addLayer(cover,
-             {min: 0, max: 17, palette: igbpPalette},
-             'IGBP classification');
-
-"""</div>
+<div id="cell-8" class="clipboard-copy-txt">sam.generate("naip.tif", output="masks.tif", foreground=True, unique=True)</div>
         
         </div>
     </div>
@@ -4370,7 +4290,7 @@ Map.addLayer(cover,
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=0f6179e4" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=deff66ea" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4390,9 +4310,153 @@ Map.addLayer(cover,
                     </div>
                 </clipboard-copy>
             </div>
-            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">js_snippet_to_py</span><span class="p">(</span><span class="n">js_snippet</span><span class="p">)</span>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">sam</span><span class="o">.</span><span class="n">show_masks</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;binary_r&quot;</span><span class="p">)</span>
 </pre></div>
-<div id="cell-9" class="clipboard-copy-txt">geemap.js_snippet_to_py(js_snippet)</div>
+<div id="cell-9" class="clipboard-copy-txt">sam.show_masks(cmap="binary_r")</div>
+        
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=d494c129" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+            <div class="zeroclipboard-container">
+                <clipboard-copy for="cell-10">
+                <div>
+                    <span class="notice" hidden>Copied!</span>
+                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
+                        <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                        <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+                    </svg>
+                    </div>
+                </clipboard-copy>
+            </div>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">sam</span><span class="o">.</span><span class="n">show_anns</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;off&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;annotations.tif&quot;</span><span class="p">)</span>
+</pre></div>
+<div id="cell-10" class="clipboard-copy-txt">sam.show_anns(axis="off", alpha=1, output="annotations.tif")</div>
+        
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=cb4b1fb0" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+            <div class="zeroclipboard-container">
+                <clipboard-copy for="cell-11">
+                <div>
+                    <span class="notice" hidden>Copied!</span>
+                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
+                        <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                        <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+                    </svg>
+                    </div>
+                </clipboard-copy>
+            </div>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">add_raster</span><span class="p">(</span><span class="s2">&quot;annotations.tif&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">&quot;Masks&quot;</span><span class="p">)</span>
+<span class="n">Map</span>
+</pre></div>
+<div id="cell-11" class="clipboard-copy-txt">Map.add_raster("annotations.tif", alpha=0.5, layer_name="Masks")
+Map</div>
+        
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=11ed4433" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+            <div class="zeroclipboard-container">
+                <clipboard-copy for="cell-12">
+                <div>
+                    <span class="notice" hidden>Copied!</span>
+                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
+                        <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                        <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+                    </svg>
+                    </div>
+                </clipboard-copy>
+            </div>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">sam</span><span class="o">.</span><span class="n">tiff_to_vector</span><span class="p">(</span><span class="s2">&quot;masks.tif&quot;</span><span class="p">,</span> <span class="s2">&quot;masks.shp&quot;</span><span class="p">)</span>
+</pre></div>
+<div id="cell-12" class="clipboard-copy-txt">sam.tiff_to_vector("masks.tif", "masks.shp")</div>
+        
+        </div>
+    </div>
+
+</div>
+</div>
+
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=40a9c1fb" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+        
+        
+        <div class="CodeMirror cm-s-jupyter">
+            <div class="zeroclipboard-container">
+                <clipboard-copy for="cell-13">
+                <div>
+                    <span class="notice" hidden>Copied!</span>
+                    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 16 16" version="1.1"  data-view-component="true" class="clipboard-copy-icon">
+                        <path fill="currentColor" fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+                        <path fill="currentColor" fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+                    </svg>
+                    </div>
+                </clipboard-copy>
+            </div>
+            <div class="highlight-ipynb hl-python "><pre><span></span><span class="n">style</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#3388ff&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;fillColor&quot;</span><span class="p">:</span> <span class="s2">&quot;#7c4185&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fillOpacity&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_vector</span><span class="p">(</span><span class="s1">&#39;masks.shp&#39;</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">&quot;Vector&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
+<span class="n">Map</span>
+</pre></div>
+<div id="cell-13" class="clipboard-copy-txt">style = {
+    "color": "#3388ff",
+    "weight": 2,
+    "fillColor": "#7c4185",
+    "fillOpacity": 0.5,
+}
+Map.add_vector('masks.shp', layer_name="Vector", style=style)
+Map</div>
         
         </div>
     </div>
@@ -4411,11 +4475,11 @@ Map.addLayer(cover,
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-05-23T13:23:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-05-23</span>
       
         <br>
         Created:
-        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2020-04-13T14:37:30+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2020-04-13</span>
+        <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-05-23T13:23:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-05-23</span>
       
     
   </small>
