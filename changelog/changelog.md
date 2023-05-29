@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.21.0 - May 29, 2023
+
+**New Features**
+
+-   Added support for Solara (#1541)
+-   Added segmentation notebook (#1539)
+-   Added SciPy workshop notebook (#1538)
+
 ## v0.20.7 - May 16, 2023
 
 **New Features**

@@ -3136,7 +3136,7 @@
 
 
 <h2 id="geemap.basemaps.get_xyz_dict" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_xyz_dict</span><span class="p">(</span><span class="n">free_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">_collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_output</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_xyz_dict</span><span class="p">(</span><span class="n">free_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">france</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 <a href="#geemap.basemaps.get_xyz_dict" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3162,6 +3162,12 @@
         <td><p>Whether to return only free xyz tile services that do not require an access token. Defaults to True.</p></td>
         <td><code>True</code></td>
       </tr>
+      <tr>
+        <td><code>france</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether include Geoportail France basemaps. Defaults to False.</p></td>
+        <td><code>False</code></td>
+      </tr>
   </tbody>
 </table>
 <p><strong>Returns:</strong></p>
@@ -3181,30 +3187,55 @@
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/basemaps.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_xyz_dict</span><span class="p">(</span><span class="n">free_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">_collection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_output</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_xyz_dict</span><span class="p">(</span><span class="n">free_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">france</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a dictionary of xyz services.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        free_only (bool, optional): Whether to return only free xyz tile services that do not require an access token. Defaults to True.</span>
+<span class="sd">        france (bool, optional): Whether include Geoportail France basemaps. Defaults to False.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        dict: A dictionary of xyz services.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">_collection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">_collection</span> <span class="o">=</span> <span class="n">xyz</span>
+    <span class="n">xyz_dict_tmp</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">xyz</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+            <span class="n">tile</span> <span class="o">=</span> <span class="n">_unpack_sub_parameters</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_unpack_sub_parameters</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">requires_token</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">free_only</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">xyz_dict_tmp</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">xyz_dict_tmp</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
+            <span class="n">tile</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span>
 
-    <span class="k">if</span> <span class="n">_output</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">_output</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">sub_item</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="n">sub_item</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+                <span class="n">tile</span> <span class="o">=</span> <span class="n">_unpack_sub_parameters</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">_unpack_sub_parameters</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">requires_token</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">free_only</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">xyz_dict_tmp</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">xyz_dict_tmp</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
+                <span class="n">tile</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span>
 
-    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_collection</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">TileProvider</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">requires_token</span><span class="p">()</span> <span class="ow">and</span> <span class="n">free_only</span><span class="p">):</span>
-                <span class="n">_output</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># it&#39;s a Bunch</span>
-            <span class="n">get_xyz_dict</span><span class="p">(</span><span class="n">free_only</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">_output</span><span class="p">)</span>
+    <span class="n">xyz_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">return</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">_output</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="n">france</span><span class="p">:</span>
+        <span class="n">xyz_dict</span> <span class="o">=</span> <span class="n">xyz_dict_tmp</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">xyz_dict_tmp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;France&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+                <span class="n">xyz_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz_dict_tmp</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="n">xyz_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">xyz_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+    <span class="k">return</span> <span class="n">xyz_dict</span>
 </code></pre></div>
         </details>
     </div>
@@ -3535,35 +3566,21 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">leaflet_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">xyz_tiles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">tile</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">tile</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span>
-        <span class="n">attribution</span> <span class="o">=</span> <span class="n">tile</span><span class="p">[</span><span class="s2">&quot;attribution&quot;</span><span class="p">]</span>
-        <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">(</span>
-            <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">attribution</span><span class="o">=</span><span class="n">attribution</span><span class="p">,</span> <span class="n">max_zoom</span><span class="o">=</span><span class="mi">22</span>
-        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">xyz_tiles</span><span class="p">:</span>
+        <span class="n">xyz_tiles</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">xyz_tiles</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz_tiles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">wms_tiles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WMSLayer</span><span class="p">(</span>
-            <span class="n">url</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
-            <span class="n">layers</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;layers&quot;</span><span class="p">],</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
-            <span class="n">attribution</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;attribution&quot;</span><span class="p">],</span>
-            <span class="nb">format</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">],</span>
-            <span class="n">transparent</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;transparent&quot;</span><span class="p">],</span>
-        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">wms_tiles</span><span class="p">:</span>
+        <span class="n">wms_tiles</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;wms&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">wms_tiles</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">wms_tiles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
-    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">(</span>
-            <span class="n">url</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">build_url</span><span class="p">(),</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">max_zoom</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max_zoom&quot;</span><span class="p">,</span> <span class="mi">22</span><span class="p">),</span>
-            <span class="n">attribution</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">attribution</span><span class="p">,</span>
-        <span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PLANET_API_KEY&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">planet_dict</span> <span class="o">=</span> <span class="n">planet_tiles</span><span class="p">(</span><span class="n">tile_format</span><span class="o">=</span><span class="s2">&quot;ipyleaflet&quot;</span><span class="p">)</span>
-        <span class="n">leaflet_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">planet_dict</span><span class="p">)</span>
+    <span class="n">xyz_dict</span> <span class="o">=</span> <span class="n">get_xyz_dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">xyz_dict</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">xyz_dict</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">xyz_dict</span><span class="p">[</span><span class="n">item</span><span class="p">][</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz_dict</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">build_url</span><span class="p">()</span>
+        <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz_dict</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">leaflet_dict</span>
 </code></pre></div>
