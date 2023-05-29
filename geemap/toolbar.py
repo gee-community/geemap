@@ -512,18 +512,22 @@ def open_data_widget(m):
 
 
 def change_basemap(m):
-    """Widget for change basemaps.
+    """Widget for changing basemaps.
 
     Args:
-        m (object): geemap.Map()
+        m (object): leafmap.Map.
     """
-    from .geemap import basemaps
+    from .basemaps import get_xyz_dict
+    from .geemap import basemaps, get_basemap
+
+    xyz_dict = get_xyz_dict()
+
+    value = "OpenStreetMap"
 
     dropdown = widgets.Dropdown(
         options=list(basemaps.keys()),
-        value="ROADMAP",
-        layout=widgets.Layout(width="200px")
-        # description="Basemaps",
+        value=value,
+        layout=widgets.Layout(width="200px"),
     )
 
     close_btn = widgets.Button(
@@ -536,13 +540,20 @@ def change_basemap(m):
     basemap_widget = widgets.HBox([dropdown, close_btn])
 
     def on_click(change):
-        basemap_name = change["new"]
-
-        if len(m.layers) == 1:
-            old_basemap = m.layers[0]
-        else:
-            old_basemap = m.layers[1]
-        m.substitute_layer(old_basemap, basemaps[basemap_name])
+        if change["new"]:
+            basemap_name = dropdown.value
+            if basemap_name not in m.get_layer_names():
+                m.add_basemap(basemap_name)
+                if basemap_name in xyz_dict:
+                    if "bounds" in xyz_dict[basemap_name]:
+                        bounds = xyz_dict[basemap_name]["bounds"]
+                        bounds = [
+                            bounds[0][1],
+                            bounds[0][0],
+                            bounds[1][1],
+                            bounds[1][0],
+                        ]
+                        m.zoom_to_bounds(bounds)
 
     dropdown.observe(on_click, "value")
 
@@ -557,7 +568,7 @@ def change_basemap(m):
     basemap_control = ipyleaflet.WidgetControl(
         widget=basemap_widget, position="topright"
     )
-    m.add_control(basemap_control)
+    m.add(basemap_control)
     m.basemap_ctrl = basemap_control
 
 

@@ -46,7 +46,7 @@ xyz_tiles = {
     "HYBRID": {
         "url": "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
         "attribution": "Google",
-        "name": "Google Satellite",
+        "name": "Google Hybrid",
     },
 }
 
@@ -223,30 +223,62 @@ wms_tiles = {
 }
 
 
-def get_xyz_dict(free_only=True, _collection=None, _output=None):
+def _unpack_sub_parameters(var, param):
+    temp = var
+    for sub_param in param.split("."):
+        temp = getattr(temp, sub_param)
+    return temp
+
+
+def get_xyz_dict(free_only=True, france=False):
     """Returns a dictionary of xyz services.
 
     Args:
         free_only (bool, optional): Whether to return only free xyz tile services that do not require an access token. Defaults to True.
+        france (bool, optional): Whether include Geoportail France basemaps. Defaults to False.
 
     Returns:
         dict: A dictionary of xyz services.
     """
 
-    if _collection is None:
-        _collection = xyz
+    xyz_dict_tmp = {}
+    for item in xyz.values():
+        try:
+            name = item["name"]
+            tile = _unpack_sub_parameters(xyz, name)
+            if _unpack_sub_parameters(xyz, name).requires_token():
+                if free_only:
+                    pass
+                else:
+                    xyz_dict_tmp[name] = tile
+            else:
+                xyz_dict_tmp[name] = tile
+            tile["type"] = "xyz"
 
-    if _output is None:
-        _output = {}
+        except Exception:
+            for sub_item in item:
+                name = item[sub_item]["name"]
+                tile = _unpack_sub_parameters(xyz, name)
+                if _unpack_sub_parameters(xyz, name).requires_token():
+                    if free_only:
+                        pass
+                    else:
+                        xyz_dict_tmp[name] = tile
+                else:
+                    xyz_dict_tmp[name] = tile
+                tile["type"] = "xyz"
 
-    for v in _collection.values():
-        if isinstance(v, TileProvider):
-            if not (v.requires_token() and free_only):
-                _output[v.name] = v
-        else:  # it's a Bunch
-            get_xyz_dict(free_only, v, _output)
+    xyz_dict = {}
 
-    return collections.OrderedDict(sorted(_output.items()))
+    if france:
+        xyz_dict = xyz_dict_tmp
+    else:
+        for key in xyz_dict_tmp:
+            if "France" not in key:
+                xyz_dict[key] = xyz_dict_tmp[key]
+
+    xyz_dict = collections.OrderedDict(sorted(xyz_dict.items()))
+    return xyz_dict
 
 
 def xyz_to_leaflet():
@@ -257,35 +289,21 @@ def xyz_to_leaflet():
     """
     leaflet_dict = {}
 
-    for key, tile in xyz_tiles.items():
-        name = tile["name"]
-        url = tile["url"]
-        attribution = tile["attribution"]
-        leaflet_dict[key] = ipyleaflet.TileLayer(
-            url=url, name=name, attribution=attribution, max_zoom=22
-        )
+    for key in xyz_tiles:
+        xyz_tiles[key]["type"] = "xyz"
+        name = xyz_tiles[key]["name"]
+        leaflet_dict[key] = xyz_tiles[key]
 
-    for key, tile in wms_tiles.items():
-        leaflet_dict[key] = ipyleaflet.WMSLayer(
-            url=tile["url"],
-            layers=tile["layers"],
-            name=tile["name"],
-            attribution=tile["attribution"],
-            format=tile["format"],
-            transparent=tile["transparent"],
-        )
+    for key in wms_tiles:
+        wms_tiles[key]["type"] = "wms"
+        name = wms_tiles[key]["name"]
+        leaflet_dict[key] = wms_tiles[key]
 
-    for item in get_xyz_dict().values():
-        leaflet_dict[item.name] = ipyleaflet.TileLayer(
-            url=item.build_url(),
-            name=item.name,
-            max_zoom=item.get("max_zoom", 22),
-            attribution=item.attribution,
-        )
-
-    if os.environ.get("PLANET_API_KEY") is not None:
-        planet_dict = planet_tiles(tile_format="ipyleaflet")
-        leaflet_dict.update(planet_dict)
+    xyz_dict = get_xyz_dict()
+    for item in xyz_dict:
+        name = xyz_dict[item].name
+        xyz_dict[item]["url"] = xyz_dict[item].build_url()
+        leaflet_dict[name] = xyz_dict[item]
 
     return leaflet_dict
 
