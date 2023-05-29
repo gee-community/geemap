@@ -225,20 +225,8 @@ class Map(ipyleaflet.Map):
 
             search_data_gui(self)
 
-        search_marker = ipyleaflet.Marker(
-            icon=ipyleaflet.AwesomeIcon(
-                name="check", marker_color="green", icon_color="darkgreen"
-            )
-        )
-        search = ipyleaflet.SearchControl(
-            position="topleft",
-            url="https://nominatim.openstreetmap.org/search?format=json&q={s}",
-            zoom=5,
-            property_name="display_name",
-            marker=search_marker,
-        )
         if kwargs.get("search_ctrl"):
-            self.add_control(search)
+            self.add_search_control()
 
         if kwargs.get("zoom_ctrl"):
             self.add_control(ipyleaflet.ZoomControl(position="topleft"))
@@ -367,16 +355,6 @@ class Map(ipyleaflet.Map):
         tool_output = widgets.Output()
         self.tool_output = tool_output
         tool_output.clear_output(wait=True)
-        save_map_widget = widgets.VBox()
-
-        save_type = widgets.ToggleButtons(
-            options=["HTML", "PNG", "JPG"],
-            tooltips=[
-                "Save the map as an HTML file",
-                "Take a screenshot and save as a PNG file",
-                "Take a screenshot and save as a JPG file",
-            ],
-        )
 
         tools = {
             "info": {"name": "inspector", "tooltip": "Inspector"},
@@ -5785,6 +5763,7 @@ class Map(ipyleaflet.Map):
         slider_widget = widgets.HBox([slider, label, play_btn, pause_btn, close_btn])
 
         def play_click(b):
+            import time
             play_chk.value = True
 
             def work(slider):
@@ -7134,6 +7113,41 @@ class Map(ipyleaflet.Map):
         print(
             "The ipyleaflet plotting backend does not support this function. Please use the folium backend instead."
         )
+
+    def add_search_control(
+        self,
+        marker=None,
+        url=None,
+        zoom=5,
+        property_name="display_name",
+        position="topleft",
+    ):
+        """Add a search control to the map.
+
+        Args:
+            marker (ipyleaflet.Marker, optional): The marker to use. Defaults to None.
+            url (str, optional): The URL to use for the search. Defaults to None.
+            zoom (int, optional): The zoom level to use. Defaults to 5.
+            property_name (str, optional): The property name to use. Defaults to "display_name".
+            position (str, optional): The position of the widget. Defaults to "topleft".
+        """
+        if marker is None:
+            marker = ipyleaflet.Marker(
+                icon=ipyleaflet.AwesomeIcon(
+                    name="check", marker_color="green", icon_color="darkgreen"
+                )
+            )
+
+        if url is None:
+            url = "https://nominatim.openstreetmap.org/search?format=json&q={s}"
+        search = ipyleaflet.SearchControl(
+            position=position,
+            url=url,
+            zoom=zoom,
+            property_name=property_name,
+            marker=marker,
+        )
+        self.add(search)
 
 
 # The functions below are outside the Map class.
