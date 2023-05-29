@@ -222,6 +222,7 @@ class Map(ipyleaflet.Map):
 
         if kwargs.get("data_ctrl"):
             from .toolbar import search_data_gui
+
             search_data_gui(self)
 
         search_marker = ipyleaflet.Marker(
@@ -3408,95 +3409,6 @@ class Map(ipyleaflet.Map):
             )
         else:
             raise Exception("The source must be a URL.")
-
-    def add_raster_legacy(
-        self,
-        image,
-        bands=None,
-        layer_name=None,
-        colormap=None,
-        x_dim="x",
-        y_dim="y",
-    ):
-        """Adds a local raster dataset to the map.
-
-        Args:
-            image (str): The image file path.
-            bands (int or list, optional): The image bands to use. It can be either a number (e.g., 1) or a list (e.g., [3, 2, 1]). Defaults to None.
-            layer_name (str, optional): The layer name to use for the raster. Defaults to None.
-            colormap (str, optional): The name of the colormap to use for the raster, such as 'gray' and 'terrain'. More can be found at https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html. Defaults to None.
-            x_dim (str, optional): The x dimension. Defaults to 'x'.
-            y_dim (str, optional): The y dimension. Defaults to 'y'.
-        """
-        try:
-            import xarray_leaflet
-
-        except Exception:
-            # import platform
-            # if platform.system() != "Windows":
-            #     # install_from_github(
-            #     #     url='https://github.com/davidbrochart/xarray_leaflet')
-            #     check_install('xarray_leaflet')
-            #     import xarray_leaflet
-            # else:
-            raise ImportError(
-                "You need to install xarray_leaflet first. See https://github.com/davidbrochart/xarray_leaflet"
-            )
-
-        import warnings
-
-        # import xarray as xr
-        import matplotlib.pyplot as plt
-        import numpy as np
-        import rioxarray
-
-        warnings.simplefilter("ignore")
-
-        if not os.path.exists(image):
-            print("The image file does not exist.")
-            return
-
-        if colormap is None:
-            colormap = plt.cm.inferno
-
-        if layer_name is None:
-            layer_name = "Layer_" + random_string()
-
-        if isinstance(colormap, str):
-            colormap = plt.cm.get_cmap(name=colormap)
-
-        da = rioxarray.open_rasterio(image, masked=True)
-
-        # print(da.rio.nodata)
-
-        multi_band = False
-        if len(da.band) > 1:
-            multi_band = True
-            if bands is None:
-                bands = [3, 2, 1]
-        else:
-            bands = 1
-
-        if multi_band:
-            da = da.rio.write_nodata(0)
-        else:
-            da = da.rio.write_nodata(np.nan)
-        da = da.sel(band=bands)
-
-        # crs = da.rio.crs
-        # nan = da.attrs['nodatavals'][0]
-        # da = da / da.max()
-        # # if multi_band:
-        # da = xr.where(da == nan, np.nan, da)
-        # da = da.rio.write_nodata(0)
-        # da = da.rio.write_crs(crs)
-
-        if multi_band and type(bands) == list:
-            layer = da.leaflet.plot(self, x_dim=x_dim, y_dim=y_dim, rgb_dim="band")
-        else:
-            layer = da.leaflet.plot(self, x_dim=x_dim, y_dim=y_dim, colormap=colormap)
-
-        layer.name = layer_name
 
     def remove_drawn_features(self):
         """Removes user-drawn geometries from the map"""
