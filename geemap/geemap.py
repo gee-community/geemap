@@ -15,7 +15,6 @@ from box import Box
 from bqplot import pyplot as plt
 
 from IPython.display import display
-from ipytree import Node, Tree
 from .basemaps import xyz_to_leaflet
 from .common import *
 from .conversion import *
@@ -7219,6 +7218,8 @@ class Map(ipyleaflet.Map):
         Returns:
             ipytree.Node | ipytree.Tree: The ipytree node or tree widget.
         """
+        from ipytree import Node, Tree
+
         point_nodes = [
             Node(f"Longitude: {latlon[1]}"),
             Node(f"Latitude: {latlon[0]}"),
@@ -7251,6 +7252,8 @@ class Map(ipyleaflet.Map):
         Returns:
             ipytree.Node | ipytree.Tree: The ipytree node or tree widget.
         """
+        from ipytree import Node, Tree
+
         layers = self.ee_layers
         xy = ee.Geometry.Point(latlon[::-1])
         sample_scale = self.getScale()
@@ -7313,6 +7316,8 @@ class Map(ipyleaflet.Map):
         Returns:
             ipytree.Node | ipytree.Tree: The ipytree node or tree widget.
         """
+        from ipytree import Node, Tree
+
         layers = self.ee_layers
         xy = ee.Geometry.Point(latlon[::-1])
         root_node = Node("Objects", icon="archive")
@@ -7374,6 +7379,8 @@ class Map(ipyleaflet.Map):
         Returns:
             ipytree.Tree: The ipytree tree widget for the Inspector GUI.
         """
+        from ipytree import Tree
+
         tree = Tree()
         nodes = []
         point_node = self._point_info(latlon, return_node=True)
