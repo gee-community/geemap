@@ -4206,6 +4206,11 @@ def search_data_gui(m):
 
     from .conversion import js_snippet_to_py
 
+    m.search_locations = None
+    m.search_loc_marker = None
+    m.search_loc_geom = None
+    m.search_datasets = None
+
     search_button = widgets.ToggleButton(
         value=False,
         tooltip="Search location/data",
