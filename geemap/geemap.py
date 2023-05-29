@@ -1,12 +1,10 @@
 """Main module for interactive mapping using Google Earth Engine Python API and ipyleaflet.
-Keep in mind that Earth Engine functions use both camel case and snake case, such as setOptions(), setCenter(), centerObject(), addLayer().
+Keep in mind that Earth Engine functions use both camel case and snake case, 
+such as setOptions(), setCenter(), centerObject(), addLayer().
 ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), add_minimap().
 """
 
-import math
 import os
-import pkg_resources
-import time
 
 import ee
 import ipyevents
@@ -16,15 +14,12 @@ import ipywidgets as widgets
 from box import Box
 from bqplot import pyplot as plt
 
-# from ipyfilechooser import FileChooser
 from IPython.display import display
 from ipytree import Node, Tree
 from .basemaps import xyz_to_leaflet
 from .common import *
 from .conversion import *
-from .legends import builtin_legends
 from .timelapse import *
-from .osm import *
 from .plot import *
 
 from . import examples
@@ -34,7 +29,10 @@ basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class Map(ipyleaflet.Map):
-    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html. By default, the Map will add Google Maps as the basemap. Set add_google_map = False to use OpenStreetMap as the basemap.
+    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map can
+        be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html.
+        By default, the Map will add Google Maps as the basemap. Set add_google_map = False
+        to use OpenStreetMap as the basemap.
 
     Returns:
         object: ipyleaflet map object.
@@ -262,6 +260,8 @@ class Map(ipyleaflet.Map):
 
         def get_ee_example(asset_id):
             try:
+                import pkg_resources
+
                 pkg_dir = os.path.dirname(
                     pkg_resources.resource_filename("geemap", "geemap.py")
                 )
@@ -660,73 +660,9 @@ class Map(ipyleaflet.Map):
             ],
         )
 
-        # file_chooser = FileChooser(os.getcwd(), sandbox_path=self.sandbox_path)
-        # file_chooser.default_filename = "my_map.html"
-        # file_chooser.use_dir_icons = True
-
-        # ok_cancel = widgets.ToggleButtons(
-        #     value=None,
-        #     options=["OK", "Cancel"],
-        #     tooltips=["OK", "Cancel"],
-        #     button_style="primary",
-        # )
-
-        # def save_type_changed(change):
-        #     ok_cancel.value = None
-        #     # file_chooser.reset()
-        #     file_chooser.default_path = os.getcwd()
-        #     if change["new"] == "HTML":
-        #         file_chooser.default_filename = "my_map.html"
-        #     elif change["new"] == "PNG":
-        #         file_chooser.default_filename = "my_map.png"
-        #     elif change["new"] == "JPG":
-        #         file_chooser.default_filename = "my_map.jpg"
-        #     save_map_widget.children = [save_type, file_chooser]
-
-        # def chooser_callback(chooser):
-        #     save_map_widget.children = [save_type, file_chooser, ok_cancel]
-
-        # def ok_cancel_clicked(change):
-        #     if change["new"] == "OK":
-        #         file_path = file_chooser.selected
-        #         ext = os.path.splitext(file_path)[1]
-        #         if save_type.value == "HTML" and ext.upper() == ".HTML":
-        #             tool_output.clear_output()
-        #             self.to_html(file_path)
-        #         elif save_type.value == "PNG" and ext.upper() == ".PNG":
-        #             tool_output.clear_output()
-        #             self.toolbar_button.value = False
-        #             time.sleep(1)
-        #             screen_capture(filename=file_path)
-        #         elif save_type.value == "JPG" and ext.upper() == ".JPG":
-        #             tool_output.clear_output()
-        #             self.toolbar_button.value = False
-        #             time.sleep(1)
-        #             screen_capture(filename=file_path)
-        #         else:
-        #             label = widgets.Label(
-        #                 value="The selected file extension does not match the selected exporting type."
-        #             )
-        #             save_map_widget.children = [save_type, file_chooser, label]
-        #         self.toolbar_reset()
-        #     elif change["new"] == "Cancel":
-        #         tool_output.clear_output()
-        #         self.toolbar_reset()
-
-        # save_type.observe(save_type_changed, names="value")
-        # ok_cancel.observe(ok_cancel_clicked, names="value")
-
-        # file_chooser.register_callback(chooser_callback)
-
-        # save_map_widget.children = [save_type, file_chooser]
-
         tools = {
             "info": {"name": "inspector", "tooltip": "Inspector"},
             "bar-chart": {"name": "plotting", "tooltip": "Plotting"},
-            # "camera": {
-            #     "name": "to_image",
-            #     "tooltip": "Save map as HTML or image",
-            # },
             "eraser": {
                 "name": "eraser",
                 "tooltip": "Remove all drawn features",
@@ -735,10 +671,6 @@ class Map(ipyleaflet.Map):
                 "name": "open_data",
                 "tooltip": "Open local vector/raster data",
             },
-            # "cloud-download": {
-            #     "name": "export_data",
-            #     "tooltip": "Export Earth Engine data",
-            # },
             "retweet": {
                 "name": "convert_js",
                 "tooltip": "Convert Earth Engine JavaScript to Python",
@@ -793,20 +725,13 @@ class Map(ipyleaflet.Map):
             # },
         }
 
-        # if kwargs["use_voila"]:
-        #     voila_tools = ["camera", "folder-open", "cloud-download", "gears"]
-
-        #     for item in voila_tools:
-        #         if item in tools.keys():
-        #             del tools[item]
-
         icons = list(tools.keys())
         tooltips = [item["tooltip"] for item in list(tools.values())]
 
         icon_width = "32px"
         icon_height = "32px"
         n_cols = 3
-        n_rows = math.ceil(len(icons) / n_cols)
+        n_rows = -int(-(len(icons) / n_cols))
 
         toolbar_grid = widgets.GridBox(
             children=[
@@ -838,12 +763,6 @@ class Map(ipyleaflet.Map):
                         tool.value = False
                 tool = change["owner"]
                 tool_name = tools[tool.icon]["name"]
-                # if tool_name == "to_image":
-                #     if tool_output_control not in self.controls:
-                #         self.add_control(tool_output_control)
-                #     with tool_output:
-                #         tool_output.clear_output()
-                #         display(save_map_widget)
                 if tool_name == "eraser":
                     self.remove_drawn_features()
                     tool.value = False
@@ -1067,14 +986,7 @@ class Map(ipyleaflet.Map):
 
                 all_layers_chk.observe(all_layers_chk_changed, "value")
 
-                layers = [
-                    lyr
-                    for lyr in self.layers[1:]
-                    # if (
-                    #     isinstance(lyr, ipyleaflet.TileLayer)
-                    #     or isinstance(lyr, ipyleaflet.WMSLayer)
-                    # )
-                ]
+                layers = [lyr for lyr in self.layers[1:]]
 
                 # if the layers contain unsupported layers (e.g., GeoJSON, GeoData), adds the ipyleaflet built-in LayerControl
                 if len(layers) < (len(self.layers) - 1):
@@ -1377,10 +1289,10 @@ class Map(ipyleaflet.Map):
         self.on_interaction(handle_interaction)
 
     def add(self, object):
-        """Adds a layer to the map.
+        """Adds a layer or control to the map.
 
         Args:
-            layer (object): The layer to add to the map.
+            layer (object): The layer or control to add to the map.
         """
         if isinstance(object, str):
             if object in basemaps.keys():
@@ -1392,9 +1304,12 @@ class Map(ipyleaflet.Map):
         """Adds Google basemap and controls to the ipyleaflet map.
 
         Args:
-            mapTypeId (str, optional): A mapTypeId to set the basemap to. Can be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN" to select one of the standard Google Maps API map types. Defaults to 'HYBRID'.
-            styles (object, optional): A dictionary of custom MapTypeStyle objects keyed with a name that will appear in the map's Map Type Controls. Defaults to None.
-            types (list, optional): A list of mapTypeIds to make available. If omitted, but opt_styles is specified, appends all of the style keys to the standard Google Maps API map types.. Defaults to None.
+            mapTypeId (str, optional): A mapTypeId to set the basemap to. Can be one of "ROADMAP", "SATELLITE",
+                "HYBRID" or "TERRAIN" to select one of the standard Google Maps API map types. Defaults to 'HYBRID'.
+            styles (object, optional): A dictionary of custom MapTypeStyle objects keyed with a name
+                that will appear in the map's Map Type Controls. Defaults to None.
+            types (list, optional): A list of mapTypeIds to make available. If omitted, but opt_styles is specified,
+                appends all of the style keys to the standard Google Maps API map types.. Defaults to None.
         """
         self.clear_layers()
         self.clear_controls()
@@ -1702,6 +1617,8 @@ class Map(ipyleaflet.Map):
         Returns:
             float: Map resolution in meters.
         """
+        import math
+
         zoom_level = self.zoom
         # Reference: https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
         resolution = 156543.04 * math.cos(0) / math.pow(2, zoom_level)
@@ -2255,6 +2172,7 @@ class Map(ipyleaflet.Map):
         """
 
         import numpy as np
+        import time
 
         if self.random_marker is not None:
             self.remove_layer(self.random_marker)
@@ -2877,6 +2795,8 @@ class Map(ipyleaflet.Map):
 
         """
         from IPython.display import display
+        import pkg_resources
+        from .legends import builtin_legends
 
         pkg_dir = os.path.dirname(
             pkg_resources.resource_filename("geemap", "geemap.py")
@@ -5695,7 +5615,6 @@ class Map(ipyleaflet.Map):
             geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
 
         """
-
         gdf = osm_to_gdf(
             query, which_result=which_result, by_osmid=by_osmid, buffer_dist=buffer_dist
         )
@@ -5746,6 +5665,7 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_geocode
 
         gdf = osm_gdf_from_geocode(
             query, which_result=which_result, by_osmid=by_osmid, buffer_dist=buffer_dist
@@ -5789,6 +5709,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_address
+
         gdf = osm_gdf_from_address(address, tags, dist)
         geojson = gdf.__geo_interface__
 
@@ -5831,6 +5753,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_place
+
         gdf = osm_gdf_from_place(query, tags, which_result, buffer_dist)
         geojson = gdf.__geo_interface__
 
@@ -5871,6 +5795,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_point
+
         gdf = osm_gdf_from_point(center_point, tags, dist)
         geojson = gdf.__geo_interface__
 
@@ -5909,6 +5835,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_polygon
+
         gdf = osm_gdf_from_polygon(polygon, tags)
         geojson = gdf.__geo_interface__
 
@@ -5954,6 +5882,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_bbox
+
         gdf = osm_gdf_from_bbox(north, south, east, west, tags)
         geojson = gdf.__geo_interface__
 
@@ -5990,6 +5920,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_bbox
+
         bounds = self.bounds
         if len(bounds) == 0:
             bounds = (
