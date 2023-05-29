@@ -256,18 +256,6 @@ class Map(ipyleaflet.Map):
         if kwargs.get("attribution_ctrl"):
             self.add(ipyleaflet.AttributionControl(position="bottomright"))
 
-        draw_control_lite = ipyleaflet.DrawControl(
-            marker={},
-            rectangle={"shapeOptions": {"color": "#3388ff"}},
-            circle={"shapeOptions": {"color": "#3388ff"}},
-            circlemarker={},
-            polyline={},
-            polygon={},
-            edit=False,
-            remove=False,
-        )
-        self.draw_control_lite = draw_control_lite
-
         if kwargs.get("draw_ctrl"):
             self.add_draw_control()
 
@@ -423,7 +411,7 @@ class Map(ipyleaflet.Map):
                     self.add(plot_dropdown_control)
                     if self.draw_control in self.controls:
                         self.remove_control(self.draw_control)
-                    self.add(self.draw_control_lite)
+                    self.add_draw_control_lite()
                 elif tool_name == "open_data":
                     from .toolbar import open_data_widget
 
@@ -764,7 +752,7 @@ class Map(ipyleaflet.Map):
         tool_output_control = ipyleaflet.WidgetControl(
             widget=tool_output, position="topright"
         )
-        # self.add(tool_output_control)
+        self.add(tool_output_control)
 
         expand_label = widgets.Label(
             "Expand   ",
@@ -7151,6 +7139,21 @@ class Map(ipyleaflet.Map):
         draw_control.on_draw(handle_draw)
         self.add(draw_control)
         self.draw_control = draw_control
+
+    def add_draw_control_lite(self):
+        """Add a lite version draw control to the map for the plotting tool."""
+
+        draw_control_lite = ipyleaflet.DrawControl(
+            marker={},
+            rectangle={"shapeOptions": {"color": "#3388ff"}},
+            circle={"shapeOptions": {"color": "#3388ff"}},
+            circlemarker={},
+            polyline={},
+            polygon={},
+            edit=False,
+            remove=False,
+        )
+        self.draw_control_lite = draw_control_lite
 
 
 # The functions below are outside the Map class.
