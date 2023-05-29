@@ -4499,3 +4499,171 @@ def search_data_gui(m):
     data_control = ipyleaflet.WidgetControl(widget=search_widget, position="topleft")
 
     m.add(data_control)
+
+
+def ee_inspector_gui(m):
+    m._expand_point = False
+    m._expand_pixels = True
+    m._expand_objects = False
+    m.default_style = {"cursor": "crosshair"}
+
+    widget_width = "250px"
+    padding = "0px 0px 0px 5px"  # upper, right, bottom, left
+
+    toolbar_button = widgets.ToggleButton(
+        value=True,
+        tooltip="Inspector",
+        icon="info",
+        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+    )
+
+    close_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Close the tool",
+        icon="times",
+        button_style="primary",
+        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
+    )
+
+    inspector_output = widgets.Output(
+        layout={
+            "border": "1px solid black",
+            "max_width": "600px",
+            "max_height": "530px",
+            "overflow": "auto",
+        }
+    )
+    inspector_output_control = ipyleaflet.WidgetControl(
+        widget=inspector_output,
+        position="topright",
+    )
+
+    expand_label = widgets.Label(
+        "Expand   ",
+        layout=widgets.Layout(padding="0px 0px 0px 4px"),
+    )
+
+    expand_point = widgets.Checkbox(
+        description="Point",
+        indent=False,
+        value=m._expand_point,
+        layout=widgets.Layout(width="65px"),
+    )
+
+    expand_pixels = widgets.Checkbox(
+        description="Pixels",
+        indent=False,
+        value=m._expand_pixels,
+        layout=widgets.Layout(width="65px"),
+    )
+
+    expand_objects = widgets.Checkbox(
+        description="Objects",
+        indent=False,
+        value=m._expand_objects,
+        layout=widgets.Layout(width="70px"),
+    )
+
+    def expand_point_changed(change):
+        m._expand_point = change["new"]
+
+    def expand_pixels_changed(change):
+        m._expand_pixels = change["new"]
+
+    def expand_objects_changed(change):
+        m._expand_objects = change["new"]
+
+    expand_point.observe(expand_point_changed, "value")
+    expand_pixels.observe(expand_pixels_changed, "value")
+    expand_objects.observe(expand_objects_changed, "value")
+
+    inspector_checks = widgets.HBox()
+    inspector_checks.children = [
+        expand_label,
+        widgets.Label(""),
+        expand_point,
+        expand_pixels,
+        expand_objects,
+    ]
+
+    with inspector_output:
+        inspector_output.clear_output(wait=True)
+        display(inspector_checks)
+        # display(m.inspector(latlon))
+
+    toolbar_header = widgets.HBox()
+    toolbar_header.children = [close_button, toolbar_button]
+    toolbar_footer = widgets.VBox()
+    toolbar_footer.children = [inspector_output]
+    toolbar_widget = widgets.VBox()
+    toolbar_widget.children = [toolbar_header, toolbar_footer]
+
+    # toolbar_event = ipyevents.Event(
+    #     source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
+    # )
+
+    # def handle_toolbar_event(event):
+    #     if event["type"] == "mouseenter":
+    #         toolbar_widget.children = [toolbar_header, toolbar_footer]
+    #         with inspector_output:
+    #             inspector_output.clear_output(wait=True)
+    #             display(inspector_checks)
+    #     elif event["type"] == "mouseleave":
+    #         if not toolbar_button.value:
+    #             toolbar_widget.children = [toolbar_button]
+    #             toolbar_button.value = False
+    #             close_button.value = False
+
+    # toolbar_event.on_dom_event(handle_toolbar_event)
+
+    def handle_interaction(**kwargs):
+        latlon = kwargs.get("coordinates")
+        if kwargs.get("type") == "click" and toolbar_button.value:
+            m.default_style = {"cursor": "wait"}
+            with inspector_output:
+                inspector_output.clear_output(wait=True)
+                display(inspector_checks)
+                display(m.inspector(latlon))
+            m.default_style = {"cursor": "crosshair"}
+
+    m.on_interaction(handle_interaction)
+
+    def toolbar_btn_click(change):
+        if change["new"]:
+            m.default_style = {"cursor": "crosshair"}
+            close_button.value = False
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+            with inspector_output:
+                inspector_output.clear_output(wait=True)
+                display(inspector_checks)
+        else:
+            # if not close_button.value:
+            toolbar_widget.children = [toolbar_button]
+            m.default_style = {"cursor": "default"}
+
+    toolbar_button.observe(toolbar_btn_click, "value")
+
+    def close_btn_click(change):
+        if change["new"]:
+            m.default_style = {"cursor": "default"}
+            toolbar_button.value = False
+            if m is not None:
+                m.toolbar_reset()
+                if m.tool_control is not None and m.tool_control in m.controls:
+                    m.remove_control(m.tool_control)
+                    m.tool_control = None
+            toolbar_widget.close()
+
+    close_button.observe(close_btn_click, "value")
+
+    toolbar_button.value = True
+    if m is not None:
+        toolbar_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position="topright"
+        )
+
+        if toolbar_control not in m.controls:
+            m.add_control(toolbar_control)
+            m.tool_control = toolbar_control
+    else:
+        return toolbar_widget
