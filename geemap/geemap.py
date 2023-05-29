@@ -256,15 +256,6 @@ class Map(ipyleaflet.Map):
         if kwargs.get("attribution_ctrl"):
             self.add(ipyleaflet.AttributionControl(position="bottomright"))
 
-        draw_control = ipyleaflet.DrawControl(
-            marker={"shapeOptions": {"color": "#3388ff"}},
-            rectangle={"shapeOptions": {"color": "#3388ff"}},
-            circle={"shapeOptions": {"color": "#3388ff"}},
-            circlemarker={},
-            edit=True,
-            remove=True,
-        )
-
         draw_control_lite = ipyleaflet.DrawControl(
             marker={},
             rectangle={"shapeOptions": {"color": "#3388ff"}},
@@ -275,53 +266,10 @@ class Map(ipyleaflet.Map):
             edit=False,
             remove=False,
         )
-
-        # Handles draw events
-        def handle_draw(target, action, geo_json):
-            try:
-                self.roi_start = True
-                geom = geojson_to_ee(geo_json, False)
-                self.user_roi = geom
-                feature = ee.Feature(geom)
-                self.draw_last_json = geo_json
-                self.draw_last_feature = feature
-                if action == "deleted" and len(self.draw_features) > 0:
-                    self.draw_features.remove(feature)
-                    self.draw_count -= 1
-                else:
-                    self.draw_features.append(feature)
-                    self.draw_count += 1
-                collection = ee.FeatureCollection(self.draw_features)
-                self.user_rois = collection
-                ee_draw_layer = ee_tile_layer(
-                    collection, {"color": "blue"}, "Drawn Features", False, 0.5
-                )
-                draw_layer_index = self.find_layer_index("Drawn Features")
-
-                if draw_layer_index == -1:
-                    self.add(ee_draw_layer)
-                    self.draw_layer = ee_draw_layer
-                else:
-                    self.substitute_layer(self.draw_layer, ee_draw_layer)
-                    self.draw_layer = ee_draw_layer
-                self.roi_end = True
-                self.roi_start = False
-            except Exception as e:
-                self.draw_count = 0
-                self.draw_features = []
-                self.draw_last_feature = None
-                self.draw_layer = None
-                self.user_roi = None
-                self.roi_start = False
-                self.roi_end = False
-                print("There was an error creating Earth Engine Feature.")
-                raise Exception(e)
-
-        draw_control.on_draw(handle_draw)
-        if kwargs.get("draw_ctrl"):
-            self.add(draw_control)
-        self.draw_control = draw_control
         self.draw_control_lite = draw_control_lite
+
+        if kwargs.get("draw_ctrl"):
+            self.add_draw_control()
 
         # Dropdown widget for plotting
         self.plot_dropdown_control = None
@@ -7146,6 +7094,63 @@ class Map(ipyleaflet.Map):
             marker=marker,
         )
         self.add(search)
+
+    def add_draw_control(self):
+        """Add a draw control to the map"""
+
+        draw_control = ipyleaflet.DrawControl(
+            marker={"shapeOptions": {"color": "#3388ff"}},
+            rectangle={"shapeOptions": {"color": "#3388ff"}},
+            circle={"shapeOptions": {"color": "#3388ff"}},
+            circlemarker={},
+            edit=True,
+            remove=True,
+        )
+
+        # Handles draw events
+        def handle_draw(target, action, geo_json):
+            try:
+                self.roi_start = True
+                geom = geojson_to_ee(geo_json, False)
+                self.user_roi = geom
+                feature = ee.Feature(geom)
+                self.draw_last_json = geo_json
+                self.draw_last_feature = feature
+                if action == "deleted" and len(self.draw_features) > 0:
+                    self.draw_features.remove(feature)
+                    self.draw_count -= 1
+                else:
+                    self.draw_features.append(feature)
+                    self.draw_count += 1
+                collection = ee.FeatureCollection(self.draw_features)
+                self.user_rois = collection
+                ee_draw_layer = ee_tile_layer(
+                    collection, {"color": "blue"}, "Drawn Features", False, 0.5
+                )
+                draw_layer_index = self.find_layer_index("Drawn Features")
+
+                if draw_layer_index == -1:
+                    self.add(ee_draw_layer)
+                    self.draw_layer = ee_draw_layer
+                else:
+                    self.substitute_layer(self.draw_layer, ee_draw_layer)
+                    self.draw_layer = ee_draw_layer
+                self.roi_end = True
+                self.roi_start = False
+            except Exception as e:
+                self.draw_count = 0
+                self.draw_features = []
+                self.draw_last_feature = None
+                self.draw_layer = None
+                self.user_roi = None
+                self.roi_start = False
+                self.roi_end = False
+                print("There was an error creating Earth Engine Feature.")
+                raise Exception(e)
+
+        draw_control.on_draw(handle_draw)
+        self.add(draw_control)
+        self.draw_control = draw_control
 
 
 # The functions below are outside the Map class.
