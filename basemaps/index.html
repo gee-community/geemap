@@ -21,7 +21,7 @@
         <link rel="next" href="../cartoee/">
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.14">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.15">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.85bb2934.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.26e3688c.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.a6bdf11c.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -592,13 +592,6 @@
         <li class="md-nav__item">
   <a href="#geemap.basemaps.xyz_to_folium" class="md-nav__link">
     xyz_to_folium()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#geemap.basemaps.xyz_to_heremap" class="md-nav__link">
-    xyz_to_heremap()
   </a>
   
 </li>
@@ -2655,8 +2648,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../notebooks/112_cartoee_basemap_X/" class="md-nav__link">
-        112 cartoee basemap X
+      <a href="../notebooks/112_cartoee_basemap_X.ipynb" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -3046,13 +3039,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#geemap.basemaps.xyz_to_heremap" class="md-nav__link">
-    xyz_to_heremap()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#geemap.basemaps.xyz_to_leaflet" class="md-nav__link">
     xyz_to_leaflet()
   </a>
@@ -3389,136 +3375,6 @@
         <span class="n">folium_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">planet_dict</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">folium_dict</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h2 id="geemap.basemaps.xyz_to_heremap" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">xyz_to_heremap</span><span class="p">()</span></code>
-
-
-<a href="#geemap.basemaps.xyz_to_heremap" class="headerlink" title="Permanent link">&para;</a></h2>
-
-    <div class="doc doc-contents ">
-
-      <p>Convert xyz tile services to hermap tile layers.</p>
-
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>dict</code></td>
-      <td><p>A dictionary of heremap tile layers.</p></td>
-    </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>geemap/basemaps.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">xyz_to_heremap</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert xyz tile services to hermap tile layers.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        dict: A dictionary of heremap tile layers.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">here_map_widget</span>
-    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-            <span class="s1">&#39;This module requires the hermap package. Please install it using &quot;pip install here-map-widget-for-jupyter&quot;.&#39;</span>
-        <span class="p">)</span>
-
-    <span class="c1"># Built-in heremap tile services.</span>
-    <span class="n">here_tiles</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;HERE_RASTER_NORMAL_MAP&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">map</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_NORMAL_BASE&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">base</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_NORMAL_BASE_NIGHT&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">basenight</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_NORMAL_LABELS&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">labels</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_NORMAL_TRANSIT&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">transit</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_NORMAL_XBASE&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">xbase</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_NORMAL_XBASE_NIGHT&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">xbasenight</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_SATELLITE_MAP&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">satellite</span><span class="o">.</span><span class="n">map</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_SATELLITE_LABELS&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">satellite</span><span class="o">.</span><span class="n">labels</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_SATELLITE_BASE&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">satellite</span><span class="o">.</span><span class="n">base</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_SATELLITE_XBASE&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">satellite</span><span class="o">.</span><span class="n">xbase</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_TERRAIN_MAP&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">terrain</span><span class="o">.</span><span class="n">map</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_TERRAIN_LABELS&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">terrain</span><span class="o">.</span><span class="n">labels</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_TERRAIN_BASE&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">terrain</span><span class="o">.</span><span class="n">base</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_RASTER_TERRAIN_XBASE&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">raster</span><span class="o">.</span><span class="n">terrain</span><span class="o">.</span><span class="n">xbase</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_VECTOR_NORMAL_MAP&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">vector</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">map</span>
-        <span class="p">),</span>
-        <span class="s2">&quot;HERE_VECTOR_NORMAL_TRUCK&quot;</span><span class="p">:</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayers</span><span class="p">(</span>
-            <span class="n">layer_name</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">DefaultLayerNames</span><span class="o">.</span><span class="n">vector</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">truck</span>
-        <span class="p">),</span>
-    <span class="p">}</span>
-
-    <span class="n">heremap_dict</span> <span class="o">=</span> <span class="p">{}</span>
-
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">xyz_tiles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">heremap_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">(</span>
-            <span class="n">provider</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">ImageTileProvider</span><span class="p">(</span>
-                <span class="n">url</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span> <span class="n">attribution</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;attribution&quot;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">heremap_dict</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">here_map_widget</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">(</span>
-            <span class="n">provider</span><span class="o">=</span><span class="n">here_map_widget</span><span class="o">.</span><span class="n">ImageTileProvider</span><span class="p">(</span>
-                <span class="n">url</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">build_url</span><span class="p">(),</span>
-                <span class="n">attribution</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">attribution</span><span class="p">,</span>
-                <span class="n">name</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                <span class="n">max_zoom</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max_zoom&quot;</span><span class="p">,</span> <span class="mi">22</span><span class="p">),</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
-
-    <span class="n">heremap_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">here_tiles</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">heremap_dict</span>
 </code></pre></div>
         </details>
     </div>
