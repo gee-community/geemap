@@ -4502,6 +4502,14 @@ def search_data_gui(m):
 
 
 def ee_inspector_gui(m):
+    """Earth Engine Inspector GUI.
+
+    Args:
+        m (geemap.Map): The geemap.Map object.
+
+    """
+    from ipytree import Tree
+
     m._expand_point = False
     m._expand_pixels = True
     m._expand_objects = False
@@ -4529,13 +4537,9 @@ def ee_inspector_gui(m):
         layout={
             "border": "1px solid black",
             "max_width": "600px",
-            "max_height": "530px",
+            "max_height": "500px",
             "overflow": "auto",
         }
-    )
-    inspector_output_control = ipyleaflet.WidgetControl(
-        widget=inspector_output,
-        position="topright",
     )
 
     expand_label = widgets.Label(
@@ -4589,7 +4593,6 @@ def ee_inspector_gui(m):
     with inspector_output:
         inspector_output.clear_output(wait=True)
         display(inspector_checks)
-        # display(m.inspector(latlon))
 
     toolbar_header = widgets.HBox()
     toolbar_header.children = [close_button, toolbar_button]
@@ -4598,24 +4601,6 @@ def ee_inspector_gui(m):
     toolbar_widget = widgets.VBox()
     toolbar_widget.children = [toolbar_header, toolbar_footer]
 
-    # toolbar_event = ipyevents.Event(
-    #     source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
-    # )
-
-    # def handle_toolbar_event(event):
-    #     if event["type"] == "mouseenter":
-    #         toolbar_widget.children = [toolbar_header, toolbar_footer]
-    #         with inspector_output:
-    #             inspector_output.clear_output(wait=True)
-    #             display(inspector_checks)
-    #     elif event["type"] == "mouseleave":
-    #         if not toolbar_button.value:
-    #             toolbar_widget.children = [toolbar_button]
-    #             toolbar_button.value = False
-    #             close_button.value = False
-
-    # toolbar_event.on_dom_event(handle_toolbar_event)
-
     def handle_interaction(**kwargs):
         latlon = kwargs.get("coordinates")
         if kwargs.get("type") == "click" and toolbar_button.value:
@@ -4623,7 +4608,20 @@ def ee_inspector_gui(m):
             with inspector_output:
                 inspector_output.clear_output(wait=True)
                 display(inspector_checks)
-                display(m.inspector(latlon))
+
+                tree = Tree()
+                nodes = []
+                point_node = m._point_info(latlon, return_node=True)
+                nodes.append(point_node)
+                pixels_node = m._pixels_info(latlon, return_node=True)
+                if pixels_node.nodes:
+                    nodes.append(pixels_node)
+                objects_node = m._objects_info(latlon, return_node=True)
+                if objects_node.nodes:
+                    nodes.append(objects_node)
+                tree.nodes = nodes
+
+                display(tree)
             m.default_style = {"cursor": "crosshair"}
 
     m.on_interaction(handle_interaction)
@@ -4637,7 +4635,6 @@ def ee_inspector_gui(m):
                 inspector_output.clear_output(wait=True)
                 display(inspector_checks)
         else:
-            # if not close_button.value:
             toolbar_widget.children = [toolbar_button]
             m.default_style = {"cursor": "default"}
 
@@ -4658,12 +4655,12 @@ def ee_inspector_gui(m):
 
     toolbar_button.value = True
     if m is not None:
-        toolbar_control = ipyleaflet.WidgetControl(
+        inspector_control = ipyleaflet.WidgetControl(
             widget=toolbar_widget, position="topright"
         )
 
-        if toolbar_control not in m.controls:
-            m.add_control(toolbar_control)
-            m.tool_control = toolbar_control
+        if inspector_control not in m.controls:
+            m.add(inspector_control)
+            m.inspector_control = inspector_control
     else:
         return toolbar_widget
