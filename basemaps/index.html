@@ -583,6 +583,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.basemaps.qms_to_geemap" class="md-nav__link">
+    qms_to_geemap()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.basemaps.search_qms" class="md-nav__link">
     search_qms()
   </a>
@@ -3025,6 +3032,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.basemaps.qms_to_geemap" class="md-nav__link">
+    qms_to_geemap()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.basemaps.search_qms" class="md-nav__link">
     search_qms()
   </a>
@@ -3228,6 +3242,79 @@
 
   </div>
 
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="geemap.basemaps.qms_to_geemap" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">qms_to_geemap</span><span class="p">(</span><span class="n">service_id</span><span class="p">)</span></code>
+
+
+<a href="#geemap.basemaps.qms_to_geemap" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Convert a qms service to an ipyleaflet tile layer.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>service_id</code></td>
+        <td><code>str</code></td>
+        <td><p>Service ID.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>ipyleaflet.TileLayer</code></td>
+      <td><p>An ipyleaflet tile layer.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/basemaps.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">qms_to_geemap</span><span class="p">(</span><span class="n">service_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a qms service to an ipyleaflet tile layer.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        service_id (str): Service ID.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ipyleaflet.TileLayer: An ipyleaflet tile layer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">service_details</span> <span class="o">=</span> <span class="n">get_qms</span><span class="p">(</span><span class="n">service_id</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">service_details</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">service_details</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span>
+    <span class="n">attribution</span> <span class="o">=</span> <span class="n">service_details</span><span class="p">[</span><span class="s2">&quot;copyright_text&quot;</span><span class="p">]</span>
+
+    <span class="n">layer</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">attribution</span><span class="o">=</span><span class="n">attribution</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">layer</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
