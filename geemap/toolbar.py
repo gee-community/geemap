@@ -4675,12 +4675,13 @@ def ee_inspector_gui(m, position="topright"):
         return toolbar_widget
 
 
-def layer_manager_gui(m, position="topright"):
+def layer_manager_gui(m, position="topright", return_widget=False):
     """Creates a layer manager widget.
 
     Args:
         m (geemap.Map): The geemap.Map object.
         position (str, optional): The position of the widget. Defaults to "topright".
+        return_widget (bool, optional): Whether to return the widget. Defaults to False.
     """
 
     layers_button = widgets.ToggleButton(
@@ -4872,14 +4873,20 @@ def layer_manager_gui(m, position="topright"):
                     layout=widgets.Layout(padding="0px 8px 0px 8px"),
                 )
                 layers_hbox.append(hbox)
+                m.layer_widget = layers_hbox
 
             toolbar_footer.children = layers_hbox
 
     layers_button.observe(layers_btn_click, "value")
     layers_button.value = True
 
-    layer_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position=position)
+    if return_widget:
+        return m.layer_widget
+    else:
+        layer_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position=position
+        )
 
-    if layer_control not in m.controls:
-        m.add_control(layer_control)
-        m.layer_manager = layer_control
+        if layer_control not in m.controls:
+            m.add_control(layer_control)
+            m.layer_manager = layer_control
