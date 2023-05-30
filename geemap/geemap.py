@@ -269,7 +269,6 @@ class Map(ipyleaflet.Map):
         self.plot_last_click = []
         self.plot_all_clicks = []
         self.plot_checked = False
-        self.inspector_checked = False
 
         inspector_output = widgets.Output(
             layout={
@@ -279,10 +278,7 @@ class Map(ipyleaflet.Map):
                 "overflow": "auto",
             }
         )
-        inspector_output_control = ipyleaflet.WidgetControl(
-            widget=inspector_output,
-            position="topright",
-        )
+
         tool_output = widgets.Output()
         self.tool_output = tool_output
         tool_output.clear_output(wait=True)
@@ -394,9 +390,9 @@ class Map(ipyleaflet.Map):
                     self.remove_drawn_features()
                     tool.value = False
                 elif tool_name == "inspector":
-                    self.inspector_checked = tool.value
-                    if not self.inspector_checked:
-                        inspector_output.clear_output()
+                    if not hasattr(self, "inspector_control"):
+                        self.add_inspector()
+                    self.toolbar_reset()
                 elif tool_name == "plotting":
                     self.plot_checked = True
                     plot_dropdown_widget = widgets.Dropdown(
@@ -494,10 +490,7 @@ class Map(ipyleaflet.Map):
                 tool = change["owner"]
                 tool_name = tools[tool.icon]["name"]
                 if tool_name == "inspector":
-                    inspector_output.clear_output()
-                    self.inspector_checked = False
-                    if inspector_output_control in self.controls:
-                        self.remove_control(inspector_output_control)
+                    pass
                 elif tool_name == "plotting":
                     self.plot_checked = False
                     plot_dropdown_widget = self.plot_dropdown_widget
@@ -804,19 +797,6 @@ class Map(ipyleaflet.Map):
 
         def handle_interaction(**kwargs):
             latlon = kwargs.get("coordinates")
-            if kwargs.get("type") == "click" and self.inspector_checked:
-                self.default_style = {"cursor": "wait"}
-                if inspector_output_control not in self.controls:
-                    self.add(inspector_output_control)
-                sample_scale = self.getScale()
-                layers = self.ee_layers
-
-                with inspector_output:
-                    inspector_output.clear_output(wait=True)
-                    display(inspector_checks)
-                    display(self.inspector(latlon))
-
-                self.default_style = {"cursor": "crosshair"}
             if (
                 kwargs.get("type") == "click"
                 and self.plot_checked
@@ -6909,7 +6889,7 @@ class Map(ipyleaflet.Map):
         else:
             return Tree(nodes=[root_node])
 
-    def inspector(self, latlon):
+    def inspect(self, latlon):
         """Create the Inspector GUI.
 
         Args:
@@ -6931,6 +6911,16 @@ class Map(ipyleaflet.Map):
             nodes.append(objects_node)
         tree.nodes = nodes
         return tree
+
+    def add_inspector(self, position="topright"):
+        """Add the Inspector GUI to the map.
+
+        Args:
+            position (str, optional): The position of the Inspector GUI. Defaults to "topright".
+        """
+        from .toolbar import ee_inspector_gui
+
+        ee_inspector_gui(self, position)
 
     def add_widget(self, content, position="bottomright", **kwargs):
         """Add a widget (e.g., text, HTML, figure) to the map.

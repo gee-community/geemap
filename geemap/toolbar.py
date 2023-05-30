@@ -4501,13 +4501,14 @@ def search_data_gui(m):
     m.add(data_control)
 
 
-def ee_inspector_gui(m):
+def ee_inspector_gui(m, position="topright"):
     """Earth Engine Inspector GUI.
 
     Args:
         m (geemap.Map): The geemap.Map object.
 
     """
+    import sys
     from ipytree import Tree
 
     m._expand_point = False
@@ -4533,14 +4534,13 @@ def ee_inspector_gui(m):
         layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
     )
 
-    inspector_output = widgets.Output(
-        layout={
-            "border": "1px solid black",
-            "max_width": "600px",
-            "max_height": "500px",
-            "overflow": "auto",
-        }
-    )
+    layout = {
+        "border": "1px solid black",
+        "max_width": "600px",
+        "max_height": "500px",
+        "overflow": "auto",
+    }
+    inspector_output = widgets.Output(layout=layout)
 
     expand_label = widgets.Label(
         "Expand   ",
@@ -4605,6 +4605,10 @@ def ee_inspector_gui(m):
         latlon = kwargs.get("coordinates")
         if kwargs.get("type") == "click" and toolbar_button.value:
             m.default_style = {"cursor": "wait"}
+            ###################################### Temporary fix for Solara
+            inspector_output = widgets.Output(layout=layout)
+            toolbar_footer.children = [inspector_output]
+            ######################################
             with inspector_output:
                 inspector_output.clear_output(wait=True)
                 display(inspector_checks)
@@ -4629,8 +4633,12 @@ def ee_inspector_gui(m):
     def toolbar_btn_click(change):
         if change["new"]:
             m.default_style = {"cursor": "crosshair"}
-            close_button.value = False
+            # close_button.value = False
             toolbar_widget.children = [toolbar_header, toolbar_footer]
+            ###################################### Temporary fix for Solara
+            inspector_output = widgets.Output(layout=layout)
+            toolbar_footer.children = [inspector_output]
+            ######################################
             with inspector_output:
                 inspector_output.clear_output(wait=True)
                 display(inspector_checks)
@@ -4646,9 +4654,14 @@ def ee_inspector_gui(m):
             toolbar_button.value = False
             if m is not None:
                 m.toolbar_reset()
-                if m.tool_control is not None and m.tool_control in m.controls:
-                    m.remove_control(m.tool_control)
-                    m.tool_control = None
+                m.on_interaction(handle_interaction, remove=True)
+                if (
+                    m.inspector_control is not None
+                    and m.inspector_control in m.controls
+                ):
+                    m.remove_control(m.inspector_control)
+                    m.inspector_control = None
+                    delattr(m, "inspector_control")
             toolbar_widget.close()
 
     close_button.observe(close_btn_click, "value")
@@ -4656,7 +4669,7 @@ def ee_inspector_gui(m):
     toolbar_button.value = True
     if m is not None:
         inspector_control = ipyleaflet.WidgetControl(
-            widget=toolbar_widget, position="topright"
+            widget=toolbar_widget, position=position
         )
 
         if inspector_control not in m.controls:
