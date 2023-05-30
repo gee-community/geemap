@@ -1,12 +1,10 @@
 """Main module for interactive mapping using Google Earth Engine Python API and ipyleaflet.
-Keep in mind that Earth Engine functions use both camel case and snake case, such as setOptions(), setCenter(), centerObject(), addLayer().
+Keep in mind that Earth Engine functions use both camel case and snake case, 
+such as setOptions(), setCenter(), centerObject(), addLayer().
 ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), add_minimap().
 """
 
-import math
 import os
-import pkg_resources
-import time
 
 import ee
 import ipyevents
@@ -16,15 +14,11 @@ import ipywidgets as widgets
 from box import Box
 from bqplot import pyplot as plt
 
-# from ipyfilechooser import FileChooser
 from IPython.display import display
-from ipytree import Node, Tree
 from .basemaps import xyz_to_leaflet
 from .common import *
 from .conversion import *
-from .legends import builtin_legends
 from .timelapse import *
-from .osm import *
 from .plot import *
 
 from . import examples
@@ -34,7 +28,10 @@ basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class Map(ipyleaflet.Map):
-    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html. By default, the Map will add Google Maps as the basemap. Set add_google_map = False to use OpenStreetMap as the basemap.
+    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map can
+        be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html.
+        By default, the Map will add Google Maps as the basemap. Set add_google_map = False
+        to use OpenStreetMap as the basemap.
 
     Returns:
         object: ipyleaflet map object.
@@ -52,11 +49,11 @@ class Map(ipyleaflet.Map):
         if kwargs["ee_initialize"]:
             ee_initialize()
 
-        # Default map center location (lat, lon) and zoom level
-        latlon = [20, 0]
+        # Default map center center (lat, lon) and zoom level
+        center = [20, 0]
         zoom = 2
 
-        # Interchangeable parameters between ipyleaflet and folium
+        # Set map width and height
         if "height" not in kwargs.keys():
             kwargs["height"] = "600px"
         elif isinstance(kwargs["height"], int):
@@ -64,28 +61,33 @@ class Map(ipyleaflet.Map):
         if "width" in kwargs.keys() and isinstance(kwargs["width"], int):
             kwargs["width"] = str(kwargs["width"]) + "px"
 
+        # Convert folium params to ipyleaflet params
         if "location" in kwargs.keys():
             kwargs["center"] = kwargs["location"]
             kwargs.pop("location")
-        if "center" not in kwargs.keys():
-            kwargs["center"] = latlon
-
         if "zoom_start" in kwargs.keys():
             kwargs["zoom"] = kwargs["zoom_start"]
             kwargs.pop("zoom_start")
+
+        # Set map center and zoom level
+        if "center" not in kwargs.keys():
+            kwargs["center"] = center
         if "zoom" not in kwargs.keys():
             kwargs["zoom"] = zoom
         if "max_zoom" not in kwargs.keys():
             kwargs["max_zoom"] = 24
 
+        # Add Google Maps as the default basemap
         if "add_google_map" not in kwargs.keys() and "basemap" not in kwargs.keys():
             kwargs["add_google_map"] = True
+
+        # Enable scroll wheel zoom by default
         if "scroll_wheel_zoom" not in kwargs.keys():
             kwargs["scroll_wheel_zoom"] = True
 
+        # Whether to use lite mode, which contains only the zoom control.
         if "lite_mode" not in kwargs.keys():
             kwargs["lite_mode"] = False
-
         if kwargs["lite_mode"]:
             kwargs["data_ctrl"] = False
             kwargs["zoom_ctrl"] = True
@@ -98,6 +100,7 @@ class Map(ipyleaflet.Map):
             kwargs["toolbar_ctrl"] = False
             kwargs["attribution_ctrl"] = False
 
+        # Default controls to use
         if "data_ctrl" not in kwargs.keys():
             kwargs["data_ctrl"] = True
         if "zoom_ctrl" not in kwargs.keys():
@@ -121,10 +124,12 @@ class Map(ipyleaflet.Map):
         if "use_voila" not in kwargs.keys():
             kwargs["use_voila"] = False
 
+        # Use any basemap available through the basemap module, such as 'ROADMAP', 'OpenTopoMap'
         if "basemap" in kwargs:
             if isinstance(kwargs["basemap"], str):
                 kwargs["basemap"] = get_basemap(kwargs["basemap"])
 
+        # Disable some widgets if using Voila
         if os.environ.get("USE_VOILA") is not None:
             kwargs["use_voila"] = True
 
@@ -148,6 +153,7 @@ class Map(ipyleaflet.Map):
                 print("The sandbox path is invalid.")
                 self.sandbox_path = None
 
+        # Remove all default controls
         self.clear_controls()
 
         # The number of shapes drawn by the user using the DrawControl
@@ -167,6 +173,8 @@ class Map(ipyleaflet.Map):
 
         self.roi_start = False
         self.roi_end = False
+
+        # Default reducer to use
         if kwargs["ee_initialize"]:
             self.roi_reducer = ee.Reducer.mean()
         self.roi_reducer_scale = None
@@ -192,11 +200,6 @@ class Map(ipyleaflet.Map):
         self.ee_vector_layer_names = []
         self.ee_layer_dict = {}
 
-        self.search_locations = None
-        self.search_loc_marker = None
-        self.search_loc_geom = None
-        self.search_datasets = None
-        self.screenshot = None
         self.toolbar = None
         self.toolbar_button = None
         self.vis_control = None
@@ -212,333 +215,31 @@ class Map(ipyleaflet.Map):
         self._expand_pixels = True
         self._expand_objects = False
 
-        # Adds search button and search box
-        search_button = widgets.ToggleButton(
-            value=False,
-            tooltip="Search location/data",
-            icon="globe",
-            layout=widgets.Layout(
-                width="28px", height="28px", padding="0px 0px 0px 4px"
-            ),
-        )
-
-        search_type = widgets.ToggleButtons(
-            options=["name/address", "lat-lon", "data"],
-            tooltips=[
-                "Search by place name or address",
-                "Search by lat-lon coordinates",
-                "Search Earth Engine data catalog",
-            ],
-        )
-        search_type.style.button_width = "110px"
-
-        search_box = widgets.Text(
-            placeholder="Search by place name or address",
-            tooltip="Search location",
-            layout=widgets.Layout(width="340px"),
-        )
-
-        search_output = widgets.Output(
-            layout={
-                "max_width": "340px",
-                "max_height": "350px",
-                "overflow": "scroll",
-            }
-        )
-
-        search_results = widgets.RadioButtons()
-
-        assets_dropdown = widgets.Dropdown(
-            options=[],
-            layout=widgets.Layout(min_width="279px", max_width="279px"),
-        )
-
-        import_btn = widgets.Button(
-            description="import",
-            button_style="primary",
-            tooltip="Click to import the selected asset",
-            layout=widgets.Layout(min_width="57px", max_width="57px"),
-        )
-
-        def get_ee_example(asset_id):
-            try:
-                pkg_dir = os.path.dirname(
-                    pkg_resources.resource_filename("geemap", "geemap.py")
-                )
-                with open(
-                    os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8"
-                ) as f:
-                    functions = json.load(f)
-                details = [
-                    dataset["code"]
-                    for x in functions["examples"]
-                    for dataset in x["contents"]
-                    if x["name"] == "Datasets"
-                    if dataset["name"] == asset_id.replace("/", "_")
-                ]
-
-                return js_snippet_to_py(
-                    details[0],
-                    add_new_cell=False,
-                    import_ee=False,
-                    import_geemap=False,
-                    show_map=False,
-                )
-
-            except Exception as e:
-                pass
-            return
-
-        def import_btn_clicked(b):
-            if assets_dropdown.value is not None:
-                datasets = self.search_datasets
-                dataset = datasets[assets_dropdown.index]
-                id_ = dataset["id"]
-                code = get_ee_example(id_)
-
-                if not code:
-                    dataset_uid = "dataset_" + random_string(string_length=3)
-                    translate = {
-                        "image_collection": "ImageCollection",
-                        "image": "Image",
-                        "table": "FeatureCollection",
-                        "table_collection": "FeatureCollection",
-                    }
-                    datatype = translate[dataset["type"]]
-                    id_ = dataset["id"]
-                    line1 = "{} = ee.{}('{}')".format(dataset_uid, datatype, id_)
-                    action = {
-                        "image_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                        "image": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                        "table": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                        "table_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                    }
-                    line2 = action[dataset["type"]]
-                    code = [line1, line2]
-
-                contents = "".join(code).strip()
-                # create_code_cell(contents)
-                with search_output:
-                    search_output.clear_output(wait=True)
-                    print(
-                        "# The code has been copied to the clipboard. \n# Press Ctrl+V in a new cell to paste it.\n"
-                    )
-                    print(contents)
-
-        import_btn.on_click(import_btn_clicked)
-
-        html_widget = widgets.HTML()
-
-        def dropdown_change(change):
-            dropdown_index = assets_dropdown.index
-            if dropdown_index is not None and dropdown_index >= 0:
-                with search_output:
-                    search_output.clear_output(wait=True)
-                    print("Loading ...")
-                    datasets = self.search_datasets
-                    dataset = datasets[dropdown_index]
-                    dataset_html = ee_data_html(dataset)
-                    html_widget.value = dataset_html
-                    search_output.clear_output(wait=True)
-                    display(html_widget)
-
-        assets_dropdown.observe(dropdown_change, names="value")
-
-        assets_combo = widgets.HBox()
-        assets_combo.children = [import_btn, assets_dropdown]
-
-        def search_result_change(change):
-            result_index = search_results.index
-            locations = self.search_locations
-            location = locations[result_index]
-            latlon = (location.lat, location.lng)
-            self.search_loc_geom = ee.Geometry.Point(location.lng, location.lat)
-            marker = self.search_loc_marker
-            marker.location = latlon
-            self.center = latlon
-
-        search_results.observe(search_result_change, names="value")
-
-        def search_btn_click(change):
-            if change["new"]:
-                search_widget.children = [search_button, search_result_widget]
-                search_type.value = "name/address"
-            else:
-                search_widget.children = [search_button]
-                search_result_widget.children = [search_type, search_box]
-
-        search_button.observe(search_btn_click, "value")
-
-        def search_type_changed(change):
-            search_box.value = ""
-            search_output.clear_output()
-            if change["new"] == "data":
-                search_box.placeholder = (
-                    "Search GEE data catalog by keywords, e.g., elevation"
-                )
-                search_result_widget.children = [
-                    search_type,
-                    search_box,
-                    assets_combo,
-                    search_output,
-                ]
-            elif change["new"] == "lat-lon":
-                search_box.placeholder = "Search by lat-lon, e.g., 40, -100"
-                assets_dropdown.options = []
-                search_result_widget.children = [
-                    search_type,
-                    search_box,
-                    search_output,
-                ]
-            elif change["new"] == "name/address":
-                search_box.placeholder = "Search by place name or address, e.g., Paris"
-                assets_dropdown.options = []
-                search_result_widget.children = [
-                    search_type,
-                    search_box,
-                    search_output,
-                ]
-
-        search_type.observe(search_type_changed, names="value")
-
-        def search_box_callback(text):
-            if text.value != "":
-                if search_type.value == "name/address":
-                    g = geocode(text.value)
-                elif search_type.value == "lat-lon":
-                    g = geocode(text.value, reverse=True)
-                    if g is None and latlon_from_text(text.value):
-                        search_output.clear_output()
-                        latlon = latlon_from_text(text.value)
-                        self.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
-                        if self.search_loc_marker is None:
-                            marker = ipyleaflet.Marker(
-                                location=latlon,
-                                draggable=False,
-                                name="Search location",
-                            )
-                            self.search_loc_marker = marker
-                            self.add(marker)
-                            self.center = latlon
-                        else:
-                            marker = self.search_loc_marker
-                            marker.location = latlon
-                            self.center = latlon
-                        with search_output:
-                            print(f"No address found for {latlon}")
-                        return
-                elif search_type.value == "data":
-                    search_output.clear_output()
-                    with search_output:
-                        print("Searching ...")
-                    self.default_style = {"cursor": "wait"}
-                    ee_assets = search_ee_data(text.value, source="all")
-                    self.search_datasets = ee_assets
-                    asset_titles = [x["title"] for x in ee_assets]
-                    assets_dropdown.options = asset_titles
-                    search_output.clear_output()
-                    if len(ee_assets) > 0:
-                        assets_dropdown.index = 0
-                        html_widget.value = ee_data_html(ee_assets[0])
-                    else:
-                        html_widget.value = "No results found."
-                    with search_output:
-                        display(html_widget)
-                    self.default_style = {"cursor": "default"}
-
-                    return
-
-                self.search_locations = g
-                if g is not None and len(g) > 0:
-                    top_loc = g[0]
-                    latlon = (top_loc.lat, top_loc.lng)
-                    self.search_loc_geom = ee.Geometry.Point(top_loc.lng, top_loc.lat)
-                    if self.search_loc_marker is None:
-                        marker = ipyleaflet.Marker(
-                            location=latlon,
-                            draggable=False,
-                            name="Search location",
-                        )
-                        self.search_loc_marker = marker
-                        self.add(marker)
-                        self.center = latlon
-                    else:
-                        marker = self.search_loc_marker
-                        marker.location = latlon
-                        self.center = latlon
-                    search_results.options = [x.address for x in g]
-                    search_result_widget.children = [
-                        search_type,
-                        search_box,
-                        search_output,
-                    ]
-                    with search_output:
-                        search_output.clear_output(wait=True)
-                        display(search_results)
-                else:
-                    with search_output:
-                        search_output.clear_output()
-                        print("No results could be found.")
-
-        search_box.on_submit(search_box_callback)
-
-        search_result_widget = widgets.VBox([search_type, search_box])
-        search_widget = widgets.HBox([search_button])
-
-        search_event = ipyevents.Event(
-            source=search_widget, watched_events=["mouseenter", "mouseleave"]
-        )
-
-        def handle_search_event(event):
-            if event["type"] == "mouseenter":
-                search_widget.children = [search_button, search_result_widget]
-                # search_type.value = "name/address"
-            elif event["type"] == "mouseleave":
-                if not search_button.value:
-                    search_widget.children = [search_button]
-                    search_result_widget.children = [search_type, search_box]
-
-        search_event.on_dom_event(handle_search_event)
-
-        data_control = ipyleaflet.WidgetControl(
-            widget=search_widget, position="topleft"
-        )
-
         if kwargs.get("data_ctrl"):
-            self.add_control(control=data_control)
+            from .toolbar import search_data_gui
 
-        search_marker = ipyleaflet.Marker(
-            icon=ipyleaflet.AwesomeIcon(
-                name="check", marker_color="green", icon_color="darkgreen"
-            )
-        )
-        search = ipyleaflet.SearchControl(
-            position="topleft",
-            url="https://nominatim.openstreetmap.org/search?format=json&q={s}",
-            zoom=5,
-            property_name="display_name",
-            marker=search_marker,
-        )
+            search_data_gui(self)
+
         if kwargs.get("search_ctrl"):
-            self.add_control(search)
+            self.add_search_control()
 
         if kwargs.get("zoom_ctrl"):
-            self.add_control(ipyleaflet.ZoomControl(position="topleft"))
+            self.add(ipyleaflet.ZoomControl(position="topleft"))
 
         if kwargs.get("layer_ctrl"):
             layer_control = ipyleaflet.LayersControl(position="topright")
             self.layer_control = layer_control
-            self.add_control(layer_control)
+            self.add(layer_control)
 
         if kwargs.get("scale_ctrl"):
             scale = ipyleaflet.ScaleControl(position="bottomleft")
             self.scale_control = scale
-            self.add_control(scale)
+            self.add(scale)
 
         if kwargs.get("fullscreen_ctrl"):
             fullscreen = ipyleaflet.FullScreenControl()
             self.fullscreen_control = fullscreen
-            self.add_control(fullscreen)
+            self.add(fullscreen)
 
         if kwargs.get("measure_ctrl"):
             measure = ipyleaflet.MeasureControl(
@@ -547,80 +248,16 @@ class Map(ipyleaflet.Map):
                 primary_length_unit="kilometers",
             )
             self.measure_control = measure
-            self.add_control(measure)
+            self.add(measure)
 
         if kwargs.get("add_google_map"):
             self.add("ROADMAP")
 
         if kwargs.get("attribution_ctrl"):
-            self.add_control(ipyleaflet.AttributionControl(position="bottomright"))
+            self.add(ipyleaflet.AttributionControl(position="bottomright"))
 
-        draw_control = ipyleaflet.DrawControl(
-            marker={"shapeOptions": {"color": "#3388ff"}},
-            rectangle={"shapeOptions": {"color": "#3388ff"}},
-            circle={"shapeOptions": {"color": "#3388ff"}},
-            circlemarker={},
-            edit=True,
-            remove=True,
-        )
-
-        draw_control_lite = ipyleaflet.DrawControl(
-            marker={},
-            rectangle={"shapeOptions": {"color": "#3388ff"}},
-            circle={"shapeOptions": {"color": "#3388ff"}},
-            circlemarker={},
-            polyline={},
-            polygon={},
-            edit=False,
-            remove=False,
-        )
-
-        # Handles draw events
-        def handle_draw(target, action, geo_json):
-            try:
-                self.roi_start = True
-                geom = geojson_to_ee(geo_json, False)
-                self.user_roi = geom
-                feature = ee.Feature(geom)
-                self.draw_last_json = geo_json
-                self.draw_last_feature = feature
-                if action == "deleted" and len(self.draw_features) > 0:
-                    self.draw_features.remove(feature)
-                    self.draw_count -= 1
-                else:
-                    self.draw_features.append(feature)
-                    self.draw_count += 1
-                collection = ee.FeatureCollection(self.draw_features)
-                self.user_rois = collection
-                ee_draw_layer = ee_tile_layer(
-                    collection, {"color": "blue"}, "Drawn Features", False, 0.5
-                )
-                draw_layer_index = self.find_layer_index("Drawn Features")
-
-                if draw_layer_index == -1:
-                    self.add(ee_draw_layer)
-                    self.draw_layer = ee_draw_layer
-                else:
-                    self.substitute_layer(self.draw_layer, ee_draw_layer)
-                    self.draw_layer = ee_draw_layer
-                self.roi_end = True
-                self.roi_start = False
-            except Exception as e:
-                self.draw_count = 0
-                self.draw_features = []
-                self.draw_last_feature = None
-                self.draw_layer = None
-                self.user_roi = None
-                self.roi_start = False
-                self.roi_end = False
-                print("There was an error creating Earth Engine Feature.")
-                raise Exception(e)
-
-        draw_control.on_draw(handle_draw)
         if kwargs.get("draw_ctrl"):
-            self.add_control(draw_control)
-        self.draw_control = draw_control
-        self.draw_control_lite = draw_control_lite
+            self.add_draw_control()
 
         # Dropdown widget for plotting
         self.plot_dropdown_control = None
@@ -632,101 +269,14 @@ class Map(ipyleaflet.Map):
         self.plot_last_click = []
         self.plot_all_clicks = []
         self.plot_checked = False
-        self.inspector_checked = False
 
-        inspector_output = widgets.Output(
-            layout={
-                "border": "1px solid black",
-                "max_width": "600px",
-                "max_height": "530px",
-                "overflow": "auto",
-            }
-        )
-        inspector_output_control = ipyleaflet.WidgetControl(
-            widget=inspector_output,
-            position="topright",
-        )
         tool_output = widgets.Output()
         self.tool_output = tool_output
         tool_output.clear_output(wait=True)
-        save_map_widget = widgets.VBox()
-
-        save_type = widgets.ToggleButtons(
-            options=["HTML", "PNG", "JPG"],
-            tooltips=[
-                "Save the map as an HTML file",
-                "Take a screenshot and save as a PNG file",
-                "Take a screenshot and save as a JPG file",
-            ],
-        )
-
-        # file_chooser = FileChooser(os.getcwd(), sandbox_path=self.sandbox_path)
-        # file_chooser.default_filename = "my_map.html"
-        # file_chooser.use_dir_icons = True
-
-        # ok_cancel = widgets.ToggleButtons(
-        #     value=None,
-        #     options=["OK", "Cancel"],
-        #     tooltips=["OK", "Cancel"],
-        #     button_style="primary",
-        # )
-
-        # def save_type_changed(change):
-        #     ok_cancel.value = None
-        #     # file_chooser.reset()
-        #     file_chooser.default_path = os.getcwd()
-        #     if change["new"] == "HTML":
-        #         file_chooser.default_filename = "my_map.html"
-        #     elif change["new"] == "PNG":
-        #         file_chooser.default_filename = "my_map.png"
-        #     elif change["new"] == "JPG":
-        #         file_chooser.default_filename = "my_map.jpg"
-        #     save_map_widget.children = [save_type, file_chooser]
-
-        # def chooser_callback(chooser):
-        #     save_map_widget.children = [save_type, file_chooser, ok_cancel]
-
-        # def ok_cancel_clicked(change):
-        #     if change["new"] == "OK":
-        #         file_path = file_chooser.selected
-        #         ext = os.path.splitext(file_path)[1]
-        #         if save_type.value == "HTML" and ext.upper() == ".HTML":
-        #             tool_output.clear_output()
-        #             self.to_html(file_path)
-        #         elif save_type.value == "PNG" and ext.upper() == ".PNG":
-        #             tool_output.clear_output()
-        #             self.toolbar_button.value = False
-        #             time.sleep(1)
-        #             screen_capture(filename=file_path)
-        #         elif save_type.value == "JPG" and ext.upper() == ".JPG":
-        #             tool_output.clear_output()
-        #             self.toolbar_button.value = False
-        #             time.sleep(1)
-        #             screen_capture(filename=file_path)
-        #         else:
-        #             label = widgets.Label(
-        #                 value="The selected file extension does not match the selected exporting type."
-        #             )
-        #             save_map_widget.children = [save_type, file_chooser, label]
-        #         self.toolbar_reset()
-        #     elif change["new"] == "Cancel":
-        #         tool_output.clear_output()
-        #         self.toolbar_reset()
-
-        # save_type.observe(save_type_changed, names="value")
-        # ok_cancel.observe(ok_cancel_clicked, names="value")
-
-        # file_chooser.register_callback(chooser_callback)
-
-        # save_map_widget.children = [save_type, file_chooser]
 
         tools = {
             "info": {"name": "inspector", "tooltip": "Inspector"},
             "bar-chart": {"name": "plotting", "tooltip": "Plotting"},
-            # "camera": {
-            #     "name": "to_image",
-            #     "tooltip": "Save map as HTML or image",
-            # },
             "eraser": {
                 "name": "eraser",
                 "tooltip": "Remove all drawn features",
@@ -735,10 +285,6 @@ class Map(ipyleaflet.Map):
                 "name": "open_data",
                 "tooltip": "Open local vector/raster data",
             },
-            # "cloud-download": {
-            #     "name": "export_data",
-            #     "tooltip": "Export Earth Engine data",
-            # },
             "retweet": {
                 "name": "convert_js",
                 "tooltip": "Convert Earth Engine JavaScript to Python",
@@ -793,20 +339,13 @@ class Map(ipyleaflet.Map):
             # },
         }
 
-        # if kwargs["use_voila"]:
-        #     voila_tools = ["camera", "folder-open", "cloud-download", "gears"]
-
-        #     for item in voila_tools:
-        #         if item in tools.keys():
-        #             del tools[item]
-
         icons = list(tools.keys())
         tooltips = [item["tooltip"] for item in list(tools.values())]
 
         icon_width = "32px"
         icon_height = "32px"
         n_cols = 3
-        n_rows = math.ceil(len(icons) / n_cols)
+        n_rows = -int(-(len(icons) / n_cols))
 
         toolbar_grid = widgets.GridBox(
             children=[
@@ -838,19 +377,13 @@ class Map(ipyleaflet.Map):
                         tool.value = False
                 tool = change["owner"]
                 tool_name = tools[tool.icon]["name"]
-                # if tool_name == "to_image":
-                #     if tool_output_control not in self.controls:
-                #         self.add_control(tool_output_control)
-                #     with tool_output:
-                #         tool_output.clear_output()
-                #         display(save_map_widget)
                 if tool_name == "eraser":
                     self.remove_drawn_features()
                     tool.value = False
                 elif tool_name == "inspector":
-                    self.inspector_checked = tool.value
-                    if not self.inspector_checked:
-                        inspector_output.clear_output()
+                    if not hasattr(self, "inspector_control"):
+                        self.add_inspector()
+                    self.toolbar_reset()
                 elif tool_name == "plotting":
                     self.plot_checked = True
                     plot_dropdown_widget = widgets.Dropdown(
@@ -862,10 +395,10 @@ class Map(ipyleaflet.Map):
                         widget=plot_dropdown_widget, position="topright"
                     )
                     self.plot_dropdown_control = plot_dropdown_control
-                    self.add_control(plot_dropdown_control)
+                    self.add(plot_dropdown_control)
                     if self.draw_control in self.controls:
                         self.remove_control(self.draw_control)
-                    self.add_control(self.draw_control_lite)
+                    self.add_draw_control_lite()
                 elif tool_name == "open_data":
                     from .toolbar import open_data_widget
 
@@ -888,7 +421,7 @@ class Map(ipyleaflet.Map):
                         widget=wbt_toolbox, position="bottomright"
                     )
                     self.whitebox = wbt_control
-                    self.add_control(wbt_control)
+                    self.add(wbt_control)
                 elif tool_name == "geetoolbox":
                     from .toolbar import build_toolbox, get_tools_dict
 
@@ -900,7 +433,7 @@ class Map(ipyleaflet.Map):
                         widget=gee_toolbox, position="bottomright"
                     )
                     self.geetoolbox = geetoolbox_control
-                    self.add_control(geetoolbox_control)
+                    self.add(geetoolbox_control)
 
                 elif tool_name == "basemap":
                     from .toolbar import change_basemap
@@ -947,16 +480,8 @@ class Map(ipyleaflet.Map):
             else:
                 tool = change["owner"]
                 tool_name = tools[tool.icon]["name"]
-                if tool_name == "to_image":
-                    tool_output.clear_output()
-                    save_map_widget.children = [save_type, file_chooser]
-                    if tool_output_control in self.controls:
-                        self.remove_control(tool_output_control)
                 if tool_name == "inspector":
-                    inspector_output.clear_output()
-                    self.inspector_checked = False
-                    if inspector_output_control in self.controls:
-                        self.remove_control(inspector_output_control)
+                    pass
                 elif tool_name == "plotting":
                     self.plot_checked = False
                     plot_dropdown_widget = self.plot_dropdown_widget
@@ -980,7 +505,7 @@ class Map(ipyleaflet.Map):
                         self.remove_layer(self.plot_marker_cluster)
                     if self.draw_control_lite in self.controls:
                         self.remove_control(self.draw_control_lite)
-                    self.add_control(self.draw_control)
+                    self.add(self.draw_control)
                 elif tool_name == "whitebox":
                     if self.whitebox is not None and self.whitebox in self.controls:
                         self.remove_control(self.whitebox)
@@ -1045,164 +570,10 @@ class Map(ipyleaflet.Map):
 
         def layers_btn_click(change):
             if change["new"]:
-                layers_hbox = []
-                all_layers_chk = widgets.Checkbox(
-                    value=False,
-                    description="All layers on/off",
-                    indent=False,
-                    layout=widgets.Layout(height="18px", padding="0px 8px 25px 8px"),
-                )
-                all_layers_chk.layout.width = "30ex"
-                layers_hbox.append(all_layers_chk)
+                from .toolbar import layer_manager_gui
 
-                def all_layers_chk_changed(change):
-                    if change["new"]:
-                        for layer in self.layers:
-                            if hasattr(layer, "visible"):
-                                layer.visible = True
-                    else:
-                        for layer in self.layers:
-                            if hasattr(layer, "visible"):
-                                layer.visible = False
-
-                all_layers_chk.observe(all_layers_chk_changed, "value")
-
-                layers = [
-                    lyr
-                    for lyr in self.layers[1:]
-                    # if (
-                    #     isinstance(lyr, ipyleaflet.TileLayer)
-                    #     or isinstance(lyr, ipyleaflet.WMSLayer)
-                    # )
-                ]
-
-                # if the layers contain unsupported layers (e.g., GeoJSON, GeoData), adds the ipyleaflet built-in LayerControl
-                if len(layers) < (len(self.layers) - 1):
-                    if self.layer_control is None:
-                        layer_control = ipyleaflet.LayersControl(position="topright")
-                        self.layer_control = layer_control
-                    if self.layer_control not in self.controls:
-                        self.add_control(self.layer_control)
-
-                # for non-TileLayer, use layer.style={'opacity':0, 'fillOpacity': 0} to turn layer off.
-                for layer in layers:
-                    visible = True
-                    if hasattr(layer, "visible"):
-                        visible = layer.visible
-                    layer_chk = widgets.Checkbox(
-                        value=visible,
-                        description=layer.name,
-                        indent=False,
-                        layout=widgets.Layout(height="18px"),
-                    )
-                    layer_chk.layout.width = "25ex"
-
-                    if layer in self.geojson_layers:
-                        try:
-                            opacity = max(
-                                layer.style["opacity"], layer.style["fillOpacity"]
-                            )
-                        except KeyError:
-                            opacity = 1.0
-                    else:
-                        if hasattr(layer, "opacity"):
-                            opacity = layer.opacity
-
-                    layer_opacity = widgets.FloatSlider(
-                        value=opacity,
-                        min=0,
-                        max=1,
-                        step=0.01,
-                        readout=False,
-                        layout=widgets.Layout(width="80px"),
-                    )
-                    layer_settings = widgets.ToggleButton(
-                        icon="gear",
-                        tooltip=layer.name,
-                        layout=widgets.Layout(
-                            width="25px", height="25px", padding="0px 0px 0px 5px"
-                        ),
-                    )
-
-                    def layer_opacity_changed(change):
-                        if change["new"]:
-                            layer.style = {
-                                "opacity": change["new"],
-                                "fillOpacity": change["new"],
-                            }
-
-                    def layer_vis_on_click(change):
-                        if change["new"]:
-                            layer_name = change["owner"].tooltip
-                            # if layer_name in self.ee_raster_layer_names:
-                            if layer_name in self.ee_layer_names:
-                                layer_dict = self.ee_layer_dict[layer_name]
-
-                                if self.vis_widget is not None:
-                                    self.vis_widget = None
-                                self.vis_widget = self.create_vis_widget(layer_dict)
-                                if self.vis_control in self.controls:
-                                    self.remove_control(self.vis_control)
-                                    self.vis_control = None
-                                vis_control = ipyleaflet.WidgetControl(
-                                    widget=self.vis_widget, position="topright"
-                                )
-                                self.add_control((vis_control))
-                                self.vis_control = vis_control
-                            else:
-                                if self.vis_widget is not None:
-                                    self.vis_widget = None
-                                if self.vis_control is not None:
-                                    if self.vis_control in self.controls:
-                                        self.remove_control(self.vis_control)
-                                    self.vis_control = None
-                            change["owner"].value = False
-
-                    layer_settings.observe(layer_vis_on_click, "value")
-
-                    def layer_chk_changed(change):
-                        layer_name = change["owner"].description
-                        if layer_name in self.ee_layer_names:
-                            if change["new"]:
-                                if "legend" in self.ee_layer_dict[layer_name].keys():
-                                    legend = self.ee_layer_dict[layer_name]["legend"]
-                                    if legend not in self.controls:
-                                        self.add_control(legend)
-                                if "colorbar" in self.ee_layer_dict[layer_name].keys():
-                                    colorbar = self.ee_layer_dict[layer_name][
-                                        "colorbar"
-                                    ]
-                                    if colorbar not in self.controls:
-                                        self.add_control(colorbar)
-                            else:
-                                if "legend" in self.ee_layer_dict[layer_name].keys():
-                                    legend = self.ee_layer_dict[layer_name]["legend"]
-                                    if legend in self.controls:
-                                        self.remove_control(legend)
-                                if "colorbar" in self.ee_layer_dict[layer_name].keys():
-                                    colorbar = self.ee_layer_dict[layer_name][
-                                        "colorbar"
-                                    ]
-                                    if colorbar in self.controls:
-                                        self.remove_control(colorbar)
-
-                    layer_chk.observe(layer_chk_changed, "value")
-
-                    if hasattr(layer, "visible"):
-                        widgets.jslink((layer_chk, "value"), (layer, "visible"))
-
-                    if layer in self.geojson_layers:
-                        layer_opacity.observe(layer_opacity_changed, "value")
-                    elif hasattr(layer, "opacity"):
-                        widgets.jsdlink((layer_opacity, "value"), (layer, "opacity"))
-                    hbox = widgets.HBox(
-                        [layer_chk, layer_settings, layer_opacity],
-                        layout=widgets.Layout(padding="0px 8px 0px 8px"),
-                    )
-                    layers_hbox.append(hbox)
-
-                toolbar_footer.children = layers_hbox
-                toolbar_button.value = False
+                # Create Layer Manager Widget
+                toolbar_footer.children = layer_manager_gui(self, return_widget=True)
             else:
                 toolbar_footer.children = [toolbar_grid]
 
@@ -1212,77 +583,11 @@ class Map(ipyleaflet.Map):
         )
 
         if kwargs.get("toolbar_ctrl"):
-            self.add_control(toolbar_control)
+            self.add(toolbar_control)
             self.toolbar_ctrl = toolbar_control
-
-        tool_output_control = ipyleaflet.WidgetControl(
-            widget=tool_output, position="topright"
-        )
-        # self.add_control(tool_output_control)
-
-        expand_label = widgets.Label(
-            "Expand   ",
-            layout=widgets.Layout(padding="0px 0px 0px 4px"),
-        )
-
-        expand_point = widgets.Checkbox(
-            description="Point",
-            indent=False,
-            value=self._expand_point,
-            layout=widgets.Layout(width="65px"),
-        )
-
-        expand_pixels = widgets.Checkbox(
-            description="Pixels",
-            indent=False,
-            value=self._expand_pixels,
-            layout=widgets.Layout(width="65px"),
-        )
-
-        expand_objects = widgets.Checkbox(
-            description="Objects",
-            indent=False,
-            value=self._expand_objects,
-            layout=widgets.Layout(width="70px"),
-        )
-
-        def expand_point_changed(change):
-            self._expand_point = change["new"]
-
-        def expand_pixels_changed(change):
-            self._expand_pixels = change["new"]
-
-        def expand_objects_changed(change):
-            self._expand_objects = change["new"]
-
-        expand_point.observe(expand_point_changed, "value")
-        expand_pixels.observe(expand_pixels_changed, "value")
-        expand_objects.observe(expand_objects_changed, "value")
-
-        inspector_checks = widgets.HBox()
-        inspector_checks.children = [
-            expand_label,
-            widgets.Label(""),
-            expand_point,
-            expand_pixels,
-            expand_objects,
-        ]
 
         def handle_interaction(**kwargs):
             latlon = kwargs.get("coordinates")
-            if kwargs.get("type") == "click" and self.inspector_checked:
-                self.default_style = {"cursor": "wait"}
-                if inspector_output_control not in self.controls:
-                    self.add_control(inspector_output_control)
-                sample_scale = self.getScale()
-                layers = self.ee_layers
-
-                with inspector_output:
-                    inspector_output.clear_output(wait=True)
-                    display(inspector_checks)
-                    display(self.inspector(latlon))
-
-                self.default_style = {"cursor": "crosshair"}
             if (
                 kwargs.get("type") == "click"
                 and self.plot_checked
@@ -1377,10 +682,10 @@ class Map(ipyleaflet.Map):
         self.on_interaction(handle_interaction)
 
     def add(self, object):
-        """Adds a layer to the map.
+        """Adds a layer or control to the map.
 
         Args:
-            layer (object): The layer to add to the map.
+            layer (object): The layer or control to add to the map.
         """
         if isinstance(object, str):
             if object in basemaps.keys():
@@ -1392,25 +697,28 @@ class Map(ipyleaflet.Map):
         """Adds Google basemap and controls to the ipyleaflet map.
 
         Args:
-            mapTypeId (str, optional): A mapTypeId to set the basemap to. Can be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN" to select one of the standard Google Maps API map types. Defaults to 'HYBRID'.
-            styles (object, optional): A dictionary of custom MapTypeStyle objects keyed with a name that will appear in the map's Map Type Controls. Defaults to None.
-            types (list, optional): A list of mapTypeIds to make available. If omitted, but opt_styles is specified, appends all of the style keys to the standard Google Maps API map types.. Defaults to None.
+            mapTypeId (str, optional): A mapTypeId to set the basemap to. Can be one of "ROADMAP", "SATELLITE",
+                "HYBRID" or "TERRAIN" to select one of the standard Google Maps API map types. Defaults to 'HYBRID'.
+            styles (object, optional): A dictionary of custom MapTypeStyle objects keyed with a name
+                that will appear in the map's Map Type Controls. Defaults to None.
+            types (list, optional): A list of mapTypeIds to make available. If omitted, but opt_styles is specified,
+                appends all of the style keys to the standard Google Maps API map types.. Defaults to None.
         """
         self.clear_layers()
         self.clear_controls()
         self.scroll_wheel_zoom = True
-        self.add_control(ipyleaflet.ZoomControl(position="topleft"))
-        self.add_control(ipyleaflet.LayersControl(position="topright"))
-        self.add_control(ipyleaflet.ScaleControl(position="bottomleft"))
-        self.add_control(ipyleaflet.FullScreenControl())
-        self.add_control(ipyleaflet.DrawControl())
+        self.add(ipyleaflet.ZoomControl(position="topleft"))
+        self.add(ipyleaflet.LayersControl(position="topright"))
+        self.add(ipyleaflet.ScaleControl(position="bottomleft"))
+        self.add(ipyleaflet.FullScreenControl())
+        self.add(ipyleaflet.DrawControl())
 
         measure = ipyleaflet.MeasureControl(
             position="bottomleft",
             active_color="orange",
             primary_length_unit="kilometers",
         )
-        self.add_control(measure)
+        self.add(measure)
 
         try:
             self.add(mapTypeId)
@@ -1702,6 +1010,8 @@ class Map(ipyleaflet.Map):
         Returns:
             float: Map resolution in meters.
         """
+        import math
+
         zoom_level = self.zoom
         # Reference: https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
         resolution = 156543.04 * math.cos(0) / math.pow(2, zoom_level)
@@ -2070,7 +1380,7 @@ class Map(ipyleaflet.Map):
         minimap.layout.height = "150px"
         ipyleaflet.link((minimap, "center"), (self, "center"))
         minimap_control = ipyleaflet.WidgetControl(widget=minimap, position=position)
-        self.add_control(minimap_control)
+        self.add(minimap_control)
 
     def marker_cluster(self):
         """Adds a marker cluster to the map and returns a list of ee.Feature, which can be accessed using Map.ee_marker_cluster.
@@ -2191,7 +1501,7 @@ class Map(ipyleaflet.Map):
             )
             self.plot_widget = plot_widget
             self.plot_control = plot_control
-            self.add_control(plot_control)
+            self.add(plot_control)
 
         if max_width is None:
             max_width = 500
@@ -2255,6 +1565,7 @@ class Map(ipyleaflet.Map):
         """
 
         import numpy as np
+        import time
 
         if self.random_marker is not None:
             self.remove_layer(self.random_marker)
@@ -2350,7 +1661,7 @@ class Map(ipyleaflet.Map):
         )
         self.plot_widget = plot_widget
         self.plot_control = plot_control
-        self.add_control(plot_control)
+        self.add(plot_control)
 
         self.default_style = {"cursor": "crosshair"}
         msg = "The plot function can only be used on ee.Image or ee.ImageCollection with more than one band."
@@ -2475,7 +1786,7 @@ class Map(ipyleaflet.Map):
         if self.layer_control is None:
             layer_control = ipyleaflet.LayersControl(position="topright")
             self.layer_control = layer_control
-            self.add_control(layer_control)
+            self.add(layer_control)
 
     addLayerControl = add_layer_control
 
@@ -2520,9 +1831,9 @@ class Map(ipyleaflet.Map):
             self.clear_controls()
 
             if zoom_control:
-                self.add_control(ipyleaflet.ZoomControl())
+                self.add(ipyleaflet.ZoomControl())
             if fullscreen_control:
-                self.add_control(ipyleaflet.FullScreenControl())
+                self.add(ipyleaflet.FullScreenControl())
 
             if left_label is not None:
                 left_name = left_label
@@ -2587,7 +1898,7 @@ class Map(ipyleaflet.Map):
                 left_layer=left_layer, right_layer=right_layer
             )
 
-            self.add_control(control)
+            self.add(control)
 
             if left_label is not None:
                 if widget_layout is None:
@@ -2597,7 +1908,7 @@ class Map(ipyleaflet.Map):
                 left_control = ipyleaflet.WidgetControl(
                     widget=left_widget, position=left_position
                 )
-                self.add_control(left_control)
+                self.add(left_control)
 
             if right_label is not None:
                 if widget_layout is None:
@@ -2606,7 +1917,7 @@ class Map(ipyleaflet.Map):
                 right_control = ipyleaflet.WidgetControl(
                     widget=right_widget, position=right_position
                 )
-                self.add_control(right_control)
+                self.add(right_control)
 
             close_button = widgets.ToggleButton(
                 value=False,
@@ -2635,7 +1946,7 @@ class Map(ipyleaflet.Map):
             )
 
             if add_close_button:
-                self.add_control(close_control)
+                self.add(close_control)
 
             if layer_control:
                 self.addLayerControl()
@@ -2727,12 +2038,12 @@ class Map(ipyleaflet.Map):
             widget=right_dropdown, position="topright"
         )
 
-        self.add_control(control=left_control)
-        self.add_control(control=right_control)
+        self.add(left_control)
+        self.add(right_control)
 
-        self.add_control(ipyleaflet.ZoomControl(position="topleft"))
-        self.add_control(ipyleaflet.ScaleControl(position="bottomleft"))
-        self.add_control(ipyleaflet.FullScreenControl())
+        self.add(ipyleaflet.ZoomControl(position="topleft"))
+        self.add(ipyleaflet.ScaleControl(position="bottomleft"))
+        self.add(ipyleaflet.FullScreenControl())
 
         def left_dropdown_change(change):
             left_dropdown_index = left_dropdown.index
@@ -2828,10 +2139,10 @@ class Map(ipyleaflet.Map):
             split_control = ipyleaflet.SplitMapControl(
                 left_layer=left_layer, right_layer=right_layer
             )
-            self.add_control(split_control)
+            self.add(split_control)
 
             if add_close_button:
-                self.add_control(close_control)
+                self.add(close_control)
 
         except Exception as e:
             raise Exception(e)
@@ -2851,7 +2162,7 @@ class Map(ipyleaflet.Map):
 
         dropdown.observe(on_click, "value")
         basemap_control = ipyleaflet.WidgetControl(widget=dropdown, position="topright")
-        self.add_control(basemap_control)
+        self.add(basemap_control)
 
     def add_legend(
         self,
@@ -2877,6 +2188,8 @@ class Map(ipyleaflet.Map):
 
         """
         from IPython.display import display
+        import pkg_resources
+        from .legends import builtin_legends
 
         pkg_dir = os.path.dirname(
             pkg_resources.resource_filename("geemap", "geemap.py")
@@ -3036,7 +2349,7 @@ class Map(ipyleaflet.Map):
 
             self.legend_widget = legend_output_widget
             self.legend_control = legend_control
-            self.add_control(legend_control)
+            self.add(legend_control)
 
             if not hasattr(self, "legends"):
                 setattr(self, "legends", [legend_control])
@@ -3218,7 +2531,7 @@ class Map(ipyleaflet.Map):
         else:
             self.colorbars.append(colormap_ctrl)
 
-        self.add_control(colormap_ctrl)
+        self.add(colormap_ctrl)
 
     def add_colorbar_branca(
         self,
@@ -3292,7 +2605,7 @@ class Map(ipyleaflet.Map):
             display(colormap)
 
         self.colorbar = colormap_ctrl
-        self.add_control(colormap_ctrl)
+        self.add(colormap_ctrl)
 
         if not hasattr(self, "colorbars"):
             self.colorbars = [colormap_ctrl]
@@ -3592,7 +2905,7 @@ class Map(ipyleaflet.Map):
             if add_layer_control and self.layer_control is None:
                 layer_control = ipyleaflet.LayersControl(position="topright")
                 self.layer_control = layer_control
-                self.add_control(layer_control)
+                self.add(layer_control)
 
             before_width = self.layout.width
             before_height = self.layout.height
@@ -3639,6 +2952,8 @@ class Map(ipyleaflet.Map):
             filename (str, optional): The output file path to the image. Defaults to None.
             monitor (int, optional): The monitor to take the screenshot. Defaults to 1.
         """
+        self.screenshot = None
+
         if filename is None:
             filename = os.path.join(os.getcwd(), "my_map.png")
 
@@ -3777,95 +3092,6 @@ class Map(ipyleaflet.Map):
         else:
             raise Exception("The source must be a URL.")
 
-    def add_raster_legacy(
-        self,
-        image,
-        bands=None,
-        layer_name=None,
-        colormap=None,
-        x_dim="x",
-        y_dim="y",
-    ):
-        """Adds a local raster dataset to the map.
-
-        Args:
-            image (str): The image file path.
-            bands (int or list, optional): The image bands to use. It can be either a number (e.g., 1) or a list (e.g., [3, 2, 1]). Defaults to None.
-            layer_name (str, optional): The layer name to use for the raster. Defaults to None.
-            colormap (str, optional): The name of the colormap to use for the raster, such as 'gray' and 'terrain'. More can be found at https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html. Defaults to None.
-            x_dim (str, optional): The x dimension. Defaults to 'x'.
-            y_dim (str, optional): The y dimension. Defaults to 'y'.
-        """
-        try:
-            import xarray_leaflet
-
-        except Exception:
-            # import platform
-            # if platform.system() != "Windows":
-            #     # install_from_github(
-            #     #     url='https://github.com/davidbrochart/xarray_leaflet')
-            #     check_install('xarray_leaflet')
-            #     import xarray_leaflet
-            # else:
-            raise ImportError(
-                "You need to install xarray_leaflet first. See https://github.com/davidbrochart/xarray_leaflet"
-            )
-
-        import warnings
-
-        # import xarray as xr
-        import matplotlib.pyplot as plt
-        import numpy as np
-        import rioxarray
-
-        warnings.simplefilter("ignore")
-
-        if not os.path.exists(image):
-            print("The image file does not exist.")
-            return
-
-        if colormap is None:
-            colormap = plt.cm.inferno
-
-        if layer_name is None:
-            layer_name = "Layer_" + random_string()
-
-        if isinstance(colormap, str):
-            colormap = plt.cm.get_cmap(name=colormap)
-
-        da = rioxarray.open_rasterio(image, masked=True)
-
-        # print(da.rio.nodata)
-
-        multi_band = False
-        if len(da.band) > 1:
-            multi_band = True
-            if bands is None:
-                bands = [3, 2, 1]
-        else:
-            bands = 1
-
-        if multi_band:
-            da = da.rio.write_nodata(0)
-        else:
-            da = da.rio.write_nodata(np.nan)
-        da = da.sel(band=bands)
-
-        # crs = da.rio.crs
-        # nan = da.attrs['nodatavals'][0]
-        # da = da / da.max()
-        # # if multi_band:
-        # da = xr.where(da == nan, np.nan, da)
-        # da = da.rio.write_nodata(0)
-        # da = da.rio.write_crs(crs)
-
-        if multi_band and type(bands) == list:
-            layer = da.leaflet.plot(self, x_dim=x_dim, y_dim=y_dim, rgb_dim="band")
-        else:
-            layer = da.leaflet.plot(self, x_dim=x_dim, y_dim=y_dim, colormap=colormap)
-
-        layer.name = layer_name
-
     def remove_drawn_features(self):
         """Removes user-drawn geometries from the map"""
         if self.draw_layer is not None:
@@ -3996,7 +3222,7 @@ class Map(ipyleaflet.Map):
         self.colorbar_ctrl = ipyleaflet.WidgetControl(
             widget=self.colorbar_widget, position="bottomright"
         )
-        self.add_control(self.colorbar_ctrl)
+        self.add(self.colorbar_ctrl)
 
         # def vdir(obj):  # Get branca colormap list
         #     return [x for x in dir(obj) if not x.startswith("_")]
@@ -4138,7 +3364,7 @@ class Map(ipyleaflet.Map):
                             self.colorbar_ctrl = ipyleaflet.WidgetControl(
                                 widget=self.colorbar_widget, position="bottomright"
                             )
-                            self.add_control(self.colorbar_ctrl)
+                            self.add(self.colorbar_ctrl)
 
                         colorbar_output = self.colorbar_widget
                         with colorbar_output:
@@ -4331,7 +3557,7 @@ class Map(ipyleaflet.Map):
                         self.colorbar_ctrl = ipyleaflet.WidgetControl(
                             widget=self.colorbar_widget, position="bottomright"
                         )
-                        self.add_control(self.colorbar_ctrl)
+                        self.add(self.colorbar_ctrl)
 
                     colorbar_output = self.colorbar_widget
                     with colorbar_output:
@@ -4629,7 +3855,7 @@ class Map(ipyleaflet.Map):
                     )
 
                     if self.colorbar_ctrl not in self.controls:
-                        self.add_control(self.colorbar_ctrl)
+                        self.add(self.colorbar_ctrl)
 
                     self.colorbar_widget.clear_output()
                     with self.colorbar_widget:
@@ -4927,7 +4153,7 @@ class Map(ipyleaflet.Map):
                             self.colorbar_ctrl = ipyleaflet.WidgetControl(
                                 widget=self.colorbar_widget, position="bottomright"
                             )
-                            self.add_control(self.colorbar_ctrl)
+                            self.add(self.colorbar_ctrl)
 
                         colorbar_output = self.colorbar_widget
                         with colorbar_output:
@@ -4974,7 +4200,7 @@ class Map(ipyleaflet.Map):
                         self.colorbar_ctrl = ipyleaflet.WidgetControl(
                             widget=self.colorbar_widget, position="bottomright"
                         )
-                        self.add_control(self.colorbar_ctrl)
+                        self.add(self.colorbar_ctrl)
 
                     colorbar_output = self.colorbar_widget
                     with colorbar_output:
@@ -5043,7 +4269,7 @@ class Map(ipyleaflet.Map):
                     self.colorbar_ctrl = ipyleaflet.WidgetControl(
                         widget=self.colorbar_widget, position="bottomright"
                     )
-                    self.add_control(self.colorbar_ctrl)
+                    self.add(self.colorbar_ctrl)
                     fill_color.disabled = True
                     colormap_options = plt.colormaps()
                     colormap_options.sort()
@@ -5459,7 +4685,7 @@ class Map(ipyleaflet.Map):
         )
 
         if info_mode in ["on_hover", "on_click"]:
-            self.add_control(info_control)
+            self.add(info_control)
 
         def toolbar_btn_click(change):
             if change["new"]:
@@ -5695,7 +4921,6 @@ class Map(ipyleaflet.Map):
             geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
 
         """
-
         gdf = osm_to_gdf(
             query, which_result=which_result, by_osmid=by_osmid, buffer_dist=buffer_dist
         )
@@ -5746,6 +4971,7 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_geocode
 
         gdf = osm_gdf_from_geocode(
             query, which_result=which_result, by_osmid=by_osmid, buffer_dist=buffer_dist
@@ -5789,6 +5015,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_address
+
         gdf = osm_gdf_from_address(address, tags, dist)
         geojson = gdf.__geo_interface__
 
@@ -5831,6 +5059,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_place
+
         gdf = osm_gdf_from_place(query, tags, which_result, buffer_dist)
         geojson = gdf.__geo_interface__
 
@@ -5871,6 +5101,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_point
+
         gdf = osm_gdf_from_point(center_point, tags, dist)
         geojson = gdf.__geo_interface__
 
@@ -5909,6 +5141,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_polygon
+
         gdf = osm_gdf_from_polygon(polygon, tags)
         geojson = gdf.__geo_interface__
 
@@ -5954,6 +5188,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_bbox
+
         gdf = osm_gdf_from_bbox(north, south, east, west, tags)
         geojson = gdf.__geo_interface__
 
@@ -5990,6 +5226,8 @@ class Map(ipyleaflet.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
+        from .osm import osm_gdf_from_bbox
+
         bounds = self.bounds
         if len(bounds) == 0:
             bounds = (
@@ -6229,6 +5467,8 @@ class Map(ipyleaflet.Map):
         slider_widget = widgets.HBox([slider, label, play_btn, pause_btn, close_btn])
 
         def play_click(b):
+            import time
+
             play_chk.value = True
 
             def work(slider):
@@ -6273,7 +5513,7 @@ class Map(ipyleaflet.Map):
         close_btn.on_click(close_click)
 
         slider_ctrl = ipyleaflet.WidgetControl(widget=slider_widget, position=position)
-        self.add_control(slider_ctrl)
+        self.add(slider_ctrl)
         self.slider_ctrl = slider_ctrl
 
     def add_xy_data(
@@ -7287,6 +6527,8 @@ class Map(ipyleaflet.Map):
         Returns:
             ipytree.Node | ipytree.Tree: The ipytree node or tree widget.
         """
+        from ipytree import Node, Tree
+
         point_nodes = [
             Node(f"Longitude: {latlon[1]}"),
             Node(f"Latitude: {latlon[0]}"),
@@ -7319,6 +6561,8 @@ class Map(ipyleaflet.Map):
         Returns:
             ipytree.Node | ipytree.Tree: The ipytree node or tree widget.
         """
+        from ipytree import Node, Tree
+
         layers = self.ee_layers
         xy = ee.Geometry.Point(latlon[::-1])
         sample_scale = self.getScale()
@@ -7381,6 +6625,8 @@ class Map(ipyleaflet.Map):
         Returns:
             ipytree.Node | ipytree.Tree: The ipytree node or tree widget.
         """
+        from ipytree import Node, Tree
+
         layers = self.ee_layers
         xy = ee.Geometry.Point(latlon[::-1])
         root_node = Node("Objects", icon="archive")
@@ -7434,7 +6680,7 @@ class Map(ipyleaflet.Map):
         else:
             return Tree(nodes=[root_node])
 
-    def inspector(self, latlon):
+    def inspect(self, latlon):
         """Create the Inspector GUI.
 
         Args:
@@ -7442,6 +6688,8 @@ class Map(ipyleaflet.Map):
         Returns:
             ipytree.Tree: The ipytree tree widget for the Inspector GUI.
         """
+        from ipytree import Tree
+
         tree = Tree()
         nodes = []
         point_node = self._point_info(latlon, return_node=True)
@@ -7454,6 +6702,26 @@ class Map(ipyleaflet.Map):
             nodes.append(objects_node)
         tree.nodes = nodes
         return tree
+
+    def add_inspector(self, position="topright"):
+        """Add the Inspector GUI to the map.
+
+        Args:
+            position (str, optional): The position of the Inspector GUI. Defaults to "topright".
+        """
+        from .toolbar import ee_inspector_gui
+
+        ee_inspector_gui(self, position)
+
+    def add_layer_manager(self, position="topright"):
+        """Add the Layer Manager to the map.
+
+        Args:
+            position (str, optional): The position of the Layer Manager. Defaults to "topright".
+        """
+        from .toolbar import layer_manager_gui
+
+        layer_manager_gui(self, position)
 
     def add_widget(self, content, position="bottomright", **kwargs):
         """Add a widget (e.g., text, HTML, figure) to the map.
@@ -7480,7 +6748,7 @@ class Map(ipyleaflet.Map):
                 with output:
                     display(content)
                 control = ipyleaflet.WidgetControl(widget=output, position=position)
-            self.add_control(control)
+            self.add(control)
 
         except Exception as e:
             raise Exception(f"Error adding widget: {e}")
@@ -7570,6 +6838,113 @@ class Map(ipyleaflet.Map):
         print(
             "The ipyleaflet plotting backend does not support this function. Please use the folium backend instead."
         )
+
+    def add_search_control(
+        self,
+        marker=None,
+        url=None,
+        zoom=5,
+        property_name="display_name",
+        position="topleft",
+    ):
+        """Add a search control to the map.
+
+        Args:
+            marker (ipyleaflet.Marker, optional): The marker to use. Defaults to None.
+            url (str, optional): The URL to use for the search. Defaults to None.
+            zoom (int, optional): The zoom level to use. Defaults to 5.
+            property_name (str, optional): The property name to use. Defaults to "display_name".
+            position (str, optional): The position of the widget. Defaults to "topleft".
+        """
+        if marker is None:
+            marker = ipyleaflet.Marker(
+                icon=ipyleaflet.AwesomeIcon(
+                    name="check", marker_color="green", icon_color="darkgreen"
+                )
+            )
+
+        if url is None:
+            url = "https://nominatim.openstreetmap.org/search?format=json&q={s}"
+        search = ipyleaflet.SearchControl(
+            position=position,
+            url=url,
+            zoom=zoom,
+            property_name=property_name,
+            marker=marker,
+        )
+        self.add(search)
+
+    def add_draw_control(self):
+        """Add a draw control to the map"""
+
+        draw_control = ipyleaflet.DrawControl(
+            marker={"shapeOptions": {"color": "#3388ff"}},
+            rectangle={"shapeOptions": {"color": "#3388ff"}},
+            circle={"shapeOptions": {"color": "#3388ff"}},
+            circlemarker={},
+            edit=True,
+            remove=True,
+        )
+
+        # Handles draw events
+        def handle_draw(target, action, geo_json):
+            try:
+                self.roi_start = True
+                geom = geojson_to_ee(geo_json, False)
+                self.user_roi = geom
+                feature = ee.Feature(geom)
+                self.draw_last_json = geo_json
+                self.draw_last_feature = feature
+                if action == "deleted" and len(self.draw_features) > 0:
+                    self.draw_features.remove(feature)
+                    self.draw_count -= 1
+                else:
+                    self.draw_features.append(feature)
+                    self.draw_count += 1
+                collection = ee.FeatureCollection(self.draw_features)
+                self.user_rois = collection
+                ee_draw_layer = ee_tile_layer(
+                    collection, {"color": "blue"}, "Drawn Features", False, 0.5
+                )
+                draw_layer_index = self.find_layer_index("Drawn Features")
+
+                if draw_layer_index == -1:
+                    self.add(ee_draw_layer)
+                    self.draw_layer = ee_draw_layer
+                else:
+                    self.substitute_layer(self.draw_layer, ee_draw_layer)
+                    self.draw_layer = ee_draw_layer
+                self.roi_end = True
+                self.roi_start = False
+            except Exception as e:
+                self.draw_count = 0
+                self.draw_features = []
+                self.draw_last_feature = None
+                self.draw_layer = None
+                self.user_roi = None
+                self.roi_start = False
+                self.roi_end = False
+                print("There was an error creating Earth Engine Feature.")
+                raise Exception(e)
+
+        draw_control.on_draw(handle_draw)
+        self.add(draw_control)
+        self.draw_control = draw_control
+
+    def add_draw_control_lite(self):
+        """Add a lite version draw control to the map for the plotting tool."""
+
+        draw_control_lite = ipyleaflet.DrawControl(
+            marker={},
+            rectangle={"shapeOptions": {"color": "#3388ff"}},
+            circle={"shapeOptions": {"color": "#3388ff"}},
+            circlemarker={},
+            polyline={},
+            polygon={},
+            edit=False,
+            remove=False,
+        )
+        self.draw_control_lite = draw_control_lite
 
 
 # The functions below are outside the Map class.
@@ -7782,7 +7157,7 @@ def linked_maps(
                 control = ipyleaflet.WidgetControl(
                     widget=label, position=label_position
                 )
-                m.add_control(control)
+                m.add(control)
 
             maps.append(m)
             widgets.jslink((maps[0], "center"), (m, "center"))
