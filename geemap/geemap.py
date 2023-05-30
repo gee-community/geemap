@@ -270,15 +270,6 @@ class Map(ipyleaflet.Map):
         self.plot_all_clicks = []
         self.plot_checked = False
 
-        inspector_output = widgets.Output(
-            layout={
-                "border": "1px solid black",
-                "max_width": "600px",
-                "max_height": "530px",
-                "overflow": "auto",
-            }
-        )
-
         tool_output = widgets.Output()
         self.tool_output = tool_output
         tool_output.clear_output(wait=True)
@@ -580,6 +571,7 @@ class Map(ipyleaflet.Map):
         def layers_btn_click(change):
             if change["new"]:
                 from .toolbar import layer_manager_gui
+
                 # Create Layer Manager Widget
                 toolbar_footer.children = layer_manager_gui(self, return_widget=True)
             else:
@@ -593,11 +585,6 @@ class Map(ipyleaflet.Map):
         if kwargs.get("toolbar_ctrl"):
             self.add(toolbar_control)
             self.toolbar_ctrl = toolbar_control
-
-        tool_output_control = ipyleaflet.WidgetControl(
-            widget=tool_output, position="topright"
-        )
-        self.add(tool_output_control)
 
         def handle_interaction(**kwargs):
             latlon = kwargs.get("coordinates")
