@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.22.0 - May 29, 2023
+
+**New Features**
+
+-   Added `Map.add_inspector()` method (#1544)
+-   Added `Map.add_layer_manager()` method (#1544)
+
+**Improvement**
+
+-   Simplified the geemap module (#1544)
+-   Deprecated the heremap module (#1543)
+
 ## v0.21.0 - May 29, 2023
 
 **New Features**
