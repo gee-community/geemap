@@ -747,54 +747,6 @@ class Map(ipyleaflet.Map):
         )
         self.add(tool_output_control)
 
-        expand_label = widgets.Label(
-            "Expand   ",
-            layout=widgets.Layout(padding="0px 0px 0px 4px"),
-        )
-
-        expand_point = widgets.Checkbox(
-            description="Point",
-            indent=False,
-            value=self._expand_point,
-            layout=widgets.Layout(width="65px"),
-        )
-
-        expand_pixels = widgets.Checkbox(
-            description="Pixels",
-            indent=False,
-            value=self._expand_pixels,
-            layout=widgets.Layout(width="65px"),
-        )
-
-        expand_objects = widgets.Checkbox(
-            description="Objects",
-            indent=False,
-            value=self._expand_objects,
-            layout=widgets.Layout(width="70px"),
-        )
-
-        def expand_point_changed(change):
-            self._expand_point = change["new"]
-
-        def expand_pixels_changed(change):
-            self._expand_pixels = change["new"]
-
-        def expand_objects_changed(change):
-            self._expand_objects = change["new"]
-
-        expand_point.observe(expand_point_changed, "value")
-        expand_pixels.observe(expand_pixels_changed, "value")
-        expand_objects.observe(expand_objects_changed, "value")
-
-        inspector_checks = widgets.HBox()
-        inspector_checks.children = [
-            expand_label,
-            widgets.Label(""),
-            expand_point,
-            expand_pixels,
-            expand_objects,
-        ]
-
         def handle_interaction(**kwargs):
             latlon = kwargs.get("coordinates")
             if (
