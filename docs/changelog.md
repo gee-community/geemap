@@ -9,7 +9,7 @@
 
 **Improvement**
 
--   Simplifed the geemap module (#1544)
+-   Simplified the geemap module (#1544)
 -   Deprecated the heremap module (#1543)
 
 ## v0.21.0 - May 29, 2023
