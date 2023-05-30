@@ -6874,6 +6874,16 @@ class Map(ipyleaflet.Map):
 
         ee_inspector_gui(self, position)
 
+    def add_layer_manager(self, position="topright"):
+        """Add the Layer Manager to the map.
+
+        Args:
+            position (str, optional): The position of the Layer Manager. Defaults to "topright".
+        """
+        from .toolbar import layer_manager_gui
+
+        layer_manager_gui(self, position)
+
     def add_widget(self, content, position="bottomright", **kwargs):
         """Add a widget (e.g., text, HTML, figure) to the map.
 
