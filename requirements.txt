@@ -13,5 +13,6 @@ numpy
 pandas
 plotly
 pyperclip
+pyshp>=2.1.3
 python-box
 scooby

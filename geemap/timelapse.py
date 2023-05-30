@@ -1017,7 +1017,12 @@ def create_timelapse(
     else:
         video_args["bands"] = ["vis-gray"]
 
-    if isinstance(dimensions, int) and dimensions > 768 or isinstance(dimensions, str) and any(dim>768 for dim in list(map(int,dimensions.split('x')))):
+    if (
+        isinstance(dimensions, int)
+        and dimensions > 768
+        or isinstance(dimensions, str)
+        and any(dim > 768 for dim in list(map(int, dimensions.split("x"))))
+    ):
         count = col.size().getInfo()
         basename = os.path.basename(out_gif)[:-4]
         names = [
@@ -2711,7 +2716,12 @@ def landsat_timelapse(
                 col, overlay_data, overlay_color, overlay_width, overlay_opacity
             )
 
-        if isinstance(dimensions, int) and dimensions > 768 or isinstance(dimensions, str) and any(dim>768 for dim in list(map(int,dimensions.split('x')))):
+        if (
+            isinstance(dimensions, int)
+            and dimensions > 768
+            or isinstance(dimensions, str)
+            and any(dim > 768 for dim in list(map(int, dimensions.split("x"))))
+        ):
             count = col.size().getInfo()
             basename = os.path.basename(out_gif)[:-4]
             names = [
@@ -2985,7 +2995,12 @@ def landsat_timelapse_legacy(
                 col, overlay_data, overlay_color, overlay_width, overlay_opacity
             )
 
-        if isinstance(dimensions, int) and dimensions > 768 or isinstance(dimensions, str) and any(dim>768 for dim in list(map(int,dimensions.split('x')))):
+        if (
+            isinstance(dimensions, int)
+            and dimensions > 768
+            or isinstance(dimensions, str)
+            and any(dim > 768 for dim in list(map(int, dimensions.split("x"))))
+        ):
             count = col.size().getInfo()
             basename = os.path.basename(out_gif)[:-4]
             names = [
@@ -3195,7 +3210,12 @@ def sentinel1_timelapse_legacy(
             col, overlay_data, overlay_color, overlay_width, overlay_opacity
         )
 
-    if isinstance(dimensions, int) and dimensions > 768 or isinstance(dimensions, str) and any(dim>768 for dim in list(map(int,dimensions.split('x')))):
+    if (
+        isinstance(dimensions, int)
+        and dimensions > 768
+        or isinstance(dimensions, str)
+        and any(dim > 768 for dim in list(map(int, dimensions.split("x"))))
+    ):
         count = col.size().getInfo()
         basename = os.path.basename(out_gif)[:-4]
         names = [
@@ -3443,7 +3463,12 @@ def sentinel2_timelapse(
                 col, overlay_data, overlay_color, overlay_width, overlay_opacity
             )
 
-        if isinstance(dimensions, int) and dimensions > 768 or isinstance(dimensions, str) and any(dim>768 for dim in list(map(int,dimensions.split('x')))):
+        if (
+            isinstance(dimensions, int)
+            and dimensions > 768
+            or isinstance(dimensions, str)
+            and any(dim > 768 for dim in list(map(int, dimensions.split("x"))))
+        ):
             count = col.size().getInfo()
             basename = os.path.basename(out_gif)[:-4]
             names = [

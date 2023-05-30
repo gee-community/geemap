@@ -18,7 +18,6 @@ import requests
 import folium
 import ipyleaflet
 import xyzservices.providers as xyz
-from xyzservices import TileProvider
 from .common import check_package, planet_tiles
 
 # Custom XYZ tile services.
@@ -450,6 +449,14 @@ def get_qms(service_id):
 
 
 def qms_to_geemap(service_id):
+    """Convert a qms service to an ipyleaflet tile layer.
+
+    Args:
+        service_id (str): Service ID.
+
+    Returns:
+        ipyleaflet.TileLayer: An ipyleaflet tile layer.
+    """
     service_details = get_qms(service_id)
     name = service_details["name"]
     url = service_details["url"]
