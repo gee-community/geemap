@@ -6703,7 +6703,7 @@ class Map(ipyleaflet.Map):
         tree.nodes = nodes
         return tree
 
-    def add_inspector(self, position="topright"):
+    def add_inspector(self, position="topright", opened=True):
         """Add the Inspector GUI to the map.
 
         Args:
@@ -6711,9 +6711,9 @@ class Map(ipyleaflet.Map):
         """
         from .toolbar import ee_inspector_gui
 
-        ee_inspector_gui(self, position)
+        ee_inspector_gui(self, position, opened)
 
-    def add_layer_manager(self, position="topright"):
+    def add_layer_manager(self, position="topright", opened=True):
         """Add the Layer Manager to the map.
 
         Args:
@@ -6721,7 +6721,7 @@ class Map(ipyleaflet.Map):
         """
         from .toolbar import layer_manager_gui
 
-        layer_manager_gui(self, position)
+        layer_manager_gui(self, position, opened)
 
     def add_widget(self, content, position="bottomright", **kwargs):
         """Add a widget (e.g., text, HTML, figure) to the map.
