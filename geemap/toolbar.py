@@ -4616,13 +4616,16 @@ def search_data_gui(m):
     m.add(data_control)
 
 
-def ee_inspector_gui(m, names=None, visible=True, position="topright", opened=True):
+def ee_inspector_gui(
+    m, names=None, visible=True, decimals=2, position="topright", opened=True
+):
     """Earth Engine Inspector GUI.
 
     Args:
         m (geemap.Map): The geemap.Map object.
         names (str | list, optional): The names of the layers to be included. Defaults to None.
         visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
+        decimals (int, optional): The number of decimal places to round the values. Defaults to 2.
         position (str, optional): The position of the control. Defaults to "topright".
         opened (bool, optional): Whether the control is opened. Defaults to True.
 
@@ -4732,7 +4735,9 @@ def ee_inspector_gui(m, names=None, visible=True, position="topright", opened=Tr
                 nodes = []
                 point_node = m._point_info(latlon, return_node=True)
                 nodes.append(point_node)
-                pixels_node = m._pixels_info(latlon, names, visible, return_node=True)
+                pixels_node = m._pixels_info(
+                    latlon, names, visible, decimals, return_node=True
+                )
                 if pixels_node.nodes:
                     nodes.append(pixels_node)
                 objects_node = m._objects_info(latlon, names, visible, return_node=True)
