@@ -6550,13 +6550,16 @@ class Map(ipyleaflet.Map):
         else:
             return Tree(nodes=[root_node])
 
-    def _pixels_info(self, latlon, names=None, visible=True, return_node=False):
+    def _pixels_info(
+        self, latlon, names=None, visible=True, decimals=2, return_node=False
+    ):
         """Create the ipytree widget for displaying the pixel values at the mouse clicking point.
 
         Args:
             latlon (list | tuple): The coordinates (lat, lon) of the point.
             names (str | list, optional): The names of the layers to be included. Defaults to None.
             visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
+            decimals (int, optional): Number of decimals to round the pixel values. Defaults to 2.
             return_node (bool, optional): If True, return the ipytree node.
                 Otherwise, return the ipytree tree widget. Defaults to False.
 
@@ -6607,7 +6610,10 @@ class Map(ipyleaflet.Map):
 
                     keys = sorted(item.keys())
                     for key in keys:
-                        layer_node.add_node(Node(f"{key}: {item[key]}", icon="file"))
+                        value = item[key]
+                        if isinstance(value, float):
+                            value = round(value, decimals)
+                        layer_node.add_node(Node(f"{key}: {value}", icon="file"))
 
                     nodes.append(layer_node)
             except:
@@ -6726,19 +6732,22 @@ class Map(ipyleaflet.Map):
         tree.nodes = nodes
         return tree
 
-    def add_inspector(self, names=None, visible=True, position="topright", opened=True):
+    def add_inspector(
+        self, names=None, visible=True, decimals=2, position="topright", opened=True
+    ):
         """Add the Inspector GUI to the map.
 
         Args:
             names (str | list, optional): The names of the layers to be included. Defaults to None.
             visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
+            decimals (int, optional): The number of decimal places to round the coordinates. Defaults to 2.
             position (str, optional): The position of the Inspector GUI. Defaults to "topright".
             opened (bool, optional): Whether the control is opened. Defaults to True.
 
         """
         from .toolbar import ee_inspector_gui
 
-        ee_inspector_gui(self, names, visible, position, opened)
+        ee_inspector_gui(self, names, visible, decimals, position, opened)
 
     def add_layer_manager(self, position="topright", opened=True):
         """Add the Layer Manager to the map.
