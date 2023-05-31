@@ -63,7 +63,7 @@ def tool_template(m=None, opened=True):
         style={"description_width": "initial"},
     )
 
-    int_slider_label = widgets.Label()
+    int_slider_label = widgets.Label(str(int_slider.value))
 
     def update_int_slider(change):
         int_slider_label.value = str(change["new"])
@@ -76,11 +76,11 @@ def tool_template(m=None, opened=True):
         description="Float Slider: ",
         readout=False,
         continuous_update=True,
-        layout=widgets.Layout(width="220px", padding=padding),
+        layout=widgets.Layout(width="210px", padding=padding),
         style={"description_width": "initial"},
     )
 
-    float_slider_label = widgets.Label()
+    float_slider_label = widgets.Label(str(float_slider.value))
 
     def update_float_slider(change):
         float_slider_label.value = str(change["new"])
@@ -105,7 +105,7 @@ def tool_template(m=None, opened=True):
 
     textarea = widgets.Textarea(
         placeholder="Placeholder",
-        layout=widgets.Layout(width=widget_width),
+        layout=widgets.Layout(width=widget_width, padding=padding),
     )
 
     buttons = widgets.ToggleButtons(
