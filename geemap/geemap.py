@@ -6550,11 +6550,13 @@ class Map(ipyleaflet.Map):
         else:
             return Tree(nodes=[root_node])
 
-    def _pixels_info(self, latlon, return_node=False):
+    def _pixels_info(self, latlon, names=None, visible=True, return_node=False):
         """Create the ipytree widget for displaying the pixel values at the mouse clicking point.
 
         Args:
             latlon (list | tuple): The coordinates (lat, lon) of the point.
+            names (str | list, optional): The names of the layers to be included. Defaults to None.
+            visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
             return_node (bool, optional): If True, return the ipytree node.
                 Otherwise, return the ipytree tree widget. Defaults to False.
 
@@ -6563,7 +6565,15 @@ class Map(ipyleaflet.Map):
         """
         from ipytree import Node, Tree
 
-        layers = self.ee_layers
+        if names is not None:
+            if isinstance(names, str):
+                names = [names]
+            layers = {}
+            for name in names:
+                if name in self.ee_layer_names:
+                    layers[name] = self.ee_layer_dict[name]
+        else:
+            layers = self.ee_layer_dict
         xy = ee.Geometry.Point(latlon[::-1])
         sample_scale = self.getScale()
 
@@ -6571,13 +6581,14 @@ class Map(ipyleaflet.Map):
 
         nodes = []
 
-        for index, ee_object in enumerate(layers):
-            layer_names = self.ee_layer_names
-            layer_name = layer_names[index]
+        for layer in layers:
+            layer_name = layer
+            ee_object = layers[layer]["ee_object"]
             object_type = ee_object.__class__.__name__
 
-            if not self.ee_layer_dict[layer_name]["ee_layer"].visible:
-                continue
+            if visible:
+                if not self.ee_layer_dict[layer_name]["ee_layer"].visible:
+                    continue
 
             try:
                 if isinstance(ee_object, ee.ImageCollection):
@@ -6614,11 +6625,13 @@ class Map(ipyleaflet.Map):
         else:
             return Tree(nodes=[root_node])
 
-    def _objects_info(self, latlon, return_node=False):
+    def _objects_info(self, latlon, names=None, visible=True, return_node=False):
         """Create the ipytree widget for displaying the Earth Engine objects at the mouse clicking point.
 
         Args:
             latlon (list | tuple): The coordinates (lat, lon) of the point.
+            names (str | list, optional): The names of the layers to be included. Defaults to None.
+            visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
             return_node (bool, optional): If True, return the ipytree node.
                 Otherwise, return the ipytree tree widget. Defaults to False.
 
@@ -6627,18 +6640,28 @@ class Map(ipyleaflet.Map):
         """
         from ipytree import Node, Tree
 
-        layers = self.ee_layers
+        if names is not None:
+            if isinstance(names, str):
+                names = [names]
+            layers = {}
+            for name in names:
+                if name in self.ee_layer_names:
+                    layers[name] = self.ee_layer_dict[name]
+        else:
+            layers = self.ee_layer_dict
+
         xy = ee.Geometry.Point(latlon[::-1])
         root_node = Node("Objects", icon="archive")
 
         nodes = []
 
-        for index, ee_object in enumerate(layers):
-            layer_names = self.ee_layer_names
-            layer_name = layer_names[index]
+        for layer in layers:
+            layer_name = layer
+            ee_object = layers[layer]["ee_object"]
 
-            if not self.ee_layer_dict[layer_name]["ee_layer"].visible:
-                continue
+            if visible:
+                if not self.ee_layer_dict[layer_name]["ee_layer"].visible:
+                    continue
 
             if isinstance(ee_object, ee.FeatureCollection):
                 # Check geometry type
@@ -6703,15 +6726,19 @@ class Map(ipyleaflet.Map):
         tree.nodes = nodes
         return tree
 
-    def add_inspector(self, position="topright", opened=True):
+    def add_inspector(self, names=None, visible=True, position="topright", opened=True):
         """Add the Inspector GUI to the map.
 
         Args:
+            names (str | list, optional): The names of the layers to be included. Defaults to None.
+            visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
             position (str, optional): The position of the Inspector GUI. Defaults to "topright".
+            opened (bool, optional): Whether the control is opened. Defaults to True.
+
         """
         from .toolbar import ee_inspector_gui
 
-        ee_inspector_gui(self, position, opened)
+        ee_inspector_gui(self, names, visible, position, opened)
 
     def add_layer_manager(self, position="topright", opened=True):
         """Add the Layer Manager to the map.
