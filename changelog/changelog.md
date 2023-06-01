@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.22.1 - Jun 1, 2023
+
+**Improvement**
+
+-   Fixed the ipyleaflet SplitControl bug (#1550)
+-   Added decimals param for Inspector GUI (#1548)
+-   Added decimals param for Inspector GUI (#1548)
+-   Add opened param for tool template (#1546)
+-   Updated SciPy notebook (#1545)
+
 ## v0.22.0 - May 29, 2023
 
 **New Features**
