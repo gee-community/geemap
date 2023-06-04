@@ -4559,6 +4559,9 @@
     <span class="n">layers_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">layers_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
     <span class="n">layers_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">opened</span>
 
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;layer_manager_widget&quot;</span><span class="p">):</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">layer_manager_widget</span> <span class="o">=</span> <span class="n">toolbar_footer</span>
+
     <span class="k">if</span> <span class="n">return_widget</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">layer_widget</span>
     <span class="k">else</span><span class="p">:</span>
