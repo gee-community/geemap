@@ -5009,6 +5009,9 @@ def layer_manager_gui(m, position="topright", opened=True, return_widget=False):
     layers_button.observe(layers_btn_click, "value")
     layers_button.value = opened
 
+    if not hasattr(m, "layer_manager_widget"):
+        m.layer_manager_widget = toolbar_footer
+
     if return_widget:
         return m.layer_widget
     else:
