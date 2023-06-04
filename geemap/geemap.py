@@ -693,6 +693,9 @@ class Map(ipyleaflet.Map):
 
         super().add(object)
 
+        if hasattr(self, "layer_manager_widget"):
+            self.update_layer_manager()
+
     def set_options(self, mapTypeId="HYBRID", styles=None, types=None):
         """Adds Google basemap and controls to the ipyleaflet map.
 
@@ -6760,6 +6763,12 @@ class Map(ipyleaflet.Map):
         from .toolbar import layer_manager_gui
 
         layer_manager_gui(self, position, opened)
+
+    def update_layer_manager(self):
+        """Update the Layer Manager."""
+        from .toolbar import layer_manager_gui
+
+        self.layer_manager_widget.children = layer_manager_gui(self, return_widget=True)
 
     def add_widget(self, content, position="bottomright", **kwargs):
         """Add a widget (e.g., text, HTML, figure) to the map.
