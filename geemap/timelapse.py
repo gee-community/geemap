@@ -15,7 +15,7 @@ from typing import Union, List
 
 def add_overlay(
     collection: ee.ImageCollection,
-    overlay_data: Union[str, ee.geometry, ee.FeatureCollection],
+    overlay_data: Union[str, ee.Geometry, ee.FeatureCollection],
     color: str = "black",
     width: int = 1,
     opacity: float = 1.0,
