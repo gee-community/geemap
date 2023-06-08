@@ -1,8 +1,15 @@
 import scooby
+from typing import Optional
 
 
 class Report(scooby.Report):
-    def __init__(self, additional=None, ncol=3, text_width=80, sort=False):
+    def __init__(
+        self,
+        additional: Optional[dict] = None,
+        ncol: int = 3,
+        text_width: int = 80,
+        sort: bool = False,
+    ):
         """Initiate a scooby.Report instance."""
         core = [
             "geemap",

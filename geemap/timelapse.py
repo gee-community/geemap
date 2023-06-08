@@ -1,6 +1,7 @@
 """Module for creating timelapse from various Earth Engine ImageCollection.
 """
 import datetime
+import glob
 import io
 import os
 import shutil
@@ -8,11 +9,18 @@ import shutil
 import ee
 
 from .common import *
+from PIL import Image
+from typing import Union, List
 
 
 def add_overlay(
-    collection, overlay_data, color="black", width=1, opacity=1.0, region=None
-):
+    collection: ee.ImageCollection,
+    overlay_data: Union[str, ee.Geometry, ee.FeatureCollection],
+    color: str = "black",
+    width: int = 1,
+    opacity: float = 1.0,
+    region: Union[ee.Geometry, ee.FeatureCollection] = None,
+) -> ee.ImageCollection:
     """Adds an overlay to an image collection.
 
     Args:
@@ -84,7 +92,15 @@ def add_overlay(
         raise Exception(e)
 
 
-def make_gif(images, out_gif, ext="jpg", fps=10, loop=0, mp4=False, clean_up=False):
+def make_gif(
+    images: Union[List[str], str],
+    out_gif: str,
+    ext: str = "jpg",
+    fps: int = 10,
+    loop: int = 0,
+    mp4: bool = False,
+    clean_up: bool = False,
+) -> None:
     """Creates a gif from a list of images.
 
     Args:
@@ -96,9 +112,6 @@ def make_gif(images, out_gif, ext="jpg", fps=10, loop=0, mp4=False, clean_up=Fal
         mp4 (bool, optional): Whether to convert the gif to mp4. Defaults to False.
 
     """
-    import glob
-    from PIL import Image
-
     if isinstance(images, str) and os.path.isdir(images):
         images = list(glob.glob(os.path.join(images, f"*.{ext}")))
         if len(images) == 0:
