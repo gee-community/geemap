@@ -152,7 +152,11 @@ def check_titiler_endpoint(titiler_endpoint=None):
 
 
 def ee_initialize(
-    token_name="EARTHENGINE_TOKEN", auth_mode="notebook", service_account=False
+    token_name="EARTHENGINE_TOKEN",
+    auth_mode="notebook",
+    service_account=False,
+    auth_args={},
+    **kwargs,
 ):
     """Authenticates Earth Engine and initialize an Earth Engine session
 
@@ -160,11 +164,18 @@ def ee_initialize(
         token_name (str, optional): The name of the Earth Engine token. Defaults to "EARTHENGINE_TOKEN".
         auth_mode (str, optional): The authentication mode, can be one of paste,notebook,gcloud,appdefault. Defaults to "notebook".
         service_account (bool, optional): If True, use a service account. Defaults to False.
+        auth_args (dict, optional): Additional authentication parameters for aa.Authenticate(). Defaults to {}.
+        kwargs (dict, optional): Additional parameters for ee.Initialize(). For example,
+            opt_url='https://earthengine-highvolume.googleapis.com' to use the Earth Engine High-Volume platform. Defaults to {}.
     """
     import httplib2
     from .__init__ import __version__
 
     user_agent = f"geemap/{__version__}"
+    if "http_transport" not in kwargs:
+        kwargs["http_transport"] = httplib2.Http()
+
+    auth_args['auth_mode'] = auth_mode
 
     if ee.data._credentials is None:
         ee_token = os.environ.get(token_name)
@@ -187,7 +198,7 @@ def ee_initialize(
                 credentials = ee.ServiceAccountCredentials(
                     service_account, key_data=private_key
                 )
-                ee.Initialize(credentials)
+                ee.Initialize(credentials, **kwargs)
 
             except Exception as e:
                 raise Exception(e)
@@ -218,18 +229,18 @@ def ee_initialize(
                     if credentials_in_drive() and (not credentials_in_colab()):
                         copy_credentials_to_colab()
                     elif not credentials_in_colab:
-                        ee.Authenticate(auth_mode=auth_mode)
+                        ee.Authenticate(**auth_args)
                         if is_drive_mounted() and (not credentials_in_drive()):
                             copy_credentials_to_drive()
                     else:
                         if is_drive_mounted():
                             copy_credentials_to_drive()
 
-                ee.Initialize(http_transport=httplib2.Http())
+                ee.Initialize(**kwargs)
 
             except Exception:
-                ee.Authenticate(auth_mode=auth_mode)
-                ee.Initialize(http_transport=httplib2.Http())
+                ee.Authenticate(**auth_args)
+                ee.Initialize(**kwargs)
 
         ee.data.setUserAgent(user_agent)
 
