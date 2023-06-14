@@ -152,6 +152,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 133. Developing interactive web apps with gradio and geemap ([notebook](https://geemap.org/notebooks/133_gradio))
 134. Downloading Earth Engine map tiles as a GeoTIFF ([notebook](https://geemap.org/notebooks/134_ee_to_geotiff))
 135. Earth Engine Image Segmentation with the Segment Anything Model ([notebook](https://geemap.org/notebooks/135_segmentation))
+136. Downloading Earth Engine images in parallel ([notebook](https://geemap.org/notebooks/136_download_parallel))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
