@@ -826,7 +826,7 @@ def collect_samples(m):
 
             # Handles draw events
             def handle_draw(target, action, geo_json):
-                from .geemap import ee_tile_layer
+                from .ee_leaflet_tile_layer import EeLeafletTileLayer
 
                 try:
                     geom = geojson_to_ee(geo_json, False)
@@ -846,7 +846,7 @@ def collect_samples(m):
                         m.draw_count += 1
                     collection = ee.FeatureCollection(m.draw_features)
                     m.user_rois = collection
-                    ee_draw_layer = ee_tile_layer(
+                    ee_draw_layer = EeLeafletTileLayer(
                         collection, {"color": "blue"}, "Drawn Features", False, 0.5
                     )
                     draw_layer_index = m.find_layer_index("Drawn Features")
