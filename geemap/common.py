@@ -167,7 +167,7 @@ def ee_initialize(
     service_account: bool =False,
     auth_args: dict[str, Any] = {},
     **kwargs: Optional[dict],
-) -> None
+) -> None:
     """Authenticates Earth Engine and initialize an Earth Engine session
 
     Args:
