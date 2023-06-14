@@ -10,10 +10,12 @@ import ee
 import matplotlib as mpl
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
+import matplotlib.figure as mplfig
 import numpy as np
 import requests
 from matplotlib import cm, colors
 from matplotlib import font_manager as mfonts
+from typing import Union, Optional, Any, Iterable
 
 from .basemaps import xyz_tiles
 
@@ -33,7 +35,7 @@ except ImportError:
     )
 
 
-def check_dependencies():
+def check_dependencies() -> None:
     """Helper function to check dependencies used for cartoee
     Dependencies not included in main geemap are: cartopy, PIL, and scipys
 
@@ -45,7 +47,7 @@ def check_dependencies():
     import importlib
 
     # check if conda in in path and available to use
-    is_conda = os.path.exists(os.path.join(sys.prefix, "conda-meta"))
+    is_conda: bool = os.path.exists(os.path.join(sys.prefix, "conda-meta"))
 
     # raise error if conda not found
     if not is_conda:
@@ -55,7 +57,7 @@ def check_dependencies():
 
     # list of dependencies to check, ordered in decreasing complexity
     # i.e. cartopy install should install PIL
-    dependencies = ["cartopy", "pillow", "scipy"]
+    dependencies: list[str] = ["cartopy", "pillow", "scipy"]
 
     # loop through dependency list and check if we can import module
     # if not try to install
@@ -91,7 +93,7 @@ def check_dependencies():
             logging.info(out.decode())
 
     # second pass through dependencies to check if everything was installed correctly
-    failed = []
+    failed: list[str] = []
 
     for dependency in dependencies:
         try:
@@ -115,7 +117,13 @@ def check_dependencies():
 # check_dependencies()
 
 
-def get_map(ee_object, proj=None, basemap=None, zoom_level=2, **kwargs):
+def get_map(
+    ee_object: Union[ee.Image, ee.FeatureCollection],
+    proj: Optional[ccrs.CRS] = None,
+    basemap: Optional[Union[str, cimgt.Tiles]] = None,
+    zoom_level: int = 2,
+    **kwargs: Any,
+) -> GeoAxesSubplot:
     """
     Wrapper function to create a new cartopy plot with project and adds Earth
     Engine image results
@@ -155,7 +163,7 @@ def get_map(ee_object, proj=None, basemap=None, zoom_level=2, **kwargs):
     if "style" in kwargs:
         del kwargs["style"]
 
-    ax = mpl.pyplot.axes(projection=proj)
+    ax: GeoAxesSubplot = mpl.pyplot.axes(projection=proj)
 
     if basemap is not None:
         if isinstance(basemap, str):
@@ -173,8 +181,14 @@ def get_map(ee_object, proj=None, basemap=None, zoom_level=2, **kwargs):
 
 
 def add_layer(
-    ax, ee_object, dims=1000, region=None, cmap=None, vis_params=None, **kwargs
-):
+    ax: Union[GeoAxes, GeoAxesSubplot],
+    ee_object: Union[ee.Image, ee.FeatureCollection],
+    dims: Union[list[int], tuple[int, int], int] = 1000,
+    region: Optional[list[float]] = None,
+    cmap: Optional[str] = None,
+    vis_params: Optional[dict[str, Any]] = None,
+    **kwargs,
+) -> None:
     """Add an Earth Engine image to a cartopy plot.
 
     args:
@@ -282,7 +296,7 @@ def add_layer(
     return
 
 
-def build_palette(cmap, n=256):
+def build_palette(cmap: str, n: int = 256) -> list[str]:
     """Creates hex color code palette from a matplotlib colormap
 
     args:
@@ -301,8 +315,14 @@ def build_palette(cmap, n=256):
 
 
 def add_colorbar(
-    ax, vis_params, loc=None, cmap="gray", discrete=False, label=None, **kwargs
-):
+    ax: Union[GeoAxes, GeoAxesSubplot],
+    vis_params: dict[str, Any],
+    loc: str = None,
+    cmap: str = "gray",
+    discrete: bool = False,
+    label: str = None,
+    **kwargs: Any,
+) -> None:
     """
     Add a colorbar to the map based on visualization parameters provided
     args:
@@ -464,7 +484,9 @@ def add_colorbar(
         cb.ax.tick_params(labelsize=tick_font_size)
 
 
-def _buffer_box(bbox, interval):
+def _buffer_box(
+    bbox: list[float], interval: float
+) -> tuple[float, float, float, float]:
     """Helper function to buffer a bounding box to the nearest multiple of interval
 
     args:
@@ -498,7 +520,7 @@ def _buffer_box(bbox, interval):
     return (xmin, xmax, ymin, ymax)
 
 
-def bbox_to_extent(bbox):
+def bbox_to_extent(bbox: list[float]) -> tuple[float, float, float, float]:
     """Helper function to reorder a list of coordinates from [W,S,E,N] to [W,E,S,N]
 
     args:
@@ -511,16 +533,16 @@ def bbox_to_extent(bbox):
 
 
 def add_gridlines(
-    ax,
-    interval=None,
-    n_ticks=None,
-    xs=None,
-    ys=None,
-    buffer_out=True,
-    xtick_rotation="horizontal",
-    ytick_rotation="horizontal",
+    ax: Union[GeoAxesSubplot, ccrs.GeoAxes],
+    interval: Union[float, list[float]] = None,
+    n_ticks: Union[int, list[int], None] = None,
+    xs: Union[list[float], None] = None,
+    ys: Union[list[float], None] = None,
+    buffer_out: bool = True,
+    xtick_rotation: Union[str, float] = "horizontal",
+    ytick_rotation: Union[str, float] = "horizontal",
     **kwargs,
-):
+) -> None:
     """Helper function to add gridlines and format ticks to map
 
     args:
@@ -613,7 +635,10 @@ def add_gridlines(
     return
 
 
-def pad_view(ax, factor=0.05):
+def pad_view(
+    ax: Union[GeoAxesSubplot, ccrs.GeoAxes],
+    factor: Union[float, Iterable[float]] = 0.05,
+):
     """Function to pad area around the view extent of a map, used for visual appeal
 
     args:
@@ -644,17 +669,17 @@ def pad_view(ax, factor=0.05):
 
 
 def add_north_arrow(
-    ax,
-    text="N",
-    xy=(0.1, 0.1),
-    arrow_length=0.1,
-    text_color="black",
-    arrow_color="black",
-    fontsize=20,
-    width=5,
-    headwidth=15,
-    ha="center",
-    va="center",
+    ax: Union[GeoAxesSubplot, ccrs.GeoAxes],
+    text: str = "N",
+    xy: tuple[float, float] = (0.1, 0.1),
+    arrow_length: float = 0.1,
+    text_color: str = "black",
+    arrow_color: str = "black",
+    fontsize: int = 20,
+    width: int = 5,
+    headwidth: int = 15,
+    ha: str = "center",
+    va: str = "center",
 ):
     """Add a north arrow to the map.
 
@@ -686,7 +711,7 @@ def add_north_arrow(
     return
 
 
-def convert_SI(val, unit_in, unit_out):
+def convert_SI(val: float, unit_in: str, unit_out: str) -> float:
     """Unit converter.
 
     Args:
@@ -697,7 +722,7 @@ def convert_SI(val, unit_in, unit_out):
     Returns:
         float: The value after unit conversion.
     """
-    SI = {
+    SI: dict[str, float] = {
         "cm": 0.01,
         "m": 1.0,
         "km": 1000.0,
@@ -709,20 +734,24 @@ def convert_SI(val, unit_in, unit_out):
 
 
 def add_scale_bar(
-    ax,
-    metric_distance=4,
-    unit="km",
-    at_x=(0.05, 0.5),
-    at_y=(0.08, 0.11),
-    max_stripes=5,
-    ytick_label_margins=0.25,
-    fontsize=8,
-    font_weight="bold",
-    rotation=0,
-    zorder=999,
-    paddings={"xmin": 0.05, "xmax": 0.05, "ymin": 1.5, "ymax": 0.5},
-    bbox_kwargs={"facecolor": "white", "edgecolor": "black", "alpha": 0.5},
-):
+    ax: Union[GeoAxesSubplot, GeoAxes],
+    metric_distance: Union[int, float] = 4,
+    unit: str = "km",
+    at_x: tuple[float, float] = (0.05, 0.5),
+    at_y: tuple[float, float] = (0.08, 0.11),
+    max_stripes: int = 5,
+    ytick_label_margins: float = 0.25,
+    fontsize: int = 8,
+    font_weight: str = "bold",
+    rotation: int = 0,
+    zorder: int = 999,
+    paddings: dict[str, float] = {"xmin": 0.05, "xmax": 0.05, "ymin": 1.5, "ymax": 0.5},
+    bbox_kwargs: dict[str, Union[str, float]] = {
+        "facecolor": "white",
+        "edgecolor": "black",
+        "alpha": 0.5,
+    },
+) -> None:
     """
     Add a scale bar to the map.
 
@@ -748,14 +777,24 @@ def add_scale_bar(
     # --------------------------------------------------------------------------
     # Auxiliary functions
 
-    def _crs_coord_project(crs_target, xcoords, ycoords, crs_source):
+    def _crs_coord_project(
+        crs_target: ccrs.Projection,
+        xcoords: np.ndarray,
+        ycoords: np.ndarray,
+        crs_source: ccrs.Projection,
+    ):
         """metric coordinates (x, y) from cartopy.crs_source"""
 
         axes_coords = crs_target.transform_points(crs_source, xcoords, ycoords)
 
         return axes_coords
 
-    def _add_bbox(ax, list_of_patches, paddings={}, bbox_kwargs={}):
+    def _add_bbox(
+        ax: GeoAxesSubplot,
+        list_of_patches: list[Any],
+        paddings: dict[str, float] = {},
+        bbox_kwargs: dict[str, Any] = {},
+    ) -> GeoAxesSubplot:
         """
         Description:
             This helper function adds a box behind the scalebar:
@@ -947,15 +986,15 @@ def add_scale_bar(
 
 
 def add_scale_bar_lite(
-    ax,
-    length=None,
-    xy=(0.5, 0.05),
-    linewidth=3,
-    fontsize=20,
-    color="black",
-    unit="km",
-    ha="center",
-    va="bottom",
+    ax: ccrs.GeoAxesSubplot,
+    length: float = None,
+    xy: tuple[float, float] = (0.5, 0.05),
+    linewidth: int = 3,
+    fontsize: int = 20,
+    color: str = "black",
+    unit: str = "km",
+    ha: str = "center",
+    va: str = "bottom",
 ):
     """Add a lite version of scale bar to the map. Reference: https://stackoverflow.com/a/50674451/2676166
 
@@ -979,7 +1018,7 @@ def add_scale_bar_lite(
         )
         return
 
-    num = length
+    num: float = length
 
     # Get the limits of the axis in lat long
     llx0, llx1, lly0, lly1 = ax.get_extent(ccrs.PlateCarree())
@@ -1033,43 +1072,43 @@ def add_scale_bar_lite(
 
 
 def create_legend(
-    linewidth=None,
-    linestyle=None,
-    color=None,
-    marker=None,
-    markersize=None,
-    markeredgewidth=None,
-    markeredgecolor=None,
-    markerfacecolor=None,
-    markerfacecoloralt=None,
-    fillstyle=None,
-    antialiased=None,
-    dash_capstyle=None,
-    solid_capstyle=None,
-    dash_joinstyle=None,
-    solid_joinstyle=None,
-    pickradius=5,
-    drawstyle=None,
-    markevery=None,
-    **kwargs,
-):
+    linewidth: float = None,
+    linestyle: str = None,
+    color: str = None,
+    marker: str = None,
+    markersize: float = None,
+    markeredgewidth: float = None,
+    markeredgecolor: str = None,
+    markerfacecolor: str = None,
+    markerfacecoloralt: str = None,
+    fillstyle: str = None,
+    antialiased: bool = None,
+    dash_capstyle: str = None,
+    solid_capstyle: str = None,
+    dash_joinstyle: str = None,
+    solid_joinstyle: str = None,
+    pickradius: float = 5,
+    drawstyle: str = None,
+    markevery: Any = None,
+    **kwargs: Any,
+) -> None:
     if linewidth is None and marker is None:
         raise ValueError("Either linewidth or marker must be specified.")
 
 
 def add_legend(
-    ax,
-    legend_elements=None,
-    loc="lower right",
-    font_size=14,
-    font_weight="normal",
-    font_color="black",
-    font_family=None,
-    title=None,
-    title_fontize=16,
-    title_fontproperties=None,
+    ax: Union[GeoAxesSubplot, GeoAxes],
+    legend_elements: Optional[list[plt.Line2D]] = None,
+    loc: str = "lower right",
+    font_size: Union[int, str] = 14,
+    font_weight: Union[str, int] = "normal",
+    font_color: str = "black",
+    font_family: Optional[str] = None,
+    title: Optional[str] = None,
+    title_fontize: int = 16,
+    title_fontproperties: Optional[object] = None,
     **kwargs,
-):
+) -> None:
     """Adds a legend to the map. The legend elements can be formatted as:
     legend_elements = [Line2D([], [], color='#00ffff', lw=2, label='Coastline'),
         Line2D([], [], marker='o', color='#A8321D', label='City', markerfacecolor='#A8321D', markersize=10, ls ='')]
@@ -1132,25 +1171,25 @@ def add_legend(
 
 
 def get_image_collection_gif(
-    ee_ic,
-    out_dir,
-    out_gif,
-    vis_params,
-    region,
-    cmap=None,
-    proj=None,
-    fps=10,
-    mp4=False,
-    grid_interval=None,
-    plot_title="",
-    date_format="YYYY-MM-dd",
-    fig_size=(10, 10),
-    dpi_plot=100,
-    file_format="png",
-    north_arrow_dict={},
-    scale_bar_dict={},
-    verbose=True,
-):
+    ee_ic: ee.ImageCollection,
+    out_dir: str,
+    out_gif: str,
+    vis_params: dict[str, Any],
+    region: tuple[float, float, float],
+    cmap: Optional[str] = None,
+    proj: Optional[str] = None,
+    fps: int = 10,
+    mp4: bool = False,
+    grid_interval: Optional[float] = None,
+    plot_title: str = "",
+    date_format: str = "YYYY-MM-dd",
+    fig_size: tuple[int, int] = (10, 10),
+    dpi_plot: int = 100,
+    file_format: str = "png",
+    north_arrow_dict: dict[str, Any] = {},
+    scale_bar_dict: dict[str, Any] = {},
+    verbose: bool = True,
+) -> None:
     """Download all the images in an image collection and use them to generate a gif/video.
     Args:
         ee_ic (object): ee.ImageCollection
@@ -1300,7 +1339,13 @@ def get_image_collection_gif(
             print(f"MP4 saved to {output_video_file_name}")
 
 
-def savefig(fig, fname, dpi="figure", bbox_inches="tight", **kwargs):
+def savefig(
+    fig: mplfig.Figure,
+    fname: str,
+    dpi: Union[int, str] = "figure",
+    bbox_inches: str = "tight",
+    **kwargs: dict[str, Any],
+) -> None:
     """Save figure to file. It wraps the matplotlib.pyplot.savefig() function.
             See https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html for more details.
 

@@ -4,6 +4,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from box import Box
+from typing import Any, Optional, Union
 
 
 _palette_dict = {
@@ -64,7 +65,9 @@ _palette_dict = {
 }
 
 
-def get_palette(cmap_name=None, n_class=None, hashtag=False):
+def get_palette(
+    cmap_name: str = None, n_class: str = None, hashtag: bool = False
+) -> list[str]:
     """Get a palette from a matplotlib colormap. See the list of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.
 
     Args:
@@ -88,15 +91,15 @@ def get_palette(cmap_name=None, n_class=None, hashtag=False):
 
 
 def get_colorbar(
-    colors,
-    vmin=0,
-    vmax=1,
-    width=6.0,
-    height=0.4,
-    orientation="horizontal",
-    discrete=False,
-    return_fig=False,
-):
+    colors: list[str],
+    vmin: float = 0,
+    vmax: float = 1,
+    width: float = 6.0,
+    height: float = 0.4,
+    orientation: str = "horizontal",
+    discrete: Optional[bool] = False,
+    return_fig: Optional[bool] = False,
+) -> Union[plt.Figure, None]:
     """Creates a colorbar based on custom colors.
 
     Args:
@@ -125,8 +128,13 @@ def get_colorbar(
         plt.show()
 
 
-def list_colormaps(add_extra=False, lowercase=False):
+def list_colormaps(
+    add_extra: Optional[bool] = False, lowercase: Optional[bool] = False
+) -> list[str]:
     """List all available colormaps. See a complete lost of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.
+    Args:
+        add_extra (bool, optional): Whether to add the extra colormaps "dem", "ndvi", and "ndwi" to the list. Defaults to False.
+        lowercase (bool, optional): Whether to convert all the colormap names to lowercase. Defaults to False.
 
     Returns:
         list: The list of colormap names.
@@ -141,17 +149,17 @@ def list_colormaps(add_extra=False, lowercase=False):
 
 
 def plot_colormap(
-    cmap,
-    width=8.0,
-    height=0.4,
-    orientation="horizontal",
-    vmin=0,
-    vmax=1.0,
-    axis_off=True,
-    show_name=False,
-    font_size=12,
-    return_fig=False,
-):
+    cmap: str,
+    width: float = 8.0,
+    height: float = 0.4,
+    orientation: str = "horizontal",
+    vmin: float = 0,
+    vmax: float = 1.0,
+    axis_off: Optional[bool] = True,
+    show_name: Optional[bool] = False,
+    font_size: Optional[int] = 12,
+    return_fig: Optional[bool] = False,
+) -> Union[plt.Figure, None]:
     """Plot a matplotlib colormap.
 
     Args:
@@ -187,7 +195,7 @@ def plot_colormap(
         plt.show()
 
 
-def plot_colormaps(width=8.0, height=0.4):
+def plot_colormaps(width: float = 8.0, height: float = 0.4) -> None:
     """Plot all available colormaps.
 
     Args:

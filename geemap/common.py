@@ -16,10 +16,14 @@ import zipfile
 
 import ee
 import ipywidgets as widgets
+import pandas as pd
+from PIL import Image
 from ipytree import Node, Tree
+from geojson import FeatureCollection
+from typing import Union, Optional, Iterable, Any
 
 try:
-    from IPython.display import display, IFrame
+    from IPython.display import display, IFrame, HTML
 except ImportError:
     pass
 
@@ -29,10 +33,10 @@ class TitilerEndpoint:
 
     def __init__(
         self,
-        endpoint="https://titiler.xyz",
-        name="stac",
-        TileMatrixSetId="WebMercatorQuad",
-    ):
+        endpoint: str = "https://titiler.xyz",
+        name: str = "stac",
+        TileMatrixSetId: str = "WebMercatorQuad",
+    ) -> None:
         """Initialize the TitilerEndpoint object.
 
         Args:
@@ -44,28 +48,28 @@ class TitilerEndpoint:
         self.name = name
         self.TileMatrixSetId = TileMatrixSetId
 
-    def url_for_stac_item(self):
+    def url_for_stac_item(self) -> str:
         return f"{self.endpoint}/{self.name}/{self.TileMatrixSetId}/tilejson.json"
 
-    def url_for_stac_assets(self):
+    def url_for_stac_assets(self) -> str:
         return f"{self.endpoint}/{self.name}/assets"
 
-    def url_for_stac_bounds(self):
+    def url_for_stac_bounds(self) -> str:
         return f"{self.endpoint}/{self.name}/bounds"
 
-    def url_for_stac_info(self):
+    def url_for_stac_info(self) -> str:
         return f"{self.endpoint}/{self.name}/info"
 
-    def url_for_stac_info_geojson(self):
+    def url_for_stac_info_geojson(self) -> str:
         return f"{self.endpoint}/{self.name}/info.geojson"
 
-    def url_for_stac_statistics(self):
+    def url_for_stac_statistics(self) -> str:
         return f"{self.endpoint}/{self.name}/statistics"
 
-    def url_for_stac_pixel_value(self, lon, lat):
+    def url_for_stac_pixel_value(self, lon: float, lat: float) -> str:
         return f"{self.endpoint}/{self.name}/point/{lon},{lat}"
 
-    def url_for_stac_wmts(self):
+    def url_for_stac_wmts(self) -> str:
         return (
             f"{self.endpoint}/{self.name}/{self.TileMatrixSetId}/WMTSCapabilities.xml"
         )
@@ -76,10 +80,10 @@ class PlanetaryComputerEndpoint(TitilerEndpoint):
 
     def __init__(
         self,
-        endpoint="https://planetarycomputer.microsoft.com/api/data/v1",
-        name="item",
-        TileMatrixSetId="WebMercatorQuad",
-    ):
+        endpoint: str = "https://planetarycomputer.microsoft.com/api/data/v1",
+        name: str = "item",
+        TileMatrixSetId: str = "WebMercatorQuad",
+    ) -> None:
         """Initialize the PlanetaryComputerEndpoint object.
 
         Args:
@@ -89,44 +93,50 @@ class PlanetaryComputerEndpoint(TitilerEndpoint):
         """
         super().__init__(endpoint, name, TileMatrixSetId)
 
-    def url_for_stac_collection(self):
+    def url_for_stac_collection(self) -> str:
         return f"{self.endpoint}/collection/{self.TileMatrixSetId}/tilejson.json"
 
-    def url_for_collection_assets(self):
+    def url_for_collection_assets(self) -> str:
         return f"{self.endpoint}/collection/assets"
 
-    def url_for_collection_bounds(self):
+    def url_for_collection_bounds(self) -> str:
         return f"{self.endpoint}/collection/bounds"
 
-    def url_for_collection_info(self):
+    def url_for_collection_info(self) -> str:
         return f"{self.endpoint}/collection/info"
 
-    def url_for_collection_info_geojson(self):
+    def url_for_collection_info_geojson(self) -> str:
         return f"{self.endpoint}/collection/info.geojson"
 
-    def url_for_collection_pixel_value(self, lon, lat):
+    def url_for_collection_pixel_value(self, lon, lat) -> str:
         return f"{self.endpoint}/collection/point/{lon},{lat}"
 
-    def url_for_collection_wmts(self):
+    def url_for_collection_wmts(self) -> str:
         return f"{self.endpoint}/collection/{self.TileMatrixSetId}/WMTSCapabilities.xml"
 
-    def url_for_collection_lat_lon_assets(self, lng, lat):
+    def url_for_collection_lat_lon_assets(self, lng: float, lat: float) -> str:
         return f"{self.endpoint}/collection/{lng},{lat}/assets"
 
-    def url_for_collection_bbox_assets(self, minx, miny, maxx, maxy):
+    def url_for_collection_bbox_assets(
+        self, minx: float, miny: float, maxx: float, maxy: float
+    ) -> str:
         return f"{self.endpoint}/collection/{minx},{miny},{maxx},{maxy}/assets"
 
-    def url_for_stac_mosaic(self, searchid):
+    def url_for_stac_mosaic(self, searchid: str) -> str:
         return f"{self.endpoint}/mosaic/{searchid}/{self.TileMatrixSetId}/tilejson.json"
 
-    def url_for_mosaic_info(self, searchid):
+    def url_for_mosaic_info(self, searchid: str) -> str:
         return f"{self.endpoint}/mosaic/{searchid}/info"
 
-    def url_for_mosaic_lat_lon_assets(self, searchid, lon, lat):
+    def url_for_mosaic_lat_lon_assets(
+        self, searchid: str, lon: float, lat: float
+    ) -> str:
         return f"{self.endpoint}/mosaic/{searchid}/{lon},{lat}/assets"
 
 
-def check_titiler_endpoint(titiler_endpoint=None):
+def check_titiler_endpoint(
+    titiler_endpoint: Optional[Union[str, PlanetaryComputerEndpoint]] = None
+) -> Union[str, PlanetaryComputerEndpoint]:
     """Returns the default titiler endpoint.
 
     Returns:
@@ -152,8 +162,10 @@ def check_titiler_endpoint(titiler_endpoint=None):
 
 
 def ee_initialize(
-    token_name="EARTHENGINE_TOKEN", auth_mode="notebook", service_account=False
-):
+    token_name: str = "EARTHENGINE_TOKEN",
+    auth_mode: str = "notebook",
+    service_account: bool = False,
+) -> None:
     """Authenticates Earth Engine and initialize an Earth Engine session
 
     Args:
@@ -234,7 +246,7 @@ def ee_initialize(
         ee.data.setUserAgent(user_agent)
 
 
-def set_proxy(port=1080, ip="http://127.0.0.1", timeout=300):
+def set_proxy(port: int = 1080, ip: str = "http://127.0.0.1", timeout: int = 300):
     """Sets proxy if needed. This is only needed for countries where Google services are not available.
 
     Args:
@@ -261,7 +273,7 @@ def set_proxy(port=1080, ip="http://127.0.0.1", timeout=300):
         print(e)
 
 
-def in_colab_shell():
+def in_colab_shell() -> bool:
     """Tests if the code is being executed within Google Colab."""
     import sys
 
@@ -271,7 +283,7 @@ def in_colab_shell():
         return False
 
 
-def is_drive_mounted():
+def is_drive_mounted() -> bool:
     """Checks whether Google Drive is mounted in Google Colab.
 
     Returns:
@@ -284,7 +296,7 @@ def is_drive_mounted():
         return False
 
 
-def credentials_in_drive():
+def credentials_in_drive() -> bool:
     """Checks if the ee credentials file exists in Google Drive.
 
     Returns:
@@ -297,7 +309,7 @@ def credentials_in_drive():
         return False
 
 
-def credentials_in_colab():
+def credentials_in_colab() -> bool:
     """Checks if the ee credentials file exists in Google Colab.
 
     Returns:
@@ -310,19 +322,19 @@ def credentials_in_colab():
         return False
 
 
-def copy_credentials_to_drive():
+def copy_credentials_to_drive() -> None:
     """Copies ee credentials from Google Colab to Google Drive."""
-    src = "/root/.config/earthengine/credentials"
-    dst = "/content/drive/My Drive/.config/earthengine/credentials"
+    src: str = "/root/.config/earthengine/credentials"
+    dst: str = "/content/drive/My Drive/.config/earthengine/credentials"
 
-    wd = os.path.dirname(dst)
+    wd: str = os.path.dirname(dst)
     if not os.path.exists(wd):
         os.makedirs(wd)
 
     shutil.copyfile(src, dst)
 
 
-def copy_credentials_to_colab():
+def copy_credentials_to_colab() -> None:
     """Copies ee credentials from Google Drive to Google Colab."""
     src = "/content/drive/My Drive/.config/earthengine/credentials"
     dst = "/root/.config/earthengine/credentials"
@@ -339,7 +351,7 @@ def copy_credentials_to_colab():
 ########################################
 
 
-def check_install(package):
+def check_install(package: str) -> None:
     """Checks whether a package is installed. If not, it will install the package.
 
     Args:
@@ -360,7 +372,7 @@ def check_install(package):
         print(f"{package} has been installed successfully.")
 
 
-def update_package():
+def update_package() -> None:
     """Updates the geemap package from the geemap GitHub repository without the need to use pip or conda.
     In this way, I don't have to keep updating pypi and conda-forge with every minor update of the package.
 
@@ -392,7 +404,7 @@ def update_package():
         raise Exception(e)
 
 
-def check_package(name, URL=""):
+def check_package(name: str, URL: Optional[str] = "") -> None:
     try:
         __import__(name.lower())
     except Exception:
@@ -401,7 +413,7 @@ def check_package(name, URL=""):
         )
 
 
-def clone_repo(out_dir=".", unzip=True):
+def clone_repo(out_dir: str = ".", unzip: bool = True) -> None:
     """Clones the geemap GitHub repository.
 
     Args:
@@ -413,7 +425,7 @@ def clone_repo(out_dir=".", unzip=True):
     download_from_url(url, out_file_name=filename, out_dir=out_dir, unzip=unzip)
 
 
-def install_from_github(url):
+def install_from_github(url: str) -> None:
     """Install a package from a GitHub repository.
 
     Args:
@@ -447,7 +459,7 @@ def install_from_github(url):
         print(e)
 
 
-def check_git_install():
+def check_git_install() -> bool:
     """Checks if Git is installed.
 
     Returns:
@@ -467,7 +479,7 @@ def check_git_install():
         return False
 
 
-def clone_github_repo(url, out_dir):
+def clone_github_repo(url: str, out_dir: str) -> None:
     """Clones a GitHub repository.
 
     Args:
@@ -502,7 +514,7 @@ def clone_github_repo(url, out_dir):
     os.remove(out_file_path)
 
 
-def clone_google_repo(url, out_dir=None):
+def clone_google_repo(url: str, out_dir: Optional[str] = None) -> None:
     """Clones an Earth Engine repository from https://earthengine.googlesource.com, such as https://earthengine.googlesource.com/users/google/datasets
 
     Args:
@@ -528,7 +540,7 @@ def clone_google_repo(url, out_dir=None):
         os.popen(cmd).read()
 
 
-def open_github(subdir=None):
+def open_github(subdir: Optional[str] = None) -> None:
     """Opens the GitHub repository for this package.
 
     Args:
@@ -548,7 +560,7 @@ def open_github(subdir=None):
     webbrowser.open_new_tab(url)
 
 
-def open_youtube():
+def open_youtube() -> None:
     """Opens the YouTube tutorials for geemap."""
     import webbrowser
 
@@ -561,7 +573,7 @@ def open_youtube():
 ########################################
 
 
-def is_tool(name):
+def is_tool(name: str) -> bool:
     """Check whether `name` is on PATH and marked as executable."""
 
     # from shutil import which
@@ -569,7 +581,7 @@ def is_tool(name):
     return shutil.which(name) is not None
 
 
-def random_string(string_length=3):
+def random_string(string_length: int = 3) -> str:
     """Generates a random string of fixed length.
 
     Args:
@@ -586,7 +598,9 @@ def random_string(string_length=3):
     return "".join(random.choice(letters) for i in range(string_length))
 
 
-def open_image_from_url(url, timeout=300, proxies=None):
+def open_image_from_url(
+    url: str, timeout: int = 300, proxies: Optional[dict[str, int]] = None
+) -> Image.Image:
     """Loads an image from the specified URL.
 
     Args:
@@ -611,7 +625,9 @@ def open_image_from_url(url, timeout=300, proxies=None):
         print(e)
 
 
-def show_image(img_path, width=None, height=None):
+def show_image(
+    img_path: str, width: Optional[int] = None, height: Optional[int] = None
+) -> None:
     """Shows an image within Jupyter notebook.
 
     Args:
@@ -646,7 +662,7 @@ def show_image(img_path, width=None, height=None):
         print(e)
 
 
-def show_html(html):
+def show_html(html: Union[str, os.PathLike]) -> Optional[widgets.HTML]:
     """Shows HTML within Jupyter notebook.
 
     Args:
@@ -672,7 +688,7 @@ def show_html(html):
             raise Exception(e)
 
 
-def has_transparency(img):
+def has_transparency(img: Image) -> bool:
     """Checks whether an image has transparency.
 
     Args:
@@ -695,7 +711,7 @@ def has_transparency(img):
     return False
 
 
-def upload_to_imgur(in_gif):
+def upload_to_imgur(in_gif: str) -> None:
     """Uploads an image to imgur.com
 
     Args:
@@ -741,7 +757,7 @@ def upload_to_imgur(in_gif):
 ########################################
 
 
-def rgb_to_hex(rgb=(255, 255, 255)):
+def rgb_to_hex(rgb: tuple[int, int, int] = (255, 255, 255)) -> str:
     """Converts RGB to hex color. In RGB color R stands for Red, G stands for Green, and B stands for Blue, and it ranges from the decimal value of 0 – 255.
 
     Args:
@@ -753,7 +769,7 @@ def rgb_to_hex(rgb=(255, 255, 255)):
     return "%02x%02x%02x" % rgb
 
 
-def hex_to_rgb(value="FFFFFF"):
+def hex_to_rgb(value: str = "FFFFFF") -> tuple[int, int, int]:
     """Converts hex color to RGB color.
 
     Args:
@@ -767,7 +783,7 @@ def hex_to_rgb(value="FFFFFF"):
     return tuple(int(value[i : i + lv // 3], 16) for i in range(0, lv, lv // 3))
 
 
-def check_color(in_color):
+def check_color(in_color: Union[str, tuple[int, int, int]]) -> str:
     """Checks the input color and returns the corresponding hex color code.
 
     Args:
@@ -807,7 +823,7 @@ def check_color(in_color):
         return out_color
 
 
-def to_hex_colors(colors):
+def to_hex_colors(colors: list[Union[str, tuple[int, int, int]]]) -> list[str]:
     """Convert a GEE color palette into hexadecimal color codes. can handle mixin formats
 
     Args:
@@ -820,7 +836,7 @@ def to_hex_colors(colors):
     return [check_color(c) for c in colors]
 
 
-def system_fonts(show_full_path=False):
+def system_fonts(show_full_path: bool = False) -> list[str]:
     """Gets a list of system fonts
 
         # Common font locations:
@@ -859,7 +875,13 @@ def system_fonts(show_full_path=False):
 ########################################
 
 
-def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=True):
+def download_from_url(
+    url: str,
+    out_file_name: Optional[str] = None,
+    out_dir: str = ".",
+    unzip: bool = True,
+    verbose: bool = True,
+) -> None:
     """Download a file from a URL (e.g., https://github.com/giswqs/whitebox/raw/master/examples/testdata.zip)
 
     Args:
@@ -903,7 +925,7 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
             with tarfile.open(out_file_path, "r") as tar_ref:
                 with tarfile.open(out_file_path, "r") as tar_ref:
 
-                    def is_within_directory(directory, target):
+                    def is_within_directory(directory: str, target: str) -> bool:
                         abs_directory = os.path.abspath(directory)
                         abs_target = os.path.abspath(target)
 
@@ -912,8 +934,12 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
                         return prefix == abs_directory
 
                     def safe_extract(
-                        tar, path=".", members=None, *, numeric_owner=False
-                    ):
+                        tar: tarfile.Tarfile,
+                        path: str = ".",
+                        members: Optional[Union[str, Iterable[str]]] = None,
+                        *,
+                        numeric_owner: bool = False,
+                    ) -> None:
                         for member in tar.getmembers():
                             member_path = os.path.join(path, member.name)
                             if not is_within_directory(path, member_path):
@@ -932,7 +958,13 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
     return
 
 
-def download_from_gdrive(gfile_url, file_name, out_dir=".", unzip=True, verbose=True):
+def download_from_gdrive(
+    gfile_url: str,
+    file_name: str,
+    out_dir: str = ".",
+    unzip: bool = True,
+    verbose: bool = True,
+) -> None:
     """Download a file shared via Google Drive
        (e.g., https://drive.google.com/file/d/18SUo_HcDGltuWYZs1s7PpOmOq_FvFn04/view?usp=sharing)
 
@@ -960,7 +992,9 @@ def download_from_gdrive(gfile_url, file_name, out_dir=".", unzip=True, verbose=
     return
 
 
-def create_download_link(filename, title="Click here to download: "):
+def create_download_link(
+    filename: str, title: Optional[str] = "Click here to download: "
+) -> HTML:
     """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578
 
     Args:
@@ -983,7 +1017,11 @@ def create_download_link(filename, title="Click here to download: "):
     return HTML(html)
 
 
-def edit_download_html(htmlWidget, filename, title="Click here to download: "):
+def edit_download_html(
+    htmlWidget: widgets.HTML,
+    filename: str,
+    title: Optional[str] = "Click here to download: ",
+) -> None:
     """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578#issuecomment-617668058
 
     Args:
@@ -1021,7 +1059,12 @@ def edit_download_html(htmlWidget, filename, title="Click here to download: "):
 ########################################
 
 
-def xy_to_points(in_csv, latitude="latitude", longitude="longitude", encoding="utf-8"):
+def xy_to_points(
+    in_csv: str,
+    latitude: Optional[str] = "latitude",
+    longitude: Optional[str] = "longitude",
+    encoding: Optional[str] = "utf-8",
+) -> FeatureCollection:
     """Converts a csv containing points (latitude and longitude) into an ee.FeatureCollection.
 
     Args:
@@ -1038,7 +1081,12 @@ def xy_to_points(in_csv, latitude="latitude", longitude="longitude", encoding="u
     return fc
 
 
-def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude"):
+def csv_points_to_shp(
+    in_csv: str,
+    out_shp: str,
+    latitude: Optional[str] = "latitude",
+    longitude: Optional[str] = "longitude",
+) -> None:
     """Converts a csv file containing points (latitude, longitude) into a shapefile.
 
     Args:
@@ -1076,8 +1124,12 @@ def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude
 
 
 def csv_to_shp(
-    in_csv, out_shp, latitude="latitude", longitude="longitude", encoding="utf-8"
-):
+    in_csv: str,
+    out_shp: str,
+    latitude: Optional[str] = "latitude",
+    longitude: Optional[str] = "longitude",
+    encoding: str = "utf-8",
+) -> None:
     """Converts a csv file with latlon info to a point shapefile.
 
     Args:
@@ -1112,12 +1164,12 @@ def csv_to_shp(
 
 
 def csv_to_geojson(
-    in_csv,
-    out_geojson=None,
-    latitude="latitude",
-    longitude="longitude",
-    encoding="utf-8",
-):
+    in_csv: str,
+    out_geojson: Optional[str] = None,
+    latitude: Optional[str] = "latitude",
+    longitude: Optional[str] = "longitude",
+    encoding: Optional[str] = "utf-8",
+) -> Union[dict[str, Any], None]:
     """Creates points for a CSV file and exports data as a GeoJSON.
 
     Args:
@@ -1149,12 +1201,12 @@ def csv_to_geojson(
 
 
 def df_to_geojson(
-    df,
-    out_geojson=None,
-    latitude="latitude",
-    longitude="longitude",
-    encoding="utf-8",
-):
+    df: pd.DataFrame,
+    out_geojson: Optional[str] = None,
+    latitude: str = "latitude",
+    longitude: str = "longitude",
+    encoding: str = "utf-8",
+) -> Union[FeatureCollection, None]:
     """Creates points for a Pandas DataFrame and exports data as a GeoJSON.
 
     Args:
@@ -1191,8 +1243,12 @@ def df_to_geojson(
 
 
 def csv_to_ee(
-    in_csv, latitude="latitude", longitude="longitude", encoding="utf-8", geodesic=True
-):
+    in_csv: str,
+    latitude: Optional[str] = "latitude",
+    longitude: Optional[str] = "longitude",
+    encoding: Optional[str] = "utf-8",
+    geodesic: Optional[bool] = True,
+) -> ee.geometry.Geometry:
     """Creates points for a CSV file and exports data as a GeoJSON.
 
     Args:
@@ -1213,7 +1269,12 @@ def csv_to_ee(
     return fc
 
 
-def csv_to_gdf(in_csv, latitude="latitude", longitude="longitude", encoding="utf-8"):
+def csv_to_gdf(
+    in_csv: str,
+    latitude: Optional[str] = "latitude",
+    longitude: Optional[str] = "longitude",
+    encoding="utf-8",
+):
     """Creates points for a CSV file and converts them to a GeoDataFrame.
 
     Args:
@@ -1241,13 +1302,13 @@ def csv_to_gdf(in_csv, latitude="latitude", longitude="longitude", encoding="utf
 
 
 def csv_to_vector(
-    in_csv,
-    output,
-    latitude="latitude",
-    longitude="longitude",
-    encoding="utf-8",
+    in_csv: str,
+    output: str,
+    latitude: Optional[str] = "latitude",
+    longitude: Optional[str] = "longitude",
+    encoding: Optional[str] = "utf-8",
     **kwargs,
-):
+) -> None:
     """Creates points for a CSV file and converts them to a vector dataset.
 
     Args:
@@ -1262,7 +1323,11 @@ def csv_to_vector(
     gdf.to_file(output, **kwargs)
 
 
-def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
+def geojson_to_ee(
+    geo_json: Union[str, dict[str, Any]],
+    geodesic: bool = False,
+    encoding: str = "utf-8",
+) -> ee.Geometry:
     """Converts a geojson to ee.Geometry()
 
     Args:
@@ -1323,7 +1388,12 @@ def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
         raise Exception(e)
 
 
-def ee_to_geojson(ee_object, filename=None, indent=2, **kwargs):
+def ee_to_geojson(
+    ee_object: Union[ee.Geometry, ee.feature.Feature],
+    filename: Optional[str] = None,
+    indent: int = 2,
+    **kwargs,
+) -> Optional[object]:
     """Converts Earth Engine object to geojson.
 
     Args:
@@ -1360,7 +1430,9 @@ def ee_to_geojson(ee_object, filename=None, indent=2, **kwargs):
         raise Exception(e)
 
 
-def ee_to_bbox(ee_object):
+def ee_to_bbox(
+    ee_object: Union[ee.Image, ee.Geometry, ee.Feature, ee.FeatureCollection]
+) -> list[float]:
     """Get the bounding box of an Earth Engine object as a list in the format [xmin, ymin, xmax, ymax].
 
     Args:
@@ -1391,7 +1463,9 @@ def ee_to_bbox(ee_object):
     return bbox
 
 
-def shp_to_geojson(in_shp, filename=None, **kwargs):
+def shp_to_geojson(
+    in_shp: str, filename: Optional[str] = None, **kwargs: Union[str, dict[str, str]]
+) -> Optional[dict[str, Union[str, list]]]:
     """Converts a shapefile to GeoJSON.
 
     Args:
@@ -1476,7 +1550,7 @@ def shp_to_geojson(in_shp, filename=None, **kwargs):
         raise Exception(e)
 
 
-def shp_to_ee(in_shp, **kwargs):
+def shp_to_ee(in_shp: str, **kwargs: Any) -> Any:
     """Converts a shapefile to Earth Engine objects. Note that the CRS of the shapefile must be EPSG:4326
 
     Args:
@@ -1502,7 +1576,7 @@ def shp_to_ee(in_shp, **kwargs):
 ########################################
 
 
-def filter_polygons(ftr):
+def filter_polygons(ftr: ee.Feature) -> ee.Feature:
     """Converts GeometryCollection to Polygon/MultiPolygon
 
     Args:
@@ -1526,14 +1600,14 @@ def filter_polygons(ftr):
 
 
 def ee_export_vector(
-    ee_object,
-    filename,
-    selectors=None,
-    verbose=True,
-    keep_zip=False,
-    timeout=300,
-    proxies=None,
-):
+    ee_object: ee.FeatureCollection,
+    filename: str,
+    selectors: Optional[list[str]]=None,
+    verbose: bool=True,
+    keep_zip: bool=False,
+    timeout: int=300,
+    proxies: Optional[dict]=None,
+) -> None:
     """Exports Earth Engine FeatureCollection to other formats, including shp, csv, json, kml, and kmz.
 
     Args:
@@ -1637,15 +1711,15 @@ def ee_export_vector(
 
 
 def ee_export_vector_to_drive(
-    collection,
-    description="myExportTableTask",
-    folder=None,
-    fileNamePrefix=None,
-    fileFormat=None,
-    selectors=None,
-    maxVertices=None,
+    collection: ee.FeatureCollection,
+    description: str="myExportTableTask",
+    folder: Optional[str]=None,
+    fileNamePrefix: Optional[str]=None,
+    fileFormat: Optional[str]=None,
+    selectors: Optional[Union[list[str], str]]=None,
+    maxVertices: Optional[int]=None,
     **kwargs,
-):
+) -> None:
     """Creates a task to export a FeatureCollection to Drive.
 
     Args:
@@ -1698,12 +1772,12 @@ def ee_export_vector_to_drive(
 
 
 def ee_export_vector_to_asset(
-    collection,
-    description="myExportTableTask",
-    assetId=None,
-    maxVertices=None,
+    collection: ee.FeatureCollection,
+    description: str="myExportTableTask",
+    assetId: Optional[str]=None,
+    maxVertices: Optional[str]=None,
     **kwargs,
-):
+) -> None:
     """Creates a task to export a FeatureCollection to Asset.
 
     Args:
@@ -1743,15 +1817,15 @@ def ee_export_vector_to_asset(
 
 
 def ee_export_vector_to_cloud_storage(
-    collection,
-    description="myExportTableTask",
-    bucket=None,
-    fileNamePrefix=None,
-    fileFormat=None,
-    selectors=None,
-    maxVertices=None,
+    collection: ee.FeatureCollection,
+    description: str="myExportTableTask",
+    bucket: Optional[str]=None,
+    fileNamePrefix: Optional[str]=None,
+    fileFormat: Optional[str]=None,
+    selectors: Optional[Union[str, list[str]]]=None,
+    maxVertices: Optional[int]=None,
     **kwargs,
-):
+) -> None:
     """Creates a task to export a FeatureCollection to Google Cloud Storage.
 
     Args:
@@ -1803,12 +1877,12 @@ def ee_export_vector_to_cloud_storage(
 
 
 def ee_export_vector_to_feature_view(
-    collection,
-    description="myExportTableTask",
-    assetId=None,
-    ingestionTimeParameters=None,
+    collection: ee.FeatureCollection,
+    description: str="myExportTableTask",
+    assetId: Optional[str]=None,
+    ingestionTimeParameters: Optional[dict[str, Any]]=None,
     **kwargs,
-):
+) -> None:
     """Creates a task to export a FeatureCollection to a FeatureView.
 
     Args:
@@ -1839,20 +1913,20 @@ def ee_export_vector_to_feature_view(
 
 
 def ee_export_video_to_dirve(
-    collection,
-    description="myExportVideoTask",
-    folder=None,
-    fileNamePrefix=None,
-    framesPerSecond=None,
-    dimensions=None,
-    region=None,
-    scale=None,
-    crs=None,
-    crsTransform=None,
-    maxPixels=None,
-    maxFrames=None,
+    collection: ee.ImageCollection,
+    description: str="myExportVideoTask",
+    folder: Optional[str]=None,
+    fileNamePrefix: Optional[str]=None,
+    framesPerSecond: Optional[float]=None,
+    dimensions: Optional[str]=None,
+    region: Optional[Union[list[list[float]], str]]=None,
+    scale: Optional[float]=None,
+    crs: Optional[str]=None,
+    crsTransform: Optional[str]=None,
+    maxPixels: Optional[int]=None,
+    maxFrames: Optional[int]=None,
     **kwargs,
-):
+) -> None:
     """Creates a task to export an ImageCollection as a video to Drive.
 
     Args:
@@ -1919,20 +1993,20 @@ def ee_export_video_to_dirve(
 
 
 def ee_export_video_to_cloud_storage(
-    collection,
-    description="myExportVideoTask",
-    bucket=None,
-    fileNamePrefix=None,
-    framesPerSecond=None,
-    dimensions=None,
-    region=None,
-    scale=None,
-    crs=None,
-    crsTransform=None,
-    maxPixels=None,
-    maxFrames=None,
-    **kwargs,
-):
+    collection: ee.ImageCollection,
+    description: str="myExportVideoTask",
+    bucket: Optional[str]=None,
+    fileNamePrefix: Optional[str]=None,
+    framesPerSecond: Optional[float]=None,
+    dimensions: Optional[str]=None,
+    region: Optional[Union[list[list[float]], str]]=None,
+    scale: Optional[float]=None,
+    crs: Optional[str]=None,
+    crsTransform: Optional[str]=None,
+    maxPixels: Optional[int]=None,
+    maxFrames: Optional[int]=None,
+    **kwargs: Any,
+) -> None:
     """Creates a task to export an ImageCollection as a video to Cloud Storage.
 
     Args:
@@ -4150,7 +4224,7 @@ def ee_data_html(asset):
             bool(thumbnail_url)
             * f"""
                     <h4>Dataset Thumbnail</h4>
-                    <img src="{thumbnail_url}">  
+                    <img src="{thumbnail_url}">
                     """
         )
         ## only community datasets have a code_url
@@ -14175,10 +14249,10 @@ def html_to_gradio(html, width="100%", height="500px", **kwargs):
         else:
             output.append(line + "\n")
 
-    return f"""<iframe style="width: {width}; height: {height}" name="result" allow="midi; geolocation; microphone; camera; 
-    display-capture; encrypted-media;" sandbox="allow-modals allow-forms 
-    allow-scripts allow-same-origin allow-popups 
-    allow-top-navigation-by-user-activation allow-downloads" allowfullscreen="" 
+    return f"""<iframe style="width: {width}; height: {height}" name="result" allow="midi; geolocation; microphone; camera;
+    display-capture; encrypted-media;" sandbox="allow-modals allow-forms
+    allow-scripts allow-same-origin allow-popups
+    allow-top-navigation-by-user-activation allow-downloads" allowfullscreen=""
     allowpaymentrequest="" frameborder="0" srcdoc='{"".join(output)}'></iframe>"""
 
 

@@ -9,52 +9,59 @@ from bqplot import pyplot as plt
 
 from .common import ee_to_df
 
-from typing import Union
+from typing import Union, Optional, Any
 
 
 class BaseChartClass:
     """This should include everything a chart module requires to plot figures."""
 
     def __init__(self, features, default_labels, name, **kwargs):
-        self.ylim = None
-        self.xlim = None
-        self.title = ""
-        self.legend_location = "top-left"
-        self.layout_width = None
-        self.layout_height = None
-        self.display_legend = True
-        self.xlabel = None
-        self.ylabel = None
-        self.labels = default_labels
-        self.width = None
-        self.height = None
-        self.colors = "black"
-        self.df = ee_to_df(features)
-        self.name = name
+        self.ylim: Optional[tuple[float, float]] = None
+        self.xlim: Optional[tuple[float, float]] = None
+        self.title: str = ""
+        self.legend_location: str = "top-left"
+        self.layout_width: Optional[int] = None
+        self.layout_height: Optional[int] = None
+        self.display_legend: bool = True
+        self.xlabel: Optional[str] = None
+        self.ylabel: Optional[str] = None
+        self.labels: dict[str, str] = default_labels
+        self.width: Optional[int] = None
+        self.height: Optional[int] = None
+        self.colors: str = "black"
+        self.df: pd.dataFrame = ee_to_df(features)
+        self.name: str = name
 
         for key, value in kwargs.items():
             setattr(self, key, value)
 
     @classmethod
-    def get_data(self):
+    def get_data(self) -> pd.DataFrame:
         pass
 
     @classmethod
-    def plot_chart(self):
+    def plot_chart(self) -> None:
         pass
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.name
 
 
 class BarChart(BaseChartClass):
     """Create Bar Chart. All histogram/bar charts can use this object."""
 
-    def __init__(self, features, default_labels, name, type="grouped", **kwargs):
+    def __init__(
+        self,
+        features: list[str],
+        default_labels: dict[str, str],
+        name: str,
+        type: str = "grouped",
+        **kwargs: Any,
+    ):
         super().__init__(features, default_labels, name, **kwargs)
         self.type = type
 
-    def generate_tooltip(self):
+    def generate_tooltip(self) -> None:
         if (self.xlabel is not None) and (self.ylabel is not None):
             self.bar_chart.tooltip = Tooltip(
                 fields=["x", "y"], labels=[self.xlabel, self.ylabel]
@@ -62,7 +69,7 @@ class BarChart(BaseChartClass):
         else:
             self.bar_chart.tooltip = Tooltip(fields=["x", "y"])
 
-    def get_ylim(self):
+    def get_ylim(self) -> tuple[float, float]:
         if self.ylim:
             ylim_min, ylim_max = self.ylim[0], self.ylim[1]
         else:
@@ -77,7 +84,7 @@ class BarChart(BaseChartClass):
                 ylim_max = ylim_max + 0.2 * (ylim_max - ylim_min)
         return (ylim_min, ylim_max)
 
-    def plot_chart(self):
+    def plot_chart(self) -> None:
         fig = plt.figure(
             title=self.title,
             legend_location=self.legend_location,
@@ -110,13 +117,20 @@ class Feature_ByFeature(BarChart):
     """A object to define variables and get_data method."""
 
     def __init__(
-        self, features, xProperty, yProperties, name="feature.byFeature", **kwargs
+        self,
+        features: list[str],
+        xProperty: str,
+        yProperties: list[str],
+        name="feature.byFeature",
+        **kwargs: Any,
     ):
         default_labels = yProperties
         super().__init__(features, default_labels, name, **kwargs)
         self.x_data, self.y_data = self.get_data(xProperty, yProperties)
 
-    def get_data(self, xProperty, yProperties):
+    def get_data(
+        self, xProperty: str, yProperties: list[str]
+    ) -> tuple[list[Any], list[Any]]:
         x_data = list(self.df[xProperty])
         y_data = list(self.df[yProperties].values.T)
         return x_data, y_data
@@ -126,7 +140,12 @@ class Feature_ByProperty(BarChart):
     """A object to define variables and get_data method."""
 
     def __init__(
-        self, features, xProperties, seriesProperty, name="feature.byProperty", **kwargs
+        self,
+        features: list[str],
+        xProperties: list[str],
+        seriesProperty: str,
+        name="feature.byProperty",
+        **kwargs: Any,
     ):
         default_labels = None
         super().__init__(features, default_labels, name, **kwargs)
@@ -136,7 +155,9 @@ class Feature_ByProperty(BarChart):
         self.labels = list(self.df[seriesProperty])
         self.x_data, self.y_data = self.get_data(xProperties)
 
-    def get_data(self, xProperties):
+    def get_data(
+        self, xProperties: Union[list[str], dict[str, str]]
+    ) -> tuple[list[Any], list[Any]]:
         if isinstance(xProperties, list):
             x_data = xProperties
             y_data = self.df[xProperties].values
@@ -154,44 +175,53 @@ class Feature_Groups(BarChart):
 
     def __init__(
         self,
-        features,
-        xProperty,
-        yProperty,
-        seriesProperty,
-        name="feature.groups",
-        type="stacked",
-        **kwargs,
+        features: ee.FeatureCollection,
+        xProperty: str,
+        yProperty: str,
+        seriesProperty: str,
+        name: str = "feature.groups",
+        type: str = "stacked",
+        **kwargs: Optional[dict[str, Any]],
     ):
         df = ee_to_df(features)
-        self.unique_series_values = df[seriesProperty].unique().tolist()
-        default_labels = [str(x) for x in self.unique_series_values]
-        self.yProperty = yProperty
+        self.unique_series_values: list[str] = df[seriesProperty].unique().tolist()
+        default_labels: list[str] = [str(x) for x in self.unique_series_values]
+        self.yProperty: str = yProperty
         super().__init__(features, default_labels, name, type, **kwargs)
 
-        self.new_column_names = self.get_column_names(seriesProperty, yProperty)
+        self.new_column_names: list[Any] = self.get_column_names(
+            seriesProperty, yProperty
+        )
         self.x_data, self.y_data = self.get_data(xProperty, self.new_column_names)
 
-    def get_column_names(self, seriesProperty, yProperty):
-        new_column_names = []
+    def get_column_names(self, seriesProperty: str, yProperty: str) -> list[str]:
+        new_column_names: list[str] = []
 
         for value in self.unique_series_values:
-            sample_filter = (self.df[seriesProperty] == value).map({True: 1, False: 0})
-            column_name = str(yProperty) + "_" + str(value)
+            sample_filter: pd.Series = (self.df[seriesProperty] == value).map(
+                {True: 1, False: 0}
+            )
+            column_name: str = str(yProperty) + "_" + str(value)
             self.df[column_name] = self.df[yProperty] * sample_filter
             new_column_names.append(column_name)
 
         return new_column_names
 
-    def get_data(self, xProperty, new_column_names):
-        x_data = list(self.df[xProperty])
-        y_data = [self.df[x] for x in new_column_names]
+    def get_data(
+        self, xProperty: str, new_column_names: list[str]
+    ) -> tuple[list[Any], list[list[Any]]]:
+        x_data: list[Any] = list(self.df[xProperty])
+        y_data: list[list[Any]] = [self.df[x] for x in new_column_names]
 
         return x_data, y_data
 
 
 def feature_byFeature(
-    features: ee.FeatureCollection, xProperty: str, yProperties: list, **kwargs
-):
+    features: ee.FeatureCollection,
+    xProperty: str,
+    yProperties: list[str],
+    **kwargs: Union[dict, None],
+) -> None:
     """Generates a Chart from a set of features. Plots the value of one or more properties for each feature.
     Reference: https://developers.google.com/earth-engine/guides/charts_feature#uichartfeaturebyfeature
 
@@ -247,7 +277,13 @@ def feature_byProperty(
         raise Exception(e)
 
 
-def feature_groups(features, xProperty, yProperty, seriesProperty, **kwargs):
+def feature_groups(
+    features: ee.FeatureCollection,
+    xProperty: str,
+    yProperty: str,
+    seriesProperty: str,
+    **kwargs: Union[dict, None],
+):
     """Generates a Chart from a set of features.
     Plots the value of one property for each feature.
     Reference:
@@ -277,8 +313,13 @@ def feature_groups(features, xProperty, yProperty, seriesProperty, **kwargs):
 
 
 def feature_histogram(
-    features, property, maxBuckets=None, minBucketWidth=None, show=True, **kwargs
-):
+    features: ee.FeatureCollection,
+    property: str,
+    maxBuckets: Optional[int] = None,
+    minBucketWidth: Optional[float] = None,
+    show: bool = True,
+    **kwargs: Union[dict, None],
+) -> Optional[plt.figure]:
     """
     Generates a Chart from a set of features.
     Computes and plots a histogram of the given property.

@@ -19,6 +19,7 @@ import folium
 import ipyleaflet
 import xyzservices.providers as xyz
 from .common import check_package, planet_tiles
+from typing import Any, Optional
 
 # Custom XYZ tile services.
 xyz_tiles = {
@@ -222,14 +223,14 @@ wms_tiles = {
 }
 
 
-def _unpack_sub_parameters(var, param):
-    temp = var
+def _unpack_sub_parameters(var: Any, param: str) -> Any:
+    temp: Any = var
     for sub_param in param.split("."):
         temp = getattr(temp, sub_param)
     return temp
 
 
-def get_xyz_dict(free_only=True, france=False):
+def get_xyz_dict(free_only: bool = True, france: bool = False) -> dict[str, Any]:
     """Returns a dictionary of xyz services.
 
     Args:
@@ -240,7 +241,7 @@ def get_xyz_dict(free_only=True, france=False):
         dict: A dictionary of xyz services.
     """
 
-    xyz_dict_tmp = {}
+    xyz_dict_tmp: dict[str, dict[str, Any]] = {}
     for item in xyz.values():
         try:
             name = item["name"]
@@ -267,7 +268,7 @@ def get_xyz_dict(free_only=True, france=False):
                     xyz_dict_tmp[name] = tile
                 tile["type"] = "xyz"
 
-    xyz_dict = {}
+    xyz_dict: dict[str, dict[str, Any]] = {}
 
     if france:
         xyz_dict = xyz_dict_tmp
@@ -280,13 +281,13 @@ def get_xyz_dict(free_only=True, france=False):
     return xyz_dict
 
 
-def xyz_to_leaflet():
+def xyz_to_leaflet() -> dict[str, dict[str, Any]]:
     """Convert xyz tile services to ipyleaflet tile layers.
 
     Returns:
         dict: A dictionary of ipyleaflet tile layers.
     """
-    leaflet_dict = {}
+    leaflet_dict: dict[str, dict[str, Any]] = {}
 
     for key in xyz_tiles:
         xyz_tiles[key]["type"] = "xyz"
@@ -298,7 +299,7 @@ def xyz_to_leaflet():
         name = wms_tiles[key]["name"]
         leaflet_dict[key] = wms_tiles[key]
 
-    xyz_dict = get_xyz_dict()
+    xyz_dict: dict[str, dict[str, Any]] = get_xyz_dict()
     for item in xyz_dict:
         name = xyz_dict[item].name
         xyz_dict[item]["url"] = xyz_dict[item].build_url()
@@ -307,7 +308,7 @@ def xyz_to_leaflet():
     return leaflet_dict
 
 
-def xyz_to_pydeck():
+def xyz_to_pydeck() -> dict[str, Any]:
     """Convert xyz tile services to pydeck custom tile layers.
 
     Returns:
@@ -317,18 +318,18 @@ def xyz_to_pydeck():
     check_package("pydeck", "https://deckgl.readthedocs.io/en/latest/installation.html")
     import pydeck as pdk
 
-    pydeck_dict = {}
+    pydeck_dict: dict[str, Any] = {}
 
     for key, tile in xyz_tiles.items():
-        url = tile["url"]
+        url: str = tile["url"]
         pydeck_dict[key] = url
 
     for key, item in get_xyz_dict().items():
-        url = item.build_url()
+        url: str = item.build_url()
         pydeck_dict[key] = url
 
         if os.environ.get("PLANET_API_KEY") is not None:
-            planet_dict = planet_tiles(tile_format="ipyleaflet")
+            planet_dict: dict[str, Any] = planet_tiles(tile_format="ipyleaflet")
             for id_, tile in planet_dict.items():
                 pydeck_dict[id_] = tile.url
 
@@ -345,13 +346,13 @@ def xyz_to_pydeck():
     return pydeck_dict
 
 
-def xyz_to_folium():
+def xyz_to_folium() -> dict[str, Any]:
     """Convert xyz tile services to folium tile layers.
 
     Returns:
         dict: A dictionary of folium tile layers.
     """
-    folium_dict = {}
+    folium_dict: dict[str, Any] = {}
 
     for key, tile in xyz_tiles.items():
         folium_dict[key] = folium.TileLayer(
@@ -386,19 +387,19 @@ def xyz_to_folium():
         )
 
     if os.environ.get("PLANET_API_KEY") is not None:
-        planet_dict = planet_tiles(tile_format="folium")
+        planet_dict: dict[str, Any] = planet_tiles(tile_format="folium")
         folium_dict.update(planet_dict)
 
     return folium_dict
 
 
-def xyz_to_plotly():
+def xyz_to_plotly() -> dict[str, dict[str, Any]]:
     """Convert xyz tile services to plotly tile layers.
 
     Returns:
         dict: A dictionary of plotly tile layers.
     """
-    plotly_dict = {}
+    plotly_dict: dict[str, dict[str, Any]] = {}
 
     for key, tile in xyz_tiles.items():
         plotly_dict[key] = {
@@ -421,12 +422,15 @@ def xyz_to_plotly():
     return plotly_dict
 
 
-def search_qms(keywords, limit=10):
+def search_qms(keywords: str, limit: int = 10) -> Optional[list[dict]]:
     """Search qms files for keywords. Reference: https://github.com/geopandas/xyzservices/issues/65
 
     Args:
         keywords (str): Keywords to search for.
         limit (int): Number of results to return.
+    Returns:
+        Optional[list[dict]]: a list of dictionaries representing the search result,
+                              or None if no result were found
     """
     QMS_API = "https://qms.nextgis.com/api/v1/geoservices"
 
@@ -442,13 +446,13 @@ def search_qms(keywords, limit=10):
         return services["results"][:limit]
 
 
-def get_qms(service_id):
-    QMS_API = "https://qms.nextgis.com/api/v1/geoservices"
+def get_qms(service_id: str) -> dict[str, str]:
+    QMS_API: str = "https://qms.nextgis.com/api/v1/geoservices"
     service_details = requests.get(f"{QMS_API}/{service_id}")
     return service_details.json()
 
 
-def qms_to_geemap(service_id):
+def qms_to_geemap(service_id: str) -> ipyleaflet.TileLayer:
     """Convert a qms service to an ipyleaflet tile layer.
 
     Args:
@@ -457,10 +461,10 @@ def qms_to_geemap(service_id):
     Returns:
         ipyleaflet.TileLayer: An ipyleaflet tile layer.
     """
-    service_details = get_qms(service_id)
-    name = service_details["name"]
-    url = service_details["url"]
-    attribution = service_details["copyright_text"]
+    service_details: dict[str, str] = get_qms(service_id)
+    name: str = service_details["name"]
+    url: str = service_details["url"]
+    attribution: str = service_details["copyright_text"]
 
     layer = ipyleaflet.TileLayer(url=url, name=name, attribution=attribution)
     return layer
