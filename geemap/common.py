@@ -162,9 +162,9 @@ def check_titiler_endpoint(
 
 
 def ee_initialize(
-    token_name: str = "EARTHENGINE_TOKEN",
-    auth_mode: str = "notebook",
-    service_account: bool = False,
+    token_name: str ="EARTHENGINE_TOKEN",
+    auth_mode: str ="notebook",
+    service_account: bool =False,
     auth_args: Dict[str, Any] = {},
     **kwargs: Optional[dict],
 ) -> None:
