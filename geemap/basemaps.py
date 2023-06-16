@@ -11,6 +11,7 @@ More WMS basemaps can be found at the following websites:
 3. FWS NWI Wetlands data: https://www.fws.gov/wetlands/Data/Web-Map-Services.html
 
 """
+from __future__ import annotations
 
 import collections
 import os

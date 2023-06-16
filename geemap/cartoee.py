@@ -17,13 +17,13 @@ import numpy as np
 import requests
 from matplotlib import cm, colors
 from matplotlib import font_manager as mfonts
-import cartopy.crs as ccrs
-from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
 from typing import Union, Optional, Any, Iterable, Dict
 
 from .basemaps import xyz_tiles
 
 try:
+    import cartopy.crs as ccrs
+    from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
     import cartopy.io.img_tiles as cimgt
     from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
     from PIL import Image
@@ -183,7 +183,7 @@ def get_map(
 
 
 def add_layer(
-    ax: Union[GeoAxes, GeoAxesSubplot],
+    ax,
     ee_object: Union[ee.Image, ee.FeatureCollection],
     dims: Union[list[int], tuple[int, int], int] = 1000,
     region: Optional[list[float]] = None,
@@ -317,7 +317,7 @@ def build_palette(cmap: str, n: int = 256) -> list[str]:
 
 
 def add_colorbar(
-    ax: Union[GeoAxes, GeoAxesSubplot],
+    ax,
     vis_params: dict[str, Any],
     loc: str = None,
     cmap: str = "gray",
@@ -535,7 +535,7 @@ def bbox_to_extent(bbox: list[float]) -> tuple[float, float, float, float]:
 
 
 def add_gridlines(
-    ax: Union[GeoAxesSubplot, GeoAxes],
+    ax,
     interval: Union[float, list[float]] = None,
     n_ticks: Union[int, list[int], None] = None,
     xs: Union[list[float], None] = None,
@@ -638,7 +638,7 @@ def add_gridlines(
 
 
 def pad_view(
-    ax: Union[GeoAxesSubplot, GeoAxes],
+    ax,
     factor: Union[float, Iterable[float]] = 0.05,
 ):
     """Function to pad area around the view extent of a map, used for visual appeal
@@ -671,7 +671,7 @@ def pad_view(
 
 
 def add_north_arrow(
-    ax: Union[GeoAxesSubplot, ccrs.GeoAxes],
+    ax,
     text: str = "N",
     xy: tuple[float, float] = (0.1, 0.1),
     arrow_length: float = 0.1,
@@ -736,7 +736,7 @@ def convert_SI(val: float, unit_in: str, unit_out: str) -> float:
 
 
 def add_scale_bar(
-    ax: Union[GeoAxesSubplot, GeoAxes],
+    ax,
     metric_distance: Union[int, float] = 4,
     unit: str = "km",
     at_x: tuple[float, float] = (0.05, 0.5),
@@ -988,7 +988,7 @@ def add_scale_bar(
 
 
 def add_scale_bar_lite(
-    ax: ccrs.GeoAxesSubplot,
+    ax,
     length: float = None,
     xy: tuple[float, float] = (0.5, 0.05),
     linewidth: int = 3,
@@ -1099,7 +1099,7 @@ def create_legend(
 
 
 def add_legend(
-    ax: Union[GeoAxesSubplot, GeoAxes],
+    ax,
     legend_elements: Optional[list[plt.Line2D]] = None,
     loc: str = "lower right",
     font_size: Union[int, str] = 14,
