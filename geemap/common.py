@@ -1,5 +1,6 @@
 """This module contains some common functions for both folium and ipyleaflet to interact with the Earth Engine Python API.
 """
+from __future__ import annotations
 
 import csv
 import datetime

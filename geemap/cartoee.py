@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import os
 import subprocess
@@ -15,14 +17,14 @@ import numpy as np
 import requests
 from matplotlib import cm, colors
 from matplotlib import font_manager as mfonts
+import cartopy.crs as ccrs
+from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
 from typing import Union, Optional, Any, Iterable, Dict
 
 from .basemaps import xyz_tiles
 
 try:
-    import cartopy.crs as ccrs
     import cartopy.io.img_tiles as cimgt
-    from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
     from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
     from PIL import Image
 
