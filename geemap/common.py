@@ -20,7 +20,7 @@ import pandas as pd
 from PIL import Image
 from ipytree import Node, Tree
 from geojson import FeatureCollection
-from typing import Union, Optional, Iterable, Any
+from typing import Union, Optional, Iterable, Any, Dict
 
 try:
     from IPython.display import display, IFrame, HTML
@@ -165,6 +165,8 @@ def ee_initialize(
     token_name: str = "EARTHENGINE_TOKEN",
     auth_mode: str = "notebook",
     service_account: bool = False,
+    auth_args: Dict[str, Any] = {},
+    **kwargs: Optional[dict],
 ) -> None:
     """Authenticates Earth Engine and initialize an Earth Engine session
 
@@ -172,11 +174,18 @@ def ee_initialize(
         token_name (str, optional): The name of the Earth Engine token. Defaults to "EARTHENGINE_TOKEN".
         auth_mode (str, optional): The authentication mode, can be one of paste,notebook,gcloud,appdefault. Defaults to "notebook".
         service_account (bool, optional): If True, use a service account. Defaults to False.
+        auth_args (dict, optional): Additional authentication parameters for aa.Authenticate(). Defaults to {}.
+        kwargs (dict, optional): Additional parameters for ee.Initialize(). For example,
+            opt_url='https://earthengine-highvolume.googleapis.com' to use the Earth Engine High-Volume platform. Defaults to {}.
     """
     import httplib2
     from .__init__ import __version__
 
     user_agent = f"geemap/{__version__}"
+    if "http_transport" not in kwargs:
+        kwargs["http_transport"] = httplib2.Http()
+
+    auth_args["auth_mode"] = auth_mode
 
     if ee.data._credentials is None:
         ee_token = os.environ.get(token_name)
@@ -199,7 +208,7 @@ def ee_initialize(
                 credentials = ee.ServiceAccountCredentials(
                     service_account, key_data=private_key
                 )
-                ee.Initialize(credentials)
+                ee.Initialize(credentials, **kwargs)
 
             except Exception as e:
                 raise Exception(e)
@@ -230,18 +239,18 @@ def ee_initialize(
                     if credentials_in_drive() and (not credentials_in_colab()):
                         copy_credentials_to_colab()
                     elif not credentials_in_colab:
-                        ee.Authenticate(auth_mode=auth_mode)
+                        ee.Authenticate(**auth_args)
                         if is_drive_mounted() and (not credentials_in_drive()):
                             copy_credentials_to_drive()
                     else:
                         if is_drive_mounted():
                             copy_credentials_to_drive()
 
-                ee.Initialize(http_transport=httplib2.Http())
+                ee.Initialize(**kwargs)
 
             except Exception:
-                ee.Authenticate(auth_mode=auth_mode)
-                ee.Initialize(http_transport=httplib2.Http())
+                ee.Authenticate(**auth_args)
+                ee.Initialize(**kwargs)
 
         ee.data.setUserAgent(user_agent)
 
@@ -599,7 +608,7 @@ def random_string(string_length: int = 3) -> str:
 
 
 def open_image_from_url(
-    url: str, timeout: int = 300, proxies: Optional[dict[str, int]] = None
+    url: str, timeout: int = 300, proxies: Optional[Dict[str, int]] = None
 ) -> Image.Image:
     """Loads an image from the specified URL.
 
@@ -12688,6 +12697,7 @@ def download_ee_image_tiles(
     shape=None,
     scale_offset=False,
     unmask_value=None,
+    column=None,
     **kwargs,
 ):
     """Download an Earth Engine Image as small tiles based on ee.FeatureCollection. Images larger than the `Earth Engine size limit are split and downloaded as
@@ -12721,8 +12731,13 @@ def download_ee_image_tiles(
             Whether to apply any EE band scales and offsets to the image.
         unmask_value (float, optional): The value to use for pixels that are masked in the input image. If the exported image contains zero values,
             you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
+        column (str, optional): The column name to use for the filename. Defaults to None.
 
     """
+    import time
+
+    start = time.time()
+
     if os.environ.get("USE_MKDOCS") is not None:
         return
 
@@ -12741,10 +12756,15 @@ def download_ee_image_tiles(
     count = features.size().getInfo()
     collection = features.toList(count)
 
+    if column is not None:
+        names = features.aggregate_array(column).getInfo()
+    else:
+        names = [str(i + 1).zfill(len(str(count))) for i in range(count)]
+
     for i in range(count):
         region = ee.Feature(collection.get(i)).geometry()
         filename = os.path.join(
-            out_dir, "{}{}.tif".format(prefix, str(i + 1).zfill(len(str(count))))
+            out_dir, "{}{}.tif".format(prefix, names[i].replace("/", "_"))
         )
         print(f"Downloading {i + 1}/{count}: {filename}")
         download_ee_image(
@@ -12765,6 +12785,125 @@ def download_ee_image_tiles(
             unmask_value,
             **kwargs,
         )
+
+    print(f"Downloaded {count} tiles in {time.time() - start} seconds.")
+
+
+def download_ee_image_tiles_parallel(
+    image,
+    features,
+    out_dir=None,
+    prefix=None,
+    crs=None,
+    crs_transform=None,
+    scale=None,
+    resampling="near",
+    dtype=None,
+    overwrite=True,
+    num_threads=None,
+    max_tile_size=None,
+    max_tile_dim=None,
+    shape=None,
+    scale_offset=False,
+    unmask_value=None,
+    column=None,
+    job_args={"n_jobs": -1},
+    **kwargs,
+):
+    """Download an Earth Engine Image as small tiles based on ee.FeatureCollection. Images larger than the `Earth Engine size limit are split and downloaded as
+        separate tiles, then re-assembled into a single GeoTIFF. See https://github.com/dugalh/geedim/blob/main/geedim/download.py#L574
+
+    Args:
+        image (ee.Image): The image to be downloaded.
+        features (ee.FeatureCollection): The features to loop through to download image.
+        out_dir (str, optional): The output directory. Defaults to None.
+        prefix (str, optional): The prefix for the output file. Defaults to None.
+        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS.  Where image bands have different CRSs, all are
+            re-projected to this CRS. Defaults to the CRS of the minimum scale band.
+        crs_transform (list, optional): tuple of float, list of float, rio.Affine, optional
+            List of 6 numbers specifying an affine transform in the specified CRS.  In row-major order:
+            [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation].  All bands are re-projected to
+            this transform.
+        scale (float, optional): Resample image(s) to this pixel scale (size) (m).  Where image bands have different scales,
+            all are resampled to this scale.  Defaults to the minimum scale of image bands.
+        resampling (ResamplingMethod, optional): Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
+        dtype (str, optional): Convert to this data type (`uint8`, `int8`, `uint16`, `int16`, `uint32`, `int32`, `float32`
+            or `float64`).  Defaults to auto select a minimum size type that can represent the range of pixel values.
+        overwrite (bool, optional): Overwrite the destination file if it exists. Defaults to True.
+        num_threads (int, optional): Number of tiles to download concurrently. Defaults to a sensible auto value.
+        max_tile_size: int, optional
+            Maximum tile size (MB).  If None, defaults to the Earth Engine download size limit (32 MB).
+        max_tile_dim: int, optional
+            Maximum tile width/height (pixels).  If None, defaults to Earth Engine download limit (10000).
+        shape: tuple of int, optional
+            (height, width) dimensions to export (pixels).
+        scale_offset: bool, optional
+            Whether to apply any EE band scales and offsets to the image.
+        unmask_value (float, optional): The value to use for pixels that are masked in the input image. If the exported image contains zero values,
+            you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
+        column (str, optional): The column name in the feature collection to use as the filename. Defaults to None.
+        job_args (dict, optional): The arguments to pass to joblib.Parallel. Defaults to {"n_jobs": -1}.
+
+    """
+    import joblib
+    import time
+
+    start = time.time()
+
+    if os.environ.get("USE_MKDOCS") is not None:
+        return
+
+    if not isinstance(features, ee.FeatureCollection):
+        raise ValueError("features must be an ee.FeatureCollection.")
+
+    if out_dir is None:
+        out_dir = os.getcwd()
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    if prefix is None:
+        prefix = ""
+
+    count = features.size().getInfo()
+    if column is not None:
+        names = features.aggregate_array(column).getInfo()
+    else:
+        names = [str(i + 1).zfill(len(str(count))) for i in range(count)]
+    collection = features.toList(count)
+
+    def download_data(index):
+        ee_initialize(opt_url="https://earthengine-highvolume.googleapis.com")
+        region = ee.Feature(collection.get(index)).geometry()
+        filename = os.path.join(
+            out_dir, "{}{}.tif".format(prefix, names[index].replace("/", "_"))
+        )
+        print(f"Downloading {index + 1}/{count}: {filename}")
+
+        download_ee_image(
+            image,
+            filename,
+            region,
+            crs,
+            crs_transform,
+            scale,
+            resampling,
+            dtype,
+            overwrite,
+            num_threads,
+            max_tile_size,
+            max_tile_dim,
+            shape,
+            scale_offset,
+            unmask_value,
+            **kwargs,
+        )
+
+    with joblib.Parallel(**job_args) as parallel:
+        parallel(joblib.delayed(download_data)(index) for index in range(count))
+
+    end = time.time()
+    print(f"Finished in {end - start} seconds.")
 
 
 def download_ee_image_collection(
