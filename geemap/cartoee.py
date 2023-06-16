@@ -15,7 +15,7 @@ import numpy as np
 import requests
 from matplotlib import cm, colors
 from matplotlib import font_manager as mfonts
-from typing import Union, Optional, Any, Iterable
+from typing import Union, Optional, Any, Iterable, Dict
 
 from .basemaps import xyz_tiles
 
@@ -533,7 +533,7 @@ def bbox_to_extent(bbox: list[float]) -> tuple[float, float, float, float]:
 
 
 def add_gridlines(
-    ax: Union[GeoAxesSubplot, ccrs.GeoAxes],
+    ax: Union[GeoAxesSubplot, GeoAxes],
     interval: Union[float, list[float]] = None,
     n_ticks: Union[int, list[int], None] = None,
     xs: Union[list[float], None] = None,
@@ -636,7 +636,7 @@ def add_gridlines(
 
 
 def pad_view(
-    ax: Union[GeoAxesSubplot, ccrs.GeoAxes],
+    ax: Union[GeoAxesSubplot, GeoAxes],
     factor: Union[float, Iterable[float]] = 0.05,
 ):
     """Function to pad area around the view extent of a map, used for visual appeal
@@ -1174,7 +1174,7 @@ def get_image_collection_gif(
     ee_ic: ee.ImageCollection,
     out_dir: str,
     out_gif: str,
-    vis_params: dict[str, Any],
+    vis_params: Dict[str, Any],
     region: tuple[float, float, float],
     cmap: Optional[str] = None,
     proj: Optional[str] = None,
@@ -1344,7 +1344,7 @@ def savefig(
     fname: str,
     dpi: Union[int, str] = "figure",
     bbox_inches: str = "tight",
-    **kwargs: dict[str, Any],
+    **kwargs: Dict[str, Any],
 ) -> None:
     """Save figure to file. It wraps the matplotlib.pyplot.savefig() function.
             See https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html for more details.
