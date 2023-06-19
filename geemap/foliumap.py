@@ -1573,7 +1573,7 @@ class Map(folium.Map):
             )
 
         if color_column is not None:
-            items = list(set(df[color_column]))
+            items = sorted(list(set(df[color_column])))
         else:
             items = None
 
