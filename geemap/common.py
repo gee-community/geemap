@@ -11295,6 +11295,9 @@ def image_to_numpy(image):
         np.array: A numpy array.
     """
     import rasterio
+    from osgeo import gdal
+
+    gdal.PushErrorHandler('CPLQuietErrorHandler')
 
     if not os.path.exists(image):
         raise FileNotFoundError("The provided input file could not be found.")
