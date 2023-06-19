@@ -631,9 +631,9 @@ class Map(folium.Map):
         **kwargs,
     ):
         """Add a local raster dataset to the map.
-
-            If you are using this function in JupyterHub on a remote server and the raster does not render properly, try
-            running the following two lines before calling this function:
+            If you are using this function in JupyterHub on a remote server (e.g., Binder, Microsoft Planetary Computer) and
+            if the raster does not render properly, try installing jupyter-server-proxy using `pip install jupyter-server-proxy`,
+            then running the following code before calling this function. For more info, see https://bit.ly/3JbmF93.
 
             import os
             os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = 'proxy/{port}'
@@ -648,10 +648,6 @@ class Map(folium.Map):
             attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
             layer_name (str, optional): The layer name to use. Defaults to 'Local COG'.
         """
-
-        if in_colab_shell():
-            print("This add_raster() function is not supported in Colab.")
-            return
 
         tile_layer, tile_client = get_local_tile_layer(
             source,
@@ -677,7 +673,10 @@ class Map(folium.Map):
         )  # [minx, miny, maxx, maxy]
         self.zoom_to_bounds(bounds)
 
-    dd_local_tile = add_raster
+        arc_add_layer(tile_layer.tiles, layer_name, True, 1.0)
+        arc_zoom_to_extent(bounds[0], bounds[1], bounds[2], bounds[3])
+
+    add_local_tile = add_raster
 
     def add_remote_tile(
         self,
@@ -704,7 +703,7 @@ class Map(folium.Map):
             layer_name (str, optional): The layer name to use. Defaults to None.
         """
         if isinstance(source, str) and source.startswith("http"):
-            self.add_local_tile(
+            self.add_raster(
                 source,
                 band=band,
                 palette=palette,
