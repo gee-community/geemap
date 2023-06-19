@@ -611,7 +611,7 @@ def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
         # else:
         out_file = os.path.splitext(in_file)[0] + "_geemap.py"
         out_file = out_file.replace(in_dir, out_dir)
-        js_to_python(in_file, out_file, use_qgis, github_repo)
+        js_to_python(in_file, out_file, use_qgis, github_repo, import_geemap=True)
     # print("Output Python script folder: {}".format(out_dir))
 
 
