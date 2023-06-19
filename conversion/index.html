@@ -4722,7 +4722,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <span class="c1"># else:</span>
         <span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">in_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_geemap.py&quot;</span>
         <span class="n">out_file</span> <span class="o">=</span> <span class="n">out_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span>
-        <span class="n">js_to_python</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">out_file</span><span class="p">,</span> <span class="n">use_qgis</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">)</span>
+        <span class="n">js_to_python</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">out_file</span><span class="p">,</span> <span class="n">use_qgis</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># print(&quot;Output Python script folder: {}&quot;.format(out_dir))</span>
 </code></pre></div>
         </details>
