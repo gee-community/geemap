@@ -163,9 +163,9 @@ def check_titiler_endpoint(
 
 
 def ee_initialize(
-    token_name: str ="EARTHENGINE_TOKEN",
-    auth_mode: str ="notebook",
-    service_account: bool =False,
+    token_name: str = "EARTHENGINE_TOKEN",
+    auth_mode: str = "notebook",
+    service_account: bool = False,
     auth_args: Dict[str, Any] = {},
     **kwargs: Optional[dict],
 ) -> None:
@@ -1612,11 +1612,11 @@ def filter_polygons(ftr: ee.Feature) -> ee.Feature:
 def ee_export_vector(
     ee_object: ee.FeatureCollection,
     filename: str,
-    selectors: Optional[list[str]]=None,
-    verbose: bool=True,
-    keep_zip: bool=False,
-    timeout: int=300,
-    proxies: Optional[dict]=None,
+    selectors: Optional[list[str]] = None,
+    verbose: bool = True,
+    keep_zip: bool = False,
+    timeout: int = 300,
+    proxies: Optional[dict] = None,
 ) -> None:
     """Exports Earth Engine FeatureCollection to other formats, including shp, csv, json, kml, and kmz.
 
@@ -1722,12 +1722,12 @@ def ee_export_vector(
 
 def ee_export_vector_to_drive(
     collection: ee.FeatureCollection,
-    description: str="myExportTableTask",
-    folder: Optional[str]=None,
-    fileNamePrefix: Optional[str]=None,
-    fileFormat: Optional[str]=None,
-    selectors: Optional[Union[list[str], str]]=None,
-    maxVertices: Optional[int]=None,
+    description: str = "myExportTableTask",
+    folder: Optional[str] = None,
+    fileNamePrefix: Optional[str] = None,
+    fileFormat: Optional[str] = None,
+    selectors: Optional[Union[list[str], str]] = None,
+    maxVertices: Optional[int] = None,
     **kwargs,
 ) -> None:
     """Creates a task to export a FeatureCollection to Drive.
@@ -1783,9 +1783,9 @@ def ee_export_vector_to_drive(
 
 def ee_export_vector_to_asset(
     collection: ee.FeatureCollection,
-    description: str="myExportTableTask",
-    assetId: Optional[str]=None,
-    maxVertices: Optional[str]=None,
+    description: str = "myExportTableTask",
+    assetId: Optional[str] = None,
+    maxVertices: Optional[str] = None,
     **kwargs,
 ) -> None:
     """Creates a task to export a FeatureCollection to Asset.
@@ -1828,12 +1828,12 @@ def ee_export_vector_to_asset(
 
 def ee_export_vector_to_cloud_storage(
     collection: ee.FeatureCollection,
-    description: str="myExportTableTask",
-    bucket: Optional[str]=None,
-    fileNamePrefix: Optional[str]=None,
-    fileFormat: Optional[str]=None,
-    selectors: Optional[Union[str, list[str]]]=None,
-    maxVertices: Optional[int]=None,
+    description: str = "myExportTableTask",
+    bucket: Optional[str] = None,
+    fileNamePrefix: Optional[str] = None,
+    fileFormat: Optional[str] = None,
+    selectors: Optional[Union[str, list[str]]] = None,
+    maxVertices: Optional[int] = None,
     **kwargs,
 ) -> None:
     """Creates a task to export a FeatureCollection to Google Cloud Storage.
@@ -1888,9 +1888,9 @@ def ee_export_vector_to_cloud_storage(
 
 def ee_export_vector_to_feature_view(
     collection: ee.FeatureCollection,
-    description: str="myExportTableTask",
-    assetId: Optional[str]=None,
-    ingestionTimeParameters: Optional[dict[str, Any]]=None,
+    description: str = "myExportTableTask",
+    assetId: Optional[str] = None,
+    ingestionTimeParameters: Optional[dict[str, Any]] = None,
     **kwargs,
 ) -> None:
     """Creates a task to export a FeatureCollection to a FeatureView.
@@ -1924,17 +1924,17 @@ def ee_export_vector_to_feature_view(
 
 def ee_export_video_to_dirve(
     collection: ee.ImageCollection,
-    description: str="myExportVideoTask",
-    folder: Optional[str]=None,
-    fileNamePrefix: Optional[str]=None,
-    framesPerSecond: Optional[float]=None,
-    dimensions: Optional[str]=None,
-    region: Optional[Union[list[list[float]], str]]=None,
-    scale: Optional[float]=None,
-    crs: Optional[str]=None,
-    crsTransform: Optional[str]=None,
-    maxPixels: Optional[int]=None,
-    maxFrames: Optional[int]=None,
+    description: str = "myExportVideoTask",
+    folder: Optional[str] = None,
+    fileNamePrefix: Optional[str] = None,
+    framesPerSecond: Optional[float] = None,
+    dimensions: Optional[str] = None,
+    region: Optional[Union[list[list[float]], str]] = None,
+    scale: Optional[float] = None,
+    crs: Optional[str] = None,
+    crsTransform: Optional[str] = None,
+    maxPixels: Optional[int] = None,
+    maxFrames: Optional[int] = None,
     **kwargs,
 ) -> None:
     """Creates a task to export an ImageCollection as a video to Drive.
@@ -2004,17 +2004,17 @@ def ee_export_video_to_dirve(
 
 def ee_export_video_to_cloud_storage(
     collection: ee.ImageCollection,
-    description: str="myExportVideoTask",
-    bucket: Optional[str]=None,
-    fileNamePrefix: Optional[str]=None,
-    framesPerSecond: Optional[float]=None,
-    dimensions: Optional[str]=None,
-    region: Optional[Union[list[list[float]], str]]=None,
-    scale: Optional[float]=None,
-    crs: Optional[str]=None,
-    crsTransform: Optional[str]=None,
-    maxPixels: Optional[int]=None,
-    maxFrames: Optional[int]=None,
+    description: str = "myExportVideoTask",
+    bucket: Optional[str] = None,
+    fileNamePrefix: Optional[str] = None,
+    framesPerSecond: Optional[float] = None,
+    dimensions: Optional[str] = None,
+    region: Optional[Union[list[list[float]], str]] = None,
+    scale: Optional[float] = None,
+    crs: Optional[str] = None,
+    crsTransform: Optional[str] = None,
+    maxPixels: Optional[int] = None,
+    maxFrames: Optional[int] = None,
     **kwargs: Any,
 ) -> None:
     """Creates a task to export an ImageCollection as a video to Cloud Storage.
@@ -2082,18 +2082,18 @@ def ee_export_video_to_cloud_storage(
 
 
 def ee_export_map_to_cloud_storage(
-    image,
-    description="myExportMapTask",
-    bucket=None,
-    fileFormat=None,
-    path=None,
-    writePublicTiles=None,
-    maxZoom=None,
-    scale=None,
-    minZoom=None,
-    region=None,
-    skipEmptyTiles=None,
-    mapsApiKey=None,
+    image: ee.Image,
+    description: str = "myExportMapTask",
+    bucket: Optional[str] = None,
+    fileFormat: Optional[str] = None,
+    path: Optional[str] = None,
+    writePublicTiles: Optional[bool] = None,
+    maxZoom: Optional[int] = None,
+    scale: Optional[int] = None,
+    minZoom: Optional[int] = None,
+    region: Optional[Any] = None,
+    skipEmptyTiles: Optional[bool] = None,
+    mapsApiKey: Optional[str] = None,
     **kwargs,
 ):
     """Creates a task to export an Image as a pyramid of map tiles.
@@ -2163,8 +2163,12 @@ def ee_export_map_to_cloud_storage(
 
 
 def ee_export_geojson(
-    ee_object, filename=None, selectors=None, timeout=300, proxies=None
-):
+    ee_object: ee.FeatureCollection,
+    filename: Optional[str] = None,
+    selectors: Optional[list[str]] = None,
+    timeout: int = 300,
+    proxies: Optional[dict[str, str]] = None,
+) -> None:
     """Exports Earth Engine FeatureCollection to geojson.
 
     Args:
@@ -2250,13 +2254,13 @@ def ee_export_geojson(
 
 
 def ee_to_shp(
-    ee_object,
-    filename,
-    selectors=None,
-    verbose=True,
-    keep_zip=False,
-    timeout=300,
-    proxies=None,
+    ee_object: ee.FeatureCollection,
+    filename: str,
+    selectors: Optional[list[str]] = None,
+    verbose: bool = True,
+    keep_zip: bool = False,
+    timeout: int = 300,
+    proxies: Optional[dict[str, str]] = None,
 ):
     """Downloads an ee.FeatureCollection as a shapefile.
 
@@ -2289,8 +2293,13 @@ def ee_to_shp(
 
 
 def ee_to_csv(
-    ee_object, filename, selectors=None, verbose=True, timeout=300, proxies=None
-):
+    ee_object: ee.FeatureCollection,
+    filename: str,
+    selectors: Optional[list[str]] = None,
+    verbose: bool = True,
+    timeout: int = 300,
+    proxies: Optional[dict[str, str]] = None,
+) -> None:
     """Downloads an ee.FeatureCollection as a CSV file.
 
     Args:
@@ -2320,7 +2329,13 @@ def ee_to_csv(
         print(e)
 
 
-def dict_to_csv(data_dict, out_csv, by_row=False, timeout=300, proxies=None):
+def dict_to_csv(
+    data_dict: ee.Dictionary,
+    out_csv: str,
+    by_row: bool = False,
+    timeout: int = 300,
+    proxies: Optional[dict[str, str]] = None,
+) -> None:
     """Downloads an ee.Dictionary as a CSV file.
 
     Args:
@@ -2348,20 +2363,20 @@ def dict_to_csv(data_dict, out_csv, by_row=False, timeout=300, proxies=None):
 
 
 def ee_export_image(
-    ee_object,
-    filename,
-    scale=None,
-    crs=None,
-    crs_transform=None,
-    region=None,
-    dimensions=None,
-    file_per_band=False,
-    format="ZIPPED_GEO_TIFF",
-    unzip=True,
-    unmask_value=None,
-    timeout=300,
-    proxies=None,
-):
+    ee_object: ee.Image,
+    filename: str,
+    scale: Optional[float] = None,
+    crs: Optional[str] = None,
+    crs_transform: Optional[list[float]] = None,
+    region: Optional[Union[ee.Geometry, ee.FeatureCollection]] = None,
+    dimensions: Optional[list[int]] = None,
+    file_per_band: bool = False,
+    format: str = "ZIPPED_GEO_TIFF",
+    unzip: bool = True,
+    unmask_value: Optional[float] = None,
+    timeout: int = 300,
+    proxies: Optional[dict[str, str]] = None,
+) -> None:
     """Exports an ee.Image as a GeoTIFF.
 
     Args:
@@ -2462,20 +2477,20 @@ def ee_export_image(
 
 
 def ee_export_image_collection(
-    ee_object,
-    out_dir,
-    scale=None,
-    crs=None,
-    crs_transform=None,
-    region=None,
-    dimensions=None,
-    file_per_band=False,
-    format="ZIPPED_GEO_TIFF",
-    unmask_value=None,
-    filenames=None,
-    timeout=300,
-    proxies=None,
-):
+    ee_object: ee.ImageCollections,
+    out_dir: str,
+    scale: Optional[float] = None,
+    crs: Optional[str] = None,
+    crs_transform: Optional[str[float]] = None,
+    region: Optional[Union[ee.Geometry, ee.FeatureCollection]] = None,
+    dimensions: Optional[list[int]] = None,
+    file_per_band: bool = False,
+    format: str = "ZIPPED_GEO_TIFF",
+    unmask_value: Optional[float] = None,
+    filenames: Optional[Union[list[str], int]] = None,
+    timeout: int = 300,
+    proxies: Optional[dict[str, str]] = None,
+) -> None:
     """Exports an ImageCollection as GeoTIFFs.
 
     Args:
@@ -2544,23 +2559,23 @@ def ee_export_image_collection(
 
 
 def ee_export_image_to_drive(
-    image,
-    description="myExportImageTask",
-    folder=None,
-    fileNamePrefix=None,
-    dimensions=None,
-    region=None,
-    scale=None,
-    crs=None,
-    crsTransform=None,
-    maxPixels=None,
-    shardSize=None,
-    fileDimensions=None,
-    skipEmptyTiles=None,
-    fileFormat=None,
-    formatOptions=None,
-    **kwargs,
-):
+    image: ee.Image,
+    description: str = "myExportImageTask",
+    folder: Optional[str] = None,
+    fileNamePrefix: Optional[str] = None,
+    dimensions: Optional[Union[int, str]] = None,
+    region: Optional[Union[list, str]] = None,
+    scale: Optional[Union[int, float]] = None,
+    crs: Optional[str] = None,
+    crsTransform: Optional[str] = None,
+    maxPixels: Optional[int] = None,
+    shardSize: Optional[int] = None,
+    fileDimensions: Optional[Union[int, tuple]] = None,
+    skipEmptyTiles: Optional[bool] = None,
+    fileFormat: Optional[str] = None,
+    formatOptions: Optional[dict[str, Any]] = None,
+    **kwargs: Any,
+) -> None:
     """Creates a batch task to export an Image as a raster to Google Drive.
 
     Args:
@@ -11370,7 +11385,7 @@ def image_to_numpy(image):
     import rasterio
     from osgeo import gdal
 
-    gdal.PushErrorHandler('CPLQuietErrorHandler')
+    gdal.PushErrorHandler("CPLQuietErrorHandler")
 
     if not os.path.exists(image):
         raise FileNotFoundError("The provided input file could not be found.")
