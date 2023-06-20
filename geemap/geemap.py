@@ -277,101 +277,6 @@ class Map(ipyleaflet.Map):
         if kwargs.get("toolbar_ctrl"):
             self.add_toolbar()
 
-        def handle_interaction(**kwargs):
-            latlon = kwargs.get("coordinates")
-            if (
-                kwargs.get("type") == "click"
-                and self.plot_checked
-                and len(self.ee_raster_layers) > 0
-            ):
-                plot_layer_name = self.plot_dropdown_widget.value
-                layer_names = self.ee_raster_layer_names
-                layers = self.ee_raster_layers
-                index = layer_names.index(plot_layer_name)
-                ee_object = layers[index]
-
-                if isinstance(ee_object, ee.ImageCollection):
-                    ee_object = ee_object.mosaic()
-
-                try:
-                    self.default_style = {"cursor": "wait"}
-                    plot_options = self.plot_options
-                    sample_scale = self.getScale()
-                    if "sample_scale" in plot_options.keys() and (
-                        plot_options["sample_scale"] is not None
-                    ):
-                        sample_scale = plot_options["sample_scale"]
-                    if "title" not in plot_options.keys():
-                        plot_options["title"] = plot_layer_name
-                    if ("add_marker_cluster" in plot_options.keys()) and plot_options[
-                        "add_marker_cluster"
-                    ]:
-                        plot_coordinates = self.plot_coordinates
-                        markers = self.plot_markers
-                        marker_cluster = self.plot_marker_cluster
-                        plot_coordinates.append(latlon)
-                        self.plot_last_click = latlon
-                        self.plot_all_clicks = plot_coordinates
-                        markers.append(ipyleaflet.Marker(location=latlon))
-                        marker_cluster.markers = markers
-                        self.plot_marker_cluster = marker_cluster
-
-                    band_names = ee_object.bandNames().getInfo()
-                    if any(len(name) > 3 for name in band_names):
-                        band_names = list(range(1, len(band_names) + 1))
-
-                    self.chart_labels = band_names
-
-                    if self.roi_end:
-                        if self.roi_reducer_scale is None:
-                            scale = ee_object.select(0).projection().nominalScale()
-                        else:
-                            scale = self.roi_reducer_scale
-                        dict_values_tmp = ee_object.reduceRegion(
-                            reducer=self.roi_reducer,
-                            geometry=self.user_roi,
-                            scale=scale,
-                            bestEffort=True,
-                        ).getInfo()
-                        b_names = ee_object.bandNames().getInfo()
-                        dict_values = dict(
-                            zip(b_names, [dict_values_tmp[b] for b in b_names])
-                        )
-                        self.chart_points.append(
-                            self.user_roi.centroid(1).coordinates().getInfo()
-                        )
-                    else:
-                        xy = ee.Geometry.Point(latlon[::-1])
-                        dict_values_tmp = (
-                            ee_object.sample(xy, scale=sample_scale)
-                            .first()
-                            .toDictionary()
-                            .getInfo()
-                        )
-                        b_names = ee_object.bandNames().getInfo()
-                        dict_values = dict(
-                            zip(b_names, [dict_values_tmp[b] for b in b_names])
-                        )
-                        self.chart_points.append(xy.coordinates().getInfo())
-                    band_values = list(dict_values.values())
-                    self.chart_values.append(band_values)
-                    self.plot(band_names, band_values, **plot_options)
-                    if plot_options["title"] == plot_layer_name:
-                        del plot_options["title"]
-                    self.default_style = {"cursor": "crosshair"}
-                    self.roi_end = False
-                except Exception as e:
-                    if self.plot_widget is not None:
-                        with self.plot_widget:
-                            self.plot_widget.clear_output()
-                            print("No data for the clicked location.")
-                    else:
-                        print(e)
-                    self.default_style = {"cursor": "crosshair"}
-                    self.roi_end = False
-
-        self.on_interaction(handle_interaction)
-
     def add(self, object):
         """Adds a layer or control to the map.
 
@@ -6684,6 +6589,17 @@ class Map(ipyleaflet.Map):
         from .toolbar import main_toolbar
 
         main_toolbar(self, position, **kwargs)
+
+    def add_plot_gui(self, position="topright", **kwargs):
+        """Adds the plot widget to the map.
+
+        Args:
+            position (str, optional): Position of the widget. Defaults to "topright".
+        """
+
+        from .toolbar import ee_plot_gui
+
+        ee_plot_gui(self, position, **kwargs)
 
 
 # The functions below are outside the Map class.
