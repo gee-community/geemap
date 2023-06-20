@@ -630,7 +630,7 @@ def change_basemap(m):
     """Widget for changing basemaps.
 
     Args:
-        m (object): leafmap.Map.
+        m (object): geemap.Map.
     """
     from .basemaps import get_xyz_dict
     from .geemap import basemaps, get_basemap
@@ -5143,27 +5143,10 @@ def main_toolbar(m, position="topright", **kwargs):
                     m.add_inspector()
                 m.toolbar_reset()
             elif tool_name == "plotting":
-                m.plot_checked = True
-                plot_dropdown_widget = widgets.Dropdown(
-                    options=list(m.ee_raster_layer_names),
-                )
-                plot_dropdown_widget.layout.width = "18ex"
-                m.plot_dropdown_widget = plot_dropdown_widget
-                plot_dropdown_control = ipyleaflet.WidgetControl(
-                    widget=plot_dropdown_widget, position="topright"
-                )
-                m.plot_dropdown_control = plot_dropdown_control
-                m.add(plot_dropdown_control)
-                if m.draw_control in m.controls:
-                    m.remove_control(m.draw_control)
-                m.add_draw_control_lite()
+                ee_plot_gui(m)
             elif tool_name == "open_data":
-                from .toolbar import open_data_widget
-
                 open_data_widget(m)
             elif tool_name == "convert_js":
-                from .toolbar import convert_js2py
-
                 convert_js2py(m)
             elif tool_name == "whitebox":
                 import whiteboxgui.whiteboxgui as wbt
@@ -5181,8 +5164,6 @@ def main_toolbar(m, position="topright", **kwargs):
                 m.whitebox = wbt_control
                 m.add(wbt_control)
             elif tool_name == "geetoolbox":
-                from .toolbar import build_toolbox, get_tools_dict
-
                 tools_dict = get_tools_dict()
                 gee_toolbox = build_toolbox(
                     tools_dict, max_width="800px", max_height="500px"
@@ -5194,40 +5175,24 @@ def main_toolbar(m, position="topright", **kwargs):
                 m.add(geetoolbox_control)
 
             elif tool_name == "basemap":
-                from .toolbar import change_basemap
-
                 change_basemap(m)
             elif tool_name == "timelapse":
-                from .toolbar import timelapse_gui
-
                 timelapse_gui(m)
                 m.toolbar_reset()
             elif tool_name == "timeslider":
-                from .toolbar import time_slider
-
                 time_slider(m)
                 m.toolbar_reset()
             elif tool_name == "draw":
-                from .toolbar import collect_samples
-
                 m.training_ctrl = None
                 collect_samples(m)
             elif tool_name == "transect":
-                from .toolbar import plot_transect
-
                 plot_transect(m)
             elif tool_name == "sankee":
-                from .toolbar import sankee_gui
-
                 sankee_gui(m)
             elif tool_name == "planet":
-                from .toolbar import split_basemaps
-
                 split_basemaps(m, layers_dict=planet_tiles())
                 m.toolbar_reset()
             elif tool_name == "cog-inspector":
-                from .toolbar import inspector_gui
-
                 inspector_gui(m)
 
             elif tool_name == "help":
@@ -5323,7 +5288,6 @@ def main_toolbar(m, position="topright", **kwargs):
 
     def layers_btn_click(change):
         if change["new"]:
-            from .toolbar import layer_manager_gui
 
             # Create Layer Manager Widget
             toolbar_footer.children = layer_manager_gui(m, return_widget=True)
@@ -5335,3 +5299,157 @@ def main_toolbar(m, position="topright", **kwargs):
 
     m.add(toolbar_control)
     m.toolbar_ctrl = toolbar_control
+
+
+def ee_plot_gui(m, position="topright", **kwargs):
+    """Widget for plotting Earth Engine data.
+
+    Args:
+        m (object): geemap.Map.
+        position (str, optional): Position of the widget. Defaults to "topright".
+    """
+
+    close_btn = widgets.Button(
+        icon="times",
+        tooltip="Close the plot widget",
+        button_style="primary",
+        layout=widgets.Layout(width="32px"),
+    )
+
+    m.plot_checked = True
+    dropdown = widgets.Dropdown(
+        options=list(m.ee_raster_layer_names),
+    )
+    dropdown.layout.width = "18ex"
+    m.plot_dropdown_widget = dropdown
+
+    widget = widgets.HBox([dropdown, close_btn])
+
+    plot_dropdown_control = ipyleaflet.WidgetControl(widget=widget, position=position)
+    m.plot_dropdown_control = plot_dropdown_control
+    m.add(plot_dropdown_control)
+
+    if m.draw_control in m.controls:
+        m.remove_control(m.draw_control)
+    m.add_draw_control_lite()
+
+    def handle_interaction(**kwargs):
+        latlon = kwargs.get("coordinates")
+        if (
+            kwargs.get("type") == "click"
+            and m.plot_checked
+            and len(m.ee_raster_layers) > 0
+        ):
+            plot_layer_name = m.plot_dropdown_widget.value
+            layer_names = m.ee_raster_layer_names
+            layers = m.ee_raster_layers
+            index = layer_names.index(plot_layer_name)
+            ee_object = layers[index]
+
+            if isinstance(ee_object, ee.ImageCollection):
+                ee_object = ee_object.mosaic()
+
+            try:
+                m.default_style = {"cursor": "wait"}
+                plot_options = m.plot_options
+                sample_scale = m.getScale()
+                if "sample_scale" in plot_options.keys() and (
+                    plot_options["sample_scale"] is not None
+                ):
+                    sample_scale = plot_options["sample_scale"]
+                if "title" not in plot_options.keys():
+                    plot_options["title"] = plot_layer_name
+                if ("add_marker_cluster" in plot_options.keys()) and plot_options[
+                    "add_marker_cluster"
+                ]:
+                    plot_coordinates = m.plot_coordinates
+                    markers = m.plot_markers
+                    marker_cluster = m.plot_marker_cluster
+                    plot_coordinates.append(latlon)
+                    m.plot_last_click = latlon
+                    m.plot_all_clicks = plot_coordinates
+                    markers.append(ipyleaflet.Marker(location=latlon))
+                    marker_cluster.markers = markers
+                    m.plot_marker_cluster = marker_cluster
+
+                band_names = ee_object.bandNames().getInfo()
+                if any(len(name) > 3 for name in band_names):
+                    band_names = list(range(1, len(band_names) + 1))
+
+                m.chart_labels = band_names
+
+                if m.roi_end:
+                    if m.roi_reducer_scale is None:
+                        scale = ee_object.select(0).projection().nominalScale()
+                    else:
+                        scale = m.roi_reducer_scale
+                    dict_values_tmp = ee_object.reduceRegion(
+                        reducer=m.roi_reducer,
+                        geometry=m.user_roi,
+                        scale=scale,
+                        bestEffort=True,
+                    ).getInfo()
+                    b_names = ee_object.bandNames().getInfo()
+                    dict_values = dict(
+                        zip(b_names, [dict_values_tmp[b] for b in b_names])
+                    )
+                    m.chart_points.append(
+                        m.user_roi.centroid(1).coordinates().getInfo()
+                    )
+                else:
+                    xy = ee.Geometry.Point(latlon[::-1])
+                    dict_values_tmp = (
+                        ee_object.sample(xy, scale=sample_scale)
+                        .first()
+                        .toDictionary()
+                        .getInfo()
+                    )
+                    b_names = ee_object.bandNames().getInfo()
+                    dict_values = dict(
+                        zip(b_names, [dict_values_tmp[b] for b in b_names])
+                    )
+                    m.chart_points.append(xy.coordinates().getInfo())
+                band_values = list(dict_values.values())
+                m.chart_values.append(band_values)
+                m.plot(band_names, band_values, **plot_options)
+                if plot_options["title"] == plot_layer_name:
+                    del plot_options["title"]
+                m.default_style = {"cursor": "crosshair"}
+                m.roi_end = False
+            except Exception as e:
+                if m.plot_widget is not None:
+                    with m.plot_widget:
+                        m.plot_widget.clear_output()
+                        print("No data for the clicked location.")
+                else:
+                    print(e)
+                m.default_style = {"cursor": "crosshair"}
+                m.roi_end = False
+
+    m.on_interaction(handle_interaction)
+
+    def close_click(change):
+        m.toolbar_reset()
+        m.plot_checked = False
+
+        if (
+            hasattr(m, "plot_control")
+            and (m.plot_control is not None)
+            and (m.plot_control in m.controls)
+        ):
+            m.plot_widget.clear_output()
+            m.remove_control(m.plot_control)
+
+        if (
+            m.plot_dropdown_control is not None
+            and m.plot_dropdown_control in m.controls
+        ):
+            m.remove_control(m.plot_dropdown_control)
+
+        widget.close()
+
+        m.on_interaction(handle_interaction, remove=True)
+        m.plot_widget = None
+        m.default_style = {"cursor": "default"}
+
+    close_btn.on_click(close_click)
