@@ -856,6 +856,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.toolbar.ee_plot_gui" class="md-nav__link">
+    ee_plot_gui()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.toolbar.inspector_gui" class="md-nav__link">
     inspector_gui()
   </a>
@@ -3137,6 +3144,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.toolbar.ee_plot_gui" class="md-nav__link">
+    ee_plot_gui()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.toolbar.inspector_gui" class="md-nav__link">
     inspector_gui()
   </a>
@@ -3466,7 +3480,7 @@
       <tr>
         <td><code>m</code></td>
         <td><code>object</code></td>
-        <td><p>leafmap.Map.</p></td>
+        <td><p>geemap.Map.</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
@@ -3477,7 +3491,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for changing basemaps.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        m (object): leafmap.Map.</span>
+<span class="sd">        m (object): geemap.Map.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.basemaps</span> <span class="kn">import</span> <span class="n">get_xyz_dict</span>
     <span class="kn">from</span> <span class="nn">.geemap</span> <span class="kn">import</span> <span class="n">basemaps</span><span class="p">,</span> <span class="n">get_basemap</span>
@@ -3886,6 +3900,207 @@
             <span class="n">m</span><span class="o">.</span><span class="n">inspector_control</span> <span class="o">=</span> <span class="n">inspector_control</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">toolbar_widget</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="geemap.toolbar.ee_plot_gui" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">ee_plot_gui</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;topright&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#geemap.toolbar.ee_plot_gui" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Widget for plotting Earth Engine data.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>m</code></td>
+        <td><code>object</code></td>
+        <td><p>geemap.Map.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>position</code></td>
+        <td><code>str</code></td>
+        <td><p>Position of the widget. Defaults to "topright".</p></td>
+        <td><code>&#39;topright&#39;</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/toolbar.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">ee_plot_gui</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for plotting Earth Engine data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        m (object): geemap.Map.</span>
+<span class="sd">        position (str, optional): Position of the widget. Defaults to &quot;topright&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">close_btn</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
+        <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;times&quot;</span><span class="p">,</span>
+        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Close the plot widget&quot;</span><span class="p">,</span>
+        <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
+        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;32px&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">m</span><span class="o">.</span><span class="n">plot_checked</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">dropdown</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
+        <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layer_names</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">dropdown</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="s2">&quot;18ex&quot;</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_widget</span> <span class="o">=</span> <span class="n">dropdown</span>
+
+    <span class="n">widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="n">dropdown</span><span class="p">,</span> <span class="n">close_btn</span><span class="p">])</span>
+
+    <span class="n">plot_dropdown_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_control</span> <span class="o">=</span> <span class="n">plot_dropdown_control</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">plot_dropdown_control</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">draw_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">draw_control</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">add_draw_control_lite</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">handle_interaction</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">latlon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;click&quot;</span>
+            <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_checked</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="p">):</span>
+            <span class="n">plot_layer_name</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_widget</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">layer_names</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layer_names</span>
+            <span class="n">layers</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layers</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">layer_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">plot_layer_name</span><span class="p">)</span>
+            <span class="n">ee_object</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">):</span>
+                <span class="n">ee_object</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">mosaic</span><span class="p">()</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;wait&quot;</span><span class="p">}</span>
+                <span class="n">plot_options</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_options</span>
+                <span class="n">sample_scale</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">getScale</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s2">&quot;sample_scale&quot;</span> <span class="ow">in</span> <span class="n">plot_options</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span>
+                    <span class="n">plot_options</span><span class="p">[</span><span class="s2">&quot;sample_scale&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="p">):</span>
+                    <span class="n">sample_scale</span> <span class="o">=</span> <span class="n">plot_options</span><span class="p">[</span><span class="s2">&quot;sample_scale&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s2">&quot;title&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">plot_options</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">plot_options</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot_layer_name</span>
+                <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;add_marker_cluster&quot;</span> <span class="ow">in</span> <span class="n">plot_options</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="ow">and</span> <span class="n">plot_options</span><span class="p">[</span>
+                    <span class="s2">&quot;add_marker_cluster&quot;</span>
+                <span class="p">]:</span>
+                    <span class="n">plot_coordinates</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_coordinates</span>
+                    <span class="n">markers</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_markers</span>
+                    <span class="n">marker_cluster</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_marker_cluster</span>
+                    <span class="n">plot_coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">latlon</span><span class="p">)</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">plot_last_click</span> <span class="o">=</span> <span class="n">latlon</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">plot_all_clicks</span> <span class="o">=</span> <span class="n">plot_coordinates</span>
+                    <span class="n">markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">latlon</span><span class="p">))</span>
+                    <span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">plot_marker_cluster</span> <span class="o">=</span> <span class="n">marker_cluster</span>
+
+                <span class="n">band_names</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">band_names</span><span class="p">):</span>
+                    <span class="n">band_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">band_names</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+                <span class="n">m</span><span class="o">.</span><span class="n">chart_labels</span> <span class="o">=</span> <span class="n">band_names</span>
+
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">roi_end</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">roi_reducer_scale</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">scale</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">projection</span><span class="p">()</span><span class="o">.</span><span class="n">nominalScale</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">scale</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">roi_reducer_scale</span>
+                    <span class="n">dict_values_tmp</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">reduceRegion</span><span class="p">(</span>
+                        <span class="n">reducer</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">roi_reducer</span><span class="p">,</span>
+                        <span class="n">geometry</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">user_roi</span><span class="p">,</span>
+                        <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
+                        <span class="n">bestEffort</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+                    <span class="n">b_names</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+                    <span class="n">dict_values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">zip</span><span class="p">(</span><span class="n">b_names</span><span class="p">,</span> <span class="p">[</span><span class="n">dict_values_tmp</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">b_names</span><span class="p">])</span>
+                    <span class="p">)</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">chart_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">user_roi</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">xy</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">latlon</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">dict_values_tmp</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">ee_object</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sample_scale</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+                        <span class="o">.</span><span class="n">toDictionary</span><span class="p">()</span>
+                        <span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+                    <span class="p">)</span>
+                    <span class="n">b_names</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+                    <span class="n">dict_values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                        <span class="nb">zip</span><span class="p">(</span><span class="n">b_names</span><span class="p">,</span> <span class="p">[</span><span class="n">dict_values_tmp</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">b_names</span><span class="p">])</span>
+                    <span class="p">)</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">chart_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xy</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">())</span>
+                <span class="n">band_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dict_values</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">chart_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">band_values</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">band_names</span><span class="p">,</span> <span class="n">band_values</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_options</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">plot_options</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">plot_layer_name</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="n">plot_options</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">roi_end</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_widget</span><span class="p">:</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">plot_widget</span><span class="o">.</span><span class="n">clear_output</span><span class="p">()</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No data for the clicked location.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">roi_end</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">m</span><span class="o">.</span><span class="n">on_interaction</span><span class="p">(</span><span class="n">handle_interaction</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">close_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">plot_checked</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;plot_control&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">plot_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">plot_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">plot_widget</span><span class="o">.</span><span class="n">clear_output</span><span class="p">()</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">plot_control</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span>
+        <span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_control</span><span class="p">)</span>
+
+        <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="n">m</span><span class="o">.</span><span class="n">on_interaction</span><span class="p">(</span><span class="n">handle_interaction</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">plot_widget</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
+
+    <span class="n">close_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">close_click</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -4768,27 +4983,10 @@
                     <span class="n">m</span><span class="o">.</span><span class="n">add_inspector</span><span class="p">()</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;plotting&quot;</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">plot_checked</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">plot_dropdown_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-                    <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layer_names</span><span class="p">),</span>
-                <span class="p">)</span>
-                <span class="n">plot_dropdown_widget</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="s2">&quot;18ex&quot;</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_widget</span> <span class="o">=</span> <span class="n">plot_dropdown_widget</span>
-                <span class="n">plot_dropdown_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-                    <span class="n">widget</span><span class="o">=</span><span class="n">plot_dropdown_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span>
-                <span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_control</span> <span class="o">=</span> <span class="n">plot_dropdown_control</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">plot_dropdown_control</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">draw_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">draw_control</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">add_draw_control_lite</span><span class="p">()</span>
+                <span class="n">ee_plot_gui</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;open_data&quot;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">.toolbar</span> <span class="kn">import</span> <span class="n">open_data_widget</span>
-
                 <span class="n">open_data_widget</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;convert_js&quot;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">.toolbar</span> <span class="kn">import</span> <span class="n">convert_js2py</span>
-
                 <span class="n">convert_js2py</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;whitebox&quot;</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">whiteboxgui.whiteboxgui</span> <span class="k">as</span> <span class="nn">wbt</span>
@@ -4806,8 +5004,6 @@
                 <span class="n">m</span><span class="o">.</span><span class="n">whitebox</span> <span class="o">=</span> <span class="n">wbt_control</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">wbt_control</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;geetoolbox&quot;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">.toolbar</span> <span class="kn">import</span> <span class="n">build_toolbox</span><span class="p">,</span> <span class="n">get_tools_dict</span>
-
                 <span class="n">tools_dict</span> <span class="o">=</span> <span class="n">get_tools_dict</span><span class="p">()</span>
                 <span class="n">gee_toolbox</span> <span class="o">=</span> <span class="n">build_toolbox</span><span class="p">(</span>
                     <span class="n">tools_dict</span><span class="p">,</span> <span class="n">max_width</span><span class="o">=</span><span class="s2">&quot;800px&quot;</span><span class="p">,</span> <span class="n">max_height</span><span class="o">=</span><span class="s2">&quot;500px&quot;</span>
@@ -4819,40 +5015,24 @@
                 <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">geetoolbox_control</span><span class="p">)</span>
 
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;basemap&quot;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">.toolbar</span> <span class="kn">import</span> <span class="n">change_basemap</span>
-
                 <span class="n">change_basemap</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;timelapse&quot;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">.toolbar</span> <span class="kn">import</span> <span class="n">timelapse_gui</span>
-
                 <span class="n">timelapse_gui</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;timeslider&quot;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">.toolbar</span> <span class="kn">import</span> <span class="n">time_slider</span>
-
                 <span class="n">time_slider</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;draw&quot;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">.toolbar</span> <span class="kn">import</span> <span class="n">collect_samples</span>
-
                 <span class="n">m</span><span class="o">.</span><span class="n">training_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">collect_samples</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;transect&quot;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">.toolbar</span> <span class="kn">import</span> <span class="n">plot_transect</span>
-
                 <span class="n">plot_transect</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;sankee&quot;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">.toolbar</span> <span class="kn">import</span> <span class="n">sankee_gui</span>
-
                 <span class="n">sankee_gui</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;planet&quot;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">.toolbar</span> <span class="kn">import</span> <span class="n">split_basemaps</span>
-
                 <span class="n">split_basemaps</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">layers_dict</span><span class="o">=</span><span class="n">planet_tiles</span><span class="p">())</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;cog-inspector&quot;</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">.toolbar</span> <span class="kn">import</span> <span class="n">inspector_gui</span>
-
                 <span class="n">inspector_gui</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
 
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;help&quot;</span><span class="p">:</span>
@@ -4948,7 +5128,6 @@
 
     <span class="k">def</span> <span class="nf">layers_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="kn">from</span> <span class="nn">.toolbar</span> <span class="kn">import</span> <span class="n">layer_manager_gui</span>
 
             <span class="c1"># Create Layer Manager Widget</span>
             <span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">layer_manager_gui</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">return_widget</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
