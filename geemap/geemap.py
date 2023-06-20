@@ -2990,13 +2990,14 @@ class Map(ipyleaflet.Map):
         vmax=None,
         nodata=None,
         attribution=None,
-        layer_name=None,
+        layer_name="Local COG",
+        zoom_to_layer=True,
         **kwargs,
     ):
         """Add a local raster dataset to the map.
-
-            If you are using this function in JupyterHub on a remote server and the raster does not render properly, try
-            running the following two lines before calling this function:
+            If you are using this function in JupyterHub on a remote server (e.g., Binder, Microsoft Planetary Computer) and
+            if the raster does not render properly, try installing jupyter-server-proxy using `pip install jupyter-server-proxy`,
+            then running the following code before calling this function. For more info, see https://bit.ly/3JbmF93.
 
             import os
             os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = 'proxy/{port}'
@@ -3009,12 +3010,9 @@ class Map(ipyleaflet.Map):
             vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
             nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
             attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
-            layer_name (str, optional): The layer name to use. Defaults to None.
+            layer_name (str, optional): The layer name to use. Defaults to 'Local COG'.
+            zoom_to_layer (bool, optional): Whether to zoom to the extent of the layer. Defaults to True.
         """
-
-        if in_colab_shell():
-            print("This add_raster() function is not supported in Colab.")
-            return
 
         tile_layer, tile_client = get_local_tile_layer(
             source,
@@ -3031,17 +3029,19 @@ class Map(ipyleaflet.Map):
 
         self.add(tile_layer)
 
-        output = widgets.Output()
-
-        with output:
-            bounds = tile_client.bounds()  # [ymin, ymax, xmin, xmax]
-            bounds = (
-                bounds[2],
-                bounds[0],
-                bounds[3],
-                bounds[1],
-            )  # [minx, miny, maxx, maxy]
+        bounds = tile_client.bounds()  # [ymin, ymax, xmin, xmax]
+        bounds = (
+            bounds[2],
+            bounds[0],
+            bounds[3],
+            bounds[1],
+        )  # [minx, miny, maxx, maxy]
+        if zoom_to_layer:
             self.zoom_to_bounds(bounds)
+
+        arc_add_layer(tile_layer.url, layer_name, True, 1.0)
+        if zoom_to_layer:
+            arc_zoom_to_extent(bounds[0], bounds[1], bounds[2], bounds[3])
 
         if not hasattr(self, "cog_layer_dict"):
             self.cog_layer_dict = {}
@@ -6277,10 +6277,6 @@ class Map(ipyleaflet.Map):
             lat (str, optional): Name of the latitude variable. Defaults to 'lat'.
             lon (str, optional): Name of the longitude variable. Defaults to 'lon'.
         """
-
-        if in_colab_shell():
-            print("The add_netcdf() function is not supported in Colab.")
-            return
 
         tif, vars = netcdf_to_tif(
             filename, shift_lon=shift_lon, lat=lat, lon=lon, return_vars=True
