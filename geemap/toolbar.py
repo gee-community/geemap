@@ -630,7 +630,7 @@ def change_basemap(m):
     """Widget for changing basemaps.
 
     Args:
-        m (object): leafmap.Map.
+        m (object): geemap.Map.
     """
     from .basemaps import get_xyz_dict
     from .geemap import basemaps, get_basemap
@@ -5022,3 +5022,434 @@ def layer_manager_gui(m, position="topright", opened=True, return_widget=False):
         if layer_control not in m.controls:
             m.add_control(layer_control)
             m.layer_manager = layer_control
+
+
+def main_toolbar(m, position="topright", **kwargs):
+    """Add a toolbar control to the map
+
+    Args:
+        m (geemap.Map): An instance of geemap.Map.
+        position (str, optional): Position of the toolbar. Defaults to "topright".
+    """
+
+    tools = {
+        "info": {"name": "inspector", "tooltip": "Inspector"},
+        "bar-chart": {"name": "plotting", "tooltip": "Plotting"},
+        "eraser": {
+            "name": "eraser",
+            "tooltip": "Remove all drawn features",
+        },
+        "folder-open": {
+            "name": "open_data",
+            "tooltip": "Open local vector/raster data",
+        },
+        "retweet": {
+            "name": "convert_js",
+            "tooltip": "Convert Earth Engine JavaScript to Python",
+        },
+        "gears": {
+            "name": "whitebox",
+            "tooltip": "WhiteboxTools for local geoprocessing",
+        },
+        "google": {
+            "name": "geetoolbox",
+            "tooltip": "GEE Toolbox for cloud computing",
+        },
+        "map": {
+            "name": "basemap",
+            "tooltip": "Change basemap",
+        },
+        "globe": {
+            "name": "timelapse",
+            "tooltip": "Create timelapse",
+        },
+        "fast-forward": {
+            "name": "timeslider",
+            "tooltip": "Activate timeslider",
+        },
+        "hand-o-up": {
+            "name": "draw",
+            "tooltip": "Collect training samples",
+        },
+        "line-chart": {
+            "name": "transect",
+            "tooltip": "Creating and plotting transects",
+        },
+        "random": {
+            "name": "sankee",
+            "tooltip": "Sankey plots",
+        },
+        "adjust": {
+            "name": "planet",
+            "tooltip": "Planet imagery",
+        },
+        "info-circle": {
+            "name": "cog-inspector",
+            "tooltip": "Get COG/STAC pixel value",
+        },
+        # "spinner": {
+        #     "name": "placehold2",
+        #     "tooltip": "This is a placehold",
+        # },
+        # "question": {
+        #     "name": "help",
+        #     "tooltip": "Get help",
+        # },
+    }
+
+    icons = list(tools.keys())
+    tooltips = [item["tooltip"] for item in list(tools.values())]
+
+    icon_width = "32px"
+    icon_height = "32px"
+    n_cols = 3
+    n_rows = -int(-(len(icons) / n_cols))
+
+    toolbar_grid = widgets.GridBox(
+        children=[
+            widgets.ToggleButton(
+                layout=widgets.Layout(
+                    width="auto", height="auto", padding="0px 0px 0px 4px"
+                ),
+                button_style="primary",
+                icon=icons[i],
+                tooltip=tooltips[i],
+            )
+            for i in range(len(icons))
+        ],
+        layout=widgets.Layout(
+            width="109px",
+            grid_template_columns=(icon_width + " ") * n_cols,
+            grid_template_rows=(icon_height + " ") * n_rows,
+            grid_gap="1px 1px",
+            padding="5px",
+        ),
+    )
+    m.toolbar = toolbar_grid
+
+    def tool_callback(change):
+        if change["new"]:
+            current_tool = change["owner"]
+            for tool in toolbar_grid.children:
+                if tool is not current_tool:
+                    tool.value = False
+            tool = change["owner"]
+            tool_name = tools[tool.icon]["name"]
+            if tool_name == "eraser":
+                m.remove_drawn_features()
+                tool.value = False
+            elif tool_name == "inspector":
+                if not hasattr(m, "inspector_control"):
+                    m.add_inspector()
+                m.toolbar_reset()
+            elif tool_name == "plotting":
+                ee_plot_gui(m)
+            elif tool_name == "open_data":
+                open_data_widget(m)
+            elif tool_name == "convert_js":
+                convert_js2py(m)
+            elif tool_name == "whitebox":
+                import whiteboxgui.whiteboxgui as wbt
+
+                tools_dict = wbt.get_wbt_dict()
+                wbt_toolbox = wbt.build_toolbox(
+                    tools_dict,
+                    max_width="800px",
+                    max_height="500px",
+                    sandbox_path=m.sandbox_path,
+                )
+                wbt_control = ipyleaflet.WidgetControl(
+                    widget=wbt_toolbox, position="bottomright"
+                )
+                m.whitebox = wbt_control
+                m.add(wbt_control)
+            elif tool_name == "geetoolbox":
+                tools_dict = get_tools_dict()
+                gee_toolbox = build_toolbox(
+                    tools_dict, max_width="800px", max_height="500px"
+                )
+                geetoolbox_control = ipyleaflet.WidgetControl(
+                    widget=gee_toolbox, position="bottomright"
+                )
+                m.geetoolbox = geetoolbox_control
+                m.add(geetoolbox_control)
+
+            elif tool_name == "basemap":
+                change_basemap(m)
+            elif tool_name == "timelapse":
+                timelapse_gui(m)
+                m.toolbar_reset()
+            elif tool_name == "timeslider":
+                time_slider(m)
+                m.toolbar_reset()
+            elif tool_name == "draw":
+                m.training_ctrl = None
+                collect_samples(m)
+            elif tool_name == "transect":
+                plot_transect(m)
+            elif tool_name == "sankee":
+                sankee_gui(m)
+            elif tool_name == "planet":
+                split_basemaps(m, layers_dict=planet_tiles())
+                m.toolbar_reset()
+            elif tool_name == "cog-inspector":
+                inspector_gui(m)
+
+            elif tool_name == "help":
+                import webbrowser
+
+                webbrowser.open_new_tab("https://geemap.org")
+                current_tool.value = False
+        else:
+            tool = change["owner"]
+            tool_name = tools[tool.icon]["name"]
+            if tool_name == "inspector":
+                pass
+            elif tool_name == "plotting":
+                m.plot_checked = False
+                plot_dropdown_widget = m.plot_dropdown_widget
+                plot_dropdown_control = m.plot_dropdown_control
+                if plot_dropdown_control in m.controls:
+                    m.remove_control(plot_dropdown_control)
+                del plot_dropdown_widget
+                del plot_dropdown_control
+                if m.plot_control in m.controls:
+                    plot_control = m.plot_control
+                    plot_widget = m.plot_widget
+                    m.remove_control(plot_control)
+                    m.plot_control = None
+                    m.plot_widget = None
+                    del plot_control
+                    del plot_widget
+                if (
+                    m.plot_marker_cluster is not None
+                    and m.plot_marker_cluster in m.layers
+                ):
+                    m.remove_layer(m.plot_marker_cluster)
+                if m.draw_control_lite in m.controls:
+                    m.remove_control(m.draw_control_lite)
+                m.add(m.draw_control)
+            elif tool_name == "whitebox":
+                if m.whitebox is not None and m.whitebox in m.controls:
+                    m.remove_control(m.whitebox)
+            elif tool_name == "convert_js":
+                if m.convert_ctrl is not None and m.convert_ctrl in m.controls:
+                    m.remove_control(m.convert_ctrl)
+
+    for tool in toolbar_grid.children:
+        tool.observe(tool_callback, "value")
+
+    toolbar_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Toolbar",
+        icon="wrench",
+        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+    )
+    m.toolbar_button = toolbar_button
+
+    layers_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Layers",
+        icon="server",
+        layout=widgets.Layout(height="28px", width="72px"),
+    )
+
+    toolbar_widget = widgets.VBox()
+    toolbar_widget.children = [toolbar_button]
+    toolbar_header = widgets.HBox()
+    toolbar_header.children = [layers_button, toolbar_button]
+    toolbar_footer = widgets.VBox()
+    toolbar_footer.children = [toolbar_grid]
+
+    toolbar_event = ipyevents.Event(
+        source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
+    )
+
+    def handle_toolbar_event(event):
+        if event["type"] == "mouseenter":
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        elif event["type"] == "mouseleave":
+            if not toolbar_button.value:
+                toolbar_widget.children = [toolbar_button]
+                toolbar_button.value = False
+                layers_button.value = False
+
+    toolbar_event.on_dom_event(handle_toolbar_event)
+
+    def toolbar_btn_click(change):
+        if change["new"]:
+            layers_button.value = False
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        else:
+            if not layers_button.value:
+                toolbar_widget.children = [toolbar_button]
+
+    toolbar_button.observe(toolbar_btn_click, "value")
+
+    def layers_btn_click(change):
+        if change["new"]:
+
+            # Create Layer Manager Widget
+            toolbar_footer.children = layer_manager_gui(m, return_widget=True)
+        else:
+            toolbar_footer.children = [toolbar_grid]
+
+    layers_button.observe(layers_btn_click, "value")
+    toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position=position)
+
+    m.add(toolbar_control)
+    m.toolbar_ctrl = toolbar_control
+
+
+def ee_plot_gui(m, position="topright", **kwargs):
+    """Widget for plotting Earth Engine data.
+
+    Args:
+        m (object): geemap.Map.
+        position (str, optional): Position of the widget. Defaults to "topright".
+    """
+
+    close_btn = widgets.Button(
+        icon="times",
+        tooltip="Close the plot widget",
+        button_style="primary",
+        layout=widgets.Layout(width="32px"),
+    )
+
+    m.plot_checked = True
+    dropdown = widgets.Dropdown(
+        options=list(m.ee_raster_layer_names),
+    )
+    dropdown.layout.width = "18ex"
+    m.plot_dropdown_widget = dropdown
+
+    widget = widgets.HBox([dropdown, close_btn])
+
+    plot_dropdown_control = ipyleaflet.WidgetControl(widget=widget, position=position)
+    m.plot_dropdown_control = plot_dropdown_control
+    m.add(plot_dropdown_control)
+
+    if m.draw_control in m.controls:
+        m.remove_control(m.draw_control)
+    m.add_draw_control_lite()
+
+    def handle_interaction(**kwargs):
+        latlon = kwargs.get("coordinates")
+        if (
+            kwargs.get("type") == "click"
+            and m.plot_checked
+            and len(m.ee_raster_layers) > 0
+        ):
+            plot_layer_name = m.plot_dropdown_widget.value
+            layer_names = m.ee_raster_layer_names
+            layers = m.ee_raster_layers
+            index = layer_names.index(plot_layer_name)
+            ee_object = layers[index]
+
+            if isinstance(ee_object, ee.ImageCollection):
+                ee_object = ee_object.mosaic()
+
+            try:
+                m.default_style = {"cursor": "wait"}
+                plot_options = m.plot_options
+                sample_scale = m.getScale()
+                if "sample_scale" in plot_options.keys() and (
+                    plot_options["sample_scale"] is not None
+                ):
+                    sample_scale = plot_options["sample_scale"]
+                if "title" not in plot_options.keys():
+                    plot_options["title"] = plot_layer_name
+                if ("add_marker_cluster" in plot_options.keys()) and plot_options[
+                    "add_marker_cluster"
+                ]:
+                    plot_coordinates = m.plot_coordinates
+                    markers = m.plot_markers
+                    marker_cluster = m.plot_marker_cluster
+                    plot_coordinates.append(latlon)
+                    m.plot_last_click = latlon
+                    m.plot_all_clicks = plot_coordinates
+                    markers.append(ipyleaflet.Marker(location=latlon))
+                    marker_cluster.markers = markers
+                    m.plot_marker_cluster = marker_cluster
+
+                band_names = ee_object.bandNames().getInfo()
+                if any(len(name) > 3 for name in band_names):
+                    band_names = list(range(1, len(band_names) + 1))
+
+                m.chart_labels = band_names
+
+                if m.roi_end:
+                    if m.roi_reducer_scale is None:
+                        scale = ee_object.select(0).projection().nominalScale()
+                    else:
+                        scale = m.roi_reducer_scale
+                    dict_values_tmp = ee_object.reduceRegion(
+                        reducer=m.roi_reducer,
+                        geometry=m.user_roi,
+                        scale=scale,
+                        bestEffort=True,
+                    ).getInfo()
+                    b_names = ee_object.bandNames().getInfo()
+                    dict_values = dict(
+                        zip(b_names, [dict_values_tmp[b] for b in b_names])
+                    )
+                    m.chart_points.append(
+                        m.user_roi.centroid(1).coordinates().getInfo()
+                    )
+                else:
+                    xy = ee.Geometry.Point(latlon[::-1])
+                    dict_values_tmp = (
+                        ee_object.sample(xy, scale=sample_scale)
+                        .first()
+                        .toDictionary()
+                        .getInfo()
+                    )
+                    b_names = ee_object.bandNames().getInfo()
+                    dict_values = dict(
+                        zip(b_names, [dict_values_tmp[b] for b in b_names])
+                    )
+                    m.chart_points.append(xy.coordinates().getInfo())
+                band_values = list(dict_values.values())
+                m.chart_values.append(band_values)
+                m.plot(band_names, band_values, **plot_options)
+                if plot_options["title"] == plot_layer_name:
+                    del plot_options["title"]
+                m.default_style = {"cursor": "crosshair"}
+                m.roi_end = False
+            except Exception as e:
+                if m.plot_widget is not None:
+                    with m.plot_widget:
+                        m.plot_widget.clear_output()
+                        print("No data for the clicked location.")
+                else:
+                    print(e)
+                m.default_style = {"cursor": "crosshair"}
+                m.roi_end = False
+
+    m.on_interaction(handle_interaction)
+
+    def close_click(change):
+        m.toolbar_reset()
+        m.plot_checked = False
+
+        if (
+            hasattr(m, "plot_control")
+            and (m.plot_control is not None)
+            and (m.plot_control in m.controls)
+        ):
+            m.plot_widget.clear_output()
+            m.remove_control(m.plot_control)
+
+        if (
+            m.plot_dropdown_control is not None
+            and m.plot_dropdown_control in m.controls
+        ):
+            m.remove_control(m.plot_dropdown_control)
+
+        widget.close()
+
+        m.on_interaction(handle_interaction, remove=True)
+        m.plot_widget = None
+        m.default_style = {"cursor": "default"}
+
+    close_btn.on_click(close_click)
