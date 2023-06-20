@@ -18,7 +18,7 @@ from IPython.display import display
 from .basemaps import xyz_to_leaflet
 from .common import *
 from .conversion import *
-from .ee_leaflet_tile_layer import *
+from .ee_tile_layers import *
 from .timelapse import *
 from .plot import *
 
@@ -748,7 +748,7 @@ class Map(ipyleaflet.Map):
         if name is None:
             layer_count = len(self.layers)
             name = "Layer " + str(layer_count + 1)
-        tile_layer = EeLeafletTileLayer(ee_object, vis_params, name, shown, opacity)
+        tile_layer = EELeafletTileLayer(ee_object, vis_params, name, shown, opacity)
 
         layer = self.find_layer(name=name)
         if layer is not None:
@@ -1989,7 +1989,7 @@ class Map(ipyleaflet.Map):
                     else:
                         left_image = ee.Image(left_image)
 
-                    left_image = EeLeafletTileLayer(
+                    left_image = EELeafletTileLayer(
                         left_image, left_vis, left_names[left_dropdown_index]
                     )
                     left_layer.url = left_image.url
@@ -2020,7 +2020,7 @@ class Map(ipyleaflet.Map):
                     else:
                         right_image = ee.Image(right_image)
 
-                    right_image = EeLeafletTileLayer(
+                    right_image = EELeafletTileLayer(
                         right_image,
                         right_vis,
                         right_names[right_dropdown_index],
@@ -3038,7 +3038,7 @@ class Map(ipyleaflet.Map):
         """Removes user-drawn geometries from the map"""
         if self.draw_layer is not None:
             collection = ee.FeatureCollection(self.draw_features[:-1])
-            ee_draw_layer = EeLeafletTileLayer(
+            ee_draw_layer = EELeafletTileLayer(
                 collection, {"color": "blue"}, "Drawn Features", True, 0.5
             )
             if self.draw_count == 1:
@@ -6869,7 +6869,7 @@ class Map(ipyleaflet.Map):
                     self.draw_count += 1
                 collection = ee.FeatureCollection(self.draw_features)
                 self.user_rois = collection
-                ee_draw_layer = EeLeafletTileLayer(
+                ee_draw_layer = EELeafletTileLayer(
                     collection, {"color": "blue"}, "Drawn Features", False, 0.5
                 )
                 draw_layer_index = self.find_layer_index("Drawn Features")
@@ -6982,7 +6982,7 @@ def ee_tile_layer(
         shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
         opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
     """
-    return EeLeafletTileLayer(ee_object, vis_params, name, shown, opacity)
+    return EELeafletTileLayer(ee_object, vis_params, name, shown, opacity)
 
 
 def linked_maps(

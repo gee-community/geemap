@@ -16,7 +16,7 @@ from jinja2 import Template
 from .basemaps import xyz_to_folium
 from .common import *
 from .conversion import *
-from .ee_folium_tile_layer import *
+from .ee_tile_layers import *
 from .legends import builtin_legends
 from .osm import *
 from .timelapse import *
@@ -217,7 +217,7 @@ class Map(folium.Map):
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
 
-        layer = EeFoliumTileLayer(ee_object, vis_params, name, shown, opacity, **kwargs)
+        layer = EEFoliumTileLayer(ee_object, vis_params, name, shown, opacity, **kwargs)
         layer.add_to(self)
         arc_add_layer(layer.url_format, name, shown, opacity)
 
