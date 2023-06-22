@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.23.0 - Jun 22, 2023
+
+**Improvement**
+
+-   Separated ee plot gui from the Map class (#1576)
+-   Separated toolbar GUI from Map class (#1575)
+-   Improved Map.add_netcdf method (#1574)
+-   Suppress gdal open raster warning (#1573)
+-   Improved Map.add_raster method (#1572)
+-   Fixed js-py conversion bug (#1571)
+-   Used sorted function instead of if statements (#1569)
+-   Added support for downloading images in parallel (#1564)
+-   Improved ee_initialize function (#1563)
+-   Added typehinting function parameter for better clarity (#1555)
+-   Updated layer manager GUI (#1553)
+
+**Contributors**
+
+@slowy07
+
 ## v0.22.1 - Jun 1, 2023
 
 **Improvement**
