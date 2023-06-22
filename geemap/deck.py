@@ -1,9 +1,11 @@
+from __future__ import annotations
 import os
 
 from .common import *
 from .osm import *
 from .geemap import basemaps
 from . import examples
+from typing import Optional, Union
 
 try:
     import pydeck as pdk
@@ -20,7 +22,14 @@ class Layer(pdk.Layer):
     You are highly encouraged to look at the examples in the pydeck documentation.
     """
 
-    def __init__(self, type, data=None, id=None, use_binary_transport=None, **kwargs):
+    def __init__(
+        self,
+        type: str,
+        data: Optional[str] = None,
+        id: Optional[Union[str, dict, pd.DataFrame]] = None,
+        use_binary_transport: Optional[bool] = None,
+        **kwargs,
+    ):
         """Initialize a Layer object.
 
         Args:
@@ -39,7 +48,14 @@ class Map(pdk.Deck):
         object: pydeck.Deck object.
     """
 
-    def __init__(self, center=(20, 0), zoom=1.2, height=800, width=None, **kwargs):
+    def __init__(
+        self,
+        center: Optional[tuple] = (20, 0),
+        zoom: Optional[int] = 1.2,
+        height: Optional[int] = 800,
+        width: Optional[int] = None,
+        **kwargs,
+    ):
         """Initialize a Map object.
 
         Args:
@@ -71,7 +87,7 @@ class Map(pdk.Deck):
 
         super().__init__(**kwargs)
 
-    def add_layer(self, layer, layer_name=None, **kwargs):
+    def add_layer(self, layer, layer_name=None, **kwargs) -> None:
         """Add a layer to the map.
 
         Args:
@@ -93,8 +109,14 @@ class Map(pdk.Deck):
             raise Exception(e)
 
     def add_ee_layer(
-        self, ee_object, vis_params={}, name=None, shown=True, opacity=1.0, **kwargs
-    ):
+        self,
+        ee_object: Any,
+        vis_params: dict[str, Any] = {},
+        name: str = None,
+        shown: bool = True,
+        opacity: float = 1.0,
+        **kwargs,
+    ) -> NOne:
         """Adds a given EE object to the map as a layer.
 
         Args:
@@ -178,7 +200,7 @@ class Map(pdk.Deck):
 
     addLayer = add_ee_layer
 
-    def add_basemap(self, basemap="HYBRID"):
+    def add_basemap(self, basemap: str = "HYBRID") -> None:
         """Adds a basemap to the map.
 
         Args:
@@ -217,7 +239,13 @@ class Map(pdk.Deck):
                 )
             )
 
-    def add_gdf(self, gdf, layer_name=None, random_color_column=None, **kwargs):
+    def add_gdf(
+        self,
+        gdf,
+        layer_name: Optional[str] = None,
+        random_color_column: Optional[str] = None,
+        **kwargs: dict[str, Any],
+    ) -> None:
         """Adds a GeoPandas GeoDataFrame to the map.
 
         Args:
@@ -281,7 +309,13 @@ class Map(pdk.Deck):
         except Exception as e:
             raise Exception(e)
 
-    def add_vector(self, filename, layer_name=None, random_color_column=None, **kwargs):
+    def add_vector(
+        self,
+        filename: str,
+        layer_name: Optional[str] = None,
+        random_color_column: Optional[str] = None,
+        **kwargs: dict[str, Any],
+    ) -> None:
         """Adds a vector file to the map.
 
         Args:
@@ -313,8 +347,12 @@ class Map(pdk.Deck):
             raise Exception(e)
 
     def add_geojson(
-        self, filename, layer_name=None, random_color_column=None, **kwargs
-    ):
+        self,
+        filename: str,
+        layer_name: Optional[str] = None,
+        random_color_column: Optional[str] = None,
+        **kwargs: dict[str, Any],
+    ) -> None:
         """Adds a GeoJSON file to the map.
 
         Args:
@@ -327,7 +365,13 @@ class Map(pdk.Deck):
         """
         self.add_vector(filename, layer_name, random_color_column, **kwargs)
 
-    def add_shp(self, filename, layer_name=None, random_color_column=None, **kwargs):
+    def add_shp(
+        self,
+        filename: str,
+        layer_name: Optional[str] = None,
+        random_color_column: Optional[str] = None,
+        **kwargs: dict[str, Any],
+    ) -> None:
         """Adds a shapefile to the map.
 
         Args:
@@ -340,7 +384,13 @@ class Map(pdk.Deck):
         """
         self.add_vector(filename, layer_name, random_color_column, **kwargs)
 
-    def add_kml(self, filename, layer_name=None, random_color_column=None, **kwargs):
+    def add_kml(
+        self,
+        filename: str,
+        layer_name: Optional[str] = None,
+        random_color_column: Optional[str] = None,
+        **kwargs: dict[str, Any],
+    ):
         """Adds a KML file to the map.
 
         Args:

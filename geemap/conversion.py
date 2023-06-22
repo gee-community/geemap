@@ -10,11 +10,11 @@ To convert all GEE Python scripts in a folder recursively to Jupyter notebooks: 
 
 To execute a Jupyter notebook and save output cells:                                execute_notebook(in_file)
 
-To execute all Jupyter notebooks in a folder recursively:                           execute_notebook_dir(in_dir)           
+To execute all Jupyter notebooks in a folder recursively:                           execute_notebook_dir(in_dir)
 
 """
 
-
+from __future__ import annotations
 import os
 import shutil
 import urllib.request
@@ -24,9 +24,15 @@ from pathlib import Path
 import pkg_resources
 
 from .common import *
+from typing import Optional
 
 
-def find_matching_bracket(lines, start_line_index, start_char_index, matching_char="{"):
+def find_matching_bracket(
+    lines: list[str],
+    start_line_index: int,
+    start_char_index: int,
+    matching_char: Optional[str] = "{",
+) -> tuple[int, int]:
     """Finds the position of the matching closing bracket from a list of lines.
 
     Args:
@@ -39,8 +45,8 @@ def find_matching_bracket(lines, start_line_index, start_char_index, matching_ch
         matching_line_index (int): The line index where the matching closing bracket is located.
         matching_char_index (int): The position index of the matching closing bracket.
     """
-    matching_line_index = -1
-    matching_char_index = -1
+    matching_line_index: int = -1
+    matching_char_index: int = -1
 
     matching_chars = {"{": "}", "(": ")", "[": "]"}
     if matching_char not in matching_chars.keys():
@@ -52,7 +58,7 @@ def find_matching_bracket(lines, start_line_index, start_char_index, matching_ch
         return matching_line_index, matching_char_index
 
     # Create a deque to use it as a stack.
-    d = deque()
+    d: deque = deque()
 
     for line_index in range(start_line_index, len(lines)):
         line = lines[line_index]
@@ -81,7 +87,7 @@ def find_matching_bracket(lines, start_line_index, start_char_index, matching_ch
     return matching_line_index, matching_char_index
 
 
-def format_params(line, sep=":"):
+def format_params(line: str, sep: Optional[str] = ":") -> str:
     """Formats keys in a dictionary and adds quotes to the keys.
     For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)
 
@@ -93,16 +99,16 @@ def format_params(line, sep=":"):
         [str]: A string with keys quoted
     """
     # print(line)
-    new_line = line
-    prefix = ""
+    new_line: str = line
+    prefix: str = ""
     # suffix = ""
 
     if line.strip().startswith("for"):  # skip for loop
         return line
 
     # find all occurrences of a substring
-    def find_all(a_str, sub):
-        start = 0
+    def find_all(a_str: str, sub: str):
+        start: int = 0
         while True:
             start = a_str.find(sub, start)
             if start == -1:
@@ -110,11 +116,11 @@ def format_params(line, sep=":"):
             yield start
             start += len(sub)  # use start += 1 to find overlapping matches
 
-    indices = list(find_all(line, sep))
-    count = len(indices)
+    indices: list = list(find_all(line, sep))
+    count: int = len(indices)
 
     if "{" in line:
-        bracket_index = line.index("{")
+        bracket_index: int = line.index("{")
         if bracket_index < indices[0]:
             prefix = line[: bracket_index + 1]
             line = line[bracket_index + 1 :]
@@ -126,23 +132,23 @@ def format_params(line, sep=":"):
             for i in range(0, count):
                 item = items[i].strip()
                 if ('"' not in item) and ("'" not in item):
-                    new_item = "'" + item + "'"
+                    new_item: str = "'" + item + "'"
                     items[i] = items[i].replace(item, new_item)
             new_line = ":".join(items)
         elif count > 1:
             for i in range(0, count):
-                item = items[i]
+                item: str = items[i]
                 if "," in item:
                     subitems = item.split(",")
                     subitem = subitems[-1]
                     if ('"' not in subitem) and ("'" not in subitem):
-                        new_subitem = "'" + subitem.strip() + "'"
+                        new_subitem: str = "'" + subitem.strip() + "'"
                         subitems[-1] = subitems[-1].replace(subitem, new_subitem)
                         items[i] = ", ".join(subitems)
                 else:
                     if ('"' not in item) and ("'" not in item):
-                        new_item = "'" + item.strip() + "'"
-                        padding = len(item) - len(item.strip())
+                        new_item: str = "'" + item.strip() + "'"
+                        padding: int = len(item) - len(item.strip())
                         items[i] = " " * padding + item.replace(item, new_item)
 
             new_line = ":".join(items)
@@ -150,7 +156,7 @@ def format_params(line, sep=":"):
     return prefix + new_line
 
 
-def use_math(lines):
+def use_math(lines: list[str]) -> bool:
     """Checks if an Earth Engine uses Math library
 
     Args:
@@ -159,7 +165,7 @@ def use_math(lines):
     Returns:
         [bool]: Returns True if the script contains 'Math.'. For example 'Math.PI', 'Math.pow'
     """
-    math_import = False
+    math_import: bool = False
     for line in lines:
         if "Math." in line:
             math_import = True
@@ -167,7 +173,7 @@ def use_math(lines):
     return math_import
 
 
-def convert_for_loop(line):
+def convert_for_loop(line: str) -> str:
     """Converts JavaScript for loop to Python for loop.
 
     Args:
@@ -176,33 +182,33 @@ def convert_for_loop(line):
     Returns:
         str: Converted Python for loop.
     """
-    new_line = ""
+    new_line: str = ""
     if "var " in line:
         line = line.replace("var ", "")
-    start_index = line.index("(")
-    end_index = line.index(")")
+    start_index: int = line.index("(")
+    end_index: int = line.index(")")
 
-    prefix = line[:(start_index)]
-    suffix = line[(end_index + 1) :]
+    prefix: str = line[:(start_index)]
+    suffix: str = line[(end_index + 1) :]
 
-    params = line[(start_index + 1) : end_index]
+    params: str = line[(start_index + 1) : end_index]
 
     if " in " in params and params.count(";") == 0:
         new_line = prefix + "{}:".format(params) + suffix
         return new_line
 
-    items = params.split("=")
-    param_name = items[0].strip()
-    items = params.split(";")
+    items: list[str] = params.split("=")
+    param_name: str = items[0].strip()
+    items: list[str] = params.split(";")
 
-    subitems = []
+    subitems: list[str] = []
 
     for item in items:
         subitems.append(item.split(" ")[-1])
 
-    start = subitems[0]
-    end = subitems[1]
-    step = subitems[2]
+    start: str = subitems[0]
+    end: str = subitems[1]
+    step: str = subitems[2]
 
     if "++" in step:
         step = 1
@@ -220,7 +226,7 @@ def convert_for_loop(line):
     return new_line
 
 
-def check_map_functions(input_lines):
+def check_map_functions(input_lines: list[str]) -> list[str]:
     """Extracts Earth Engine map function
 
     Args:
@@ -229,17 +235,17 @@ def check_map_functions(input_lines):
     Returns:
         list: Output JavaScript with map function
     """
-    output_lines = []
+    output_lines: list[str] = []
     for index, line in enumerate(input_lines):
         if (".map(function" in line) or (".map (function") in line:
-            bracket_index = line.index("{")
+            bracket_index: int = line.index("{")
             matching_line_index, matching_char_index = find_matching_bracket(
                 input_lines, index, bracket_index
             )
 
-            func_start_index = line.index("function")
-            func_name = "func_" + random_string()
-            func_header = line[func_start_index:].replace(
+            func_start_index: int = line.index("function")
+            func_name: str = "func_" + random_string()
+            func_header: str = line[func_start_index:].replace(
                 "function", "function " + func_name
             )
             output_lines.append("\n")
@@ -251,13 +257,15 @@ def check_map_functions(input_lines):
                 output_lines.append(tmp_line)
                 input_lines[index + 1 + sub_index] = ""
 
-            header_line = line[:func_start_index] + func_name
+            header_line: str = line[:func_start_index] + func_name
             header_line = header_line.rstrip()
 
-            func_footer = input_lines[matching_line_index][: matching_char_index + 1]
+            func_footer: str = input_lines[matching_line_index][
+                : matching_char_index + 1
+            ]
             output_lines.append(func_footer)
 
-            footer_line = input_lines[matching_line_index][
+            footer_line: str = input_lines[matching_line_index][
                 matching_char_index + 1 :
             ].strip()
             if footer_line == ")" or footer_line == ");":
@@ -275,13 +283,13 @@ def check_map_functions(input_lines):
 
 
 def js_to_python(
-    in_file,
-    out_file=None,
-    use_qgis=True,
-    github_repo=None,
-    show_map=True,
-    import_geemap=False,
-):
+    in_file: str,
+    out_file: Optional[str] = None,
+    use_qgis: bool = True,
+    github_repo: Optional[str] = None,
+    show_map: bool = True,
+    import_geemap: bool = False,
+) -> list[str]:
     """Converts an Earth Engine JavaScript to Python script.
 
     Args:
@@ -326,7 +334,7 @@ def js_to_python(
     math_import = False
     math_import_str = ""
 
-    lines = []
+    lines: list[str] = []
     with open(in_file, encoding="utf-8") as f:
         lines = f.readlines()
 
@@ -499,7 +507,7 @@ def js_to_python(
     return output
 
 
-def create_new_cell(contents, replace=False):
+def create_new_cell(contents: str, replace: Optional[bool] = False) -> None:
     """Create a new cell in Jupyter notebook based on the contents.
 
     Args:
@@ -512,12 +520,12 @@ def create_new_cell(contents, replace=False):
 
 
 def js_snippet_to_py(
-    in_js_snippet,
-    add_new_cell=True,
-    import_ee=True,
-    import_geemap=False,
-    show_map=True,
-):
+    in_js_snippet: str,
+    add_new_cell: Optional[bool] = True,
+    import_ee: Optional[bool] = True,
+    import_geemap: Optional[bool] = False,
+    show_map: Optional[bool] = True,
+) -> list:
     """Converts an Earth Engine JavaScript snippet wrapped in triple quotes to Python directly on a Jupyter notebook.
 
     Args:
@@ -583,7 +591,12 @@ def js_snippet_to_py(
         print(e)
 
 
-def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
+def js_to_python_dir(
+    in_dir: str,
+    out_dir: Optional[str] = None,
+    use_qgis: Optional[str] = True,
+    github_repo: Optional[str] = None,
+) -> None:
     """Converts all Earth Engine JavaScripts in a folder recursively to Python scripts.
 
     Args:
@@ -628,7 +641,7 @@ def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
 #     return line
 
 
-def remove_qgis_import(in_file):
+def remove_qgis_import(in_file: str) -> list:
     """Removes 'from ee_plugin import Map' from an Earth Engine Python script.
 
     Args:
@@ -656,7 +669,7 @@ def remove_qgis_import(in_file):
                 return lines[index + 1 :]
 
 
-def get_js_examples(out_dir=None):
+def get_js_examples(out_dir: str = None) -> str:
     """Gets Earth Engine JavaScript examples from the geemap package.
 
     Args:
@@ -684,7 +697,7 @@ def get_js_examples(out_dir=None):
     return out_dir
 
 
-def get_nb_template(download_latest=False, out_file=None):
+def get_nb_template(download_latest: Optional[bool]=False, out_file: Optional[str]=None) -> str:
     """Get the Earth Engine Jupyter notebook template.
 
     Args:
@@ -719,7 +732,7 @@ def get_nb_template(download_latest=False, out_file=None):
     return out_file
 
 
-def template_header(in_template):
+def template_header(in_template: str) -> list:
     """Extracts header from the notebook template.
 
     Args:
@@ -743,7 +756,7 @@ def template_header(in_template):
     return header
 
 
-def template_footer(in_template):
+def template_footer(in_template: str) -> list:
     """Extracts footer from the notebook template.
 
     Args:
@@ -768,12 +781,12 @@ def template_footer(in_template):
 
 
 def py_to_ipynb(
-    in_file,
-    template_file=None,
-    out_file=None,
-    github_username=None,
-    github_repo=None,
-):
+    in_file: str,
+    template_file: str=None,
+    out_file: Optional[str]=None,
+    github_username: Optional[str]=None,
+    github_repo: Optional[str]=None,
+) -> str:
     """Converts Earth Engine Python script to Jupyter notebook.
 
     Args:
@@ -852,8 +865,8 @@ def py_to_ipynb(
 
 
 def py_to_ipynb_dir(
-    in_dir, template_file=None, out_dir=None, github_username=None, github_repo=None
-):
+    in_dir, template_file: bool=None, out_dir: str=None, github_username: str=None, github_repo: str=None
+) -> None:
     """Converts Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
 
     Args:
@@ -894,7 +907,7 @@ def py_to_ipynb_dir(
         py_to_ipynb(in_file, template_file, out_file, github_username, github_repo)
 
 
-def execute_notebook(in_file):
+def execute_notebook(in_file: str) -> None:
     """Executes a Jupyter notebook and save output cells
 
     Args:
@@ -906,7 +919,7 @@ def execute_notebook(in_file):
     # os.popen(command)
 
 
-def execute_notebook_dir(in_dir):
+def execute_notebook_dir(in_dir: str) -> None:
     """Executes all Jupyter notebooks in the given directory recursively and save output cells.
 
     Args:
@@ -924,7 +937,7 @@ def execute_notebook_dir(in_dir):
             execute_notebook(in_file)
 
 
-def update_nb_header(in_file, github_username=None, github_repo=None):
+def update_nb_header(in_file: str, github_username: Optional[str]=None, github_repo: Optional[str]=None) -> None:
     """Updates notebook header (binder and Google Colab URLs).
 
     Args:
@@ -978,7 +991,7 @@ def update_nb_header(in_file, github_username=None, github_repo=None):
             f.writelines(output_lines)
 
 
-def update_nb_header_dir(in_dir, github_username=None, github_repo=None):
+def update_nb_header_dir(in_dir: str, github_username: Optional[str]=None, github_repo: Optional[str]=None) -> None:
     """Updates header (binder and Google Colab URLs) of all notebooks in a folder .
 
     Args:
@@ -1044,7 +1057,7 @@ def update_nb_header_dir(in_dir, github_username=None, github_repo=None):
 #     print('Data downloaded to: {}'.format(final_path))
 
 
-def download_gee_app(url, out_file=None):
+def download_gee_app(url: str, out_file: Optional[str]=None) -> None:
     """Downloads JavaScript source code from a GEE App
 
     Args:

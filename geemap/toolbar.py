@@ -305,7 +305,7 @@ def tool_header_template(m=None, opened=True):
         return toolbar_widget
 
 
-def open_data_widget(m):
+def open_data_widget(m) -> None:
     """A widget for opening local vector/raster data.
 
     Args:

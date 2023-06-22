@@ -1,3 +1,4 @@
+from __future__ import annotations
 import json
 import os
 import shutil
@@ -10,9 +11,10 @@ from box import Box
 from IPython.display import display
 
 from .common import download_from_url, ee_data_html, search_ee_data
+from typing import Optional
 
 
-def get_data_csv():
+def get_data_csv() -> str:
     """Gets the file path to the CSV file containing the information about the Earth Engien Data Catalog.
 
     Returns:
@@ -24,7 +26,7 @@ def get_data_csv():
     return data_csv
 
 
-def update_data_list(out_dir="."):
+def update_data_list(out_dir: Optional[str]=".") -> None:
     """Updates the Earth Engine Data Catalog dataset list.
 
     Args:
@@ -61,7 +63,7 @@ def update_data_list(out_dir="."):
         raise Exception(e)
 
 
-def get_data_list():
+def get_data_list() -> list:
     """Gets a list of Earth Engine datasets.
 
     Returns:
@@ -95,7 +97,7 @@ def get_geemap_data_list():
     return extra_datasets
 
 
-def get_community_data_list():
+def get_community_data_list() -> list:
     """Gets the list community datasets
         from https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
 
@@ -129,7 +131,7 @@ def get_ee_stac_list():
         raise Exception(e)
 
 
-def merge_dict(dict1, dict2):
+def merge_dict(dict1: dict, dict2: dict) -> dict:
     """Merges two nested dictionaries.
 
     Args:
@@ -142,7 +144,7 @@ def merge_dict(dict1, dict2):
     return {**dict1, **dict2}
 
 
-def get_data_dict():
+def get_data_dict() -> dict:
     """Gets the Earth Engine Data Catalog as a nested dictionary.
 
     Returns:
@@ -166,7 +168,7 @@ def get_data_dict():
     return data_dict
 
 
-def get_metadata(asset_id, source="ee"):
+def get_metadata(asset_id: str, source: str ="ee") -> None:
     """Gets metadata about an Earth Engine asset.
 
     Args:
