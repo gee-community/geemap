@@ -5288,7 +5288,6 @@ def main_toolbar(m, position="topright", **kwargs):
 
     def layers_btn_click(change):
         if change["new"]:
-
             # Create Layer Manager Widget
             toolbar_footer.children = layer_manager_gui(m, return_widget=True)
         else:

@@ -4123,6 +4123,12 @@ class Map(ipyleaflet.Map):
             palette (list | dict): The palette (e.g., list of colors or a dict containing label and color pairs) to use for styling.
             layer_name (str, optional): The name to be used for the new layer. Defaults to "Untitled".
         """
+        if isinstance(palette, str):
+            from .colormaps import get_palette
+
+            count = ee_object.size().getInfo()
+            palette = get_palette(palette, count)
+
         styled_vector = vector_styling(ee_object, column, palette, **kwargs)
         self.addLayer(styled_vector.style(**{"styleProperty": "style"}), {}, layer_name)
 
