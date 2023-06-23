@@ -269,6 +269,7 @@ nav:
           - notebooks/134_ee_to_geotiff.ipynb
           - notebooks/135_segmentation.ipynb
           - notebooks/136_download_parallel.ipynb
+          - notebooks/137_create_grid.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
