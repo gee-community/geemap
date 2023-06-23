@@ -1,24 +1,27 @@
+from __future__ import annotations
+
 import pandas as pd
 import plotly.express as px
 
 from .common import *
+from typing import Union, Optional, Any
 
 
 def bar_chart(
-    data=None,
-    x=None,
-    y=None,
-    color=None,
-    descending=True,
-    sort_column=None,
-    max_rows=None,
-    x_label=None,
-    y_label=None,
-    title=None,
-    legend_title=None,
-    width=None,
-    height=500,
-    layout_args={},
+    data: Union[pd.DataFrame, str, None] = None,
+    x: Union[str, int, pd.Series, list[Union[str, int, pd.Series]]] = None,
+    y: Union[str, int, pd.Series, list[Union[str, int, pd.Series]]] = None,
+    color: Union[str, int, pd.Series, list[Union[str, int, pd.Series]]] = None,
+    descending: bool = True,
+    sort_column: Optional[str] = None,
+    max_rows: Optional[str] = None,
+    x_label: Optional[str] = None,
+    y_label: Optional[str] = None,
+    title: Optional[str] = None,
+    legend_title: Optional[str] = None,
+    width: Optional[int] = None,
+    height: int = 500,
+    layout_args: dict = {},
     **kwargs,
 ):
     """Create a bar chart with plotly.express,
@@ -298,19 +301,21 @@ def bar_chart(
 
 
 def line_chart(
-    data=None,
-    x=None,
-    y=None,
-    color=None,
-    descending=None,
-    max_rows=None,
-    x_label=None,
-    y_label=None,
-    title=None,
-    legend_title=None,
-    width=None,
-    height=500,
-    layout_args={},
+    data: Optional[Union[pd.DataFrame, pd.Series, dict, str]] = None,
+    x: Optional[Union[str, int, pd.Series, list[Union[str, int, pd.Series]]]] = None,
+    y: Optional[Union[str, int, pd.Series, list[Union[str, int, pd.Series]]]] = None,
+    color: Optional[
+        Union[str, int, pd.Series, list[Union[str, int, pd.Series]]]
+    ] = None,
+    descending: Optional[bool] = None,
+    max_rows: Optiona[str] = None,
+    x_label: Optiona[str] = None,
+    y_label: Optiona[str] = None,
+    title: Optiona[str] = None,
+    legend_title: Optiona[str] = None,
+    width: Optional[int] = None,
+    height: Optional[int] = 500,
+    layout_args: dict = {},
     **kwargs,
 ):
     """Create a line chart with plotly.express,
@@ -579,18 +584,18 @@ def line_chart(
 
 
 def histogram(
-    data=None,
-    x=None,
-    y=None,
-    color=None,
-    descending=None,
-    max_rows=None,
-    x_label=None,
-    y_label=None,
-    title=None,
-    width=None,
-    height=500,
-    layout_args={},
+    data: Union[pd.DataFrame, pd.Series, list, dict, str] = None,
+    x: Union[str, int, pd.Series, list, None] = None,
+    y: Union[str, int, pd.Series, list, None] = None,
+    color: Union[str, int, pd.Series, list, None] = None,
+    descending: Optional[str] = None,
+    max_rows: Optional[str] = None,
+    x_label: Optional[str] = None,
+    y_label: Optional[str] = None,
+    title: Optional[str] = None,
+    width: Optional[int] = None,
+    height: Optional[int] = 500,
+    layout_args: dict = {},
     **kwargs,
 ):
     """Create a line chart with plotly.express,
@@ -852,28 +857,30 @@ def histogram(
 
 
 def pie_chart(
-    data,
-    names=None,
-    values=None,
-    descending=True,
-    max_rows=None,
-    other_label=None,
-    color=None,
-    color_discrete_sequence=None,
-    color_discrete_map=None,
-    hover_name=None,
-    hover_data=None,
-    custom_data=None,
-    labels=None,
-    title=None,
-    legend_title=None,
-    template=None,
-    width=None,
-    height=None,
-    opacity=None,
-    hole=None,
-    layout_args={},
-    **kwargs,
+    data: Union[pd.DataFrame, pd.Series, list[Any], dict[str, Any]],
+    names: Optional[Union[str, int, pd.Series, list[Any]]] = None,
+    values: Optional[Union[str, int, pd.Series, list[Any]]] = None,
+    descending: bool = True,
+    max_rows: Optional[int] = None,
+    other_label: Optional[str] = None,
+    color: Optional[Union[str, int, pd.Series, list[Any]]] = None,
+    color_discrete_sequence: Optional[list[str]] = None,
+    color_discrete_map: Optional[dict[str, str]] = None,
+    hover_name: Optional[Union[str, int, pd.Series, list[Any]]] = None,
+    hover_data: Optional[
+        Union[list[str], int, pd.Series, dict[str, Union[bool, str, list[Any]]]]
+    ] = None,
+    custom_data: Optional[Union[list[str], int, pd.Series, list[Any]]] = None,
+    labels: Optional[dict[str, str]] = None,
+    title: Optional[str] = None,
+    legend_title: Optional[str] = None,
+    template: Optional[Union[str, dict[str, Any], Any]] = None,
+    width: Optional[int] = None,
+    height: Optional[int] = None,
+    opacity: Optional[float] = None,
+    hole: Optional[float] = None,
+    layout_args: Optional[dict[str, Any]] = {},
+    **kwargs: Any,
 ):
     """Create a plotly pie chart.
 

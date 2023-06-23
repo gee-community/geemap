@@ -1,12 +1,14 @@
-"""The module contains functions for downloading OpenStreetMap data. It wraps the geometries module of the osmnx package 
-(see https://osmnx.readthedocs.io/en/stable/osmnx.html#module-osmnx.geometries). Credits to Geoff Boeing, the developer of the osmnx package. 
-Most functions for downloading OpenStreetMap data require tags of map features. The list of commonly used tags can be found at 
-https://wiki.openstreetmap.org/wiki/Map_features 
+"""The module contains functions for downloading OpenStreetMap data. It wraps the geometries module of the osmnx package
+(see https://osmnx.readthedocs.io/en/stable/osmnx.html#module-osmnx.geometries). Credits to Geoff Boeing, the developer of the osmnx package.
+Most functions for downloading OpenStreetMap data require tags of map features. The list of commonly used tags can be found at
+https://wiki.openstreetmap.org/wiki/Map_features
 """
+from __future__ import annotations
 from .common import check_package
+from typing import Optional, Union
 
 
-def osm_gdf_from_address(address, tags, dist=1000):
+def osm_gdf_from_address(address: str, tags: dict, dist: int = 1000):
     """Create GeoDataFrame of OSM entities within some distance N, S, E, W of address.
 
     Args:
@@ -24,7 +26,7 @@ def osm_gdf_from_address(address, tags, dist=1000):
     return gdf
 
 
-def osm_shp_from_address(address, tags, filepath, dist=1000):
+def osm_shp_from_address(address: str, tags: dict, filepath: str, dist: int = 1000):
     """Download OSM entities within some distance N, S, E, W of address as a shapefile.
 
     Args:
@@ -38,7 +40,9 @@ def osm_shp_from_address(address, tags, filepath, dist=1000):
     gdf.to_file(filepath)
 
 
-def osm_geojson_from_address(address, tags, filepath=None, dist=1000):
+def osm_geojson_from_address(
+    address: str, tags: dict, filepath: Optional[str] = None, dist: int = 1000
+) -> dict:
     """Download OSM entities within some distance N, S, E, W of address as a GeoJSON.
 
     Args:
@@ -57,7 +61,12 @@ def osm_geojson_from_address(address, tags, filepath=None, dist=1000):
         return gdf.__geo_interface__
 
 
-def osm_gdf_from_place(query, tags, which_result=None, buffer_dist=None):
+def osm_gdf_from_place(
+    query: Union[str, dict, list],
+    tags: dict,
+    which_result: Optional[int] = None,
+    buffer_dist: Optional[int] = None,
+):
     """Create GeoDataFrame of OSM entities within boundaries of geocodable place(s).
 
     Args:
@@ -78,7 +87,13 @@ def osm_gdf_from_place(query, tags, which_result=None, buffer_dist=None):
     return gdf
 
 
-def osm_shp_from_place(query, tags, filepath, which_result=None, buffer_dist=None):
+def osm_shp_from_place(
+    query: Union[str, dict, list],
+    tags: dict,
+    filepath: str,
+    which_result: Optional[int] = None,
+    buffer_dist: Optional[float] = None,
+):
     """Download OSM entities within boundaries of geocodable place(s) as a shapefile.
 
     Args:
@@ -93,7 +108,11 @@ def osm_shp_from_place(query, tags, filepath, which_result=None, buffer_dist=Non
 
 
 def osm_geojson_from_place(
-    query, tags, filepath=None, which_result=None, buffer_dist=None
+    query: Union[str, dict, list],
+    tags: dict,
+    filepath: str = None,
+    which_result: Optional[str] = None,
+    buffer_dist: Optional[float] = None,
 ):
     """Download OSM entities within boundaries of geocodable place(s) as a GeoJSON.
 
@@ -115,7 +134,7 @@ def osm_geojson_from_place(
         return gdf.__geo_interface__
 
 
-def osm_gdf_from_point(center_point, tags, dist=1000):
+def osm_gdf_from_point(center_point: tuple, tags: dict, dist: int = 1000):
     """Create GeoDataFrame of OSM entities within some distance N, S, E, W of a point.
 
     Args:
@@ -133,7 +152,9 @@ def osm_gdf_from_point(center_point, tags, dist=1000):
     return gdf
 
 
-def osm_shp_from_point(center_point, tags, filepath, dist=1000):
+def osm_shp_from_point(
+    center_point: tuple, tags: dict, filepath: str, dist: int = 1000
+):
     """Download OSM entities within some distance N, S, E, W of point as a shapefile.
 
     Args:
@@ -146,7 +167,9 @@ def osm_shp_from_point(center_point, tags, filepath, dist=1000):
     gdf.to_file(filepath)
 
 
-def osm_geojson_from_point(center_point, tags, filepath=None, dist=1000):
+def osm_geojson_from_point(
+    center_point: tuple, tags: dict, filepath: str = None, dist: int = 1000
+):
     """Download OSM entities within some distance N, S, E, W of point as a GeoJSON.
 
     Args:
@@ -212,7 +235,9 @@ def osm_geojson_from_polygon(polygon, tags, filepath=None):
         return gdf.__geo_interface__
 
 
-def osm_gdf_from_bbox(north, south, east, west, tags):
+def osm_gdf_from_bbox(
+    north: float, south: float, east: float, west: float, tags: float
+):
     """Create a GeoDataFrame of OSM entities within a N, S, E, W bounding box.
 
     Args:
@@ -232,7 +257,9 @@ def osm_gdf_from_bbox(north, south, east, west, tags):
     return gdf
 
 
-def osm_shp_from_bbox(north, south, east, west, tags, filepath):
+def osm_shp_from_bbox(
+    north: float, south: float, east: float, west: float, tags: float, filepath: str
+):
     """Download OSM entities within a N, S, E, W bounding box as a shapefile.
 
     Args:
@@ -247,7 +274,14 @@ def osm_shp_from_bbox(north, south, east, west, tags, filepath):
     gdf.to_file(filepath)
 
 
-def osm_geojson_from_bbox(north, south, east, west, tags, filepath=None):
+def osm_geojson_from_bbox(
+    north: float,
+    south: float,
+    east: float,
+    west: float,
+    tags: float,
+    filepath: Optional[str] = None,
+) -> dict:
     """Download OSM entities within a N, S, E, W bounding box as a GeoJSON.
 
     Args:
@@ -287,16 +321,16 @@ def osm_gdf_from_xml(filepath, polygon=None, tags=None):
 
 
 def osm_gdf_from_geocode(
-    query,
-    which_result=None,
-    by_osmid=False,
-    buffer_dist=None,
+    query: Union[str, dict, list],
+    which_result: Optional[int] = None,
+    by_osmid: bool = False,
+    buffer_dist: Optional[float] = None,
 ):
     """Retrieves place(s) by name or ID from the Nominatim API as a GeoDataFrame.
 
     Args:
         query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-        which_result (INT, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
+        which_result (int, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
         by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
         buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
 
@@ -313,11 +347,11 @@ def osm_gdf_from_geocode(
 
 
 def osm_shp_from_geocode(
-    query,
-    filepath,
-    which_result=None,
-    by_osmid=False,
-    buffer_dist=None,
+    query: Union[str, dict, list],
+    filepath: str,
+    which_result: Optional[int] = None,
+    by_osmid: bool = False,
+    buffer_dist: Optional[float] = None,
 ):
     """Download place(s) by name or ID from the Nominatim API as a shapefile.
 
@@ -333,11 +367,11 @@ def osm_shp_from_geocode(
 
 
 def osm_geojson_from_geocode(
-    query,
-    filepath=None,
-    which_result=None,
-    by_osmid=False,
-    buffer_dist=None,
+    query: Union[str, dict, list],
+    filepath: str = None,
+    which_result: Optional[int] = None,
+    by_osmid: bool = False,
+    buffer_dist: Optional[float] = None,
 ):
     """Download place(s) by name or ID from the Nominatim API as a GeoJSON.
 

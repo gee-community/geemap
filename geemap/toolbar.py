@@ -1,5 +1,6 @@
 """Module for dealing with the toolbar.
 """
+from __future__ import annotations
 import os
 
 import ee
@@ -11,6 +12,8 @@ from IPython.core.display import display
 
 from .common import *
 from .timelapse import *
+
+from typing import Any
 
 
 def tool_template(m=None, opened=True):
@@ -150,7 +153,7 @@ def tool_template(m=None, opened=True):
 
     # toolbar_event.on_dom_event(handle_toolbar_event)
 
-    def toolbar_btn_click(change):
+    def toolbar_btn_click(change: dict[str, bool]) -> None:
         if change["new"]:
             close_button.value = False
             toolbar_widget.children = [toolbar_header, toolbar_footer]
@@ -172,7 +175,7 @@ def tool_template(m=None, opened=True):
 
     close_button.observe(close_btn_click, "value")
 
-    def button_clicked(change):
+    def button_clicked(change: dict[str, Any]) -> None:
         if change["new"] == "Apply":
             with output:
                 output.clear_output()
