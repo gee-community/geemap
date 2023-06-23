@@ -7,7 +7,6 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 import os
 
 import ee
-import ipyevents
 import ipyleaflet
 import ipywidgets as widgets
 
