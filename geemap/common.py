@@ -15294,3 +15294,21 @@ def ee_to_geotiff(
         raise ValueError("Either zoom level or resolution must be specified.")
 
     tms_to_geotiff(output, bbox, zoom, resolution, url, crs, to_cog, quiet, **kwargs)
+
+
+def create_grid(ee_object, scale, proj=None):
+    if isinstance(ee_object, ee.FeatureCollection) or isinstance(ee_object, ee.Image):
+        geometry = ee_object.geometry()
+    elif isinstance(ee_object, ee.Geometry):
+        geometry = ee_object
+    else:
+        raise ValueError(
+            "ee_object must be an ee.FeatureCollection, ee.Image, or ee.Geometry"
+        )
+
+    if proj is None:
+        proj = geometry.projection()
+
+    grid = geometry.coveringGrid(proj, scale)
+
+    return grid
