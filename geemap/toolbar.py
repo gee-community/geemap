@@ -205,7 +205,7 @@ def tool_template(m=None, opened=True):
         return toolbar_widget
 
 
-def tool_header_template(m=None, opened=True):
+def tool_header_template(m=None, opened=True, show_close_button=True):
     """Create a toolbar widget.
 
     Args:
@@ -244,7 +244,10 @@ def tool_header_template(m=None, opened=True):
     toolbar_widget = widgets.VBox()
     toolbar_widget.children = [toolbar_button]
     toolbar_header = widgets.HBox()
-    toolbar_header.children = [close_button, toolbar_button]
+    if show_close_button:
+        toolbar_header.children = [close_button, toolbar_button]
+    else:
+        toolbar_header.children = [toolbar_button]
     toolbar_footer = widgets.VBox()
     toolbar_footer.children = [
         buttons,
@@ -4618,7 +4621,13 @@ def search_data_gui(m):
 
 
 def ee_inspector_gui(
-    m, names=None, visible=True, decimals=2, position="topright", opened=True
+    m,
+    names=None,
+    visible=True,
+    decimals=2,
+    position="topright",
+    opened=True,
+    show_close_button=True,
 ):
     """Earth Engine Inspector GUI.
 
@@ -4629,6 +4638,7 @@ def ee_inspector_gui(
         decimals (int, optional): The number of decimal places to round the values. Defaults to 2.
         position (str, optional): The position of the control. Defaults to "topright".
         opened (bool, optional): Whether the control is opened. Defaults to True.
+        show_close_button (bool, optional): Whether to show the close button. Defaults to True.
 
     """
     from ipytree import Tree
@@ -4714,7 +4724,10 @@ def ee_inspector_gui(
         display(inspector_checks)
 
     toolbar_header = widgets.HBox()
-    toolbar_header.children = [close_button, toolbar_button]
+    if show_close_button:
+        toolbar_header.children = [close_button, toolbar_button]
+    else:
+        toolbar_header.children = [toolbar_button]
     toolbar_footer = widgets.VBox()
     toolbar_footer.children = [inspector_output]
     toolbar_widget = widgets.VBox()
@@ -4800,7 +4813,9 @@ def ee_inspector_gui(
         return toolbar_widget
 
 
-def layer_manager_gui(m, position="topright", opened=True, return_widget=False):
+def layer_manager_gui(
+    m, position="topright", opened=True, return_widget=False, show_close_button=True
+):
     """Creates a layer manager widget.
 
     Args:
@@ -5000,7 +5015,10 @@ def layer_manager_gui(m, position="topright", opened=True, return_widget=False):
                 layers_hbox.append(hbox)
                 m.layer_widget = layers_hbox
 
-            toolbar_header.children = [close_button, layers_button]
+            if show_close_button:
+                toolbar_header.children = [close_button, layers_button]
+            else:
+                toolbar_header.children = [layers_button]
             toolbar_footer.children = layers_hbox
 
         else:

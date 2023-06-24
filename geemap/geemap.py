@@ -2573,8 +2573,9 @@ class Map(ipyleaflet.Map):
     def toolbar_reset(self):
         """Reset the toolbar so that no tool is selected."""
         toolbar_grid = self.toolbar
-        for tool in toolbar_grid.children:
-            tool.value = False
+        if toolbar_grid is not None:
+            for tool in toolbar_grid.children:
+                tool.value = False
 
     def add_raster(
         self,
@@ -6335,7 +6336,13 @@ class Map(ipyleaflet.Map):
         return tree
 
     def add_inspector(
-        self, names=None, visible=True, decimals=2, position="topright", opened=True
+        self,
+        names=None,
+        visible=True,
+        decimals=2,
+        position="topright",
+        opened=True,
+        show_close_button=True,
     ):
         """Add the Inspector GUI to the map.
 
@@ -6349,9 +6356,13 @@ class Map(ipyleaflet.Map):
         """
         from .toolbar import ee_inspector_gui
 
-        ee_inspector_gui(self, names, visible, decimals, position, opened)
+        ee_inspector_gui(
+            self, names, visible, decimals, position, opened, show_close_button
+        )
 
-    def add_layer_manager(self, position="topright", opened=True):
+    def add_layer_manager(
+        self, position="topright", opened=True, show_close_button=True
+    ):
         """Add the Layer Manager to the map.
 
         Args:
@@ -6359,7 +6370,7 @@ class Map(ipyleaflet.Map):
         """
         from .toolbar import layer_manager_gui
 
-        layer_manager_gui(self, position, opened)
+        layer_manager_gui(self, position, opened, show_close_button=show_close_button)
 
     def update_layer_manager(self):
         """Update the Layer Manager."""
