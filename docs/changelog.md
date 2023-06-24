@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.23.1 - Jun 24, 2023
+
+**New Features**
+
+-   Added create_grid function for zonal stats (#1582)
+
+**Improvement**
+
+-   Fixed toolbar GUI bug (#1584)
+
 ## v0.23.0 - Jun 22, 2023
 
 **Improvement**
