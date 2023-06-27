@@ -1922,7 +1922,7 @@ def ee_export_vector_to_feature_view(
     task.start()
 
 
-def ee_export_video_to_dirve(
+def ee_export_video_to_drive(
     collection: ee.ImageCollection,
     description: str = "myExportVideoTask",
     folder: Optional[str] = None,
