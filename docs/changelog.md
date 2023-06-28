@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.23.2 - Jun 28, 2023
+
+**Improvement**
+
+-   Improve exception handling (#1587)
+-   Fixed function typo
+
 ## v0.23.1 - Jun 24, 2023
 
 **New Features**
