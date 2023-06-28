@@ -2701,25 +2701,28 @@ def ee_export_image_to_cloud_storage(
     if not isinstance(image, ee.Image):
         raise ValueError("Input image must be an instance of ee.Image")
 
-    task = ee.batch.Export.image.toCloudStorage(
-        image,
-        description,
-        bucket,
-        fileNamePrefix,
-        dimensions,
-        region,
-        scale,
-        crs,
-        crsTransform,
-        maxPixels,
-        shardSize,
-        fileDimensions,
-        skipEmptyTiles,
-        fileFormat,
-        formatOptions,
-        **kwargs,
-    )
-    task.start()
+    try:
+        task = ee.batch.Export.image.toCloudStorage(
+            image,
+            description,
+            bucket,
+            fileNamePrefix,
+            dimensions,
+            region,
+            scale,
+            crs,
+            crsTransform,
+            maxPixels,
+            shardSize,
+            fileDimensions,
+            skipEmptyTiles,
+            fileFormat,
+            formatOptions,
+            **kwargs,
+        )
+        task.start()
+    except Exception as e:
+        print(e)
 
 
 def ee_export_image_collection_to_drive(
@@ -12987,7 +12990,7 @@ def plot_raster(
         return
 
     if in_colab_shell():
-        print("The plot_raster_3d() function is not supported in Colab.")
+        print("The plot_raster() function is not supported in Colab.")
         return
 
     try:
@@ -13051,6 +13054,10 @@ def plot_raster_3d(
     """
 
     if os.environ.get("USE_MKDOCS") is not None:
+        return
+
+    if in_colab_shell():
+        print("The plot_raster_3d() function is not supported in Colab.")
         return
 
     try:
