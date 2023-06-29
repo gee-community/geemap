@@ -6,8 +6,8 @@ from unittest.mock import patch
 import box
 import ee
 
-import fake_ee
 from geemap import ee_tile_layers
+from . import fake_ee
 
 
 @patch.object(ee, "Feature", fake_ee.Feature)
