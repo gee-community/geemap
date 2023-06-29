@@ -3130,19 +3130,20 @@
 <a id="geemap.basemaps"></a>
     <div class="doc doc-contents first">
 
-      <p>Module for basemaps. Each basemap is defined as item in the basemaps dictionary. For example, to access Google basemaps, use the following:</p>
-<p>basemaps['ROADMAP'], basemaps['SATELLITE'], basemaps['HYBRID'].</p>
+      <p>Module for basemaps.</p>
+<p>Each basemap is defined as an item in the <code>basemaps</code> dictionary.</p>
+<p>For example, to access Google basemaps, use the following:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code>* `basemaps[&#39;ROADMAP&#39;]`
+* `basemaps[&#39;SATELLITE&#39;]`
+* `basemaps[&#39;HYBRID&#39;]`
+</code></pre></div></td></tr></table></div>
 <p>More WMS basemaps can be found at the following websites:</p>
 <ol>
-<li>
-<p>USGS National Map: https://viewer.nationalmap.gov/services/</p>
-</li>
-<li>
-<p>MRLC NLCD Land Cover data: https://viewer.nationalmap.gov/services/</p>
-</li>
-<li>
-<p>FWS NWI Wetlands data: https://www.fws.gov/wetlands/Data/Web-Map-Services.html</p>
-</li>
+<li>USGS National Map: https://viewer.nationalmap.gov/services/</li>
+<li>MRLC NLCD Land Cover data: https://viewer.nationalmap.gov/services/</li>
+<li>FWS NWI Wetlands data: https://www.fws.gov/wetlands/Data/Web-Map-Services.html</li>
 </ol>
 
 
@@ -3187,13 +3188,15 @@
       <tr>
         <td><code>free_only</code></td>
         <td><code>bool</code></td>
-        <td><p>Whether to return only free xyz tile services that do not require an access token. Defaults to True.</p></td>
+        <td><p>Whether to return only free xyz tile
+services that do not require an access token. Defaults to True.</p></td>
         <td><code>True</code></td>
       </tr>
       <tr>
         <td><code>france</code></td>
         <td><code>bool</code></td>
-        <td><p>Whether include Geoportail France basemaps. Defaults to False.</p></td>
+        <td><p>Whether to include Geoportail France basemaps.
+Defaults to False.</p></td>
         <td><code>False</code></td>
       </tr>
   </tbody>
@@ -3219,48 +3222,29 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a dictionary of xyz services.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        free_only (bool, optional): Whether to return only free xyz tile services that do not require an access token. Defaults to True.</span>
-<span class="sd">        france (bool, optional): Whether include Geoportail France basemaps. Defaults to False.</span>
+<span class="sd">        free_only (bool, optional): Whether to return only free xyz tile</span>
+<span class="sd">            services that do not require an access token. Defaults to True.</span>
+<span class="sd">        france (bool, optional): Whether to include Geoportail France basemaps.</span>
+<span class="sd">            Defaults to False.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        dict: A dictionary of xyz services.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xyz_bunch</span> <span class="o">=</span> <span class="n">xyzservices</span><span class="o">.</span><span class="n">providers</span>
 
-    <span class="n">xyz_dict_tmp</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">xyz</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-            <span class="n">tile</span> <span class="o">=</span> <span class="n">_unpack_sub_parameters</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">_unpack_sub_parameters</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">requires_token</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">free_only</span><span class="p">:</span>
-                    <span class="k">pass</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">xyz_dict_tmp</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">xyz_dict_tmp</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
+    <span class="k">if</span> <span class="n">free_only</span><span class="p">:</span>
+        <span class="n">xyz_bunch</span> <span class="o">=</span> <span class="n">xyz_bunch</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">requires_token</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">france</span><span class="p">:</span>
+        <span class="n">xyz_bunch</span> <span class="o">=</span> <span class="n">xyz_bunch</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">tile</span><span class="p">:</span> <span class="s2">&quot;france&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">tile</span><span class="p">)[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+    <span class="n">xyz_dict</span> <span class="o">=</span> <span class="n">xyz_bunch</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">xyz_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">tile</span> <span class="o">=</span> <span class="n">xyzservices</span><span class="o">.</span><span class="n">TileProvider</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;type&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tile</span><span class="p">:</span>
             <span class="n">tile</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span>
-
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">sub_item</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="n">sub_item</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-                <span class="n">tile</span> <span class="o">=</span> <span class="n">_unpack_sub_parameters</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">_unpack_sub_parameters</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">requires_token</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">free_only</span><span class="p">:</span>
-                        <span class="k">pass</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">xyz_dict_tmp</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">xyz_dict_tmp</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
-                <span class="n">tile</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span>
-
-    <span class="n">xyz_dict</span> <span class="o">=</span> <span class="p">{}</span>
-
-    <span class="k">if</span> <span class="n">france</span><span class="p">:</span>
-        <span class="n">xyz_dict</span> <span class="o">=</span> <span class="n">xyz_dict_tmp</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">xyz_dict_tmp</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;France&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
-                <span class="n">xyz_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz_dict_tmp</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">xyz_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile</span>
 
     <span class="n">xyz_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">xyz_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
     <span class="k">return</span> <span class="n">xyz_dict</span>
