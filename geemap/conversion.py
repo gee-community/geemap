@@ -697,7 +697,9 @@ def get_js_examples(out_dir: str = None) -> str:
     return out_dir
 
 
-def get_nb_template(download_latest: Optional[bool]=False, out_file: Optional[str]=None) -> str:
+def get_nb_template(
+    download_latest: Optional[bool] = False, out_file: Optional[str] = None
+) -> str:
     """Get the Earth Engine Jupyter notebook template.
 
     Args:
@@ -782,10 +784,10 @@ def template_footer(in_template: str) -> list:
 
 def py_to_ipynb(
     in_file: str,
-    template_file: str=None,
-    out_file: Optional[str]=None,
-    github_username: Optional[str]=None,
-    github_repo: Optional[str]=None,
+    template_file: str = None,
+    out_file: Optional[str] = None,
+    github_username: Optional[str] = None,
+    github_repo: Optional[str] = None,
 ) -> str:
     """Converts Earth Engine Python script to Jupyter notebook.
 
@@ -865,7 +867,11 @@ def py_to_ipynb(
 
 
 def py_to_ipynb_dir(
-    in_dir, template_file: bool=None, out_dir: str=None, github_username: str=None, github_repo: str=None
+    in_dir,
+    template_file: bool = None,
+    out_dir: str = None,
+    github_username: str = None,
+    github_repo: str = None,
 ) -> None:
     """Converts Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
 
@@ -937,7 +943,11 @@ def execute_notebook_dir(in_dir: str) -> None:
             execute_notebook(in_file)
 
 
-def update_nb_header(in_file: str, github_username: Optional[str]=None, github_repo: Optional[str]=None) -> None:
+def update_nb_header(
+    in_file: str,
+    github_username: Optional[str] = None,
+    github_repo: Optional[str] = None,
+) -> None:
     """Updates notebook header (binder and Google Colab URLs).
 
     Args:
@@ -991,7 +1001,11 @@ def update_nb_header(in_file: str, github_username: Optional[str]=None, github_r
             f.writelines(output_lines)
 
 
-def update_nb_header_dir(in_dir: str, github_username: Optional[str]=None, github_repo: Optional[str]=None) -> None:
+def update_nb_header_dir(
+    in_dir: str,
+    github_username: Optional[str] = None,
+    github_repo: Optional[str] = None,
+) -> None:
     """Updates header (binder and Google Colab URLs) of all notebooks in a folder .
 
     Args:
@@ -1057,7 +1071,7 @@ def update_nb_header_dir(in_dir: str, github_username: Optional[str]=None, githu
 #     print('Data downloaded to: {}'.format(final_path))
 
 
-def download_gee_app(url: str, out_file: Optional[str]=None) -> None:
+def download_gee_app(url: str, out_file: Optional[str] = None) -> None:
     """Downloads JavaScript source code from a GEE App
 
     Args:

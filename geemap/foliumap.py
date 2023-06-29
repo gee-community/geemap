@@ -2886,7 +2886,9 @@ class Map(folium.Map):
 
         self.add_html(text, position=position, **kwargs)
 
-    def to_gradio(self, width: Optional[str]="100%", height: Optional[str]="500px", **kwargs) -> None:
+    def to_gradio(
+        self, width: Optional[str] = "100%", height: Optional[str] = "500px", **kwargs
+    ) -> None:
         """Converts the map to an HTML string that can be used in Gradio. Removes unsupported elements, such as
             attribution and any code blocks containing functions. See https://github.com/gradio-app/gradio/issues/3190
 
@@ -2952,9 +2954,9 @@ class Map(folium.Map):
         right_ts: Any,
         left_names: Any,
         right_names: Any,
-        left_vis: dict[Any, Any]={},
-        right_vis: dict[Any, Any]={},
-        width: str="130px",
+        left_vis: dict[Any, Any] = {},
+        right_vis: dict[Any, Any] = {},
+        width: str = "130px",
         **kwargs,
     ):
         print("The folium plotting backend does not support this function.")
@@ -2962,15 +2964,15 @@ class Map(folium.Map):
     def add_time_slider(
         self,
         ee_object: Any,
-        vis_params: dict={},
-        region: Any=None,
-        layer_name: str="Time series",
-        labels: Any =None,
-        time_interval: int=1,
-        position: str="bottomright",
-        slider_length: str="150px",
-        date_format: str="YYYY-MM-dd",
-        opacity: float=1.0,
+        vis_params: dict = {},
+        region: Any = None,
+        layer_name: str = "Time series",
+        labels: Any = None,
+        time_interval: int = 1,
+        position: str = "bottomright",
+        slider_length: str = "150px",
+        date_format: str = "YYYY-MM-dd",
+        opacity: float = 1.0,
         **kwargs,
     ):
         print("The folium plotting backend does not support this function.")
@@ -3219,7 +3221,12 @@ def delete_dp_reports():
 
 
 def ee_tile_layer(
-    ee_object: Any, vis_params: dict[Any, Any]={}, name: str="Layer untitled", shown: bool=True, opacity: float=1.0, **kwargs: Any
+    ee_object: Any,
+    vis_params: dict[Any, Any] = {},
+    name: str = "Layer untitled",
+    shown: bool = True,
+    opacity: float = 1.0,
+    **kwargs: Any,
 ) -> None:
     """Converts and Earth Engine layer to ipyleaflet TileLayer.
 

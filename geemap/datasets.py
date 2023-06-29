@@ -26,7 +26,7 @@ def get_data_csv() -> str:
     return data_csv
 
 
-def update_data_list(out_dir: Optional[str]=".") -> None:
+def update_data_list(out_dir: Optional[str] = ".") -> None:
     """Updates the Earth Engine Data Catalog dataset list.
 
     Args:
@@ -168,7 +168,7 @@ def get_data_dict() -> dict:
     return data_dict
 
 
-def get_metadata(asset_id: str, source: str ="ee") -> None:
+def get_metadata(asset_id: str, source: str = "ee") -> None:
     """Gets metadata about an Earth Engine asset.
 
     Args:

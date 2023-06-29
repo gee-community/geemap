@@ -2649,17 +2649,17 @@ def ee_export_image_to_drive(
 
 def ee_export_image_to_asset(
     image,
-    description="myExportImageTask",
-    assetId=None,
-    pyramidingPolicy=None,
-    dimensions=None,
-    region=None,
-    scale=None,
-    crs=None,
-    crsTransform=None,
-    maxPixels=None,
-    **kwargs,
-):
+    description: str = "myExportImageTask",
+    assetId: str = None,
+    pyramidingPolicy: dict[str, str] = None,
+    dimensions: Union[str, str] = None,
+    region: Union[str, list[list[float]]] = None,
+    scale: int = None,
+    crs: str = None,
+    crsTransform: str = None,
+    maxPixels: int = None,
+    **kwargs: Any,
+) -> None:
     """Creates a task to export an EE Image to an EE Asset.
 
     Args:
@@ -2724,22 +2724,22 @@ def ee_export_image_to_asset(
 
 def ee_export_image_to_cloud_storage(
     image,
-    description="myExportImageTask",
-    bucket=None,
-    fileNamePrefix=None,
-    dimensions=None,
-    region=None,
-    scale=None,
-    crs=None,
-    crsTransform=None,
-    maxPixels=None,
-    shardSize=None,
-    fileDimensions=None,
-    skipEmptyTiles=None,
-    fileFormat=None,
-    formatOptions=None,
-    **kwargs,
-):
+    description: str = "myExportImageTask",
+    bucket: str = None,
+    fileNamePrefix: str = None,
+    dimensions: Union[str, int] = None,
+    region: Union[str, list[list[float]]] = None,
+    scale: int = None,
+    crs: str = None,
+    crsTransform: str = None,
+    maxPixels: int = None,
+    shardSize: int = None,
+    fileDimensions: Union[int, tuple[int, int]] = None,
+    skipEmptyTiles: bool = None,
+    fileFormat: str = None,
+    formatOptions: dict[str, Any] = None,
+    **kwargs: Any,
+) -> None:
     """Creates a task to export an EE Image to Google Cloud Storage.
 
     Args:
@@ -2812,22 +2812,22 @@ def ee_export_image_to_cloud_storage(
 
 def ee_export_image_collection_to_drive(
     ee_object,
-    descriptions=None,
-    folder=None,
-    fileNamePrefix=None,
-    dimensions=None,
-    region=None,
-    scale=None,
-    crs=None,
-    crsTransform=None,
-    maxPixels=None,
-    shardSize=None,
-    fileDimensions=None,
-    skipEmptyTiles=None,
-    fileFormat=None,
-    formatOptions=None,
-    **kwargs,
-):
+    descriptions: Optional[list[str]] = None,
+    folder: Optional[str] = None,
+    fileNamePrefix: Optional[str] = None,
+    dimensions: Optional[Union[int, str]] = None,
+    region: Optional[Union[str, list[list[float]]]] = None,
+    scale: Optional[str] = None,
+    crs: Optional[str] = None,
+    crsTransform: Optional[str] = None,
+    maxPixels: Optional[int] = None,
+    shardSize: Optional[int] = None,
+    fileDimensions: Optional[Union[int, tuple[int, int]]] = None,
+    skipEmptyTiles: Optional[bool] = None,
+    fileFormat: Optional[str] = None,
+    formatOptions: Optional[dict[str, Any]] = None,
+    **kwargs: Any,
+) -> None:
     """Creates a batch task to export an ImageCollection as raster images to Google Drive.
 
     Args:
@@ -2923,17 +2923,17 @@ def ee_export_image_collection_to_drive(
 
 def ee_export_image_collection_to_asset(
     ee_object,
-    descriptions=None,
-    assetIds=None,
-    pyramidingPolicy=None,
-    dimensions=None,
-    region=None,
-    scale=None,
-    crs=None,
-    crsTransform=None,
-    maxPixels=None,
-    **kwargs,
-):
+    descriptions: Optional[list[str]] = None,
+    assetIds: Optional[list[str]] = None,
+    pyramidingPolicy: Optional[dict[str, str]] = None,
+    dimensions: Optional[Union[int, str]] = None,
+    region: Optional[Union[list[list[float]], list]] = None,
+    scale: Optional[float] = None,
+    crs: Optional[str] = None,
+    crsTransform: Optional[str] = None,
+    maxPixels: Optional[int] = None,
+    **kwargs: Any,
+) -> None:
     """Creates a batch task to export an ImageCollection as raster images to Google Drive.
 
     Args:
@@ -3015,22 +3015,22 @@ def ee_export_image_collection_to_asset(
 
 def ee_export_image_collection_to_cloud_storage(
     ee_object,
-    descriptions=None,
-    bucket=None,
-    fileNamePrefix=None,
-    dimensions=None,
-    region=None,
-    scale=None,
-    crs=None,
-    crsTransform=None,
-    maxPixels=None,
-    shardSize=None,
-    fileDimensions=None,
-    skipEmptyTiles=None,
-    fileFormat=None,
-    formatOptions=None,
-    **kwargs,
-):
+    descriptions: Optional[list[str]] = None,
+    bucket: Optional[str] = None,
+    fileNamePrefix: Optional[str] = None,
+    dimensions: Optional[Union[int, str]] = None,
+    region: Optional[Union[list[list[float]], str]] = None,
+    scale: Optional[float] = None,
+    crs: Optional[str] = None,
+    crsTransform: Optional[str] = None,
+    maxPixels: Optional[int] = None,
+    shardSize: Optional[int] = None,
+    fileDimensions: Optional[Union[int, tuple[int, int]]] = None,
+    skipEmptyTiles: Optional[bool] = None,
+    fileFormat: Optional[str] = None,
+    formatOptions: Optional[dict[str, str]] = None,
+    **kwargs: Any,
+) -> None:
     """Creates a batch task to export an ImageCollection as raster images to Google Drive.
 
     Args:
@@ -3124,15 +3124,15 @@ def ee_export_image_collection_to_cloud_storage(
 
 def get_image_thumbnail(
     ee_object,
-    out_img,
-    vis_params,
-    dimensions=500,
-    region=None,
-    format="jpg",
-    crs="EPSG:3857",
-    timeout=300,
-    proxies=None,
-):
+    out_img: str,
+    vis_params: dict[str, Union[str, int, float]],
+    dimensions: Optional[int] = 500,
+    region: Optional[Union[str, list]] = None,
+    format: str = "jpg",
+    crs: str = "EPSG:3857",
+    timeout: int = 300,
+    proxies: Optional[dict[str, str]] = None,
+) -> None:
     """Download a thumbnail for an ee.Image.
 
     Args:
@@ -3186,16 +3186,16 @@ def get_image_thumbnail(
 
 def get_image_collection_thumbnails(
     ee_object,
-    out_dir,
-    vis_params,
-    dimensions=500,
-    region=None,
-    format="jpg",
-    names=None,
-    verbose=True,
-    timeout=300,
-    proxies=None,
-):
+    out_dir: str,
+    vis_params: dict[str, Union[str, int, float]],
+    dimensions: Union[int, str] = 500,
+    region: Optional[Union[str, list]] = None,
+    format: str = "jpg",
+    names: Optional[list[str]] = None,
+    verbose: bool = True,
+    timeout: int = 300,
+    proxies: Optional[dict[str, str]] = None,
+) -> None:
     """Download thumbnails for all images in an ImageCollection.
 
     Args:
@@ -3259,7 +3259,13 @@ def get_image_collection_thumbnails(
         print(e)
 
 
-def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat"):
+def netcdf_to_ee(
+    nc_file: str,
+    var_names: Union[str, list],
+    band_names: Optional[list] = None,
+    lon: Optional[str] = "lon",
+    lat: Optional[str] = "lat",
+):
     """
     Creates an ee.Image from netCDF variables band_names that are read from nc_file. Currently only supports variables in a regular longitude/latitude grid (EPSG:4326).
 
@@ -3351,7 +3357,13 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat"):
         print(e)
 
 
-def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_names=None):
+def numpy_to_ee(
+    np_array,
+    crs: str = None,
+    transform: list = None,
+    transformWkt: str = None,
+    band_names: Optional[list, str] = None,
+):
     """
     Creates an ee.Image from a 3D numpy array where each 2D numpy slice is added to a band, and a geospatial transform that indicates where to put the data. If the np_array is already 2D only, then it is only a one-band image.
 
@@ -3417,7 +3429,11 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
 
 
 def ee_to_numpy(
-    ee_object, bands=None, region=None, properties=None, default_value=None
+    ee_object,
+    bands: Optional[list[str]] = None,
+    region: Optional[ee.Geometry] = None,
+    properties: Optional[str] = None,
+    default_value: Optional[float] = None,
 ):
     """Extracts a rectangular region of pixels from an image into a 2D numpy array per band.
 
@@ -3463,7 +3479,13 @@ def ee_to_numpy(
         print(e)
 
 
-def download_ee_video(collection, video_args, out_gif, timeout=300, proxies=None):
+def download_ee_video(
+    collection,
+    video_args: dict[str, object],
+    out_gif: str,
+    timeout: int = 300,
+    proxies: Optional[dict[str, str]] = None,
+) -> None:
     """Downloads a video thumbnail as a GIF image from Earth Engine.
 
     Args:
@@ -3517,7 +3539,7 @@ def download_ee_video(collection, video_args, out_gif, timeout=300, proxies=None
         print(e)
 
 
-def screen_capture(filename, monitor=1):
+def screen_capture(filename: str, monitor: int = 1) -> Optional[str]:
     """Takes a full screenshot of the selected monitor.
 
     Args:
@@ -3551,7 +3573,7 @@ def screen_capture(filename, monitor=1):
 ########################################
 
 
-def api_docs():
+def api_docs() -> None:
     """Open a browser and navigate to the geemap API documentation."""
     import webbrowser
 
@@ -3559,7 +3581,7 @@ def api_docs():
     webbrowser.open_new_tab(url)
 
 
-def show_youtube(id="h0pz3S6Tvx0"):
+def show_youtube(id: str = "h0pz3S6Tvx0") -> None:
     """Displays a YouTube video within Jupyter notebooks.
 
     Args:
@@ -3583,20 +3605,20 @@ def show_youtube(id="h0pz3S6Tvx0"):
 
 
 def create_colorbar(
-    width=150,
-    height=30,
-    palette=["blue", "green", "red"],
-    add_ticks=True,
-    add_labels=True,
-    labels=None,
-    vertical=False,
-    out_file=None,
-    font_type="arial.ttf",
-    font_size=12,
-    font_color="black",
-    add_outline=True,
-    outline_color="black",
-):
+    width: int = 150,
+    height: int = 30,
+    palette: list[Union[str, tuple[int, int, int]]] = ["blue", "green", "red"],
+    add_ticks: bool = True,
+    add_labels: bool = True,
+    labels: Optional[list[str]] = None,
+    vertical: bool = False,
+    out_file: Optional[str] = None,
+    font_type: str = "arial.ttf",
+    font_size: int = 12,
+    font_color: str = "black",
+    add_outline: bool = True,
+    outline_color: str = "black",
+) -> str:
     """Creates a colorbar based on the provided palette.
 
     Args:
@@ -3797,26 +3819,26 @@ def create_colorbar(
 
 
 def save_colorbar(
-    out_fig=None,
-    width=4.0,
-    height=0.3,
-    vmin=0,
-    vmax=1.0,
-    palette=None,
-    vis_params=None,
-    cmap="gray",
-    discrete=False,
-    label=None,
-    label_size=10,
-    label_weight="normal",
-    tick_size=8,
-    bg_color="white",
-    orientation="horizontal",
-    dpi="figure",
-    transparent=False,
-    show_colorbar=True,
+    out_fig: Optional[str] = None,
+    width: float = 4.0,
+    height: float = 0.3,
+    vmin: float = 0,
+    vmax: float = 1.0,
+    palette: Optional[Union[str, list[str]]] = None,
+    vis_params: Optional[dict[str, Union[str, int, float]]] = None,
+    cmap: str = "gray",
+    discrete: bool = False,
+    label: Optional[str] = None,
+    label_size: int = 10,
+    label_weight: str = "normal",
+    tick_size: int = 8,
+    bg_color: str = "white",
+    orientation: str = "horizontal",
+    dpi: Union[float, str] = "figure",
+    transparent: bool = False,
+    show_colorbar: bool = True,
     **kwargs,
-):
+) -> str:
     """Create a standalone colorbar and save it as an image.
 
     Args:
@@ -3924,7 +3946,9 @@ def save_colorbar(
     return out_fig
 
 
-def minimum_bounding_box(geojson):
+def minimum_bounding_box(
+    geojson: dict,
+) -> tuple[tuple[float, float], tuple[float, float]]:
     """Gets the minimum bounding box for a geojson polygon.
 
     Args:
@@ -3933,7 +3957,7 @@ def minimum_bounding_box(geojson):
     Returns:
         tuple: Returns a tuple containing the minimum bounding box in the format of (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -120)).
     """
-    coordinates = []
+    coordinates: list[tuple[float, float]] = []
     try:
         if "geometry" in geojson.keys():
             coordinates = geojson["geometry"]["coordinates"][0]
@@ -3951,7 +3975,7 @@ def minimum_bounding_box(geojson):
         raise Exception(e)
 
 
-def geocode(location, max_rows=10, reverse=False):
+def geocode(location: str, max_rows: int = 10, reverse: bool = False) -> list[str]:
     """Search location by address and lat/lon coordinates.
 
     Args:
@@ -4015,7 +4039,7 @@ def geocode(location, max_rows=10, reverse=False):
             return None
 
 
-def is_latlon_valid(location):
+def is_latlon_valid(location: str) -> bool:
     """Checks whether a pair of coordinates is valid.
 
     Args:
@@ -4046,7 +4070,7 @@ def is_latlon_valid(location):
         return False
 
 
-def latlon_from_text(location):
+def latlon_from_text(location: str) -> Optional[tuple[float, float]]:
     """Extracts latlon from text.
 
     Args:
@@ -4082,12 +4106,12 @@ def latlon_from_text(location):
 
 
 def search_ee_data(
-    keywords,
-    regex=False,
-    source="ee",
-    types=None,
-    keys=["id", "provider", "tags", "title"],
-):
+    keywords: Union[str, list[str]],
+    regex: bool = False,
+    source: str = "ee",
+    types: list[str] = None,
+    keys: list[str] = ["id", "provider", "tags", "title"],
+) -> list[str]:
     """Searches Earth Engine data catalog.
 
     Args:
@@ -4163,7 +4187,9 @@ def search_ee_data(
         print(e)
 
 
-def ee_data_thumbnail(asset_id, timeout=300, proxies=None):
+def ee_data_thumbnail(
+    asset_id: str, timeout: Optional[int] = 300, proxies: Optional[dict] = None
+) -> str:
     """Retrieves the thumbnail URL of an Earth Engine asset.
 
     Args:
@@ -4203,7 +4229,7 @@ def ee_data_thumbnail(asset_id, timeout=300, proxies=None):
         print(e)
 
 
-def ee_data_html(asset):
+def ee_data_html(asset: dict) -> str:
     """Generates HTML from an asset to be used in the HTML widget.
 
     Args:
@@ -4283,7 +4309,7 @@ def ee_data_html(asset):
         print(e)
 
 
-def create_code_cell(code="", where="below"):
+def create_code_cell(code: Optional[str] = "", where: Optional[str] = "below") -> None:
     """Creates a code cell in the IPython Notebook.
 
     Args:
@@ -4314,7 +4340,11 @@ def create_code_cell(code="", where="below"):
     )
 
 
-def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
+def ee_api_to_csv(
+    outfile: Optional[str] = None,
+    timeout: Optional[int] = 300,
+    proxies: Optional[dict] = None,
+) -> None:
     """Extracts Earth Engine API documentation from https://developers.google.com/earth-engine/api_docs as a csv file.
 
     Args:
@@ -4434,7 +4464,7 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
         print(e)
 
 
-def read_api_csv():
+def read_api_csv() -> dict[str, dict]:
     """Extracts Earth Engine API from a csv file and returns a dictionary containing information about each function.
 
     Returns:
@@ -4526,7 +4556,7 @@ def read_api_csv():
     return api_dict
 
 
-def ee_function_tree(name):
+def ee_function_tree(name: str) -> list[str]:
     """Construct the tree structure based on an Earth Engine function. For example, the function "ee.Algorithms.FMask.matchClouds" will return a list ["ee.Algorithms", "ee.Algorithms.FMask", "ee.Algorithms.FMask.matchClouds"]
 
     Args:
@@ -4551,7 +4581,9 @@ def ee_function_tree(name):
         print("The provided function name is invalid.")
 
 
-def build_api_tree(api_dict, output_widget, layout_width="100%"):
+def build_api_tree(
+    api_dict: dict[str], output_widget, layout_width: str = "100%"
+) -> tuple[dict[str, dict]]:
     """Builds an Earth Engine API tree view.
 
     Args:
@@ -4605,7 +4637,7 @@ def build_api_tree(api_dict, output_widget, layout_width="100%"):
     return tree, tree_dict
 
 
-def search_api_tree(keywords, api_tree):
+def search_api_tree(keywords: str, api_tree: dict[str]):
     """Search Earth Engine API and return functions containing the specified keywords
 
     Args:
@@ -4627,7 +4659,7 @@ def search_api_tree(keywords, api_tree):
     return sub_tree
 
 
-def ee_search(asset_limit=100):
+def ee_search(asset_limit: Optional[int] = 100) -> None:
     """Search Earth Engine API and user assets. If you received a warning (IOPub message rate exceeded) in Jupyter notebook, you can relaunch Jupyter notebook using the following command:
         jupyter notebook --NotebookApp.iopub_msg_rate_limit=10000
 
@@ -4764,7 +4796,7 @@ def ee_search(asset_limit=100):
     search_box.on_submit(search_box_callback)
 
 
-def ee_user_id():
+def ee_user_id() -> str:
     """Gets Earth Engine account user id.
 
     Returns:
@@ -4896,7 +4928,7 @@ def build_asset_tree(limit=100):
     return tree, info_widget, tree_dict
 
 
-def build_repo_tree(out_dir=None, name="gee_repos"):
+def build_repo_tree(out_dir: str = None, name: Optional[str] = "gee_repos") -> tuple:
     """Builds a repo tree for GEE account.
 
     Args:
@@ -5006,13 +5038,13 @@ def build_repo_tree(out_dir=None, name="gee_repos"):
 
 
 def file_browser(
-    in_dir=None,
-    show_hidden=False,
-    add_root_node=True,
-    search_description=None,
-    use_import=False,
-    return_sep_widgets=False,
-    node_icon="file",
+    in_dir: Optional[str] = None,
+    show_hidden: bool = False,
+    add_root_node: bool = True,
+    search_description: Optional[str] = None,
+    use_import: bool = False,
+    return_sep_widgets: bool = False,
+    node_icon: str = "file",
 ):
     """Creates a simple file browser and text editor.
 
@@ -5238,7 +5270,9 @@ def file_browser(
 ########################################
 
 
-def date_sequence(start, end, unit, date_format="YYYY-MM-dd"):
+def date_sequence(
+    start: str, end: str, unit: str, date_format: Optional[str] = "YYYY-MM-dd"
+):
     """Creates a date sequence.
 
     Args:
@@ -5251,7 +5285,7 @@ def date_sequence(start, end, unit, date_format="YYYY-MM-dd"):
         ee.List: A list of date sequence.
     """
 
-    def get_quarter(d):
+    def get_quarter(d) -> str:
         return str((int(d[5:7]) - 1) // 3 * 3 + 1).zfill(2)
 
     def get_monday(d):
@@ -5289,7 +5323,7 @@ def date_sequence(start, end, unit, date_format="YYYY-MM-dd"):
     return date_seq
 
 
-def legend_from_ee(ee_class_table):
+def legend_from_ee(ee_class_table: str) -> dict:
     """Extract legend from an Earth Engine class table on the Earth Engine Data Catalog page
     such as https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1
 
@@ -5320,7 +5354,7 @@ def legend_from_ee(ee_class_table):
         print(e)
 
 
-def vis_to_qml(ee_class_table, out_qml):
+def vis_to_qml(ee_class_table: str, out_qml: str) -> None:
     """Create a QGIS Layer Style (.qml) based on an Earth Engine class table from the Earth Engine Data Catalog page
     such as https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1
 
@@ -5371,7 +5405,7 @@ def vis_to_qml(ee_class_table, out_qml):
         print(e)
 
 
-def create_nlcd_qml(out_qml):
+def create_nlcd_qml(out_qml: str) -> None:
     """Create a QGIS Layer Style (.qml) for NLCD data
 
     Args:
@@ -5391,7 +5425,7 @@ def create_nlcd_qml(out_qml):
     shutil.copyfile(qml_template, out_qml)
 
 
-def load_GeoTIFF(URL):
+def load_GeoTIFF(URL: str):
     """Loads a Cloud Optimized GeoTIFF (COG) as an Image. Only Google Cloud Storage is supported. The URL can be one of the following formats:
     Option 1: gs://pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
     Option 2: https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
@@ -5428,7 +5462,7 @@ def load_GeoTIFF(URL):
     return cloud_image
 
 
-def load_GeoTIFFs(URLs):
+def load_GeoTIFFs(URLs: str):
     """Loads a list of Cloud Optimized GeoTIFFs (COG) as an ImageCollection. URLs is a list of URL, which can be one of the following formats:
     Option 1: gs://pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
     Option 2: https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
@@ -5474,13 +5508,13 @@ def load_GeoTIFFs(URLs):
 
 
 def cog_tile(
-    url,
-    bands=None,
-    titiler_endpoint=None,
-    timeout=300,
-    proxies=None,
+    url: str,
+    bands: Optional[str] = None,
+    titiler_endpoint: Optional[str] = None,
+    timeout: Optional[int] = 300,
+    proxies: Optional[dict] = None,
     **kwargs,
-):
+) -> tuple:
     """Get a tile layer from a Cloud Optimized GeoTIFF (COG).
         Source code adapted from https://developmentseed.org/titiler/examples/notebooks/Working_with_CloudOptimizedGeoTIFF_simple/
 
@@ -5538,15 +5572,15 @@ def cog_tile(
 
 
 def cog_mosaic(
-    links,
-    titiler_endpoint=None,
-    username="anonymous",
+    links: list,
+    titiler_endpoint: Optional[str] = None,
+    username: str = "anonymous",
     layername=None,
-    overwrite=False,
-    verbose=True,
-    timeout=300,
+    overwrite: Optional[bool] = False,
+    verbose: Optional[bool] = True,
+    timeout: Optional[int] = 300,
     **kwargs,
-):
+) -> str:
     """Creates a COG mosaic from a list of COG URLs.
 
     Args:
@@ -5606,15 +5640,15 @@ def cog_mosaic(
 
 
 def cog_mosaic_from_file(
-    filepath,
-    skip_rows=0,
-    titiler_endpoint=None,
-    username="anonymous",
-    layername=None,
-    overwrite=False,
-    verbose=True,
+    filepath: str,
+    skip_rows: int = 0,
+    titiler_endpoint: Optional[str] = None,
+    username: str = "anonymous",
+    layername: Optional[str] = None,
+    overwrite: bool = False,
+    verbose: bool = True,
     **kwargs,
-):
+) -> str:
     """Creates a COG mosaic from a csv/txt file stored locally for through HTTP URL.
 
     Args:
@@ -5650,7 +5684,9 @@ def cog_mosaic_from_file(
     return mosaic
 
 
-def cog_bounds(url, titiler_endpoint=None, timeout=300):
+def cog_bounds(
+    url: str, titiler_endpoint: Optional[str] = None, timeout: Optional[int] = 300
+) -> list:
     """Get the bounding box of a Cloud Optimized GeoTIFF (COG).
 
     Args:
@@ -5676,7 +5712,7 @@ def cog_bounds(url, titiler_endpoint=None, timeout=300):
     return bounds
 
 
-def cog_center(url, titiler_endpoint=None):
+def cog_center(url: str, titiler_endpoint: Optional[str] = None) -> tuple:
     """Get the centroid of a Cloud Optimized GeoTIFF (COG).
 
     Args:
@@ -5694,7 +5730,9 @@ def cog_center(url, titiler_endpoint=None):
     return center
 
 
-def cog_bands(url, titiler_endpoint=None, timeout=300):
+def cog_bands(
+    url: str, titiler_endpoint: Optional[str] = None, timeout: Optional[int] = 300
+) -> list:
     """Get band names of a Cloud Optimized GeoTIFF (COG).
 
     Args:
@@ -5745,7 +5783,7 @@ def cog_stats(url, titiler_endpoint=None, timeout=300):
     return r
 
 
-def cog_info(url, titiler_endpoint=None, return_geojson=False, timeout=300):
+def cog_info(url, titiler_endpoint=None, return_geojson=False, timeout=300) -> list:
     """Get band statistics of a Cloud Optimized GeoTIFF (COG).
 
     Args:
@@ -5775,14 +5813,14 @@ def cog_info(url, titiler_endpoint=None, return_geojson=False, timeout=300):
 
 
 def cog_pixel_value(
-    lon,
-    lat,
-    url,
-    bidx=None,
-    titiler_endpoint=None,
-    timeout=300,
+    lon: float,
+    lat: float,
+    url: str,
+    bidx: Optional[str] = None,
+    titiler_endpoint: Optional[str] = None,
+    timeout: Optional[int] = 300,
     **kwargs,
-):
+) -> list:
     """Get pixel value from COG.
 
     Args:
@@ -5825,15 +5863,15 @@ def cog_pixel_value(
 
 
 def stac_tile(
-    url=None,
-    collection=None,
-    item=None,
-    assets=None,
-    bands=None,
-    titiler_endpoint=None,
-    timeout=300,
+    url: str = None,
+    collection: str = None,
+    item: str = None,
+    assets: Union[str, list[str]] = None,
+    bands: Optional[list[str]] = None,
+    titiler_endpoint: Optional[str] = None,
+    timeout: int = 300,
     **kwargs,
-):
+) -> str:
     """Get a tile layer from a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
@@ -5974,8 +6012,13 @@ def stac_tile(
 
 
 def stac_bounds(
-    url=None, collection=None, item=None, titiler_endpoint=None, timeout=300, **kwargs
-):
+    url: str = None,
+    collection: str = None,
+    item: str = None,
+    titiler_endpoint: Optional[str] = None,
+    timeout: Optional[int] = 300,
+    **kwargs: Any,
+) -> list:
     """Get the bounding box of a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
@@ -6017,7 +6060,13 @@ def stac_bounds(
     return bounds
 
 
-def stac_center(url=None, collection=None, item=None, titiler_endpoint=None, **kwargs):
+def stac_center(
+    url: str = None,
+    collection: str = None,
+    item: str = None,
+    titiler_endpoint: Optional[str] = None,
+    **kwargs,
+) -> tuple:
     """Get the centroid of a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
@@ -6041,8 +6090,13 @@ def stac_center(url=None, collection=None, item=None, titiler_endpoint=None, **k
 
 
 def stac_bands(
-    url=None, collection=None, item=None, titiler_endpoint=None, timeout=300, **kwargs
-):
+    url: str = None,
+    collection: str = None,
+    item: str = None,
+    titiler_endpoint: Optional[int] = None,
+    timeout: Optional[int] = 300,
+    **kwargs: Any,
+) -> list:
     """Get band names of a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
@@ -6084,14 +6138,14 @@ def stac_bands(
 
 
 def stac_stats(
-    url=None,
-    collection=None,
-    item=None,
-    assets=None,
-    titiler_endpoint=None,
-    timeout=300,
+    url: str = None,
+    collection: str = None,
+    item: str = None,
+    assets: Union[str, list] = None,
+    titiler_endpoint: Optional[str] = None,
+    timeout: Optional[int] = 300,
     **kwargs,
-):
+) -> list:
     """Get band statistics of a STAC item.
 
     Args:
@@ -6136,14 +6190,14 @@ def stac_stats(
 
 
 def stac_info(
-    url=None,
-    collection=None,
-    item=None,
-    assets=None,
-    titiler_endpoint=None,
-    timeout=300,
-    **kwargs,
-):
+    url: str = None,
+    collection: str = None,
+    item: str = None,
+    assets: Union[str, list] = None,
+    titiler_endpoint: Optional[str] = None,
+    timeout: int = 300,
+    **kwargs: Any,
+) -> list:
     """Get band info of a STAC item.
 
     Args:
@@ -6188,14 +6242,14 @@ def stac_info(
 
 
 def stac_info_geojson(
-    url=None,
-    collection=None,
-    item=None,
-    assets=None,
-    titiler_endpoint=None,
-    timeout=300,
-    **kwargs,
-):
+    url: str = None,
+    collection: str = None,
+    item: str = None,
+    assets: Union[str, list] = None,
+    titiler_endpoint: Optional[str] = None,
+    timeout: int = 300,
+    **kwargs: Any,
+) -> list:
     """Get band info of a STAC item.
 
     Args:
@@ -6240,8 +6294,13 @@ def stac_info_geojson(
 
 
 def stac_assets(
-    url=None, collection=None, item=None, titiler_endpoint=None, timeout=300, **kwargs
-):
+    url: str = None,
+    collection: str = None,
+    item: str = None,
+    titiler_endpoint: Optional[str] = None,
+    timeout: int = 300,
+    **kwargs: Any,
+) -> list:
     """Get all assets of a STAC item.
 
     Args:
@@ -6283,17 +6342,17 @@ def stac_assets(
 
 
 def stac_pixel_value(
-    lon,
-    lat,
-    url=None,
-    collection=None,
-    item=None,
-    assets=None,
-    titiler_endpoint=None,
-    verbose=True,
-    timeout=300,
-    **kwargs,
-):
+    lon: float,
+    lat: float,
+    url: str = None,
+    collection: str = None,
+    item: str = None,
+    assets: Union[str, list] = None,
+    titiler_endpoint: Optional[str] = None,
+    verbose: bool = True,
+    timeout: int = 300,
+    **kwargs: Any,
+) -> list:
     """Get pixel value from STAC assets.
 
     Args:
@@ -6358,24 +6417,22 @@ def stac_pixel_value(
 
 
 def local_tile_pixel_value(
-    lon,
-    lat,
+    lon: float,
+    lat: float,
     tile_client,
-    verbose=True,
+    verbose: bool = True,
     **kwargs,
-):
+) -> list:
     """Get pixel value from COG.
 
     Args:
         lon (float): Longitude of the pixel.
         lat (float): Latitude of the pixel.
-        url (str): HTTP URL to a COG, e.g., 'https://opendata.digitalglobe.com/events/california-fire-2020/pre-event/2018-02-16/pine-gulch-fire20/1030010076004E00.tif'
-        bidx (str, optional): Dataset band indexes (e.g bidx=1, bidx=1&bidx=2&bidx=3). Defaults to None.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        tile_client: The tile client object.
         verbose (bool, optional): Print status messages. Defaults to True.
 
     Returns:
-        list: A dictionary of band info.
+        list: A list of dictionaries containing band information.
     """
 
     r = tile_client.pixel(lat, lon, units="EPSG:4326", **kwargs)
@@ -6388,10 +6445,10 @@ def local_tile_pixel_value(
 
 
 def local_tile_vmin_vmax(
-    source,
-    bands=None,
+    source: str,
+    bands: Union[str, list[str]] = None,
     **kwargs,
-):
+) -> tuple[float, float]:
     """Get vmin and vmax from COG.
 
     Args:
@@ -6433,7 +6490,7 @@ def local_tile_vmin_vmax(
     return vmin, vmax
 
 
-def local_tile_bands(source):
+def local_tile_bands(source: str) -> list:
     """Get band names from COG.
 
     Args:
@@ -6456,7 +6513,7 @@ def local_tile_bands(source):
     return bandnames
 
 
-def bbox_to_geojson(bounds):
+def bbox_to_geojson(bounds: str) -> dict:
     """Convert coordinates of a bounding box to a geojson.
 
     Args:
@@ -6482,7 +6539,7 @@ def bbox_to_geojson(bounds):
     }
 
 
-def coords_to_geojson(coords):
+def coords_to_geojson(coords: list) -> dict:
     """Convert a list of bbox coordinates representing [left, bottom, right, top] to geojson FeatureCollection.
 
     Args:
@@ -6498,7 +6555,7 @@ def coords_to_geojson(coords):
     return {"type": "FeatureCollection", "features": features}
 
 
-def explode(coords):
+def explode(coords: list) -> None:
     """Explode a GeoJSON geometry's coordinates object and yield
     coordinate tuples. As long as the input is conforming, the type of
     the geometry doesn't matter.  From Fiona 1.4.8
@@ -6519,7 +6576,9 @@ def explode(coords):
                 yield f
 
 
-def get_bounds(geometry, north_up=True, transform=None):
+def get_bounds(
+    geometry: Union[dict, list[dict]], north_up: bool = True, transform: Any = None
+) -> list:
     """Bounding box of a GeoJSON geometry, GeometryCollection, or FeatureCollection.
     left, bottom, right, top
     *not* xmin, ymin, xmax, ymax
@@ -6604,7 +6663,9 @@ def get_bounds(geometry, north_up=True, transform=None):
     )
 
 
-def get_center(geometry, north_up=True, transform=None):
+def get_center(
+    geometry: dict, north_up: bool = True, transform: Optional[Any] = None
+) -> list[float, float]:
     """Get the centroid of a GeoJSON.
 
     Args:
@@ -6620,7 +6681,7 @@ def get_center(geometry, north_up=True, transform=None):
     return center
 
 
-def image_props(img, date_format="YYYY-MM-dd"):
+def image_props(img: ee.Image, date_format: Optional[str] = "YYYY-MM-dd") -> dict:
     """Gets image properties.
 
     Args:
@@ -6676,7 +6737,9 @@ def image_props(img, date_format="YYYY-MM-dd"):
     return props
 
 
-def image_stats(img, region=None, scale=None):
+def image_stats(
+    img: ee.Image, region: Optional[Any] = None, scale: Optional[float] = None
+) -> ee.Dictionary:
     """Gets image descriptive statistics.
 
     Args:
@@ -6707,7 +6770,7 @@ def image_stats(img, region=None, scale=None):
     return stats
 
 
-def adjust_longitude(in_fc):
+def adjust_longitude(in_fc: dict) -> dict:
     """Adjusts longitude if it is less than -180 or greater than 180.
 
     Args:
@@ -6787,19 +6850,19 @@ def adjust_longitude(in_fc):
 
 
 def zonal_stats(
-    in_value_raster,
-    in_zone_vector,
-    out_file_path=None,
-    statistics_type="MEAN",
-    scale=None,
-    crs=None,
-    tile_scale=1.0,
-    return_fc=False,
-    verbose=True,
-    timeout=300,
-    proxies=None,
-    **kwargs,
-):
+    in_value_raster: Union[ee.Image, ee.ImageCollection],
+    in_zone_vector: ee.FeatureCollection,
+    out_file_path: Optional[str] = None,
+    statistics_type: str = "MEAN",
+    scale: Optional[float] = None,
+    crs: Optional[str] = None,
+    tile_scale: float = 1.0,
+    return_fc: bool = False,
+    verbose: bool = True,
+    timeout: int = 300,
+    proxies: Optional[dict] = None,
+    **kwargs: Any,
+) -> None:
     """Summarizes the values of a raster within the zones of another dataset and exports the results as a csv, shp, json, kml, or kmz.
 
     Args:
@@ -6934,24 +6997,24 @@ zonal_statistics = zonal_stats
 
 
 def zonal_stats_by_group(
-    in_value_raster,
-    in_zone_vector,
-    out_file_path=None,
-    statistics_type="SUM",
-    decimal_places=0,
-    denominator=1.0,
-    scale=None,
-    crs=None,
-    crs_transform=None,
-    best_effort=True,
-    max_pixels=1e7,
-    tile_scale=1.0,
-    return_fc=False,
-    verbose=True,
-    timeout=300,
-    proxies=None,
-    **kwargs,
-):
+    in_value_raster: Union[ee.Image, ee.ImageCollection],
+    in_zone_vector: ee.FeatureCollection,
+    out_file_path: Optional[str] = None,
+    statistics_type: str = "SUM",
+    decimal_places: int = 0,
+    denominator: float = 1.0,
+    scale: Optional[float] = None,
+    crs: Optional[str] = None,
+    crs_transform: Optional[list] = None,
+    best_effort: bool = True,
+    max_pixels: int = 1e7,
+    tile_scale: float = 1.0,
+    return_fc: bool = False,
+    verbose: bool = True,
+    timeout: int = 300,
+    proxies: Optional[dict] = None,
+    **kwargs: Any,
+) -> None:
     """Summarizes the area or percentage of a raster by group within the zones of another dataset and exports the results as a csv, shp, json, kml, or kmz.
 
     Args:
@@ -7133,7 +7196,7 @@ def zonal_stats_by_group(
 zonal_statistics_by_group = zonal_stats_by_group
 
 
-def vec_area(fc):
+def vec_area(fc: Any) -> ee.FeatureCollection:
     """Calculate the area (m2) of each each feature in a feature collection.
 
     Args:
@@ -7145,7 +7208,7 @@ def vec_area(fc):
     return fc.map(lambda f: f.set({"area_m2": f.area(1).round()}))
 
 
-def vec_area_km2(fc):
+def vec_area_km2(fc: Any) -> ee.FeatureCollection:
     """Calculate the area (km2) of each each feature in a feature collection.
 
     Args:
@@ -7157,7 +7220,7 @@ def vec_area_km2(fc):
     return fc.map(lambda f: f.set({"area_km2": f.area(1).divide(1e6).round()}))
 
 
-def vec_area_mi2(fc):
+def vec_area_mi2(fc: Any) -> ee.FeatureCollection:
     """Calculate the area (square mile) of each each feature in a feature collection.
 
     Args:
@@ -7169,7 +7232,7 @@ def vec_area_mi2(fc):
     return fc.map(lambda f: f.set({"area_mi2": f.area(1).divide(2.59e6).round()}))
 
 
-def vec_area_ha(fc):
+def vec_area_ha(fc: Any) -> ee.FeatureCollection:
     """Calculate the area (hectare) of each each feature in a feature collection.
 
     Args:
@@ -7181,7 +7244,7 @@ def vec_area_ha(fc):
     return fc.map(lambda f: f.set({"area_ha": f.area(1).divide(1e4).round()}))
 
 
-def remove_geometry(fc):
+def remove_geometry(fc: Any) -> Any:
     """Remove .geo coordinate field from a FeatureCollection
 
     Args:
@@ -7193,7 +7256,7 @@ def remove_geometry(fc):
     return fc.select([".*"], None, False)
 
 
-def image_cell_size(img):
+def image_cell_size(img: Any) -> float:
     """Retrieves the image cell size (e.g., spatial resolution)
 
     Args:
@@ -7212,7 +7275,7 @@ def image_cell_size(img):
     return scale
 
 
-def image_scale(img):
+def image_scale(img: Any) -> float:
     """Retrieves the image cell size (e.g., spatial resolution)
 
     Args:
@@ -7227,7 +7290,7 @@ def image_scale(img):
     return img.select(0).projection().nominalScale()
 
 
-def image_band_names(img):
+def image_band_names(img: Any) -> ee.List:
     """Gets image band names.
 
     Args:
@@ -7239,7 +7302,7 @@ def image_band_names(img):
     return img.bandNames()
 
 
-def image_date(img, date_format="YYYY-MM-dd"):
+def image_date(img: ee.Image, date_format: Optional[str] = "YYYY-MM-dd") -> str:
     """Retrieves the image acquisition date.
 
     Args:
@@ -7252,7 +7315,9 @@ def image_date(img, date_format="YYYY-MM-dd"):
     return ee.Date(img.get("system:time_start")).format(date_format)
 
 
-def image_dates(img_col, date_format="YYYY-MM-dd"):
+def image_dates(
+    img_col: ee.ImageCollection, date_format: Optional[str] = "YYYY-MM-dd"
+) -> ee.List:
     """Get image dates of all images in an ImageCollection.
 
     Args:
@@ -7267,7 +7332,12 @@ def image_dates(img_col, date_format="YYYY-MM-dd"):
     return new_dates
 
 
-def image_area(img, region=None, scale=None, denominator=1.0):
+def image_area(
+    img: Any,
+    region: Optional[Any] = None,
+    scale: Optional[float] = None,
+    denominator: Optional[float] = 1.0,
+) -> ee.Dictionary:
     """Calculates the area of an image.
 
     Args:
@@ -7300,16 +7370,16 @@ def image_area(img, region=None, scale=None, denominator=1.0):
 
 
 def image_area_by_group(
-    img,
-    groups=None,
-    region=None,
-    scale=None,
-    denominator=1.0,
-    out_csv=None,
-    labels=None,
-    decimal_places=4,
-    verbose=True,
-):
+    img: Any,
+    groups: Optional[Any] = None,
+    region: Optional[Any] = None,
+    scale: Optional[float] = None,
+    denominator: Optional[float] = 1.0,
+    out_csv: Optional[str] = None,
+    labels: Optional[Any] = None,
+    decimal_places: Optional[int] = 4,
+    verbose: bool = True,
+) -> Any:
     """Calculates the area of each class of an image.
 
     Args:
@@ -7360,7 +7430,9 @@ def image_area_by_group(
         return df
 
 
-def image_max_value(img, region=None, scale=None):
+def image_max_value(
+    img: Any, region: Optional[Any] = None, scale: Optional[float] = None
+) -> Any:
     """Retrieves the maximum value of an image.
 
     Args:
@@ -7389,7 +7461,9 @@ def image_max_value(img, region=None, scale=None):
     return max_value
 
 
-def image_min_value(img, region=None, scale=None):
+def image_min_value(
+    img: Any, region: Optional[Any] = None, scale: Optional[float] = None
+) -> Any:
     """Retrieves the minimum value of an image.
 
     Args:
@@ -7418,7 +7492,9 @@ def image_min_value(img, region=None, scale=None):
     return min_value
 
 
-def image_mean_value(img, region=None, scale=None):
+def image_mean_value(
+    img: Any, region: Optional[Any] = None, scale: Optional[float] = None
+) -> Any:
     """Retrieves the mean value of an image.
 
     Args:
@@ -7447,7 +7523,9 @@ def image_mean_value(img, region=None, scale=None):
     return mean_value
 
 
-def image_std_value(img, region=None, scale=None):
+def image_std_value(
+    img: Any, region: Optional[Any] = None, scale: Optional[float] = None
+) -> Any:
     """Retrieves the standard deviation of an image.
 
     Args:
@@ -7476,7 +7554,9 @@ def image_std_value(img, region=None, scale=None):
     return std_value
 
 
-def image_sum_value(img, region=None, scale=None):
+def image_sum_value(
+    img: Any, region: Optional[Any] = None, scale: Optional[float] = None
+) -> Any:
     """Retrieves the sum of an image.
 
     Args:
@@ -7505,7 +7585,13 @@ def image_sum_value(img, region=None, scale=None):
     return sum_value
 
 
-def image_value_list(img, region=None, scale=None, return_hist=False, **kwargs):
+def image_value_list(
+    img: Any,
+    region: Union[Optional[ee.Geometry, ee.FeatureCollection]] = None,
+    scale: Optional[float] = None,
+    return_hist: bool = False,
+    **kwargs,
+) -> Union[ee.List, ee.Dictionary]:
     """Get the unique values of an image.
 
     Args:
@@ -7544,17 +7630,17 @@ def image_value_list(img, region=None, scale=None, return_hist=False, **kwargs):
 
 
 def image_histogram(
-    img,
-    region=None,
-    scale=None,
-    x_label=None,
-    y_label=None,
-    title=None,
-    width=None,
-    height=500,
-    plot_args={},
-    layout_args={},
-    return_df=False,
+    img: Any,
+    region: Union[Optional[ee.Geometry, ee.FeatureCollection]] = None,
+    scale: Optional[float] = None,
+    x_label: Optional[str] = None,
+    y_label: Optional[str] = None,
+    title: Optional[str] = None,
+    width: Optional[int] = None,
+    height: Optional[int] = 500,
+    plot_args: Optional[dict] = {},
+    layout_args: Optional[dict] = {},
+    return_df: bool = False,
     **kwargs,
 ):
     """Create a histogram of an image.
@@ -7614,16 +7700,16 @@ def image_histogram(
 
 
 def image_stats_by_zone(
-    image,
-    zones,
-    out_csv=None,
-    labels=None,
-    region=None,
-    scale=None,
-    reducer="MEAN",
-    bestEffort=True,
+    image: Any,
+    zones: Any,
+    out_csv: Optional[str] = None,
+    labels: Optional[list] = None,
+    region: Union[Optional[ee.Geometry]] = None,
+    scale: Optional[float] = None,
+    reducer: Union[Optional[str]] = "MEAN",
+    bestEffort: bool = True,
     **kwargs,
-):
+) -> Union[str]:
     """Calculate statistics for an image by zone.
 
     Args:
@@ -7711,7 +7797,13 @@ def image_stats_by_zone(
         return df
 
 
-def latitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
+def latitude_grid(
+    step: Optional[float] = 1.0,
+    west: Optional[int] = -180,
+    east: Optional[int] = 180,
+    south: Optional[int] = -85,
+    north: Optional[int] = 85,
+) -> ee.FeatureCollection:
     """Create a latitude grid.
 
     Args:
@@ -7742,7 +7834,13 @@ def latitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
     return features
 
 
-def longitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
+def longitude_grid(
+    step: Optional[float] = 1.0,
+    west: Optional[int] = -180,
+    east: Optional[int] = 180,
+    south: Optional[int] = -85,
+    north: Optional[int] = 85,
+) -> ee.FeatureCollection:
     """Create a longitude grid.
 
     Args:
@@ -7774,7 +7872,14 @@ def longitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
     return features
 
 
-def latlon_grid(lat_step=1.0, lon_step=1.0, west=-180, east=180, south=-85, north=85):
+def latlon_grid(
+    lat_step: Optional[float] = 1.0,
+    lon_step: Optional[float] = 1.0,
+    west: Optional[int] = -180,
+    east: Optional[int] = 180,
+    south: Optional[int] = -85,
+    north: Optional[int] = 85,
+) -> ee.FeatureCollection:
     """Create a retangular grid of latitude and longitude.
 
     Args:
@@ -7812,16 +7917,16 @@ def latlon_grid(lat_step=1.0, lon_step=1.0, west=-180, east=180, south=-85, nort
 
 
 def fishnet(
-    data,
-    h_interval=1.0,
-    v_interval=1.0,
-    rows=None,
-    cols=None,
-    delta=1.0,
-    intersect=True,
-    output=None,
+    data: Union[str, ee.Feature, ee.Geometry, ee.FeatureCollection],
+    h_interval: Optional[float] = 1.0,
+    v_interval: Optional[float] = 1.0,
+    rows: Optional[int] = None,
+    cols: Optional[int] = None,
+    delta: Optional[float] = 1.0,
+    intersect: bool = True,
+    output: Optional[str] = None,
     **kwargs,
-):
+) -> ee.FeatureCollection:
     """Create a fishnet (i.e., rectangular grid) based on an input vector dataset.
 
     Args:
@@ -7879,18 +7984,18 @@ def fishnet(
 
 
 def extract_values_to_points(
-    in_fc,
-    image,
-    out_fc=None,
-    scale=None,
-    crs=None,
-    crsTransform=None,
-    tileScale=1,
-    stats_type="FIRST",
-    timeout=300,
-    proxies=None,
-    **kwargs,
-):
+    in_fc: Any,
+    image: Any,
+    out_fc: Optional[Any] = None,
+    scale: Optional[ee.Projectcoin] = None,
+    crs: Optional[str] = None,
+    crsTransform: Optional[list] = None,
+    tileScale: Optional[float] = 1,
+    stats_type: Optional[str] = "FIRST",
+    timeout: Optional[int] = 300,
+    proxies: Optional[dict] = None,
+    **kwargs: Any,
+) -> Any:
     """Extracts image values to points.
 
     Args:
@@ -7957,7 +8062,7 @@ def extract_values_to_points(
         return result
 
 
-def image_reclassify(img, in_list, out_list):
+def image_reclassify(img: Any, in_list: list, out_list: list) -> Any:
     """Reclassify an image.
 
     Args:
@@ -7972,7 +8077,7 @@ def image_reclassify(img, in_list, out_list):
     return image
 
 
-def image_smoothing(img, reducer, kernel):
+def image_smoothing(img: Any, reducer: Any, kernel: Any) -> Any:
     """Smooths an image.
 
     Args:
@@ -7992,7 +8097,7 @@ def image_smoothing(img, reducer, kernel):
     return image
 
 
-def rename_bands(img, in_band_names, out_band_names):
+def rename_bands(img: Any, in_band_names: list, out_band_names: list) -> Any:
     """Renames image bands.
 
     Args:
@@ -8006,7 +8111,7 @@ def rename_bands(img, in_band_names, out_band_names):
     return img.select(in_band_names, out_band_names)
 
 
-def bands_to_image_collection(img):
+def bands_to_image_collection(img: Any) -> Any:
     """Converts all bands in an image to an image collection.
 
     Args:
@@ -8019,7 +8124,7 @@ def bands_to_image_collection(img):
     return collection
 
 
-def find_landsat_by_path_row(landsat_col, path_num, row_num):
+def find_landsat_by_path_row(landsat_col: str, path_num: int, row_num: int) -> Any:
     """Finds Landsat images by WRS path number and row number.
 
     Args:
@@ -8041,7 +8146,7 @@ def find_landsat_by_path_row(landsat_col, path_num, row_num):
         print(e)
 
 
-def str_to_num(in_str):
+def str_to_num(in_str: str) -> Any:
     """Converts a string to an ee.Number.
 
     Args:
@@ -8053,7 +8158,7 @@ def str_to_num(in_str):
     return ee.Number.parse(str)
 
 
-def array_sum(arr):
+def array_sum(arr: Any) -> Any:
     """Accumulates elements of an array along the given axis.
 
     Args:
@@ -8065,7 +8170,7 @@ def array_sum(arr):
     return ee.Array(arr).accum(0).get([-1])
 
 
-def array_mean(arr):
+def array_mean(arr: Any) -> Any:
     """Calculates the mean of an array along the given axis.
 
     Args:
@@ -8079,7 +8184,7 @@ def array_mean(arr):
     return ee.Number(total.divide(size))
 
 
-def get_annual_NAIP(year, RGBN=True):
+def get_annual_NAIP(year: int, RGBN: Optional[bool] = True) -> Any:
     """Filters NAIP ImageCollection by year.
 
     Args:
@@ -8101,7 +8206,9 @@ def get_annual_NAIP(year, RGBN=True):
         print(e)
 
 
-def get_all_NAIP(start_year=2009, end_year=2019):
+def get_all_NAIP(
+    start_year: Optional[int] = 2009, end_year: Optional[int] = 2019
+) -> Any:
     """Creates annual NAIP imagery mosaic.
 
     Args:
@@ -8133,7 +8240,7 @@ def get_all_NAIP(start_year=2009, end_year=2019):
         print(e)
 
 
-def annual_NAIP(year, region):
+def annual_NAIP(year: int, region: Any) -> Any:
     """Create an NAIP mosaic of a specified year for a specified region.
 
     Args:
@@ -8166,7 +8273,9 @@ def annual_NAIP(year, region):
     return image.set({"system:time_start": time_start, "system:time_end": time_end})
 
 
-def find_NAIP(region, add_NDVI=True, add_NDWI=True):
+def find_NAIP(
+    region: Any, add_NDVI: Optional[bool] = True, add_NDWI: Optional[bool] = True
+) -> Any:
     """Create annual NAIP mosaic for a given region.
 
     Args:
@@ -8261,7 +8370,9 @@ def find_NAIP(region, add_NDVI=True, add_NDWI=True):
     return ee.ImageCollection(naip)
 
 
-def filter_NWI(HUC08_Id, region, exclude_riverine=True):
+def filter_NWI(
+    HUC08_Id: str, region: Any, exclude_riverine: Optional[bool] = True
+) -> Any:
     """Retrieves NWI dataset for a given HUC8 watershed.
 
     Args:
@@ -8284,7 +8395,7 @@ def filter_NWI(HUC08_Id, region, exclude_riverine=True):
     return nwi_huc
 
 
-def filter_HUC08(region):
+def filter_HUC08(region: Any) -> Any:
     """Filters HUC08 watersheds intersecting a given region.
 
     Args:
@@ -8300,7 +8411,7 @@ def filter_HUC08(region):
 
 
 # Find HUC10 intersecting a geometry
-def filter_HUC10(region):
+def filter_HUC10(region: Any) -> Any:
     """Filters HUC10 watersheds intersecting a given region.
 
     Args:
@@ -8315,7 +8426,7 @@ def filter_HUC10(region):
     return HUC10
 
 
-def find_HUC08(HUC08_Id):
+def find_HUC08(HUC08_Id: str) -> Any:
     """Finds a HUC08 watershed based on a given HUC08 ID
 
     Args:
@@ -8330,7 +8441,7 @@ def find_HUC08(HUC08_Id):
     return HUC08
 
 
-def find_HUC10(HUC10_Id):
+def find_HUC10(HUC10_Id: str) -> Any:
     """Finds a HUC10 watershed based on a given HUC08 ID
 
     Args:
@@ -8346,7 +8457,7 @@ def find_HUC10(HUC10_Id):
 
 
 # find NWI by HUC08
-def find_NWI(HUC08_Id, exclude_riverine=True):
+def find_NWI(HUC08_Id: str, exclude_riverine: Optional[bool] = True) -> Any:
     """Finds NWI dataset for a given HUC08 watershed.
 
     Args:
@@ -8368,7 +8479,7 @@ def find_NWI(HUC08_Id, exclude_riverine=True):
     return nwi_huc
 
 
-def nwi_add_color(fc):
+def nwi_add_color(fc: Any) -> Any:
     """Converts NWI vector dataset to image and add color to it.
 
     Args:
@@ -8410,7 +8521,15 @@ def nwi_add_color(fc):
     return img
 
 
-def nwi_rename(names):
+def nwi_rename(names: list[str]) -> list[str]:
+    """Renames a list of wetland names based on a predefined dictionary.
+
+    Args:
+        names (list[str]): A list of wetland names to be renamed.
+
+    Returns:
+        list[str]: A list of renamed wetlands names.
+    """
     name_dict = ee.Dictionary(
         {
             "Freshwater Emergent Wetland": "Emergent",
@@ -8429,8 +8548,13 @@ def nwi_rename(names):
 
 
 def summarize_by_group(
-    collection, column, group, group_name, stats_type, return_dict=True
-):
+    collection: Any,
+    column: str,
+    group: str,
+    group_name: str,
+    stats_type: str,
+    return_dict: bool = True,
+) -> Any:
     """Calculates summary statistics by group.
 
     Args:
@@ -8482,7 +8606,7 @@ def summarize_by_group(
     return results
 
 
-def summary_stats(collection, column):
+def summary_stats(collection: ee.FeatureCollection, column: str) -> dict:
     """Aggregates over a given property of the objects in a collection, calculating the sum, min, max, mean,
     sample standard deviation, sample variance, total standard deviation and total variance of the selected property.
 
@@ -8497,7 +8621,9 @@ def summary_stats(collection, column):
     return eval(str(stats))
 
 
-def column_stats(collection, column, stats_type):
+def column_stats(
+    collection: ee.FeatureCollection, column: str, stats_type: str
+) -> dict:
     """Aggregates over a given property of the objects in a collection, calculating the sum, min, max, mean,
     sample standard deviation, sample variance, total standard deviation and total variance of the selected property.
 
@@ -8537,7 +8663,7 @@ def column_stats(collection, column, stats_type):
     return stats
 
 
-def ee_num_round(num, decimal=2):
+def ee_num_round(num: ee.Number, decimal: Optional[int] = 2) -> ee.Number:
     """Rounds a number to a specified number of decimal places.
 
     Args:
@@ -8551,7 +8677,7 @@ def ee_num_round(num, decimal=2):
     return ee.Number.parse(ee.Number(num).format(format_str))
 
 
-def num_round(num, decimal=2):
+def num_round(num: float, decimal: Optional[int] = 2) -> float:
     """Rounds a number to a specified number of decimal places.
 
     Args:
@@ -8564,7 +8690,9 @@ def num_round(num, decimal=2):
     return round(num, decimal)
 
 
-def png_to_gif(in_dir, out_gif, fps=10, loop=0):
+def png_to_gif(
+    in_dir: str, out_gif: str, fps: Optional[int] = 10, loop: Optional[bool] = 0
+) -> None:
     """Convert a list of png images to gif.
 
     Args:
@@ -8612,7 +8740,9 @@ def png_to_gif(in_dir, out_gif, fps=10, loop=0):
     )
 
 
-def jpg_to_gif(in_dir, out_gif, fps=10, loop=0):
+def jpg_to_gif(
+    in_dir: str, out_gif: str, fps: Optional[int] = 10, loop: Optional[bool] = 0
+) -> None:
     """Convert a list of jpg images to gif.
 
     Args:
@@ -8660,7 +8790,7 @@ def jpg_to_gif(in_dir, out_gif, fps=10, loop=0):
     )
 
 
-def geometry_type(ee_object):
+def geometry_type(ee_object: Any) -> str:
     """Get geometry type of an Earth Engine object.
 
     Args:
@@ -8682,17 +8812,17 @@ def geometry_type(ee_object):
 
 
 def vector_styling(
-    ee_object,
-    column,
-    palette,
-    color="000000",
-    colorOpacity=1.0,
-    pointSize=3,
-    pointShape="circle",
-    width=1,
-    lineType="solid",
-    fillColorOpacity=0.66,
-):
+    ee_object: Any,
+    column: str,
+    palette: Union[list, dict],
+    color: Optional[str] = "000000",
+    colorOpacity: Optional[float] = 1.0,
+    pointSize: Optional[int] = 3,
+    pointShape: Optional[str] = "circle",
+    width: Optional[int] = 1,
+    lineType: Optional[str] = "solid",
+    fillColorOpacity: Optional[float] = 0.66,
+) -> None:
     """Add a new property to each feature containing a stylying dictionary.
 
     Args:
@@ -8778,7 +8908,21 @@ def vector_styling(
         raise TypeError("The ee_object must be an ee.FeatureCollection.")
 
 
-def is_GCS(in_shp):
+def is_GCS(in_shp: str) -> bool:
+    """
+    Checks if a shapefile is in a geographic coordinate system (GCS).
+
+    Args:
+        in_shp (str): Path to the input shapefile.
+
+    Returns:
+        bool: True if the shapefile is in a GCS, False otherwise.
+
+    Raises:
+        FileNotFoundError: If the input shapefile could not be found.
+        TypeError: If the input shapefile is invalid.
+
+    """
     import pycrs
 
     if not os.path.exists(in_shp):
@@ -8809,7 +8953,7 @@ def is_GCS(in_shp):
             return False
 
 
-def kml_to_shp(in_kml, out_shp, **kwargs):
+def kml_to_shp(in_kml: str, out_shp: str, **kwargs: Any) -> None:
     """Converts a KML to shapefile.
 
     Args:
@@ -8847,7 +8991,7 @@ def kml_to_shp(in_kml, out_shp, **kwargs):
     df.to_file(out_shp, **kwargs)
 
 
-def kml_to_geojson(in_kml, out_geojson=None, **kwargs):
+def kml_to_geojson(in_kml: str, out_geojson: str = None, **kwargs: Any) -> None:
     """Converts a KML to GeoJSON.
 
     Args:
@@ -8890,7 +9034,7 @@ def kml_to_geojson(in_kml, out_geojson=None, **kwargs):
         return gdf.__geo_interface__
 
 
-def kml_to_ee(in_kml, **kwargs):
+def kml_to_ee(in_kml: str, **kwargs: Any) -> Any:
     """Converts a KML to ee.FeatureColleciton.
 
     Args:
@@ -8919,7 +9063,7 @@ def kml_to_ee(in_kml, **kwargs):
     return ee_object
 
 
-def kmz_to_ee(in_kmz, **kwargs):
+def kmz_to_ee(in_kmz: str, **kwargs: Any) -> Any:
     """Converts a KMZ to ee.FeatureColleciton.
 
     Args:
@@ -8945,7 +9089,7 @@ def kmz_to_ee(in_kmz, **kwargs):
     return fc
 
 
-def csv_to_df(in_csv, **kwargs):
+def csv_to_df(in_csv: str, **kwargs: Any) -> Amy:
     """Converts a CSV file to pandas dataframe.
 
     Args:
@@ -8964,7 +9108,12 @@ def csv_to_df(in_csv, **kwargs):
         raise Exception(e)
 
 
-def ee_to_df(ee_object, col_names=None, sort_columns=False, **kwargs):
+def ee_to_df(
+    ee_object: ee.FeatureCollection,
+    col_names: list = None,
+    sort_columns: bool = False,
+    **kwargs,
+) -> Any:
     """Converts an ee.FeatureCollection to pandas dataframe.
 
     Args:
@@ -9010,7 +9159,7 @@ def ee_to_df(ee_object, col_names=None, sort_columns=False, **kwargs):
 ee_to_pandas = ee_to_df
 
 
-def shp_to_gdf(in_shp, **kwargs):
+def shp_to_gdf(in_shp: str, **kwargs: Any):
     """Converts a shapefile to Geopandas dataframe.
 
     Args:
@@ -9042,7 +9191,11 @@ def shp_to_gdf(in_shp, **kwargs):
 shp_to_geopandas = shp_to_gdf
 
 
-def ee_to_gdf(ee_object, selectors=None, verbose=False):
+def ee_to_gdf(
+    ee_object: ee.FeatureCollection,
+    selectors: Optional[str] = None,
+    verbose: Optional[bool] = False,
+):
     """Converts an ee.FeatureCollection to Geopandas dataframe.
 
     Args:
@@ -9073,7 +9226,7 @@ def ee_to_gdf(ee_object, selectors=None, verbose=False):
 ee_to_geopandas = ee_to_gdf
 
 
-def delete_shp(in_shp, verbose=False):
+def delete_shp(in_shp: str, verbose: Optional[bool] = False) -> None:
     """Deletes a shapefile.
 
     Args:
@@ -9099,7 +9252,12 @@ def delete_shp(in_shp, verbose=False):
                 print(e)
 
 
-def df_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
+def df_to_ee(
+    df,
+    latitude: Optional[str] = "latitude",
+    longitude: Optional[str] = "longitude",
+    **kwargs,
+) -> ee.FeatureCollection:
     """Converts a pandas DataFrame to ee.FeatureCollection.
 
     Args:
@@ -9127,7 +9285,12 @@ def df_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
 pandas_to_ee = df_to_ee
 
 
-def gdf_to_ee(gdf, geodesic=True, date=None, date_format="YYYY-MM-dd"):
+def gdf_to_ee(
+    gdf,
+    geodesic: Optional[bool] = True,
+    date: Optional[str] = None,
+    date_format: Optional[str] = "YYYY-MM-dd",
+) -> ee.FeatureCollection:
     """Converts a GeoPandas GeoDataFrame to ee.FeatureCollection.
 
     Args:
@@ -9175,8 +9338,14 @@ geopandas_to_ee = gdf_to_ee
 
 
 def vector_to_geojson(
-    filename, out_geojson=None, bbox=None, mask=None, rows=None, epsg="4326", **kwargs
-):
+    filename: str,
+    out_geojson: str = None,
+    bbox: Union[tuple] = None,
+    mask: Union[dict] = None,
+    rows: Optional[int, slice] = None,
+    epsg: Optional[str] = "4326",
+    **kwargs,
+) -> dict:
     """Converts any geopandas-supported vector dataset to GeoJSON.
 
     Args:
@@ -9229,13 +9398,13 @@ def vector_to_geojson(
 
 
 def vector_to_ee(
-    filename,
-    bbox=None,
-    mask=None,
-    rows=None,
-    geodesic=True,
+    filename: str,
+    bbox: Union[tuple] = None,
+    mask: Union[dict] = None,
+    rows: Optional[int, slice] = None,
+    geodesic: Optional[bool] = True,
     **kwargs,
-):
+) -> ee.FeatureCollection:
     """Converts any geopandas-supported vector dataset to ee.FeatureCollection.
 
     Args:
@@ -9256,8 +9425,13 @@ def vector_to_ee(
 
 
 def extract_pixel_values(
-    ee_object, region, scale=None, projection=None, tileScale=1, getInfo=False
-):
+    ee_object: Union[ee.Image, ee.ImageCollection],
+    region: ee.Geometry,
+    scale: Optional[float] = None,
+    projection: Optional[str] = None,
+    tileScale: Optional[int] = 1,
+    getInfo: Optional[bool] = False,
+) -> ee.Dictionary:
     """Samples the pixels of an image, returning them as a ee.Dictionary.
 
     Args:
@@ -9299,7 +9473,7 @@ def extract_pixel_values(
         return dict_values
 
 
-def list_vars(var_type=None):
+def list_vars(var_type: Optional[Any] = None) -> list:
     """Lists all defined avariables.
 
     Args:
@@ -9337,18 +9511,18 @@ def list_vars(var_type=None):
 
 
 def extract_transect(
-    image,
-    line,
-    reducer="mean",
-    n_segments=100,
-    dist_interval=None,
-    scale=None,
-    crs=None,
-    crsTransform=None,
-    tileScale=1.0,
-    to_pandas=False,
+    image: ee.Image,
+    line: ee.Image.LineString,
+    reducer: Optional[str] = "mean",
+    n_segments: Optional[int] = 100,
+    dist_interval: Optional[float] = None,
+    scale: Optional[float] = None,
+    crs: Optional[list] = None,
+    crsTransform: Optional[list] = None,
+    tileScale: Optional[float] = 1.0,
+    to_pandas: Optional[bool] = False,
     **kwargs,
-):
+) -> ee.FeatureCollection:
     """Extracts transect from an image. Credits to Gena for providing the JavaScript example https://code.earthengine.google.com/b09759b8ac60366ee2ae4eccdd19e615.
 
     Args:
@@ -9415,18 +9589,18 @@ def extract_transect(
 
 
 def random_sampling(
-    image,
-    region=None,
-    scale=None,
-    projection=None,
-    factor=None,
-    numPixels=None,
-    seed=0,
-    dropNulls=True,
-    tileScale=1.0,
-    geometries=True,
-    to_pandas=False,
-):
+    image: ee.Image,
+    region: ee.Geometry = None,
+    scale: Optional[float] = None,
+    projection: ee.Projection = None,
+    factor: Optional[float] = None,
+    numPixels: Optional[int] = None,
+    seed: Optional[int] = 0,
+    dropNulls: Optional[bool] = True,
+    tileScale: Optional[float] = 1.0,
+    geometries: Optional[bool] = True,
+    to_pandas: Optional[bool] = False,
+) -> ee.FeatureCollection:
     """Samples the pixels of an image, returning them as a FeatureCollection. Each feature will have 1 property per band in the input image. Note that the default behavior is to drop features that intersect masked pixels, which result in null-valued properties (see dropNulls argument).
 
     Args:
@@ -9472,10 +9646,10 @@ def random_sampling(
 
 
 def osm_to_gdf(
-    query,
-    which_result=None,
-    by_osmid=False,
-    buffer_dist=None,
+    query: Union[str, dict, list],
+    which_result: Optional[int] = None,
+    by_osmid: Optional[bool] = False,
+    buffer_dist: Optional[float] = None,
 ):
     """Retrieves place(s) by name or ID from the Nominatim API as a GeoDataFrame.
 
@@ -9506,8 +9680,12 @@ osm_to_geopandas = osm_to_gdf
 
 
 def osm_to_ee(
-    query, which_result=None, by_osmid=False, buffer_dist=None, geodesic=True
-):
+    query: Union[str, dict, list],
+    which_result: Optional[int] = None,
+    by_osmid: Optional[bool] = False,
+    buffer_dist: Optional[float] = None,
+    geodesic: Optional[bool] = True,
+) -> ee.FeatureCollection:
     """Retrieves place(s) by name or ID from the Nominatim API as an ee.FeatureCollection.
 
     Args:
@@ -9525,7 +9703,12 @@ def osm_to_ee(
     return fc
 
 
-def osm_to_geojson(query, which_result=None, by_osmid=False, buffer_dist=None):
+def osm_to_geojson(
+    query: Union[str, dict, list],
+    which_result: Optional[int] = None,
+    by_osmid: Optional[bool] = False,
+    buffer_dist: Optional[float] = None,
+) -> ee.FeatureCollection:
     """Retrieves place(s) by name or ID from the Nominatim API as an ee.FeatureCollection.
 
     Args:
@@ -9541,7 +9724,7 @@ def osm_to_geojson(query, which_result=None, by_osmid=False, buffer_dist=None):
     return gdf.__geo_interface__
 
 
-def get_api_key(token_name, m=None):
+def get_api_key(token_name: str, m=None) -> str:
     """Retrieves an API key based on a system environmen variable.
 
     Args:
@@ -9558,7 +9741,7 @@ def get_api_key(token_name, m=None):
     return api_key
 
 
-def set_api_key(token_name, api_key, m=None):
+def set_api_key(token_name: str, api_key: str, m=None) -> None:
     """Sets an API key as an environment variable.
 
     Args:
@@ -9571,7 +9754,7 @@ def set_api_key(token_name, api_key, m=None):
         m.api_keys[token_name] = api_key
 
 
-def planet_monthly_tropical(api_key=None, token_name="PLANET_API_KEY"):
+def planet_monthly_tropical(api_key: Optional[str]=None, token_name:Optional[str]="PLANET_API_KEY"):
     """Generates Planet monthly imagery URLs based on an API key. See https://assets.planet.com/docs/NICFI_UserGuidesFAQ.pdf
 
     Args:
@@ -9614,7 +9797,7 @@ def planet_monthly_tropical(api_key=None, token_name="PLANET_API_KEY"):
     return links
 
 
-def planet_biannual_tropical(api_key=None, token_name="PLANET_API_KEY"):
+def planet_biannual_tropical(api_key: Optional[str]=None, token_name: Optional[str]="PLANET_API_KEY") -> list:
     """Generates Planet bi-annual imagery URLs based on an API key. See https://assets.planet.com/docs/NICFI_UserGuidesFAQ.pdf
 
     Args:
@@ -9657,7 +9840,7 @@ def planet_biannual_tropical(api_key=None, token_name="PLANET_API_KEY"):
     return link
 
 
-def planet_catalog_tropical(api_key=None, token_name="PLANET_API_KEY"):
+def planet_catalog_tropical(api_key: Optional[str]=None, token_name: Optional[str]="PLANET_API_KEY") -> list:
     """Generates Planet bi-annual and monthly imagery URLs based on an API key. See https://assets.planet.com/docs/NICFI_UserGuidesFAQ.pdf
 
     Args:
@@ -9673,8 +9856,8 @@ def planet_catalog_tropical(api_key=None, token_name="PLANET_API_KEY"):
 
 
 def planet_monthly_tiles_tropical(
-    api_key=None, token_name="PLANET_API_KEY", tile_format="ipyleaflet"
-):
+    api_key: Optional[str]=None, token_name: Optional[str]="PLANET_API_KEY", tile_format: Optional[str]="ipyleaflet"
+) -> dict:
     """Generates Planet  monthly imagery TileLayer based on an API key. See https://assets.planet.com/docs/NICFI_UserGuidesFAQ.pdf
 
     Args:
@@ -9717,8 +9900,8 @@ def planet_monthly_tiles_tropical(
 
 
 def planet_biannual_tiles_tropical(
-    api_key=None, token_name="PLANET_API_KEY", tile_format="ipyleaflet"
-):
+    api_key: Optional[str]=None, token_name: Optional[str]="PLANET_API_KEY", tile_format: Optional[str]="ipyleaflet"
+) -> dict:
     """Generates Planet  bi-annual imagery TileLayer based on an API key. See https://assets.planet.com/docs/NICFI_UserGuidesFAQ.pdf
 
     Args:
@@ -9760,8 +9943,8 @@ def planet_biannual_tiles_tropical(
 
 
 def planet_tiles_tropical(
-    api_key=None, token_name="PLANET_API_KEY", tile_format="ipyleaflet"
-):
+    api_key: Optional[str]=None, token_name: Optional[str]="PLANET_API_KEY", tile_format: Optional[str]="ipyleaflet"
+) -> dict:
     """Generates Planet  monthly imagery TileLayer based on an API key. See https://assets.planet.com/docs/NICFI_UserGuidesFAQ.pdf
 
     Args:
@@ -9789,7 +9972,7 @@ def planet_tiles_tropical(
     return catalog
 
 
-def planet_monthly(api_key=None, token_name="PLANET_API_KEY"):
+def planet_monthly(api_key: Optional[str]=None, token_name: Optional[str]="PLANET_API_KEY") -> list:
     """Generates Planet monthly imagery URLs based on an API key. To get a Planet API key, see https://developers.planet.com/quickstart/apis/
 
     Args:
