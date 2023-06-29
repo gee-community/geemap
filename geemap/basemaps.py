@@ -1,14 +1,18 @@
-"""Module for basemaps. Each basemap is defined as item in the basemaps dictionary. For example, to access Google basemaps, use the following:
+"""Module for basemaps.
 
-basemaps['ROADMAP'], basemaps['SATELLITE'], basemaps['HYBRID'].
+Each basemap is defined as an item in the `basemaps` dictionary.
+
+For example, to access Google basemaps, use the following:
+
+    * `basemaps['ROADMAP']`
+    * `basemaps['SATELLITE']`
+    * `basemaps['HYBRID']`
 
 More WMS basemaps can be found at the following websites:
 
-1. USGS National Map: https://viewer.nationalmap.gov/services/
-
-2. MRLC NLCD Land Cover data: https://viewer.nationalmap.gov/services/
-
-3. FWS NWI Wetlands data: https://www.fws.gov/wetlands/Data/Web-Map-Services.html
+  1. USGS National Map: https://viewer.nationalmap.gov/services/
+  2. MRLC NLCD Land Cover data: https://viewer.nationalmap.gov/services/
+  3. FWS NWI Wetlands data: https://www.fws.gov/wetlands/Data/Web-Map-Services.html
 
 """
 
@@ -17,7 +21,7 @@ import os
 import requests
 import folium
 import ipyleaflet
-import xyzservices.providers as xyz
+import xyzservices
 from .common import check_package, planet_tiles
 
 # Custom XYZ tile services.
@@ -222,59 +226,33 @@ wms_tiles = {
 }
 
 
-def _unpack_sub_parameters(var, param):
-    temp = var
-    for sub_param in param.split("."):
-        temp = getattr(temp, sub_param)
-    return temp
-
-
 def get_xyz_dict(free_only=True, france=False):
     """Returns a dictionary of xyz services.
 
     Args:
-        free_only (bool, optional): Whether to return only free xyz tile services that do not require an access token. Defaults to True.
-        france (bool, optional): Whether include Geoportail France basemaps. Defaults to False.
+        free_only (bool, optional): Whether to return only free xyz tile
+            services that do not require an access token. Defaults to True.
+        france (bool, optional): Whether to include Geoportail France basemaps.
+            Defaults to False.
 
     Returns:
         dict: A dictionary of xyz services.
     """
+    xyz_bunch = xyzservices.providers
 
-    xyz_dict_tmp = {}
-    for item in xyz.values():
-        try:
-            name = item["name"]
-            tile = _unpack_sub_parameters(xyz, name)
-            if _unpack_sub_parameters(xyz, name).requires_token():
-                if free_only:
-                    pass
-                else:
-                    xyz_dict_tmp[name] = tile
-            else:
-                xyz_dict_tmp[name] = tile
+    if free_only:
+        xyz_bunch = xyz_bunch.filter(requires_token=False)
+    if not france:
+        xyz_bunch = xyz_bunch.filter(
+            function=lambda tile: "france" not in dict(tile)["name"].lower())
+
+    xyz_dict = xyz_bunch.flatten()
+
+    for key, value in xyz_dict.items():
+        tile = xyzservices.TileProvider(value)
+        if "type" not in tile:
             tile["type"] = "xyz"
-
-        except Exception:
-            for sub_item in item:
-                name = item[sub_item]["name"]
-                tile = _unpack_sub_parameters(xyz, name)
-                if _unpack_sub_parameters(xyz, name).requires_token():
-                    if free_only:
-                        pass
-                    else:
-                        xyz_dict_tmp[name] = tile
-                else:
-                    xyz_dict_tmp[name] = tile
-                tile["type"] = "xyz"
-
-    xyz_dict = {}
-
-    if france:
-        xyz_dict = xyz_dict_tmp
-    else:
-        for key in xyz_dict_tmp:
-            if "France" not in key:
-                xyz_dict[key] = xyz_dict_tmp[key]
+        xyz_dict[key] = tile
 
     xyz_dict = collections.OrderedDict(sorted(xyz_dict.items()))
     return xyz_dict
