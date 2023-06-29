@@ -17,6 +17,7 @@ from IPython.display import display
 from .basemaps import xyz_to_leaflet
 from .common import *
 from .conversion import *
+from .ee_tile_layers import *
 from .timelapse import *
 from .plot import *
 
@@ -339,99 +340,21 @@ class Map(ipyleaflet.Map):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
-
-        image = None
-
-        if vis_params is None:
-            vis_params = {}
-
         if name is None:
             layer_count = len(self.layers)
             name = "Layer " + str(layer_count + 1)
-
-        if (
-            not isinstance(ee_object, ee.Image)
-            and not isinstance(ee_object, ee.ImageCollection)
-            and not isinstance(ee_object, ee.FeatureCollection)
-            and not isinstance(ee_object, ee.Feature)
-            and not isinstance(ee_object, ee.Geometry)
-        ):
-            err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
-            raise AttributeError(err_str)
-
-        if (
-            isinstance(ee_object, ee.geometry.Geometry)
-            or isinstance(ee_object, ee.feature.Feature)
-            or isinstance(ee_object, ee.featurecollection.FeatureCollection)
-        ):
-            features = ee.FeatureCollection(ee_object)
-
-            width = 2
-
-            if "width" in vis_params:
-                width = vis_params["width"]
-
-            color = "000000"
-
-            if "color" in vis_params:
-                color = vis_params["color"]
-
-            image_fill = features.style(**{"fillColor": color}).updateMask(
-                ee.Image.constant(0.5)
-            )
-            image_outline = features.style(
-                **{"color": color, "fillColor": "00000000", "width": width}
-            )
-
-            image = image_fill.blend(image_outline)
-        elif isinstance(ee_object, ee.image.Image):
-            image = ee_object
-        elif isinstance(ee_object, ee.imagecollection.ImageCollection):
-            image = ee_object.mosaic()
-
-        if "palette" in vis_params:
-            if isinstance(vis_params["palette"], tuple):
-                vis_params["palette"] = list(vis_params["palette"])
-            if isinstance(vis_params["palette"], Box):
-                try:
-                    vis_params["palette"] = vis_params["palette"]["default"]
-                except Exception as e:
-                    print("The provided palette is invalid.")
-                    raise Exception(e)
-            elif isinstance(vis_params["palette"], str):
-                vis_params["palette"] = check_cmap(vis_params["palette"])
-            elif not isinstance(vis_params["palette"], list):
-                raise ValueError(
-                    "The palette must be a list of colors or a string or a Box object."
-                )
-
-        map_id_dict = ee.Image(image).getMapId(vis_params)
-        url = map_id_dict["tile_fetcher"].url_format
-        tile_layer = ipyleaflet.TileLayer(
-            url=url,
-            attribution="Google Earth Engine",
-            name=name,
-            opacity=opacity,
-            visible=shown,
-            max_zoom=24,
-        )
+        tile_layer = EELeafletTileLayer(ee_object, vis_params, name, shown, opacity)
 
         layer = self.find_layer(name=name)
         if layer is not None:
             existing_object = self.ee_layer_dict[name]["ee_object"]
 
-            if isinstance(existing_object, ee.Image) or isinstance(
-                existing_object, ee.ImageCollection
-            ):
+            if isinstance(existing_object, (ee.Image, ee.ImageCollection)):
                 self.ee_raster_layers.remove(existing_object)
                 self.ee_raster_layer_names.remove(name)
                 if self.plot_dropdown_widget is not None:
                     self.plot_dropdown_widget.options = list(self.ee_raster_layer_names)
-            elif (
-                isinstance(ee_object, ee.Geometry)
-                or isinstance(ee_object, ee.Feature)
-                or isinstance(ee_object, ee.FeatureCollection)
-            ):
+            elif isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
                 self.ee_vector_layers.remove(existing_object)
                 self.ee_vector_layer_names.remove(name)
 
@@ -445,27 +368,23 @@ class Map(ipyleaflet.Map):
         self.ee_layer_dict[name] = {
             "ee_object": ee_object,
             "ee_layer": tile_layer,
-            "vis_params": vis_params,
+            "vis_params": tile_layer.vis_params,
         }
 
         self.add(tile_layer)
         self.last_ee_layer = self.ee_layer_dict[name]
         self.last_ee_data = self.ee_layer_dict[name]["ee_object"]
 
-        if isinstance(ee_object, ee.Image) or isinstance(ee_object, ee.ImageCollection):
+        if isinstance(ee_object, (ee.Image, ee.ImageCollection)):
             self.ee_raster_layers.append(ee_object)
             self.ee_raster_layer_names.append(name)
             if self.plot_dropdown_widget is not None:
                 self.plot_dropdown_widget.options = list(self.ee_raster_layer_names)
-        elif (
-            isinstance(ee_object, ee.Geometry)
-            or isinstance(ee_object, ee.Feature)
-            or isinstance(ee_object, ee.FeatureCollection)
-        ):
+        elif isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
             self.ee_vector_layers.append(ee_object)
             self.ee_vector_layer_names.append(name)
 
-        arc_add_layer(url, name, shown, opacity)
+        arc_add_layer(tile_layer.url_format, name, shown, opacity)
 
     addLayer = add_ee_layer
 
@@ -1665,7 +1584,7 @@ class Map(ipyleaflet.Map):
                     else:
                         left_image = ee.Image(left_image)
 
-                    left_image = ee_tile_layer(
+                    left_image = EELeafletTileLayer(
                         left_image, left_vis, left_names[left_dropdown_index]
                     )
                     left_layer.url = left_image.url
@@ -1696,7 +1615,7 @@ class Map(ipyleaflet.Map):
                     else:
                         right_image = ee.Image(right_image)
 
-                    right_image = ee_tile_layer(
+                    right_image = EELeafletTileLayer(
                         right_image,
                         right_vis,
                         right_names[right_dropdown_index],
@@ -2715,7 +2634,7 @@ class Map(ipyleaflet.Map):
         """Removes user-drawn geometries from the map"""
         if self.draw_layer is not None:
             collection = ee.FeatureCollection(self.draw_features[:-1])
-            ee_draw_layer = ee_tile_layer(
+            ee_draw_layer = EELeafletTileLayer(
                 collection, {"color": "blue"}, "Drawn Features", True, 0.5
             )
             if self.draw_count == 1:
@@ -6558,7 +6477,7 @@ class Map(ipyleaflet.Map):
                     self.draw_count += 1
                 collection = ee.FeatureCollection(self.draw_features)
                 self.user_rois = collection
-                ee_draw_layer = ee_tile_layer(
+                ee_draw_layer = EELeafletTileLayer(
                     collection, {"color": "blue"}, "Drawn Features", False, 0.5
                 )
                 draw_layer_index = self.find_layer_index("Drawn Features")
@@ -6687,72 +6606,7 @@ def ee_tile_layer(
         shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
         opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
     """
-
-    image = None
-
-    if (
-        not isinstance(ee_object, ee.Image)
-        and not isinstance(ee_object, ee.ImageCollection)
-        and not isinstance(ee_object, ee.FeatureCollection)
-        and not isinstance(ee_object, ee.Feature)
-        and not isinstance(ee_object, ee.Geometry)
-    ):
-        err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
-        raise AttributeError(err_str)
-
-    if (
-        isinstance(ee_object, ee.geometry.Geometry)
-        or isinstance(ee_object, ee.feature.Feature)
-        or isinstance(ee_object, ee.featurecollection.FeatureCollection)
-    ):
-        features = ee.FeatureCollection(ee_object)
-
-        width = 2
-
-        if "width" in vis_params:
-            width = vis_params["width"]
-
-        color = "000000"
-
-        if "color" in vis_params:
-            color = vis_params["color"]
-
-        image_fill = features.style(**{"fillColor": color}).updateMask(
-            ee.Image.constant(0.5)
-        )
-        image_outline = features.style(
-            **{"color": color, "fillColor": "00000000", "width": width}
-        )
-
-        image = image_fill.blend(image_outline)
-    elif isinstance(ee_object, ee.image.Image):
-        image = ee_object
-    elif isinstance(ee_object, ee.imagecollection.ImageCollection):
-        image = ee_object.mosaic()
-
-    if "palette" in vis_params:
-        if isinstance(vis_params["palette"], Box):
-            try:
-                vis_params["palette"] = vis_params["palette"]["default"]
-            except Exception as e:
-                print("The provided palette is invalid.")
-                raise Exception(e)
-        elif isinstance(vis_params["palette"], str):
-            vis_params["palette"] = check_cmap(vis_params["palette"])
-        elif not isinstance(vis_params["palette"], list):
-            raise ValueError(
-                "The palette must be a list of colors or a string or a Box object."
-            )
-
-    map_id_dict = ee.Image(image).getMapId(vis_params)
-    tile_layer = ipyleaflet.TileLayer(
-        url=map_id_dict["tile_fetcher"].url_format,
-        attribution="Google Earth Engine",
-        name=name,
-        opacity=opacity,
-        visible=shown,
-    )
-    return tile_layer
+    return EELeafletTileLayer(ee_object, vis_params, name, shown, opacity)
 
 
 def linked_maps(
