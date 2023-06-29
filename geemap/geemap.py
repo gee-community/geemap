@@ -6958,7 +6958,7 @@ def get_basemap(name):
     if isinstance(name, str):
         if name in basemaps.keys():
             basemap = basemaps[name]
-            if basemap["type"] == "xyz":
+            if basemap["type"] in ["xyz", "normal", "grau"]:
                 layer = ipyleaflet.TileLayer(
                     url=basemap["url"],
                     name=basemap["name"],
