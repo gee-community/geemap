@@ -16,6 +16,7 @@ from jinja2 import Template
 from .basemaps import xyz_to_folium
 from .common import *
 from .conversion import *
+from .ee_tile_layers import *
 from .legends import builtin_legends
 from .osm import *
 from .timelapse import *
@@ -216,88 +217,9 @@ class Map(folium.Map):
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
 
-        from box import Box
-
-        image = None
-        if vis_params is None:
-            vis_params = {}
-
-        if (
-            not isinstance(ee_object, ee.Image)
-            and not isinstance(ee_object, ee.ImageCollection)
-            and not isinstance(ee_object, ee.FeatureCollection)
-            and not isinstance(ee_object, ee.Feature)
-            and not isinstance(ee_object, ee.Geometry)
-        ):
-            err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
-            raise AttributeError(err_str)
-
-        if (
-            isinstance(ee_object, ee.geometry.Geometry)
-            or isinstance(ee_object, ee.feature.Feature)
-            or isinstance(ee_object, ee.featurecollection.FeatureCollection)
-        ):
-            features = ee.FeatureCollection(ee_object)
-
-            width = 2
-
-            if "width" in vis_params:
-                width = vis_params["width"]
-
-            color = "000000"
-
-            if "color" in vis_params:
-                color = vis_params["color"]
-
-            image_fill = features.style(**{"fillColor": color}).updateMask(
-                ee.Image.constant(0.5)
-            )
-            image_outline = features.style(
-                **{"color": color, "fillColor": "00000000", "width": width}
-            )
-
-            image = image_fill.blend(image_outline)
-        elif isinstance(ee_object, ee.image.Image):
-            image = ee_object
-        elif isinstance(ee_object, ee.imagecollection.ImageCollection):
-            image = ee_object.mosaic()
-
-        if "palette" in vis_params:
-            if isinstance(vis_params["palette"], tuple):
-                vis_params["palette"] = list(vis_params["palette"])
-            if isinstance(vis_params["palette"], Box):
-                try:
-                    vis_params["palette"] = vis_params["palette"]["default"]
-                except Exception as e:
-                    print("The provided palette is invalid.")
-                    raise Exception(e)
-            elif isinstance(vis_params["palette"], str):
-                vis_params["palette"] = check_cmap(vis_params["palette"])
-            elif not isinstance(vis_params["palette"], list):
-                raise ValueError(
-                    "The palette must be a list of colors or a string or a Box object."
-                )
-
-        map_id_dict = ee.Image(image).getMapId(vis_params)
-
-        # if a layer starts with a number, add "Layer" to name.
-        if name[0].isdigit():
-            name = "Layer " + name
-
-        url = map_id_dict["tile_fetcher"].url_format
-        folium.raster_layers.TileLayer(
-            tiles=url,
-            attr="Google Earth Engine",
-            name=name,
-            overlay=True,
-            control=True,
-            show=shown,
-            opacity=opacity,
-            max_zoom=24,
-            **kwargs,
-        ).add_to(self)
-
-        arc_add_layer(url, name, shown, opacity)
+        layer = EEFoliumTileLayer(ee_object, vis_params, name, shown, opacity, **kwargs)
+        layer.add_to(self)
+        arc_add_layer(layer.url_format, name, shown, opacity)
 
     addLayer = add_layer
 
