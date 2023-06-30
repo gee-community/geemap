@@ -93,7 +93,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#step-1-clone-conda-env" class="md-skip">
+        <a href="#step-1-open-arcgis-python-command-prompt" class="md-skip">
           Skip to content
         </a>
       
@@ -2861,15 +2861,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#step-1-clone-conda-env" class="md-nav__link">
-    Step 1 - Clone conda env
+  <a href="#step-1-open-arcgis-python-command-prompt" class="md-nav__link">
+    Step 1 - Open ArcGIS Python Command Prompt
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-install-geemap" class="md-nav__link">
-    Step 2 - Install geemap
+  <a href="#step-2-create-a-conda-environment" class="md-nav__link">
+    Step 2 - Create a conda environment
   </a>
   
 </li>
@@ -3012,15 +3012,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#step-1-clone-conda-env" class="md-nav__link">
-    Step 1 - Clone conda env
+  <a href="#step-1-open-arcgis-python-command-prompt" class="md-nav__link">
+    Step 1 - Open ArcGIS Python Command Prompt
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-install-geemap" class="md-nav__link">
-    Step 2 - Install geemap
+  <a href="#step-2-create-a-conda-environment" class="md-nav__link">
+    Step 2 - Create a conda environment
   </a>
   
 </li>
@@ -4097,7 +4097,7 @@ Licensed under the Apache License, Version 2.0.
     init_mathjax();
     </script>
     <!-- End of mathjax configuration --><div class="jupyter-wrapper">
-<div id="cell-id=9f78f58b" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=cf36c2cf" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4110,7 +4110,7 @@ Licensed under the Apache License, Version 2.0.
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=64f3dbce" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=8c13ba25" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4142,17 +4142,19 @@ Licensed under the Apache License, Version 2.0.
 
 </div>
 </div>
-<div id="cell-id=356d3b75" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=878a4b06" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="step-1-clone-conda-env">Step 1 - Clone conda env<a class="anchor-link" href="#step-1-clone-conda-env">&#182;</a></h2><p>Clone the <code>arcgispro-py3</code> conda environment and name it as <code>gee</code> (or whatever name you prefer)</p>
-<p><img src="https://i.imgur.com/inZw6mR.png" alt="" /></p>
-<h2 id="step-2-install-geemap">Step 2 - Install geemap<a class="anchor-link" href="#step-2-install-geemap">&#182;</a></h2><p>Open Command Prompt or PowerShell to install geemap.</p>
-<p><code>AppData\Local\ESRI\conda\envs\gee\Scripts\pip.exe install geemap</code></p>
-<p><img src="https://i.imgur.com/AmBULc5.png" alt="" /></p>
+<h2 id="step-1-open-arcgis-python-command-prompt">Step 1 - Open ArcGIS Python Command Prompt<a class="anchor-link" href="#step-1-open-arcgis-python-command-prompt">&#182;</a></h2><p>Navigate to the <strong>Start Menu -&gt; All apps -&gt; ArcGIS</strong> folder, then open the <strong>Python Command Prompt</strong>.</p>
+<h2 id="step-2-create-a-conda-environment">Step 2 - Create a conda environment<a class="anchor-link" href="#step-2-create-a-conda-environment">&#182;</a></h2><p>Create a fresh conda env to install arcpy and geemap with the following commands within the Python Command Prompt:</p>
+<div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>conda-forge::mamba<span class="w"> </span>esri::python<span class="w"> </span>-n<span class="w"> </span>gee
+conda<span class="w"> </span>activate<span class="w"> </span>gee
+mamba<span class="w"> </span>install<span class="w"> </span>arcpy<span class="w"> </span>geemap<span class="w"> </span>-c<span class="w"> </span>esri<span class="w"> </span>-c<span class="w"> </span>conda-forge
+proswap<span class="w"> </span>gee
+</pre></div>
 <h2 id="step-3-create-a-new-notebook">Step 3 - Create a New Notebook<a class="anchor-link" href="#step-3-create-a-new-notebook">&#182;</a></h2><p>To create a notebook, click the <strong>Insert</strong> tab on the ArcGIS Pro ribbon, and click the <strong>New Notebook</strong> button. Alternatively, open the <strong>Catalog</strong> pane, browse to your project directory, right-click a folder, and select <strong>New &gt; Notebook</strong>.</p>
 <h2 id="step-4-run-gee-script">Step 4 - Run GEE script<a class="anchor-link" href="#step-4-run-gee-script">&#182;</a></h2><p>Run any geemap code as usual. The <code>Map.addLayer()</code> function will automatically add Earth Engine layers to the active map. Use <code>Map.centerObject()</code> to center an Earth Engine object on the map.</p>
 
@@ -4160,7 +4162,7 @@ Licensed under the Apache License, Version 2.0.
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=baf708b3" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=57322641" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4194,7 +4196,7 @@ import geemap</div>
 
 </div>
 </div>
-<div id="cell-id=d742d55a" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=2a1440aa" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4206,7 +4208,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=7469b81b" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=333ddde6" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4254,7 +4256,7 @@ Map</div>
 
 </div>
 </div>
-<div id="cell-id=58aaa415" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div id="cell-id=8f153147" class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4266,7 +4268,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div id="cell-id=a4a2c415" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div id="cell-id=5ba47e07" class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4331,7 +4333,7 @@ Map</div>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-30T18:31:08+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-30</span>
       
         <br>
         Created:
