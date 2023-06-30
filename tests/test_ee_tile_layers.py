@@ -7,7 +7,7 @@ import box
 import ee
 
 from geemap import ee_tile_layers
-from . import fake_ee
+from tests import fake_ee
 
 
 @patch.object(ee, "Feature", fake_ee.Feature)
