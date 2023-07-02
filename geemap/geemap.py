@@ -267,6 +267,15 @@ class Map(ipyleaflet.Map):
             layer (object): The layer or control to add to the map.
         """
         if isinstance(object, str):
+            map_dict = {
+                "ROADMAP": "Google Maps",
+                "SATELLITE": "Google Satellite",
+                "TERRAIN": "Google Terrain",
+                "HYBRID": "Google Hybrid",
+            }
+            if object.upper() in map_dict.keys():
+                object = map_dict[object.upper()]
+
             if object in basemaps.keys():
                 object = get_basemap(object)
 
@@ -552,6 +561,17 @@ class Map(ipyleaflet.Map):
 
         try:
             layer_names = self.get_layer_names()
+
+            map_dict = {
+                "ROADMAP": "Google Maps",
+                "SATELLITE": "Google Satellite",
+                "TERRAIN": "Google Terrain",
+                "HYBRID": "Google Hybrid",
+            }
+
+            if isinstance(basemap, str):
+                if basemap.upper() in map_dict:
+                    basemap = map_dict[basemap.upper()]
 
             if isinstance(basemap, xyzservices.TileProvider):
                 name = basemap.name
