@@ -1699,7 +1699,7 @@ class Map(folium.Map):
             icon_shape (str, optional): The shape of the marker, such as "retangle-dot", "circle-dot". Defaults to 'circle-dot'.
             border_width (int, optional): The width of the border. Defaults to 3.
             border_color (str, optional): The color of the border. Defaults to '#0000ff'.
-            kwargs (dict, optional): Additional keyword arguments to pass to BeautifyIcon. See 
+            kwargs (dict, optional): Additional keyword arguments to pass to BeautifyIcon. See
                 https://python-visualization.github.io/folium/plugins.html#folium.plugins.BeautifyIcon.
 
         """
@@ -1725,7 +1725,6 @@ class Map(folium.Map):
 
         if y not in col_names:
             raise ValueError(f"y must be one of the following: {', '.join(col_names)}")
-
 
         for row in df.itertuples():
             html = ""

@@ -51,7 +51,7 @@ class TestXyzToLeaflet(unittest.TestCase):
         expected_keys = {
             "custom_xyz": "OpenStreetMap",
             "custom_wms": "USGS NAIP Imagery",
-            "xyzservices_xyz": "Stamen.Terrain"
+            "xyzservices_xyz": "Stamen.Terrain",
         }
         for _, expected_name in expected_keys.items():
             self.assertIn(expected_name, self.tiles)
@@ -63,7 +63,7 @@ class FakeProvider(xyzservices.TileProvider):
             name=name,
             url=url,
             attribution="&copy; Fake Provider",
-            accessToken="<insert your access token here>"
+            accessToken="<insert your access token here>",
         )
 
 
@@ -80,10 +80,7 @@ class FakeXyz(xyzservices.Bunch):
         self.providers = xyzservices.Bunch(
             a=self.fake_tile_a,
             b=self.fake_tile_b,
-            c=xyzservices.Bunch(
-                c_1=self.fake_tile_c_1,
-                c_2=self.fake_tile_c_France
-            )
+            c=xyzservices.Bunch(c_1=self.fake_tile_c_1, c_2=self.fake_tile_c_France),
         )
 
 
@@ -104,8 +101,9 @@ class TestGetXyzDict(unittest.TestCase):
         self.assertIn("accessToken", tile_a_keys)
         self.assertEqual("xyz", tile_a["type"])
         self.assertEqual("a", tile_a.name)
-        self.assertEqual("https://fake-server.com/tiles/{z}/{x}/{y}",
-                         tile_a.build_url())
+        self.assertEqual(
+            "https://fake-server.com/tiles/{z}/{x}/{y}", tile_a.build_url()
+        )
 
     def test_get_xyz_dict_free_tiles(self):
         """Tests that get_xyz_dict correctly filters for free tile layers."""

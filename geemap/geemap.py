@@ -5,6 +5,7 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 """
 
 import os
+import warnings
 
 import ee
 import ipyleaflet
@@ -38,8 +39,6 @@ class Map(ipyleaflet.Map):
     """
 
     def __init__(self, **kwargs):
-        import warnings
-
         warnings.filterwarnings("ignore")
 
         # Authenticates Earth Engine and initializes an Earth Engine session
@@ -104,7 +103,7 @@ class Map(ipyleaflet.Map):
         if "search_ctrl" not in kwargs:
             kwargs["search_ctrl"] = False
         if "measure_ctrl" not in kwargs:
-            kwargs["measure_ctrl"] = True
+            kwargs["measure_ctrl"] = False
         if "scale_ctrl" not in kwargs:
             kwargs["scale_ctrl"] = True
         if "layer_ctrl" not in kwargs:
@@ -6457,7 +6456,7 @@ class Map(ipyleaflet.Map):
         draw_control = ipyleaflet.DrawControl(
             marker={"shapeOptions": {"color": "#3388ff"}},
             rectangle={"shapeOptions": {"color": "#3388ff"}},
-            circle={"shapeOptions": {"color": "#3388ff"}},
+            # circle={"shapeOptions": {"color": "#3388ff"}},
             circlemarker={},
             edit=True,
             remove=True,
