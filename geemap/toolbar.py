@@ -4314,11 +4314,12 @@ def inspector_gui(m=None):
         return toolbar_widget
 
 
-def search_data_gui(m):
+def search_data_gui(m, position="topleft"):
     """The GUI widget for searching Earth Engine data catalog.
 
     Args:
         m (geemap.Map): The geemap.Map object.
+        position (str, optional): The position of the widget. Defaults to "topleft".
     """
 
     # Adds search button and search box
@@ -4614,7 +4615,7 @@ def search_data_gui(m):
 
     search_event.on_dom_event(handle_search_event)
 
-    data_control = ipyleaflet.WidgetControl(widget=search_widget, position="topleft")
+    data_control = ipyleaflet.WidgetControl(widget=search_widget, position=position)
 
     m.add(data_control)
 

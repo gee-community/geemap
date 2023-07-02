@@ -76,43 +76,6 @@ class Map(ipyleaflet.Map):
         if "scroll_wheel_zoom" not in kwargs:
             kwargs["scroll_wheel_zoom"] = True
 
-        # Whether to use lite mode, which contains only the zoom control.
-        if "lite_mode" not in kwargs:
-            kwargs["lite_mode"] = False
-        if kwargs["lite_mode"]:
-            kwargs["data_ctrl"] = False
-            kwargs["zoom_ctrl"] = True
-            kwargs["fullscreen_ctrl"] = False
-            kwargs["draw_ctrl"] = False
-            kwargs["search_ctrl"] = False
-            kwargs["measure_ctrl"] = False
-            kwargs["scale_ctrl"] = False
-            kwargs["layer_ctrl"] = False
-            kwargs["toolbar_ctrl"] = False
-            kwargs["attribution_ctrl"] = False
-
-        # Default controls to use
-        if "data_ctrl" not in kwargs:
-            kwargs["data_ctrl"] = True
-        if "zoom_ctrl" not in kwargs:
-            kwargs["zoom_ctrl"] = True
-        if "fullscreen_ctrl" not in kwargs:
-            kwargs["fullscreen_ctrl"] = True
-        if "draw_ctrl" not in kwargs:
-            kwargs["draw_ctrl"] = True
-        if "search_ctrl" not in kwargs:
-            kwargs["search_ctrl"] = False
-        if "measure_ctrl" not in kwargs:
-            kwargs["measure_ctrl"] = False
-        if "scale_ctrl" not in kwargs:
-            kwargs["scale_ctrl"] = True
-        if "layer_ctrl" not in kwargs:
-            kwargs["layer_ctrl"] = False
-        if "toolbar_ctrl" not in kwargs:
-            kwargs["toolbar_ctrl"] = True
-        if "attribution_ctrl" not in kwargs:
-            kwargs["attribution_ctrl"] = True
-
         # Use any basemap available through the basemap module, such as 'ROADMAP', 'OpenTopoMap'
         if "basemap" in kwargs:
             if isinstance(kwargs["basemap"], str):
@@ -137,6 +100,40 @@ class Map(ipyleaflet.Map):
 
         # Remove all default controls
         self.clear_controls()
+
+        if kwargs.get("lite_mode"):
+            self.add_controls("zoom_ctrl", position="topleft")
+        else:
+            topleft_controls = [
+                "data_ctrl",
+                "zoom_ctrl",
+                "fullscreen_ctrl",
+                "draw_ctrl",
+            ]
+            bottomleft_controls = [
+                "scale_ctrl",
+                "measure_ctrl",
+            ]
+            topright_controls = [
+                "toolbar_ctrl",
+            ]
+            bottomright_controls = ["attribution_ctrl"]
+
+            for control in topleft_controls:
+                if kwargs.get(control, True):
+                    self.add_controls(control, position="topleft")
+            for control in bottomleft_controls:
+                if kwargs.get(control, True):
+                    self.add_controls(control, position="bottomleft")
+            for control in topright_controls:
+                if kwargs.get(control, True):
+                    self.add_controls(control, position="topright")
+            for control in bottomright_controls:
+                if kwargs.get(control, True):
+                    self.add_controls(control, position="bottomright")
+
+        if kwargs.get("add_google_map"):
+            self.add("ROADMAP")
 
         # The number of shapes drawn by the user using the DrawControl
         self.draw_count = 0
@@ -197,50 +194,6 @@ class Map(ipyleaflet.Map):
         self._expand_pixels = True
         self._expand_objects = False
 
-        if kwargs.get("data_ctrl"):
-            from .toolbar import search_data_gui
-
-            search_data_gui(self)
-
-        if kwargs.get("search_ctrl"):
-            self.add_search_control()
-
-        if kwargs.get("zoom_ctrl"):
-            self.add(ipyleaflet.ZoomControl(position="topleft"))
-
-        if kwargs.get("layer_ctrl"):
-            layer_control = ipyleaflet.LayersControl(position="topright")
-            self.layer_control = layer_control
-            self.add(layer_control)
-
-        if kwargs.get("scale_ctrl"):
-            scale = ipyleaflet.ScaleControl(position="bottomleft")
-            self.scale_control = scale
-            self.add(scale)
-
-        if kwargs.get("fullscreen_ctrl"):
-            fullscreen = ipyleaflet.FullScreenControl()
-            self.fullscreen_control = fullscreen
-            self.add(fullscreen)
-
-        if kwargs.get("measure_ctrl"):
-            measure = ipyleaflet.MeasureControl(
-                position="bottomleft",
-                active_color="orange",
-                primary_length_unit="kilometers",
-            )
-            self.measure_control = measure
-            self.add(measure)
-
-        if kwargs.get("add_google_map"):
-            self.add("ROADMAP")
-
-        if kwargs.get("attribution_ctrl"):
-            self.add(ipyleaflet.AttributionControl(position="bottomright"))
-
-        if kwargs.get("draw_ctrl"):
-            self.add_draw_control()
-
         # Dropdown widget for plotting
         self.plot_dropdown_control = None
         self.plot_dropdown_widget = None
@@ -255,9 +208,6 @@ class Map(ipyleaflet.Map):
         tool_output = widgets.Output()
         self.tool_output = tool_output
         tool_output.outputs = ()
-
-        if kwargs.get("toolbar_ctrl"):
-            self.add_toolbar()
 
     def add(self, object):
         """Adds a layer or control to the map.
@@ -282,6 +232,65 @@ class Map(ipyleaflet.Map):
 
         if hasattr(self, "layer_manager_widget"):
             self.update_layer_manager()
+
+    def add_controls(self, controls, position="topleft"):
+        """Adds a list of controls to the map.
+
+        Args:
+            controls (list): A list of controls to add to the map.
+            position (str, optional): The position of the controls on the map. Defaults to 'topleft'.
+        """
+        if not isinstance(controls, list):
+            controls = [controls]
+        for control in controls:
+            if isinstance(control, str):
+                control = control.lower()
+
+                if control == "data_ctrl":
+                    from .toolbar import search_data_gui
+
+                    search_data_gui(self, position=position)
+
+                elif control == "zoom_ctrl":
+                    self.add(ipyleaflet.ZoomControl(position=position))
+
+                elif control == "fullscreen_ctrl":
+                    fullscreen = ipyleaflet.FullScreenControl(position=position)
+                    self.add(fullscreen)
+
+                elif control == "search_ctrl":
+                    self.add_search_control(position=position)
+
+                elif control == "draw_ctrl":
+                    self.add_draw_control(position=position)
+
+                elif control == "scale_ctrl":
+                    scale_control = ipyleaflet.ScaleControl(position=position)
+                    self.add(scale_control)
+
+                elif control == "measure_ctrl":
+                    measure = ipyleaflet.MeasureControl(
+                        position=position,
+                        active_color="orange",
+                        primary_length_unit="kilometers",
+                    )
+                    self.add(measure)
+
+                elif control == 'toolbar_ctrl':
+                    self.add_toolbar(position=position)
+
+                elif control == "layer_ctrl":
+                    layer_control = ipyleaflet.LayersControl(position=position)
+                    self.add(layer_control)
+
+                elif control == "attribution_ctrl":
+                    attribution = ipyleaflet.AttributionControl(position=position)
+                    self.add(attribution)
+
+                else:
+                    raise ValueError(f'Unsupported control: {control}')
+            else:
+                self.add(control)
 
     def set_options(self, mapTypeId="HYBRID", styles=None, types=None):
         """Adds Google basemap and controls to the ipyleaflet map.
@@ -1300,11 +1309,14 @@ class Map(ipyleaflet.Map):
 
     setControlVisibility = set_control_visibility
 
-    def add_layer_control(self):
-        """Adds the layer control to the map."""
+    def add_layer_control(self, position="topright"):
+        """Adds a layer control to the map.
+
+        Args:
+            position (str, optional): _description_. Defaults to "topright".
+        """
         if self.layer_control is None:
-            layer_control = ipyleaflet.LayersControl(position="topright")
-            self.layer_control = layer_control
+            layer_control = ipyleaflet.LayersControl(position=position)
             self.add(layer_control)
 
     addLayerControl = add_layer_control
@@ -6450,7 +6462,7 @@ class Map(ipyleaflet.Map):
         )
         self.add(search)
 
-    def add_draw_control(self):
+    def add_draw_control(self, position="topleft"):
         """Add a draw control to the map"""
 
         draw_control = ipyleaflet.DrawControl(
@@ -6460,6 +6472,7 @@ class Map(ipyleaflet.Map):
             circlemarker={},
             edit=True,
             remove=True,
+            position=position,
         )
 
         # Handles draw events
@@ -6507,7 +6520,7 @@ class Map(ipyleaflet.Map):
         self.add(draw_control)
         self.draw_control = draw_control
 
-    def add_draw_control_lite(self):
+    def add_draw_control_lite(self, position="topleft"):
         """Add a lite version draw control to the map for the plotting tool."""
 
         draw_control_lite = ipyleaflet.DrawControl(
@@ -6519,6 +6532,7 @@ class Map(ipyleaflet.Map):
             polygon={},
             edit=False,
             remove=False,
+            position=position,
         )
         self.draw_control_lite = draw_control_lite
 
