@@ -68,10 +68,6 @@ class Map(ipyleaflet.Map):
         if "max_zoom" not in kwargs:
             kwargs["max_zoom"] = 24
 
-        # Add Google Maps as the default basemap
-        if "add_google_map" not in kwargs and "basemap" not in kwargs:
-            kwargs["add_google_map"] = True
-
         # Enable scroll wheel zoom by default
         if "scroll_wheel_zoom" not in kwargs:
             kwargs["scroll_wheel_zoom"] = True
@@ -97,6 +93,10 @@ class Map(ipyleaflet.Map):
             else:
                 print("The sandbox path is invalid.")
                 self.sandbox_path = None
+
+        # Add Google Maps as the default basemap
+        if kwargs.get("add_google_map", True):
+            self.add("Google Maps")
 
         # Remove all default controls
         self.clear_controls()
@@ -132,40 +132,34 @@ class Map(ipyleaflet.Map):
                 if kwargs.get(control, True):
                     self.add_controls(control, position="bottomright")
 
-        if kwargs.get("add_google_map"):
-            self.add("ROADMAP")
+        #### Hidden attributes
 
         # The number of shapes drawn by the user using the DrawControl
-        self.draw_count = 0
+        self._draw_count = 0
+        # Flag for whether the user is currently drawing a shape using the DrawControl
+        self._roi_start = False
+        self._roi_end = False
+        # List for storing pixel values and locations based on user-drawn geometries.
+        self._chart_points = []
+        self._chart_values = []
+        self._chart_labels = None
+
+        self._expand_point = False
+        self._expand_pixels = True
+        self._expand_objects = False
+
+
         # The list of Earth Engine Geometry objects converted from geojson
         self.draw_features = []
         # The Earth Engine Geometry object converted from the last drawn feature
         self.draw_last_feature = None
         self.draw_layer = None
-        self.draw_last_json = None
-        self.draw_last_bounds = None
         self.user_roi = None
         self.user_rois = None
-        self.last_ee_data = None
-        self.last_ee_layer = None
         self.geojson_layers = []
-
-        self.roi_start = False
-        self.roi_end = False
-
-        # Default reducer to use
-        if kwargs["ee_initialize"]:
-            self.roi_reducer = ee.Reducer.mean()
-        self.roi_reducer_scale = None
-
-        # List for storing pixel values and locations based on user-drawn geometries.
-        self.chart_points = []
-        self.chart_values = []
-        self.chart_labels = None
 
         self.plot_widget = None  # The plot widget for plotting Earth Engine data
         self.plot_control = None  # The plot control for interacting plotting
-        self.random_marker = None
 
         self.legend_widget = None
         self.legend = None
@@ -190,9 +184,6 @@ class Map(ipyleaflet.Map):
         self.layer_control = None
         self.convert_ctrl = None
         self.toolbar_ctrl = None
-        self._expand_point = False
-        self._expand_pixels = True
-        self._expand_objects = False
 
         # Dropdown widget for plotting
         self.plot_dropdown_control = None
@@ -208,6 +199,11 @@ class Map(ipyleaflet.Map):
         tool_output = widgets.Output()
         self.tool_output = tool_output
         tool_output.outputs = ()
+
+        # Default reducer to use
+        if kwargs["ee_initialize"]:
+            self.roi_reducer = ee.Reducer.mean()
+        self.roi_reducer_scale = None
 
     def add(self, object):
         """Adds a layer or control to the map.
@@ -372,8 +368,6 @@ class Map(ipyleaflet.Map):
         }
 
         self.add(tile_layer)
-        self.last_ee_layer = self.ee_layer_dict[name]
-        self.last_ee_data = self.ee_layer_dict[name]["ee_object"]
 
         if isinstance(ee_object, (ee.Image, ee.ImageCollection)):
             self.ee_raster_layers.append(ee_object)
@@ -1095,7 +1089,7 @@ class Map(ipyleaflet.Map):
         import numpy as np
         import time
 
-        if self.random_marker is not None:
+        if hasattr(self, 'random_marker') and self.random_marker is not None:
             self.remove_layer(self.random_marker)
 
         image = ee.Image("LANDSAT/LE7_TOA_5YEAR/1999_2003").select([0, 1, 2, 3, 4, 6])
@@ -1175,7 +1169,7 @@ class Map(ipyleaflet.Map):
             if self.plot_control in self.controls:
                 self.remove_control(self.plot_control)
 
-        if self.random_marker is not None:
+        if hasattr(self, 'random_marker') and self.random_marker is not None:
             self.remove_layer(self.random_marker)
 
         plot_widget = widgets.Output(layout={"border": "1px solid black"})
@@ -2630,17 +2624,15 @@ class Map(ipyleaflet.Map):
         """Removes user-drawn geometries from the map"""
         if self.draw_layer is not None:
             self.remove_layer(self.draw_layer)
-            self.draw_count = 0
+            self._draw_count = 0
             self.draw_features = []
             self.draw_last_feature = None
             self.draw_layer = None
-            self.draw_last_json = None
-            self.draw_last_bounds = None
             self.user_roi = None
             self.user_rois = None
-            self.chart_values = []
-            self.chart_points = []
-            self.chart_labels = None
+            self._chart_values = []
+            self._chart_points = []
+            self._chart_labels = None
         if self.draw_control is not None:
             self.draw_control.clear()
 
@@ -2651,26 +2643,24 @@ class Map(ipyleaflet.Map):
             ee_draw_layer = EELeafletTileLayer(
                 collection, {"color": "blue"}, "Drawn Features", True, 0.5
             )
-            if self.draw_count == 1:
+            if self._draw_count == 1:
                 self.remove_drawn_features()
             else:
                 self.substitute_layer(self.draw_layer, ee_draw_layer)
                 self.draw_layer = ee_draw_layer
-                self.draw_count -= 1
+                self._draw_count -= 1
                 self.draw_features = self.draw_features[:-1]
                 self.draw_last_feature = self.draw_features[-1]
                 self.draw_layer = ee_draw_layer
-                self.draw_last_json = None
-                self.draw_last_bounds = None
                 self.user_roi = ee.Feature(
                     collection.toList(collection.size()).get(
                         collection.size().subtract(1)
                     )
                 ).geometry()
                 self.user_rois = collection
-                self.chart_values = self.chart_values[:-1]
-                self.chart_points = self.chart_points[:-1]
-                # self.chart_labels = None
+                self._chart_values = self._chart_values[:-1]
+                self._chart_points = self._chart_points[:-1]
+                # self._chart_labels = None
 
     def extract_values_to_points(self, filename):
         """Exports pixel values to a csv file based on user-drawn geometries.
@@ -2698,15 +2688,15 @@ class Map(ipyleaflet.Map):
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
 
-        count = len(self.chart_points)
+        count = len(self._chart_points)
         out_list = []
         if count > 0:
-            header = ["id", "longitude", "latitude"] + self.chart_labels
+            header = ["id", "longitude", "latitude"] + self._chart_labels
             out_list.append(header)
 
             for i in range(0, count):
                 id = i + 1
-                line = [id] + self.chart_points[i] + self.chart_values[i]
+                line = [id] + self._chart_points[i] + self._chart_values[i]
                 out_list.append(line)
 
             with open(out_csv, "w", newline="") as f:
@@ -6478,18 +6468,17 @@ class Map(ipyleaflet.Map):
         # Handles draw events
         def handle_draw(target, action, geo_json):
             try:
-                self.roi_start = True
+                self._roi_start = True
                 geom = geojson_to_ee(geo_json, False)
                 self.user_roi = geom
                 feature = ee.Feature(geom)
-                self.draw_last_json = geo_json
                 self.draw_last_feature = feature
                 if action == "deleted" and len(self.draw_features) > 0:
                     self.draw_features.remove(feature)
-                    self.draw_count -= 1
+                    self._draw_count -= 1
                 else:
                     self.draw_features.append(feature)
-                    self.draw_count += 1
+                    self._draw_count += 1
                 collection = ee.FeatureCollection(self.draw_features)
                 self.user_rois = collection
                 ee_draw_layer = EELeafletTileLayer(
@@ -6503,16 +6492,16 @@ class Map(ipyleaflet.Map):
                 else:
                     self.substitute_layer(self.draw_layer, ee_draw_layer)
                     self.draw_layer = ee_draw_layer
-                self.roi_end = True
-                self.roi_start = False
+                self._roi_end = True
+                self._roi_start = False
             except Exception as e:
-                self.draw_count = 0
+                self._draw_count = 0
                 self.draw_features = []
                 self.draw_last_feature = None
                 self.draw_layer = None
                 self.user_roi = None
-                self.roi_start = False
-                self.roi_end = False
+                self._roi_start = False
+                self._roi_end = False
                 print("There was an error creating Earth Engine Feature.")
                 raise Exception(e)
 

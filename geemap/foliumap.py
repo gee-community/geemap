@@ -118,18 +118,14 @@ class Map(folium.Map):
         self.baseclass = "folium"
 
         # The number of shapes drawn by the user using the DrawControl
-        self.draw_count = 0
+        self._draw_count = 0
         # The list of Earth Engine Geometry objects converted from geojson
         self.draw_features = []
         # The Earth Engine Geometry object converted from the last drawn feature
         self.draw_last_feature = None
         self.draw_layer = None
-        self.draw_last_json = None
-        self.draw_last_bounds = None
         self.user_roi = None
         self.user_rois = None
-        self.last_ee_data = None
-        self.last_ee_layer = None
         self.search_locations = None
         self.search_loc_marker = None
         self.search_loc_geom = None

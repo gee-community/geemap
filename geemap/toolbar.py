@@ -839,14 +839,13 @@ def collect_samples(m):
                         feature = ee.Feature(geom, train_props)
                     else:
                         feature = ee.Feature(geom)
-                    m.draw_last_json = geo_json
                     m.draw_last_feature = feature
                     if action == "deleted" and len(m.draw_features) > 0:
                         m.draw_features.remove(feature)
-                        m.draw_count -= 1
+                        m._draw_count -= 1
                     else:
                         m.draw_features.append(feature)
-                        m.draw_count += 1
+                        m._draw_count += 1
                     collection = ee.FeatureCollection(m.draw_features)
                     m.user_rois = collection
                     ee_draw_layer = EELeafletTileLayer(
@@ -862,13 +861,13 @@ def collect_samples(m):
                         m.draw_layer = ee_draw_layer
 
                 except Exception as e:
-                    m.draw_count = 0
+                    m._draw_count = 0
                     m.draw_features = []
                     m.draw_last_feature = None
                     m.draw_layer = None
                     m.user_roi = None
-                    m.roi_start = False
-                    m.roi_end = False
+                    m._roi_start = False
+                    m._roi_end = False
                     print("There was an error creating Earth Engine Feature.")
                     raise Exception(e)
 
@@ -5031,7 +5030,10 @@ def layer_manager_gui(
         m.layer_manager_widget = toolbar_footer
 
     if return_widget:
-        return m.layer_widget
+        if hasattr(m, "layer_widget"):
+            return m.layer_widget
+        else:
+            return
     else:
         layer_control = ipyleaflet.WidgetControl(
             widget=toolbar_widget, position=position
@@ -5393,9 +5395,9 @@ def ee_plot_gui(m, position="topright", **kwargs):
                 if any(len(name) > 3 for name in band_names):
                     band_names = list(range(1, len(band_names) + 1))
 
-                m.chart_labels = band_names
+                m._chart_labels = band_names
 
-                if m.roi_end:
+                if m._roi_end:
                     if m.roi_reducer_scale is None:
                         scale = ee_object.select(0).projection().nominalScale()
                     else:
@@ -5410,7 +5412,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
                     dict_values = dict(
                         zip(b_names, [dict_values_tmp[b] for b in b_names])
                     )
-                    m.chart_points.append(
+                    m._chart_points.append(
                         m.user_roi.centroid(1).coordinates().getInfo()
                     )
                 else:
@@ -5425,14 +5427,14 @@ def ee_plot_gui(m, position="topright", **kwargs):
                     dict_values = dict(
                         zip(b_names, [dict_values_tmp[b] for b in b_names])
                     )
-                    m.chart_points.append(xy.coordinates().getInfo())
+                    m._chart_points.append(xy.coordinates().getInfo())
                 band_values = list(dict_values.values())
-                m.chart_values.append(band_values)
+                m._chart_values.append(band_values)
                 m.plot(band_names, band_values, **plot_options)
                 if plot_options["title"] == plot_layer_name:
                     del plot_options["title"]
                 m.default_style = {"cursor": "crosshair"}
-                m.roi_end = False
+                m._roi_end = False
             except Exception as e:
                 if m.plot_widget is not None:
                     with m.plot_widget:
@@ -5441,7 +5443,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
                 else:
                     print(e)
                 m.default_style = {"cursor": "crosshair"}
-                m.roi_end = False
+                m._roi_end = False
 
     m.on_interaction(handle_interaction)
 
