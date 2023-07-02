@@ -272,7 +272,7 @@ class Map(ipyleaflet.Map):
 
         tool_output = widgets.Output()
         self.tool_output = tool_output
-        tool_output.clear_output(wait=True)
+        tool_output.outputs = ()
 
         if kwargs.get("toolbar_ctrl"):
             self.add_toolbar()
@@ -1036,7 +1036,7 @@ class Map(ipyleaflet.Map):
                 if max_height is not None:
                     fig.layout.height = str(max_height) + "px"
 
-                plot_widget.clear_output(wait=True)
+                plot_widget.outputs = ()
                 if not overlay:
                     plt.clear()
 
@@ -1241,7 +1241,7 @@ class Map(ipyleaflet.Map):
                 except Exception as e:
                     if self.plot_widget is not None:
                         with self.plot_widget:
-                            self.plot_widget.clear_output()
+                            self.plot_widget.outputs = ()
                             print("No data for the clicked location.")
                     else:
                         print(e)
@@ -2037,7 +2037,7 @@ class Map(ipyleaflet.Map):
             transparent_bg=transparent_bg,
         )
         with output:
-            output.clear_output()
+            output.outputs = ()
             plt.show()
 
         self.colorbar = colormap_ctrl
@@ -2120,7 +2120,7 @@ class Map(ipyleaflet.Map):
             **kwargs,
         )
         with output:
-            output.clear_output()
+            output.outputs = ()
             display(colormap)
 
         self.colorbar = colormap_ctrl
@@ -2888,7 +2888,7 @@ class Map(ipyleaflet.Map):
 
                         colorbar_output = self.colorbar_widget
                         with colorbar_output:
-                            colorbar_output.clear_output()
+                            colorbar_output.outputs = ()
                             plt.show()
 
                         if len(palette.value) > 0 and "," in palette.value:
@@ -3081,7 +3081,7 @@ class Map(ipyleaflet.Map):
 
                     colorbar_output = self.colorbar_widget
                     with colorbar_output:
-                        colorbar_output.clear_output()
+                        colorbar_output.outputs = ()
                         plt.show()
                         # display(colorbar)
 
@@ -3208,7 +3208,7 @@ class Map(ipyleaflet.Map):
                             )
                 else:
                     if radio1.index == 0 and "palette" in vis:
-                        self.colorbar_widget.clear_output()
+                        self.colorbar_widget.outputs = ()
                         with self.colorbar_widget:
                             _, ax = plt.subplots(figsize=(6, 0.4))
                             colors = to_hex_colors(vis["palette"])
@@ -3313,7 +3313,7 @@ class Map(ipyleaflet.Map):
                         [color.strip() for color in palette.value.split(",")]
                     )
 
-                    self.colorbar_widget.clear_output()
+                    self.colorbar_widget.outputs = ()
                     with self.colorbar_widget:
                         _, ax = plt.subplots(figsize=(6, 0.4))
                         cmap = mpl.colors.LinearSegmentedColormap.from_list(
@@ -3377,7 +3377,7 @@ class Map(ipyleaflet.Map):
                     if self.colorbar_ctrl not in self.controls:
                         self.add(self.colorbar_ctrl)
 
-                    self.colorbar_widget.clear_output()
+                    self.colorbar_widget.outputs = ()
                     with self.colorbar_widget:
                         plt.show()
 
@@ -3677,7 +3677,7 @@ class Map(ipyleaflet.Map):
 
                         colorbar_output = self.colorbar_widget
                         with colorbar_output:
-                            colorbar_output.clear_output()
+                            colorbar_output.outputs = ()
                             plt.show()
 
                         if len(palette.value) > 0 and "," in palette.value:
@@ -3724,7 +3724,7 @@ class Map(ipyleaflet.Map):
 
                     colorbar_output = self.colorbar_widget
                     with colorbar_output:
-                        colorbar_output.clear_output()
+                        colorbar_output.outputs = ()
                         plt.show()
                         # display(colorbar)
 

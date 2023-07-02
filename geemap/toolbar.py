@@ -175,11 +175,11 @@ def tool_template(m=None, opened=True):
     def button_clicked(change):
         if change["new"] == "Apply":
             with output:
-                output.clear_output()
+                output.outputs = ()
                 print("Running ...")
         elif change["new"] == "Reset":
             textarea.value = ""
-            output.clear_output()
+            output.outputs = ()
         elif change["new"] == "Close":
             if m is not None:
                 m.toolbar_reset()
@@ -279,10 +279,10 @@ def tool_header_template(m=None, opened=True, show_close_button=True):
     def button_clicked(change):
         if change["new"] == "Apply":
             with output:
-                output.clear_output()
+                output.outputs = ()
                 print("Running ...")
         elif change["new"] == "Reset":
-            output.clear_output()
+            output.outputs = ()
         elif change["new"] == "Close":
             if m is not None:
                 m.toolbar_reset()
@@ -458,7 +458,7 @@ def open_data_widget(m):
         ]
     )
 
-    tool_output.clear_output()
+    tool_output.outputs = ()
     with tool_output:
         display(main_widget)
 
@@ -609,7 +609,7 @@ def open_data_widget(m):
 
         elif change["new"] == "Reset":
             file_chooser.reset()
-            tool_output.clear_output()
+            tool_output.outputs = ()
             with tool_output:
                 display(main_widget)
             m.toolbar_reset()
@@ -969,7 +969,7 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
     tool_widget.children = children
 
     def run_button_clicked(b):
-        tool_output.clear_output()
+        tool_output.outputs = ()
 
         required_params = required_inputs.copy()
         args2 = []
@@ -1007,7 +1007,7 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
     def help_button_clicked(b):
         import webbrowser
 
-        tool_output.clear_output()
+        tool_output.outputs = ()
         with tool_output:
             html = widgets.HTML(
                 value=f'<a href={tool_dict["link"]} target="_blank">{tool_dict["link"]}</a>'
@@ -1026,10 +1026,10 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
         webbrowser.open_new_tab(tool_dict["link"])
 
     def cancel_btn_clicked(b):
-        tool_output.clear_output()
+        tool_output.outputs = ()
 
     def import_button_clicked(b):
-        tool_output.clear_output()
+        tool_output.outputs = ()
 
         content = []
 
@@ -1110,7 +1110,7 @@ def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
             selected = change["owner"].value
             tool_dict = tools_dict[selected]
             with right_widget:
-                right_widget.clear_output()
+                right_widget.outputs = ()
                 display(tool_gui(tool_dict, max_height=max_height))
 
     tools_widget.observe(tool_selected, "value")
@@ -1445,7 +1445,7 @@ def timelapse_gui(m=None):
             out_gif = os.path.join(out_dir, "timelapse_" + random_string(3) + ".gif")
 
             with temp_output:
-                temp_output.clear_output()
+                temp_output.outputs = ()
                 m.add_landsat_ts_gif(
                     roi=m.user_roi,
                     label=title.value,
@@ -1492,7 +1492,7 @@ def timelapse_gui(m=None):
     )
 
     def reset_btn_click(change):
-        output.clear_output()
+        output.outputs = ()
 
     reset_btn.on_click(reset_btn_click)
 
@@ -1866,7 +1866,7 @@ def time_slider(m=None):
 
                 colorbar_output = m.colorbar_widget
                 with colorbar_output:
-                    colorbar_output.clear_output()
+                    colorbar_output.outputs = ()
                     plt.show()
 
     classes.observe(classes_changed, "value")
@@ -1943,7 +1943,7 @@ def time_slider(m=None):
 
             colorbar_output = m.colorbar_widget
             with colorbar_output:
-                colorbar_output.clear_output()
+                colorbar_output.outputs = ()
                 plt.show()
 
     colormap.observe(colormap_changed, "value")
@@ -2070,7 +2070,7 @@ def time_slider(m=None):
     )
 
     def submit_clicked(b):
-        output.clear_output()
+        output.outputs = ()
         with output:
             if start_year.value > end_year.value:
                 print("The end year must be great than the start year.")
@@ -2177,7 +2177,7 @@ def time_slider(m=None):
                         or band3_dropdown.value == "N"
                     ):
                         with output:
-                            output.clear_output()
+                            output.outputs = ()
                             print("4-band NAIP imagery not available before 2009.")
                             return
 
@@ -2191,7 +2191,7 @@ def time_slider(m=None):
                 time_interval=speed.value,
             )
 
-            output.clear_output()
+            output.outputs = ()
 
             if m.colorbar_ctrl is not None:
                 m.remove_control(m.colorbar_ctrl)
@@ -2207,7 +2207,7 @@ def time_slider(m=None):
     )
 
     def reset_btn_click(change):
-        output.clear_output()
+        output.outputs = ()
         collection.value = col_options[0]
         region.value = "User-drawn ROI"
         vis.value = ""
@@ -2647,7 +2647,7 @@ def plot_transect(m=None):
     def button_clicked(change):
         if change["new"] == "Plot":
             with output:
-                output.clear_output()
+                output.outputs = ()
                 if m is not None:
                     if m.user_roi is not None:
                         line = m.user_roi
@@ -2673,7 +2673,7 @@ def plot_transect(m=None):
                                 dist,
                                 to_pandas=True,
                             )
-                            output.clear_output()
+                            output.outputs = ()
                             fig = plt.figure(title=title.value)
                             fig.layout.width = output.layout.max_width
                             fig.layout.height = output.layout.max_height
@@ -2684,7 +2684,7 @@ def plot_transect(m=None):
                     else:
                         print("Use drawing tool to draw a line")
         elif change["new"] == "Reset":
-            output.clear_output()
+            output.outputs = ()
         elif change["new"] == "Close":
             if m is not None:
                 m.toolbar_reset()
@@ -2893,7 +2893,7 @@ def sankee_gui(m=None):
                 margin=dict(l=10, r=10, b=10, t=50, pad=5),
             )
             with plot_output:
-                plot_output.clear_output()
+                plot_output.outputs = ()
                 display(m.sankee_plot)
 
         plot_reset_btn.on_click(plot_reset_btn_clicked)
@@ -2913,7 +2913,7 @@ def sankee_gui(m=None):
                 margin=dict(l=10, r=10, b=10, t=50, pad=5),
             )
             with plot_output:
-                plot_output.clear_output()
+                plot_output.outputs = ()
                 display(m.sankee_plot)
 
         plot_fullscreen_btn.on_click(plot_fullscreen_btn_clicked)
@@ -2932,7 +2932,7 @@ def sankee_gui(m=None):
                 margin=dict(l=10, r=10, b=10, t=50, pad=5),
             )
             with plot_output:
-                plot_output.clear_output()
+                plot_output.outputs = ()
                 display(m.sankee_plot)
 
         width_btn.on_click(width_btn_clicked)
@@ -2951,7 +2951,7 @@ def sankee_gui(m=None):
                 margin=dict(l=10, r=10, b=10, t=50, pad=5),
             )
             with plot_output:
-                plot_output.clear_output()
+                plot_output.outputs = ()
                 display(m.sankee_plot)
 
         height_btn.on_click(height_btn_clicked)
@@ -2980,7 +2980,7 @@ def sankee_gui(m=None):
                     margin=dict(l=10, r=10, b=10, t=50, pad=5),
                 )
                 with plot_output:
-                    plot_output.clear_output()
+                    plot_output.outputs = ()
                     display(m.sankee_plot)
 
         width_slider.observe(width_changed, "value")
@@ -3007,7 +3007,7 @@ def sankee_gui(m=None):
                     margin=dict(l=10, r=10, b=10, t=50, pad=5),
                 )
                 with plot_output:
-                    plot_output.clear_output()
+                    plot_output.outputs = ()
                     display(m.sankee_plot)
 
         height_slider.observe(height_changed, "value")
@@ -3061,8 +3061,8 @@ def sankee_gui(m=None):
     def button_clicked(change):
         if change["new"] == "Apply":
             with output:
-                output.clear_output()
-                plot_output.clear_output()
+                output.outputs = ()
+                plot_output.outputs = ()
                 print("Running ...")
 
             if m is not None:
@@ -3107,8 +3107,8 @@ def sankee_gui(m=None):
                         title=plot_title,
                     )
 
-                    output.clear_output()
-                    plot_output.clear_output()
+                    output.outputs = ()
+                    plot_output.outputs = ()
                     with plot_output:
                         plot.update_layout(
                             width=600,
@@ -3140,12 +3140,12 @@ def sankee_gui(m=None):
 
                 else:
                     with output:
-                        output.clear_output()
+                        output.outputs = ()
                         print("Draw a polygon on the map.")
 
         elif change["new"] == "Reset":
-            output.clear_output()
-            plot_output.clear_output()
+            output.outputs = ()
+            plot_output.outputs = ()
             plot_widget.children = []
 
         elif change["new"] == "Close":
@@ -3420,7 +3420,7 @@ def plotly_toolbar(
             map_widget.layout.width = map_min_width
             if map_refresh:
                 with map_widget:
-                    map_widget.clear_output()
+                    map_widget.outputs = ()
                     display(m)
             layers_button.value = False
             toolbar_widget.children = [toolbar_header, toolbar_footer]
@@ -3431,7 +3431,7 @@ def plotly_toolbar(
                 toolbar_widget.children = [toolbar_button]
             if map_refresh:
                 with map_widget:
-                    map_widget.clear_output()
+                    map_widget.outputs = ()
                     display(m)
 
     toolbar_button.observe(toolbar_btn_click, "value")
@@ -3752,14 +3752,14 @@ def plotly_search_basemaps(canvas):
             if provider is not None:
                 if provider.startswith("qms"):
                     with output:
-                        output.clear_output()
+                        output.outputs = ()
                         print("Adding data. Please wait...")
                     name = provider[4:]
                     qms_provider = TileProvider.from_qms(name)
                     url = qms_provider.build_url()
                     attribution = qms_provider.attribution
                     m.add_tile_layer(url, name, attribution)
-                    output.clear_output()
+                    output.outputs = ()
                 elif provider.startswith("xyz"):
                     name = provider[4:]
                     xyz_provider = xyz.flatten()[name]
@@ -3767,7 +3767,7 @@ def plotly_search_basemaps(canvas):
                     attribution = xyz_provider.attribution
                     if xyz_provider.requires_token():
                         with output:
-                            output.clear_output()
+                            output.outputs = ()
                             print(f"{provider} requires an API Key.")
                     m.add_tile_layer(url, name, attribution)
 
@@ -3822,7 +3822,7 @@ def plotly_search_basemaps(canvas):
     def button_clicked(change):
         if change["new"] == "Search":
             providers.options = []
-            output.clear_output()
+            output.outputs = ()
             if keyword.value != "":
                 tiles = search_xyz_services(keyword=keyword.value)
                 if checkbox.value:
@@ -3834,7 +3834,7 @@ def plotly_search_basemaps(canvas):
         elif change["new"] == "Reset":
             keyword.value = ""
             providers.options = []
-            output.clear_output()
+            output.outputs = ()
         elif change["new"] == "Close":
             canvas.toolbar_reset()
             toolbar_widget.close()
@@ -3964,7 +3964,7 @@ def inspector_gui(m=None):
             setattr(m, "inspector_output", inspector_output)
 
         output = m.inspector_output
-        output.clear_output()
+        output.outputs = ()
 
         if not hasattr(m, "inspector_add_marker"):
             inspector_add_marker = widgets.Checkbox(
@@ -4066,7 +4066,7 @@ def inspector_gui(m=None):
             m.pixel_values = []
         if hasattr(m, "marker_cluster"):
             m.marker_cluster.markers = []
-        output.clear_output()
+        output.outputs = ()
 
     bands_chk.observe(chk_change, "value")
 
@@ -4122,7 +4122,7 @@ def inspector_gui(m=None):
     def button_clicked(change):
         if change["new"] == "Download":
             with output:
-                output.clear_output()
+                output.outputs = ()
                 if len(m.pixel_values) == 0:
                     print(
                         "No pixel values available. Click on the map to start collection data."
@@ -4134,11 +4134,11 @@ def inspector_gui(m=None):
                     df.to_csv(temp_csv, index=False)
                     link = create_download_link(temp_csv)
                     with output:
-                        output.clear_output()
+                        output.outputs = ()
                         display(link)
         elif change["new"] == "Reset":
             label.value = ""
-            output.clear_output()
+            output.outputs = ()
             if hasattr(m, "pixel_values"):
                 m.pixel_values = []
             if hasattr(m, "marker_cluster"):
@@ -4184,7 +4184,7 @@ def inspector_gui(m=None):
             m.default_style = {"cursor": "wait"}
 
             with output:
-                output.clear_output()
+                output.outputs = ()
                 print("Getting pixel value ...")
 
                 layer_dict = m.cog_layer_dict[dropdown.value]
@@ -4207,7 +4207,7 @@ def inspector_gui(m=None):
                 )
                 if result is not None:
                     with output:
-                        output.clear_output()
+                        output.outputs = ()
                         print(f"lat/lon: {lat:.4f}, {lon:.4f}\n")
                         for key in result:
                             print(f"{key}: {result[key]}")
@@ -4223,7 +4223,7 @@ def inspector_gui(m=None):
 
                 else:
                     with output:
-                        output.clear_output()
+                        output.outputs = ()
                         print("No pixel value available")
                         bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]
                         m.zoom_to_bounds(bounds)
@@ -4231,7 +4231,7 @@ def inspector_gui(m=None):
                 result = cog_pixel_value(lon, lat, layer_dict["url"], verbose=False)
                 if result is not None:
                     with output:
-                        output.clear_output()
+                        output.outputs = ()
                         print(f"lat/lon: {lat:.4f}, {lon:.4f}\n")
                         for key in result:
                             print(f"{key}: {result[key]}")
@@ -4246,7 +4246,7 @@ def inspector_gui(m=None):
                         m.marker_cluster.markers = markers
                 else:
                     with output:
-                        output.clear_output()
+                        output.outputs = ()
                         print("No pixel value available")
                         bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]
                         m.zoom_to_bounds(bounds)
@@ -4265,7 +4265,7 @@ def inspector_gui(m=None):
                             sel_bands = [band_names[b - 1] for b in band]
                             result = {k: v for k, v in result.items() if k in sel_bands}
                     with output:
-                        output.clear_output()
+                        output.outputs = ()
                         print(f"lat/lon: {lat:.4f}, {lon:.4f}\n")
                         for key in result:
                             print(f"{key}: {result[key]}")
@@ -4280,7 +4280,7 @@ def inspector_gui(m=None):
                         m.marker_cluster.markers = markers
                 else:
                     with output:
-                        output.clear_output()
+                        output.outputs = ()
                         print("No pixel value available")
                         bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]
                         m.zoom_to_bounds(bounds)
@@ -4434,7 +4434,7 @@ def search_data_gui(m):
             contents = "".join(code).strip()
             # create_code_cell(contents)
             with search_output:
-                search_output.clear_output(wait=True)
+                search_output.outputs = ()
                 print(
                     "# The code has been copied to the clipboard. \n# Press Ctrl+V in a new cell to paste it.\n"
                 )
@@ -4447,15 +4447,14 @@ def search_data_gui(m):
     def dropdown_change(change):
         dropdown_index = assets_dropdown.index
         if dropdown_index is not None and dropdown_index >= 0:
-            with search_output:
-                search_output.clear_output(wait=True)
-                print("Loading ...")
-                datasets = m.search_datasets
-                dataset = datasets[dropdown_index]
-                dataset_html = ee_data_html(dataset)
-                html_widget.value = dataset_html
-                search_output.clear_output(wait=True)
-                display(html_widget)
+            search_output.outputs = ()
+            search_output.append_stdout("Loading ...")
+            datasets = m.search_datasets
+            dataset = datasets[dropdown_index]
+            dataset_html = ee_data_html(dataset)
+            html_widget.value = dataset_html
+            search_output.outputs = ()
+            search_output.append_display_data(html_widget)
 
     assets_dropdown.observe(dropdown_change, names="value")
 
@@ -4486,7 +4485,7 @@ def search_data_gui(m):
 
     def search_type_changed(change):
         search_box.value = ""
-        search_output.clear_output()
+        search_output.outputs = ()
         if change["new"] == "data":
             search_box.placeholder = (
                 "Search GEE data catalog by keywords, e.g., elevation"
@@ -4523,7 +4522,7 @@ def search_data_gui(m):
             elif search_type.value == "lat-lon":
                 g = geocode(text.value, reverse=True)
                 if g is None and latlon_from_text(text.value):
-                    search_output.clear_output()
+                    search_output.outputs = ()
                     latlon = latlon_from_text(text.value)
                     m.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
                     if m.search_loc_marker is None:
@@ -4543,7 +4542,7 @@ def search_data_gui(m):
                         print(f"No address found for {latlon}")
                     return
             elif search_type.value == "data":
-                search_output.clear_output()
+                search_output.outputs = ()
                 with search_output:
                     print("Searching ...")
                 m.default_style = {"cursor": "wait"}
@@ -4551,7 +4550,7 @@ def search_data_gui(m):
                 m.search_datasets = ee_assets
                 asset_titles = [x["title"] for x in ee_assets]
                 assets_dropdown.options = asset_titles
-                search_output.clear_output()
+                search_output.outputs = ()
                 if len(ee_assets) > 0:
                     assets_dropdown.index = 0
                     html_widget.value = ee_data_html(ee_assets[0])
@@ -4588,11 +4587,11 @@ def search_data_gui(m):
                     search_output,
                 ]
                 with search_output:
-                    search_output.clear_output(wait=True)
+                    search_output.outputs = ()
                     display(search_results)
             else:
                 with search_output:
-                    search_output.clear_output()
+                    search_output.outputs = ()
                     print("No results could be found.")
 
     search_box.on_submit(search_box_callback)
@@ -4720,7 +4719,7 @@ def ee_inspector_gui(
     ]
 
     with inspector_output:
-        inspector_output.clear_output(wait=True)
+        inspector_output.outputs = ()
         display(inspector_checks)
 
     toolbar_header = widgets.HBox()
@@ -4742,7 +4741,7 @@ def ee_inspector_gui(
             toolbar_footer.children = [inspector_output]
             ######################################
             with inspector_output:
-                inspector_output.clear_output(wait=True)
+                inspector_output.outputs = ()
                 display(inspector_checks)
 
                 tree = Tree()
@@ -4774,7 +4773,7 @@ def ee_inspector_gui(
             toolbar_footer.children = [inspector_output]
             ######################################
             with inspector_output:
-                inspector_output.clear_output(wait=True)
+                inspector_output.outputs = ()
                 display(inspector_checks)
         else:
             toolbar_widget.children = [toolbar_button]
@@ -5436,7 +5435,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
             except Exception as e:
                 if m.plot_widget is not None:
                     with m.plot_widget:
-                        m.plot_widget.clear_output()
+                        m.plot_widget.outputs = ()
                         print("No data for the clicked location.")
                 else:
                     print(e)
@@ -5454,7 +5453,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
             and (m.plot_control is not None)
             and (m.plot_control in m.controls)
         ):
-            m.plot_widget.clear_output()
+            m.plot_widget.outputs = ()
             m.remove_control(m.plot_control)
 
         if (

@@ -637,7 +637,7 @@ def show_image(img_path, width=None, height=None):
         out = widgets.Output()
         # layout={'border': '1px solid black'})
         # layout={'border': '1px solid black', 'width': str(width + 20) + 'px', 'height': str(height + 10) + 'px'},)
-        out.clear_output(wait=True)
+        out.outputs = ()
         display(out)
         with out:
             if isinstance(img_path, str) and img_path.startswith("http"):
@@ -3489,7 +3489,7 @@ def show_youtube(id="h0pz3S6Tvx0"):
     try:
         out = widgets.Output(layout={"width": "815px"})
         # layout={'border': '1px solid black', 'width': '815px'})
-        out.clear_output(wait=True)
+        out.outputs = ()
         display(out)
         with out:
             display(YouTubeVideo(id, width=800, height=450))
@@ -4491,7 +4491,7 @@ def build_api_tree(api_dict, output_widget, layout_width="100%"):
             values = api_dict[name]
 
             with output_widget:
-                output_widget.clear_output()
+                output_widget.outputs = ()
                 html_widget = widgets.HTML(value=values["html"])
                 display(html_widget)
 
@@ -4606,8 +4606,8 @@ def ee_search(asset_limit=100):
     def search_type_changed(change):
         search_box.value = ""
 
-        output_widget.clear_output()
-        tree_widget.clear_output()
+        output_widget.outputs = ()
+        tree_widget.outputs = ()
         if change["new"] == "Scripts":
             search_box.placeholder = "Filter scripts..."
             left_widget.children = [search_type, repo_tree]
@@ -4625,7 +4625,7 @@ def ee_search(asset_limit=100):
             else:
                 ee_api_tree = flags.docs
             with tree_widget:
-                tree_widget.clear_output()
+                tree_widget.outputs = ()
                 display(ee_api_tree)
                 right_widget.children = [output_widget]
             search_box.value = ""
@@ -4643,7 +4643,7 @@ def ee_search(asset_limit=100):
                 flags.asset_import = asset_widget
 
             with tree_widget:
-                tree_widget.clear_output()
+                tree_widget.outputs = ()
                 display(flags.assets)
             right_widget.children = [flags.asset_import]
             search_box.value = ""
@@ -4655,24 +4655,24 @@ def ee_search(asset_limit=100):
             with tree_widget:
                 if text.value == "":
                     print("Loading...")
-                    tree_widget.clear_output(wait=True)
+                    tree_widget.outputs = ()
                     display(flags.docs)
                 else:
-                    tree_widget.clear_output()
+                    tree_widget.outputs = ()
                     print("Searching...")
-                    tree_widget.clear_output(wait=True)
+                    tree_widget.outputs = ()
                     sub_tree = search_api_tree(text.value, flags.docs_dict)
                     display(sub_tree)
         elif search_type.value == "Assets":
             with tree_widget:
                 if text.value == "":
                     print("Loading...")
-                    tree_widget.clear_output(wait=True)
+                    tree_widget.outputs = ()
                     display(flags.assets)
                 else:
-                    tree_widget.clear_output()
+                    tree_widget.outputs = ()
                     print("Searching...")
-                    tree_widget.clear_output(wait=True)
+                    tree_widget.outputs = ()
                     sub_tree = search_api_tree(text.value, flags.asset_dict)
                     display(sub_tree)
 
@@ -5041,12 +5041,12 @@ def file_browser(
         with tree_widget:
             if text.value == "":
                 print("Loading...")
-                tree_widget.clear_output(wait=True)
+                tree_widget.outputs = ()
                 display(tree)
             else:
-                tree_widget.clear_output()
+                tree_widget.outputs = ()
                 print("Searching...")
-                tree_widget.clear_output(wait=True)
+                tree_widget.outputs = ()
                 sub_tree = search_api_tree(text.value, tree_dict)
                 display(sub_tree)
 
@@ -5139,7 +5139,7 @@ def file_browser(
                 node.observe(handle_file_click, "selected")
 
     with tree_widget:
-        tree_widget.clear_output()
+        tree_widget.outputs = ()
         display(tree)
 
     if return_sep_widgets:
