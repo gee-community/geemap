@@ -28,8 +28,8 @@ basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class Map(ipyleaflet.Map):
-    """The Map class inherits from ipyleaflet.Map. The arguments you can pass to the Map can
-        be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html.
+    """The Map class inherits the ipyleaflet Map class. The arguments you can pass to the Map initialization
+        can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html.
         By default, the Map will add Google Maps as the basemap. Set add_google_map = False
         to use OpenStreetMap as the basemap.
 
@@ -43,7 +43,7 @@ class Map(ipyleaflet.Map):
         warnings.filterwarnings("ignore")
 
         # Authenticates Earth Engine and initializes an Earth Engine session
-        if "ee_initialize" not in kwargs.keys():
+        if "ee_initialize" not in kwargs:
             kwargs["ee_initialize"] = True
 
         if kwargs["ee_initialize"]:
@@ -54,39 +54,31 @@ class Map(ipyleaflet.Map):
         zoom = 2
 
         # Set map width and height
-        if "height" not in kwargs.keys():
+        if "height" not in kwargs:
             kwargs["height"] = "600px"
         elif isinstance(kwargs["height"], int):
             kwargs["height"] = str(kwargs["height"]) + "px"
-        if "width" in kwargs.keys() and isinstance(kwargs["width"], int):
+        if "width" in kwargs and isinstance(kwargs["width"], int):
             kwargs["width"] = str(kwargs["width"]) + "px"
 
-        # Convert folium params to ipyleaflet params
-        if "location" in kwargs.keys():
-            kwargs["center"] = kwargs["location"]
-            kwargs.pop("location")
-        if "zoom_start" in kwargs.keys():
-            kwargs["zoom"] = kwargs["zoom_start"]
-            kwargs.pop("zoom_start")
-
         # Set map center and zoom level
-        if "center" not in kwargs.keys():
+        if "center" not in kwargs:
             kwargs["center"] = center
-        if "zoom" not in kwargs.keys():
+        if "zoom" not in kwargs:
             kwargs["zoom"] = zoom
-        if "max_zoom" not in kwargs.keys():
+        if "max_zoom" not in kwargs:
             kwargs["max_zoom"] = 24
 
         # Add Google Maps as the default basemap
-        if "add_google_map" not in kwargs.keys() and "basemap" not in kwargs.keys():
+        if "add_google_map" not in kwargs and "basemap" not in kwargs:
             kwargs["add_google_map"] = True
 
         # Enable scroll wheel zoom by default
-        if "scroll_wheel_zoom" not in kwargs.keys():
+        if "scroll_wheel_zoom" not in kwargs:
             kwargs["scroll_wheel_zoom"] = True
 
         # Whether to use lite mode, which contains only the zoom control.
-        if "lite_mode" not in kwargs.keys():
+        if "lite_mode" not in kwargs:
             kwargs["lite_mode"] = False
         if kwargs["lite_mode"]:
             kwargs["data_ctrl"] = False
@@ -101,37 +93,31 @@ class Map(ipyleaflet.Map):
             kwargs["attribution_ctrl"] = False
 
         # Default controls to use
-        if "data_ctrl" not in kwargs.keys():
+        if "data_ctrl" not in kwargs:
             kwargs["data_ctrl"] = True
-        if "zoom_ctrl" not in kwargs.keys():
+        if "zoom_ctrl" not in kwargs:
             kwargs["zoom_ctrl"] = True
-        if "fullscreen_ctrl" not in kwargs.keys():
+        if "fullscreen_ctrl" not in kwargs:
             kwargs["fullscreen_ctrl"] = True
-        if "draw_ctrl" not in kwargs.keys():
+        if "draw_ctrl" not in kwargs:
             kwargs["draw_ctrl"] = True
-        if "search_ctrl" not in kwargs.keys():
+        if "search_ctrl" not in kwargs:
             kwargs["search_ctrl"] = False
-        if "measure_ctrl" not in kwargs.keys():
+        if "measure_ctrl" not in kwargs:
             kwargs["measure_ctrl"] = True
-        if "scale_ctrl" not in kwargs.keys():
+        if "scale_ctrl" not in kwargs:
             kwargs["scale_ctrl"] = True
-        if "layer_ctrl" not in kwargs.keys():
+        if "layer_ctrl" not in kwargs:
             kwargs["layer_ctrl"] = False
-        if "toolbar_ctrl" not in kwargs.keys():
+        if "toolbar_ctrl" not in kwargs:
             kwargs["toolbar_ctrl"] = True
-        if "attribution_ctrl" not in kwargs.keys():
+        if "attribution_ctrl" not in kwargs:
             kwargs["attribution_ctrl"] = True
-        if "use_voila" not in kwargs.keys():
-            kwargs["use_voila"] = False
 
         # Use any basemap available through the basemap module, such as 'ROADMAP', 'OpenTopoMap'
         if "basemap" in kwargs:
             if isinstance(kwargs["basemap"], str):
                 kwargs["basemap"] = get_basemap(kwargs["basemap"])
-
-        # Disable some widgets if using Voila
-        if os.environ.get("USE_VOILA") is not None:
-            kwargs["use_voila"] = True
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -142,10 +128,7 @@ class Map(ipyleaflet.Map):
 
         # sandbox path for Voila app to restrict access to system directories.
         if "sandbox_path" not in kwargs:
-            if os.environ.get("USE_VOILA") is not None:
-                self.sandbox_path = os.getcwd()
-            else:
-                self.sandbox_path = None
+            self.sandbox_path = None
         else:
             if os.path.exists(os.path.abspath(kwargs["sandbox_path"])):
                 self.sandbox_path = kwargs["sandbox_path"]
@@ -969,7 +952,7 @@ class Map(ipyleaflet.Map):
         plot_options_dict["min_height"] = min_height
         plot_options_dict["max_height"] = max_height
 
-        for key in kwargs.keys():
+        for key in kwargs:
             plot_options_dict[key] = kwargs[key]
 
         self.plot_options = plot_options_dict
@@ -1025,7 +1008,7 @@ class Map(ipyleaflet.Map):
         if max_height is None:
             max_height = 300
 
-        if (plot_type is None) and ("markers" not in kwargs.keys()):
+        if (plot_type is None) and ("markers" not in kwargs):
             kwargs["markers"] = "circle"
 
         with plot_widget:
@@ -1041,7 +1024,7 @@ class Map(ipyleaflet.Map):
                     plt.clear()
 
                 if plot_type is None:
-                    if "marker" not in kwargs.keys():
+                    if "marker" not in kwargs:
                         kwargs["marker"] = "circle"
                     plt.plot(x, y, **kwargs)
                 elif plot_type == "bar":
@@ -1715,25 +1698,25 @@ class Map(ipyleaflet.Map):
         )
         legend_template = os.path.join(pkg_dir, "data/template/legend.html")
 
-        if "min_width" not in kwargs.keys():
+        if "min_width" not in kwargs:
             min_width = None
-        if "max_width" not in kwargs.keys():
+        if "max_width" not in kwargs:
             max_width = None
         else:
             max_width = kwargs["max_width"]
-        if "min_height" not in kwargs.keys():
+        if "min_height" not in kwargs:
             min_height = None
         else:
             min_height = kwargs["min_height"]
-        if "max_height" not in kwargs.keys():
+        if "max_height" not in kwargs:
             max_height = None
         else:
             max_height = kwargs["max_height"]
-        if "height" not in kwargs.keys():
+        if "height" not in kwargs:
             height = None
         else:
             height = kwargs["height"]
-        if "width" not in kwargs.keys():
+        if "width" not in kwargs:
             width = None
         else:
             width = kwargs["width"]
@@ -2088,7 +2071,7 @@ class Map(ipyleaflet.Map):
         output = widgets.Output()
         output.layout.height = height
 
-        if "width" in kwargs.keys():
+        if "width" in kwargs:
             output.layout.width = kwargs["width"]
 
         if isinstance(colors, Box):
