@@ -148,7 +148,6 @@ class Map(ipyleaflet.Map):
         self._expand_pixels = True
         self._expand_objects = False
 
-
         # The list of Earth Engine Geometry objects converted from geojson
         self.draw_features = []
         # The Earth Engine Geometry object converted from the last drawn feature
@@ -175,12 +174,11 @@ class Map(ipyleaflet.Map):
 
         self.toolbar = None
         self.toolbar_button = None
-        self.vis_control = None
+        self._vis_control = None
         self.vis_widget = None
         self.colorbar_ctrl = None
         self.colorbar_widget = None
         self.tool_output = None
-        self.tool_output_ctrl = None
         self.layer_control = None
         self.convert_ctrl = None
         self.toolbar_ctrl = None
@@ -192,13 +190,7 @@ class Map(ipyleaflet.Map):
         self.plot_marker_cluster = ipyleaflet.MarkerCluster(name="Marker Cluster")
         self.plot_coordinates = []
         self.plot_markers = []
-        self.plot_last_click = []
-        self.plot_all_clicks = []
         self.plot_checked = False
-
-        tool_output = widgets.Output()
-        self.tool_output = tool_output
-        tool_output.outputs = ()
 
         # Default reducer to use
         if kwargs["ee_initialize"]:
@@ -272,7 +264,7 @@ class Map(ipyleaflet.Map):
                     )
                     self.add(measure)
 
-                elif control == 'toolbar_ctrl':
+                elif control == "toolbar_ctrl":
                     self.add_toolbar(position=position)
 
                 elif control == "layer_ctrl":
@@ -284,7 +276,7 @@ class Map(ipyleaflet.Map):
                     self.add(attribution)
 
                 else:
-                    raise ValueError(f'Unsupported control: {control}')
+                    raise ValueError(f"Unsupported control: {control}")
             else:
                 self.add(control)
 
@@ -1089,7 +1081,7 @@ class Map(ipyleaflet.Map):
         import numpy as np
         import time
 
-        if hasattr(self, 'random_marker') and self.random_marker is not None:
+        if hasattr(self, "random_marker") and self.random_marker is not None:
             self.remove_layer(self.random_marker)
 
         image = ee.Image("LANDSAT/LE7_TOA_5YEAR/1999_2003").select([0, 1, 2, 3, 4, 6])
@@ -1169,7 +1161,7 @@ class Map(ipyleaflet.Map):
             if self.plot_control in self.controls:
                 self.remove_control(self.plot_control)
 
-        if hasattr(self, 'random_marker') and self.random_marker is not None:
+        if hasattr(self, "random_marker") and self.random_marker is not None:
             self.remove_layer(self.random_marker)
 
         plot_widget = widgets.Output(layout={"border": "1px solid black"})
@@ -3241,9 +3233,9 @@ class Map(ipyleaflet.Map):
                             layer_dict["legend"] = None
 
             def close_btn_clicked(b):
-                if self.vis_control in self.controls:
-                    self.remove_control(self.vis_control)
-                    self.vis_control = None
+                if self._vis_control in self.controls:
+                    self.remove_control(self._vis_control)
+                    self._vis_control = None
                     self.vis_widget.close()
 
                 if (
@@ -3998,8 +3990,8 @@ class Map(ipyleaflet.Map):
                     compute_label.value = ""
 
             def close_btn_clicked(b):
-                self.remove_control(self.vis_control)
-                self.vis_control.close()
+                self.remove_control(self._vis_control)
+                self._vis_control.close()
                 self.vis_widget.close()
 
                 if (

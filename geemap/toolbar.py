@@ -322,7 +322,11 @@ def open_data_widget(m):
     tool_output = widgets.Output()
     tool_output_ctrl = ipyleaflet.WidgetControl(widget=tool_output, position="topright")
 
-    if m.tool_output_ctrl is not None and m.tool_output_ctrl in m.controls:
+    if (
+        hasattr(m, "tool_output_ctrl")
+        and m.tool_output_ctrl is not None
+        and m.tool_output_ctrl in m.controls
+    ):
         m.remove_control(m.tool_output_ctrl)
 
     file_type = widgets.ToggleButtons(
@@ -614,7 +618,11 @@ def open_data_widget(m):
                 display(main_widget)
             m.toolbar_reset()
         elif change["new"] == "Close":
-            if m.tool_output_ctrl is not None and m.tool_output_ctrl in m.controls:
+            if (
+                hasattr(m, "tool_output_ctrl")
+                and m.tool_output_ctrl is not None
+                and m.tool_output_ctrl in m.controls
+            ):
                 m.remove_control(m.tool_output_ctrl)
                 m.tool_output_ctrl = None
                 m.toolbar_reset()
@@ -4957,21 +4965,21 @@ def layer_manager_gui(
                             if m.vis_widget is not None:
                                 m.vis_widget = None
                             m.vis_widget = m.create_vis_widget(layer_dict)
-                            if m.vis_control in m.controls:
-                                m.remove_control(m.vis_control)
-                                m.vis_control = None
+                            if m._vis_control in m.controls:
+                                m.remove_control(m._vis_control)
+                                m._vis_control = None
                             vis_control = ipyleaflet.WidgetControl(
                                 widget=m.vis_widget, position="topright"
                             )
                             m.add((vis_control))
-                            m.vis_control = vis_control
+                            m._vis_control = vis_control
                         else:
                             if m.vis_widget is not None:
                                 m.vis_widget = None
-                            if m.vis_control is not None:
-                                if m.vis_control in m.controls:
-                                    m.remove_control(m.vis_control)
-                                m.vis_control = None
+                            if m._vis_control is not None:
+                                if m._vis_control in m.controls:
+                                    m.remove_control(m._vis_control)
+                                m._vis_control = None
                         change["owner"].value = False
 
                 layer_settings.observe(layer_vis_on_click, "value")
@@ -5385,8 +5393,6 @@ def ee_plot_gui(m, position="topright", **kwargs):
                     markers = m.plot_markers
                     marker_cluster = m.plot_marker_cluster
                     plot_coordinates.append(latlon)
-                    m.plot_last_click = latlon
-                    m.plot_all_clicks = plot_coordinates
                     markers.append(ipyleaflet.Marker(location=latlon))
                     marker_cluster.markers = markers
                     m.plot_marker_cluster = marker_cluster
