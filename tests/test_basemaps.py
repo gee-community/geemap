@@ -3,9 +3,58 @@
 import unittest
 from unittest.mock import patch
 
-from geemap.basemaps import get_xyz_dict
+from geemap.basemaps import custom_tiles, get_xyz_dict, xyz_to_leaflet
 
 import xyzservices
+
+
+class TestCustomTiles(unittest.TestCase):
+    def test_custom_tiles_types(self):
+        """Tests that custom_tiles is a dict and contains expected keys."""
+        self.assertIsInstance(custom_tiles, dict)
+        expected_keys = ["xyz", "wms"]
+        for key in custom_tiles.keys():
+            self.assertIn(key, expected_keys)
+
+    def test_custom_tiles_xyz(self):
+        """Tests that custom_tiles["xyz"] is a dict w/ expected keys/values."""
+        tiles = custom_tiles["xyz"]
+        self.assertIsInstance(tiles, dict)
+        for _, value in tiles.items():
+            self.assertIn("url", value)
+            self.assertIn("attribution", value)
+            self.assertIn("name", value)
+            self.assertTrue(value["url"].startswith("http"))
+
+    def test_custom_tiles_wms(self):
+        """Tests that custom_tiles["wms"] is a dict w/ expected keys/values."""
+        tiles = custom_tiles["wms"]
+        self.assertIsInstance(tiles, dict)
+        for _, value in tiles.items():
+            self.assertIsInstance(value["url"], str)
+            self.assertIsInstance(value["attribution"], str)
+            self.assertIsInstance(value["name"], str)
+            self.assertTrue(value["url"].startswith("http"))
+
+
+class TestXyzToLeaflet(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.tiles = xyz_to_leaflet()
+
+    def test_xyz_to_leaflet_is_dictionary(self):
+        """Tests that xyz_to_leaflet returns a dict."""
+        self.assertIsInstance(self.tiles, dict)
+
+    def test_xyz_to_leaflet_sources(self):
+        """Tests that xyz_to_leaflet has custom xyz, wms, and xyzservices."""
+        expected_keys = {
+            "custom_xyz": "OpenStreetMap",
+            "custom_wms": "USGS NAIP Imagery",
+            "xyzservices_xyz": "Stamen.Terrain"
+        }
+        for _, expected_name in expected_keys.items():
+            self.assertIn(expected_name, self.tiles)
 
 
 class FakeProvider(xyzservices.TileProvider):
