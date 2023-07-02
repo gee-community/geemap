@@ -3160,6 +3160,7 @@
 
 
 
+
   <div class="doc doc-object doc-function">
 
 
@@ -3437,7 +3438,7 @@ Defaults to False.</p></td>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">folium_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">xyz_tiles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">custom_tiles</span><span class="p">[</span><span class="s2">&quot;xyz&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">folium_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">(</span>
             <span class="n">tiles</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
             <span class="n">attr</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;attribution&quot;</span><span class="p">],</span>
@@ -3447,7 +3448,7 @@ Defaults to False.</p></td>
             <span class="n">max_zoom</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">wms_tiles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">custom_tiles</span><span class="p">[</span><span class="s2">&quot;wms&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">folium_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">WmsTileLayer</span><span class="p">(</span>
             <span class="n">url</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
             <span class="n">layers</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;layers&quot;</span><span class="p">],</span>
@@ -3521,21 +3522,16 @@ Defaults to False.</p></td>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">leaflet_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">xyz_tiles</span><span class="p">:</span>
-        <span class="n">xyz_tiles</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xyz&quot;</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">xyz_tiles</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-        <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz_tiles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="c1"># Add custom tiles.</span>
+    <span class="k">for</span> <span class="n">tile_type</span><span class="p">,</span> <span class="n">tile_dict</span> <span class="ow">in</span> <span class="n">custom_tiles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">tile_provider</span><span class="p">,</span> <span class="n">tile_info</span> <span class="ow">in</span> <span class="n">tile_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile_type</span>
+            <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tile_info</span>
 
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">wms_tiles</span><span class="p">:</span>
-        <span class="n">wms_tiles</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;wms&quot;</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">wms_tiles</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-        <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">wms_tiles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-
-    <span class="n">xyz_dict</span> <span class="o">=</span> <span class="n">get_xyz_dict</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">xyz_dict</span><span class="p">:</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">xyz_dict</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
-        <span class="n">xyz_dict</span><span class="p">[</span><span class="n">item</span><span class="p">][</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz_dict</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">build_url</span><span class="p">()</span>
-        <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz_dict</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+    <span class="c1"># Add xyzservices.provider tiles.</span>
+    <span class="k">for</span> <span class="n">tile_provider</span><span class="p">,</span> <span class="n">tile_info</span> <span class="ow">in</span> <span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">build_url</span><span class="p">()</span>
+        <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tile_info</span>
 
     <span class="k">return</span> <span class="n">leaflet_dict</span>
 </code></pre></div>
@@ -3585,7 +3581,7 @@ Defaults to False.</p></td>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">plotly_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">xyz_tiles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">custom_tiles</span><span class="p">[</span><span class="s2">&quot;xyz&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">plotly_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;below&quot;</span><span class="p">:</span> <span class="s2">&quot;traces&quot;</span><span class="p">,</span>
             <span class="s2">&quot;sourcetype&quot;</span><span class="p">:</span> <span class="s2">&quot;raster&quot;</span><span class="p">,</span>
@@ -3655,7 +3651,7 @@ Defaults to False.</p></td>
 
     <span class="n">pydeck_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">xyz_tiles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">custom_tiles</span><span class="p">[</span><span class="s2">&quot;xyz&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">tile</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span>
         <span class="n">pydeck_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">url</span>
 
