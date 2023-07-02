@@ -15,7 +15,7 @@ import requests
 from matplotlib import cm, colors
 from matplotlib import font_manager as mfonts
 
-from .basemaps import xyz_tiles
+from .basemaps import custom_tiles
 
 try:
     import cartopy.crs as ccrs
@@ -160,7 +160,8 @@ def get_map(ee_object, proj=None, basemap=None, zoom_level=2, **kwargs):
     if basemap is not None:
         if isinstance(basemap, str):
             if basemap.upper() in ["ROADMAP", "SATELLITE", "TERRAIN", "HYBRID"]:
-                basemap = cimgt.GoogleTiles(url=xyz_tiles[basemap.upper()]["url"])
+                basemap = cimgt.GoogleTiles(
+                    url=custom_tiles["xyz"][basemap.upper()]["url"])
 
         try:
             ax.add_image(basemap, zoom_level)

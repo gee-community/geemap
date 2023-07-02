@@ -25,7 +25,7 @@ import xyzservices
 from .common import check_package, planet_tiles
 
 # Custom XYZ tile services.
-xyz_tiles = {
+XYZ_TILES = {
     "OpenStreetMap": {
         "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         "attribution": "OpenStreetMap",
@@ -54,7 +54,7 @@ xyz_tiles = {
 }
 
 # Custom WMS tile services.
-wms_tiles = {
+WMS_TILES = {
     "FWS NWI Wetlands": {
         "url": "https://www.fws.gov/wetlands/arcgis/services/Wetlands/MapServer/WMSServer?",
         "layers": "1",
@@ -225,6 +225,11 @@ wms_tiles = {
     },
 }
 
+custom_tiles = {
+   "xyz": XYZ_TILES,
+   "wms": WMS_TILES
+}
+
 
 def get_xyz_dict(free_only=True, france=False):
     """Returns a dictionary of xyz services.
@@ -266,21 +271,16 @@ def xyz_to_leaflet():
     """
     leaflet_dict = {}
 
-    for key in xyz_tiles:
-        xyz_tiles[key]["type"] = "xyz"
-        name = xyz_tiles[key]["name"]
-        leaflet_dict[key] = xyz_tiles[key]
+    # Add custom tiles.
+    for tile_type, tile_dict in custom_tiles.items():
+        for tile_provider, tile_info in tile_dict.items():
+            tile_info["type"] = tile_type
+            leaflet_dict[tile_info["name"]] = tile_info
 
-    for key in wms_tiles:
-        wms_tiles[key]["type"] = "wms"
-        name = wms_tiles[key]["name"]
-        leaflet_dict[key] = wms_tiles[key]
-
-    xyz_dict = get_xyz_dict()
-    for item in xyz_dict:
-        name = xyz_dict[item].name
-        xyz_dict[item]["url"] = xyz_dict[item].build_url()
-        leaflet_dict[name] = xyz_dict[item]
+    # Add xyzservices.provider tiles.
+    for tile_provider, tile_info in get_xyz_dict().items():
+        tile_info["url"] = tile_info.build_url()
+        leaflet_dict[tile_info["name"]] = tile_info
 
     return leaflet_dict
 
@@ -297,7 +297,7 @@ def xyz_to_pydeck():
 
     pydeck_dict = {}
 
-    for key, tile in xyz_tiles.items():
+    for key, tile in custom_tiles["xyz"].items():
         url = tile["url"]
         pydeck_dict[key] = url
 
@@ -331,7 +331,7 @@ def xyz_to_folium():
     """
     folium_dict = {}
 
-    for key, tile in xyz_tiles.items():
+    for key, tile in custom_tiles["xyz"].items():
         folium_dict[key] = folium.TileLayer(
             tiles=tile["url"],
             attr=tile["attribution"],
@@ -341,7 +341,7 @@ def xyz_to_folium():
             max_zoom=22,
         )
 
-    for key, tile in wms_tiles.items():
+    for key, tile in custom_tiles["wms"].items():
         folium_dict[key] = folium.WmsTileLayer(
             url=tile["url"],
             layers=tile["layers"],
@@ -378,7 +378,7 @@ def xyz_to_plotly():
     """
     plotly_dict = {}
 
-    for key, tile in xyz_tiles.items():
+    for key, tile in custom_tiles["xyz"].items():
         plotly_dict[key] = {
             "below": "traces",
             "sourcetype": "raster",
