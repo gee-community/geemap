@@ -5086,6 +5086,22 @@ def main_toolbar(m, position="topright", **kwargs):
     tools = {
         "info": {"name": "inspector", "tooltip": "Inspector"},
         "bar-chart": {"name": "plotting", "tooltip": "Plotting"},
+        "globe": {
+            "name": "timelapse",
+            "tooltip": "Create timelapse",
+        },
+        "map": {
+            "name": "basemap",
+            "tooltip": "Change basemap",
+        },
+        "retweet": {
+            "name": "convert_js",
+            "tooltip": "Convert Earth Engine JavaScript to Python",
+        },
+        "plus": {
+            "name": "expand",
+            "tooltip": "Expand toolbar",
+        },
         "eraser": {
             "name": "eraser",
             "tooltip": "Remove all drawn features",
@@ -5094,26 +5110,14 @@ def main_toolbar(m, position="topright", **kwargs):
             "name": "open_data",
             "tooltip": "Open local vector/raster data",
         },
-        "retweet": {
-            "name": "convert_js",
-            "tooltip": "Convert Earth Engine JavaScript to Python",
-        },
         "gears": {
             "name": "whitebox",
             "tooltip": "WhiteboxTools for local geoprocessing",
         },
-        "google": {
-            "name": "geetoolbox",
-            "tooltip": "GEE Toolbox for cloud computing",
-        },
-        "map": {
-            "name": "basemap",
-            "tooltip": "Change basemap",
-        },
-        "globe": {
-            "name": "timelapse",
-            "tooltip": "Create timelapse",
-        },
+        # "google": {
+        #     "name": "geetoolbox",
+        #     "tooltip": "GEE Toolbox for cloud computing",
+        # },
         "fast-forward": {
             "name": "timeslider",
             "tooltip": "Activate timeslider",
@@ -5138,6 +5142,10 @@ def main_toolbar(m, position="topright", **kwargs):
             "name": "cog-inspector",
             "tooltip": "Get COG/STAC pixel value",
         },
+        "minus": {
+            "name": "collapse",
+            "tooltip": "Collapse toolbar",
+        },
         # "spinner": {
         #     "name": "placehold2",
         #     "tooltip": "This is a placehold",
@@ -5148,7 +5156,7 @@ def main_toolbar(m, position="topright", **kwargs):
         # },
     }
 
-    icons = list(tools.keys())
+    icons = list(tools.keys())[:-1]
     tooltips = [item["tooltip"] for item in list(tools.values())]
 
     icon_width = "32px"
@@ -5156,22 +5164,26 @@ def main_toolbar(m, position="topright", **kwargs):
     n_cols = 3
     n_rows = -int(-(len(icons) / n_cols))
 
+    all_children = [
+        widgets.ToggleButton(
+            layout=widgets.Layout(
+                width="auto", height="auto", padding="0px 0px 0px 4px"
+            ),
+            button_style="primary",
+            icon=icons[i],
+            tooltip=tooltips[i],
+        )
+        for i in range(len(icons))
+    ]
+
+    expand_button = all_children[5]
+
     toolbar_grid = widgets.GridBox(
-        children=[
-            widgets.ToggleButton(
-                layout=widgets.Layout(
-                    width="auto", height="auto", padding="0px 0px 0px 4px"
-                ),
-                button_style="primary",
-                icon=icons[i],
-                tooltip=tooltips[i],
-            )
-            for i in range(len(icons))
-        ],
+        children=all_children[:6],
         layout=widgets.Layout(
             width="109px",
             grid_template_columns=(icon_width + " ") * n_cols,
-            grid_template_rows=(icon_height + " ") * n_rows,
+            grid_template_rows=(icon_height + " ") * 2,
             grid_gap="1px 1px",
             padding="5px",
         ),
@@ -5186,7 +5198,17 @@ def main_toolbar(m, position="topright", **kwargs):
                     tool.value = False
             tool = change["owner"]
             tool_name = tools[tool.icon]["name"]
-            if tool_name == "eraser":
+            if tool_name == "expand":
+                toolbar_grid.layout.grid_template_rows = (icon_height + " ") * n_rows
+                toolbar_grid.children = all_children
+                expand_button.icon = "minus"
+                tool.value = False
+            if tool_name == "collapse":
+                toolbar_grid.layout.grid_template_rows = (icon_height + " ") * 2
+                toolbar_grid.children = all_children[:6]
+                expand_button.icon = "plus"
+                tool.value = False
+            elif tool_name == "eraser":
                 m.remove_drawn_features()
                 tool.value = False
             elif tool_name == "inspector":
