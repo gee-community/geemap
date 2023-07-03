@@ -49,25 +49,25 @@ class Map(ipyleaflet.Map):
         """Initialize a map object. The following additional parameters can be passed in addition to the ipyleaflet.Map parameters:
 
         Args:
-            ee_initialize (bool): Whether or not to initialize ee. Defaults to True.
-            center (list): Center of the map (lat, lon). Defaults to [20, 0].
-            zoom (int): Zoom level of the map. Defaults to 2.
-            height (str): Height of the map. Defaults to "600px".
-            width (str): Width of the map. Defaults to "100%".
-            basemap (str): Name of the basemap to add to the map. Defaults to "ROADMAP". Other options include "ROADMAP", "SATELLITE", "TERRAIN".
-            add_google_map (bool): Whether to add Google Maps to the map. Defaults to True.
-            sandbox_path (str): The path to a sandbox folder for voila web app. Defaults to None.
-            lite_mode (bool): Whether to enable lite mode, which only displays zoom control on the map. Defaults to False.
-            data_ctrl (bool): Whether to add the data control to the map. Defaults to True.
-            zoom_ctrl (bool): Whether to add the zoom control to the map. Defaults to True.
-            fullscreen_ctrl (bool): Whether to add the fullscreen control to the map. Defaults to True.
-            search_ctrl (bool): Whether to add the search control to the map. Defaults to True.
-            draw_ctrl (bool): Whether to add the draw control to the map. Defaults to True.
-            scale_ctrl (bool): Whether to add the scale control to the map. Defaults to True.
-            measure_ctrl (bool): Whether to add the measure control to the map. Defaults to True.
-            toolbar_ctrl (bool): Whether to add the toolbar control to the map. Defaults to True.
-            layer_ctrl (bool): Whether to add the layer control to the map. Defaults to False.
-            attribution_ctrl (bool): Whether to add the attribution control to the map. Defaults to True.
+            ee_initialize (bool, optional): Whether or not to initialize ee. Defaults to True.
+            center (list, optional): Center of the map (lat, lon). Defaults to [20, 0].
+            zoom (int, optional): Zoom level of the map. Defaults to 2.
+            height (str, optional): Height of the map. Defaults to "600px".
+            width (str, optional): Width of the map. Defaults to "100%".
+            basemap (str, optional): Name of the basemap to add to the map. Defaults to "ROADMAP". Other options include "ROADMAP", "SATELLITE", "TERRAIN".
+            add_google_map (bool, optional): Whether to add Google Maps to the map. Defaults to True.
+            sandbox_path (str, optional): The path to a sandbox folder for voila web app. Defaults to None.
+            lite_mode (bool, optional): Whether to enable lite mode, which only displays zoom control on the map. Defaults to False.
+            data_ctrl (bool, optional): Whether to add the data control to the map. Defaults to True.
+            zoom_ctrl (bool, optional): Whether to add the zoom control to the map. Defaults to True.
+            fullscreen_ctrl (bool, optional): Whether to add the fullscreen control to the map. Defaults to True.
+            search_ctrl (bool, optional): Whether to add the search control to the map. Defaults to True.
+            draw_ctrl (bool, optional): Whether to add the draw control to the map. Defaults to True.
+            scale_ctrl (bool, optional): Whether to add the scale control to the map. Defaults to True.
+            measure_ctrl (bool, optional): Whether to add the measure control to the map. Defaults to True.
+            toolbar_ctrl (bool, optional): Whether to add the toolbar control to the map. Defaults to True.
+            layer_ctrl (bool, optional): Whether to add the layer control to the map. Defaults to False.
+            attribution_ctrl (bool, optional): Whether to add the attribution control to the map. Defaults to True.
             **kwargs: Additional keyword arguments for ipyleaflet.Map.
         """
         warnings.filterwarnings("ignore")
