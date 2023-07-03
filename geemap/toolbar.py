@@ -5325,7 +5325,7 @@ def main_toolbar(m, position="topright", **kwargs):
                 if m._convert_ctrl is not None and m._convert_ctrl in m.controls:
                     m.remove_control(m._convert_ctrl)
 
-    for tool in toolbar_grid.children:
+    for tool in all_children:
         tool.observe(tool_callback, "value")
 
     toolbar_button = widgets.ToggleButton(
