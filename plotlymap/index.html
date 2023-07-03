@@ -3633,8 +3633,8 @@ Canvas        </code>
 
     <span class="k">def</span> <span class="nf">toolbar_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the toolbar so that no tool is selected.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;toolbar&quot;</span><span class="p">):</span>
-            <span class="n">toolbar_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_toolbar&quot;</span><span class="p">):</span>
+            <span class="n">toolbar_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar</span>
             <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
                 <span class="n">tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre></div>
@@ -3771,8 +3771,8 @@ Canvas        </code>
           <summary>Source code in <code>geemap/plotlymap.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">toolbar_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reset the toolbar so that no tool is selected.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;toolbar&quot;</span><span class="p">):</span>
-        <span class="n">toolbar_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_toolbar&quot;</span><span class="p">):</span>
+        <span class="n">toolbar_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar</span>
         <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
             <span class="n">tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre></div>

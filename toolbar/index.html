@@ -3649,8 +3649,8 @@
             <span class="n">text_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">elif</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Close&quot;</span><span class="p">:</span>
             <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">convert_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">convert_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">convert_ctrl</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span><span class="p">)</span>
             <span class="n">full_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">buttons</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -3659,7 +3659,7 @@
     <span class="n">full_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">text_widget</span><span class="p">,</span> <span class="n">buttons</span><span class="p">]</span>
     <span class="n">widget_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">full_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span><span class="p">)</span>
     <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">widget_control</span><span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">convert_ctrl</span> <span class="o">=</span> <span class="n">widget_control</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="o">=</span> <span class="n">widget_control</span>
 </code></pre></div>
         </details>
     </div>
@@ -3994,31 +3994,38 @@
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;32px&quot;</span><span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="n">m</span><span class="o">.</span><span class="n">plot_checked</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">_plot_checked</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">dropdown</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
         <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layer_names</span><span class="p">),</span>
     <span class="p">)</span>
     <span class="n">dropdown</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="s2">&quot;18ex&quot;</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_widget</span> <span class="o">=</span> <span class="n">dropdown</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_widget</span> <span class="o">=</span> <span class="n">dropdown</span>
 
     <span class="n">widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="n">dropdown</span><span class="p">,</span> <span class="n">close_btn</span><span class="p">])</span>
 
     <span class="n">plot_dropdown_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_control</span> <span class="o">=</span> <span class="n">plot_dropdown_control</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span> <span class="o">=</span> <span class="n">plot_dropdown_control</span>
     <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">plot_dropdown_control</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">draw_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
         <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">draw_control</span><span class="p">)</span>
     <span class="n">m</span><span class="o">.</span><span class="n">add_draw_control_lite</span><span class="p">()</span>
 
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_chart_points&quot;</span><span class="p">):</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">_chart_points</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_chart_values&quot;</span><span class="p">):</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">_chart_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_chart_labels&quot;</span><span class="p">):</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">_chart_labels</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="k">def</span> <span class="nf">handle_interaction</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">latlon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;click&quot;</span>
-            <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_checked</span>
+            <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_checked</span>
             <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="p">):</span>
-            <span class="n">plot_layer_name</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_widget</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">plot_layer_name</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_widget</span><span class="o">.</span><span class="n">value</span>
             <span class="n">layer_names</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layer_names</span>
             <span class="n">layers</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layers</span>
             <span class="n">index</span> <span class="o">=</span> <span class="n">layer_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">plot_layer_name</span><span class="p">)</span>
@@ -4029,7 +4036,9 @@
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;wait&quot;</span><span class="p">}</span>
-                <span class="n">plot_options</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_options</span>
+                <span class="n">plot_options</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_options&quot;</span><span class="p">):</span>
+                    <span class="n">plot_options</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_options</span>
                 <span class="n">sample_scale</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">getScale</span><span class="p">()</span>
                 <span class="k">if</span> <span class="s2">&quot;sample_scale&quot;</span> <span class="ow">in</span> <span class="n">plot_options</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span>
                     <span class="n">plot_options</span><span class="p">[</span><span class="s2">&quot;sample_scale&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -4040,23 +4049,24 @@
                 <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;add_marker_cluster&quot;</span> <span class="ow">in</span> <span class="n">plot_options</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="ow">and</span> <span class="n">plot_options</span><span class="p">[</span>
                     <span class="s2">&quot;add_marker_cluster&quot;</span>
                 <span class="p">]:</span>
-                    <span class="n">plot_coordinates</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_coordinates</span>
-                    <span class="n">markers</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_markers</span>
-                    <span class="n">marker_cluster</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_marker_cluster</span>
-                    <span class="n">plot_coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">latlon</span><span class="p">)</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">plot_last_click</span> <span class="o">=</span> <span class="n">latlon</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">plot_all_clicks</span> <span class="o">=</span> <span class="n">plot_coordinates</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_markers&quot;</span><span class="p">):</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">_plot_markers</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">markers</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_markers</span>
+                    <span class="n">marker_cluster</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_marker_cluster</span>
                     <span class="n">markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">latlon</span><span class="p">))</span>
                     <span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">plot_marker_cluster</span> <span class="o">=</span> <span class="n">marker_cluster</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_marker_cluster</span> <span class="o">=</span> <span class="n">marker_cluster</span>
 
                 <span class="n">band_names</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
                 <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">band_names</span><span class="p">):</span>
                     <span class="n">band_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">band_names</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
-                <span class="n">m</span><span class="o">.</span><span class="n">chart_labels</span> <span class="o">=</span> <span class="n">band_names</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_chart_labels</span> <span class="o">=</span> <span class="n">band_names</span>
 
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">roi_end</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_roi_end&quot;</span><span class="p">):</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_roi_end</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_roi_end</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">roi_reducer_scale</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">scale</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">projection</span><span class="p">()</span><span class="o">.</span><span class="n">nominalScale</span><span class="p">()</span>
                     <span class="k">else</span><span class="p">:</span>
@@ -4071,7 +4081,7 @@
                     <span class="n">dict_values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
                         <span class="nb">zip</span><span class="p">(</span><span class="n">b_names</span><span class="p">,</span> <span class="p">[</span><span class="n">dict_values_tmp</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">b_names</span><span class="p">])</span>
                     <span class="p">)</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">chart_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_chart_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                         <span class="n">m</span><span class="o">.</span><span class="n">user_roi</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -4086,48 +4096,48 @@
                     <span class="n">dict_values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
                         <span class="nb">zip</span><span class="p">(</span><span class="n">b_names</span><span class="p">,</span> <span class="p">[</span><span class="n">dict_values_tmp</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">b_names</span><span class="p">])</span>
                     <span class="p">)</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">chart_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xy</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">())</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_chart_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xy</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">())</span>
                 <span class="n">band_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dict_values</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">chart_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">band_values</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_chart_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">band_values</span><span class="p">)</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">band_names</span><span class="p">,</span> <span class="n">band_values</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_options</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">plot_options</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">plot_layer_name</span><span class="p">:</span>
                     <span class="k">del</span> <span class="n">plot_options</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">roi_end</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_roi_end</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">with</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_widget</span><span class="p">:</span>
-                        <span class="n">m</span><span class="o">.</span><span class="n">plot_widget</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span><span class="p">:</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
                         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No data for the clicked location.&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">roi_end</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_roi_end</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="n">m</span><span class="o">.</span><span class="n">on_interaction</span><span class="p">(</span><span class="n">handle_interaction</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">close_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
         <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-        <span class="n">m</span><span class="o">.</span><span class="n">plot_checked</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">_plot_checked</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;plot_control&quot;</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">plot_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">plot_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">)</span>
         <span class="p">):</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">plot_widget</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">plot_control</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span>
         <span class="p">):</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_control</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span><span class="p">)</span>
 
         <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
         <span class="n">m</span><span class="o">.</span><span class="n">on_interaction</span><span class="p">(</span><span class="n">handle_interaction</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">m</span><span class="o">.</span><span class="n">plot_widget</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
 
     <span class="n">close_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">close_click</span><span class="p">)</span>
@@ -4765,24 +4775,27 @@
                         <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_names</span><span class="p">:</span>
                             <span class="n">layer_dict</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span>
 
-                            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">vis_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                                <span class="n">m</span><span class="o">.</span><span class="n">vis_widget</span> <span class="o">=</span> <span class="kc">None</span>
-                            <span class="n">m</span><span class="o">.</span><span class="n">vis_widget</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">create_vis_widget</span><span class="p">(</span><span class="n">layer_dict</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">vis_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">vis_control</span><span class="p">)</span>
-                                <span class="n">m</span><span class="o">.</span><span class="n">vis_control</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;_vis_widget&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">create_vis_widget</span><span class="p">(</span><span class="n">layer_dict</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="p">(</span>
+                                <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;_vis_control&#39;</span><span class="p">)</span>
+                                <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span>
+                            <span class="p">):</span>
+                                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span><span class="p">)</span>
+                                <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="o">=</span> <span class="kc">None</span>
                             <span class="n">vis_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-                                <span class="n">widget</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">vis_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span>
+                                <span class="n">widget</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span>
                             <span class="p">)</span>
                             <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">vis_control</span><span class="p">))</span>
-                            <span class="n">m</span><span class="o">.</span><span class="n">vis_control</span> <span class="o">=</span> <span class="n">vis_control</span>
+                            <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="o">=</span> <span class="n">vis_control</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">vis_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                                <span class="n">m</span><span class="o">.</span><span class="n">vis_widget</span> <span class="o">=</span> <span class="kc">None</span>
-                            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">vis_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">vis_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">vis_control</span><span class="p">)</span>
-                                <span class="n">m</span><span class="o">.</span><span class="n">vis_control</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;_vis_widget&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span><span class="p">)</span>
+                                <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="o">=</span> <span class="kc">None</span>
                         <span class="n">change</span><span class="p">[</span><span class="s2">&quot;owner&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
 
                 <span class="n">layer_settings</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">layer_vis_on_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
@@ -4841,7 +4854,10 @@
         <span class="n">m</span><span class="o">.</span><span class="n">layer_manager_widget</span> <span class="o">=</span> <span class="n">toolbar_footer</span>
 
     <span class="k">if</span> <span class="n">return_widget</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">layer_widget</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;layer_widget&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">layer_widget</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">layer_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
             <span class="n">widget</span><span class="o">=</span><span class="n">toolbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span>
@@ -5000,7 +5016,7 @@
             <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;5px&quot;</span><span class="p">,</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">toolbar</span> <span class="o">=</span> <span class="n">toolbar_grid</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">_toolbar</span> <span class="o">=</span> <span class="n">toolbar_grid</span>
 
     <span class="k">def</span> <span class="nf">tool_callback</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
@@ -5016,7 +5032,7 @@
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;inspector&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;inspector_control&quot;</span><span class="p">):</span>
                     <span class="n">m</span><span class="o">.</span><span class="n">add_inspector</span><span class="p">()</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
+                <span class="n">tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;plotting&quot;</span><span class="p">:</span>
                 <span class="n">ee_plot_gui</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;open_data&quot;</span><span class="p">:</span>
@@ -5065,7 +5081,10 @@
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;sankee&quot;</span><span class="p">:</span>
                 <span class="n">sankee_gui</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;planet&quot;</span><span class="p">:</span>
-                <span class="n">split_basemaps</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">layers_dict</span><span class="o">=</span><span class="n">planet_tiles</span><span class="p">())</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">split_basemaps</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">layers_dict</span><span class="o">=</span><span class="n">planet_tiles</span><span class="p">())</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;cog-inspector&quot;</span><span class="p">:</span>
                 <span class="n">inspector_gui</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
@@ -5075,32 +5094,45 @@
 
                 <span class="n">webbrowser</span><span class="o">.</span><span class="n">open_new_tab</span><span class="p">(</span><span class="s2">&quot;https://geemap.org&quot;</span><span class="p">)</span>
                 <span class="n">current_tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="c1"># current_tool.value = False</span>
+
         <span class="k">else</span><span class="p">:</span>
             <span class="n">tool</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;owner&quot;</span><span class="p">]</span>
             <span class="n">tool_name</span> <span class="o">=</span> <span class="n">tools</span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">icon</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;inspector&quot;</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;plotting&quot;</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">plot_checked</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="n">plot_dropdown_widget</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_widget</span>
-                <span class="n">plot_dropdown_control</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_dropdown_control</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_dropdown_widget&quot;</span><span class="p">):</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_widget</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_dropdown_control&quot;</span><span class="p">):</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">plot_dropdown_widget</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_widget</span>
+                <span class="n">plot_dropdown_control</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span>
                 <span class="k">if</span> <span class="n">plot_dropdown_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
                     <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">plot_dropdown_control</span><span class="p">)</span>
                 <span class="k">del</span> <span class="n">plot_dropdown_widget</span>
                 <span class="k">del</span> <span class="n">plot_dropdown_control</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">plot_control</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_control</span>
-                    <span class="n">plot_widget</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_widget</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_widget&quot;</span><span class="p">):</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_control&quot;</span><span class="p">):</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                    <span class="n">plot_control</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span>
+                    <span class="n">plot_widget</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span>
                     <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">plot_control</span><span class="p">)</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">plot_control</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">plot_widget</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span> <span class="o">=</span> <span class="kc">None</span>
                     <span class="k">del</span> <span class="n">plot_control</span>
                     <span class="k">del</span> <span class="n">plot_widget</span>
                 <span class="k">if</span> <span class="p">(</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">plot_marker_cluster</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                    <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">plot_marker_cluster</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">layers</span>
+                    <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_marker_cluster&quot;</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_marker_cluster</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_marker_cluster</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">layers</span>
                 <span class="p">):</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">plot_marker_cluster</span><span class="p">)</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_plot_marker_cluster</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">draw_control_lite</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
                     <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">draw_control_lite</span><span class="p">)</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">draw_control</span><span class="p">)</span>
@@ -5108,8 +5140,8 @@
                 <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">whitebox</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">whitebox</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
                     <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">whitebox</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;convert_js&quot;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">convert_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">convert_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">convert_ctrl</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
         <span class="n">tool</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">tool_callback</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
@@ -5120,7 +5152,6 @@
         <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;wrench&quot;</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">toolbar_button</span>
 
     <span class="n">layers_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
         <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -5172,7 +5203,6 @@
     <span class="n">toolbar_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">toolbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
 
     <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">toolbar_control</span><span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">toolbar_ctrl</span> <span class="o">=</span> <span class="n">toolbar_control</span>
 </code></pre></div>
         </details>
     </div>
@@ -5222,7 +5252,6 @@
 <span class="sd">    Args:</span>
 <span class="sd">        m (object): geemap.Map</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.colormaps</span> <span class="kn">import</span> <span class="n">list_colormaps</span>
 
     <span class="n">padding</span> <span class="o">=</span> <span class="s2">&quot;0px 0px 0px 5px&quot;</span>
     <span class="n">style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;description_width&quot;</span><span class="p">:</span> <span class="s2">&quot;initial&quot;</span><span class="p">}</span>
@@ -5230,8 +5259,12 @@
     <span class="n">tool_output</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">()</span>
     <span class="n">tool_output_ctrl</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">tool_output</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_output_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_output_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-        <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">tool_output_ctrl</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_tool_output_ctrl&quot;</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span>
+    <span class="p">):</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span><span class="p">)</span>
 
     <span class="n">file_type</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButtons</span><span class="p">(</span>
         <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Shapefile&quot;</span><span class="p">,</span> <span class="s2">&quot;GeoJSON&quot;</span><span class="p">,</span> <span class="s2">&quot;CSV&quot;</span><span class="p">,</span> <span class="s2">&quot;Vector&quot;</span><span class="p">,</span> <span class="s2">&quot;Raster&quot;</span><span class="p">],</span>
@@ -5430,8 +5463,12 @@
             <span class="n">convert_hbox</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">convert_bool</span><span class="p">]</span>
             <span class="n">http_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">filepath</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Raster&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colormaps&quot;</span><span class="p">):</span>
+                <span class="kn">from</span> <span class="nn">.colormaps</span> <span class="kn">import</span> <span class="n">list_colormaps</span>
+
+                <span class="n">m</span><span class="o">.</span><span class="n">_colormaps</span> <span class="o">=</span> <span class="n">list_colormaps</span><span class="p">(</span><span class="n">add_extra</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">file_chooser</span><span class="o">.</span><span class="n">filter_pattern</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;*.tif&quot;</span><span class="p">,</span> <span class="s2">&quot;*.img&quot;</span><span class="p">]</span>
-            <span class="n">palette</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">list_colormaps</span><span class="p">(</span><span class="n">add_extra</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">palette</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_colormaps</span>
             <span class="n">palette</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">raster_options</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="n">bands</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">]),</span>
@@ -5522,9 +5559,13 @@
                 <span class="n">display</span><span class="p">(</span><span class="n">main_widget</span><span class="p">)</span>
             <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Close&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_output_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_output_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">tool_output_ctrl</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">tool_output_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_tool_output_ctrl&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span>
+            <span class="p">):</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
 
         <span class="n">ok_cancel</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
@@ -5534,7 +5575,7 @@
     <span class="c1"># file_chooser.register_callback(chooser_callback)</span>
 
     <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">tool_output_ctrl</span><span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">tool_output_ctrl</span> <span class="o">=</span> <span class="n">tool_output_ctrl</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span> <span class="o">=</span> <span class="n">tool_output_ctrl</span>
 </code></pre></div>
         </details>
     </div>
@@ -6192,7 +6233,7 @@
 
 
 <h2 id="geemap.toolbar.search_data_gui" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">search_data_gui</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">search_data_gui</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;topleft&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.toolbar.search_data_gui" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6218,15 +6259,22 @@
         <td><p>The geemap.Map object.</p></td>
         <td><em>required</em></td>
       </tr>
+      <tr>
+        <td><code>position</code></td>
+        <td><code>str</code></td>
+        <td><p>The position of the widget. Defaults to "topleft".</p></td>
+        <td><code>&#39;topleft&#39;</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/toolbar.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">search_data_gui</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">search_data_gui</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topleft&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The GUI widget for searching Earth Engine data catalog.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        m (geemap.Map): The geemap.Map object.</span>
+<span class="sd">        position (str, optional): The position of the widget. Defaults to &quot;topleft&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Adds search button and search box</span>
@@ -6522,7 +6570,7 @@
 
     <span class="n">search_event</span><span class="o">.</span><span class="n">on_dom_event</span><span class="p">(</span><span class="n">handle_search_event</span><span class="p">)</span>
 
-    <span class="n">data_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">search_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topleft&quot;</span><span class="p">)</span>
+    <span class="n">data_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">search_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
 
     <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">data_control</span><span class="p">)</span>
 </code></pre></div>
@@ -6758,8 +6806,10 @@
         <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;description_width&quot;</span><span class="p">:</span> <span class="s2">&quot;50px&quot;</span><span class="p">},</span>
     <span class="p">)</span>
 
-    <span class="n">opacity_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;40px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">))</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">opacity</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">opacity_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">opacity_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+        <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;40px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">opacity</span><span class="p">,</span> <span class="n">opacity_label</span><span class="p">)</span>
 
     <span class="n">gamma</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">FloatSlider</span><span class="p">(</span>
         <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -6774,8 +6824,10 @@
         <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;description_width&quot;</span><span class="p">:</span> <span class="s2">&quot;50px&quot;</span><span class="p">},</span>
     <span class="p">)</span>
 
-    <span class="n">gamma_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;40px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">))</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">gamma</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">gamma_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">gamma_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+        <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;40px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">gamma_label</span><span class="p">)</span>
 
     <span class="n">color_picker</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ColorPicker</span><span class="p">(</span>
         <span class="n">concise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -6852,18 +6904,18 @@
 
                 <span class="n">palette</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">color</span> <span class="k">for</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">cmap_colors</span><span class="p">])</span>
 
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">colorbar_widget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">colorbar_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span>
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span>
                         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;60px&quot;</span><span class="p">)</span>
                     <span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-                        <span class="n">widget</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">colorbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
+                        <span class="n">widget</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span>
                     <span class="p">)</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span><span class="p">)</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
 
-                <span class="n">colorbar_output</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">colorbar_widget</span>
+                <span class="n">colorbar_output</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span>
                 <span class="k">with</span> <span class="n">colorbar_output</span><span class="p">:</span>
                     <span class="n">colorbar_output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
                     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -6931,16 +6983,18 @@
 
             <span class="n">palette</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmap_colors</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">colorbar_widget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">colorbar_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;60px&quot;</span><span class="p">))</span>
-
-            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-                    <span class="n">widget</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">colorbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span>
+                    <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;60px&quot;</span><span class="p">)</span>
                 <span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span><span class="p">)</span>
 
-            <span class="n">colorbar_output</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">colorbar_widget</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
+                    <span class="n">widget</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span>
+                <span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
+
+            <span class="n">colorbar_output</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span>
             <span class="k">with</span> <span class="n">colorbar_output</span><span class="p">:</span>
                 <span class="n">colorbar_output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
                 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -6968,9 +7022,10 @@
     <span class="p">)</span>
 
     <span class="n">speed_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+        <span class="s2">&quot;1&quot;</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;25px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">speed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">speed_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="n">speed_label</span><span class="p">)</span>
 
     <span class="n">prebuilt_options</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
 
@@ -6981,11 +7036,13 @@
         <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
     <span class="p">)</span>
 
+    <span class="n">current_year</span> <span class="o">=</span> <span class="n">get_current_year</span><span class="p">()</span>
+
     <span class="n">start_year</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Start Year:&quot;</span><span class="p">,</span>
         <span class="n">value</span><span class="o">=</span><span class="mi">1984</span><span class="p">,</span>
         <span class="nb">min</span><span class="o">=</span><span class="mi">1984</span><span class="p">,</span>
-        <span class="nb">max</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span>
+        <span class="nb">max</span><span class="o">=</span><span class="n">current_year</span><span class="p">,</span>
         <span class="n">readout</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;138px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
@@ -7007,14 +7064,14 @@
 
     <span class="n">start_year</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">year_change</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
-    <span class="n">start_year_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">()</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">start_year</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">start_year_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">start_year_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;1984&quot;</span><span class="p">)</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">start_year</span><span class="p">,</span> <span class="n">start_year_label</span><span class="p">)</span>
 
     <span class="n">end_year</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;End Year:&quot;</span><span class="p">,</span>
         <span class="n">value</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span>
         <span class="nb">min</span><span class="o">=</span><span class="mi">1984</span><span class="p">,</span>
-        <span class="nb">max</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span>
+        <span class="nb">max</span><span class="o">=</span><span class="n">current_year</span><span class="p">,</span>
         <span class="n">readout</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;138px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
@@ -7022,8 +7079,8 @@
 
     <span class="n">end_year</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">year_change</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
-    <span class="n">end_year_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">()</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">end_year</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">end_year_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">end_year_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">current_year</span><span class="p">))</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">end_year</span><span class="p">,</span> <span class="n">end_year_label</span><span class="p">)</span>
 
     <span class="n">start_month</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Start Month:&quot;</span><span class="p">,</span>
@@ -7036,9 +7093,10 @@
     <span class="p">)</span>
 
     <span class="n">start_month_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+        <span class="s2">&quot;1&quot;</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;20px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">start_month</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">start_month_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">start_month</span><span class="p">,</span> <span class="n">start_month_label</span><span class="p">)</span>
 
     <span class="n">end_month</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;End Month:&quot;</span><span class="p">,</span>
@@ -7050,8 +7108,8 @@
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;155px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="n">end_month_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">()</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">end_month</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">end_month_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">end_month_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;12&quot;</span><span class="p">)</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">end_month</span><span class="p">,</span> <span class="n">end_month_label</span><span class="p">)</span>
 
     <span class="n">prebuilt_options</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="n">start_year</span><span class="p">,</span> <span class="n">start_year_label</span><span class="p">,</span> <span class="n">end_year</span><span class="p">,</span> <span class="n">end_year_label</span><span class="p">]),</span>
@@ -7192,9 +7250,9 @@
 
             <span class="n">output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
 
-            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">apply_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">submit_clicked</span><span class="p">)</span>
 
@@ -7213,9 +7271,9 @@
         <span class="n">labels</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;1, 2, 3&quot;</span>
         <span class="n">speed</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
 
-        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span><span class="p">)</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">reset_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">reset_btn_click</span><span class="p">)</span>
 
@@ -7233,9 +7291,9 @@
                 <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="p">)</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="n">close_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">close_click</span><span class="p">)</span>
@@ -7448,9 +7506,9 @@
                 <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
             <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">close_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">close_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
@@ -7539,6 +7597,8 @@
     <span class="n">padding</span> <span class="o">=</span> <span class="s2">&quot;0px 0px 0px 5px&quot;</span>  <span class="c1"># upper, right, bottom, left</span>
     <span class="n">style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;description_width&quot;</span><span class="p">:</span> <span class="s2">&quot;initial&quot;</span><span class="p">}</span>
 
+    <span class="n">current_year</span> <span class="o">=</span> <span class="n">get_current_year</span><span class="p">()</span>
+
     <span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
         <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Toolbar&quot;</span><span class="p">,</span>
@@ -7604,9 +7664,10 @@
     <span class="p">)</span>
 
     <span class="n">speed_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+        <span class="s2">&quot;10&quot;</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;20px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">speed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">speed_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span> <span class="n">speed_label</span><span class="p">)</span>
 
     <span class="n">cloud</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
         <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -7619,26 +7680,26 @@
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Start Year:&quot;</span><span class="p">,</span>
         <span class="n">value</span><span class="o">=</span><span class="mi">1984</span><span class="p">,</span>
         <span class="nb">min</span><span class="o">=</span><span class="mi">1984</span><span class="p">,</span>
-        <span class="nb">max</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span>
+        <span class="nb">max</span><span class="o">=</span><span class="n">current_year</span><span class="p">,</span>
         <span class="n">readout</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;138px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="n">start_year_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">()</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">start_year</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">start_year_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">start_year_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;1984&quot;</span><span class="p">)</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">start_year</span><span class="p">,</span> <span class="n">start_year_label</span><span class="p">)</span>
 
     <span class="n">end_year</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;End Year:&quot;</span><span class="p">,</span>
-        <span class="n">value</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">current_year</span><span class="p">,</span>
         <span class="nb">min</span><span class="o">=</span><span class="mi">1984</span><span class="p">,</span>
-        <span class="nb">max</span><span class="o">=</span><span class="mi">2021</span><span class="p">,</span>
+        <span class="nb">max</span><span class="o">=</span><span class="n">current_year</span><span class="p">,</span>
         <span class="n">readout</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;138px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">end_year_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">()</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">end_year</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">end_year_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">end_year_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">current_year</span><span class="p">))</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">end_year</span><span class="p">,</span> <span class="n">end_year_label</span><span class="p">)</span>
 
     <span class="n">start_month</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Start Month:&quot;</span><span class="p">,</span>
@@ -7651,9 +7712,10 @@
     <span class="p">)</span>
 
     <span class="n">start_month_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+        <span class="s2">&quot;5&quot;</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;20px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">start_month</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">start_month_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">start_month</span><span class="p">,</span> <span class="n">start_month_label</span><span class="p">)</span>
 
     <span class="n">end_month</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;End Month:&quot;</span><span class="p">,</span>
@@ -7665,8 +7727,8 @@
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;155px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="n">end_month_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">()</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">end_month</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">end_month_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">end_month_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;10&quot;</span><span class="p">)</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">end_month</span><span class="p">,</span> <span class="n">end_month_label</span><span class="p">)</span>
 
     <span class="n">font_size</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Font size:&quot;</span><span class="p">,</span>
@@ -7678,8 +7740,8 @@
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;152px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="n">font_size_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">()</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">font_size</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">font_size_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">font_size_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="s2">&quot;30&quot;</span><span class="p">)</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">font_size</span><span class="p">,</span> <span class="n">font_size_label</span><span class="p">)</span>
 
     <span class="n">font_color</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ColorPicker</span><span class="p">(</span>
         <span class="n">concise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -7745,9 +7807,10 @@
     <span class="p">)</span>
 
     <span class="n">nd_threshold_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+        <span class="s2">&quot;0&quot;</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;35px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">nd_threshold</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">nd_threshold_label</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+    <span class="n">jslink_slider_label</span><span class="p">(</span><span class="n">nd_threshold</span><span class="p">,</span> <span class="n">nd_threshold_label</span><span class="p">)</span>
 
     <span class="n">nd_color</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ColorPicker</span><span class="p">(</span>
         <span class="n">concise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -7816,10 +7879,7 @@
         <span class="n">temp_output</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~/Downloads&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_dir</span><span class="p">):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
-
+            <span class="n">out_dir</span> <span class="o">=</span> <span class="n">get_temp_dir</span><span class="p">()</span>
             <span class="n">out_gif</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;timelapse_&quot;</span> <span class="o">+</span> <span class="n">random_string</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.gif&quot;</span><span class="p">)</span>
 
             <span class="k">with</span> <span class="n">temp_output</span><span class="p">:</span>
@@ -8204,6 +8264,12 @@
         <td><p>Whether to open the toolbar. Defaults to True.</p></td>
         <td><code>True</code></td>
       </tr>
+      <tr>
+        <td><code>show_close_button</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether to show the close button. Defaults to True.</p></td>
+        <td><code>True</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
@@ -8214,6 +8280,7 @@
 <span class="sd">    Args:</span>
 <span class="sd">        m (geemap.Map, optional): The geemap.Map instance. Defaults to None.</span>
 <span class="sd">        opened (bool, optional): Whether to open the toolbar. Defaults to True.</span>
+<span class="sd">        show_close_button (bool, optional): Whether to show the close button. Defaults to True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">widget_width</span> <span class="o">=</span> <span class="s2">&quot;250px&quot;</span>

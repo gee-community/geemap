@@ -4530,19 +4530,13 @@ Map            (<span title="folium.folium.Map">Map</span>)
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">baseclass</span> <span class="o">=</span> <span class="s2">&quot;folium&quot;</span>
 
-        <span class="c1"># The number of shapes drawn by the user using the DrawControl</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">draw_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="c1"># The list of Earth Engine Geometry objects converted from geojson</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">draw_features</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># The Earth Engine Geometry object converted from the last drawn feature</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">draw_last_feature</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">draw_layer</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">draw_last_json</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">draw_last_bounds</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">user_roi</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">user_rois</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_ee_data</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_ee_layer</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">search_locations</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">search_loc_marker</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">search_loc_geom</span> <span class="o">=</span> <span class="kc">None</span>
@@ -6112,7 +6106,7 @@ Map            (<span title="folium.folium.Map">Map</span>)
 <span class="sd">            icon_shape (str, optional): The shape of the marker, such as &quot;retangle-dot&quot;, &quot;circle-dot&quot;. Defaults to &#39;circle-dot&#39;.</span>
 <span class="sd">            border_width (int, optional): The width of the border. Defaults to 3.</span>
 <span class="sd">            border_color (str, optional): The color of the border. Defaults to &#39;#0000ff&#39;.</span>
-<span class="sd">            kwargs (dict, optional): Additional keyword arguments to pass to BeautifyIcon. See </span>
+<span class="sd">            kwargs (dict, optional): Additional keyword arguments to pass to BeautifyIcon. See</span>
 <span class="sd">                https://python-visualization.github.io/folium/plugins.html#folium.plugins.BeautifyIcon.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -6138,7 +6132,6 @@ Map            (<span title="folium.folium.Map">Map</span>)
 
         <span class="k">if</span> <span class="n">y</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">col_names</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;y must be one of the following: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col_names</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
 
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
             <span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -10159,7 +10152,7 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
       <tr>
         <td><code>kwargs</code></td>
         <td><code>dict</code></td>
-        <td><p>Additional keyword arguments to pass to BeautifyIcon. See 
+        <td><p>Additional keyword arguments to pass to BeautifyIcon. See
 https://python-visualization.github.io/folium/plugins.html#folium.plugins.BeautifyIcon.</p></td>
         <td><code>{}</code></td>
       </tr>
@@ -10196,7 +10189,7 @@ https://python-visualization.github.io/folium/plugins.html#folium.plugins.Beauti
 <span class="sd">        icon_shape (str, optional): The shape of the marker, such as &quot;retangle-dot&quot;, &quot;circle-dot&quot;. Defaults to &#39;circle-dot&#39;.</span>
 <span class="sd">        border_width (int, optional): The width of the border. Defaults to 3.</span>
 <span class="sd">        border_color (str, optional): The color of the border. Defaults to &#39;#0000ff&#39;.</span>
-<span class="sd">        kwargs (dict, optional): Additional keyword arguments to pass to BeautifyIcon. See </span>
+<span class="sd">        kwargs (dict, optional): Additional keyword arguments to pass to BeautifyIcon. See</span>
 <span class="sd">            https://python-visualization.github.io/folium/plugins.html#folium.plugins.BeautifyIcon.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -10222,7 +10215,6 @@ https://python-visualization.github.io/folium/plugins.html#folium.plugins.Beauti
 
     <span class="k">if</span> <span class="n">y</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">col_names</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;y must be one of the following: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col_names</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
 
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
         <span class="n">html</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>

@@ -3237,7 +3237,8 @@ Defaults to False.</p></td>
         <span class="n">xyz_bunch</span> <span class="o">=</span> <span class="n">xyz_bunch</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">requires_token</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">france</span><span class="p">:</span>
         <span class="n">xyz_bunch</span> <span class="o">=</span> <span class="n">xyz_bunch</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
-            <span class="n">function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">tile</span><span class="p">:</span> <span class="s2">&quot;france&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">tile</span><span class="p">)[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="n">function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">tile</span><span class="p">:</span> <span class="s2">&quot;france&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">tile</span><span class="p">)[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="p">)</span>
 
     <span class="n">xyz_dict</span> <span class="o">=</span> <span class="n">xyz_bunch</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 
