@@ -63,8 +63,8 @@ class Canvas:
 
     def toolbar_reset(self):
         """Reset the toolbar so that no tool is selected."""
-        if hasattr(self, "toolbar"):
-            toolbar_grid = self.toolbar
+        if hasattr(self, "_toolbar"):
+            toolbar_grid = self._toolbar
             for tool in toolbar_grid.children:
                 tool.value = False
 

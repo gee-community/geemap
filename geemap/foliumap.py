@@ -117,19 +117,13 @@ class Map(folium.Map):
         super().__init__(**kwargs)
         self.baseclass = "folium"
 
-        # The number of shapes drawn by the user using the DrawControl
-        self.draw_count = 0
         # The list of Earth Engine Geometry objects converted from geojson
         self.draw_features = []
         # The Earth Engine Geometry object converted from the last drawn feature
         self.draw_last_feature = None
         self.draw_layer = None
-        self.draw_last_json = None
-        self.draw_last_bounds = None
         self.user_roi = None
         self.user_rois = None
-        self.last_ee_data = None
-        self.last_ee_layer = None
         self.search_locations = None
         self.search_loc_marker = None
         self.search_loc_geom = None
@@ -1699,7 +1693,7 @@ class Map(folium.Map):
             icon_shape (str, optional): The shape of the marker, such as "retangle-dot", "circle-dot". Defaults to 'circle-dot'.
             border_width (int, optional): The width of the border. Defaults to 3.
             border_color (str, optional): The color of the border. Defaults to '#0000ff'.
-            kwargs (dict, optional): Additional keyword arguments to pass to BeautifyIcon. See 
+            kwargs (dict, optional): Additional keyword arguments to pass to BeautifyIcon. See
                 https://python-visualization.github.io/folium/plugins.html#folium.plugins.BeautifyIcon.
 
         """
@@ -1725,7 +1719,6 @@ class Map(folium.Map):
 
         if y not in col_names:
             raise ValueError(f"y must be one of the following: {', '.join(col_names)}")
-
 
         for row in df.itertuples():
             html = ""

@@ -161,7 +161,8 @@ def get_map(ee_object, proj=None, basemap=None, zoom_level=2, **kwargs):
         if isinstance(basemap, str):
             if basemap.upper() in ["ROADMAP", "SATELLITE", "TERRAIN", "HYBRID"]:
                 basemap = cimgt.GoogleTiles(
-                    url=custom_tiles["xyz"][basemap.upper()]["url"])
+                    url=custom_tiles["xyz"][basemap.upper()]["url"]
+                )
 
         try:
             ax.add_image(basemap, zoom_level)
