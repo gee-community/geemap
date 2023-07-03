@@ -323,11 +323,11 @@ def open_data_widget(m):
     tool_output_ctrl = ipyleaflet.WidgetControl(widget=tool_output, position="topright")
 
     if (
-        hasattr(m, "tool_output_ctrl")
-        and m.tool_output_ctrl is not None
-        and m.tool_output_ctrl in m.controls
+        hasattr(m, "_tool_output_ctrl")
+        and m._tool_output_ctrl is not None
+        and m._tool_output_ctrl in m.controls
     ):
-        m.remove_control(m.tool_output_ctrl)
+        m.remove_control(m._tool_output_ctrl)
 
     file_type = widgets.ToggleButtons(
         options=["Shapefile", "GeoJSON", "CSV", "Vector", "Raster"],
@@ -619,12 +619,12 @@ def open_data_widget(m):
             m.toolbar_reset()
         elif change["new"] == "Close":
             if (
-                hasattr(m, "tool_output_ctrl")
-                and m.tool_output_ctrl is not None
-                and m.tool_output_ctrl in m.controls
+                hasattr(m, "_tool_output_ctrl")
+                and m._tool_output_ctrl is not None
+                and m._tool_output_ctrl in m.controls
             ):
-                m.remove_control(m.tool_output_ctrl)
-                m.tool_output_ctrl = None
+                m.remove_control(m._tool_output_ctrl)
+                m._tool_output_ctrl = None
                 m.toolbar_reset()
 
         ok_cancel.value = None
@@ -634,7 +634,7 @@ def open_data_widget(m):
     # file_chooser.register_callback(chooser_callback)
 
     m.add_control(tool_output_ctrl)
-    m.tool_output_ctrl = tool_output_ctrl
+    m._tool_output_ctrl = tool_output_ctrl
 
 
 def change_basemap(m):
@@ -743,8 +743,8 @@ def convert_js2py(m):
             text_widget.value = ""
         elif change["new"] == "Close":
             m.toolbar_reset()
-            if m.convert_ctrl is not None and m.convert_ctrl in m.controls:
-                m.remove_control(m.convert_ctrl)
+            if m._convert_ctrl is not None and m._convert_ctrl in m.controls:
+                m.remove_control(m._convert_ctrl)
             full_widget.close()
         buttons.value = None
 
@@ -753,7 +753,7 @@ def convert_js2py(m):
     full_widget.children = [text_widget, buttons]
     widget_control = ipyleaflet.WidgetControl(widget=full_widget, position="topright")
     m.add_control(widget_control)
-    m.convert_ctrl = widget_control
+    m._convert_ctrl = widget_control
 
 
 def collect_samples(m):
@@ -848,6 +848,8 @@ def collect_samples(m):
                     else:
                         feature = ee.Feature(geom)
                     m.draw_last_feature = feature
+                    if not hasattr(m, "_draw_count"):
+                        m._draw_count = 0
                     if action == "deleted" and len(m.draw_features) > 0:
                         m.draw_features.remove(feature)
                         m._draw_count -= 1
@@ -1860,18 +1862,18 @@ def time_slider(m=None):
 
                 palette.value = ", ".join([color for color in cmap_colors])
 
-                if m.colorbar_widget is None:
-                    m.colorbar_widget = widgets.Output(
+                if m._colorbar_widget is None:
+                    m._colorbar_widget = widgets.Output(
                         layout=widgets.Layout(height="60px")
                     )
 
-                if m.colorbar_ctrl is None:
-                    m.colorbar_ctrl = ipyleaflet.WidgetControl(
-                        widget=m.colorbar_widget, position="bottomright"
+                if (not hasattr(m, "_colorbar_ctrl")) or (m._colorbar_ctrl is None):
+                    m._colorbar_ctrl = ipyleaflet.WidgetControl(
+                        widget=m._colorbar_widget, position="bottomright"
                     )
-                    m.add_control(m.colorbar_ctrl)
+                    m.add_control(m._colorbar_ctrl)
 
-                colorbar_output = m.colorbar_widget
+                colorbar_output = m._colorbar_widget
                 with colorbar_output:
                     colorbar_output.outputs = ()
                     plt.show()
@@ -1939,16 +1941,18 @@ def time_slider(m=None):
 
             palette.value = ", ".join(cmap_colors)
 
-            if m.colorbar_widget is None:
-                m.colorbar_widget = widgets.Output(layout=widgets.Layout(height="60px"))
-
-            if m.colorbar_ctrl is None:
-                m.colorbar_ctrl = ipyleaflet.WidgetControl(
-                    widget=m.colorbar_widget, position="bottomright"
+            if m._colorbar_widget is None:
+                m._colorbar_widget = widgets.Output(
+                    layout=widgets.Layout(height="60px")
                 )
-                m.add_control(m.colorbar_ctrl)
 
-            colorbar_output = m.colorbar_widget
+            if hasattr(m, "_colorbar_ctrl") or (m._colorbar_ctrl is None):
+                m._colorbar_ctrl = ipyleaflet.WidgetControl(
+                    widget=m._colorbar_widget, position="bottomright"
+                )
+                m.add_control(m._colorbar_ctrl)
+
+            colorbar_output = m._colorbar_widget
             with colorbar_output:
                 colorbar_output.outputs = ()
                 plt.show()
@@ -2200,9 +2204,9 @@ def time_slider(m=None):
 
             output.outputs = ()
 
-            if m.colorbar_ctrl is not None:
-                m.remove_control(m.colorbar_ctrl)
-                m.colorbar_ctrl = None
+            if hasattr(m, "_colorbar_ctrl") and (m._colorbar_ctrl is not None):
+                m.remove_control(m._colorbar_ctrl)
+                m._colorbar_ctrl = None
 
     apply_btn.on_click(submit_clicked)
 
@@ -2221,9 +2225,9 @@ def time_slider(m=None):
         labels.value = "1, 2, 3"
         speed.value = 1
 
-        if m.colorbar_ctrl is not None:
-            m.remove_control(m.colorbar_ctrl)
-            m.colorbar_ctrl = None
+        if hasattr(m, "_colorbar_ctrl") and (m._colorbar_ctrl is not None):
+            m.remove_control(m._colorbar_ctrl)
+            m._colorbar_ctrl = None
 
     reset_btn.on_click(reset_btn_click)
 
@@ -2241,9 +2245,9 @@ def time_slider(m=None):
                 m.remove_control(m.tool_control)
                 m.tool_control = None
 
-            if m.colorbar_ctrl is not None:
-                m.remove_control(m.colorbar_ctrl)
-                m.colorbar_ctrl = None
+            if hasattr(m, "_colorbar_ctrl") and (m._colorbar_ctrl is not None):
+                m.remove_control(m._colorbar_ctrl)
+                m._colorbar_ctrl = None
         toolbar_widget.close()
 
     close_btn.on_click(close_click)
@@ -2456,9 +2460,9 @@ def time_slider(m=None):
                 m.toolbar_reset()
             toolbar_widget.close()
 
-            if m.colorbar_ctrl is not None:
-                m.remove_control(m.colorbar_ctrl)
-                m.colorbar_ctrl = None
+            if hasattr(m, "_colorbar_ctrl") and (m._colorbar_ctrl is not None):
+                m.remove_control(m._colorbar_ctrl)
+                m._colorbar_ctrl = None
 
     close_button.observe(close_btn_click, "value")
 
@@ -4962,20 +4966,23 @@ def layer_manager_gui(
                         if layer_name in m.ee_layer_names:
                             layer_dict = m.ee_layer_dict[layer_name]
 
-                            if m.vis_widget is not None:
-                                m.vis_widget = None
-                            m.vis_widget = m.create_vis_widget(layer_dict)
-                            if m._vis_control in m.controls:
+                            if hasattr(m, '_vis_widget') and m._vis_widget is not None:
+                                m._vis_widget = None
+                            m._vis_widget = m.create_vis_widget(layer_dict)
+                            if (
+                                hasattr(m, '_vis_control')
+                                and m._vis_control in m.controls
+                            ):
                                 m.remove_control(m._vis_control)
                                 m._vis_control = None
                             vis_control = ipyleaflet.WidgetControl(
-                                widget=m.vis_widget, position="topright"
+                                widget=m._vis_widget, position="topright"
                             )
                             m.add((vis_control))
                             m._vis_control = vis_control
                         else:
-                            if m.vis_widget is not None:
-                                m.vis_widget = None
+                            if hasattr(m, '_vis_widget') and m._vis_widget is not None:
+                                m._vis_widget = None
                             if m._vis_control is not None:
                                 if m._vis_control in m.controls:
                                     m.remove_control(m._vis_control)
@@ -5153,7 +5160,7 @@ def main_toolbar(m, position="topright", **kwargs):
             padding="5px",
         ),
     )
-    m.toolbar = toolbar_grid
+    m._toolbar = toolbar_grid
 
     def tool_callback(change):
         if change["new"]:
@@ -5169,7 +5176,7 @@ def main_toolbar(m, position="topright", **kwargs):
             elif tool_name == "inspector":
                 if not hasattr(m, "inspector_control"):
                     m.add_inspector()
-                m.toolbar_reset()
+                tool.value = False
             elif tool_name == "plotting":
                 ee_plot_gui(m)
             elif tool_name == "open_data":
@@ -5228,32 +5235,45 @@ def main_toolbar(m, position="topright", **kwargs):
 
                 webbrowser.open_new_tab("https://geemap.org")
                 current_tool.value = False
+
+            # current_tool.value = False
+
         else:
             tool = change["owner"]
             tool_name = tools[tool.icon]["name"]
             if tool_name == "inspector":
                 pass
             elif tool_name == "plotting":
-                m.plot_checked = False
-                plot_dropdown_widget = m.plot_dropdown_widget
-                plot_dropdown_control = m.plot_dropdown_control
+                if not hasattr(m, "_plot_dropdown_widget"):
+                    m._plot_dropdown_widget = None
+                if not hasattr(m, "_plot_dropdown_control"):
+                    m._plot_dropdown_control = None
+                plot_dropdown_widget = m._plot_dropdown_widget
+                plot_dropdown_control = m._plot_dropdown_control
                 if plot_dropdown_control in m.controls:
                     m.remove_control(plot_dropdown_control)
                 del plot_dropdown_widget
                 del plot_dropdown_control
-                if m.plot_control in m.controls:
-                    plot_control = m.plot_control
-                    plot_widget = m.plot_widget
+
+                if not hasattr(m, "_plot_widget"):
+                    m._plot_widget = None
+                if not hasattr(m, "_plot_control"):
+                    m._plot_control = None
+
+                if m._plot_control in m.controls:
+                    plot_control = m._plot_control
+                    plot_widget = m._plot_widget
                     m.remove_control(plot_control)
-                    m.plot_control = None
-                    m.plot_widget = None
+                    m._plot_control = None
+                    m._plot_widget = None
                     del plot_control
                     del plot_widget
                 if (
-                    m.plot_marker_cluster is not None
-                    and m.plot_marker_cluster in m.layers
+                    hasattr(m, "_plot_marker_cluster")
+                    and m._plot_marker_cluster is not None
+                    and m._plot_marker_cluster in m.layers
                 ):
-                    m.remove_layer(m.plot_marker_cluster)
+                    m.remove_layer(m._plot_marker_cluster)
                 if m.draw_control_lite in m.controls:
                     m.remove_control(m.draw_control_lite)
                 m.add(m.draw_control)
@@ -5261,8 +5281,8 @@ def main_toolbar(m, position="topright", **kwargs):
                 if m.whitebox is not None and m.whitebox in m.controls:
                     m.remove_control(m.whitebox)
             elif tool_name == "convert_js":
-                if m.convert_ctrl is not None and m.convert_ctrl in m.controls:
-                    m.remove_control(m.convert_ctrl)
+                if m._convert_ctrl is not None and m._convert_ctrl in m.controls:
+                    m.remove_control(m._convert_ctrl)
 
     for tool in toolbar_grid.children:
         tool.observe(tool_callback, "value")
@@ -5273,7 +5293,6 @@ def main_toolbar(m, position="topright", **kwargs):
         icon="wrench",
         layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
     )
-    m.toolbar_button = toolbar_button
 
     layers_button = widgets.ToggleButton(
         value=False,
@@ -5325,7 +5344,6 @@ def main_toolbar(m, position="topright", **kwargs):
     toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position=position)
 
     m.add(toolbar_control)
-    m.toolbar_ctrl = toolbar_control
 
 
 def ee_plot_gui(m, position="topright", **kwargs):
@@ -5343,31 +5361,38 @@ def ee_plot_gui(m, position="topright", **kwargs):
         layout=widgets.Layout(width="32px"),
     )
 
-    m.plot_checked = True
+    m._plot_checked = True
     dropdown = widgets.Dropdown(
         options=list(m.ee_raster_layer_names),
     )
     dropdown.layout.width = "18ex"
-    m.plot_dropdown_widget = dropdown
+    m._plot_dropdown_widget = dropdown
 
     widget = widgets.HBox([dropdown, close_btn])
 
     plot_dropdown_control = ipyleaflet.WidgetControl(widget=widget, position=position)
-    m.plot_dropdown_control = plot_dropdown_control
+    m._plot_dropdown_control = plot_dropdown_control
     m.add(plot_dropdown_control)
 
     if m.draw_control in m.controls:
         m.remove_control(m.draw_control)
     m.add_draw_control_lite()
 
+    if not hasattr(m, "_chart_points"):
+        m._chart_points = []
+    if not hasattr(m, "_chart_values"):
+        m._chart_values = []
+    if not hasattr(m, "_chart_labels"):
+        m._chart_labels = None
+
     def handle_interaction(**kwargs):
         latlon = kwargs.get("coordinates")
         if (
             kwargs.get("type") == "click"
-            and m.plot_checked
+            and m._plot_checked
             and len(m.ee_raster_layers) > 0
         ):
-            plot_layer_name = m.plot_dropdown_widget.value
+            plot_layer_name = m._plot_dropdown_widget.value
             layer_names = m.ee_raster_layer_names
             layers = m.ee_raster_layers
             index = layer_names.index(plot_layer_name)
@@ -5378,7 +5403,9 @@ def ee_plot_gui(m, position="topright", **kwargs):
 
             try:
                 m.default_style = {"cursor": "wait"}
-                plot_options = m.plot_options
+                plot_options = {}
+                if hasattr(m, "_plot_options"):
+                    plot_options = m._plot_options
                 sample_scale = m.getScale()
                 if "sample_scale" in plot_options.keys() and (
                     plot_options["sample_scale"] is not None
@@ -5389,19 +5416,22 @@ def ee_plot_gui(m, position="topright", **kwargs):
                 if ("add_marker_cluster" in plot_options.keys()) and plot_options[
                     "add_marker_cluster"
                 ]:
-                    plot_coordinates = m.plot_coordinates
-                    markers = m.plot_markers
-                    marker_cluster = m.plot_marker_cluster
-                    plot_coordinates.append(latlon)
+                    if not hasattr(m, "_plot_markers"):
+                        m._plot_markers = []
+                    markers = m._plot_markers
+                    marker_cluster = m._plot_marker_cluster
                     markers.append(ipyleaflet.Marker(location=latlon))
                     marker_cluster.markers = markers
-                    m.plot_marker_cluster = marker_cluster
+                    m._plot_marker_cluster = marker_cluster
 
                 band_names = ee_object.bandNames().getInfo()
                 if any(len(name) > 3 for name in band_names):
                     band_names = list(range(1, len(band_names) + 1))
 
                 m._chart_labels = band_names
+
+                if not hasattr(m, "_roi_end"):
+                    m._roi_end = False
 
                 if m._roi_end:
                     if m.roi_reducer_scale is None:
@@ -5442,9 +5472,9 @@ def ee_plot_gui(m, position="topright", **kwargs):
                 m.default_style = {"cursor": "crosshair"}
                 m._roi_end = False
             except Exception as e:
-                if m.plot_widget is not None:
-                    with m.plot_widget:
-                        m.plot_widget.outputs = ()
+                if m._plot_widget is not None:
+                    with m._plot_widget:
+                        m._plot_widget.outputs = ()
                         print("No data for the clicked location.")
                 else:
                     print(e)
@@ -5455,26 +5485,26 @@ def ee_plot_gui(m, position="topright", **kwargs):
 
     def close_click(change):
         m.toolbar_reset()
-        m.plot_checked = False
+        m._plot_checked = False
 
         if (
             hasattr(m, "plot_control")
-            and (m.plot_control is not None)
-            and (m.plot_control in m.controls)
+            and (m._plot_control is not None)
+            and (m._plot_control in m.controls)
         ):
-            m.plot_widget.outputs = ()
-            m.remove_control(m.plot_control)
+            m._plot_widget.outputs = ()
+            m.remove_control(m._plot_control)
 
         if (
-            m.plot_dropdown_control is not None
-            and m.plot_dropdown_control in m.controls
+            m._plot_dropdown_control is not None
+            and m._plot_dropdown_control in m.controls
         ):
-            m.remove_control(m.plot_dropdown_control)
+            m.remove_control(m._plot_dropdown_control)
 
         widget.close()
 
         m.on_interaction(handle_interaction, remove=True)
-        m.plot_widget = None
+        m._plot_widget = None
         m.default_style = {"cursor": "default"}
 
     close_btn.on_click(close_click)

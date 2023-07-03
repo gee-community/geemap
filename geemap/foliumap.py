@@ -117,8 +117,6 @@ class Map(folium.Map):
         super().__init__(**kwargs)
         self.baseclass = "folium"
 
-        # The number of shapes drawn by the user using the DrawControl
-        self._draw_count = 0
         # The list of Earth Engine Geometry objects converted from geojson
         self.draw_features = []
         # The Earth Engine Geometry object converted from the last drawn feature
