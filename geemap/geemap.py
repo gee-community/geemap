@@ -3429,8 +3429,6 @@ class Map(ipyleaflet.Map):
 
             color_opacity.observe(color_opacity_change, names="value")
 
-            # widgets.jslink((color_opacity, "value"), (color_opacity_label, "value"))
-
             point_size = widgets.IntText(
                 value=3,
                 description="Point size:",

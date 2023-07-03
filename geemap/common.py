@@ -10458,6 +10458,18 @@ def temp_file_path(extension):
     return file_path
 
 
+def get_temp_dir():
+    """Returns the temporary directory.
+
+    Returns:
+        str: The temporary directory.
+    """
+
+    import tempfile
+
+    return tempfile.gettempdir()
+
+
 def create_contours(
     image, min_value, max_value, interval, kernel=None, region=None, values=None
 ):
@@ -15216,6 +15228,18 @@ def ee_to_geotiff(
 
 
 def create_grid(ee_object, scale, proj=None):
+    """Create a grid covering an Earth Engine object.
+
+    Args:
+        ee_object (ee.Image | ee.Geometry | ee.FeatureCollection): The Earth Engine object.
+        scale (float): The grid cell size.
+        proj (str, optional): The projection. Defaults to None.
+
+
+    Returns:
+        ee.FeatureCollection: The grid as a feature collection.
+    """
+
     if isinstance(ee_object, ee.FeatureCollection) or isinstance(ee_object, ee.Image):
         geometry = ee_object.geometry()
     elif isinstance(ee_object, ee.Geometry):
@@ -15231,3 +15255,18 @@ def create_grid(ee_object, scale, proj=None):
     grid = geometry.coveringGrid(proj, scale)
 
     return grid
+
+
+def jslink_slider_label(slider, label):
+    """Link a slider and a label.
+
+    Args:
+        slider (ipywidgets.IntSlider | ipywidgets.FloatSlider): The slider.
+        label (ipywidgets.Label): The label.
+    """
+
+    def update_label(change):
+        if change["name"]:
+            label.value = str(change["new"])
+
+    slider.observe(update_label, "value")

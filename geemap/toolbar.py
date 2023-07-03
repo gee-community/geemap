@@ -24,6 +24,13 @@ def tool_template(m=None, opened=True):
     widget_width = "250px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
 
+    def link_slider_label(slider, label):
+        def update_label(change):
+            if change["name"]:
+                label.value = str(change["new"])
+
+        slider.observe(update_label, "value")
+
     toolbar_button = widgets.ToggleButton(
         value=False,
         tooltip="Toolbar",
@@ -216,6 +223,13 @@ def tool_header_template(m=None, opened=True, show_close_button=True):
     widget_width = "250px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
 
+    def link_slider_label(slider, label):
+        def update_label(change):
+            if change["name"]:
+                label.value = str(change["new"])
+
+        slider.observe(update_label, "value")
+
     toolbar_button = widgets.ToggleButton(
         value=False,
         tooltip="Toolbar",
@@ -314,7 +328,6 @@ def open_data_widget(m):
     Args:
         m (object): geemap.Map
     """
-    from .colormaps import list_colormaps
 
     padding = "0px 0px 0px 5px"
     style = {"description_width": "initial"}
@@ -526,8 +539,12 @@ def open_data_widget(m):
             convert_hbox.children = [convert_bool]
             http_widget.children = [filepath]
         elif change["new"] == "Raster":
+            if not hasattr(m, "_colormaps"):
+                from .colormaps import list_colormaps
+
+                m._colormaps = list_colormaps(add_extra=True)
             file_chooser.filter_pattern = ["*.tif", "*.img"]
-            palette.options = list_colormaps(add_extra=True)
+            palette.options = m._colormaps
             palette.value = None
             raster_options.children = [
                 widgets.HBox([bands, vmin, vmax]),
@@ -1170,6 +1187,8 @@ def timelapse_gui(m=None):
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
     style = {"description_width": "initial"}
 
+    current_year = get_current_year()
+
     toolbar_button = widgets.ToggleButton(
         value=False,
         tooltip="Toolbar",
@@ -1235,9 +1254,10 @@ def timelapse_gui(m=None):
     )
 
     speed_label = widgets.Label(
+        "10",
         layout=widgets.Layout(width="20px", padding=padding),
     )
-    widgets.jslink((speed, "value"), (speed_label, "value"))
+    jslink_slider_label(speed, speed_label)
 
     cloud = widgets.Checkbox(
         value=True,
@@ -1250,26 +1270,26 @@ def timelapse_gui(m=None):
         description="Start Year:",
         value=1984,
         min=1984,
-        max=2021,
+        max=current_year,
         readout=False,
         style=style,
         layout=widgets.Layout(width="138px", padding=padding),
     )
 
-    start_year_label = widgets.Label()
-    widgets.jslink((start_year, "value"), (start_year_label, "value"))
+    start_year_label = widgets.Label("1984")
+    jslink_slider_label(start_year, start_year_label)
 
     end_year = widgets.IntSlider(
         description="End Year:",
-        value=2020,
+        value=current_year,
         min=1984,
-        max=2021,
+        max=current_year,
         readout=False,
         style=style,
         layout=widgets.Layout(width="138px", padding=padding),
     )
-    end_year_label = widgets.Label()
-    widgets.jslink((end_year, "value"), (end_year_label, "value"))
+    end_year_label = widgets.Label(str(current_year))
+    jslink_slider_label(end_year, end_year_label)
 
     start_month = widgets.IntSlider(
         description="Start Month:",
@@ -1282,9 +1302,10 @@ def timelapse_gui(m=None):
     )
 
     start_month_label = widgets.Label(
+        "5",
         layout=widgets.Layout(width="20px", padding=padding),
     )
-    widgets.jslink((start_month, "value"), (start_month_label, "value"))
+    jslink_slider_label(start_month, start_month_label)
 
     end_month = widgets.IntSlider(
         description="End Month:",
@@ -1296,8 +1317,8 @@ def timelapse_gui(m=None):
         layout=widgets.Layout(width="155px", padding=padding),
     )
 
-    end_month_label = widgets.Label()
-    widgets.jslink((end_month, "value"), (end_month_label, "value"))
+    end_month_label = widgets.Label("10")
+    jslink_slider_label(end_month, end_month_label)
 
     font_size = widgets.IntSlider(
         description="Font size:",
@@ -1309,8 +1330,8 @@ def timelapse_gui(m=None):
         layout=widgets.Layout(width="152px", padding=padding),
     )
 
-    font_size_label = widgets.Label()
-    widgets.jslink((font_size, "value"), (font_size_label, "value"))
+    font_size_label = widgets.Label("30")
+    jslink_slider_label(font_size, font_size_label)
 
     font_color = widgets.ColorPicker(
         concise=False,
@@ -1376,9 +1397,10 @@ def timelapse_gui(m=None):
     )
 
     nd_threshold_label = widgets.Label(
+        "0",
         layout=widgets.Layout(width="35px", padding=padding),
     )
-    widgets.jslink((nd_threshold, "value"), (nd_threshold_label, "value"))
+    jslink_slider_label(nd_threshold, nd_threshold_label)
 
     nd_color = widgets.ColorPicker(
         concise=False,
@@ -1447,10 +1469,7 @@ def timelapse_gui(m=None):
         temp_output = widgets.Output()
 
         if m is not None:
-            out_dir = os.path.expanduser("~/Downloads")
-            if not os.path.exists(out_dir):
-                os.makedirs(out_dir)
-
+            out_dir = get_temp_dir()
             out_gif = os.path.join(out_dir, "timelapse_" + random_string(3) + ".gif")
 
             with temp_output:
@@ -1768,8 +1787,10 @@ def time_slider(m=None):
         style={"description_width": "50px"},
     )
 
-    opacity_label = widgets.Label(layout=widgets.Layout(width="40px", padding=padding))
-    widgets.jslink((opacity, "value"), (opacity_label, "value"))
+    opacity_label = widgets.Label(
+        "1", layout=widgets.Layout(width="40px", padding=padding)
+    )
+    jslink_slider_label(opacity, opacity_label)
 
     gamma = widgets.FloatSlider(
         value=1,
@@ -1784,8 +1805,10 @@ def time_slider(m=None):
         style={"description_width": "50px"},
     )
 
-    gamma_label = widgets.Label(layout=widgets.Layout(width="40px", padding=padding))
-    widgets.jslink((gamma, "value"), (gamma_label, "value"))
+    gamma_label = widgets.Label(
+        "1", layout=widgets.Layout(width="40px", padding=padding)
+    )
+    jslink_slider_label(gamma, gamma_label)
 
     color_picker = widgets.ColorPicker(
         concise=False,
@@ -1980,9 +2003,10 @@ def time_slider(m=None):
     )
 
     speed_label = widgets.Label(
+        "1",
         layout=widgets.Layout(width="25px", padding=padding),
     )
-    widgets.jslink((speed, "value"), (speed_label, "value"))
+    jslink_slider_label(speed, speed_label)
 
     prebuilt_options = widgets.VBox()
 
@@ -1993,11 +2017,13 @@ def time_slider(m=None):
         style=style,
     )
 
+    current_year = get_current_year()
+
     start_year = widgets.IntSlider(
         description="Start Year:",
         value=1984,
         min=1984,
-        max=2021,
+        max=current_year,
         readout=False,
         style=style,
         layout=widgets.Layout(width="138px", padding=padding),
@@ -2019,14 +2045,14 @@ def time_slider(m=None):
 
     start_year.observe(year_change, "value")
 
-    start_year_label = widgets.Label()
-    widgets.jslink((start_year, "value"), (start_year_label, "value"))
+    start_year_label = widgets.Label("1984")
+    jslink_slider_label(start_year, start_year_label)
 
     end_year = widgets.IntSlider(
         description="End Year:",
         value=2020,
         min=1984,
-        max=2021,
+        max=current_year,
         readout=False,
         style=style,
         layout=widgets.Layout(width="138px", padding=padding),
@@ -2034,8 +2060,8 @@ def time_slider(m=None):
 
     end_year.observe(year_change, "value")
 
-    end_year_label = widgets.Label()
-    widgets.jslink((end_year, "value"), (end_year_label, "value"))
+    end_year_label = widgets.Label(str(current_year))
+    jslink_slider_label(end_year, end_year_label)
 
     start_month = widgets.IntSlider(
         description="Start Month:",
@@ -2048,9 +2074,10 @@ def time_slider(m=None):
     )
 
     start_month_label = widgets.Label(
+        "1",
         layout=widgets.Layout(width="20px", padding=padding),
     )
-    widgets.jslink((start_month, "value"), (start_month_label, "value"))
+    jslink_slider_label(start_month, start_month_label)
 
     end_month = widgets.IntSlider(
         description="End Month:",
@@ -2062,8 +2089,8 @@ def time_slider(m=None):
         layout=widgets.Layout(width="155px", padding=padding),
     )
 
-    end_month_label = widgets.Label()
-    widgets.jslink((end_month, "value"), (end_month_label, "value"))
+    end_month_label = widgets.Label("12")
+    jslink_slider_label(end_month, end_month_label)
 
     prebuilt_options.children = [
         widgets.HBox([start_year, start_year_label, end_year, end_year_label]),
@@ -2597,6 +2624,7 @@ def plot_transect(m=None):
 
     if m is not None:
         layer.options = m.ee_raster_layer_names
+        layer.value = layer.options[0]
         if len(layer.options) > 0:
             image = m.ee_layer_dict[layer.value]["ee_object"]
             if isinstance(image, ee.ImageCollection):
@@ -2616,6 +2644,7 @@ def plot_transect(m=None):
                 if isinstance(image, ee.ImageCollection):
                     image = image.toBands()
                 band.options = image.bandNames().getInfo()
+                band.value = band.options[0]
 
     layer.observe(layer_changed, "value")
 
@@ -2980,9 +3009,9 @@ def sankee_gui(m=None):
         )
 
         width_slider_label = widgets.Label(
-            layout=widgets.Layout(padding="0px 10px 0px 0px")
+            "600", layout=widgets.Layout(padding="0px 10px 0px 0px")
         )
-        widgets.jslink((width_slider, "value"), (width_slider_label, "value"))
+        jslink_slider_label(width_slider, width_slider_label)
 
         def width_changed(change):
             if change["new"]:
@@ -3008,8 +3037,8 @@ def sankee_gui(m=None):
             style={"description_width": "initial"},
         )
 
-        height_slider_label = widgets.Label()
-        widgets.jslink((height_slider, "value"), (height_slider_label, "value"))
+        height_slider_label = widgets.Label("250")
+        jslink_slider_label(height_slider, height_slider_label)
 
         def height_changed(change):
             if change["new"]:
@@ -5225,7 +5254,10 @@ def main_toolbar(m, position="topright", **kwargs):
             elif tool_name == "sankee":
                 sankee_gui(m)
             elif tool_name == "planet":
-                split_basemaps(m, layers_dict=planet_tiles())
+                try:
+                    split_basemaps(m, layers_dict=planet_tiles())
+                except Exception as e:
+                    print(e)
                 m.toolbar_reset()
             elif tool_name == "cog-inspector":
                 inspector_gui(m)
