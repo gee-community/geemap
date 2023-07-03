@@ -1,5 +1,10 @@
-""" This module extends the folium Map class. It is designed to be used in Google Colab, as Google Colab currently does not support ipyleaflet.
-"""
+"""Module for creating interactive maps with the folium library."""
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
+
 import os
 
 import ee

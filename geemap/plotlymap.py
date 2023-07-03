@@ -1,3 +1,10 @@
+"""Module for creating interactive maps with plotly."""
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
+
 import os
 import numpy as np
 import pandas as pd

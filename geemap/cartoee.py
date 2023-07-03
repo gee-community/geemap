@@ -1,3 +1,11 @@
+"""The cartoee module contains functions for creating publication-quality maps with cartopy and Earth Engine data."""
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
+
+
 import logging
 import os
 import subprocess

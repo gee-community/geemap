@@ -1,6 +1,11 @@
 """Module for creating charts for Earth Engine data.
 """
 
+# *******************************************************************************#
+# This module contains core features of the geemap package.                      #
+# The Earth Engine team and the geemap community will maintain the core features.#
+# *******************************************************************************#
+
 import ee
 import pandas as pd
 import numpy as np

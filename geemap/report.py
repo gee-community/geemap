@@ -1,3 +1,10 @@
+"""Module for reporting issues with geemap."""
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
+
 import scooby
 from typing import Optional
 

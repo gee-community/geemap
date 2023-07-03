@@ -1,3 +1,10 @@
+"Module for machine learning with Google Earth Engine."
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
+
 import multiprocessing as mp
 import os
 from functools import partial
