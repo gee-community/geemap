@@ -1,5 +1,11 @@
-"""Module for creating timelapse from various Earth Engine ImageCollection.
+"""Module for creating timelapse from Earth Engine data.
 """
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
+
 import datetime
 import glob
 import io

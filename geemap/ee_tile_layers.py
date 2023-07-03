@@ -1,5 +1,10 @@
 """Tile layers that show EE objects."""
 
+# *******************************************************************************#
+# This module contains core features features of the geemap package.             #
+# The Earth Engine team and the geemap community will maintain the core features.#
+# *******************************************************************************#
+
 import box
 import ee
 import folium
@@ -74,12 +79,14 @@ class EEFoliumTileLayer(folium.raster_layers.TileLayer):
         opacity=1.0,
         **kwargs,
     ):
-        """Args:
-        ee_object (Collection|Feature|Image|MapId): The object to add to the map.
-        vis_params (dict, optional): The visualization parameters. Defaults to None.
-        name (str, optional): The name of the layer. Defaults to 'Layer untitled'.
-        shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-        opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
+        """Initialize the folium tile layer.
+
+        Args:
+            ee_object (Collection|Feature|Image|MapId): The object to add to the map.
+            vis_params (dict, optional): The visualization parameters. Defaults to None.
+            name (str, optional): The name of the layer. Defaults to 'Layer untitled'.
+            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
         self.vis_params = _validate_vis_params(vis_params)
         self.url_format = _get_tile_url_format(ee_object, self.vis_params)
@@ -111,12 +118,14 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         opacity=1.0,
         **kwargs,
     ):
-        """Args:
-        ee_object (Collection|Feature|Image|MapId): The object to add to the map.
-        vis_params (dict, optional): The visualization parameters. Defaults to None.
-        name (str, optional): The name of the layer. Defaults to 'Layer untitled'.
-        shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-        opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
+        """Initialize the ipyleaflet tile layer.
+
+        Args:
+            ee_object (Collection|Feature|Image|MapId): The object to add to the map.
+            vis_params (dict, optional): The visualization parameters. Defaults to None.
+            name (str, optional): The name of the layer. Defaults to 'Layer untitled'.
+            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
         self.vis_params = _validate_vis_params(vis_params)
         self.url_format = _get_tile_url_format(ee_object, vis_params)

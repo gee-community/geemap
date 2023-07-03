@@ -1,3 +1,10 @@
+"""Module for accessing the Earth Engine Data Catalog with dot notation."""
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
+
 import json
 import os
 import shutil
