@@ -24,13 +24,6 @@ def tool_template(m=None, opened=True):
     widget_width = "250px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
 
-    def link_slider_label(slider, label):
-        def update_label(change):
-            if change["name"]:
-                label.value = str(change["new"])
-
-        slider.observe(update_label, "value")
-
     toolbar_button = widgets.ToggleButton(
         value=False,
         tooltip="Toolbar",
@@ -218,17 +211,11 @@ def tool_header_template(m=None, opened=True, show_close_button=True):
     Args:
         m (geemap.Map, optional): The geemap.Map instance. Defaults to None.
         opened (bool, optional): Whether to open the toolbar. Defaults to True.
+        show_close_button (bool, optional): Whether to show the close button. Defaults to True.
     """
 
     widget_width = "250px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
-
-    def link_slider_label(slider, label):
-        def update_label(change):
-            if change["name"]:
-                label.value = str(change["new"])
-
-        slider.observe(update_label, "value")
 
     toolbar_button = widgets.ToggleButton(
         value=False,
