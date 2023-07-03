@@ -3,6 +3,12 @@
 Most functions for downloading OpenStreetMap data require tags of map features. The list of commonly used tags can be found at 
 https://wiki.openstreetmap.org/wiki/Map_features 
 """
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
+
 from .common import check_package
 
 

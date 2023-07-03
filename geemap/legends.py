@@ -1,6 +1,11 @@
 """Module of sample legends for some commonly used geospatial datasets.
 """
 
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
+
 import os
 
 

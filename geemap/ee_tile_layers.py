@@ -119,7 +119,7 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         **kwargs,
     ):
         """Initialize the ipyleaflet tile layer.
-        
+
         Args:
             ee_object (Collection|Feature|Image|MapId): The object to add to the map.
             vis_params (dict, optional): The visualization parameters. Defaults to None.

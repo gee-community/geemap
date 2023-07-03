@@ -1,5 +1,13 @@
-"""Module for dealing with the toolbar.
+"""Module for dealing with interactive GUIs.
 """
+
+# *******************************************************************************#
+# This module contains core features and extra features of the geemap package.   #
+# The Earth Engine team and the geemap community will maintain the core features.#
+# The geemap community will maintain the extra features.                         #
+# The core features include classes and functions below until the line # ******* #
+# *******************************************************************************#
+
 import os
 
 import ee
