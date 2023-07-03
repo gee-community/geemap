@@ -16,6 +16,13 @@ More WMS basemaps can be found at the following websites:
 
 """
 
+# *******************************************************************************#
+# This module contains core features and extra features of the geemap package.   #
+# The Earth Engine team and the geemap community will maintain the core features.#
+# The geemap community will maintain the extra features.                         #
+# The core features include classes and functions below until the line # ******* #
+# *******************************************************************************#
+
 import collections
 import os
 import requests
@@ -283,44 +290,6 @@ def xyz_to_leaflet():
     return leaflet_dict
 
 
-def xyz_to_pydeck():
-    """Convert xyz tile services to pydeck custom tile layers.
-
-    Returns:
-        dict: A dictionary of pydeck tile layers.
-    """
-
-    check_package("pydeck", "https://deckgl.readthedocs.io/en/latest/installation.html")
-    import pydeck as pdk
-
-    pydeck_dict = {}
-
-    for key, tile in custom_tiles["xyz"].items():
-        url = tile["url"]
-        pydeck_dict[key] = url
-
-    for key, item in get_xyz_dict().items():
-        url = item.build_url()
-        pydeck_dict[key] = url
-
-        if os.environ.get("PLANET_API_KEY") is not None:
-            planet_dict = planet_tiles(tile_format="ipyleaflet")
-            for id_, tile in planet_dict.items():
-                pydeck_dict[id_] = tile.url
-
-    pdk.settings.custom_libraries = [
-        {
-            "libraryName": "MyTileLayerLibrary",
-            "resourceUri": "https://cdn.jsdelivr.net/gh/giswqs/pydeck_myTileLayer@master/dist/bundle.js",
-        }
-    ]
-
-    for key in pydeck_dict:
-        pydeck_dict[key] = pdk.Layer("MyTileLayer", pydeck_dict[key], key)
-
-    return pydeck_dict
-
-
 def xyz_to_folium():
     """Convert xyz tile services to folium tile layers.
 
@@ -366,6 +335,55 @@ def xyz_to_folium():
         folium_dict.update(planet_dict)
 
     return folium_dict
+
+
+# ******************************************************************************#
+# The classes and functions above are the core features of the geemap package.  #
+# The Earth Engine team and the geemap community will maintain these features.  #
+# ******************************************************************************#
+
+# ******************************************************************************#
+# The classes and functions below are the extra features of the geemap package. #
+# The geemap community will maintain these features.                            #
+# ******************************************************************************#
+
+
+def xyz_to_pydeck():
+    """Convert xyz tile services to pydeck custom tile layers.
+
+    Returns:
+        dict: A dictionary of pydeck tile layers.
+    """
+
+    check_package("pydeck", "https://deckgl.readthedocs.io/en/latest/installation.html")
+    import pydeck as pdk
+
+    pydeck_dict = {}
+
+    for key, tile in custom_tiles["xyz"].items():
+        url = tile["url"]
+        pydeck_dict[key] = url
+
+    for key, item in get_xyz_dict().items():
+        url = item.build_url()
+        pydeck_dict[key] = url
+
+        if os.environ.get("PLANET_API_KEY") is not None:
+            planet_dict = planet_tiles(tile_format="ipyleaflet")
+            for id_, tile in planet_dict.items():
+                pydeck_dict[id_] = tile.url
+
+    pdk.settings.custom_libraries = [
+        {
+            "libraryName": "MyTileLayerLibrary",
+            "resourceUri": "https://cdn.jsdelivr.net/gh/giswqs/pydeck_myTileLayer@master/dist/bundle.js",
+        }
+    ]
+
+    for key in pydeck_dict:
+        pydeck_dict[key] = pdk.Layer("MyTileLayer", pydeck_dict[key], key)
+
+    return pydeck_dict
 
 
 def xyz_to_plotly():
