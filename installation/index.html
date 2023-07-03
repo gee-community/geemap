@@ -3109,8 +3109,14 @@ the <a href="https://code.earthengine.google.com/">Earth Engine Code Editor</a> 
 </code></pre></div></td></tr></table></div>
 <p>The geemap package has some optional dependencies, such as <a href="https://geopandas.org">GeoPandas</a> and <a href="https://github.com/banesullivan/localtileserver">localtileserver</a>. These optional dependencies can be challenging to install on some computers, especially Windows. It is highly recommended that you create a fresh conda environment to install geemap. Follow the commands below to set up a conda env and install geemap:</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>conda<span class="w"> </span>install<span class="w"> </span>-n<span class="w"> </span>base<span class="w"> </span>mamba<span class="w"> </span>-c<span class="w"> </span>conda-forge
-mamba<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>gee<span class="w"> </span>geemap<span class="w"> </span>geopandas<span class="w"> </span>localtileserver<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span>conda-forge
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>gee<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10
+conda<span class="w"> </span>activate<span class="w"> </span>gee
+conda<span class="w"> </span>install<span class="w"> </span>-n<span class="w"> </span>base<span class="w"> </span>mamba<span class="w"> </span>-c<span class="w"> </span>conda-forge
+mamba<span class="w"> </span>install<span class="w"> </span>geemap<span class="w"> </span>-c<span class="w"> </span>conda-forge
+mamba<span class="w"> </span>geopandas<span class="w"> </span>localtileserver<span class="w"> </span>-c<span class="w"> </span>conda-forge
 </code></pre></div></td></tr></table></div>
 <p>All the optional dependencies are listed in <a href="https://github.com/gee-community/geemap/blob/master/requirements_all.txt">requirements_all.txt</a>, which can be installed using one of the following:</p>
 <ul>
@@ -3153,7 +3159,7 @@ mamba<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-23T04:28:41+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-23</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-07-03T14:15:56+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-07-03</span>
       
         <br>
         Created:

@@ -28,8 +28,11 @@ conda install geemap -c conda-forge
 The geemap package has some optional dependencies, such as [GeoPandas](https://geopandas.org) and [localtileserver](https://github.com/banesullivan/localtileserver). These optional dependencies can be challenging to install on some computers, especially Windows. It is highly recommended that you create a fresh conda environment to install geemap. Follow the commands below to set up a conda env and install geemap:
 
 ```bash
+conda create -n gee python=3.10
+conda activate gee
 conda install -n base mamba -c conda-forge
-mamba create -n gee geemap geopandas localtileserver python -c conda-forge
+mamba install geemap -c conda-forge
+mamba geopandas localtileserver -c conda-forge
 ```
 
 All the optional dependencies are listed in [requirements_all.txt](https://github.com/gee-community/geemap/blob/master/requirements_all.txt), which can be installed using one of the following:
