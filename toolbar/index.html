@@ -21,7 +21,7 @@
         <link rel="next" href="../workshops/GeoPython_2021/">
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.18">
     
     
       
@@ -4926,6 +4926,22 @@
     <span class="n">tools</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;inspector&quot;</span><span class="p">,</span> <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Inspector&quot;</span><span class="p">},</span>
         <span class="s2">&quot;bar-chart&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;plotting&quot;</span><span class="p">,</span> <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Plotting&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;globe&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;timelapse&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Create timelapse&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;map&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;basemap&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Change basemap&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;retweet&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;convert_js&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Convert Earth Engine JavaScript to Python&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;plus&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;expand&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Expand toolbar&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
         <span class="s2">&quot;eraser&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;eraser&quot;</span><span class="p">,</span>
             <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Remove all drawn features&quot;</span><span class="p">,</span>
@@ -4934,26 +4950,14 @@
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;open_data&quot;</span><span class="p">,</span>
             <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Open local vector/raster data&quot;</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s2">&quot;retweet&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;convert_js&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Convert Earth Engine JavaScript to Python&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
         <span class="s2">&quot;gears&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;whitebox&quot;</span><span class="p">,</span>
             <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;WhiteboxTools for local geoprocessing&quot;</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s2">&quot;google&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;geetoolbox&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;GEE Toolbox for cloud computing&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;map&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;basemap&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Change basemap&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;globe&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;timelapse&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Create timelapse&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
+        <span class="c1"># &quot;google&quot;: {</span>
+        <span class="c1">#     &quot;name&quot;: &quot;geetoolbox&quot;,</span>
+        <span class="c1">#     &quot;tooltip&quot;: &quot;GEE Toolbox for cloud computing&quot;,</span>
+        <span class="c1"># },</span>
         <span class="s2">&quot;fast-forward&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;timeslider&quot;</span><span class="p">,</span>
             <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Activate timeslider&quot;</span><span class="p">,</span>
@@ -4978,6 +4982,10 @@
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cog-inspector&quot;</span><span class="p">,</span>
             <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Get COG/STAC pixel value&quot;</span><span class="p">,</span>
         <span class="p">},</span>
+        <span class="s2">&quot;minus&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;collapse&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Collapse toolbar&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
         <span class="c1"># &quot;spinner&quot;: {</span>
         <span class="c1">#     &quot;name&quot;: &quot;placehold2&quot;,</span>
         <span class="c1">#     &quot;tooltip&quot;: &quot;This is a placehold&quot;,</span>
@@ -4988,7 +4996,7 @@
         <span class="c1"># },</span>
     <span class="p">}</span>
 
-    <span class="n">icons</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tools</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">icons</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tools</span><span class="o">.</span><span class="n">keys</span><span class="p">())[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">tooltips</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;tooltip&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">tools</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span>
 
     <span class="n">icon_width</span> <span class="o">=</span> <span class="s2">&quot;32px&quot;</span>
@@ -4996,22 +5004,26 @@
     <span class="n">n_cols</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">n_rows</span> <span class="o">=</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">icons</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_cols</span><span class="p">))</span>
 
+    <span class="n">all_children</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+                <span class="n">width</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span>
+            <span class="p">),</span>
+            <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="n">icons</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">tooltips</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">icons</span><span class="p">))</span>
+    <span class="p">]</span>
+
+    <span class="n">expand_button</span> <span class="o">=</span> <span class="n">all_children</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+
     <span class="n">toolbar_grid</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">GridBox</span><span class="p">(</span>
-        <span class="n">children</span><span class="o">=</span><span class="p">[</span>
-            <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
-                <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
-                    <span class="n">width</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span>
-                <span class="p">),</span>
-                <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
-                <span class="n">icon</span><span class="o">=</span><span class="n">icons</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                <span class="n">tooltip</span><span class="o">=</span><span class="n">tooltips</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">icons</span><span class="p">))</span>
-        <span class="p">],</span>
+        <span class="n">children</span><span class="o">=</span><span class="n">all_children</span><span class="p">[:</span><span class="mi">6</span><span class="p">],</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
             <span class="n">width</span><span class="o">=</span><span class="s2">&quot;109px&quot;</span><span class="p">,</span>
             <span class="n">grid_template_columns</span><span class="o">=</span><span class="p">(</span><span class="n">icon_width</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_cols</span><span class="p">,</span>
-            <span class="n">grid_template_rows</span><span class="o">=</span><span class="p">(</span><span class="n">icon_height</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_rows</span><span class="p">,</span>
+            <span class="n">grid_template_rows</span><span class="o">=</span><span class="p">(</span><span class="n">icon_height</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
             <span class="n">grid_gap</span><span class="o">=</span><span class="s2">&quot;1px 1px&quot;</span><span class="p">,</span>
             <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;5px&quot;</span><span class="p">,</span>
         <span class="p">),</span>
@@ -5026,7 +5038,17 @@
                     <span class="n">tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">tool</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;owner&quot;</span><span class="p">]</span>
             <span class="n">tool_name</span> <span class="o">=</span> <span class="n">tools</span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">icon</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;eraser&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;expand&quot;</span><span class="p">:</span>
+                <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">grid_template_rows</span> <span class="o">=</span> <span class="p">(</span><span class="n">icon_height</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_rows</span>
+                <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">all_children</span>
+                <span class="n">expand_button</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;minus&quot;</span>
+                <span class="n">tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;collapse&quot;</span><span class="p">:</span>
+                <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">grid_template_rows</span> <span class="o">=</span> <span class="p">(</span><span class="n">icon_height</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+                <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">all_children</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span>
+                <span class="n">expand_button</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;plus&quot;</span>
+                <span class="n">tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;eraser&quot;</span><span class="p">:</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">remove_drawn_features</span><span class="p">()</span>
                 <span class="n">tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;inspector&quot;</span><span class="p">:</span>
@@ -5143,7 +5165,7 @@
                 <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
                     <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">all_children</span><span class="p">:</span>
         <span class="n">tool</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">tool_callback</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
     <span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
@@ -8754,10 +8776,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.b425cdc4.min.js"></script>
+      <script src="../assets/javascripts/bundle.220ee61c.min.js"></script>
       
         
           <script src="../js/timeago.min.js"></script>
