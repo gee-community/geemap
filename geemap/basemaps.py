@@ -225,10 +225,7 @@ WMS_TILES = {
     },
 }
 
-custom_tiles = {
-   "xyz": XYZ_TILES,
-   "wms": WMS_TILES
-}
+custom_tiles = {"xyz": XYZ_TILES, "wms": WMS_TILES}
 
 
 def get_xyz_dict(free_only=True, france=False):
@@ -249,7 +246,8 @@ def get_xyz_dict(free_only=True, france=False):
         xyz_bunch = xyz_bunch.filter(requires_token=False)
     if not france:
         xyz_bunch = xyz_bunch.filter(
-            function=lambda tile: "france" not in dict(tile)["name"].lower())
+            function=lambda tile: "france" not in dict(tile)["name"].lower()
+        )
 
     xyz_dict = xyz_bunch.flatten()
 
