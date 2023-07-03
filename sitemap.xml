@@ -66,6 +66,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://geemap.org/ee_tile_layers/</loc>
+         <lastmod>2023-07-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://geemap.org/examples/</loc>
          <lastmod>2023-07-03</lastmod>
          <changefreq>daily</changefreq>
