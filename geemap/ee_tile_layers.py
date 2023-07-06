@@ -22,8 +22,13 @@ def _get_tile_url_format(ee_object, vis_params):
 def _validate_vis_params(vis_params):
     if vis_params is None:
         return {}
+
+    if not isinstance(vis_params, dict):
+        raise TypeError("vis_params must be a dictionary")
+
     if "palette" in vis_params:
         vis_params["palette"] = _validate_palette(vis_params["palette"])
+
     return vis_params
 
 
@@ -56,7 +61,7 @@ def _validate_palette(palette):
     if isinstance(palette, box.Box):
         if "default" not in palette:
             raise ValueError("The provided palette Box object is invalid.")
-        return palette["default"]
+        return list(palette["default"])
     if isinstance(palette, str):
         return common.check_cmap(palette)
     if isinstance(palette, list):
@@ -128,7 +133,7 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
         self.vis_params = _validate_vis_params(vis_params)
-        self.url_format = _get_tile_url_format(ee_object, vis_params)
+        self.url_format = _get_tile_url_format(ee_object, self.vis_params)
         super().__init__(
             url=self.url_format,
             attribution="Google Earth Engine",
