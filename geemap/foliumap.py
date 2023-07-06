@@ -893,7 +893,14 @@ class Map(folium.Map):
         self.add_image(colorbar, position=position)
 
     def add_styled_vector(
-        self, ee_object, column, palette, layer_name="Untitled", **kwargs
+        self,
+        ee_object,
+        column,
+        palette,
+        layer_name="Untitled",
+        shown=True,
+        opacity=1.0,
+        **kwargs,
     ):
         """Adds a styled vector to the map.
 
@@ -904,7 +911,13 @@ class Map(folium.Map):
             layer_name (str, optional): The name to be used for the new layer. Defaults to "Untitled".
         """
         styled_vector = vector_styling(ee_object, column, palette, **kwargs)
-        self.addLayer(styled_vector.style(**{"styleProperty": "style"}), {}, layer_name)
+        self.addLayer(
+            styled_vector.style(**{"styleProperty": "style"}),
+            {},
+            layer_name,
+            shown,
+            opacity,
+        )
 
     def add_shapefile(self, in_shp, layer_name="Untitled", **kwargs):
         """Adds a shapefile to the map. See https://python-visualization.github.io/folium/modules.html#folium.features.GeoJson for more info about setting style.
