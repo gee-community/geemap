@@ -26,10 +26,12 @@ def _validate_vis_params(vis_params):
     if not isinstance(vis_params, dict):
         raise TypeError("vis_params must be a dictionary")
 
-    if "palette" in vis_params:
-        vis_params["palette"] = _validate_palette(vis_params["palette"])
+    valid_dict = vis_params.copy()
 
-    return vis_params
+    if "palette" in valid_dict:
+        valid_dict["palette"] = _validate_palette(valid_dict["palette"])
+
+    return valid_dict
 
 
 def _ee_object_to_image(ee_object, vis_params):
