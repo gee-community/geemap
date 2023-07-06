@@ -5315,7 +5315,14 @@ Map            (<span title="folium.folium.Map">Map</span>)
         <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">colorbar</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">add_styled_vector</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">palette</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">&quot;Untitled&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ee_object</span><span class="p">,</span>
+        <span class="n">column</span><span class="p">,</span>
+        <span class="n">palette</span><span class="p">,</span>
+        <span class="n">layer_name</span><span class="o">=</span><span class="s2">&quot;Untitled&quot;</span><span class="p">,</span>
+        <span class="n">shown</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">opacity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a styled vector to the map.</span>
 
@@ -5326,7 +5333,13 @@ Map            (<span title="folium.folium.Map">Map</span>)
 <span class="sd">            layer_name (str, optional): The name to be used for the new layer. Defaults to &quot;Untitled&quot;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">styled_vector</span> <span class="o">=</span> <span class="n">vector_styling</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">palette</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">styled_vector</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;styleProperty&quot;</span><span class="p">:</span> <span class="s2">&quot;style&quot;</span><span class="p">}),</span> <span class="p">{},</span> <span class="n">layer_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span>
+            <span class="n">styled_vector</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;styleProperty&quot;</span><span class="p">:</span> <span class="s2">&quot;style&quot;</span><span class="p">}),</span>
+            <span class="p">{},</span>
+            <span class="n">layer_name</span><span class="p">,</span>
+            <span class="n">shown</span><span class="p">,</span>
+            <span class="n">opacity</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">add_shapefile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_shp</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">&quot;Untitled&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a shapefile to the map. See https://python-visualization.github.io/folium/modules.html#folium.features.GeoJson for more info about setting style.</span>
@@ -12297,7 +12310,7 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
 
 
 <h3 id="geemap.foliumap.Map.add_styled_vector" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">add_styled_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">palette</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s1">&#39;Untitled&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">add_styled_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">palette</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s1">&#39;Untitled&#39;</span><span class="p">,</span> <span class="n">shown</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 
 <a href="#geemap.foliumap.Map.add_styled_vector" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -12346,7 +12359,14 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
         <details class="quote">
           <summary>Source code in <code>geemap/foliumap.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">add_styled_vector</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">palette</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">&quot;Untitled&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">ee_object</span><span class="p">,</span>
+    <span class="n">column</span><span class="p">,</span>
+    <span class="n">palette</span><span class="p">,</span>
+    <span class="n">layer_name</span><span class="o">=</span><span class="s2">&quot;Untitled&quot;</span><span class="p">,</span>
+    <span class="n">shown</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a styled vector to the map.</span>
 
@@ -12357,7 +12377,13 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
 <span class="sd">        layer_name (str, optional): The name to be used for the new layer. Defaults to &quot;Untitled&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">styled_vector</span> <span class="o">=</span> <span class="n">vector_styling</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">palette</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">styled_vector</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;styleProperty&quot;</span><span class="p">:</span> <span class="s2">&quot;style&quot;</span><span class="p">}),</span> <span class="p">{},</span> <span class="n">layer_name</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span>
+        <span class="n">styled_vector</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;styleProperty&quot;</span><span class="p">:</span> <span class="s2">&quot;style&quot;</span><span class="p">}),</span>
+        <span class="p">{},</span>
+        <span class="n">layer_name</span><span class="p">,</span>
+        <span class="n">shown</span><span class="p">,</span>
+        <span class="n">opacity</span><span class="p">,</span>
+    <span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
