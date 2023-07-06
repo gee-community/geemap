@@ -31,6 +31,769 @@ except ImportError:
     pass
 
 
+def ee_export_image(
+    ee_object,
+    filename,
+    scale=None,
+    crs=None,
+    crs_transform=None,
+    region=None,
+    dimensions=None,
+    file_per_band=False,
+    format="ZIPPED_GEO_TIFF",
+    unzip=True,
+    unmask_value=None,
+    timeout=300,
+    proxies=None,
+):
+    """Exports an ee.Image as a GeoTIFF.
+
+    Args:
+        ee_object (object): The ee.Image to download.
+        filename (str): Output filename for the exported image.
+        scale (float, optional): A default scale to use for any bands that do not specify one; ignored if crs and crs_transform is specified. Defaults to None.
+        crs (str, optional): A default CRS string to use for any bands that do not explicitly specify one. Defaults to None.
+        crs_transform (list, optional): a default affine transform to use for any bands that do not specify one, of the same format as the crs_transform of bands. Defaults to None.
+        region (object, optional): A polygon specifying a region to download; ignored if crs and crs_transform is specified. Defaults to None.
+        dimensions (list, optional): An optional array of two integers defining the width and height to which the band is cropped. Defaults to None.
+        file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
+        format (str, optional):  One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file, default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If "GEO_TIFF" or "NPY",
+            filePerBand and all band-level transformations will be ignored. Loading a NumPy output results in a structured array.
+        unzip (bool, optional): Whether to unzip the downloaded file. Defaults to True.
+        unmask_value (float, optional): The value to use for pixels that are masked in the input image.
+            If the exported image contains zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
+        timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
+        proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
+    """
+
+    if not isinstance(ee_object, ee.Image):
+        print("The ee_object must be an ee.Image.")
+        return
+
+    if unmask_value is not None:
+        ee_object = ee_object.selfMask().unmask(unmask_value)
+        if isinstance(region, ee.Geometry):
+            ee_object = ee_object.clip(region)
+        elif isinstance(region, ee.FeatureCollection):
+            ee_object = ee_object.clipToCollection(region)
+
+    filename = os.path.abspath(filename)
+    basename = os.path.basename(filename)
+    name = os.path.splitext(basename)[0]
+    filetype = os.path.splitext(basename)[1][1:].lower()
+    filename_zip = filename.replace(".tif", ".zip")
+
+    if filetype != "tif":
+        print("The filename must end with .tif")
+        return
+
+    try:
+        print("Generating URL ...")
+        params = {"name": name, "filePerBand": file_per_band}
+
+        params["scale"] = scale
+        if region is None:
+            region = ee_object.geometry()
+        if dimensions is not None:
+            params["dimensions"] = dimensions
+        if region is not None:
+            params["region"] = region
+        if crs is not None:
+            params["crs"] = crs
+        if crs_transform is not None:
+            params["crs_transform"] = crs_transform
+        if format != "ZIPPED_GEO_TIFF":
+            params["format"] = format
+
+        try:
+            url = ee_object.getDownloadURL(params)
+        except Exception as e:
+            print("An error occurred while downloading.")
+            print(e)
+            return
+        print(f"Downloading data from {url}\nPlease wait ...")
+        # Need to initialize r to something because of how we currently handle errors
+        # We should aim to refactor the code such that only one try block is needed
+        r = None
+        r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
+
+        if r.status_code != 200:
+            print("An error occurred while downloading.")
+            return
+
+        with open(filename_zip, "wb") as fd:
+            for chunk in r.iter_content(chunk_size=1024):
+                fd.write(chunk)
+
+    except Exception as e:
+        print("An error occurred while downloading.")
+        if r is not None:
+            print(r.json()["error"]["message"])
+        return
+
+    try:
+        if unzip:
+            with zipfile.ZipFile(filename_zip) as z:
+                z.extractall(os.path.dirname(filename))
+            os.remove(filename_zip)
+
+        if file_per_band:
+            print(f"Data downloaded to {os.path.dirname(filename)}")
+        else:
+            print(f"Data downloaded to {filename}")
+    except Exception as e:
+        print(e)
+
+
+def ee_export_image_collection(
+    ee_object,
+    out_dir,
+    scale=None,
+    crs=None,
+    crs_transform=None,
+    region=None,
+    dimensions=None,
+    file_per_band=False,
+    format="ZIPPED_GEO_TIFF",
+    unmask_value=None,
+    filenames=None,
+    timeout=300,
+    proxies=None,
+):
+    """Exports an ImageCollection as GeoTIFFs.
+
+    Args:
+        ee_object (object): The ee.Image to download.
+        out_dir (str): The output directory for the exported images.
+        scale (float, optional): A default scale to use for any bands that do not specify one; ignored if crs and crs_transform is specified. Defaults to None.
+        crs (str, optional): A default CRS string to use for any bands that do not explicitly specify one. Defaults to None.
+        crs_transform (list, optional): a default affine transform to use for any bands that do not specify one, of the same format as the crs_transform of bands. Defaults to None.
+        region (object, optional): A polygon specifying a region to download; ignored if crs and crs_transform is specified. Defaults to None.
+        dimensions (list, optional): An optional array of two integers defining the width and height to which the band is cropped. Defaults to None.
+        file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
+        format (str, optional):  One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file, default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If "GEO_TIFF" or "NPY",
+            filePerBand and all band-level transformations will be ignored. Loading a NumPy output results in a structured array.
+        unmask_value (float, optional): The value to use for pixels that are masked in the input image.
+            If the exported image contains zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
+        filenames (list | int, optional): A list of filenames to use for the exported images. Defaults to None.
+        timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
+        proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
+    """
+
+    if not isinstance(ee_object, ee.ImageCollection):
+        print("The ee_object must be an ee.ImageCollection.")
+        return
+
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    try:
+        count = int(ee_object.size().getInfo())
+        print(f"Total number of images: {count}\n")
+
+        if filenames is None:
+            filenames = ee_object.aggregate_array("system:index").getInfo()
+        elif isinstance(filenames, int):
+            filenames = [str(f + filenames) for f in range(0, count)]
+
+        if len(filenames) != count:
+            raise Exception(
+                "The number of filenames must be equal to the number of images."
+            )
+
+        filenames = [str(f) + ".tif" for f in filenames if not str(f).endswith(".tif")]
+
+        for i in range(0, count):
+            image = ee.Image(ee_object.toList(count).get(i))
+            filename = os.path.join(out_dir, filenames[i])
+            print(f"Exporting {i + 1}/{count}: {filename}")
+            ee_export_image(
+                image,
+                filename=filename,
+                scale=scale,
+                crs=crs,
+                crs_transform=crs_transform,
+                region=region,
+                dimensions=dimensions,
+                file_per_band=file_per_band,
+                format=format,
+                unmask_value=unmask_value,
+                timeout=timeout,
+                proxies=proxies,
+            )
+            print("\n")
+
+    except Exception as e:
+        print(e)
+
+
+def ee_export_image_to_drive(
+    image,
+    description="myExportImageTask",
+    folder=None,
+    fileNamePrefix=None,
+    dimensions=None,
+    region=None,
+    scale=None,
+    crs=None,
+    crsTransform=None,
+    maxPixels=None,
+    shardSize=None,
+    fileDimensions=None,
+    skipEmptyTiles=None,
+    fileFormat=None,
+    formatOptions=None,
+    **kwargs,
+):
+    """Creates a batch task to export an Image as a raster to Google Drive.
+
+    Args:
+        image: The image to be exported.
+        description: Human-readable name of the task.
+        folder: The name of a unique folder in your Drive account to
+            export into. Defaults to the root of the drive.
+        fileNamePrefix: The Google Drive filename for the export.
+            Defaults to the name of the task.
+        dimensions: The dimensions of the exported image. Takes either a
+            single positive integer as the maximum dimension or "WIDTHxHEIGHT"
+            where WIDTH and HEIGHT are each positive integers.
+        region: The lon,lat coordinates for a LinearRing or Polygon
+            specifying the region to export. Can be specified as a nested
+            lists of numbers or a serialized string. Defaults to the image's
+            region.
+        scale: The resolution in meters per pixel. Defaults to the
+            native resolution of the image assset unless a crsTransform
+            is specified.
+        crs: The coordinate reference system of the exported image's
+            projection. Defaults to the image's default projection.
+        crsTransform: A comma-separated string of 6 numbers describing
+            the affine transform of the coordinate reference system of the
+            exported image's projection, in the order: xScale, xShearing,
+            xTranslation, yShearing, yScale and yTranslation. Defaults to
+            the image's native CRS transform.
+        maxPixels: The maximum allowed number of pixels in the exported
+            image. The task will fail if the exported region covers more
+            pixels in the specified projection. Defaults to 100,000,000.
+        shardSize: Size in pixels of the tiles in which this image will be
+            computed. Defaults to 256.
+        fileDimensions: The dimensions in pixels of each image file, if the
+            image is too large to fit in a single file. May specify a
+            single number to indicate a square shape, or a tuple of two
+            dimensions to indicate (width,height). Note that the image will
+            still be clipped to the overall image dimensions. Must be a
+            multiple of shardSize.
+        skipEmptyTiles: If true, skip writing empty (i.e. fully-masked)
+            image tiles. Defaults to false.
+        fileFormat: The string file format to which the image is exported.
+            Currently only 'GeoTIFF' and 'TFRecord' are supported, defaults to
+            'GeoTIFF'.
+        formatOptions: A dictionary of string keys to format specific options.
+        **kwargs: Holds other keyword arguments that may have been deprecated
+            such as 'crs_transform', 'driveFolder', and 'driveFileNamePrefix'.
+    """
+
+    if not isinstance(image, ee.Image):
+        raise ValueError("Input image must be an instance of ee.Image")
+
+    task = ee.batch.Export.image.toDrive(
+        image,
+        description,
+        folder,
+        fileNamePrefix,
+        dimensions,
+        region,
+        scale,
+        crs,
+        crsTransform,
+        maxPixels,
+        shardSize,
+        fileDimensions,
+        skipEmptyTiles,
+        fileFormat,
+        formatOptions,
+        **kwargs,
+    )
+    task.start()
+
+
+def ee_export_image_to_asset(
+    image,
+    description="myExportImageTask",
+    assetId=None,
+    pyramidingPolicy=None,
+    dimensions=None,
+    region=None,
+    scale=None,
+    crs=None,
+    crsTransform=None,
+    maxPixels=None,
+    **kwargs,
+):
+    """Creates a task to export an EE Image to an EE Asset.
+
+    Args:
+        image: The image to be exported.
+        description: Human-readable name of the task.
+        assetId: The destination asset ID.
+        pyramidingPolicy: The pyramiding policy to apply to each band in the
+            image, a dictionary keyed by band name. Values must be
+            one of: "mean", "sample", "min", "max", or "mode".
+            Defaults to "mean". A special key, ".default", may be used to
+            change the default for all bands.
+        dimensions: The dimensions of the exported image. Takes either a
+            single positive integer as the maximum dimension or "WIDTHxHEIGHT"
+            where WIDTH and HEIGHT are each positive integers.
+        region: The lon,lat coordinates for a LinearRing or Polygon
+            specifying the region to export. Can be specified as a nested
+            lists of numbers or a serialized string. Defaults to the image's
+            region.
+        scale: The resolution in meters per pixel. Defaults to the
+            native resolution of the image assset unless a crsTransform
+            is specified.
+        crs: The coordinate reference system of the exported image's
+            projection. Defaults to the image's default projection.
+        crsTransform: A comma-separated string of 6 numbers describing
+            the affine transform of the coordinate reference system of the
+            exported image's projection, in the order: xScale, xShearing,
+            xTranslation, yShearing, yScale and yTranslation. Defaults to
+            the image's native CRS transform.
+        maxPixels: The maximum allowed number of pixels in the exported
+            image. The task will fail if the exported region covers more
+            pixels in the specified projection. Defaults to 100,000,000.
+        **kwargs: Holds other keyword arguments that may have been deprecated
+            such as 'crs_transform'.
+    """
+
+    if isinstance(image, ee.Image) or isinstance(image, ee.image.Image):
+        pass
+    else:
+        raise ValueError("Input image must be an instance of ee.Image")
+
+    if isinstance(assetId, str):
+        if assetId.startswith("users/") or assetId.startswith("projects/"):
+            pass
+        else:
+            assetId = f"{ee_user_id()}/{assetId}"
+
+    task = ee.batch.Export.image.toAsset(
+        image,
+        description,
+        assetId,
+        pyramidingPolicy,
+        dimensions,
+        region,
+        scale,
+        crs,
+        crsTransform,
+        maxPixels,
+        **kwargs,
+    )
+    task.start()
+
+
+def ee_export_image_to_cloud_storage(
+    image,
+    description="myExportImageTask",
+    bucket=None,
+    fileNamePrefix=None,
+    dimensions=None,
+    region=None,
+    scale=None,
+    crs=None,
+    crsTransform=None,
+    maxPixels=None,
+    shardSize=None,
+    fileDimensions=None,
+    skipEmptyTiles=None,
+    fileFormat=None,
+    formatOptions=None,
+    **kwargs,
+):
+    """Creates a task to export an EE Image to Google Cloud Storage.
+
+    Args:
+        image: The image to be exported.
+        description: Human-readable name of the task.
+        bucket: The name of a Cloud Storage bucket for the export.
+        fileNamePrefix: Cloud Storage object name prefix for the export.
+            Defaults to the name of the task.
+        dimensions: The dimensions of the exported image. Takes either a
+            single positive integer as the maximum dimension or "WIDTHxHEIGHT"
+            where WIDTH and HEIGHT are each positive integers.
+        region: The lon,lat coordinates for a LinearRing or Polygon
+            specifying the region to export. Can be specified as a nested
+            lists of numbers or a serialized string. Defaults to the image's
+            region.
+        scale: The resolution in meters per pixel. Defaults to the
+            native resolution of the image assset unless a crsTransform
+            is specified.
+        crs: The coordinate reference system of the exported image's
+            projection. Defaults to the image's default projection.
+        crsTransform: A comma-separated string of 6 numbers describing
+            the affine transform of the coordinate reference system of the
+            exported image's projection, in the order: xScale, xShearing,
+            xTranslation, yShearing, yScale and yTranslation. Defaults to
+            the image's native CRS transform.
+        maxPixels: The maximum allowed number of pixels in the exported
+            image. The task will fail if the exported region covers more
+            pixels in the specified projection. Defaults to 100,000,000.
+        shardSize: Size in pixels of the tiles in which this image will be
+            computed. Defaults to 256.
+        fileDimensions: The dimensions in pixels of each image file, if the
+            image is too large to fit in a single file. May specify a
+            single number to indicate a square shape, or a tuple of two
+            dimensions to indicate (width,height). Note that the image will
+            still be clipped to the overall image dimensions. Must be a
+            multiple of shardSize.
+        skipEmptyTiles: If true, skip writing empty (i.e. fully-masked)
+            image tiles. Defaults to false.
+        fileFormat: The string file format to which the image is exported.
+            Currently only 'GeoTIFF' and 'TFRecord' are supported, defaults to
+            'GeoTIFF'.
+        formatOptions: A dictionary of string keys to format specific options.
+        **kwargs: Holds other keyword arguments that may have been deprecated
+            such as 'crs_transform'.
+    """
+
+    if not isinstance(image, ee.Image):
+        raise ValueError("Input image must be an instance of ee.Image")
+
+    try:
+        task = ee.batch.Export.image.toCloudStorage(
+            image,
+            description,
+            bucket,
+            fileNamePrefix,
+            dimensions,
+            region,
+            scale,
+            crs,
+            crsTransform,
+            maxPixels,
+            shardSize,
+            fileDimensions,
+            skipEmptyTiles,
+            fileFormat,
+            formatOptions,
+            **kwargs,
+        )
+        task.start()
+    except Exception as e:
+        print(e)
+
+
+def ee_export_image_collection_to_drive(
+    ee_object,
+    descriptions=None,
+    folder=None,
+    fileNamePrefix=None,
+    dimensions=None,
+    region=None,
+    scale=None,
+    crs=None,
+    crsTransform=None,
+    maxPixels=None,
+    shardSize=None,
+    fileDimensions=None,
+    skipEmptyTiles=None,
+    fileFormat=None,
+    formatOptions=None,
+    **kwargs,
+):
+    """Creates a batch task to export an ImageCollection as raster images to Google Drive.
+
+    Args:
+        ee_object: The image collection to export.
+        descriptions: A list of human-readable names of the tasks.
+        folder: The name of a unique folder in your Drive account to
+            export into. Defaults to the root of the drive.
+        fileNamePrefix: The Google Drive filename for the export.
+            Defaults to the name of the task.
+        dimensions: The dimensions of the exported image. Takes either a
+            single positive integer as the maximum dimension or "WIDTHxHEIGHT"
+            where WIDTH and HEIGHT are each positive integers.
+        region: The lon,lat coordinates for a LinearRing or Polygon
+            specifying the region to export. Can be specified as a nested
+            lists of numbers or a serialized string. Defaults to the image's
+            region.
+        scale: The resolution in meters per pixel. Defaults to the
+            native resolution of the image assset unless a crsTransform
+            is specified.
+        crs: The coordinate reference system of the exported image's
+            projection. Defaults to the image's default projection.
+        crsTransform: A comma-separated string of 6 numbers describing
+            the affine transform of the coordinate reference system of the
+            exported image's projection, in the order: xScale, xShearing,
+            xTranslation, yShearing, yScale and yTranslation. Defaults to
+            the image's native CRS transform.
+        maxPixels: The maximum allowed number of pixels in the exported
+            image. The task will fail if the exported region covers more
+            pixels in the specified projection. Defaults to 100,000,000.
+        shardSize: Size in pixels of the tiles in which this image will be
+            computed. Defaults to 256.
+        fileDimensions: The dimensions in pixels of each image file, if the
+            image is too large to fit in a single file. May specify a
+            single number to indicate a square shape, or a tuple of two
+            dimensions to indicate (width,height). Note that the image will
+            still be clipped to the overall image dimensions. Must be a
+            multiple of shardSize.
+        skipEmptyTiles: If true, skip writing empty (i.e. fully-masked)
+            image tiles. Defaults to false.
+        fileFormat: The string file format to which the image is exported.
+            Currently only 'GeoTIFF' and 'TFRecord' are supported, defaults to
+            'GeoTIFF'.
+        formatOptions: A dictionary of string keys to format specific options.
+        **kwargs: Holds other keyword arguments that may have been deprecated
+            such as 'crs_transform', 'driveFolder', and 'driveFileNamePrefix'.
+    """
+
+    if not isinstance(ee_object, ee.ImageCollection):
+        raise ValueError("The ee_object must be an ee.ImageCollection.")
+
+    try:
+        count = int(ee_object.size().getInfo())
+        print(f"Total number of images: {count}\n")
+
+        if (descriptions is not None) and (len(descriptions) != count):
+            raise ValueError(
+                "The number of descriptions is not equal to the number of images."
+            )
+
+        if descriptions is None:
+            descriptions = ee_object.aggregate_array("system:index").getInfo()
+
+        images = ee_object.toList(count)
+
+        if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
+            return
+
+        for i in range(0, count):
+            image = ee.Image(images.get(i))
+            description = descriptions[i]
+            ee_export_image_to_drive(
+                image,
+                description,
+                folder,
+                fileNamePrefix,
+                dimensions,
+                region,
+                scale,
+                crs,
+                crsTransform,
+                maxPixels,
+                shardSize,
+                fileDimensions,
+                skipEmptyTiles,
+                fileFormat,
+                formatOptions,
+                **kwargs,
+            )
+
+    except Exception as e:
+        print(e)
+
+
+def ee_export_image_collection_to_asset(
+    ee_object,
+    descriptions=None,
+    assetIds=None,
+    pyramidingPolicy=None,
+    dimensions=None,
+    region=None,
+    scale=None,
+    crs=None,
+    crsTransform=None,
+    maxPixels=None,
+    **kwargs,
+):
+    """Creates a batch task to export an ImageCollection as raster images to Google Drive.
+
+    Args:
+        ee_object: The image collection to export.
+        descriptions: A list of human-readable names of the tasks.
+        assetIds: The destination asset ID.
+        pyramidingPolicy: The pyramiding policy to apply to each band in the
+            image, a dictionary keyed by band name. Values must be
+            one of: "mean", "sample", "min", "max", or "mode".
+            Defaults to "mean". A special key, ".default", may be used to
+            change the default for all bands.
+        dimensions: The dimensions of the exported image. Takes either a
+            single positive integer as the maximum dimension or "WIDTHxHEIGHT"
+            where WIDTH and HEIGHT are each positive integers.
+        region: The lon,lat coordinates for a LinearRing or Polygon
+            specifying the region to export. Can be specified as a nested
+            lists of numbers or a serialized string. Defaults to the image's
+            region.
+        scale: The resolution in meters per pixel. Defaults to the
+            native resolution of the image assset unless a crsTransform
+            is specified.
+        crs: The coordinate reference system of the exported image's
+            projection. Defaults to the image's default projection.
+        crsTransform: A comma-separated string of 6 numbers describing
+            the affine transform of the coordinate reference system of the
+            exported image's projection, in the order: xScale, xShearing,
+            xTranslation, yShearing, yScale and yTranslation. Defaults to
+            the image's native CRS transform.
+        maxPixels: The maximum allowed number of pixels in the exported
+            image. The task will fail if the exported region covers more
+            pixels in the specified projection. Defaults to 100,000,000.
+        **kwargs: Holds other keyword arguments that may have been deprecated
+            such as 'crs_transform'.
+    """
+
+    if not isinstance(ee_object, ee.ImageCollection):
+        raise ValueError("The ee_object must be an ee.ImageCollection.")
+
+    try:
+        count = int(ee_object.size().getInfo())
+        print(f"Total number of images: {count}\n")
+
+        if (descriptions is not None) and (len(descriptions) != count):
+            print("The number of descriptions is not equal to the number of images.")
+            return
+
+        if descriptions is None:
+            descriptions = ee_object.aggregate_array("system:index").getInfo()
+
+        if assetIds is None:
+            assetIds = descriptions
+
+        images = ee_object.toList(count)
+
+        if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
+            return
+
+        for i in range(0, count):
+            image = ee.Image(images.get(i))
+            description = descriptions[i]
+            assetId = assetIds[i]
+            ee_export_image_to_asset(
+                image,
+                description,
+                assetId,
+                pyramidingPolicy,
+                dimensions,
+                region,
+                scale,
+                crs,
+                crsTransform,
+                maxPixels,
+                **kwargs,
+            )
+
+    except Exception as e:
+        print(e)
+
+
+def ee_export_image_collection_to_cloud_storage(
+    ee_object,
+    descriptions=None,
+    bucket=None,
+    fileNamePrefix=None,
+    dimensions=None,
+    region=None,
+    scale=None,
+    crs=None,
+    crsTransform=None,
+    maxPixels=None,
+    shardSize=None,
+    fileDimensions=None,
+    skipEmptyTiles=None,
+    fileFormat=None,
+    formatOptions=None,
+    **kwargs,
+):
+    """Creates a batch task to export an ImageCollection as raster images to Google Drive.
+
+    Args:
+        ee_object: The image collection to export.
+        descriptions: A list of human-readable names of the tasks.
+        bucket: The name of a Cloud Storage bucket for the export.
+        fileNamePrefix: Cloud Storage object name prefix for the export.
+            Defaults to the name of the task.
+        dimensions: The dimensions of the exported image. Takes either a
+            single positive integer as the maximum dimension or "WIDTHxHEIGHT"
+            where WIDTH and HEIGHT are each positive integers.
+        region: The lon,lat coordinates for a LinearRing or Polygon
+            specifying the region to export. Can be specified as a nested
+            lists of numbers or a serialized string. Defaults to the image's
+            region.
+        scale: The resolution in meters per pixel. Defaults to the
+            native resolution of the image assset unless a crsTransform
+            is specified.
+        crs: The coordinate reference system of the exported image's
+            projection. Defaults to the image's default projection.
+        crsTransform: A comma-separated string of 6 numbers describing
+            the affine transform of the coordinate reference system of the
+            exported image's projection, in the order: xScale, xShearing,
+            xTranslation, yShearing, yScale and yTranslation. Defaults to
+            the image's native CRS transform.
+        maxPixels: The maximum allowed number of pixels in the exported
+            image. The task will fail if the exported region covers more
+            pixels in the specified projection. Defaults to 100,000,000.
+        shardSize: Size in pixels of the tiles in which this image will be
+            computed. Defaults to 256.
+        fileDimensions: The dimensions in pixels of each image file, if the
+            image is too large to fit in a single file. May specify a
+            single number to indicate a square shape, or a tuple of two
+            dimensions to indicate (width,height). Note that the image will
+            still be clipped to the overall image dimensions. Must be a
+            multiple of shardSize.
+        skipEmptyTiles: If true, skip writing empty (i.e. fully-masked)
+            image tiles. Defaults to false.
+        fileFormat: The string file format to which the image is exported.
+            Currently only 'GeoTIFF' and 'TFRecord' are supported, defaults to
+            'GeoTIFF'.
+        formatOptions: A dictionary of string keys to format specific options.
+        **kwargs: Holds other keyword arguments that may have been deprecated
+            such as 'crs_transform'.
+    """
+
+    if not isinstance(ee_object, ee.ImageCollection):
+        raise ValueError("The ee_object must be an ee.ImageCollection.")
+
+    try:
+        count = int(ee_object.size().getInfo())
+        print(f"Total number of images: {count}\n")
+
+        if (descriptions is not None) and (len(descriptions) != count):
+            print("The number of descriptions is not equal to the number of images.")
+            return
+
+        if descriptions is None:
+            descriptions = ee_object.aggregate_array("system:index").getInfo()
+
+        images = ee_object.toList(count)
+
+        if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
+            return
+
+        for i in range(0, count):
+            image = ee.Image(images.get(i))
+            description = descriptions[i]
+            ee_export_image_to_cloud_storage(
+                image,
+                description,
+                bucket,
+                fileNamePrefix,
+                dimensions,
+                region,
+                scale,
+                crs,
+                crsTransform,
+                maxPixels,
+                shardSize,
+                fileDimensions,
+                skipEmptyTiles,
+                fileFormat,
+                formatOptions,
+                **kwargs,
+            )
+
+    except Exception as e:
+        print(e)
+
+
 def ee_export_geojson(
     ee_object, filename=None, selectors=None, timeout=300, proxies=None
 ):
@@ -14525,3 +15288,28 @@ def jslink_slider_label(slider, label):
             label.value = str(change["new"])
 
     slider.observe(update_label, "value")
+
+
+def check_basemap(basemap):
+    """Check Google basemaps
+
+    Args:
+        basemap (str): The basemap name.
+
+    Returns:
+        str: The basemap name.
+    """
+    if isinstance(basemap, str):
+        map_dict = {
+            "ROADMAP": "Google Maps",
+            "SATELLITE": "Google Satellite",
+            "TERRAIN": "Google Terrain",
+            "HYBRID": "Google Hybrid",
+        }
+
+        if basemap.upper() in map_dict.keys():
+            return map_dict[basemap.upper()]
+        else:
+            return basemap
+    else:
+        return basemap

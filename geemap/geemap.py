@@ -105,8 +105,11 @@ class Map(ipyleaflet.Map):
 
         # Use any basemap available through the basemap module, such as 'ROADMAP', 'OpenTopoMap'
         if "basemap" in kwargs:
-            if isinstance(kwargs["basemap"], str):
+            kwargs["basemap"] = check_basemap(kwargs["basemap"])
+            if kwargs["basemap"] in basemaps.keys():
                 kwargs["basemap"] = get_basemap(kwargs["basemap"])
+            else:
+                kwargs.pop("basemap")
 
         # Inherits the ipyleaflet Map class
         super().__init__(**kwargs)
@@ -195,14 +198,7 @@ class Map(ipyleaflet.Map):
             object (object): The layer or control to add to the map.
         """
         if isinstance(object, str):
-            map_dict = {
-                "ROADMAP": "Google Maps",
-                "SATELLITE": "Google Satellite",
-                "TERRAIN": "Google Terrain",
-                "HYBRID": "Google Hybrid",
-            }
-            if object.upper() in map_dict.keys():
-                object = map_dict[object.upper()]
+            object = check_basemap(object)
 
             if object in basemaps.keys():
                 object = get_basemap(object)
@@ -2856,6 +2852,26 @@ class Map(ipyleaflet.Map):
 
         ee_plot_gui(self, position, **kwargs)
 
+    def add_gui(
+        self, name, position="topright", opened=True, show_close_button=True, **kwargs
+    ):
+        name = name.lower()
+        if name == "layer_manager":
+            self.add_layer_manager(position, opened, show_close_button, **kwargs)
+        elif name == "inspector":
+            self.add_inspector(
+                position=position,
+                opened=opened,
+                show_close_button=show_close_button,
+                **kwargs,
+            )
+        elif name == "plot":
+            self.add_plot_gui(position, **kwargs)
+        elif name == "timelapse":
+            from .toolbar import timelapse_gui
+
+            timelapse_gui(self, **kwargs)
+
     # ******************************************************************************#
     # The classes and functions above are the core features of the geemap package.  #
     # The Earth Engine team and the geemap community will maintain these features.  #
@@ -4381,7 +4397,14 @@ class Map(ipyleaflet.Map):
                 print(f"The shapefile has been saved to: {out_shp}")
 
     def add_styled_vector(
-        self, ee_object, column, palette, layer_name="Untitled", **kwargs
+        self,
+        ee_object,
+        column,
+        palette,
+        layer_name="Untitled",
+        shown=True,
+        opacity=1.0,
+        **kwargs,
     ):
         """Adds a styled vector to the map.
 
@@ -4390,6 +4413,8 @@ class Map(ipyleaflet.Map):
             column (str): The column name to use for styling.
             palette (list | dict): The palette (e.g., list of colors or a dict containing label and color pairs) to use for styling.
             layer_name (str, optional): The name to be used for the new layer. Defaults to "Untitled".
+            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            opacity (float, optional): The opacity of the layer. Defaults to 1.0.
         """
         if isinstance(palette, str):
             from .colormaps import get_palette
@@ -4398,7 +4423,13 @@ class Map(ipyleaflet.Map):
             palette = get_palette(palette, count)
 
         styled_vector = vector_styling(ee_object, column, palette, **kwargs)
-        self.addLayer(styled_vector.style(**{"styleProperty": "style"}), {}, layer_name)
+        self.addLayer(
+            styled_vector.style(**{"styleProperty": "style"}),
+            {},
+            layer_name,
+            shown,
+            opacity,
+        )
 
     def add_shp(
         self,
