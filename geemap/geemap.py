@@ -108,6 +108,7 @@ class Map(ipyleaflet.Map):
             kwargs["basemap"] = check_basemap(kwargs["basemap"])
             if kwargs["basemap"] in basemaps.keys():
                 kwargs["basemap"] = get_basemap(kwargs["basemap"])
+                kwargs["add_google_map"] = False
             else:
                 kwargs.pop("basemap")
 
