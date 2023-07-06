@@ -51,6 +51,7 @@ extras_requires = {
     "sql": ["psycopg2", "sqlalchemy"],
     "apps": ["gradio", "streamlit-folium", "voila"],
     "vector": ["geopandas", "osmnx"],
+    "workshop": ["geopandas", "geedim", "ffmpeg-python", "gdown"],
 }
 
 setup_requirements = []
