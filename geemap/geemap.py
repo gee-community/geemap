@@ -783,6 +783,8 @@ class Map(ipyleaflet.Map):
         position="bottomright",
         builtin_legend=None,
         layer_name=None,
+        closeable=True,
+        widget_args={},
         **kwargs,
     ):
         """Adds a customized basemap to the map.
@@ -938,7 +940,7 @@ class Map(ipyleaflet.Map):
         legend_text = "".join(legend_html)
 
         try:
-            legend_output_widget = widgets.Output(
+            legend_output = widgets.Output(
                 layout={
                     # "border": "1px solid black",
                     "max_width": max_width,
@@ -950,11 +952,28 @@ class Map(ipyleaflet.Map):
                     "overflow": "scroll",
                 }
             )
+            legend_widget = widgets.HTML(value=legend_text)
+
+            if closeable:
+                if "show_close_button" not in widget_args:
+                    widget_args["show_close_button"] = False
+                if "widget_icon" not in widget_args:
+                    widget_args["widget_icon"] = "bars"
+
+                legend_output_widget = widget_template(
+                    legend_output,
+                    position=position,
+                    display_widget=legend_widget,
+                    **widget_args,
+                )
+            else:
+                legend_output_widget = legend_output
+
             legend_control = ipyleaflet.WidgetControl(
                 widget=legend_output_widget, position=position
             )
-            legend_widget = widgets.HTML(value=legend_text)
-            with legend_output_widget:
+            # legend_output.append_display_data(legend_widget)
+            with legend_output:
                 display(legend_widget)
 
             self._legend_widget = legend_output_widget
