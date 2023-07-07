@@ -74,9 +74,6 @@ def _validate_palette(palette):
 class EEFoliumTileLayer(folium.raster_layers.TileLayer):
     """A Folium raster TileLayer that shows an EE object."""
 
-    url_format = None
-    vis_params = None
-
     def __init__(
         self,
         ee_object,
@@ -112,9 +109,6 @@ class EEFoliumTileLayer(folium.raster_layers.TileLayer):
 
 class EELeafletTileLayer(ipyleaflet.TileLayer):
     """An ipyleaflet TileLayer that shows an EE object."""
-
-    url_format = None
-    vis_params = None
 
     def __init__(
         self,
