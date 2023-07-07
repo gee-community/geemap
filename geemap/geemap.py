@@ -783,6 +783,8 @@ class Map(ipyleaflet.Map):
         position="bottomright",
         builtin_legend=None,
         layer_name=None,
+        add_header=True,
+        widget_args={},
         **kwargs,
     ):
         """Adds a customized basemap to the map.
@@ -795,6 +797,9 @@ class Map(ipyleaflet.Map):
             position (str, optional): Position of the legend. Defaults to 'bottomright'.
             builtin_legend (str, optional): Name of the builtin legend to add to the map. Defaults to None.
             layer_name (str, optional): Layer name of the legend to be associated with. Defaults to None.
+            add_header (bool, optional): Whether the legend can be closed or not. Defaults to True.
+            widget_args (dict, optional): Additional arguments passed to the widget_template() function. Defaults to {}.
+
 
         """
         from IPython.display import display
@@ -938,7 +943,7 @@ class Map(ipyleaflet.Map):
         legend_text = "".join(legend_html)
 
         try:
-            legend_output_widget = widgets.Output(
+            legend_output = widgets.Output(
                 layout={
                     # "border": "1px solid black",
                     "max_width": max_width,
@@ -950,11 +955,28 @@ class Map(ipyleaflet.Map):
                     "overflow": "scroll",
                 }
             )
+            legend_widget = widgets.HTML(value=legend_text)
+
+            if add_header:
+                if "show_close_button" not in widget_args:
+                    widget_args["show_close_button"] = False
+                if "widget_icon" not in widget_args:
+                    widget_args["widget_icon"] = "bars"
+
+                legend_output_widget = widget_template(
+                    legend_output,
+                    position=position,
+                    display_widget=legend_widget,
+                    **widget_args,
+                )
+            else:
+                legend_output_widget = legend_output
+
             legend_control = ipyleaflet.WidgetControl(
                 widget=legend_output_widget, position=position
             )
-            legend_widget = widgets.HTML(value=legend_text)
-            with legend_output_widget:
+            # legend_output.append_display_data(legend_widget)
+            with legend_output:
                 display(legend_widget)
 
             self._legend_widget = legend_output_widget
@@ -6417,13 +6439,34 @@ class Map(ipyleaflet.Map):
         """
         return bbox_coords(self.user_roi, decimals=decimals)
 
-    def add_widget(self, content, position="bottomright", **kwargs):
+    def add_widget(
+        self,
+        content,
+        position="bottomright",
+        add_header=True,
+        opened=True,
+        show_close_button=True,
+        widget_icon='gear',
+        close_button_icon="times",
+        widget_args={},
+        close_button_args={},
+        display_widget=None,
+        **kwargs,
+    ):
         """Add a widget (e.g., text, HTML, figure) to the map.
 
         Args:
             content (str | ipywidgets.Widget | object): The widget to add.
             position (str, optional): The position of the widget. Defaults to "bottomright".
-            **kwargs: Other keyword arguments for ipywidgets.HTML().
+            add_header (bool, optional): Whether to add a header with close buttons to the widget. Defaults to True.
+            opened (bool, optional): Whether to open the toolbar. Defaults to True.
+            show_close_button (bool, optional): Whether to show the close button. Defaults to True.
+            widget_icon (str, optional): The icon name for the toolbar button. Defaults to 'gear'.
+            close_button_icon (str, optional): The icon name for the close button. Defaults to "times".
+            widget_args (dict, optional): Additional arguments to pass to the toolbar button. Defaults to {}.
+            close_button_args (dict, optional): Additional arguments to pass to the close button. Defaults to {}.
+            display_widget (ipywidgets.Widget, optional): The widget to be displayed when the toolbar is clicked.
+            **kwargs: Additional arguments to pass to the HTML or Output widgets
         """
 
         allowed_positions = ["topleft", "topright", "bottomleft", "bottomright"]
@@ -6434,15 +6477,33 @@ class Map(ipyleaflet.Map):
         if "layout" not in kwargs:
             kwargs["layout"] = widgets.Layout(padding="0px 4px 0px 4px")
         try:
-            if isinstance(content, str):
-                widget = widgets.HTML(value=content, **kwargs)
-                control = ipyleaflet.WidgetControl(widget=widget, position=position)
+            if add_header:
+                if isinstance(content, str):
+                    widget = widgets.HTML(value=content, **kwargs)
+                else:
+                    widget = content
+
+                widget_template(
+                    widget,
+                    opened,
+                    show_close_button,
+                    widget_icon,
+                    close_button_icon,
+                    widget_args,
+                    close_button_args,
+                    display_widget,
+                    self,
+                    position,
+                )
             else:
-                output = widgets.Output(**kwargs)
-                with output:
-                    display(content)
-                control = ipyleaflet.WidgetControl(widget=output, position=position)
-            self.add(control)
+                if isinstance(content, str):
+                    widget = widgets.HTML(value=content, **kwargs)
+                else:
+                    widget = widgets.Output(**kwargs)
+                    with widget:
+                        display(content)
+                control = ipyleaflet.WidgetControl(widget=widget, position=position)
+                self.add(control)
 
         except Exception as e:
             raise Exception(f"Error adding widget: {e}")
