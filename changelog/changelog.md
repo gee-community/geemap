@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.24.1 - Jul 6, 2023
+
+**Improvement**
+
+-   Removed two unused variables (#1615)
+-   Fixed vis_param palette validation (#1613)
+-   Added a collapsible option for legends (#1612)
+-   Added show and opacity options for styled vector (#1610)
+
 ## v0.24.0 - Jul 6, 2023
 
 **New Features**
