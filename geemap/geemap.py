@@ -454,8 +454,13 @@ class Map(ipyleaflet.Map):
         import math
 
         zoom_level = self.zoom
-        # Reference: https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
-        resolution = 156543.04 * math.cos(0) / math.pow(2, zoom_level)
+        center_lat = self.center[0]
+
+        # Reference:
+        # - https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
+        # - https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Resolution_and_Scale
+        center_lat_cos = math.cos(math.radians(center_lat))
+        resolution = 156543.04 * center_lat_cos / math.pow(2, zoom_level)
         return resolution
 
     getScale = get_scale
