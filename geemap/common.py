@@ -15325,3 +15325,116 @@ def get_ee_token():
     else:
         print("Earth Engine credentials not found. Please run ee.Authenticate()")
         return None
+
+
+def widget_template(
+    widget=None,
+    opened=True,
+    show_close_button=True,
+    widget_icon='gear',
+    close_button_icon="times",
+    widget_args={},
+    close_button_args={},
+    display_widget=None,
+    m=None,
+    position="topright",
+):
+    """Create a widget template.
+
+    Args:
+        widget (ipywidgets.Widget, optional): The widget to be displayed. Defaults to None.
+        opened (bool, optional): Whether to open the toolbar. Defaults to True.
+        show_close_button (bool, optional): Whether to show the close button. Defaults to True.
+        widget_icon (str, optional): The icon name for the toolbar button. Defaults to 'gear'.
+        close_button_icon (str, optional): The icon name for the close button. Defaults to "times".
+        widget_args (dict, optional): Additional arguments to pass to the toolbar button. Defaults to {}.
+        close_button_args (dict, optional): Additional arguments to pass to the close button. Defaults to {}.
+        display_widget (ipywidgets.Widget, optional): The widget to be displayed when the toolbar is clicked.
+        m (geemap.Map, optional): The geemap.Map instance. Defaults to None.
+        position (str, optional): The position of the toolbar. Defaults to "topright".
+    """
+
+    name = "_" + random_string()  # a random attribute name
+
+    if "value" not in widget_args:
+        widget_args["value"] = False
+    if "tooltip" not in widget_args:
+        widget_args["tooltip"] = "Toolbar"
+    if "layout" not in widget_args:
+        widget_args["layout"] = widgets.Layout(
+            width="28px", height="28px", padding="0px 0px 0px 4px"
+        )
+    widget_args["icon"] = widget_icon
+
+    if "value" not in close_button_args:
+        close_button_args["value"] = False
+    if "tooltip" not in close_button_args:
+        close_button_args["tooltip"] = "Close the tool"
+    if "button_style" not in close_button_args:
+        close_button_args["button_style"] = "primary"
+    if "layout" not in close_button_args:
+        close_button_args["layout"] = widgets.Layout(
+            height="28px", width="28px", padding="0px 0px 0px 4px"
+        )
+    close_button_args["icon"] = close_button_icon
+
+    toolbar_button = widgets.ToggleButton(**widget_args)
+
+    close_button = widgets.ToggleButton(**close_button_args)
+
+    toolbar_widget = widgets.VBox()
+    toolbar_widget.children = [toolbar_button]
+    toolbar_header = widgets.HBox()
+    if show_close_button:
+        toolbar_header.children = [close_button, toolbar_button]
+    else:
+        toolbar_header.children = [toolbar_button]
+    toolbar_footer = widgets.VBox()
+
+    if widget is not None:
+        toolbar_footer.children = [
+            widget,
+        ]
+    else:
+        toolbar_footer.children = []
+
+    def toolbar_btn_click(change):
+        if change["new"]:
+            close_button.value = False
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+            if display_widget is not None:
+                widget.outputs = ()
+                with widget:
+                    display(display_widget)
+        else:
+            toolbar_widget.children = [toolbar_button]
+
+    toolbar_button.observe(toolbar_btn_click, "value")
+
+    def close_btn_click(change):
+        if change["new"]:
+            toolbar_button.value = False
+            if m is not None:
+                control = getattr(m, name)
+                if control is not None and control in m.controls:
+                    m.remove_control(control)
+                    delattr(m, name)
+            toolbar_widget.close()
+
+    close_button.observe(close_btn_click, "value")
+
+    toolbar_button.value = opened
+    if m is not None:
+        import ipyleaflet
+
+        toolbar_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position=position
+        )
+
+        if toolbar_control not in m.controls:
+            m.add_control(toolbar_control)
+
+            setattr(m, name, toolbar_control)
+
+    else:
+        return toolbar_widget
