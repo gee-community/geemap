@@ -15342,10 +15342,19 @@ def widget_template(
     """Create a widget template.
 
     Args:
-        m (geemap.Map, optional): The geemap.Map instance. Defaults to None.
+        widget (ipywidgets.Widget, optional): The widget to be displayed. Defaults to None.
         opened (bool, optional): Whether to open the toolbar. Defaults to True.
         show_close_button (bool, optional): Whether to show the close button. Defaults to True.
+        widget_icon (str, optional): The icon name for the toolbar button. Defaults to 'gear'.
+        close_button_icon (str, optional): The icon name for the close button. Defaults to "times".
+        widget_args (dict, optional): Additional arguments to pass to the toolbar button. Defaults to {}.
+        close_button_args (dict, optional): Additional arguments to pass to the close button. Defaults to {}.
+        display_widget (ipywidgets.Widget, optional): The widget to be displayed when the toolbar is clicked.
+        m (geemap.Map, optional): The geemap.Map instance. Defaults to None.
+        position (str, optional): The position of the toolbar. Defaults to "topright".
     """
+
+    name = "_" + random_string()  # a random attribute name
 
     if "value" not in widget_args:
         widget_args["value"] = False
@@ -15406,10 +15415,10 @@ def widget_template(
         if change["new"]:
             toolbar_button.value = False
             if m is not None:
-                m.toolbar_reset()
-                if m.tool_control is not None and m.tool_control in m.controls:
-                    m.remove_control(m.tool_control)
-                    m.tool_control = None
+                control = getattr(m, name)
+                if control is not None and control in m.controls:
+                    m.remove_control(control)
+                    delattr(m, name)
             toolbar_widget.close()
 
     close_button.observe(close_btn_click, "value")
@@ -15424,6 +15433,8 @@ def widget_template(
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
-            m.tool_control = toolbar_control
+
+            setattr(m, name, toolbar_control)
+
     else:
         return toolbar_widget
