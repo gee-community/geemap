@@ -5803,6 +5803,9 @@ def stac_tile(
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
 
+    if "expression" in kwargs and ("asset_as_band" not in kwargs):
+        kwargs["asset_as_band"] = True
+
     if isinstance(titiler_endpoint, PlanetaryComputerEndpoint):
         if isinstance(bands, str):
             bands = bands.split(",")
@@ -10632,6 +10635,9 @@ def get_local_tile_layer(
         else:
             layer_name = "LocalTile_" + random_string(3)
 
+    if "cmap" not in kwargs:
+        kwargs["cmap"] = palette
+
     with output:
         tile_client = TileClient(source, port=port, debug=debug)
 
@@ -10642,7 +10648,6 @@ def get_local_tile_layer(
                 debug=debug,
                 projection=projection,
                 band=band,
-                palette=palette,
                 vmin=vmin,
                 vmax=vmax,
                 nodata=nodata,
@@ -10659,7 +10664,6 @@ def get_local_tile_layer(
                 debug=debug,
                 projection=projection,
                 band=band,
-                palette=palette,
                 vmin=vmin,
                 vmax=vmax,
                 nodata=nodata,
@@ -15331,7 +15335,7 @@ def widget_template(
     widget=None,
     opened=True,
     show_close_button=True,
-    widget_icon='gear',
+    widget_icon="gear",
     close_button_icon="times",
     widget_args={},
     close_button_args={},
