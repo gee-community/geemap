@@ -1134,7 +1134,7 @@ class Map(ipyleaflet.Map):
                 'cmap keyword or "palette" key in vis_params must be provided.'
             )
 
-        _, ax = plt.subplots(figsize=(width, height))
+        fig, ax = plt.subplots(figsize=(width, height))
         cb = mpl.colorbar.ColorbarBase(
             ax, norm=norm, alpha=alpha, cmap=cmap, orientation=orientation, **kwargs
         )
@@ -1147,6 +1147,10 @@ class Map(ipyleaflet.Map):
         if axis_off:
             ax.set_axis_off()
         ax.tick_params(labelsize=font_size)
+
+        # set the background color to transparent
+        if transparent_bg:
+            fig.patch.set_alpha(0.0)
 
         output = widgets.Output()
         colormap_ctrl = ipyleaflet.WidgetControl(
