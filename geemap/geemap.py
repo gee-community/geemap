@@ -330,7 +330,7 @@ class Map(ipyleaflet.Map):
         self.ee_layer_dict[name] = {
             "ee_object": ee_object,
             "ee_layer": tile_layer,
-            "vis_params": tile_layer.vis_params,
+            "vis_params": vis_params,
         }
 
         self.add(tile_layer)
