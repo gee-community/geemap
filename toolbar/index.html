@@ -6425,6 +6425,13 @@
 
             <span class="n">contents</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="c1"># create_code_cell(contents)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">pyperclip</span>
+                <span class="n">pyperclip</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">contents</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">pass</span>
+
             <span class="k">with</span> <span class="n">search_output</span><span class="p">:</span>
                 <span class="n">search_output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
                 <span class="nb">print</span><span class="p">(</span>
