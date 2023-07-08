@@ -3178,8 +3178,7 @@ EEFoliumTileLayer            (<span title="folium.raster_layers.TileLayer">TileL
 <span class="sd">            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.</span>
 <span class="sd">            opacity (float, optional): The layer&#39;s opacity represented as a number between 0 and 1. Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vis_params</span> <span class="o">=</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">))</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">tiles</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url_format</span><span class="p">,</span>
             <span class="n">attr</span><span class="o">=</span><span class="s2">&quot;Google Earth Engine&quot;</span><span class="p">,</span>
@@ -3286,8 +3285,7 @@ EEFoliumTileLayer            (<span title="folium.raster_layers.TileLayer">TileL
 <span class="sd">        shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.</span>
 <span class="sd">        opacity (float, optional): The layer&#39;s opacity represented as a number between 0 and 1. Defaults to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">vis_params</span> <span class="o">=</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis_params</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">))</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
         <span class="n">tiles</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url_format</span><span class="p">,</span>
         <span class="n">attr</span><span class="o">=</span><span class="s2">&quot;Google Earth Engine&quot;</span><span class="p">,</span>
@@ -3357,8 +3355,7 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
 <span class="sd">            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.</span>
 <span class="sd">            opacity (float, optional): The layer&#39;s opacity represented as a number between 0 and 1. Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vis_params</span> <span class="o">=</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">))</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url_format</span><span class="p">,</span>
             <span class="n">attribution</span><span class="o">=</span><span class="s2">&quot;Google Earth Engine&quot;</span><span class="p">,</span>
@@ -3463,8 +3460,7 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
 <span class="sd">        shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.</span>
 <span class="sd">        opacity (float, optional): The layer&#39;s opacity represented as a number between 0 and 1. Defaults to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">vis_params</span> <span class="o">=</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis_params</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">))</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
         <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url_format</span><span class="p">,</span>
         <span class="n">attribution</span><span class="o">=</span><span class="s2">&quot;Google Earth Engine&quot;</span><span class="p">,</span>
