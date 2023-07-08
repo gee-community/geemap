@@ -1486,6 +1486,13 @@ def search_data_gui(m, position="topleft"):
 
             contents = "".join(code).strip()
             # create_code_cell(contents)
+
+            try:
+                import pyperclip
+                pyperclip.copy(str(contents))
+            except Exception as e:
+                pass
+
             with search_output:
                 search_output.outputs = ()
                 print(
