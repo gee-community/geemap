@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.24.1 - Jul 6, 2023
+
+**Improvement**
+
+-   Removed two unused variables (#1615)
+-   Fixed vis_param palette validation (#1613)
+-   Added a collapsible option for legends (#1612)
+-   Added show and opacity options for styled vector (#1610)
+
+## v0.24.0 - Jul 6, 2023
+
+**New Features**
+
+-   Split modules into core and extra features (#1601)
+-   Made toolbar customizable (#1599)
+-   Simplified geemap Map class (#1598)
+-   Added markers with custom shape and color (#1595)
+
+**Improvement**
+
+-   Updated SciPy workshop notebook and fixed bugs (#1607)
+-   Updated SciPy workshop notebook (#1608)
+-   Fix ipywidget Output widget bug (#1597)
+-   Refactor xyz_to_leaflet and tests (#1592)
+-   Removed old glob tag \_X from notebook nav path (#1594)
+-   Updated ArcGIS instructions (#1593)
+-   Refactored leaflet and folium tile layers (#1567)
+-   Refactored get_xyz_dict and added tests (#1588)
+
 ## v0.23.2 - Jun 28, 2023
 
 **Improvement**

@@ -1,6 +1,11 @@
-""" This module extends the folium Map class. It is designed to be used in Google Colab, as Google Colab currently does not support ipyleaflet.
-"""
 from __future__ import annotations
+"""Module for creating interactive maps with the folium library."""
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
+
 import os
 
 import ee
@@ -17,6 +22,7 @@ from jinja2 import Template
 from .basemaps import xyz_to_folium
 from .common import *
 from .conversion import *
+from .ee_tile_layers import *
 from .legends import builtin_legends
 from .osm import *
 from .timelapse import *
@@ -117,19 +123,13 @@ class Map(folium.Map):
         super().__init__(**kwargs)
         self.baseclass = "folium"
 
-        # The number of shapes drawn by the user using the DrawControl
-        self.draw_count = 0
         # The list of Earth Engine Geometry objects converted from geojson
         self.draw_features = []
         # The Earth Engine Geometry object converted from the last drawn feature
         self.draw_last_feature = None
         self.draw_layer = None
-        self.draw_last_json = None
-        self.draw_last_bounds = None
         self.user_roi = None
         self.user_rois = None
-        self.last_ee_data = None
-        self.last_ee_layer = None
         self.search_locations = None
         self.search_loc_marker = None
         self.search_loc_geom = None
@@ -222,88 +222,9 @@ class Map(folium.Map):
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
 
-        from box import Box
-
-        image = None
-        if vis_params is None:
-            vis_params = {}
-
-        if (
-            not isinstance(ee_object, ee.Image)
-            and not isinstance(ee_object, ee.ImageCollection)
-            and not isinstance(ee_object, ee.FeatureCollection)
-            and not isinstance(ee_object, ee.Feature)
-            and not isinstance(ee_object, ee.Geometry)
-        ):
-            err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
-            raise AttributeError(err_str)
-
-        if (
-            isinstance(ee_object, ee.geometry.Geometry)
-            or isinstance(ee_object, ee.feature.Feature)
-            or isinstance(ee_object, ee.featurecollection.FeatureCollection)
-        ):
-            features = ee.FeatureCollection(ee_object)
-
-            width = 2
-
-            if "width" in vis_params:
-                width = vis_params["width"]
-
-            color = "000000"
-
-            if "color" in vis_params:
-                color = vis_params["color"]
-
-            image_fill = features.style(**{"fillColor": color}).updateMask(
-                ee.Image.constant(0.5)
-            )
-            image_outline = features.style(
-                **{"color": color, "fillColor": "00000000", "width": width}
-            )
-
-            image = image_fill.blend(image_outline)
-        elif isinstance(ee_object, ee.image.Image):
-            image = ee_object
-        elif isinstance(ee_object, ee.imagecollection.ImageCollection):
-            image = ee_object.mosaic()
-
-        if "palette" in vis_params:
-            if isinstance(vis_params["palette"], tuple):
-                vis_params["palette"] = list(vis_params["palette"])
-            if isinstance(vis_params["palette"], Box):
-                try:
-                    vis_params["palette"] = vis_params["palette"]["default"]
-                except Exception as e:
-                    print("The provided palette is invalid.")
-                    raise Exception(e)
-            elif isinstance(vis_params["palette"], str):
-                vis_params["palette"] = check_cmap(vis_params["palette"])
-            elif not isinstance(vis_params["palette"], list):
-                raise ValueError(
-                    "The palette must be a list of colors or a string or a Box object."
-                )
-
-        map_id_dict = ee.Image(image).getMapId(vis_params)
-
-        # if a layer starts with a number, add "Layer" to name.
-        if name[0].isdigit():
-            name = "Layer " + name
-
-        url = map_id_dict["tile_fetcher"].url_format
-        folium.raster_layers.TileLayer(
-            tiles=url,
-            attr="Google Earth Engine",
-            name=name,
-            overlay=True,
-            control=True,
-            show=shown,
-            opacity=opacity,
-            max_zoom=24,
-            **kwargs,
-        ).add_to(self)
-
-        arc_add_layer(url, name, shown, opacity)
+        layer = EEFoliumTileLayer(ee_object, vis_params, name, shown, opacity, **kwargs)
+        layer.add_to(self)
+        arc_add_layer(layer.url_format, name, shown, opacity)
 
     addLayer = add_layer
 
@@ -991,7 +912,9 @@ class Map(folium.Map):
         ee_object: Any,
         column: str,
         palette: Union[list[str], dict[str, str]],
-        layer_name: str = "Untitled",
+        layer_name: str="Untitled",
+        shown: bool=True,
+        opacity: float=1.0,
         **kwargs: Any,
     ) -> None:
         """Adds a styled vector to the map.
@@ -1003,7 +926,13 @@ class Map(folium.Map):
             layer_name (str, optional): The name to be used for the new layer. Defaults to "Untitled".
         """
         styled_vector = vector_styling(ee_object, column, palette, **kwargs)
-        self.addLayer(styled_vector.style(**{"styleProperty": "style"}), {}, layer_name)
+        self.addLayer(
+            styled_vector.style(**{"styleProperty": "style"}),
+            {},
+            layer_name,
+            shown,
+            opacity,
+        )
 
     def add_shapefile(
         self, in_shp: str, layer_name: str = "Untitled", **kwargs: Any
@@ -1782,23 +1711,20 @@ class Map(folium.Map):
 
     def add_markers_from_xy(
         self,
-        data: Union[str, pd.DataFrame],
-        x: str = "longitude",
-        y: str = "latitude",
-        popup: Optional[list[str]] = None,
-        min_width: int = 100,
-        max_width: int = 200,
-        layer_name: str = "Marker Cluster",
-        color_column: Optional[str] = None,
-        marker_colors: Optional[list[str]] = None,
-        icon_colors: list[str] = ["white"],
-        icon_names: list[str] = ["info"],
-        angle: int = 0,
-        prefix: str = "fa",
-        add_legend: bool = True,
-        **kwargs: Any,
+        data: str,
+        x: Optional[str]="longitude",
+        y: Optional[str]="latitude",
+        popup: Optional[list]=None,
+        min_width: Optional[int]=100,
+        max_width: Optional[int]=200,
+        layer_name: Optional[str]="Markers",
+        icon: Optional[str]=None,
+        icon_shape: Optional[str]='circle-dot',
+        border_width: Optional[int]=3,
+        border_color: Optional[str]='#0000ff',
+        **kwargs: Optional[dict],
     ) -> None:
-        """Adds a marker cluster to the map.
+        """Adds markers to the map from a csv or Pandas DataFrame containing x, y values.
 
         Args:
             data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z values.
@@ -1808,38 +1734,18 @@ class Map(folium.Map):
             min_width (int, optional): The minimum width of the popup. Defaults to 100.
             max_width (int, optional): The maximum width of the popup. Defaults to 200.
             layer_name (str, optional): The name of the layer. Defaults to "Marker Cluster".
-            color_column (str, optional): The column name for the color values. Defaults to None.
-            marker_colors (list, optional): A list of colors to be used for the markers. Defaults to None.
-            icon_colors (list, optional): A list of colors to be used for the icons. Defaults to ['white'].
-            icon_names (list, optional): A list of names to be used for the icons. More icons can be found at https://fontawesome.com/v4/icons or https://getbootstrap.com/docs/3.3/components/?utm_source=pocket_mylist. Defaults to ['info'].
-            angle (int, optional): The angle of the icon. Defaults to 0.
-            prefix (str, optional): The prefix states the source of the icon. 'fa' for font-awesome or 'glyphicon' for bootstrap 3. Defaults to 'fa'.
-            add_legend (bool, optional): If True, a legend will be added to the map. Defaults to True.
+            icon (str, optional): The Font-Awesome icon name to use to render the marker. Defaults to None.
+            icon_shape (str, optional): The shape of the marker, such as "retangle-dot", "circle-dot". Defaults to 'circle-dot'.
+            border_width (int, optional): The width of the border. Defaults to 3.
+            border_color (str, optional): The color of the border. Defaults to '#0000ff'.
+            kwargs (dict, optional): Additional keyword arguments to pass to BeautifyIcon. See
+                https://python-visualization.github.io/folium/plugins.html#folium.plugins.BeautifyIcon.
+
         """
         import pandas as pd
         from folium.plugins import BeautifyIcon
 
-        color_options = [
-            "red",
-            "blue",
-            "green",
-            "purple",
-            "orange",
-            "darkred",
-            "lightred",
-            "beige",
-            "darkblue",
-            "darkgreen",
-            "cadetblue",
-            "darkpurple",
-            "white",
-            "pink",
-            "lightblue",
-            "lightgreen",
-            "gray",
-            "black",
-            "lightgray",
-        ]
+        layer_group = folium.FeatureGroup(name=layer_name)
 
         if isinstance(data, pd.DataFrame):
             df = data
@@ -1850,44 +1756,6 @@ class Map(folium.Map):
 
         col_names = df.columns.values.tolist()
 
-        if color_column is not None and color_column not in col_names:
-            raise ValueError(
-                f"The color column {color_column} does not exist in the dataframe."
-            )
-
-        if color_column is not None:
-            items = list(set(df[color_column]))
-        else:
-            items = None
-
-        if color_column is not None and marker_colors is None:
-            if len(items) > len(color_options):
-                raise ValueError(
-                    f"The number of unique values in the color column {color_column} is greater than the number of available colors."
-                )
-            else:
-                marker_colors = color_options[: len(items)]
-        elif color_column is not None and marker_colors is not None:
-            if len(items) != len(marker_colors):
-                raise ValueError(
-                    f"The number of unique values in the color column {color_column} is not equal to the number of available colors."
-                )
-
-        if items is not None:
-            if len(icon_colors) == 1:
-                icon_colors = icon_colors * len(items)
-            elif len(items) != len(icon_colors):
-                raise ValueError(
-                    f"The number of unique values in the color column {color_column} is not equal to the number of available colors."
-                )
-
-            if len(icon_names) == 1:
-                icon_names = icon_names * len(items)
-            elif len(items) != len(icon_names):
-                raise ValueError(
-                    f"The number of unique values in the color column {color_column} is not equal to the number of available colors."
-                )
-
         if popup is None:
             popup = col_names
 
@@ -1897,58 +1765,22 @@ class Map(folium.Map):
         if y not in col_names:
             raise ValueError(f"y must be one of the following: {', '.join(col_names)}")
 
-        # marker_cluster = plugins.MarkerCluster(name=layer_name).add_to(self)
         for row in df.itertuples():
             html = ""
             for p in popup:
                 html = html + "<b>" + p + "</b>" + ": " + str(getattr(row, p)) + "<br>"
             popup_html = folium.Popup(html, min_width=min_width, max_width=max_width)
 
-            if items is not None:
-                index = items.index(getattr(row, color_column))
-                marker_icon = folium.Icon(
-                    color=marker_colors[index],
-                    icon_color=icon_colors[index],
-                    icon=icon_names[index],
-                    angle=angle,
-                    prefix=prefix,
-                )
-            else:
-                marker_icon = None
-
-            icon_square = BeautifyIcon(
-                icon_shape="rectangle-dot",
-                border_color="red",
-                border_width=10,
+            marker_icon = BeautifyIcon(
+                icon, icon_shape, border_width, border_color, **kwargs
             )
-
-            icon_circle = BeautifyIcon(
-                icon_shape="circle-dot",
-                border_color="green",
-                border_width=10,
-            )
-            icon_star = BeautifyIcon(
-                icon="star",
-                inner_icon_style="color:blue;font-size:20px;",
-                background_color="transparent",
-                border_color="transparent",
-            )
-
             folium.Marker(
                 location=[getattr(row, y), getattr(row, x)],
                 popup=popup_html,
-                icon=icon_star,
-            ).add_to(self)
+                icon=marker_icon,
+            ).add_to(layer_group)
 
-        # folium.Marker([50, -70], tooltip="square", icon=icon, name="marker").add_to(
-        #     self
-        # )
-        # folium.Marker([50, 70], tooltip="square", icon=icon2).add_to(self)
-        if items is not None and add_legend:
-            marker_colors = [check_color(c) for c in marker_colors]
-            self.add_legend(
-                title=color_column.title(), colors=marker_colors, labels=items
-            )
+        layer_group.add_to(self)
 
     def add_planet_by_month(
         self,

@@ -1,4 +1,10 @@
 from __future__ import annotations
+"""Module for creating interactive maps with kepler.gl."""
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
 import json
 import os
 import sys

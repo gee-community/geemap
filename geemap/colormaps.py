@@ -1,5 +1,12 @@
 """Module for commonly used colormaps and palettes for visualizing Earth Engine data.
 """
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
+
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np

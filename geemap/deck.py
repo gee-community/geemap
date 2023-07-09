@@ -1,4 +1,10 @@
 from __future__ import annotations
+""""Module for interacting with deck.gl in Python."""
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
 import os
 
 from .common import *

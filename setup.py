@@ -51,6 +51,7 @@ extras_requires = {
     "sql": ["psycopg2", "sqlalchemy"],
     "apps": ["gradio", "streamlit-folium", "voila"],
     "vector": ["geopandas", "osmnx"],
+    "workshop": ["geopandas", "geedim", "ffmpeg-python", "gdown"],
 }
 
 setup_requirements = []
@@ -89,6 +90,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/gee-community/geemap",
-    version="0.23.2",
+    version="0.24.1",
     zip_safe=False,
 )

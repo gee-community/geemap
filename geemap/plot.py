@@ -1,4 +1,10 @@
 from __future__ import annotations
+"Module for plotting data using plotly.express."
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
 
 import pandas as pd
 import plotly.express as px

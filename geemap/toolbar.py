@@ -1,6 +1,13 @@
-"""Module for dealing with the toolbar.
+"""Module for dealing with interactive GUIs.
 """
-from __future__ import annotations
+
+# *******************************************************************************#
+# This module contains core features and extra features of the geemap package.   #
+# The Earth Engine team and the geemap community will maintain the core features.#
+# The geemap community will maintain the extra features.                         #
+# The core features include classes and functions below until the line # ******* #
+# *******************************************************************************#
+
 import os
 
 import ee
@@ -13,7 +20,1674 @@ from IPython.core.display import display
 from .common import *
 from .timelapse import *
 
-from typing import Any
+
+def main_toolbar(m, position="topright", **kwargs):
+    """Add a toolbar control to the map
+
+    Args:
+        m (geemap.Map): An instance of geemap.Map.
+        position (str, optional): Position of the toolbar. Defaults to "topright".
+    """
+
+    tools = {
+        "info": {"name": "inspector", "tooltip": "Inspector"},
+        "bar-chart": {"name": "plotting", "tooltip": "Plotting"},
+        "globe": {
+            "name": "timelapse",
+            "tooltip": "Create timelapse",
+        },
+        "map": {
+            "name": "basemap",
+            "tooltip": "Change basemap",
+        },
+        "retweet": {
+            "name": "convert_js",
+            "tooltip": "Convert Earth Engine JavaScript to Python",
+        },
+        "plus": {
+            "name": "expand",
+            "tooltip": "Expand toolbar",
+        },
+        "eraser": {
+            "name": "eraser",
+            "tooltip": "Remove all drawn features",
+        },
+        "folder-open": {
+            "name": "open_data",
+            "tooltip": "Open local vector/raster data",
+        },
+        "gears": {
+            "name": "whitebox",
+            "tooltip": "WhiteboxTools for local geoprocessing",
+        },
+        # "google": {
+        #     "name": "geetoolbox",
+        #     "tooltip": "GEE Toolbox for cloud computing",
+        # },
+        "fast-forward": {
+            "name": "timeslider",
+            "tooltip": "Activate timeslider",
+        },
+        "hand-o-up": {
+            "name": "draw",
+            "tooltip": "Collect training samples",
+        },
+        "line-chart": {
+            "name": "transect",
+            "tooltip": "Creating and plotting transects",
+        },
+        "random": {
+            "name": "sankee",
+            "tooltip": "Sankey plots",
+        },
+        "adjust": {
+            "name": "planet",
+            "tooltip": "Planet imagery",
+        },
+        "info-circle": {
+            "name": "cog-inspector",
+            "tooltip": "Get COG/STAC pixel value",
+        },
+        "minus": {
+            "name": "collapse",
+            "tooltip": "Collapse toolbar",
+        },
+        # "spinner": {
+        #     "name": "placehold2",
+        #     "tooltip": "This is a placehold",
+        # },
+        # "question": {
+        #     "name": "help",
+        #     "tooltip": "Get help",
+        # },
+    }
+
+    icons = list(tools.keys())[:-1]
+    tooltips = [item["tooltip"] for item in list(tools.values())]
+
+    icon_width = "32px"
+    icon_height = "32px"
+    n_cols = 3
+    n_rows = -int(-(len(icons) / n_cols))
+
+    all_children = [
+        widgets.ToggleButton(
+            layout=widgets.Layout(
+                width="auto", height="auto", padding="0px 0px 0px 4px"
+            ),
+            button_style="primary",
+            icon=icons[i],
+            tooltip=tooltips[i],
+        )
+        for i in range(len(icons))
+    ]
+
+    expand_button = all_children[5]
+
+    toolbar_grid = widgets.GridBox(
+        children=all_children[:6],
+        layout=widgets.Layout(
+            width="109px",
+            grid_template_columns=(icon_width + " ") * n_cols,
+            grid_template_rows=(icon_height + " ") * 2,
+            grid_gap="1px 1px",
+            padding="5px",
+        ),
+    )
+    m._toolbar = toolbar_grid
+
+    def tool_callback(change):
+        if change["new"]:
+            current_tool = change["owner"]
+            for tool in toolbar_grid.children:
+                if tool is not current_tool:
+                    tool.value = False
+            tool = change["owner"]
+            tool_name = tools[tool.icon]["name"]
+            if tool_name == "expand":
+                toolbar_grid.layout.grid_template_rows = (icon_height + " ") * n_rows
+                toolbar_grid.children = all_children
+                expand_button.icon = "minus"
+                tool.value = False
+            if tool_name == "collapse":
+                toolbar_grid.layout.grid_template_rows = (icon_height + " ") * 2
+                toolbar_grid.children = all_children[:6]
+                expand_button.icon = "plus"
+                tool.value = False
+            elif tool_name == "eraser":
+                m.remove_drawn_features()
+                tool.value = False
+            elif tool_name == "inspector":
+                if not hasattr(m, "inspector_control"):
+                    m.add_inspector()
+                tool.value = False
+            elif tool_name == "plotting":
+                ee_plot_gui(m)
+            elif tool_name == "open_data":
+                open_data_widget(m)
+            elif tool_name == "convert_js":
+                convert_js2py(m)
+            elif tool_name == "whitebox":
+                import whiteboxgui.whiteboxgui as wbt
+
+                tools_dict = wbt.get_wbt_dict()
+                wbt_toolbox = wbt.build_toolbox(
+                    tools_dict,
+                    max_width="800px",
+                    max_height="500px",
+                    sandbox_path=m.sandbox_path,
+                )
+                wbt_control = ipyleaflet.WidgetControl(
+                    widget=wbt_toolbox, position="bottomright"
+                )
+                m.whitebox = wbt_control
+                m.add(wbt_control)
+            elif tool_name == "geetoolbox":
+                tools_dict = get_tools_dict()
+                gee_toolbox = build_toolbox(
+                    tools_dict, max_width="800px", max_height="500px"
+                )
+                geetoolbox_control = ipyleaflet.WidgetControl(
+                    widget=gee_toolbox, position="bottomright"
+                )
+                m.geetoolbox = geetoolbox_control
+                m.add(geetoolbox_control)
+
+            elif tool_name == "basemap":
+                change_basemap(m)
+            elif tool_name == "timelapse":
+                timelapse_gui(m)
+                m.toolbar_reset()
+            elif tool_name == "timeslider":
+                time_slider(m)
+                m.toolbar_reset()
+            elif tool_name == "draw":
+                m.training_ctrl = None
+                collect_samples(m)
+            elif tool_name == "transect":
+                plot_transect(m)
+            elif tool_name == "sankee":
+                sankee_gui(m)
+            elif tool_name == "planet":
+                try:
+                    split_basemaps(m, layers_dict=planet_tiles())
+                except Exception as e:
+                    print(e)
+                m.toolbar_reset()
+            elif tool_name == "cog-inspector":
+                inspector_gui(m)
+
+            elif tool_name == "help":
+                import webbrowser
+
+                webbrowser.open_new_tab("https://geemap.org")
+                current_tool.value = False
+
+            # current_tool.value = False
+
+        else:
+            tool = change["owner"]
+            tool_name = tools[tool.icon]["name"]
+            if tool_name == "inspector":
+                pass
+            elif tool_name == "plotting":
+                if not hasattr(m, "_plot_dropdown_widget"):
+                    m._plot_dropdown_widget = None
+                if not hasattr(m, "_plot_dropdown_control"):
+                    m._plot_dropdown_control = None
+                plot_dropdown_widget = m._plot_dropdown_widget
+                plot_dropdown_control = m._plot_dropdown_control
+                if plot_dropdown_control in m.controls:
+                    m.remove_control(plot_dropdown_control)
+                del plot_dropdown_widget
+                del plot_dropdown_control
+
+                if not hasattr(m, "_plot_widget"):
+                    m._plot_widget = None
+                if not hasattr(m, "_plot_control"):
+                    m._plot_control = None
+
+                if m._plot_control in m.controls:
+                    plot_control = m._plot_control
+                    plot_widget = m._plot_widget
+                    m.remove_control(plot_control)
+                    m._plot_control = None
+                    m._plot_widget = None
+                    del plot_control
+                    del plot_widget
+                if (
+                    hasattr(m, "_plot_marker_cluster")
+                    and m._plot_marker_cluster is not None
+                    and m._plot_marker_cluster in m.layers
+                ):
+                    m.remove_layer(m._plot_marker_cluster)
+                if m.draw_control_lite in m.controls:
+                    m.remove_control(m.draw_control_lite)
+                m.add(m.draw_control)
+            elif tool_name == "whitebox":
+                if m.whitebox is not None and m.whitebox in m.controls:
+                    m.remove_control(m.whitebox)
+            elif tool_name == "convert_js":
+                if m._convert_ctrl is not None and m._convert_ctrl in m.controls:
+                    m.remove_control(m._convert_ctrl)
+
+    for tool in all_children:
+        tool.observe(tool_callback, "value")
+
+    toolbar_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Toolbar",
+        icon="wrench",
+        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+    )
+
+    layers_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Layers",
+        icon="server",
+        layout=widgets.Layout(height="28px", width="72px"),
+    )
+
+    toolbar_widget = widgets.VBox()
+    toolbar_widget.children = [toolbar_button]
+    toolbar_header = widgets.HBox()
+    toolbar_header.children = [layers_button, toolbar_button]
+    toolbar_footer = widgets.VBox()
+    toolbar_footer.children = [toolbar_grid]
+
+    toolbar_event = ipyevents.Event(
+        source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
+    )
+
+    def handle_toolbar_event(event):
+        if event["type"] == "mouseenter":
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        elif event["type"] == "mouseleave":
+            if not toolbar_button.value:
+                toolbar_widget.children = [toolbar_button]
+                toolbar_button.value = False
+                layers_button.value = False
+
+    toolbar_event.on_dom_event(handle_toolbar_event)
+
+    def toolbar_btn_click(change):
+        if change["new"]:
+            layers_button.value = False
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        else:
+            if not layers_button.value:
+                toolbar_widget.children = [toolbar_button]
+
+    toolbar_button.observe(toolbar_btn_click, "value")
+
+    def layers_btn_click(change):
+        if change["new"]:
+            # Create Layer Manager Widget
+            toolbar_footer.children = layer_manager_gui(m, return_widget=True)
+        else:
+            toolbar_footer.children = [toolbar_grid]
+
+    layers_button.observe(layers_btn_click, "value")
+    toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position=position)
+
+    m.add(toolbar_control)
+
+
+def inspector_gui(m=None):
+    """Generates a tool GUI template using ipywidgets.
+
+    Args:
+        m (geemap.Map, optional): The leaflet Map object. Defaults to None.
+
+    Returns:
+        ipywidgets: The tool GUI widget.
+    """
+    import pandas as pd
+
+    widget_width = "250px"
+    padding = "0px 5px 0px 5px"  # upper, right, bottom, left
+    style = {"description_width": "initial"}
+
+    if m is not None:
+        marker_cluster = ipyleaflet.MarkerCluster(name="Inspector Markers")
+        setattr(m, "pixel_values", [])
+        setattr(m, "marker_cluster", marker_cluster)
+
+        if not hasattr(m, "interact_mode"):
+            setattr(m, "interact_mode", False)
+
+        if not hasattr(m, "inspector_output"):
+            inspector_output = widgets.Output(
+                layout=widgets.Layout(width=widget_width, padding="0px 5px 5px 5px")
+            )
+            setattr(m, "inspector_output", inspector_output)
+
+        output = m.inspector_output
+        output.outputs = ()
+
+        if not hasattr(m, "inspector_add_marker"):
+            inspector_add_marker = widgets.Checkbox(
+                description="Add Marker at clicked location",
+                value=True,
+                indent=False,
+                layout=widgets.Layout(padding=padding, width=widget_width),
+            )
+            setattr(m, "inspector_add_marker", inspector_add_marker)
+        add_marker = m.inspector_add_marker
+
+        if not hasattr(m, "inspector_bands_chk"):
+            inspector_bands_chk = widgets.Checkbox(
+                description="Get pixel value for visible bands only",
+                indent=False,
+                layout=widgets.Layout(padding=padding, width=widget_width),
+            )
+            setattr(m, "inspector_bands_chk", inspector_bands_chk)
+        bands_chk = m.inspector_bands_chk
+
+        if not hasattr(m, "inspector_class_label"):
+            inspector_label = widgets.Text(
+                value="",
+                description="Class label:",
+                placeholder="Add a label to the marker",
+                style=style,
+                layout=widgets.Layout(width=widget_width, padding=padding),
+            )
+            setattr(m, "inspector_class_label", inspector_label)
+        label = m.inspector_class_label
+
+        options = []
+        if hasattr(m, "cog_layer_dict"):
+            options = list(m.cog_layer_dict.keys())
+            options.sort()
+        if len(options) == 0:
+            default_option = None
+        else:
+            default_option = options[0]
+        if not hasattr(m, "inspector_dropdown"):
+            inspector_dropdown = widgets.Dropdown(
+                options=options,
+                value=default_option,
+                description="Select a layer:",
+                layout=widgets.Layout(width=widget_width, padding=padding),
+                style=style,
+            )
+            setattr(m, "inspector_dropdown", inspector_dropdown)
+
+        dropdown = m.inspector_dropdown
+
+    toolbar_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Toolbar",
+        icon="info-circle",
+        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+    )
+
+    close_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Close the tool",
+        icon="times",
+        button_style="primary",
+        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
+    )
+
+    buttons = widgets.ToggleButtons(
+        value=None,
+        options=["Download", "Reset", "Close"],
+        tooltips=["Download", "Reset", "Close"],
+        button_style="primary",
+    )
+    buttons.style.button_width = "80px"
+
+    if len(options) == 0:
+        with output:
+            print("No COG/STAC layers available")
+
+    toolbar_widget = widgets.VBox()
+    toolbar_widget.children = [toolbar_button]
+    toolbar_header = widgets.HBox()
+    toolbar_header.children = [close_button, toolbar_button]
+    toolbar_footer = widgets.VBox()
+    toolbar_footer.children = [
+        add_marker,
+        label,
+        dropdown,
+        bands_chk,
+        buttons,
+        output,
+    ]
+
+    toolbar_event = ipyevents.Event(
+        source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
+    )
+
+    def chk_change(change):
+        if hasattr(m, "pixel_values"):
+            m.pixel_values = []
+        if hasattr(m, "marker_cluster"):
+            m.marker_cluster.markers = []
+        output.outputs = ()
+
+    bands_chk.observe(chk_change, "value")
+
+    def handle_toolbar_event(event):
+        if event["type"] == "mouseenter":
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        elif event["type"] == "mouseleave":
+            if not toolbar_button.value:
+                toolbar_widget.children = [toolbar_button]
+                toolbar_button.value = False
+                close_button.value = False
+
+    toolbar_event.on_dom_event(handle_toolbar_event)
+
+    def toolbar_btn_click(change):
+        if change["new"]:
+            close_button.value = False
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        else:
+            if not close_button.value:
+                toolbar_widget.children = [toolbar_button]
+
+    toolbar_button.observe(toolbar_btn_click, "value")
+
+    def close_btn_click(change):
+        if change["new"]:
+            toolbar_button.value = False
+            if m is not None:
+                if hasattr(m, "inspector_mode"):
+                    delattr(m, "inspector_mode")
+                m.toolbar_reset()
+                if m.tool_control is not None and m.tool_control in m.controls:
+                    m.remove_control(m.tool_control)
+                    m.tool_control = None
+                m.default_style = {"cursor": "default"}
+
+                m.marker_cluster.markers = []
+                m.pixel_values = []
+                marker_cluster_layer = m.find_layer("Inspector Markers")
+                if marker_cluster_layer is not None:
+                    m.remove_layer(marker_cluster_layer)
+
+                if hasattr(m, "pixel_values"):
+                    delattr(m, "pixel_values")
+
+                if hasattr(m, "marker_cluster"):
+                    delattr(m, "marker_cluster")
+
+            toolbar_widget.close()
+
+    close_button.observe(close_btn_click, "value")
+
+    def button_clicked(change):
+        if change["new"] == "Download":
+            with output:
+                output.outputs = ()
+                if len(m.pixel_values) == 0:
+                    print(
+                        "No pixel values available. Click on the map to start collection data."
+                    )
+                else:
+                    print("Downloading pixel values...")
+                    df = pd.DataFrame(m.pixel_values)
+                    temp_csv = temp_file_path("csv")
+                    df.to_csv(temp_csv, index=False)
+                    link = create_download_link(temp_csv)
+                    with output:
+                        output.outputs = ()
+                        display(link)
+        elif change["new"] == "Reset":
+            label.value = ""
+            output.outputs = ()
+            if hasattr(m, "pixel_values"):
+                m.pixel_values = []
+            if hasattr(m, "marker_cluster"):
+                m.marker_cluster.markers = []
+        elif change["new"] == "Close":
+            if m is not None:
+                if hasattr(m, "inspector_mode"):
+                    delattr(m, "inspector_mode")
+                m.toolbar_reset()
+                if m.tool_control is not None and m.tool_control in m.controls:
+                    m.remove_control(m.tool_control)
+                    m.tool_control = None
+                m.default_style = {"cursor": "default"}
+                m.marker_cluster.markers = []
+                marker_cluster_layer = m.find_layer("Inspector Markers")
+                if marker_cluster_layer is not None:
+                    m.remove_layer(marker_cluster_layer)
+                m.pixel_values = []
+
+                if hasattr(m, "pixel_values"):
+                    delattr(m, "pixel_values")
+
+                if hasattr(m, "marker_cluster"):
+                    delattr(m, "marker_cluster")
+
+            toolbar_widget.close()
+
+        buttons.value = None
+
+    buttons.observe(button_clicked, "value")
+
+    toolbar_button.value = True
+
+    def handle_interaction(**kwargs):
+        latlon = kwargs.get("coordinates")
+        lat = round(latlon[0], 4)
+        lon = round(latlon[1], 4)
+        if (
+            kwargs.get("type") == "click"
+            and hasattr(m, "inspector_mode")
+            and m.inspector_mode
+        ):
+            m.default_style = {"cursor": "wait"}
+
+            with output:
+                output.outputs = ()
+                print("Getting pixel value ...")
+
+                layer_dict = m.cog_layer_dict[dropdown.value]
+
+            if layer_dict["type"] == "STAC":
+                if bands_chk.value:
+                    assets = layer_dict["assets"]
+                else:
+                    assets = None
+
+                result = stac_pixel_value(
+                    lon,
+                    lat,
+                    layer_dict["url"],
+                    layer_dict["collection"],
+                    layer_dict["items"],
+                    assets,
+                    layer_dict["titiler_endpoint"],
+                    verbose=False,
+                )
+                if result is not None:
+                    with output:
+                        output.outputs = ()
+                        print(f"lat/lon: {lat:.4f}, {lon:.4f}\n")
+                        for key in result:
+                            print(f"{key}: {result[key]}")
+
+                        result["latitude"] = lat
+                        result["longitude"] = lon
+                        result["label"] = label.value
+                        m.pixel_values.append(result)
+                    if add_marker.value:
+                        markers = list(m.marker_cluster.markers)
+                        markers.append(ipyleaflet.Marker(location=latlon))
+                        m.marker_cluster.markers = markers
+
+                else:
+                    with output:
+                        output.outputs = ()
+                        print("No pixel value available")
+                        bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]
+                        m.zoom_to_bounds(bounds)
+            elif layer_dict["type"] == "COG":
+                result = cog_pixel_value(lon, lat, layer_dict["url"], verbose=False)
+                if result is not None:
+                    with output:
+                        output.outputs = ()
+                        print(f"lat/lon: {lat:.4f}, {lon:.4f}\n")
+                        for key in result:
+                            print(f"{key}: {result[key]}")
+
+                        result["latitude"] = lat
+                        result["longitude"] = lon
+                        result["label"] = label.value
+                        m.pixel_values.append(result)
+                    if add_marker.value:
+                        markers = list(m.marker_cluster.markers)
+                        markers.append(ipyleaflet.Marker(location=latlon))
+                        m.marker_cluster.markers = markers
+                else:
+                    with output:
+                        output.outputs = ()
+                        print("No pixel value available")
+                        bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]
+                        m.zoom_to_bounds(bounds)
+
+            elif layer_dict["type"] == "LOCAL":
+                result = local_tile_pixel_value(
+                    lon, lat, layer_dict["tile_client"], verbose=False
+                )
+                if result is not None:
+                    if m.inspector_bands_chk.value:
+                        band = m.cog_layer_dict[m.inspector_dropdown.value]["band"]
+                        band_names = m.cog_layer_dict[m.inspector_dropdown.value][
+                            "band_names"
+                        ]
+                        if band is not None:
+                            sel_bands = [band_names[b - 1] for b in band]
+                            result = {k: v for k, v in result.items() if k in sel_bands}
+                    with output:
+                        output.outputs = ()
+                        print(f"lat/lon: {lat:.4f}, {lon:.4f}\n")
+                        for key in result:
+                            print(f"{key}: {result[key]}")
+
+                        result["latitude"] = lat
+                        result["longitude"] = lon
+                        result["label"] = label.value
+                        m.pixel_values.append(result)
+                    if add_marker.value:
+                        markers = list(m.marker_cluster.markers)
+                        markers.append(ipyleaflet.Marker(location=latlon))
+                        m.marker_cluster.markers = markers
+                else:
+                    with output:
+                        output.outputs = ()
+                        print("No pixel value available")
+                        bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]
+                        m.zoom_to_bounds(bounds)
+            m.default_style = {"cursor": "crosshair"}
+
+    if m is not None:
+        if not hasattr(m, "marker_cluster"):
+            setattr(m, "marker_cluster", marker_cluster)
+        m.add_layer(marker_cluster)
+
+        if not m.interact_mode:
+            m.on_interaction(handle_interaction)
+            m.interact_mode = True
+
+    if m is not None:
+        toolbar_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position="topright"
+        )
+
+        if toolbar_control not in m.controls:
+            m.add_control(toolbar_control)
+            m.tool_control = toolbar_control
+
+        if not hasattr(m, "inspector_mode"):
+            if hasattr(m, "cog_layer_dict"):
+                setattr(m, "inspector_mode", True)
+            else:
+                setattr(m, "inspector_mode", False)
+
+    else:
+        return toolbar_widget
+
+
+def ee_inspector_gui(
+    m,
+    names=None,
+    visible=True,
+    decimals=2,
+    position="topright",
+    opened=True,
+    show_close_button=True,
+):
+    """Earth Engine Inspector GUI.
+
+    Args:
+        m (geemap.Map): The geemap.Map object.
+        names (str | list, optional): The names of the layers to be included. Defaults to None.
+        visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
+        decimals (int, optional): The number of decimal places to round the values. Defaults to 2.
+        position (str, optional): The position of the control. Defaults to "topright".
+        opened (bool, optional): Whether the control is opened. Defaults to True.
+        show_close_button (bool, optional): Whether to show the close button. Defaults to True.
+
+    """
+    from ipytree import Tree
+
+    m._expand_point = False
+    m._expand_pixels = True
+    m._expand_objects = False
+    m.default_style = {"cursor": "crosshair"}
+
+    toolbar_button = widgets.ToggleButton(
+        value=True,
+        tooltip="Inspector",
+        icon="info",
+        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+    )
+
+    close_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Close the tool",
+        icon="times",
+        button_style="primary",
+        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
+    )
+
+    layout = {
+        "border": "1px solid black",
+        "max_width": "600px",
+        "max_height": "500px",
+        "overflow": "auto",
+    }
+    inspector_output = widgets.Output(layout=layout)
+
+    expand_label = widgets.Label(
+        "Expand   ",
+        layout=widgets.Layout(padding="0px 0px 0px 4px"),
+    )
+
+    expand_point = widgets.Checkbox(
+        description="Point",
+        indent=False,
+        value=m._expand_point,
+        layout=widgets.Layout(width="65px"),
+    )
+
+    expand_pixels = widgets.Checkbox(
+        description="Pixels",
+        indent=False,
+        value=m._expand_pixels,
+        layout=widgets.Layout(width="65px"),
+    )
+
+    expand_objects = widgets.Checkbox(
+        description="Objects",
+        indent=False,
+        value=m._expand_objects,
+        layout=widgets.Layout(width="70px"),
+    )
+
+    def expand_point_changed(change):
+        m._expand_point = change["new"]
+
+    def expand_pixels_changed(change):
+        m._expand_pixels = change["new"]
+
+    def expand_objects_changed(change):
+        m._expand_objects = change["new"]
+
+    expand_point.observe(expand_point_changed, "value")
+    expand_pixels.observe(expand_pixels_changed, "value")
+    expand_objects.observe(expand_objects_changed, "value")
+
+    inspector_checks = widgets.HBox()
+    inspector_checks.children = [
+        expand_label,
+        widgets.Label(""),
+        expand_point,
+        expand_pixels,
+        expand_objects,
+    ]
+
+    with inspector_output:
+        inspector_output.outputs = ()
+        display(inspector_checks)
+
+    toolbar_header = widgets.HBox()
+    if show_close_button:
+        toolbar_header.children = [close_button, toolbar_button]
+    else:
+        toolbar_header.children = [toolbar_button]
+    toolbar_footer = widgets.VBox()
+    toolbar_footer.children = [inspector_output]
+    toolbar_widget = widgets.VBox()
+    toolbar_widget.children = [toolbar_header, toolbar_footer]
+
+    def handle_interaction(**kwargs):
+        latlon = kwargs.get("coordinates")
+        if kwargs.get("type") == "click" and toolbar_button.value:
+            m.default_style = {"cursor": "wait"}
+            ###################################### Temporary fix for Solara
+            inspector_output = widgets.Output(layout=layout)
+            toolbar_footer.children = [inspector_output]
+            ######################################
+            with inspector_output:
+                inspector_output.outputs = ()
+                display(inspector_checks)
+
+                tree = Tree()
+                nodes = []
+                point_node = m._point_info(latlon, return_node=True)
+                nodes.append(point_node)
+                pixels_node = m._pixels_info(
+                    latlon, names, visible, decimals, return_node=True
+                )
+                if pixels_node.nodes:
+                    nodes.append(pixels_node)
+                objects_node = m._objects_info(latlon, names, visible, return_node=True)
+                if objects_node.nodes:
+                    nodes.append(objects_node)
+                tree.nodes = nodes
+
+                display(tree)
+            m.default_style = {"cursor": "crosshair"}
+
+    m.on_interaction(handle_interaction)
+
+    def toolbar_btn_click(change):
+        if change["new"]:
+            m.default_style = {"cursor": "crosshair"}
+            # close_button.value = False
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+            ###################################### Temporary fix for Solara
+            inspector_output = widgets.Output(layout=layout)
+            toolbar_footer.children = [inspector_output]
+            ######################################
+            with inspector_output:
+                inspector_output.outputs = ()
+                display(inspector_checks)
+        else:
+            toolbar_widget.children = [toolbar_button]
+            m.default_style = {"cursor": "default"}
+
+    toolbar_button.observe(toolbar_btn_click, "value")
+
+    def close_btn_click(change):
+        if change["new"]:
+            m.default_style = {"cursor": "default"}
+            toolbar_button.value = False
+            if m is not None:
+                m.toolbar_reset()
+                m.on_interaction(handle_interaction, remove=True)
+                if (
+                    m.inspector_control is not None
+                    and m.inspector_control in m.controls
+                ):
+                    m.remove_control(m.inspector_control)
+                    m.inspector_control = None
+                    delattr(m, "inspector_control")
+            toolbar_widget.close()
+
+    close_button.observe(close_btn_click, "value")
+
+    toolbar_button.value = opened
+    if m is not None:
+        inspector_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position=position
+        )
+
+        if inspector_control not in m.controls:
+            m.add(inspector_control)
+            m.inspector_control = inspector_control
+    else:
+        return toolbar_widget
+
+
+def layer_manager_gui(
+    m, position="topright", opened=True, return_widget=False, show_close_button=True
+):
+    """Creates a layer manager widget.
+
+    Args:
+        m (geemap.Map): The geemap.Map object.
+        position (str, optional): The position of the widget. Defaults to "topright".
+        return_widget (bool, optional): Whether to return the widget. Defaults to False.
+    """
+
+    layers_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Layer Manager",
+        icon="server",
+        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+    )
+
+    close_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Close the tool",
+        icon="times",
+        button_style="primary",
+        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
+    )
+
+    toolbar_header = widgets.HBox()
+    toolbar_header.children = [layers_button]
+    toolbar_footer = widgets.VBox()
+    toolbar_footer.children = []
+    toolbar_widget = widgets.VBox()
+    toolbar_widget.children = [toolbar_header]
+
+    def toolbar_btn_click(change):
+        if change["new"]:
+            close_button.value = False
+            toolbar_widget.children = [toolbar_header, toolbar_footer]
+        else:
+            if not close_button.value:
+                toolbar_widget.children = [layers_button]
+
+    layers_button.observe(toolbar_btn_click, "value")
+
+    def close_btn_click(change):
+        if change["new"]:
+            layers_button.value = False
+            m.toolbar_reset()
+            if m.layer_manager is not None and m.layer_manager in m.controls:
+                m.remove_control(m.layer_manager)
+                m.layer_manager = None
+            toolbar_widget.close()
+
+    close_button.observe(close_btn_click, "value")
+
+    def layers_btn_click(change):
+        if change["new"]:
+            layers_hbox = []
+            all_layers_chk = widgets.Checkbox(
+                value=False,
+                description="All layers on/off",
+                indent=False,
+                layout=widgets.Layout(height="18px", padding="0px 8px 25px 8px"),
+            )
+            all_layers_chk.layout.width = "30ex"
+            layers_hbox.append(all_layers_chk)
+
+            def all_layers_chk_changed(change):
+                if change["new"]:
+                    for layer in m.layers:
+                        if hasattr(layer, "visible"):
+                            layer.visible = True
+                else:
+                    for layer in m.layers:
+                        if hasattr(layer, "visible"):
+                            layer.visible = False
+
+            all_layers_chk.observe(all_layers_chk_changed, "value")
+
+            layers = [lyr for lyr in m.layers[1:]]
+
+            # if the layers contain unsupported layers (e.g., GeoJSON, GeoData), adds the ipyleaflet built-in LayerControl
+            if len(layers) < (len(m.layers) - 1):
+                if m.layer_control is None:
+                    layer_control = ipyleaflet.LayersControl(position="topright")
+                    m.layer_control = layer_control
+                if m.layer_control not in m.controls:
+                    m.add(m.layer_control)
+
+            # for non-TileLayer, use layer.style={'opacity':0, 'fillOpacity': 0} to turn layer off.
+            for layer in layers:
+                visible = True
+                if hasattr(layer, "visible"):
+                    visible = layer.visible
+                layer_chk = widgets.Checkbox(
+                    value=visible,
+                    description=layer.name,
+                    indent=False,
+                    layout=widgets.Layout(height="18px"),
+                )
+                layer_chk.layout.width = "140px"
+
+                if layer in m.geojson_layers:
+                    try:
+                        opacity = max(
+                            layer.style["opacity"], layer.style["fillOpacity"]
+                        )
+                    except KeyError:
+                        opacity = 1.0
+                else:
+                    if hasattr(layer, "opacity"):
+                        opacity = layer.opacity
+
+                layer_opacity = widgets.FloatSlider(
+                    value=opacity,
+                    min=0,
+                    max=1,
+                    step=0.01,
+                    readout=False,
+                    layout=widgets.Layout(width="80px"),
+                )
+                layer_settings = widgets.ToggleButton(
+                    icon="gear",
+                    tooltip=layer.name,
+                    layout=widgets.Layout(
+                        width="25px", height="25px", padding="0px 0px 0px 5px"
+                    ),
+                )
+
+                def layer_opacity_changed(change):
+                    if change["new"]:
+                        layer.style = {
+                            "opacity": change["new"],
+                            "fillOpacity": change["new"],
+                        }
+
+                def layer_vis_on_click(change):
+                    if change["new"]:
+                        layer_name = change["owner"].tooltip
+                        # if layer_name in m.ee_raster_layer_names:
+                        if layer_name in m.ee_layer_names:
+                            layer_dict = m.ee_layer_dict[layer_name]
+
+                            if hasattr(m, '_vis_widget') and m._vis_widget is not None:
+                                m._vis_widget = None
+                            m._vis_widget = m.create_vis_widget(layer_dict)
+                            if (
+                                hasattr(m, '_vis_control')
+                                and m._vis_control in m.controls
+                            ):
+                                m.remove_control(m._vis_control)
+                                m._vis_control = None
+                            vis_control = ipyleaflet.WidgetControl(
+                                widget=m._vis_widget, position="topright"
+                            )
+                            m.add((vis_control))
+                            m._vis_control = vis_control
+                        else:
+                            if hasattr(m, '_vis_widget') and m._vis_widget is not None:
+                                m._vis_widget = None
+                            if m._vis_control is not None:
+                                if m._vis_control in m.controls:
+                                    m.remove_control(m._vis_control)
+                                m._vis_control = None
+                        change["owner"].value = False
+
+                layer_settings.observe(layer_vis_on_click, "value")
+
+                def layer_chk_changed(change):
+                    layer_name = change["owner"].description
+                    if layer_name in m.ee_layer_names:
+                        if change["new"]:
+                            if "legend" in m.ee_layer_dict[layer_name].keys():
+                                legend = m.ee_layer_dict[layer_name]["legend"]
+                                if legend not in m.controls:
+                                    m.add(legend)
+                            if "colorbar" in m.ee_layer_dict[layer_name].keys():
+                                colorbar = m.ee_layer_dict[layer_name]["colorbar"]
+                                if colorbar not in m.controls:
+                                    m.add(colorbar)
+                        else:
+                            if "legend" in m.ee_layer_dict[layer_name].keys():
+                                legend = m.ee_layer_dict[layer_name]["legend"]
+                                if legend in m.controls:
+                                    m.remove_control(legend)
+                            if "colorbar" in m.ee_layer_dict[layer_name].keys():
+                                colorbar = m.ee_layer_dict[layer_name]["colorbar"]
+                                if colorbar in m.controls:
+                                    m.remove_control(colorbar)
+
+                layer_chk.observe(layer_chk_changed, "value")
+
+                if hasattr(layer, "visible"):
+                    widgets.jslink((layer_chk, "value"), (layer, "visible"))
+
+                if layer in m.geojson_layers:
+                    layer_opacity.observe(layer_opacity_changed, "value")
+                elif hasattr(layer, "opacity"):
+                    widgets.jsdlink((layer_opacity, "value"), (layer, "opacity"))
+                hbox = widgets.HBox(
+                    [layer_chk, layer_settings, layer_opacity],
+                    layout=widgets.Layout(padding="0px 8px 0px 8px"),
+                )
+                layers_hbox.append(hbox)
+                m.layer_widget = layers_hbox
+
+            if show_close_button:
+                toolbar_header.children = [close_button, layers_button]
+            else:
+                toolbar_header.children = [layers_button]
+            toolbar_footer.children = layers_hbox
+
+        else:
+            toolbar_header.children = [layers_button]
+
+    layers_button.observe(layers_btn_click, "value")
+    layers_button.value = opened
+
+    if not hasattr(m, "layer_manager_widget"):
+        m.layer_manager_widget = toolbar_footer
+
+    if return_widget:
+        if hasattr(m, "layer_widget"):
+            return m.layer_widget
+        else:
+            return
+    else:
+        layer_control = ipyleaflet.WidgetControl(
+            widget=toolbar_widget, position=position
+        )
+
+        if layer_control not in m.controls:
+            m.add_control(layer_control)
+            m.layer_manager = layer_control
+
+
+def ee_plot_gui(m, position="topright", **kwargs):
+    """Widget for plotting Earth Engine data.
+
+    Args:
+        m (object): geemap.Map.
+        position (str, optional): Position of the widget. Defaults to "topright".
+    """
+
+    close_btn = widgets.Button(
+        icon="times",
+        tooltip="Close the plot widget",
+        button_style="primary",
+        layout=widgets.Layout(width="32px"),
+    )
+
+    m._plot_checked = True
+    dropdown = widgets.Dropdown(
+        options=list(m.ee_raster_layer_names),
+    )
+    dropdown.layout.width = "18ex"
+    m._plot_dropdown_widget = dropdown
+
+    widget = widgets.HBox([dropdown, close_btn])
+
+    plot_dropdown_control = ipyleaflet.WidgetControl(widget=widget, position=position)
+    m._plot_dropdown_control = plot_dropdown_control
+    m.add(plot_dropdown_control)
+
+    if m.draw_control in m.controls:
+        m.remove_control(m.draw_control)
+    m.add_draw_control_lite()
+
+    if not hasattr(m, "_chart_points"):
+        m._chart_points = []
+    if not hasattr(m, "_chart_values"):
+        m._chart_values = []
+    if not hasattr(m, "_chart_labels"):
+        m._chart_labels = None
+
+    def handle_interaction(**kwargs):
+        latlon = kwargs.get("coordinates")
+        if (
+            kwargs.get("type") == "click"
+            and m._plot_checked
+            and len(m.ee_raster_layers) > 0
+        ):
+            plot_layer_name = m._plot_dropdown_widget.value
+            layer_names = m.ee_raster_layer_names
+            layers = m.ee_raster_layers
+            index = layer_names.index(plot_layer_name)
+            ee_object = layers[index]
+
+            if isinstance(ee_object, ee.ImageCollection):
+                ee_object = ee_object.mosaic()
+
+            try:
+                m.default_style = {"cursor": "wait"}
+                plot_options = {}
+                if hasattr(m, "_plot_options"):
+                    plot_options = m._plot_options
+                sample_scale = m.getScale()
+                if "sample_scale" in plot_options.keys() and (
+                    plot_options["sample_scale"] is not None
+                ):
+                    sample_scale = plot_options["sample_scale"]
+                if "title" not in plot_options.keys():
+                    plot_options["title"] = plot_layer_name
+                if ("add_marker_cluster" in plot_options.keys()) and plot_options[
+                    "add_marker_cluster"
+                ]:
+                    if not hasattr(m, "_plot_markers"):
+                        m._plot_markers = []
+                    markers = m._plot_markers
+                    marker_cluster = m._plot_marker_cluster
+                    markers.append(ipyleaflet.Marker(location=latlon))
+                    marker_cluster.markers = markers
+                    m._plot_marker_cluster = marker_cluster
+
+                band_names = ee_object.bandNames().getInfo()
+                if any(len(name) > 3 for name in band_names):
+                    band_names = list(range(1, len(band_names) + 1))
+
+                m._chart_labels = band_names
+
+                if not hasattr(m, "_roi_end"):
+                    m._roi_end = False
+
+                if m._roi_end:
+                    if m.roi_reducer_scale is None:
+                        scale = ee_object.select(0).projection().nominalScale()
+                    else:
+                        scale = m.roi_reducer_scale
+                    dict_values_tmp = ee_object.reduceRegion(
+                        reducer=m.roi_reducer,
+                        geometry=m.user_roi,
+                        scale=scale,
+                        bestEffort=True,
+                    ).getInfo()
+                    b_names = ee_object.bandNames().getInfo()
+                    dict_values = dict(
+                        zip(b_names, [dict_values_tmp[b] for b in b_names])
+                    )
+                    m._chart_points.append(
+                        m.user_roi.centroid(1).coordinates().getInfo()
+                    )
+                else:
+                    xy = ee.Geometry.Point(latlon[::-1])
+                    dict_values_tmp = (
+                        ee_object.sample(xy, scale=sample_scale)
+                        .first()
+                        .toDictionary()
+                        .getInfo()
+                    )
+                    b_names = ee_object.bandNames().getInfo()
+                    dict_values = dict(
+                        zip(b_names, [dict_values_tmp[b] for b in b_names])
+                    )
+                    m._chart_points.append(xy.coordinates().getInfo())
+                band_values = list(dict_values.values())
+                m._chart_values.append(band_values)
+                m.plot(band_names, band_values, **plot_options)
+                if plot_options["title"] == plot_layer_name:
+                    del plot_options["title"]
+                m.default_style = {"cursor": "crosshair"}
+                m._roi_end = False
+            except Exception as e:
+                if m._plot_widget is not None:
+                    with m._plot_widget:
+                        m._plot_widget.outputs = ()
+                        print("No data for the clicked location.")
+                else:
+                    print(e)
+                m.default_style = {"cursor": "crosshair"}
+                m._roi_end = False
+
+    m.on_interaction(handle_interaction)
+
+    def close_click(change):
+        m.toolbar_reset()
+        m._plot_checked = False
+
+        if (
+            hasattr(m, "plot_control")
+            and (m._plot_control is not None)
+            and (m._plot_control in m.controls)
+        ):
+            m._plot_widget.outputs = ()
+            m.remove_control(m._plot_control)
+
+        if (
+            m._plot_dropdown_control is not None
+            and m._plot_dropdown_control in m.controls
+        ):
+            m.remove_control(m._plot_dropdown_control)
+
+        widget.close()
+
+        m.on_interaction(handle_interaction, remove=True)
+        m._plot_widget = None
+        m.default_style = {"cursor": "default"}
+
+    close_btn.on_click(close_click)
+
+
+def change_basemap(m):
+    """Widget for changing basemaps.
+
+    Args:
+        m (object): geemap.Map.
+    """
+    from .basemaps import get_xyz_dict
+    from .geemap import basemaps, get_basemap
+
+    xyz_dict = get_xyz_dict()
+
+    value = "OpenStreetMap"
+
+    dropdown = widgets.Dropdown(
+        options=list(basemaps.keys()),
+        value=value,
+        layout=widgets.Layout(width="200px"),
+    )
+
+    close_btn = widgets.Button(
+        icon="times",
+        tooltip="Close the basemap widget",
+        button_style="primary",
+        layout=widgets.Layout(width="32px"),
+    )
+
+    basemap_widget = widgets.HBox([dropdown, close_btn])
+
+    def on_click(change):
+        if change["new"]:
+            basemap_name = dropdown.value
+            if basemap_name not in m.get_layer_names():
+                m.add_basemap(basemap_name)
+                if basemap_name in xyz_dict:
+                    if "bounds" in xyz_dict[basemap_name]:
+                        bounds = xyz_dict[basemap_name]["bounds"]
+                        bounds = [
+                            bounds[0][1],
+                            bounds[0][0],
+                            bounds[1][1],
+                            bounds[1][0],
+                        ]
+                        m.zoom_to_bounds(bounds)
+
+    dropdown.observe(on_click, "value")
+
+    def close_click(change):
+        m.toolbar_reset()
+        if m.basemap_ctrl is not None and m.basemap_ctrl in m.controls:
+            m.remove_control(m.basemap_ctrl)
+        basemap_widget.close()
+
+    close_btn.on_click(close_click)
+
+    basemap_control = ipyleaflet.WidgetControl(
+        widget=basemap_widget, position="topright"
+    )
+    m.add(basemap_control)
+    m.basemap_ctrl = basemap_control
+
+
+def search_data_gui(m, position="topleft"):
+    """The GUI widget for searching Earth Engine data catalog.
+
+    Args:
+        m (geemap.Map): The geemap.Map object.
+        position (str, optional): The position of the widget. Defaults to "topleft".
+    """
+
+    # Adds search button and search box
+
+    from .conversion import js_snippet_to_py
+
+    m.search_locations = None
+    m.search_loc_marker = None
+    m.search_loc_geom = None
+    m.search_datasets = None
+
+    search_button = widgets.ToggleButton(
+        value=False,
+        tooltip="Search location/data",
+        icon="globe",
+        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+    )
+
+    search_type = widgets.ToggleButtons(
+        options=["name/address", "lat-lon", "data"],
+        tooltips=[
+            "Search by place name or address",
+            "Search by lat-lon coordinates",
+            "Search Earth Engine data catalog",
+        ],
+    )
+    search_type.style.button_width = "110px"
+
+    search_box = widgets.Text(
+        placeholder="Search by place name or address",
+        tooltip="Search location",
+        layout=widgets.Layout(width="340px"),
+    )
+
+    search_output = widgets.Output(
+        layout={
+            "max_width": "340px",
+            "max_height": "350px",
+            "overflow": "scroll",
+        }
+    )
+
+    search_results = widgets.RadioButtons()
+
+    assets_dropdown = widgets.Dropdown(
+        options=[],
+        layout=widgets.Layout(min_width="279px", max_width="279px"),
+    )
+
+    import_btn = widgets.Button(
+        description="import",
+        button_style="primary",
+        tooltip="Click to import the selected asset",
+        layout=widgets.Layout(min_width="57px", max_width="57px"),
+    )
+
+    def get_ee_example(asset_id):
+        try:
+            import pkg_resources
+
+            pkg_dir = os.path.dirname(
+                pkg_resources.resource_filename("geemap", "geemap.py")
+            )
+            with open(os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8") as f:
+                functions = json.load(f)
+            details = [
+                dataset["code"]
+                for x in functions["examples"]
+                for dataset in x["contents"]
+                if x["name"] == "Datasets"
+                if dataset["name"] == asset_id.replace("/", "_")
+            ]
+
+            return js_snippet_to_py(
+                details[0],
+                add_new_cell=False,
+                import_ee=False,
+                import_geemap=False,
+                show_map=False,
+            )
+
+        except Exception as e:
+            pass
+        return
+
+    def import_btn_clicked(b):
+        if assets_dropdown.value is not None:
+            datasets = m.search_datasets
+            dataset = datasets[assets_dropdown.index]
+            id_ = dataset["id"]
+            code = get_ee_example(id_)
+
+            if not code:
+                dataset_uid = "dataset_" + random_string(string_length=3)
+                translate = {
+                    "image_collection": "ImageCollection",
+                    "image": "Image",
+                    "table": "FeatureCollection",
+                    "table_collection": "FeatureCollection",
+                }
+                datatype = translate[dataset["type"]]
+                id_ = dataset["id"]
+                line1 = "{} = ee.{}('{}')".format(dataset_uid, datatype, id_)
+                action = {
+                    "image_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                    "image": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                    "table": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                    "table_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                }
+                line2 = action[dataset["type"]]
+                code = [line1, line2]
+
+            contents = "".join(code).strip()
+            # create_code_cell(contents)
+
+            try:
+                import pyperclip
+                pyperclip.copy(str(contents))
+            except Exception as e:
+                pass
+
+            with search_output:
+                search_output.outputs = ()
+                print(
+                    "# The code has been copied to the clipboard. \n# Press Ctrl+V in a new cell to paste it.\n"
+                )
+                print(contents)
+
+    import_btn.on_click(import_btn_clicked)
+
+    html_widget = widgets.HTML()
+
+    def dropdown_change(change):
+        dropdown_index = assets_dropdown.index
+        if dropdown_index is not None and dropdown_index >= 0:
+            search_output.outputs = ()
+            search_output.append_stdout("Loading ...")
+            datasets = m.search_datasets
+            dataset = datasets[dropdown_index]
+            dataset_html = ee_data_html(dataset)
+            html_widget.value = dataset_html
+            search_output.outputs = ()
+            search_output.append_display_data(html_widget)
+
+    assets_dropdown.observe(dropdown_change, names="value")
+
+    assets_combo = widgets.HBox()
+    assets_combo.children = [import_btn, assets_dropdown]
+
+    def search_result_change(change):
+        result_index = search_results.index
+        locations = m.search_locations
+        location = locations[result_index]
+        latlon = (location.lat, location.lng)
+        m.search_loc_geom = ee.Geometry.Point(location.lng, location.lat)
+        marker = m.search_loc_marker
+        marker.location = latlon
+        m.center = latlon
+
+    search_results.observe(search_result_change, names="value")
+
+    def search_btn_click(change):
+        if change["new"]:
+            search_widget.children = [search_button, search_result_widget]
+            search_type.value = "name/address"
+        else:
+            search_widget.children = [search_button]
+            search_result_widget.children = [search_type, search_box]
+
+    search_button.observe(search_btn_click, "value")
+
+    def search_type_changed(change):
+        search_box.value = ""
+        search_output.outputs = ()
+        if change["new"] == "data":
+            search_box.placeholder = (
+                "Search GEE data catalog by keywords, e.g., elevation"
+            )
+            search_result_widget.children = [
+                search_type,
+                search_box,
+                assets_combo,
+                search_output,
+            ]
+        elif change["new"] == "lat-lon":
+            search_box.placeholder = "Search by lat-lon, e.g., 40, -100"
+            assets_dropdown.options = []
+            search_result_widget.children = [
+                search_type,
+                search_box,
+                search_output,
+            ]
+        elif change["new"] == "name/address":
+            search_box.placeholder = "Search by place name or address, e.g., Paris"
+            assets_dropdown.options = []
+            search_result_widget.children = [
+                search_type,
+                search_box,
+                search_output,
+            ]
+
+    search_type.observe(search_type_changed, names="value")
+
+    def search_box_callback(text):
+        if text.value != "":
+            if search_type.value == "name/address":
+                g = geocode(text.value)
+            elif search_type.value == "lat-lon":
+                g = geocode(text.value, reverse=True)
+                if g is None and latlon_from_text(text.value):
+                    search_output.outputs = ()
+                    latlon = latlon_from_text(text.value)
+                    m.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
+                    if m.search_loc_marker is None:
+                        marker = ipyleaflet.Marker(
+                            location=latlon,
+                            draggable=False,
+                            name="Search location",
+                        )
+                        m.search_loc_marker = marker
+                        m.add(marker)
+                        m.center = latlon
+                    else:
+                        marker = m.search_loc_marker
+                        marker.location = latlon
+                        m.center = latlon
+                    with search_output:
+                        print(f"No address found for {latlon}")
+                    return
+            elif search_type.value == "data":
+                search_output.outputs = ()
+                with search_output:
+                    print("Searching ...")
+                m.default_style = {"cursor": "wait"}
+                ee_assets = search_ee_data(text.value, source="all")
+                m.search_datasets = ee_assets
+                asset_titles = [x["title"] for x in ee_assets]
+                assets_dropdown.options = asset_titles
+                search_output.outputs = ()
+                if len(ee_assets) > 0:
+                    assets_dropdown.index = 0
+                    html_widget.value = ee_data_html(ee_assets[0])
+                else:
+                    html_widget.value = "No results found."
+                with search_output:
+                    display(html_widget)
+                m.default_style = {"cursor": "default"}
+
+                return
+
+            m.search_locations = g
+            if g is not None and len(g) > 0:
+                top_loc = g[0]
+                latlon = (top_loc.lat, top_loc.lng)
+                m.search_loc_geom = ee.Geometry.Point(top_loc.lng, top_loc.lat)
+                if m.search_loc_marker is None:
+                    marker = ipyleaflet.Marker(
+                        location=latlon,
+                        draggable=False,
+                        name="Search location",
+                    )
+                    m.search_loc_marker = marker
+                    m.add(marker)
+                    m.center = latlon
+                else:
+                    marker = m.search_loc_marker
+                    marker.location = latlon
+                    m.center = latlon
+                search_results.options = [x.address for x in g]
+                search_result_widget.children = [
+                    search_type,
+                    search_box,
+                    search_output,
+                ]
+                with search_output:
+                    search_output.outputs = ()
+                    display(search_results)
+            else:
+                with search_output:
+                    search_output.outputs = ()
+                    print("No results could be found.")
+
+    search_box.on_submit(search_box_callback)
+
+    search_result_widget = widgets.VBox([search_type, search_box])
+    search_widget = widgets.HBox([search_button])
+
+    search_event = ipyevents.Event(
+        source=search_widget, watched_events=["mouseenter", "mouseleave"]
+    )
+
+    def handle_search_event(event):
+        if event["type"] == "mouseenter":
+            search_widget.children = [search_button, search_result_widget]
+            # search_type.value = "name/address"
+        elif event["type"] == "mouseleave":
+            if not search_button.value:
+                search_widget.children = [search_button]
+                search_result_widget.children = [search_type, search_box]
+
+    search_event.on_dom_event(handle_search_event)
+
+    data_control = ipyleaflet.WidgetControl(widget=search_widget, position=position)
+
+    m.add(data_control)
+
+
+# ******************************************************************************#
+# The classes and functions above are the core features of the geemap package.  #
+# The Earth Engine team and the geemap community will maintain these features.  #
+# ******************************************************************************#
+
+# ******************************************************************************#
+# The classes and functions below are the extra features of the geemap package. #
+# The geemap community will maintain these features.                            #
+# ******************************************************************************#
 
 
 def tool_template(m=None, opened=True):
@@ -153,7 +1827,7 @@ def tool_template(m=None, opened=True):
 
     # toolbar_event.on_dom_event(handle_toolbar_event)
 
-    def toolbar_btn_click(change: dict[str, bool]) -> None:
+    def toolbar_btn_click(change):
         if change["new"]:
             close_button.value = False
             toolbar_widget.children = [toolbar_header, toolbar_footer]
@@ -175,14 +1849,14 @@ def tool_template(m=None, opened=True):
 
     close_button.observe(close_btn_click, "value")
 
-    def button_clicked(change: dict[str, Any]) -> None:
+    def button_clicked(change):
         if change["new"] == "Apply":
             with output:
-                output.clear_output()
+                output.outputs = ()
                 print("Running ...")
         elif change["new"] == "Reset":
             textarea.value = ""
-            output.clear_output()
+            output.outputs = ()
         elif change["new"] == "Close":
             if m is not None:
                 m.toolbar_reset()
@@ -214,6 +1888,7 @@ def tool_header_template(m=None, opened=True, show_close_button=True):
     Args:
         m (geemap.Map, optional): The geemap.Map instance. Defaults to None.
         opened (bool, optional): Whether to open the toolbar. Defaults to True.
+        show_close_button (bool, optional): Whether to show the close button. Defaults to True.
     """
 
     widget_width = "250px"
@@ -282,10 +1957,10 @@ def tool_header_template(m=None, opened=True, show_close_button=True):
     def button_clicked(change):
         if change["new"] == "Apply":
             with output:
-                output.clear_output()
+                output.outputs = ()
                 print("Running ...")
         elif change["new"] == "Reset":
-            output.clear_output()
+            output.outputs = ()
         elif change["new"] == "Close":
             if m is not None:
                 m.toolbar_reset()
@@ -311,13 +1986,12 @@ def tool_header_template(m=None, opened=True, show_close_button=True):
         return toolbar_widget
 
 
-def open_data_widget(m) -> None:
+def open_data_widget(m):
     """A widget for opening local vector/raster data.
 
     Args:
         m (object): geemap.Map
     """
-    from .colormaps import list_colormaps
 
     padding = "0px 0px 0px 5px"
     style = {"description_width": "initial"}
@@ -325,8 +1999,12 @@ def open_data_widget(m) -> None:
     tool_output = widgets.Output()
     tool_output_ctrl = ipyleaflet.WidgetControl(widget=tool_output, position="topright")
 
-    if m.tool_output_ctrl is not None and m.tool_output_ctrl in m.controls:
-        m.remove_control(m.tool_output_ctrl)
+    if (
+        hasattr(m, "_tool_output_ctrl")
+        and m._tool_output_ctrl is not None
+        and m._tool_output_ctrl in m.controls
+    ):
+        m.remove_control(m._tool_output_ctrl)
 
     file_type = widgets.ToggleButtons(
         options=["Shapefile", "GeoJSON", "CSV", "Vector", "Raster"],
@@ -461,7 +2139,7 @@ def open_data_widget(m) -> None:
         ]
     )
 
-    tool_output.clear_output()
+    tool_output.outputs = ()
     with tool_output:
         display(main_widget)
 
@@ -525,8 +2203,12 @@ def open_data_widget(m) -> None:
             convert_hbox.children = [convert_bool]
             http_widget.children = [filepath]
         elif change["new"] == "Raster":
+            if not hasattr(m, "_colormaps"):
+                from .colormaps import list_colormaps
+
+                m._colormaps = list_colormaps(add_extra=True)
             file_chooser.filter_pattern = ["*.tif", "*.img"]
-            palette.options = list_colormaps(add_extra=True)
+            palette.options = m._colormaps
             palette.value = None
             raster_options.children = [
                 widgets.HBox([bands, vmin, vmax]),
@@ -612,14 +2294,18 @@ def open_data_widget(m) -> None:
 
         elif change["new"] == "Reset":
             file_chooser.reset()
-            tool_output.clear_output()
+            tool_output.outputs = ()
             with tool_output:
                 display(main_widget)
             m.toolbar_reset()
         elif change["new"] == "Close":
-            if m.tool_output_ctrl is not None and m.tool_output_ctrl in m.controls:
-                m.remove_control(m.tool_output_ctrl)
-                m.tool_output_ctrl = None
+            if (
+                hasattr(m, "_tool_output_ctrl")
+                and m._tool_output_ctrl is not None
+                and m._tool_output_ctrl in m.controls
+            ):
+                m.remove_control(m._tool_output_ctrl)
+                m._tool_output_ctrl = None
                 m.toolbar_reset()
 
         ok_cancel.value = None
@@ -629,68 +2315,7 @@ def open_data_widget(m) -> None:
     # file_chooser.register_callback(chooser_callback)
 
     m.add_control(tool_output_ctrl)
-    m.tool_output_ctrl = tool_output_ctrl
-
-
-def change_basemap(m):
-    """Widget for changing basemaps.
-
-    Args:
-        m (object): geemap.Map.
-    """
-    from .basemaps import get_xyz_dict
-    from .geemap import basemaps, get_basemap
-
-    xyz_dict = get_xyz_dict()
-
-    value = "OpenStreetMap"
-
-    dropdown = widgets.Dropdown(
-        options=list(basemaps.keys()),
-        value=value,
-        layout=widgets.Layout(width="200px"),
-    )
-
-    close_btn = widgets.Button(
-        icon="times",
-        tooltip="Close the basemap widget",
-        button_style="primary",
-        layout=widgets.Layout(width="32px"),
-    )
-
-    basemap_widget = widgets.HBox([dropdown, close_btn])
-
-    def on_click(change):
-        if change["new"]:
-            basemap_name = dropdown.value
-            if basemap_name not in m.get_layer_names():
-                m.add_basemap(basemap_name)
-                if basemap_name in xyz_dict:
-                    if "bounds" in xyz_dict[basemap_name]:
-                        bounds = xyz_dict[basemap_name]["bounds"]
-                        bounds = [
-                            bounds[0][1],
-                            bounds[0][0],
-                            bounds[1][1],
-                            bounds[1][0],
-                        ]
-                        m.zoom_to_bounds(bounds)
-
-    dropdown.observe(on_click, "value")
-
-    def close_click(change):
-        m.toolbar_reset()
-        if m.basemap_ctrl is not None and m.basemap_ctrl in m.controls:
-            m.remove_control(m.basemap_ctrl)
-        basemap_widget.close()
-
-    close_btn.on_click(close_click)
-
-    basemap_control = ipyleaflet.WidgetControl(
-        widget=basemap_widget, position="topright"
-    )
-    m.add(basemap_control)
-    m.basemap_ctrl = basemap_control
+    m._tool_output_ctrl = tool_output_ctrl
 
 
 def convert_js2py(m):
@@ -738,8 +2363,8 @@ def convert_js2py(m):
             text_widget.value = ""
         elif change["new"] == "Close":
             m.toolbar_reset()
-            if m.convert_ctrl is not None and m.convert_ctrl in m.controls:
-                m.remove_control(m.convert_ctrl)
+            if m._convert_ctrl is not None and m._convert_ctrl in m.controls:
+                m.remove_control(m._convert_ctrl)
             full_widget.close()
         buttons.value = None
 
@@ -748,7 +2373,7 @@ def convert_js2py(m):
     full_widget.children = [text_widget, buttons]
     widget_control = ipyleaflet.WidgetControl(widget=full_widget, position="topright")
     m.add_control(widget_control)
-    m.convert_ctrl = widget_control
+    m._convert_ctrl = widget_control
 
 
 def collect_samples(m):
@@ -832,7 +2457,7 @@ def collect_samples(m):
 
             # Handles draw events
             def handle_draw(target, action, geo_json):
-                from .geemap import ee_tile_layer
+                from .ee_tile_layers import EELeafletTileLayer
 
                 try:
                     geom = geojson_to_ee(geo_json, False)
@@ -842,17 +2467,18 @@ def collect_samples(m):
                         feature = ee.Feature(geom, train_props)
                     else:
                         feature = ee.Feature(geom)
-                    m.draw_last_json = geo_json
                     m.draw_last_feature = feature
+                    if not hasattr(m, "_draw_count"):
+                        m._draw_count = 0
                     if action == "deleted" and len(m.draw_features) > 0:
                         m.draw_features.remove(feature)
-                        m.draw_count -= 1
+                        m._draw_count -= 1
                     else:
                         m.draw_features.append(feature)
-                        m.draw_count += 1
+                        m._draw_count += 1
                     collection = ee.FeatureCollection(m.draw_features)
                     m.user_rois = collection
-                    ee_draw_layer = ee_tile_layer(
+                    ee_draw_layer = EELeafletTileLayer(
                         collection, {"color": "blue"}, "Drawn Features", False, 0.5
                     )
                     draw_layer_index = m.find_layer_index("Drawn Features")
@@ -865,13 +2491,13 @@ def collect_samples(m):
                         m.draw_layer = ee_draw_layer
 
                 except Exception as e:
-                    m.draw_count = 0
+                    m._draw_count = 0
                     m.draw_features = []
                     m.draw_last_feature = None
                     m.draw_layer = None
                     m.user_roi = None
-                    m.roi_start = False
-                    m.roi_end = False
+                    m._roi_start = False
+                    m._roi_end = False
                     print("There was an error creating Earth Engine Feature.")
                     raise Exception(e)
 
@@ -972,7 +2598,7 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
     tool_widget.children = children
 
     def run_button_clicked(b):
-        tool_output.clear_output()
+        tool_output.outputs = ()
 
         required_params = required_inputs.copy()
         args2 = []
@@ -1010,7 +2636,7 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
     def help_button_clicked(b):
         import webbrowser
 
-        tool_output.clear_output()
+        tool_output.outputs = ()
         with tool_output:
             html = widgets.HTML(
                 value=f'<a href={tool_dict["link"]} target="_blank">{tool_dict["link"]}</a>'
@@ -1029,10 +2655,10 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
         webbrowser.open_new_tab(tool_dict["link"])
 
     def cancel_btn_clicked(b):
-        tool_output.clear_output()
+        tool_output.outputs = ()
 
     def import_button_clicked(b):
-        tool_output.clear_output()
+        tool_output.outputs = ()
 
         content = []
 
@@ -1113,7 +2739,7 @@ def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
             selected = change["owner"].value
             tool_dict = tools_dict[selected]
             with right_widget:
-                right_widget.clear_output()
+                right_widget.outputs = ()
                 display(tool_gui(tool_dict, max_height=max_height))
 
     tools_widget.observe(tool_selected, "value")
@@ -1163,6 +2789,8 @@ def timelapse_gui(m=None):
     widget_width = "350px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
     style = {"description_width": "initial"}
+
+    current_year = get_current_year()
 
     toolbar_button = widgets.ToggleButton(
         value=False,
@@ -1229,9 +2857,10 @@ def timelapse_gui(m=None):
     )
 
     speed_label = widgets.Label(
+        "10",
         layout=widgets.Layout(width="20px", padding=padding),
     )
-    widgets.jslink((speed, "value"), (speed_label, "value"))
+    jslink_slider_label(speed, speed_label)
 
     cloud = widgets.Checkbox(
         value=True,
@@ -1244,26 +2873,26 @@ def timelapse_gui(m=None):
         description="Start Year:",
         value=1984,
         min=1984,
-        max=2021,
+        max=current_year,
         readout=False,
         style=style,
         layout=widgets.Layout(width="138px", padding=padding),
     )
 
-    start_year_label = widgets.Label()
-    widgets.jslink((start_year, "value"), (start_year_label, "value"))
+    start_year_label = widgets.Label("1984")
+    jslink_slider_label(start_year, start_year_label)
 
     end_year = widgets.IntSlider(
         description="End Year:",
-        value=2020,
+        value=current_year,
         min=1984,
-        max=2021,
+        max=current_year,
         readout=False,
         style=style,
         layout=widgets.Layout(width="138px", padding=padding),
     )
-    end_year_label = widgets.Label()
-    widgets.jslink((end_year, "value"), (end_year_label, "value"))
+    end_year_label = widgets.Label(str(current_year))
+    jslink_slider_label(end_year, end_year_label)
 
     start_month = widgets.IntSlider(
         description="Start Month:",
@@ -1276,9 +2905,10 @@ def timelapse_gui(m=None):
     )
 
     start_month_label = widgets.Label(
+        "5",
         layout=widgets.Layout(width="20px", padding=padding),
     )
-    widgets.jslink((start_month, "value"), (start_month_label, "value"))
+    jslink_slider_label(start_month, start_month_label)
 
     end_month = widgets.IntSlider(
         description="End Month:",
@@ -1290,8 +2920,8 @@ def timelapse_gui(m=None):
         layout=widgets.Layout(width="155px", padding=padding),
     )
 
-    end_month_label = widgets.Label()
-    widgets.jslink((end_month, "value"), (end_month_label, "value"))
+    end_month_label = widgets.Label("10")
+    jslink_slider_label(end_month, end_month_label)
 
     font_size = widgets.IntSlider(
         description="Font size:",
@@ -1303,8 +2933,8 @@ def timelapse_gui(m=None):
         layout=widgets.Layout(width="152px", padding=padding),
     )
 
-    font_size_label = widgets.Label()
-    widgets.jslink((font_size, "value"), (font_size_label, "value"))
+    font_size_label = widgets.Label("30")
+    jslink_slider_label(font_size, font_size_label)
 
     font_color = widgets.ColorPicker(
         concise=False,
@@ -1370,9 +3000,10 @@ def timelapse_gui(m=None):
     )
 
     nd_threshold_label = widgets.Label(
+        "0",
         layout=widgets.Layout(width="35px", padding=padding),
     )
-    widgets.jslink((nd_threshold, "value"), (nd_threshold_label, "value"))
+    jslink_slider_label(nd_threshold, nd_threshold_label)
 
     nd_color = widgets.ColorPicker(
         concise=False,
@@ -1441,14 +3072,11 @@ def timelapse_gui(m=None):
         temp_output = widgets.Output()
 
         if m is not None:
-            out_dir = os.path.expanduser("~/Downloads")
-            if not os.path.exists(out_dir):
-                os.makedirs(out_dir)
-
+            out_dir = get_temp_dir()
             out_gif = os.path.join(out_dir, "timelapse_" + random_string(3) + ".gif")
 
             with temp_output:
-                temp_output.clear_output()
+                temp_output.outputs = ()
                 m.add_landsat_ts_gif(
                     roi=m.user_roi,
                     label=title.value,
@@ -1495,7 +3123,7 @@ def timelapse_gui(m=None):
     )
 
     def reset_btn_click(change):
-        output.clear_output()
+        output.outputs = ()
 
     reset_btn.on_click(reset_btn_click)
 
@@ -1762,8 +3390,10 @@ def time_slider(m=None):
         style={"description_width": "50px"},
     )
 
-    opacity_label = widgets.Label(layout=widgets.Layout(width="40px", padding=padding))
-    widgets.jslink((opacity, "value"), (opacity_label, "value"))
+    opacity_label = widgets.Label(
+        "1", layout=widgets.Layout(width="40px", padding=padding)
+    )
+    jslink_slider_label(opacity, opacity_label)
 
     gamma = widgets.FloatSlider(
         value=1,
@@ -1778,8 +3408,10 @@ def time_slider(m=None):
         style={"description_width": "50px"},
     )
 
-    gamma_label = widgets.Label(layout=widgets.Layout(width="40px", padding=padding))
-    widgets.jslink((gamma, "value"), (gamma_label, "value"))
+    gamma_label = widgets.Label(
+        "1", layout=widgets.Layout(width="40px", padding=padding)
+    )
+    jslink_slider_label(gamma, gamma_label)
 
     color_picker = widgets.ColorPicker(
         concise=False,
@@ -1856,20 +3488,20 @@ def time_slider(m=None):
 
                 palette.value = ", ".join([color for color in cmap_colors])
 
-                if m.colorbar_widget is None:
-                    m.colorbar_widget = widgets.Output(
+                if m._colorbar_widget is None:
+                    m._colorbar_widget = widgets.Output(
                         layout=widgets.Layout(height="60px")
                     )
 
-                if m.colorbar_ctrl is None:
-                    m.colorbar_ctrl = ipyleaflet.WidgetControl(
-                        widget=m.colorbar_widget, position="bottomright"
+                if (not hasattr(m, "_colorbar_ctrl")) or (m._colorbar_ctrl is None):
+                    m._colorbar_ctrl = ipyleaflet.WidgetControl(
+                        widget=m._colorbar_widget, position="bottomright"
                     )
-                    m.add_control(m.colorbar_ctrl)
+                    m.add_control(m._colorbar_ctrl)
 
-                colorbar_output = m.colorbar_widget
+                colorbar_output = m._colorbar_widget
                 with colorbar_output:
-                    colorbar_output.clear_output()
+                    colorbar_output.outputs = ()
                     plt.show()
 
     classes.observe(classes_changed, "value")
@@ -1935,18 +3567,20 @@ def time_slider(m=None):
 
             palette.value = ", ".join(cmap_colors)
 
-            if m.colorbar_widget is None:
-                m.colorbar_widget = widgets.Output(layout=widgets.Layout(height="60px"))
-
-            if m.colorbar_ctrl is None:
-                m.colorbar_ctrl = ipyleaflet.WidgetControl(
-                    widget=m.colorbar_widget, position="bottomright"
+            if m._colorbar_widget is None:
+                m._colorbar_widget = widgets.Output(
+                    layout=widgets.Layout(height="60px")
                 )
-                m.add_control(m.colorbar_ctrl)
 
-            colorbar_output = m.colorbar_widget
+            if hasattr(m, "_colorbar_ctrl") or (m._colorbar_ctrl is None):
+                m._colorbar_ctrl = ipyleaflet.WidgetControl(
+                    widget=m._colorbar_widget, position="bottomright"
+                )
+                m.add_control(m._colorbar_ctrl)
+
+            colorbar_output = m._colorbar_widget
             with colorbar_output:
-                colorbar_output.clear_output()
+                colorbar_output.outputs = ()
                 plt.show()
 
     colormap.observe(colormap_changed, "value")
@@ -1972,9 +3606,10 @@ def time_slider(m=None):
     )
 
     speed_label = widgets.Label(
+        "1",
         layout=widgets.Layout(width="25px", padding=padding),
     )
-    widgets.jslink((speed, "value"), (speed_label, "value"))
+    jslink_slider_label(speed, speed_label)
 
     prebuilt_options = widgets.VBox()
 
@@ -1985,11 +3620,13 @@ def time_slider(m=None):
         style=style,
     )
 
+    current_year = get_current_year()
+
     start_year = widgets.IntSlider(
         description="Start Year:",
         value=1984,
         min=1984,
-        max=2021,
+        max=current_year,
         readout=False,
         style=style,
         layout=widgets.Layout(width="138px", padding=padding),
@@ -2011,14 +3648,14 @@ def time_slider(m=None):
 
     start_year.observe(year_change, "value")
 
-    start_year_label = widgets.Label()
-    widgets.jslink((start_year, "value"), (start_year_label, "value"))
+    start_year_label = widgets.Label("1984")
+    jslink_slider_label(start_year, start_year_label)
 
     end_year = widgets.IntSlider(
         description="End Year:",
         value=2020,
         min=1984,
-        max=2021,
+        max=current_year,
         readout=False,
         style=style,
         layout=widgets.Layout(width="138px", padding=padding),
@@ -2026,8 +3663,8 @@ def time_slider(m=None):
 
     end_year.observe(year_change, "value")
 
-    end_year_label = widgets.Label()
-    widgets.jslink((end_year, "value"), (end_year_label, "value"))
+    end_year_label = widgets.Label(str(current_year))
+    jslink_slider_label(end_year, end_year_label)
 
     start_month = widgets.IntSlider(
         description="Start Month:",
@@ -2040,9 +3677,10 @@ def time_slider(m=None):
     )
 
     start_month_label = widgets.Label(
+        "1",
         layout=widgets.Layout(width="20px", padding=padding),
     )
-    widgets.jslink((start_month, "value"), (start_month_label, "value"))
+    jslink_slider_label(start_month, start_month_label)
 
     end_month = widgets.IntSlider(
         description="End Month:",
@@ -2054,8 +3692,8 @@ def time_slider(m=None):
         layout=widgets.Layout(width="155px", padding=padding),
     )
 
-    end_month_label = widgets.Label()
-    widgets.jslink((end_month, "value"), (end_month_label, "value"))
+    end_month_label = widgets.Label("12")
+    jslink_slider_label(end_month, end_month_label)
 
     prebuilt_options.children = [
         widgets.HBox([start_year, start_year_label, end_year, end_year_label]),
@@ -2073,7 +3711,7 @@ def time_slider(m=None):
     )
 
     def submit_clicked(b):
-        output.clear_output()
+        output.outputs = ()
         with output:
             if start_year.value > end_year.value:
                 print("The end year must be great than the start year.")
@@ -2180,7 +3818,7 @@ def time_slider(m=None):
                         or band3_dropdown.value == "N"
                     ):
                         with output:
-                            output.clear_output()
+                            output.outputs = ()
                             print("4-band NAIP imagery not available before 2009.")
                             return
 
@@ -2194,11 +3832,11 @@ def time_slider(m=None):
                 time_interval=speed.value,
             )
 
-            output.clear_output()
+            output.outputs = ()
 
-            if m.colorbar_ctrl is not None:
-                m.remove_control(m.colorbar_ctrl)
-                m.colorbar_ctrl = None
+            if hasattr(m, "_colorbar_ctrl") and (m._colorbar_ctrl is not None):
+                m.remove_control(m._colorbar_ctrl)
+                m._colorbar_ctrl = None
 
     apply_btn.on_click(submit_clicked)
 
@@ -2210,16 +3848,16 @@ def time_slider(m=None):
     )
 
     def reset_btn_click(change):
-        output.clear_output()
+        output.outputs = ()
         collection.value = col_options[0]
         region.value = "User-drawn ROI"
         vis.value = ""
         labels.value = "1, 2, 3"
         speed.value = 1
 
-        if m.colorbar_ctrl is not None:
-            m.remove_control(m.colorbar_ctrl)
-            m.colorbar_ctrl = None
+        if hasattr(m, "_colorbar_ctrl") and (m._colorbar_ctrl is not None):
+            m.remove_control(m._colorbar_ctrl)
+            m._colorbar_ctrl = None
 
     reset_btn.on_click(reset_btn_click)
 
@@ -2237,9 +3875,9 @@ def time_slider(m=None):
                 m.remove_control(m.tool_control)
                 m.tool_control = None
 
-            if m.colorbar_ctrl is not None:
-                m.remove_control(m.colorbar_ctrl)
-                m.colorbar_ctrl = None
+            if hasattr(m, "_colorbar_ctrl") and (m._colorbar_ctrl is not None):
+                m.remove_control(m._colorbar_ctrl)
+                m._colorbar_ctrl = None
         toolbar_widget.close()
 
     close_btn.on_click(close_click)
@@ -2452,9 +4090,9 @@ def time_slider(m=None):
                 m.toolbar_reset()
             toolbar_widget.close()
 
-            if m.colorbar_ctrl is not None:
-                m.remove_control(m.colorbar_ctrl)
-                m.colorbar_ctrl = None
+            if hasattr(m, "_colorbar_ctrl") and (m._colorbar_ctrl is not None):
+                m.remove_control(m._colorbar_ctrl)
+                m._colorbar_ctrl = None
 
     close_button.observe(close_btn_click, "value")
 
@@ -2589,6 +4227,7 @@ def plot_transect(m=None):
 
     if m is not None:
         layer.options = m.ee_raster_layer_names
+        layer.value = layer.options[0]
         if len(layer.options) > 0:
             image = m.ee_layer_dict[layer.value]["ee_object"]
             if isinstance(image, ee.ImageCollection):
@@ -2608,6 +4247,7 @@ def plot_transect(m=None):
                 if isinstance(image, ee.ImageCollection):
                     image = image.toBands()
                 band.options = image.bandNames().getInfo()
+                band.value = band.options[0]
 
     layer.observe(layer_changed, "value")
 
@@ -2650,7 +4290,7 @@ def plot_transect(m=None):
     def button_clicked(change):
         if change["new"] == "Plot":
             with output:
-                output.clear_output()
+                output.outputs = ()
                 if m is not None:
                     if m.user_roi is not None:
                         line = m.user_roi
@@ -2676,7 +4316,7 @@ def plot_transect(m=None):
                                 dist,
                                 to_pandas=True,
                             )
-                            output.clear_output()
+                            output.outputs = ()
                             fig = plt.figure(title=title.value)
                             fig.layout.width = output.layout.max_width
                             fig.layout.height = output.layout.max_height
@@ -2687,7 +4327,7 @@ def plot_transect(m=None):
                     else:
                         print("Use drawing tool to draw a line")
         elif change["new"] == "Reset":
-            output.clear_output()
+            output.outputs = ()
         elif change["new"] == "Close":
             if m is not None:
                 m.toolbar_reset()
@@ -2896,7 +4536,7 @@ def sankee_gui(m=None):
                 margin=dict(l=10, r=10, b=10, t=50, pad=5),
             )
             with plot_output:
-                plot_output.clear_output()
+                plot_output.outputs = ()
                 display(m.sankee_plot)
 
         plot_reset_btn.on_click(plot_reset_btn_clicked)
@@ -2916,7 +4556,7 @@ def sankee_gui(m=None):
                 margin=dict(l=10, r=10, b=10, t=50, pad=5),
             )
             with plot_output:
-                plot_output.clear_output()
+                plot_output.outputs = ()
                 display(m.sankee_plot)
 
         plot_fullscreen_btn.on_click(plot_fullscreen_btn_clicked)
@@ -2935,7 +4575,7 @@ def sankee_gui(m=None):
                 margin=dict(l=10, r=10, b=10, t=50, pad=5),
             )
             with plot_output:
-                plot_output.clear_output()
+                plot_output.outputs = ()
                 display(m.sankee_plot)
 
         width_btn.on_click(width_btn_clicked)
@@ -2954,7 +4594,7 @@ def sankee_gui(m=None):
                 margin=dict(l=10, r=10, b=10, t=50, pad=5),
             )
             with plot_output:
-                plot_output.clear_output()
+                plot_output.outputs = ()
                 display(m.sankee_plot)
 
         height_btn.on_click(height_btn_clicked)
@@ -2972,9 +4612,9 @@ def sankee_gui(m=None):
         )
 
         width_slider_label = widgets.Label(
-            layout=widgets.Layout(padding="0px 10px 0px 0px")
+            "600", layout=widgets.Layout(padding="0px 10px 0px 0px")
         )
-        widgets.jslink((width_slider, "value"), (width_slider_label, "value"))
+        jslink_slider_label(width_slider, width_slider_label)
 
         def width_changed(change):
             if change["new"]:
@@ -2983,7 +4623,7 @@ def sankee_gui(m=None):
                     margin=dict(l=10, r=10, b=10, t=50, pad=5),
                 )
                 with plot_output:
-                    plot_output.clear_output()
+                    plot_output.outputs = ()
                     display(m.sankee_plot)
 
         width_slider.observe(width_changed, "value")
@@ -3000,8 +4640,8 @@ def sankee_gui(m=None):
             style={"description_width": "initial"},
         )
 
-        height_slider_label = widgets.Label()
-        widgets.jslink((height_slider, "value"), (height_slider_label, "value"))
+        height_slider_label = widgets.Label("250")
+        jslink_slider_label(height_slider, height_slider_label)
 
         def height_changed(change):
             if change["new"]:
@@ -3010,7 +4650,7 @@ def sankee_gui(m=None):
                     margin=dict(l=10, r=10, b=10, t=50, pad=5),
                 )
                 with plot_output:
-                    plot_output.clear_output()
+                    plot_output.outputs = ()
                     display(m.sankee_plot)
 
         height_slider.observe(height_changed, "value")
@@ -3064,8 +4704,8 @@ def sankee_gui(m=None):
     def button_clicked(change):
         if change["new"] == "Apply":
             with output:
-                output.clear_output()
-                plot_output.clear_output()
+                output.outputs = ()
+                plot_output.outputs = ()
                 print("Running ...")
 
             if m is not None:
@@ -3110,8 +4750,8 @@ def sankee_gui(m=None):
                         title=plot_title,
                     )
 
-                    output.clear_output()
-                    plot_output.clear_output()
+                    output.outputs = ()
+                    plot_output.outputs = ()
                     with plot_output:
                         plot.update_layout(
                             width=600,
@@ -3143,12 +4783,12 @@ def sankee_gui(m=None):
 
                 else:
                     with output:
-                        output.clear_output()
+                        output.outputs = ()
                         print("Draw a polygon on the map.")
 
         elif change["new"] == "Reset":
-            output.clear_output()
-            plot_output.clear_output()
+            output.outputs = ()
+            plot_output.outputs = ()
             plot_widget.children = []
 
         elif change["new"] == "Close":
@@ -3423,7 +5063,7 @@ def plotly_toolbar(
             map_widget.layout.width = map_min_width
             if map_refresh:
                 with map_widget:
-                    map_widget.clear_output()
+                    map_widget.outputs = ()
                     display(m)
             layers_button.value = False
             toolbar_widget.children = [toolbar_header, toolbar_footer]
@@ -3434,7 +5074,7 @@ def plotly_toolbar(
                 toolbar_widget.children = [toolbar_button]
             if map_refresh:
                 with map_widget:
-                    map_widget.clear_output()
+                    map_widget.outputs = ()
                     display(m)
 
     toolbar_button.observe(toolbar_btn_click, "value")
@@ -3755,14 +5395,14 @@ def plotly_search_basemaps(canvas):
             if provider is not None:
                 if provider.startswith("qms"):
                     with output:
-                        output.clear_output()
+                        output.outputs = ()
                         print("Adding data. Please wait...")
                     name = provider[4:]
                     qms_provider = TileProvider.from_qms(name)
                     url = qms_provider.build_url()
                     attribution = qms_provider.attribution
                     m.add_tile_layer(url, name, attribution)
-                    output.clear_output()
+                    output.outputs = ()
                 elif provider.startswith("xyz"):
                     name = provider[4:]
                     xyz_provider = xyz.flatten()[name]
@@ -3770,7 +5410,7 @@ def plotly_search_basemaps(canvas):
                     attribution = xyz_provider.attribution
                     if xyz_provider.requires_token():
                         with output:
-                            output.clear_output()
+                            output.outputs = ()
                             print(f"{provider} requires an API Key.")
                     m.add_tile_layer(url, name, attribution)
 
@@ -3825,7 +5465,7 @@ def plotly_search_basemaps(canvas):
     def button_clicked(change):
         if change["new"] == "Search":
             providers.options = []
-            output.clear_output()
+            output.outputs = ()
             if keyword.value != "":
                 tiles = search_xyz_services(keyword=keyword.value)
                 if checkbox.value:
@@ -3837,7 +5477,7 @@ def plotly_search_basemaps(canvas):
         elif change["new"] == "Reset":
             keyword.value = ""
             providers.options = []
-            output.clear_output()
+            output.outputs = ()
         elif change["new"] == "Close":
             canvas.toolbar_reset()
             toolbar_widget.close()
@@ -3935,1541 +5575,3 @@ def plotly_whitebox_gui(canvas):
 
     toolbar_button.value = True
     container_widget.children = [toolbar_widget]
-
-
-def inspector_gui(m=None):
-    """Generates a tool GUI template using ipywidgets.
-
-    Args:
-        m (geemap.Map, optional): The leaflet Map object. Defaults to None.
-
-    Returns:
-        ipywidgets: The tool GUI widget.
-    """
-    import pandas as pd
-
-    widget_width = "250px"
-    padding = "0px 5px 0px 5px"  # upper, right, bottom, left
-    style = {"description_width": "initial"}
-
-    if m is not None:
-        marker_cluster = ipyleaflet.MarkerCluster(name="Inspector Markers")
-        setattr(m, "pixel_values", [])
-        setattr(m, "marker_cluster", marker_cluster)
-
-        if not hasattr(m, "interact_mode"):
-            setattr(m, "interact_mode", False)
-
-        if not hasattr(m, "inspector_output"):
-            inspector_output = widgets.Output(
-                layout=widgets.Layout(width=widget_width, padding="0px 5px 5px 5px")
-            )
-            setattr(m, "inspector_output", inspector_output)
-
-        output = m.inspector_output
-        output.clear_output()
-
-        if not hasattr(m, "inspector_add_marker"):
-            inspector_add_marker = widgets.Checkbox(
-                description="Add Marker at clicked location",
-                value=True,
-                indent=False,
-                layout=widgets.Layout(padding=padding, width=widget_width),
-            )
-            setattr(m, "inspector_add_marker", inspector_add_marker)
-        add_marker = m.inspector_add_marker
-
-        if not hasattr(m, "inspector_bands_chk"):
-            inspector_bands_chk = widgets.Checkbox(
-                description="Get pixel value for visible bands only",
-                indent=False,
-                layout=widgets.Layout(padding=padding, width=widget_width),
-            )
-            setattr(m, "inspector_bands_chk", inspector_bands_chk)
-        bands_chk = m.inspector_bands_chk
-
-        if not hasattr(m, "inspector_class_label"):
-            inspector_label = widgets.Text(
-                value="",
-                description="Class label:",
-                placeholder="Add a label to the marker",
-                style=style,
-                layout=widgets.Layout(width=widget_width, padding=padding),
-            )
-            setattr(m, "inspector_class_label", inspector_label)
-        label = m.inspector_class_label
-
-        options = []
-        if hasattr(m, "cog_layer_dict"):
-            options = list(m.cog_layer_dict.keys())
-            options.sort()
-        if len(options) == 0:
-            default_option = None
-        else:
-            default_option = options[0]
-        if not hasattr(m, "inspector_dropdown"):
-            inspector_dropdown = widgets.Dropdown(
-                options=options,
-                value=default_option,
-                description="Select a layer:",
-                layout=widgets.Layout(width=widget_width, padding=padding),
-                style=style,
-            )
-            setattr(m, "inspector_dropdown", inspector_dropdown)
-
-        dropdown = m.inspector_dropdown
-
-    toolbar_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Toolbar",
-        icon="info-circle",
-        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
-    )
-
-    close_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Close the tool",
-        icon="times",
-        button_style="primary",
-        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
-    )
-
-    buttons = widgets.ToggleButtons(
-        value=None,
-        options=["Download", "Reset", "Close"],
-        tooltips=["Download", "Reset", "Close"],
-        button_style="primary",
-    )
-    buttons.style.button_width = "80px"
-
-    if len(options) == 0:
-        with output:
-            print("No COG/STAC layers available")
-
-    toolbar_widget = widgets.VBox()
-    toolbar_widget.children = [toolbar_button]
-    toolbar_header = widgets.HBox()
-    toolbar_header.children = [close_button, toolbar_button]
-    toolbar_footer = widgets.VBox()
-    toolbar_footer.children = [
-        add_marker,
-        label,
-        dropdown,
-        bands_chk,
-        buttons,
-        output,
-    ]
-
-    toolbar_event = ipyevents.Event(
-        source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
-    )
-
-    def chk_change(change):
-        if hasattr(m, "pixel_values"):
-            m.pixel_values = []
-        if hasattr(m, "marker_cluster"):
-            m.marker_cluster.markers = []
-        output.clear_output()
-
-    bands_chk.observe(chk_change, "value")
-
-    def handle_toolbar_event(event):
-        if event["type"] == "mouseenter":
-            toolbar_widget.children = [toolbar_header, toolbar_footer]
-        elif event["type"] == "mouseleave":
-            if not toolbar_button.value:
-                toolbar_widget.children = [toolbar_button]
-                toolbar_button.value = False
-                close_button.value = False
-
-    toolbar_event.on_dom_event(handle_toolbar_event)
-
-    def toolbar_btn_click(change):
-        if change["new"]:
-            close_button.value = False
-            toolbar_widget.children = [toolbar_header, toolbar_footer]
-        else:
-            if not close_button.value:
-                toolbar_widget.children = [toolbar_button]
-
-    toolbar_button.observe(toolbar_btn_click, "value")
-
-    def close_btn_click(change):
-        if change["new"]:
-            toolbar_button.value = False
-            if m is not None:
-                if hasattr(m, "inspector_mode"):
-                    delattr(m, "inspector_mode")
-                m.toolbar_reset()
-                if m.tool_control is not None and m.tool_control in m.controls:
-                    m.remove_control(m.tool_control)
-                    m.tool_control = None
-                m.default_style = {"cursor": "default"}
-
-                m.marker_cluster.markers = []
-                m.pixel_values = []
-                marker_cluster_layer = m.find_layer("Inspector Markers")
-                if marker_cluster_layer is not None:
-                    m.remove_layer(marker_cluster_layer)
-
-                if hasattr(m, "pixel_values"):
-                    delattr(m, "pixel_values")
-
-                if hasattr(m, "marker_cluster"):
-                    delattr(m, "marker_cluster")
-
-            toolbar_widget.close()
-
-    close_button.observe(close_btn_click, "value")
-
-    def button_clicked(change):
-        if change["new"] == "Download":
-            with output:
-                output.clear_output()
-                if len(m.pixel_values) == 0:
-                    print(
-                        "No pixel values available. Click on the map to start collection data."
-                    )
-                else:
-                    print("Downloading pixel values...")
-                    df = pd.DataFrame(m.pixel_values)
-                    temp_csv = temp_file_path("csv")
-                    df.to_csv(temp_csv, index=False)
-                    link = create_download_link(temp_csv)
-                    with output:
-                        output.clear_output()
-                        display(link)
-        elif change["new"] == "Reset":
-            label.value = ""
-            output.clear_output()
-            if hasattr(m, "pixel_values"):
-                m.pixel_values = []
-            if hasattr(m, "marker_cluster"):
-                m.marker_cluster.markers = []
-        elif change["new"] == "Close":
-            if m is not None:
-                if hasattr(m, "inspector_mode"):
-                    delattr(m, "inspector_mode")
-                m.toolbar_reset()
-                if m.tool_control is not None and m.tool_control in m.controls:
-                    m.remove_control(m.tool_control)
-                    m.tool_control = None
-                m.default_style = {"cursor": "default"}
-                m.marker_cluster.markers = []
-                marker_cluster_layer = m.find_layer("Inspector Markers")
-                if marker_cluster_layer is not None:
-                    m.remove_layer(marker_cluster_layer)
-                m.pixel_values = []
-
-                if hasattr(m, "pixel_values"):
-                    delattr(m, "pixel_values")
-
-                if hasattr(m, "marker_cluster"):
-                    delattr(m, "marker_cluster")
-
-            toolbar_widget.close()
-
-        buttons.value = None
-
-    buttons.observe(button_clicked, "value")
-
-    toolbar_button.value = True
-
-    def handle_interaction(**kwargs):
-        latlon = kwargs.get("coordinates")
-        lat = round(latlon[0], 4)
-        lon = round(latlon[1], 4)
-        if (
-            kwargs.get("type") == "click"
-            and hasattr(m, "inspector_mode")
-            and m.inspector_mode
-        ):
-            m.default_style = {"cursor": "wait"}
-
-            with output:
-                output.clear_output()
-                print("Getting pixel value ...")
-
-                layer_dict = m.cog_layer_dict[dropdown.value]
-
-            if layer_dict["type"] == "STAC":
-                if bands_chk.value:
-                    assets = layer_dict["assets"]
-                else:
-                    assets = None
-
-                result = stac_pixel_value(
-                    lon,
-                    lat,
-                    layer_dict["url"],
-                    layer_dict["collection"],
-                    layer_dict["items"],
-                    assets,
-                    layer_dict["titiler_endpoint"],
-                    verbose=False,
-                )
-                if result is not None:
-                    with output:
-                        output.clear_output()
-                        print(f"lat/lon: {lat:.4f}, {lon:.4f}\n")
-                        for key in result:
-                            print(f"{key}: {result[key]}")
-
-                        result["latitude"] = lat
-                        result["longitude"] = lon
-                        result["label"] = label.value
-                        m.pixel_values.append(result)
-                    if add_marker.value:
-                        markers = list(m.marker_cluster.markers)
-                        markers.append(ipyleaflet.Marker(location=latlon))
-                        m.marker_cluster.markers = markers
-
-                else:
-                    with output:
-                        output.clear_output()
-                        print("No pixel value available")
-                        bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]
-                        m.zoom_to_bounds(bounds)
-            elif layer_dict["type"] == "COG":
-                result = cog_pixel_value(lon, lat, layer_dict["url"], verbose=False)
-                if result is not None:
-                    with output:
-                        output.clear_output()
-                        print(f"lat/lon: {lat:.4f}, {lon:.4f}\n")
-                        for key in result:
-                            print(f"{key}: {result[key]}")
-
-                        result["latitude"] = lat
-                        result["longitude"] = lon
-                        result["label"] = label.value
-                        m.pixel_values.append(result)
-                    if add_marker.value:
-                        markers = list(m.marker_cluster.markers)
-                        markers.append(ipyleaflet.Marker(location=latlon))
-                        m.marker_cluster.markers = markers
-                else:
-                    with output:
-                        output.clear_output()
-                        print("No pixel value available")
-                        bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]
-                        m.zoom_to_bounds(bounds)
-
-            elif layer_dict["type"] == "LOCAL":
-                result = local_tile_pixel_value(
-                    lon, lat, layer_dict["tile_client"], verbose=False
-                )
-                if result is not None:
-                    if m.inspector_bands_chk.value:
-                        band = m.cog_layer_dict[m.inspector_dropdown.value]["band"]
-                        band_names = m.cog_layer_dict[m.inspector_dropdown.value][
-                            "band_names"
-                        ]
-                        if band is not None:
-                            sel_bands = [band_names[b - 1] for b in band]
-                            result = {k: v for k, v in result.items() if k in sel_bands}
-                    with output:
-                        output.clear_output()
-                        print(f"lat/lon: {lat:.4f}, {lon:.4f}\n")
-                        for key in result:
-                            print(f"{key}: {result[key]}")
-
-                        result["latitude"] = lat
-                        result["longitude"] = lon
-                        result["label"] = label.value
-                        m.pixel_values.append(result)
-                    if add_marker.value:
-                        markers = list(m.marker_cluster.markers)
-                        markers.append(ipyleaflet.Marker(location=latlon))
-                        m.marker_cluster.markers = markers
-                else:
-                    with output:
-                        output.clear_output()
-                        print("No pixel value available")
-                        bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]
-                        m.zoom_to_bounds(bounds)
-            m.default_style = {"cursor": "crosshair"}
-
-    if m is not None:
-        if not hasattr(m, "marker_cluster"):
-            setattr(m, "marker_cluster", marker_cluster)
-        m.add_layer(marker_cluster)
-
-        if not m.interact_mode:
-            m.on_interaction(handle_interaction)
-            m.interact_mode = True
-
-    if m is not None:
-        toolbar_control = ipyleaflet.WidgetControl(
-            widget=toolbar_widget, position="topright"
-        )
-
-        if toolbar_control not in m.controls:
-            m.add_control(toolbar_control)
-            m.tool_control = toolbar_control
-
-        if not hasattr(m, "inspector_mode"):
-            if hasattr(m, "cog_layer_dict"):
-                setattr(m, "inspector_mode", True)
-            else:
-                setattr(m, "inspector_mode", False)
-
-    else:
-        return toolbar_widget
-
-
-def search_data_gui(m):
-    """The GUI widget for searching Earth Engine data catalog.
-
-    Args:
-        m (geemap.Map): The geemap.Map object.
-    """
-
-    # Adds search button and search box
-
-    from .conversion import js_snippet_to_py
-
-    m.search_locations = None
-    m.search_loc_marker = None
-    m.search_loc_geom = None
-    m.search_datasets = None
-
-    search_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Search location/data",
-        icon="globe",
-        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
-    )
-
-    search_type = widgets.ToggleButtons(
-        options=["name/address", "lat-lon", "data"],
-        tooltips=[
-            "Search by place name or address",
-            "Search by lat-lon coordinates",
-            "Search Earth Engine data catalog",
-        ],
-    )
-    search_type.style.button_width = "110px"
-
-    search_box = widgets.Text(
-        placeholder="Search by place name or address",
-        tooltip="Search location",
-        layout=widgets.Layout(width="340px"),
-    )
-
-    search_output = widgets.Output(
-        layout={
-            "max_width": "340px",
-            "max_height": "350px",
-            "overflow": "scroll",
-        }
-    )
-
-    search_results = widgets.RadioButtons()
-
-    assets_dropdown = widgets.Dropdown(
-        options=[],
-        layout=widgets.Layout(min_width="279px", max_width="279px"),
-    )
-
-    import_btn = widgets.Button(
-        description="import",
-        button_style="primary",
-        tooltip="Click to import the selected asset",
-        layout=widgets.Layout(min_width="57px", max_width="57px"),
-    )
-
-    def get_ee_example(asset_id):
-        try:
-            import pkg_resources
-
-            pkg_dir = os.path.dirname(
-                pkg_resources.resource_filename("geemap", "geemap.py")
-            )
-            with open(os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8") as f:
-                functions = json.load(f)
-            details = [
-                dataset["code"]
-                for x in functions["examples"]
-                for dataset in x["contents"]
-                if x["name"] == "Datasets"
-                if dataset["name"] == asset_id.replace("/", "_")
-            ]
-
-            return js_snippet_to_py(
-                details[0],
-                add_new_cell=False,
-                import_ee=False,
-                import_geemap=False,
-                show_map=False,
-            )
-
-        except Exception as e:
-            pass
-        return
-
-    def import_btn_clicked(b):
-        if assets_dropdown.value is not None:
-            datasets = m.search_datasets
-            dataset = datasets[assets_dropdown.index]
-            id_ = dataset["id"]
-            code = get_ee_example(id_)
-
-            if not code:
-                dataset_uid = "dataset_" + random_string(string_length=3)
-                translate = {
-                    "image_collection": "ImageCollection",
-                    "image": "Image",
-                    "table": "FeatureCollection",
-                    "table_collection": "FeatureCollection",
-                }
-                datatype = translate[dataset["type"]]
-                id_ = dataset["id"]
-                line1 = "{} = ee.{}('{}')".format(dataset_uid, datatype, id_)
-                action = {
-                    "image_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                    "image": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                    "table": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                    "table_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                }
-                line2 = action[dataset["type"]]
-                code = [line1, line2]
-
-            contents = "".join(code).strip()
-            # create_code_cell(contents)
-            with search_output:
-                search_output.clear_output(wait=True)
-                print(
-                    "# The code has been copied to the clipboard. \n# Press Ctrl+V in a new cell to paste it.\n"
-                )
-                print(contents)
-
-    import_btn.on_click(import_btn_clicked)
-
-    html_widget = widgets.HTML()
-
-    def dropdown_change(change):
-        dropdown_index = assets_dropdown.index
-        if dropdown_index is not None and dropdown_index >= 0:
-            with search_output:
-                search_output.clear_output(wait=True)
-                print("Loading ...")
-                datasets = m.search_datasets
-                dataset = datasets[dropdown_index]
-                dataset_html = ee_data_html(dataset)
-                html_widget.value = dataset_html
-                search_output.clear_output(wait=True)
-                display(html_widget)
-
-    assets_dropdown.observe(dropdown_change, names="value")
-
-    assets_combo = widgets.HBox()
-    assets_combo.children = [import_btn, assets_dropdown]
-
-    def search_result_change(change):
-        result_index = search_results.index
-        locations = m.search_locations
-        location = locations[result_index]
-        latlon = (location.lat, location.lng)
-        m.search_loc_geom = ee.Geometry.Point(location.lng, location.lat)
-        marker = m.search_loc_marker
-        marker.location = latlon
-        m.center = latlon
-
-    search_results.observe(search_result_change, names="value")
-
-    def search_btn_click(change):
-        if change["new"]:
-            search_widget.children = [search_button, search_result_widget]
-            search_type.value = "name/address"
-        else:
-            search_widget.children = [search_button]
-            search_result_widget.children = [search_type, search_box]
-
-    search_button.observe(search_btn_click, "value")
-
-    def search_type_changed(change):
-        search_box.value = ""
-        search_output.clear_output()
-        if change["new"] == "data":
-            search_box.placeholder = (
-                "Search GEE data catalog by keywords, e.g., elevation"
-            )
-            search_result_widget.children = [
-                search_type,
-                search_box,
-                assets_combo,
-                search_output,
-            ]
-        elif change["new"] == "lat-lon":
-            search_box.placeholder = "Search by lat-lon, e.g., 40, -100"
-            assets_dropdown.options = []
-            search_result_widget.children = [
-                search_type,
-                search_box,
-                search_output,
-            ]
-        elif change["new"] == "name/address":
-            search_box.placeholder = "Search by place name or address, e.g., Paris"
-            assets_dropdown.options = []
-            search_result_widget.children = [
-                search_type,
-                search_box,
-                search_output,
-            ]
-
-    search_type.observe(search_type_changed, names="value")
-
-    def search_box_callback(text):
-        if text.value != "":
-            if search_type.value == "name/address":
-                g = geocode(text.value)
-            elif search_type.value == "lat-lon":
-                g = geocode(text.value, reverse=True)
-                if g is None and latlon_from_text(text.value):
-                    search_output.clear_output()
-                    latlon = latlon_from_text(text.value)
-                    m.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
-                    if m.search_loc_marker is None:
-                        marker = ipyleaflet.Marker(
-                            location=latlon,
-                            draggable=False,
-                            name="Search location",
-                        )
-                        m.search_loc_marker = marker
-                        m.add(marker)
-                        m.center = latlon
-                    else:
-                        marker = m.search_loc_marker
-                        marker.location = latlon
-                        m.center = latlon
-                    with search_output:
-                        print(f"No address found for {latlon}")
-                    return
-            elif search_type.value == "data":
-                search_output.clear_output()
-                with search_output:
-                    print("Searching ...")
-                m.default_style = {"cursor": "wait"}
-                ee_assets = search_ee_data(text.value, source="all")
-                m.search_datasets = ee_assets
-                asset_titles = [x["title"] for x in ee_assets]
-                assets_dropdown.options = asset_titles
-                search_output.clear_output()
-                if len(ee_assets) > 0:
-                    assets_dropdown.index = 0
-                    html_widget.value = ee_data_html(ee_assets[0])
-                else:
-                    html_widget.value = "No results found."
-                with search_output:
-                    display(html_widget)
-                m.default_style = {"cursor": "default"}
-
-                return
-
-            m.search_locations = g
-            if g is not None and len(g) > 0:
-                top_loc = g[0]
-                latlon = (top_loc.lat, top_loc.lng)
-                m.search_loc_geom = ee.Geometry.Point(top_loc.lng, top_loc.lat)
-                if m.search_loc_marker is None:
-                    marker = ipyleaflet.Marker(
-                        location=latlon,
-                        draggable=False,
-                        name="Search location",
-                    )
-                    m.search_loc_marker = marker
-                    m.add(marker)
-                    m.center = latlon
-                else:
-                    marker = m.search_loc_marker
-                    marker.location = latlon
-                    m.center = latlon
-                search_results.options = [x.address for x in g]
-                search_result_widget.children = [
-                    search_type,
-                    search_box,
-                    search_output,
-                ]
-                with search_output:
-                    search_output.clear_output(wait=True)
-                    display(search_results)
-            else:
-                with search_output:
-                    search_output.clear_output()
-                    print("No results could be found.")
-
-    search_box.on_submit(search_box_callback)
-
-    search_result_widget = widgets.VBox([search_type, search_box])
-    search_widget = widgets.HBox([search_button])
-
-    search_event = ipyevents.Event(
-        source=search_widget, watched_events=["mouseenter", "mouseleave"]
-    )
-
-    def handle_search_event(event):
-        if event["type"] == "mouseenter":
-            search_widget.children = [search_button, search_result_widget]
-            # search_type.value = "name/address"
-        elif event["type"] == "mouseleave":
-            if not search_button.value:
-                search_widget.children = [search_button]
-                search_result_widget.children = [search_type, search_box]
-
-    search_event.on_dom_event(handle_search_event)
-
-    data_control = ipyleaflet.WidgetControl(widget=search_widget, position="topleft")
-
-    m.add(data_control)
-
-
-def ee_inspector_gui(
-    m,
-    names=None,
-    visible=True,
-    decimals=2,
-    position="topright",
-    opened=True,
-    show_close_button=True,
-):
-    """Earth Engine Inspector GUI.
-
-    Args:
-        m (geemap.Map): The geemap.Map object.
-        names (str | list, optional): The names of the layers to be included. Defaults to None.
-        visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
-        decimals (int, optional): The number of decimal places to round the values. Defaults to 2.
-        position (str, optional): The position of the control. Defaults to "topright".
-        opened (bool, optional): Whether the control is opened. Defaults to True.
-        show_close_button (bool, optional): Whether to show the close button. Defaults to True.
-
-    """
-    from ipytree import Tree
-
-    m._expand_point = False
-    m._expand_pixels = True
-    m._expand_objects = False
-    m.default_style = {"cursor": "crosshair"}
-
-    toolbar_button = widgets.ToggleButton(
-        value=True,
-        tooltip="Inspector",
-        icon="info",
-        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
-    )
-
-    close_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Close the tool",
-        icon="times",
-        button_style="primary",
-        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
-    )
-
-    layout = {
-        "border": "1px solid black",
-        "max_width": "600px",
-        "max_height": "500px",
-        "overflow": "auto",
-    }
-    inspector_output = widgets.Output(layout=layout)
-
-    expand_label = widgets.Label(
-        "Expand   ",
-        layout=widgets.Layout(padding="0px 0px 0px 4px"),
-    )
-
-    expand_point = widgets.Checkbox(
-        description="Point",
-        indent=False,
-        value=m._expand_point,
-        layout=widgets.Layout(width="65px"),
-    )
-
-    expand_pixels = widgets.Checkbox(
-        description="Pixels",
-        indent=False,
-        value=m._expand_pixels,
-        layout=widgets.Layout(width="65px"),
-    )
-
-    expand_objects = widgets.Checkbox(
-        description="Objects",
-        indent=False,
-        value=m._expand_objects,
-        layout=widgets.Layout(width="70px"),
-    )
-
-    def expand_point_changed(change):
-        m._expand_point = change["new"]
-
-    def expand_pixels_changed(change):
-        m._expand_pixels = change["new"]
-
-    def expand_objects_changed(change):
-        m._expand_objects = change["new"]
-
-    expand_point.observe(expand_point_changed, "value")
-    expand_pixels.observe(expand_pixels_changed, "value")
-    expand_objects.observe(expand_objects_changed, "value")
-
-    inspector_checks = widgets.HBox()
-    inspector_checks.children = [
-        expand_label,
-        widgets.Label(""),
-        expand_point,
-        expand_pixels,
-        expand_objects,
-    ]
-
-    with inspector_output:
-        inspector_output.clear_output(wait=True)
-        display(inspector_checks)
-
-    toolbar_header = widgets.HBox()
-    if show_close_button:
-        toolbar_header.children = [close_button, toolbar_button]
-    else:
-        toolbar_header.children = [toolbar_button]
-    toolbar_footer = widgets.VBox()
-    toolbar_footer.children = [inspector_output]
-    toolbar_widget = widgets.VBox()
-    toolbar_widget.children = [toolbar_header, toolbar_footer]
-
-    def handle_interaction(**kwargs):
-        latlon = kwargs.get("coordinates")
-        if kwargs.get("type") == "click" and toolbar_button.value:
-            m.default_style = {"cursor": "wait"}
-            ###################################### Temporary fix for Solara
-            inspector_output = widgets.Output(layout=layout)
-            toolbar_footer.children = [inspector_output]
-            ######################################
-            with inspector_output:
-                inspector_output.clear_output(wait=True)
-                display(inspector_checks)
-
-                tree = Tree()
-                nodes = []
-                point_node = m._point_info(latlon, return_node=True)
-                nodes.append(point_node)
-                pixels_node = m._pixels_info(
-                    latlon, names, visible, decimals, return_node=True
-                )
-                if pixels_node.nodes:
-                    nodes.append(pixels_node)
-                objects_node = m._objects_info(latlon, names, visible, return_node=True)
-                if objects_node.nodes:
-                    nodes.append(objects_node)
-                tree.nodes = nodes
-
-                display(tree)
-            m.default_style = {"cursor": "crosshair"}
-
-    m.on_interaction(handle_interaction)
-
-    def toolbar_btn_click(change):
-        if change["new"]:
-            m.default_style = {"cursor": "crosshair"}
-            # close_button.value = False
-            toolbar_widget.children = [toolbar_header, toolbar_footer]
-            ###################################### Temporary fix for Solara
-            inspector_output = widgets.Output(layout=layout)
-            toolbar_footer.children = [inspector_output]
-            ######################################
-            with inspector_output:
-                inspector_output.clear_output(wait=True)
-                display(inspector_checks)
-        else:
-            toolbar_widget.children = [toolbar_button]
-            m.default_style = {"cursor": "default"}
-
-    toolbar_button.observe(toolbar_btn_click, "value")
-
-    def close_btn_click(change):
-        if change["new"]:
-            m.default_style = {"cursor": "default"}
-            toolbar_button.value = False
-            if m is not None:
-                m.toolbar_reset()
-                m.on_interaction(handle_interaction, remove=True)
-                if (
-                    m.inspector_control is not None
-                    and m.inspector_control in m.controls
-                ):
-                    m.remove_control(m.inspector_control)
-                    m.inspector_control = None
-                    delattr(m, "inspector_control")
-            toolbar_widget.close()
-
-    close_button.observe(close_btn_click, "value")
-
-    toolbar_button.value = opened
-    if m is not None:
-        inspector_control = ipyleaflet.WidgetControl(
-            widget=toolbar_widget, position=position
-        )
-
-        if inspector_control not in m.controls:
-            m.add(inspector_control)
-            m.inspector_control = inspector_control
-    else:
-        return toolbar_widget
-
-
-def layer_manager_gui(
-    m, position="topright", opened=True, return_widget=False, show_close_button=True
-):
-    """Creates a layer manager widget.
-
-    Args:
-        m (geemap.Map): The geemap.Map object.
-        position (str, optional): The position of the widget. Defaults to "topright".
-        return_widget (bool, optional): Whether to return the widget. Defaults to False.
-    """
-
-    layers_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Layer Manager",
-        icon="server",
-        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
-    )
-
-    close_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Close the tool",
-        icon="times",
-        button_style="primary",
-        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
-    )
-
-    toolbar_header = widgets.HBox()
-    toolbar_header.children = [layers_button]
-    toolbar_footer = widgets.VBox()
-    toolbar_footer.children = []
-    toolbar_widget = widgets.VBox()
-    toolbar_widget.children = [toolbar_header]
-
-    def toolbar_btn_click(change):
-        if change["new"]:
-            close_button.value = False
-            toolbar_widget.children = [toolbar_header, toolbar_footer]
-        else:
-            if not close_button.value:
-                toolbar_widget.children = [layers_button]
-
-    layers_button.observe(toolbar_btn_click, "value")
-
-    def close_btn_click(change):
-        if change["new"]:
-            layers_button.value = False
-            m.toolbar_reset()
-            if m.layer_manager is not None and m.layer_manager in m.controls:
-                m.remove_control(m.layer_manager)
-                m.layer_manager = None
-            toolbar_widget.close()
-
-    close_button.observe(close_btn_click, "value")
-
-    def layers_btn_click(change):
-        if change["new"]:
-            layers_hbox = []
-            all_layers_chk = widgets.Checkbox(
-                value=False,
-                description="All layers on/off",
-                indent=False,
-                layout=widgets.Layout(height="18px", padding="0px 8px 25px 8px"),
-            )
-            all_layers_chk.layout.width = "30ex"
-            layers_hbox.append(all_layers_chk)
-
-            def all_layers_chk_changed(change):
-                if change["new"]:
-                    for layer in m.layers:
-                        if hasattr(layer, "visible"):
-                            layer.visible = True
-                else:
-                    for layer in m.layers:
-                        if hasattr(layer, "visible"):
-                            layer.visible = False
-
-            all_layers_chk.observe(all_layers_chk_changed, "value")
-
-            layers = [lyr for lyr in m.layers[1:]]
-
-            # if the layers contain unsupported layers (e.g., GeoJSON, GeoData), adds the ipyleaflet built-in LayerControl
-            if len(layers) < (len(m.layers) - 1):
-                if m.layer_control is None:
-                    layer_control = ipyleaflet.LayersControl(position="topright")
-                    m.layer_control = layer_control
-                if m.layer_control not in m.controls:
-                    m.add(m.layer_control)
-
-            # for non-TileLayer, use layer.style={'opacity':0, 'fillOpacity': 0} to turn layer off.
-            for layer in layers:
-                visible = True
-                if hasattr(layer, "visible"):
-                    visible = layer.visible
-                layer_chk = widgets.Checkbox(
-                    value=visible,
-                    description=layer.name,
-                    indent=False,
-                    layout=widgets.Layout(height="18px"),
-                )
-                layer_chk.layout.width = "140px"
-
-                if layer in m.geojson_layers:
-                    try:
-                        opacity = max(
-                            layer.style["opacity"], layer.style["fillOpacity"]
-                        )
-                    except KeyError:
-                        opacity = 1.0
-                else:
-                    if hasattr(layer, "opacity"):
-                        opacity = layer.opacity
-
-                layer_opacity = widgets.FloatSlider(
-                    value=opacity,
-                    min=0,
-                    max=1,
-                    step=0.01,
-                    readout=False,
-                    layout=widgets.Layout(width="80px"),
-                )
-                layer_settings = widgets.ToggleButton(
-                    icon="gear",
-                    tooltip=layer.name,
-                    layout=widgets.Layout(
-                        width="25px", height="25px", padding="0px 0px 0px 5px"
-                    ),
-                )
-
-                def layer_opacity_changed(change):
-                    if change["new"]:
-                        layer.style = {
-                            "opacity": change["new"],
-                            "fillOpacity": change["new"],
-                        }
-
-                def layer_vis_on_click(change):
-                    if change["new"]:
-                        layer_name = change["owner"].tooltip
-                        # if layer_name in m.ee_raster_layer_names:
-                        if layer_name in m.ee_layer_names:
-                            layer_dict = m.ee_layer_dict[layer_name]
-
-                            if m.vis_widget is not None:
-                                m.vis_widget = None
-                            m.vis_widget = m.create_vis_widget(layer_dict)
-                            if m.vis_control in m.controls:
-                                m.remove_control(m.vis_control)
-                                m.vis_control = None
-                            vis_control = ipyleaflet.WidgetControl(
-                                widget=m.vis_widget, position="topright"
-                            )
-                            m.add((vis_control))
-                            m.vis_control = vis_control
-                        else:
-                            if m.vis_widget is not None:
-                                m.vis_widget = None
-                            if m.vis_control is not None:
-                                if m.vis_control in m.controls:
-                                    m.remove_control(m.vis_control)
-                                m.vis_control = None
-                        change["owner"].value = False
-
-                layer_settings.observe(layer_vis_on_click, "value")
-
-                def layer_chk_changed(change):
-                    layer_name = change["owner"].description
-                    if layer_name in m.ee_layer_names:
-                        if change["new"]:
-                            if "legend" in m.ee_layer_dict[layer_name].keys():
-                                legend = m.ee_layer_dict[layer_name]["legend"]
-                                if legend not in m.controls:
-                                    m.add(legend)
-                            if "colorbar" in m.ee_layer_dict[layer_name].keys():
-                                colorbar = m.ee_layer_dict[layer_name]["colorbar"]
-                                if colorbar not in m.controls:
-                                    m.add(colorbar)
-                        else:
-                            if "legend" in m.ee_layer_dict[layer_name].keys():
-                                legend = m.ee_layer_dict[layer_name]["legend"]
-                                if legend in m.controls:
-                                    m.remove_control(legend)
-                            if "colorbar" in m.ee_layer_dict[layer_name].keys():
-                                colorbar = m.ee_layer_dict[layer_name]["colorbar"]
-                                if colorbar in m.controls:
-                                    m.remove_control(colorbar)
-
-                layer_chk.observe(layer_chk_changed, "value")
-
-                if hasattr(layer, "visible"):
-                    widgets.jslink((layer_chk, "value"), (layer, "visible"))
-
-                if layer in m.geojson_layers:
-                    layer_opacity.observe(layer_opacity_changed, "value")
-                elif hasattr(layer, "opacity"):
-                    widgets.jsdlink((layer_opacity, "value"), (layer, "opacity"))
-                hbox = widgets.HBox(
-                    [layer_chk, layer_settings, layer_opacity],
-                    layout=widgets.Layout(padding="0px 8px 0px 8px"),
-                )
-                layers_hbox.append(hbox)
-                m.layer_widget = layers_hbox
-
-            if show_close_button:
-                toolbar_header.children = [close_button, layers_button]
-            else:
-                toolbar_header.children = [layers_button]
-            toolbar_footer.children = layers_hbox
-
-        else:
-            toolbar_header.children = [layers_button]
-
-    layers_button.observe(layers_btn_click, "value")
-    layers_button.value = opened
-
-    if not hasattr(m, "layer_manager_widget"):
-        m.layer_manager_widget = toolbar_footer
-
-    if return_widget:
-        return m.layer_widget
-    else:
-        layer_control = ipyleaflet.WidgetControl(
-            widget=toolbar_widget, position=position
-        )
-
-        if layer_control not in m.controls:
-            m.add_control(layer_control)
-            m.layer_manager = layer_control
-
-
-def main_toolbar(m, position="topright", **kwargs):
-    """Add a toolbar control to the map
-
-    Args:
-        m (geemap.Map): An instance of geemap.Map.
-        position (str, optional): Position of the toolbar. Defaults to "topright".
-    """
-
-    tools = {
-        "info": {"name": "inspector", "tooltip": "Inspector"},
-        "bar-chart": {"name": "plotting", "tooltip": "Plotting"},
-        "eraser": {
-            "name": "eraser",
-            "tooltip": "Remove all drawn features",
-        },
-        "folder-open": {
-            "name": "open_data",
-            "tooltip": "Open local vector/raster data",
-        },
-        "retweet": {
-            "name": "convert_js",
-            "tooltip": "Convert Earth Engine JavaScript to Python",
-        },
-        "gears": {
-            "name": "whitebox",
-            "tooltip": "WhiteboxTools for local geoprocessing",
-        },
-        "google": {
-            "name": "geetoolbox",
-            "tooltip": "GEE Toolbox for cloud computing",
-        },
-        "map": {
-            "name": "basemap",
-            "tooltip": "Change basemap",
-        },
-        "globe": {
-            "name": "timelapse",
-            "tooltip": "Create timelapse",
-        },
-        "fast-forward": {
-            "name": "timeslider",
-            "tooltip": "Activate timeslider",
-        },
-        "hand-o-up": {
-            "name": "draw",
-            "tooltip": "Collect training samples",
-        },
-        "line-chart": {
-            "name": "transect",
-            "tooltip": "Creating and plotting transects",
-        },
-        "random": {
-            "name": "sankee",
-            "tooltip": "Sankey plots",
-        },
-        "adjust": {
-            "name": "planet",
-            "tooltip": "Planet imagery",
-        },
-        "info-circle": {
-            "name": "cog-inspector",
-            "tooltip": "Get COG/STAC pixel value",
-        },
-        # "spinner": {
-        #     "name": "placehold2",
-        #     "tooltip": "This is a placehold",
-        # },
-        # "question": {
-        #     "name": "help",
-        #     "tooltip": "Get help",
-        # },
-    }
-
-    icons = list(tools.keys())
-    tooltips = [item["tooltip"] for item in list(tools.values())]
-
-    icon_width = "32px"
-    icon_height = "32px"
-    n_cols = 3
-    n_rows = -int(-(len(icons) / n_cols))
-
-    toolbar_grid = widgets.GridBox(
-        children=[
-            widgets.ToggleButton(
-                layout=widgets.Layout(
-                    width="auto", height="auto", padding="0px 0px 0px 4px"
-                ),
-                button_style="primary",
-                icon=icons[i],
-                tooltip=tooltips[i],
-            )
-            for i in range(len(icons))
-        ],
-        layout=widgets.Layout(
-            width="109px",
-            grid_template_columns=(icon_width + " ") * n_cols,
-            grid_template_rows=(icon_height + " ") * n_rows,
-            grid_gap="1px 1px",
-            padding="5px",
-        ),
-    )
-    m.toolbar = toolbar_grid
-
-    def tool_callback(change):
-        if change["new"]:
-            current_tool = change["owner"]
-            for tool in toolbar_grid.children:
-                if tool is not current_tool:
-                    tool.value = False
-            tool = change["owner"]
-            tool_name = tools[tool.icon]["name"]
-            if tool_name == "eraser":
-                m.remove_drawn_features()
-                tool.value = False
-            elif tool_name == "inspector":
-                if not hasattr(m, "inspector_control"):
-                    m.add_inspector()
-                m.toolbar_reset()
-            elif tool_name == "plotting":
-                ee_plot_gui(m)
-            elif tool_name == "open_data":
-                open_data_widget(m)
-            elif tool_name == "convert_js":
-                convert_js2py(m)
-            elif tool_name == "whitebox":
-                import whiteboxgui.whiteboxgui as wbt
-
-                tools_dict = wbt.get_wbt_dict()
-                wbt_toolbox = wbt.build_toolbox(
-                    tools_dict,
-                    max_width="800px",
-                    max_height="500px",
-                    sandbox_path=m.sandbox_path,
-                )
-                wbt_control = ipyleaflet.WidgetControl(
-                    widget=wbt_toolbox, position="bottomright"
-                )
-                m.whitebox = wbt_control
-                m.add(wbt_control)
-            elif tool_name == "geetoolbox":
-                tools_dict = get_tools_dict()
-                gee_toolbox = build_toolbox(
-                    tools_dict, max_width="800px", max_height="500px"
-                )
-                geetoolbox_control = ipyleaflet.WidgetControl(
-                    widget=gee_toolbox, position="bottomright"
-                )
-                m.geetoolbox = geetoolbox_control
-                m.add(geetoolbox_control)
-
-            elif tool_name == "basemap":
-                change_basemap(m)
-            elif tool_name == "timelapse":
-                timelapse_gui(m)
-                m.toolbar_reset()
-            elif tool_name == "timeslider":
-                time_slider(m)
-                m.toolbar_reset()
-            elif tool_name == "draw":
-                m.training_ctrl = None
-                collect_samples(m)
-            elif tool_name == "transect":
-                plot_transect(m)
-            elif tool_name == "sankee":
-                sankee_gui(m)
-            elif tool_name == "planet":
-                split_basemaps(m, layers_dict=planet_tiles())
-                m.toolbar_reset()
-            elif tool_name == "cog-inspector":
-                inspector_gui(m)
-
-            elif tool_name == "help":
-                import webbrowser
-
-                webbrowser.open_new_tab("https://geemap.org")
-                current_tool.value = False
-        else:
-            tool = change["owner"]
-            tool_name = tools[tool.icon]["name"]
-            if tool_name == "inspector":
-                pass
-            elif tool_name == "plotting":
-                m.plot_checked = False
-                plot_dropdown_widget = m.plot_dropdown_widget
-                plot_dropdown_control = m.plot_dropdown_control
-                if plot_dropdown_control in m.controls:
-                    m.remove_control(plot_dropdown_control)
-                del plot_dropdown_widget
-                del plot_dropdown_control
-                if m.plot_control in m.controls:
-                    plot_control = m.plot_control
-                    plot_widget = m.plot_widget
-                    m.remove_control(plot_control)
-                    m.plot_control = None
-                    m.plot_widget = None
-                    del plot_control
-                    del plot_widget
-                if (
-                    m.plot_marker_cluster is not None
-                    and m.plot_marker_cluster in m.layers
-                ):
-                    m.remove_layer(m.plot_marker_cluster)
-                if m.draw_control_lite in m.controls:
-                    m.remove_control(m.draw_control_lite)
-                m.add(m.draw_control)
-            elif tool_name == "whitebox":
-                if m.whitebox is not None and m.whitebox in m.controls:
-                    m.remove_control(m.whitebox)
-            elif tool_name == "convert_js":
-                if m.convert_ctrl is not None and m.convert_ctrl in m.controls:
-                    m.remove_control(m.convert_ctrl)
-
-    for tool in toolbar_grid.children:
-        tool.observe(tool_callback, "value")
-
-    toolbar_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Toolbar",
-        icon="wrench",
-        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
-    )
-    m.toolbar_button = toolbar_button
-
-    layers_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Layers",
-        icon="server",
-        layout=widgets.Layout(height="28px", width="72px"),
-    )
-
-    toolbar_widget = widgets.VBox()
-    toolbar_widget.children = [toolbar_button]
-    toolbar_header = widgets.HBox()
-    toolbar_header.children = [layers_button, toolbar_button]
-    toolbar_footer = widgets.VBox()
-    toolbar_footer.children = [toolbar_grid]
-
-    toolbar_event = ipyevents.Event(
-        source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
-    )
-
-    def handle_toolbar_event(event):
-        if event["type"] == "mouseenter":
-            toolbar_widget.children = [toolbar_header, toolbar_footer]
-        elif event["type"] == "mouseleave":
-            if not toolbar_button.value:
-                toolbar_widget.children = [toolbar_button]
-                toolbar_button.value = False
-                layers_button.value = False
-
-    toolbar_event.on_dom_event(handle_toolbar_event)
-
-    def toolbar_btn_click(change):
-        if change["new"]:
-            layers_button.value = False
-            toolbar_widget.children = [toolbar_header, toolbar_footer]
-        else:
-            if not layers_button.value:
-                toolbar_widget.children = [toolbar_button]
-
-    toolbar_button.observe(toolbar_btn_click, "value")
-
-    def layers_btn_click(change):
-        if change["new"]:
-            # Create Layer Manager Widget
-            toolbar_footer.children = layer_manager_gui(m, return_widget=True)
-        else:
-            toolbar_footer.children = [toolbar_grid]
-
-    layers_button.observe(layers_btn_click, "value")
-    toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position=position)
-
-    m.add(toolbar_control)
-    m.toolbar_ctrl = toolbar_control
-
-
-def ee_plot_gui(m, position="topright", **kwargs):
-    """Widget for plotting Earth Engine data.
-
-    Args:
-        m (object): geemap.Map.
-        position (str, optional): Position of the widget. Defaults to "topright".
-    """
-
-    close_btn = widgets.Button(
-        icon="times",
-        tooltip="Close the plot widget",
-        button_style="primary",
-        layout=widgets.Layout(width="32px"),
-    )
-
-    m.plot_checked = True
-    dropdown = widgets.Dropdown(
-        options=list(m.ee_raster_layer_names),
-    )
-    dropdown.layout.width = "18ex"
-    m.plot_dropdown_widget = dropdown
-
-    widget = widgets.HBox([dropdown, close_btn])
-
-    plot_dropdown_control = ipyleaflet.WidgetControl(widget=widget, position=position)
-    m.plot_dropdown_control = plot_dropdown_control
-    m.add(plot_dropdown_control)
-
-    if m.draw_control in m.controls:
-        m.remove_control(m.draw_control)
-    m.add_draw_control_lite()
-
-    def handle_interaction(**kwargs):
-        latlon = kwargs.get("coordinates")
-        if (
-            kwargs.get("type") == "click"
-            and m.plot_checked
-            and len(m.ee_raster_layers) > 0
-        ):
-            plot_layer_name = m.plot_dropdown_widget.value
-            layer_names = m.ee_raster_layer_names
-            layers = m.ee_raster_layers
-            index = layer_names.index(plot_layer_name)
-            ee_object = layers[index]
-
-            if isinstance(ee_object, ee.ImageCollection):
-                ee_object = ee_object.mosaic()
-
-            try:
-                m.default_style = {"cursor": "wait"}
-                plot_options = m.plot_options
-                sample_scale = m.getScale()
-                if "sample_scale" in plot_options.keys() and (
-                    plot_options["sample_scale"] is not None
-                ):
-                    sample_scale = plot_options["sample_scale"]
-                if "title" not in plot_options.keys():
-                    plot_options["title"] = plot_layer_name
-                if ("add_marker_cluster" in plot_options.keys()) and plot_options[
-                    "add_marker_cluster"
-                ]:
-                    plot_coordinates = m.plot_coordinates
-                    markers = m.plot_markers
-                    marker_cluster = m.plot_marker_cluster
-                    plot_coordinates.append(latlon)
-                    m.plot_last_click = latlon
-                    m.plot_all_clicks = plot_coordinates
-                    markers.append(ipyleaflet.Marker(location=latlon))
-                    marker_cluster.markers = markers
-                    m.plot_marker_cluster = marker_cluster
-
-                band_names = ee_object.bandNames().getInfo()
-                if any(len(name) > 3 for name in band_names):
-                    band_names = list(range(1, len(band_names) + 1))
-
-                m.chart_labels = band_names
-
-                if m.roi_end:
-                    if m.roi_reducer_scale is None:
-                        scale = ee_object.select(0).projection().nominalScale()
-                    else:
-                        scale = m.roi_reducer_scale
-                    dict_values_tmp = ee_object.reduceRegion(
-                        reducer=m.roi_reducer,
-                        geometry=m.user_roi,
-                        scale=scale,
-                        bestEffort=True,
-                    ).getInfo()
-                    b_names = ee_object.bandNames().getInfo()
-                    dict_values = dict(
-                        zip(b_names, [dict_values_tmp[b] for b in b_names])
-                    )
-                    m.chart_points.append(
-                        m.user_roi.centroid(1).coordinates().getInfo()
-                    )
-                else:
-                    xy = ee.Geometry.Point(latlon[::-1])
-                    dict_values_tmp = (
-                        ee_object.sample(xy, scale=sample_scale)
-                        .first()
-                        .toDictionary()
-                        .getInfo()
-                    )
-                    b_names = ee_object.bandNames().getInfo()
-                    dict_values = dict(
-                        zip(b_names, [dict_values_tmp[b] for b in b_names])
-                    )
-                    m.chart_points.append(xy.coordinates().getInfo())
-                band_values = list(dict_values.values())
-                m.chart_values.append(band_values)
-                m.plot(band_names, band_values, **plot_options)
-                if plot_options["title"] == plot_layer_name:
-                    del plot_options["title"]
-                m.default_style = {"cursor": "crosshair"}
-                m.roi_end = False
-            except Exception as e:
-                if m.plot_widget is not None:
-                    with m.plot_widget:
-                        m.plot_widget.clear_output()
-                        print("No data for the clicked location.")
-                else:
-                    print(e)
-                m.default_style = {"cursor": "crosshair"}
-                m.roi_end = False
-
-    m.on_interaction(handle_interaction)
-
-    def close_click(change):
-        m.toolbar_reset()
-        m.plot_checked = False
-
-        if (
-            hasattr(m, "plot_control")
-            and (m.plot_control is not None)
-            and (m.plot_control in m.controls)
-        ):
-            m.plot_widget.clear_output()
-            m.remove_control(m.plot_control)
-
-        if (
-            m.plot_dropdown_control is not None
-            and m.plot_dropdown_control in m.controls
-        ):
-            m.remove_control(m.plot_dropdown_control)
-
-        widget.close()
-
-        m.on_interaction(handle_interaction, remove=True)
-        m.plot_widget = None
-        m.default_style = {"cursor": "default"}
-
-    close_btn.on_click(close_click)

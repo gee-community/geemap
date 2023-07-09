@@ -1,4 +1,11 @@
+
 from __future__ import annotations
+"""The cartoee module contains functions for creating publication-quality maps with cartopy and Earth Engine data."""
+
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
 
 import logging
 import os
@@ -19,7 +26,7 @@ from matplotlib import cm, colors
 from matplotlib import font_manager as mfonts
 from typing import Union, Optional, Any, Iterable, Dict
 
-from .basemaps import xyz_tiles
+from .basemaps import custom_tiles
 
 try:
     import cartopy.crs as ccrs
@@ -170,7 +177,9 @@ def get_map(
     if basemap is not None:
         if isinstance(basemap, str):
             if basemap.upper() in ["ROADMAP", "SATELLITE", "TERRAIN", "HYBRID"]:
-                basemap = cimgt.GoogleTiles(url=xyz_tiles[basemap.upper()]["url"])
+                basemap = cimgt.GoogleTiles(
+                    url=custom_tiles["xyz"][basemap.upper()]["url"]
+                )
 
         try:
             ax.add_image(basemap, zoom_level)

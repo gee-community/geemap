@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """ Module for converting Google Earth Engine (GEE) JavaScripts to Python scripts and Jupyter notebooks.
 
 To convert a GEE JavaScript to Python script:                                       js_to_python(in_file out_file)
@@ -14,7 +16,11 @@ To execute all Jupyter notebooks in a folder recursively:                       
 
 """
 
-from __future__ import annotations
+# *******************************************************************************#
+# This module contains extra features of the geemap package.                     #
+# The geemap community will maintain the extra features.                         #
+# *******************************************************************************#
+
 import os
 import shutil
 import urllib.request
