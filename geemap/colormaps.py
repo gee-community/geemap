@@ -1,3 +1,4 @@
+from __future__ import annotations
 """Module for commonly used colormaps and palettes for visualizing Earth Engine data.
 """
 
