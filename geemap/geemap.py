@@ -715,7 +715,7 @@ class Map(ipyleaflet.Map):
             max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.
 
         """
-        if hasattr(self, '_plot_widget') and self._plot_widget is not None:
+        if hasattr(self, "_plot_widget") and self._plot_widget is not None:
             plot_widget = self._plot_widget
         else:
             plot_widget = widgets.Output(layout={"border": "1px solid black"})
@@ -1011,6 +1011,7 @@ class Map(ipyleaflet.Map):
         layer_name=None,
         font_size=9,
         axis_off=False,
+        max_width="270px",
         **kwargs,
     ):
         """Add a matplotlib colorbar to the map
@@ -1026,6 +1027,7 @@ class Map(ipyleaflet.Map):
             layer_name (str, optional): The layer name associated with the colorbar. Defaults to None.
             font_size (int, optional): Font size for the colorbar. Defaults to 9.
             axis_off (bool, optional): Whether to turn off the axis. Defaults to False.
+            max_width (str, optional): Maximum width of the colorbar in pixels. Defaults to "300px".
 
         Raises:
             TypeError: If the vis_params is not a dictionary.
@@ -1152,7 +1154,7 @@ class Map(ipyleaflet.Map):
         if transparent_bg:
             fig.patch.set_alpha(0.0)
 
-        output = widgets.Output()
+        output = widgets.Output(layout=widgets.Layout(width=max_width))
         colormap_ctrl = ipyleaflet.WidgetControl(
             widget=output,
             position=position,
@@ -1176,7 +1178,7 @@ class Map(ipyleaflet.Map):
 
     def remove_colorbar(self):
         """Remove colorbar from the map."""
-        if hasattr(self, '_colorbar') and self._colorbar is not None:
+        if hasattr(self, "_colorbar") and self._colorbar is not None:
             self.remove_control(self._colorbar)
 
     def remove_colorbars(self):
@@ -1188,7 +1190,7 @@ class Map(ipyleaflet.Map):
 
     def remove_legend(self):
         """Remove legend from the map."""
-        if hasattr(self, '_legend') and self._legend is not None:
+        if hasattr(self, "_legend") and self._legend is not None:
             if self._legend in self.controls:
                 self.remove_control(self._legend)
 
@@ -4217,7 +4219,7 @@ class Map(ipyleaflet.Map):
 
     def toolbar_reset(self):
         """Reset the toolbar so that no tool is selected."""
-        if hasattr(self, '_toolbar'):
+        if hasattr(self, "_toolbar"):
             toolbar_grid = self._toolbar
             if toolbar_grid is not None:
                 for tool in toolbar_grid.children:
@@ -6455,7 +6457,7 @@ class Map(ipyleaflet.Map):
         add_header=True,
         opened=True,
         show_close_button=True,
-        widget_icon='gear',
+        widget_icon="gear",
         close_button_icon="times",
         widget_args={},
         close_button_args={},
