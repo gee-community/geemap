@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.24.2 - Jul 10, 2023
+
+**Improvement**
+
+-   Fixed colorbar width bug (#1624)
+-   Fixed stac layer expression bug (#1623)
+-   Added support for transparent legend (#1622)
+-   Auto copy js-py converted code to clipboard (#1621)
+-   Removed vis_params attribute from TileLayer (#1619)
+-   Dynamic latitude in map scale calc (#1618)
+-
+
 ## v0.24.1 - Jul 6, 2023
 
 **Improvement**
