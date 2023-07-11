@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.24.3 - Jul 11, 2023
+
+**Improvement**
+
+-   Set Output widget max width (#1626)
+
 ## v0.24.2 - Jul 10, 2023
 
 **Improvement**
