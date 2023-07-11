@@ -718,7 +718,9 @@ class Map(ipyleaflet.Map):
         if hasattr(self, "_plot_widget") and self._plot_widget is not None:
             plot_widget = self._plot_widget
         else:
-            plot_widget = widgets.Output(layout={"border": "1px solid black"})
+            plot_widget = widgets.Output(
+                layout={"border": "1px solid black", "max_width": "500px"}
+            )
             plot_control = ipyleaflet.WidgetControl(
                 widget=plot_widget,
                 position=position,
@@ -819,7 +821,7 @@ class Map(ipyleaflet.Map):
         if "min_width" not in kwargs:
             min_width = None
         if "max_width" not in kwargs:
-            max_width = None
+            max_width = "300px"
         else:
             max_width = kwargs["max_width"]
         if "min_height" not in kwargs:
@@ -981,6 +983,7 @@ class Map(ipyleaflet.Map):
                 widget=legend_output_widget, position=position
             )
             # legend_output.append_display_data(legend_widget)
+            legend_output.clear_output()
             with legend_output:
                 display(legend_widget)
 
@@ -1233,8 +1236,11 @@ class Map(ipyleaflet.Map):
         layer_gamma = 1
         left_value = 0
         right_value = 10000
+        max_width = "270px"
 
-        self._colorbar_widget = widgets.Output(layout=widgets.Layout(height="60px"))
+        self._colorbar_widget = widgets.Output(
+            layout=widgets.Layout(height="60px", max_width=max_width)
+        )
         self._colorbar_ctrl = ipyleaflet.WidgetControl(
             widget=self._colorbar_widget, position="bottomright"
         )
@@ -1373,7 +1379,9 @@ class Map(ipyleaflet.Map):
 
                         if self._colorbar_widget is None:
                             self._colorbar_widget = widgets.Output(
-                                layout=widgets.Layout(height="60px")
+                                layout=widgets.Layout(
+                                    height="60px", max_width=max_width
+                                )
                             )
 
                         if (not hasattr(self, "_colorbar_ctrl")) or (
@@ -1568,7 +1576,7 @@ class Map(ipyleaflet.Map):
 
                     if self._colorbar_widget is None:
                         self._colorbar_widget = widgets.Output(
-                            layout=widgets.Layout(height="60px")
+                            layout=widgets.Layout(height="60px", max_width="270px")
                         )
 
                     if (
@@ -1870,7 +1878,7 @@ class Map(ipyleaflet.Map):
                     )
 
                     self._colorbar_widget = widgets.Output(
-                        layout=widgets.Layout(height="60px")
+                        layout=widgets.Layout(height="60px", max_width=max_width)
                     )
                     self._colorbar_ctrl = ipyleaflet.WidgetControl(
                         widget=self._colorbar_widget, position="bottomright"
@@ -2166,7 +2174,9 @@ class Map(ipyleaflet.Map):
 
                         if self._colorbar_widget is None:
                             self._colorbar_widget = widgets.Output(
-                                layout=widgets.Layout(height="60px")
+                                layout=widgets.Layout(
+                                    height="60px", max_width=max_width
+                                )
                             )
 
                         if self._colorbar_ctrl is None:
@@ -2213,7 +2223,7 @@ class Map(ipyleaflet.Map):
 
                     if self._colorbar_widget is None:
                         self._colorbar_widget = widgets.Output(
-                            layout=widgets.Layout(height="60px")
+                            layout=widgets.Layout(height="60px", max_width=max_width)
                         )
 
                     if self._colorbar_ctrl is None:
@@ -2285,7 +2295,7 @@ class Map(ipyleaflet.Map):
                         self._colorbar_widget.close()
 
                     self._colorbar_widget = widgets.Output(
-                        layout=widgets.Layout(height="60px")
+                        layout=widgets.Layout(height="60px", max_width=max_width)
                     )
                     self._colorbar_ctrl = ipyleaflet.WidgetControl(
                         widget=self._colorbar_widget, position="bottomright"
