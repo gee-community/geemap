@@ -3687,7 +3687,7 @@
 
 
 <h2 id="geemap.toolbar.ee_inspector_gui" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ee_inspector_gui</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;topright&#39;</span><span class="p">,</span> <span class="n">opened</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_close_button</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ee_inspector_gui</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;topright&#39;</span><span class="p">,</span> <span class="n">opened</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_close_button</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_width</span><span class="o">=</span><span class="s1">&#39;300px&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.toolbar.ee_inspector_gui" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -3761,6 +3761,7 @@
     <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span><span class="p">,</span>
     <span class="n">opened</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">show_close_button</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">max_width</span><span class="o">=</span><span class="s2">&quot;300px&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Earth Engine Inspector GUI.</span>
 
@@ -3772,6 +3773,7 @@
 <span class="sd">        position (str, optional): The position of the control. Defaults to &quot;topright&quot;.</span>
 <span class="sd">        opened (bool, optional): Whether the control is opened. Defaults to True.</span>
 <span class="sd">        show_close_button (bool, optional): Whether to show the close button. Defaults to True.</span>
+<span class="sd">        max_width</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">ipytree</span> <span class="kn">import</span> <span class="n">Tree</span>
@@ -3798,7 +3800,7 @@
 
     <span class="n">layout</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;border&quot;</span><span class="p">:</span> <span class="s2">&quot;1px solid black&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;max_width&quot;</span><span class="p">:</span> <span class="s2">&quot;600px&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;max_width&quot;</span><span class="p">:</span> <span class="n">max_width</span><span class="p">,</span>
         <span class="s2">&quot;max_height&quot;</span><span class="p">:</span> <span class="s2">&quot;500px&quot;</span><span class="p">,</span>
         <span class="s2">&quot;overflow&quot;</span><span class="p">:</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
     <span class="p">}</span>
@@ -4239,7 +4241,11 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;inspector_output&quot;</span><span class="p">):</span>
             <span class="n">inspector_output</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span>
-                <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">widget_width</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 5px 5px 5px&quot;</span><span class="p">)</span>
+                <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+                    <span class="n">width</span><span class="o">=</span><span class="n">widget_width</span><span class="p">,</span>
+                    <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 5px 5px 5px&quot;</span><span class="p">,</span>
+                    <span class="n">max_width</span><span class="o">=</span><span class="n">widget_width</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="p">)</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;inspector_output&quot;</span><span class="p">,</span> <span class="n">inspector_output</span><span class="p">)</span>
 
@@ -4789,11 +4795,11 @@
                         <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_names</span><span class="p">:</span>
                             <span class="n">layer_dict</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span>
 
-                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;_vis_widget&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_vis_widget&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                                 <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="o">=</span> <span class="kc">None</span>
                             <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">create_vis_widget</span><span class="p">(</span><span class="n">layer_dict</span><span class="p">)</span>
                             <span class="k">if</span> <span class="p">(</span>
-                                <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;_vis_control&#39;</span><span class="p">)</span>
+                                <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_vis_control&quot;</span><span class="p">)</span>
                                 <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span>
                             <span class="p">):</span>
                                 <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span><span class="p">)</span>
@@ -4804,7 +4810,7 @@
                             <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">vis_control</span><span class="p">))</span>
                             <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="o">=</span> <span class="n">vis_control</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s1">&#39;_vis_widget&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_vis_widget&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                                 <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="o">=</span> <span class="kc">None</span>
                             <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                                 <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
@@ -6428,6 +6434,7 @@
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">pyperclip</span>
+
                 <span class="n">pyperclip</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">contents</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">pass</span>
