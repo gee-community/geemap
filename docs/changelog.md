@@ -10,7 +10,6 @@
 -   Auto copy js-py converted code to clipboard (#1621)
 -   Removed vis_params attribute from TileLayer (#1619)
 -   Dynamic latitude in map scale calc (#1618)
--
 
 ## v0.24.1 - Jul 6, 2023
 
