@@ -358,7 +358,11 @@ def inspector_gui(m=None):
 
         if not hasattr(m, "inspector_output"):
             inspector_output = widgets.Output(
-                layout=widgets.Layout(width=widget_width, padding="0px 5px 5px 5px")
+                layout=widgets.Layout(
+                    width=widget_width,
+                    padding="0px 5px 5px 5px",
+                    max_width=widget_width,
+                )
             )
             setattr(m, "inspector_output", inspector_output)
 
@@ -721,6 +725,7 @@ def ee_inspector_gui(
     position="topright",
     opened=True,
     show_close_button=True,
+    max_width="300px",
 ):
     """Earth Engine Inspector GUI.
 
@@ -732,6 +737,7 @@ def ee_inspector_gui(
         position (str, optional): The position of the control. Defaults to "topright".
         opened (bool, optional): Whether the control is opened. Defaults to True.
         show_close_button (bool, optional): Whether to show the close button. Defaults to True.
+        max_width
 
     """
     from ipytree import Tree
@@ -758,7 +764,7 @@ def ee_inspector_gui(
 
     layout = {
         "border": "1px solid black",
-        "max_width": "600px",
+        "max_width": max_width,
         "max_height": "500px",
         "overflow": "auto",
     }
@@ -1048,11 +1054,11 @@ def layer_manager_gui(
                         if layer_name in m.ee_layer_names:
                             layer_dict = m.ee_layer_dict[layer_name]
 
-                            if hasattr(m, '_vis_widget') and m._vis_widget is not None:
+                            if hasattr(m, "_vis_widget") and m._vis_widget is not None:
                                 m._vis_widget = None
                             m._vis_widget = m.create_vis_widget(layer_dict)
                             if (
-                                hasattr(m, '_vis_control')
+                                hasattr(m, "_vis_control")
                                 and m._vis_control in m.controls
                             ):
                                 m.remove_control(m._vis_control)
@@ -1063,7 +1069,7 @@ def layer_manager_gui(
                             m.add((vis_control))
                             m._vis_control = vis_control
                         else:
-                            if hasattr(m, '_vis_widget') and m._vis_widget is not None:
+                            if hasattr(m, "_vis_widget") and m._vis_widget is not None:
                                 m._vis_widget = None
                             if m._vis_control is not None:
                                 if m._vis_control in m.controls:
@@ -1489,6 +1495,7 @@ def search_data_gui(m, position="topleft"):
 
             try:
                 import pyperclip
+
                 pyperclip.copy(str(contents))
             except Exception as e:
                 pass
