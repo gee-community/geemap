@@ -20,7 +20,7 @@ from .common import download_from_url, ee_data_html, search_ee_data
 
 
 def get_data_csv():
-    """Gets the file path to the CSV file containing the information about the Earth Engien Data Catalog.
+    """Gets the file path to the CSV file containing the information about the Earth Engine Data Catalog.
 
     Returns:
         str: File path to the CSV file.
