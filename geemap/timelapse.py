@@ -612,7 +612,7 @@ def add_image_to_gif(
     )
 
     logo_image = logo_raw_image.convert("RGBA")
-    logo_image.thumbnail(image_size, Image.ANTIALIAS)
+    logo_image.thumbnail(image_size, Image.LANCZOS)
 
     gif_width, gif_height = gif.size
     mask_im = None
