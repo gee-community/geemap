@@ -23,7 +23,7 @@ from typing import Optional
 
 
 def get_data_csv() -> str:
-    """Gets the file path to the CSV file containing the information about the Earth Engien Data Catalog.
+    """Gets the file path to the CSV file containing the information about the Earth Engine Data Catalog.
 
     Returns:
         str: File path to the CSV file.
