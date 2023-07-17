@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 """This module contains some common functions for both folium and ipyleaflet to interact with the Earth Engine Python API.
 """
-
 # *******************************************************************************#
 # This module contains core features and extra features of the geemap package.   #
 # The Earth Engine team and the geemap community will maintain the core features.#
@@ -24,6 +25,7 @@ import zipfile
 import ee
 import ipywidgets as widgets
 from ipytree import Node, Tree
+from typing import Any, Optional
 
 try:
     from IPython.display import display, IFrame
@@ -32,12 +34,12 @@ except ImportError:
 
 
 def ee_initialize(
-    token_name="EARTHENGINE_TOKEN",
-    auth_mode="notebook",
-    service_account=False,
-    auth_args={},
-    **kwargs,
-):
+    token_name: Optional[str] = "EARTHENGINE_TOKEN",
+    auth_mode: Optional[str] = "notebook",
+    service_account: Optional[bool] = False,
+    auth_args: Optional[dict] = {},
+    **kwargs: Any,
+) -> None:
     """Authenticates Earth Engine and initialize an Earth Engine session
 
     Args:
@@ -126,20 +128,20 @@ def ee_initialize(
 
 
 def ee_export_image(
-    ee_object,
-    filename,
-    scale=None,
-    crs=None,
-    crs_transform=None,
-    region=None,
-    dimensions=None,
-    file_per_band=False,
-    format="ZIPPED_GEO_TIFF",
-    unzip=True,
-    unmask_value=None,
-    timeout=300,
-    proxies=None,
-):
+    ee_object: Any,
+    filename: str,
+    scale: Optional[float] = None,
+    crs: Optional[str] = None,
+    crs_transform: Optional[list] = None,
+    region: Optional[Any] = None,
+    dimensions: Optional[list] = None,
+    file_per_band: Optional[bool] = False,
+    format: Optional[str] = "ZIPPED_GEO_TIFF",
+    unzip: Optional[bool] = True,
+    unmask_value: Optional[float] = None,
+    timeout: Optional[int] = 300,
+    proxies: Optional[dict] = None,
+) -> None:
     """Exports an ee.Image as a GeoTIFF.
 
     Args:
@@ -240,20 +242,20 @@ def ee_export_image(
 
 
 def ee_export_image_collection(
-    ee_object,
-    out_dir,
-    scale=None,
-    crs=None,
-    crs_transform=None,
-    region=None,
-    dimensions=None,
-    file_per_band=False,
-    format="ZIPPED_GEO_TIFF",
-    unmask_value=None,
-    filenames=None,
-    timeout=300,
-    proxies=None,
-):
+    ee_object: Any,
+    out_dir: str,
+    scale: Optional[float] = None,
+    crs: Optional[str] = None,
+    crs_transform: Optional[list] = None,
+    region: Optional[Any] = None,
+    dimensions: Optional[list] = None,
+    file_per_band: Optional[bool] = False,
+    format: Optional[str] = "ZIPPED_GEO_TIFF",
+    unmask_value: Optional[float] = None,
+    filenames: Optional[list] = None,
+    timeout: Optional[int] = 300,
+    proxies: Optional[dict] = None,
+) -> None:
     """Exports an ImageCollection as GeoTIFFs.
 
     Args:
@@ -889,8 +891,12 @@ def ee_export_image_collection_to_cloud_storage(
 
 
 def ee_export_geojson(
-    ee_object, filename=None, selectors=None, timeout=300, proxies=None
-):
+    ee_object: Any,
+    filename: str = None,
+    selectors: Optional[list] = None,
+    timeout: Optional[int] = 300,
+    proxies: Optional[dict] = None,
+) -> None:
     """Exports Earth Engine FeatureCollection to geojson.
 
     Args:
@@ -976,14 +982,14 @@ def ee_export_geojson(
 
 
 def ee_export_vector(
-    ee_object,
-    filename,
-    selectors=None,
-    verbose=True,
-    keep_zip=False,
-    timeout=300,
-    proxies=None,
-):
+    ee_object: Any,
+    filename: str,
+    selectors: Optional[list] = None,
+    verbose: Optional[bool] = True,
+    keep_zip: Optional[bool] = False,
+    timeout: Optional[int] = 300,
+    proxies: Optional[dict] = None,
+) -> None:
     """Exports Earth Engine FeatureCollection to other formats, including shp, csv, json, kml, and kmz.
 
     Args:
@@ -1544,9 +1550,9 @@ class TitilerEndpoint:
 
     def __init__(
         self,
-        endpoint="https://titiler.xyz",
-        name="stac",
-        TileMatrixSetId="WebMercatorQuad",
+        endpoint: Optional[str] = "https://titiler.xyz",
+        name: Optional[str] = "stac",
+        TileMatrixSetId: Optional[str] = "WebMercatorQuad",
     ):
         """Initialize the TitilerEndpoint object.
 
@@ -1559,28 +1565,28 @@ class TitilerEndpoint:
         self.name = name
         self.TileMatrixSetId = TileMatrixSetId
 
-    def url_for_stac_item(self):
+    def url_for_stac_item(self) -> str:
         return f"{self.endpoint}/{self.name}/{self.TileMatrixSetId}/tilejson.json"
 
-    def url_for_stac_assets(self):
+    def url_for_stac_assets(self) -> str:
         return f"{self.endpoint}/{self.name}/assets"
 
-    def url_for_stac_bounds(self):
+    def url_for_stac_bounds(self) -> str:
         return f"{self.endpoint}/{self.name}/bounds"
 
-    def url_for_stac_info(self):
+    def url_for_stac_info(self) -> str:
         return f"{self.endpoint}/{self.name}/info"
 
-    def url_for_stac_info_geojson(self):
+    def url_for_stac_info_geojson(self) -> str:
         return f"{self.endpoint}/{self.name}/info.geojson"
 
-    def url_for_stac_statistics(self):
+    def url_for_stac_statistics(self) -> str:
         return f"{self.endpoint}/{self.name}/statistics"
 
-    def url_for_stac_pixel_value(self, lon, lat):
+    def url_for_stac_pixel_value(self, lon, lat) -> str:
         return f"{self.endpoint}/{self.name}/point/{lon},{lat}"
 
-    def url_for_stac_wmts(self):
+    def url_for_stac_wmts(self) -> str:
         return (
             f"{self.endpoint}/{self.name}/{self.TileMatrixSetId}/WMTSCapabilities.xml"
         )
@@ -1591,9 +1597,9 @@ class PlanetaryComputerEndpoint(TitilerEndpoint):
 
     def __init__(
         self,
-        endpoint="https://planetarycomputer.microsoft.com/api/data/v1",
-        name="item",
-        TileMatrixSetId="WebMercatorQuad",
+        endpoint: Optional[str] = "https://planetarycomputer.microsoft.com/api/data/v1",
+        name: Optional[str] = "item",
+        TileMatrixSetId: Optional[str] = "WebMercatorQuad",
     ):
         """Initialize the PlanetaryComputerEndpoint object.
 
@@ -1604,44 +1610,44 @@ class PlanetaryComputerEndpoint(TitilerEndpoint):
         """
         super().__init__(endpoint, name, TileMatrixSetId)
 
-    def url_for_stac_collection(self):
+    def url_for_stac_collection(self) -> str:
         return f"{self.endpoint}/collection/{self.TileMatrixSetId}/tilejson.json"
 
-    def url_for_collection_assets(self):
+    def url_for_collection_assets(self) -> str:
         return f"{self.endpoint}/collection/assets"
 
-    def url_for_collection_bounds(self):
+    def url_for_collection_bounds(self) -> str:
         return f"{self.endpoint}/collection/bounds"
 
-    def url_for_collection_info(self):
+    def url_for_collection_info(self) -> str:
         return f"{self.endpoint}/collection/info"
 
-    def url_for_collection_info_geojson(self):
+    def url_for_collection_info_geojson(self) -> str:
         return f"{self.endpoint}/collection/info.geojson"
 
-    def url_for_collection_pixel_value(self, lon, lat):
+    def url_for_collection_pixel_value(self, lon, lat) -> str:
         return f"{self.endpoint}/collection/point/{lon},{lat}"
 
-    def url_for_collection_wmts(self):
+    def url_for_collection_wmts(self) -> str:
         return f"{self.endpoint}/collection/{self.TileMatrixSetId}/WMTSCapabilities.xml"
 
-    def url_for_collection_lat_lon_assets(self, lng, lat):
+    def url_for_collection_lat_lon_assets(self, lng, lat) -> str:
         return f"{self.endpoint}/collection/{lng},{lat}/assets"
 
-    def url_for_collection_bbox_assets(self, minx, miny, maxx, maxy):
+    def url_for_collection_bbox_assets(self, minx, miny, maxx, maxy) -> str:
         return f"{self.endpoint}/collection/{minx},{miny},{maxx},{maxy}/assets"
 
-    def url_for_stac_mosaic(self, searchid):
+    def url_for_stac_mosaic(self, searchid) -> str:
         return f"{self.endpoint}/mosaic/{searchid}/{self.TileMatrixSetId}/tilejson.json"
 
-    def url_for_mosaic_info(self, searchid):
+    def url_for_mosaic_info(self, searchid) -> str:
         return f"{self.endpoint}/mosaic/{searchid}/info"
 
-    def url_for_mosaic_lat_lon_assets(self, searchid, lon, lat):
+    def url_for_mosaic_lat_lon_assets(self, searchid, lon, lat) -> str:
         return f"{self.endpoint}/mosaic/{searchid}/{lon},{lat}/assets"
 
 
-def check_titiler_endpoint(titiler_endpoint=None):
+def check_titiler_endpoint(titiler_endpoint=None) -> Any:
     """Returns the default titiler endpoint.
 
     Returns:
@@ -1661,7 +1667,11 @@ def check_titiler_endpoint(titiler_endpoint=None):
     return titiler_endpoint
 
 
-def set_proxy(port=1080, ip="http://127.0.0.1", timeout=300):
+def set_proxy(
+    port: Optional[int] = 1080,
+    ip: Optional[str] = "http://127.0.0.1",
+    timeout: Optional[int] = 300,
+) -> None:
     """Sets proxy if needed. This is only needed for countries where Google services are not available.
 
     Args:
@@ -1688,7 +1698,7 @@ def set_proxy(port=1080, ip="http://127.0.0.1", timeout=300):
         print(e)
 
 
-def in_colab_shell():
+def in_colab_shell() -> None:
     """Tests if the code is being executed within Google Colab."""
     import sys
 
@@ -1698,7 +1708,7 @@ def in_colab_shell():
         return False
 
 
-def is_drive_mounted():
+def is_drive_mounted() -> bool:
     """Checks whether Google Drive is mounted in Google Colab.
 
     Returns:
@@ -1711,7 +1721,7 @@ def is_drive_mounted():
         return False
 
 
-def credentials_in_drive():
+def credentials_in_drive() -> bool:
     """Checks if the ee credentials file exists in Google Drive.
 
     Returns:
@@ -1724,7 +1734,7 @@ def credentials_in_drive():
         return False
 
 
-def credentials_in_colab():
+def credentials_in_colab() -> bool:
     """Checks if the ee credentials file exists in Google Colab.
 
     Returns:
@@ -1737,7 +1747,7 @@ def credentials_in_colab():
         return False
 
 
-def copy_credentials_to_drive():
+def copy_credentials_to_drive() -> None:
     """Copies ee credentials from Google Colab to Google Drive."""
     src = "/root/.config/earthengine/credentials"
     dst = "/content/drive/My Drive/.config/earthengine/credentials"
@@ -1749,7 +1759,7 @@ def copy_credentials_to_drive():
     shutil.copyfile(src, dst)
 
 
-def copy_credentials_to_colab():
+def copy_credentials_to_colab() -> None:
     """Copies ee credentials from Google Drive to Google Colab."""
     src = "/content/drive/My Drive/.config/earthengine/credentials"
     dst = "/root/.config/earthengine/credentials"
@@ -1766,7 +1776,7 @@ def copy_credentials_to_colab():
 ########################################
 
 
-def check_install(package):
+def check_install(package: str) -> None:
     """Checks whether a package is installed. If not, it will install the package.
 
     Args:
@@ -1787,7 +1797,7 @@ def check_install(package):
         print(f"{package} has been installed successfully.")
 
 
-def update_package():
+def update_package() -> None:
     """Updates the geemap package from the geemap GitHub repository without the need to use pip or conda.
     In this way, I don't have to keep updating pypi and conda-forge with every minor update of the package.
 
@@ -1819,7 +1829,7 @@ def update_package():
         raise Exception(e)
 
 
-def check_package(name, URL=""):
+def check_package(name, URL="") -> None:
     try:
         __import__(name.lower())
     except Exception:
@@ -1828,7 +1838,7 @@ def check_package(name, URL=""):
         )
 
 
-def clone_repo(out_dir=".", unzip=True):
+def clone_repo(out_dir: Optional[str] = ".", unzip: Optional[bool] = True):
     """Clones the geemap GitHub repository.
 
     Args:
@@ -1840,7 +1850,7 @@ def clone_repo(out_dir=".", unzip=True):
     download_from_url(url, out_file_name=filename, out_dir=out_dir, unzip=unzip)
 
 
-def install_from_github(url):
+def install_from_github(url: str) -> None:
     """Install a package from a GitHub repository.
 
     Args:
@@ -1874,7 +1884,7 @@ def install_from_github(url):
         print(e)
 
 
-def check_git_install():
+def check_git_install() -> bool:
     """Checks if Git is installed.
 
     Returns:
@@ -1894,7 +1904,7 @@ def check_git_install():
         return False
 
 
-def clone_github_repo(url, out_dir):
+def clone_github_repo(url: str, out_dir: str) -> None:
     """Clones a GitHub repository.
 
     Args:
@@ -1929,7 +1939,7 @@ def clone_github_repo(url, out_dir):
     os.remove(out_file_path)
 
 
-def clone_google_repo(url, out_dir=None):
+def clone_google_repo(url: str, out_dir: Optional[str] = None) -> None:
     """Clones an Earth Engine repository from https://earthengine.googlesource.com, such as https://earthengine.googlesource.com/users/google/datasets
 
     Args:
@@ -1955,7 +1965,7 @@ def clone_google_repo(url, out_dir=None):
         os.popen(cmd).read()
 
 
-def open_github(subdir=None):
+def open_github(subdir: Optional[str] = None) -> None:
     """Opens the GitHub repository for this package.
 
     Args:
@@ -1975,7 +1985,7 @@ def open_github(subdir=None):
     webbrowser.open_new_tab(url)
 
 
-def open_youtube():
+def open_youtube() -> None:
     """Opens the YouTube tutorials for geemap."""
     import webbrowser
 
@@ -1996,7 +2006,7 @@ def is_tool(name):
     return shutil.which(name) is not None
 
 
-def random_string(string_length=3):
+def random_string(string_length: Optional[int] = 3) -> str:
     """Generates a random string of fixed length.
 
     Args:
@@ -2013,7 +2023,9 @@ def random_string(string_length=3):
     return "".join(random.choice(letters) for i in range(string_length))
 
 
-def open_image_from_url(url, timeout=300, proxies=None):
+def open_image_from_url(
+    url: str, timeout: Optional[int] = 300, proxies: Optional[dict] = None
+) -> Any:
     """Loads an image from the specified URL.
 
     Args:
@@ -2038,7 +2050,9 @@ def open_image_from_url(url, timeout=300, proxies=None):
         print(e)
 
 
-def show_image(img_path, width=None, height=None):
+def show_image(
+    img_path: str, width: Optional[int] = None, height: Optional[int] = None
+) -> None:
     """Shows an image within Jupyter notebook.
 
     Args:
@@ -2073,7 +2087,7 @@ def show_image(img_path, width=None, height=None):
         print(e)
 
 
-def show_html(html):
+def show_html(html: str):
     """Shows HTML within Jupyter notebook.
 
     Args:
@@ -2099,7 +2113,7 @@ def show_html(html):
             raise Exception(e)
 
 
-def has_transparency(img):
+def has_transparency(img: Any) -> bool:
     """Checks whether an image has transparency.
 
     Args:
@@ -2122,7 +2136,7 @@ def has_transparency(img):
     return False
 
 
-def upload_to_imgur(in_gif):
+def upload_to_imgur(in_gif: str) -> None:
     """Uploads an image to imgur.com
 
     Args:
@@ -2168,7 +2182,7 @@ def upload_to_imgur(in_gif):
 ########################################
 
 
-def rgb_to_hex(rgb=(255, 255, 255)):
+def rgb_to_hex(rgb: Optional[tuple] = (255, 255, 255)) -> str:
     """Converts RGB to hex color. In RGB color R stands for Red, G stands for Green, and B stands for Blue, and it ranges from the decimal value of 0 – 255.
 
     Args:
@@ -2180,7 +2194,7 @@ def rgb_to_hex(rgb=(255, 255, 255)):
     return "%02x%02x%02x" % rgb
 
 
-def hex_to_rgb(value="FFFFFF"):
+def hex_to_rgb(value: Optional[str] = "FFFFFF") -> tuple:
     """Converts hex color to RGB color.
 
     Args:
@@ -2194,7 +2208,7 @@ def hex_to_rgb(value="FFFFFF"):
     return tuple(int(value[i : i + lv // 3], 16) for i in range(0, lv, lv // 3))
 
 
-def check_color(in_color):
+def check_color(in_color: Optional[str, tuple]) -> str:
     """Checks the input color and returns the corresponding hex color code.
 
     Args:
@@ -2234,7 +2248,7 @@ def check_color(in_color):
         return out_color
 
 
-def to_hex_colors(colors):
+def to_hex_colors(colors: list) -> list:
     """Convert a GEE color palette into hexadecimal color codes. can handle mixin formats
 
     Args:
@@ -2247,7 +2261,7 @@ def to_hex_colors(colors):
     return [check_color(c) for c in colors]
 
 
-def system_fonts(show_full_path=False):
+def system_fonts(show_full_path: Optional[bool] = False) -> list:
     """Gets a list of system fonts
 
         # Common font locations:
@@ -2286,7 +2300,13 @@ def system_fonts(show_full_path=False):
 ########################################
 
 
-def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=True):
+def download_from_url(
+    url,
+    out_file_name: Optional[str] = None,
+    out_dir: Optional[str] = ".",
+    unzip: Optional[bool] = True,
+    verbose: Optional[bool] = True,
+) -> None:
     """Download a file from a URL (e.g., https://github.com/giswqs/whitebox/raw/master/examples/testdata.zip)
 
     Args:
@@ -2359,7 +2379,13 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
     return
 
 
-def download_from_gdrive(gfile_url, file_name, out_dir=".", unzip=True, verbose=True):
+def download_from_gdrive(
+    gfile_url: str,
+    file_name: str,
+    out_dir: Optional[str] = ".",
+    unzip: Optional[bool] = True,
+    verbose: Optional[bool] = True,
+) -> None:
     """Download a file shared via Google Drive
        (e.g., https://drive.google.com/file/d/18SUo_HcDGltuWYZs1s7PpOmOq_FvFn04/view?usp=sharing)
 
@@ -2387,7 +2413,9 @@ def download_from_gdrive(gfile_url, file_name, out_dir=".", unzip=True, verbose=
     return
 
 
-def create_download_link(filename, title="Click here to download: "):
+def create_download_link(
+    filename: str, title: Optional[str] = "Click here to download: "
+) -> str:
     """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578
 
     Args:
@@ -2410,7 +2438,9 @@ def create_download_link(filename, title="Click here to download: "):
     return HTML(html)
 
 
-def edit_download_html(htmlWidget, filename, title="Click here to download: "):
+def edit_download_html(
+    htmlWidget: Any, filename: str, title: Optional[str] = "Click here to download: "
+) -> None:
     """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578#issuecomment-617668058
 
     Args:
@@ -2448,7 +2478,12 @@ def edit_download_html(htmlWidget, filename, title="Click here to download: "):
 ########################################
 
 
-def xy_to_points(in_csv, latitude="latitude", longitude="longitude", encoding="utf-8"):
+def xy_to_points(
+    in_csv: str,
+    latitude: Optional[str] = "latitude",
+    longitude: Optional[str] = "longitude",
+    encoding="utf-8",
+) -> Any:
     """Converts a csv containing points (latitude and longitude) into an ee.FeatureCollection.
 
     Args:
@@ -2465,7 +2500,12 @@ def xy_to_points(in_csv, latitude="latitude", longitude="longitude", encoding="u
     return fc
 
 
-def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude"):
+def csv_points_to_shp(
+    in_csv: str,
+    out_shp: str,
+    latitude: Optional[str] = "latitude",
+    longitude: Optional[str] = "longitude",
+) -> None:
     """Converts a csv file containing points (latitude, longitude) into a shapefile.
 
     Args:
@@ -2503,8 +2543,8 @@ def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude
 
 
 def csv_to_shp(
-    in_csv, out_shp, latitude="latitude", longitude="longitude", encoding="utf-8"
-):
+    in_csv: str, out_shp: str, latitude: Optional[str]="latitude", longitude: Optional[str]="longitude", encoding="utf-8"
+) -> None:
     """Converts a csv file with latlon info to a point shapefile.
 
     Args:
@@ -2539,12 +2579,12 @@ def csv_to_shp(
 
 
 def csv_to_geojson(
-    in_csv,
-    out_geojson=None,
-    latitude="latitude",
-    longitude="longitude",
-    encoding="utf-8",
-):
+    in_csv: str,
+    out_geojson: str=None,
+    latitude: Optional[str]="latitude",
+    longitude: Optional[str]="longitude",
+    encoding: Optional[str]="utf-8",
+) -> None:
     """Creates points for a CSV file and exports data as a GeoJSON.
 
     Args:
@@ -2577,11 +2617,11 @@ def csv_to_geojson(
 
 def df_to_geojson(
     df,
-    out_geojson=None,
-    latitude="latitude",
-    longitude="longitude",
-    encoding="utf-8",
-):
+    out_geojson: str=None,
+    latitude: Optional[str]="latitude",
+    longitude: Optional[str]="longitude",
+    encoding: Optional[str]="utf-8",
+) -> None:
     """Creates points for a Pandas DataFrame and exports data as a GeoJSON.
 
     Args:
@@ -2618,8 +2658,8 @@ def df_to_geojson(
 
 
 def csv_to_ee(
-    in_csv, latitude="latitude", longitude="longitude", encoding="utf-8", geodesic=True
-):
+    in_csv: str, latitude: Optional[str]="latitude", longitude: Optional[str]="longitude", encoding: Optional[str]="utf-8", geodesic: Optional[bool]=True
+) -> Any:
     """Creates points for a CSV file and exports data as a GeoJSON.
 
     Args:
@@ -2640,7 +2680,7 @@ def csv_to_ee(
     return fc
 
 
-def csv_to_gdf(in_csv, latitude="latitude", longitude="longitude", encoding="utf-8"):
+def csv_to_gdf(in_csv: str, latitude: Optional[str]="latitude", longitude: Optional[str]="longitude", encoding: Optional[str]="utf-8") -> None:
     """Creates points for a CSV file and converts them to a GeoDataFrame.
 
     Args:
@@ -2668,13 +2708,13 @@ def csv_to_gdf(in_csv, latitude="latitude", longitude="longitude", encoding="utf
 
 
 def csv_to_vector(
-    in_csv,
-    output,
-    latitude="latitude",
-    longitude="longitude",
-    encoding="utf-8",
-    **kwargs,
-):
+    in_csv: str,
+    output: str,
+    latitude: Optional[str]="latitude",
+    longitude: Optional[str]="longitude",
+    encoding: Optional[str]="utf-8",
+    **kwargs: Any,
+) -> None:
     """Creates points for a CSV file and converts them to a vector dataset.
 
     Args:
@@ -2689,7 +2729,7 @@ def csv_to_vector(
     gdf.to_file(output, **kwargs)
 
 
-def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
+def geojson_to_ee(geo_json: dict, geodesic: Optional[bool]=False, encoding: Optional[str]="utf-8") -> Any:
     """Converts a geojson to ee.Geometry()
 
     Args:
@@ -2750,7 +2790,7 @@ def geojson_to_ee(geo_json, geodesic=False, encoding="utf-8"):
         raise Exception(e)
 
 
-def ee_to_geojson(ee_object, filename=None, indent=2, **kwargs):
+def ee_to_geojson(ee_object: Any, filename: Optional[str]=None, indent: int =2, **kwargs: Any) -> Any:
     """Converts Earth Engine object to geojson.
 
     Args:
@@ -2787,7 +2827,7 @@ def ee_to_geojson(ee_object, filename=None, indent=2, **kwargs):
         raise Exception(e)
 
 
-def ee_to_bbox(ee_object):
+def ee_to_bbox(ee_object: Any) -> list:
     """Get the bounding box of an Earth Engine object as a list in the format [xmin, ymin, xmax, ymax].
 
     Args:
@@ -2818,7 +2858,7 @@ def ee_to_bbox(ee_object):
     return bbox
 
 
-def shp_to_geojson(in_shp, filename=None, **kwargs):
+def shp_to_geojson(in_shp: str, filename: Optional[str]=None, **kwargs: Any) -> Any:
     """Converts a shapefile to GeoJSON.
 
     Args:
@@ -2903,7 +2943,7 @@ def shp_to_geojson(in_shp, filename=None, **kwargs):
         raise Exception(e)
 
 
-def shp_to_ee(in_shp, **kwargs):
+def shp_to_ee(in_shp: str, **kwargs: Any) -> Any:
     """Converts a shapefile to Earth Engine objects. Note that the CRS of the shapefile must be EPSG:4326
 
     Args:
@@ -2953,14 +2993,14 @@ def filter_polygons(ftr):
 
 
 def ee_to_shp(
-    ee_object,
-    filename,
-    selectors=None,
-    verbose=True,
-    keep_zip=False,
-    timeout=300,
-    proxies=None,
-):
+    ee_object: Any,
+    filename: str,
+    selectors: Optional[list]=None,
+    verbose: Optional[bool]=True,
+    keep_zip: Optional[bool]=False,
+    timeout: Optional[int]=300,
+    proxies: Optional[dict]=None,
+) -> None:
     """Downloads an ee.FeatureCollection as a shapefile.
 
     Args:
@@ -2992,8 +3032,8 @@ def ee_to_shp(
 
 
 def ee_to_csv(
-    ee_object, filename, selectors=None, verbose=True, timeout=300, proxies=None
-):
+    ee_object: Any, filename: str, selectors: Optional[list]=None, verbose: Optional[bool]=True, timeout: Optional[int]=300, proxies: Optional[dict]=None
+) -> None:
     """Downloads an ee.FeatureCollection as a CSV file.
 
     Args:

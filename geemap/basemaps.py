@@ -250,7 +250,7 @@ def get_xyz_dict(free_only: bool = True, france: bool = False) -> dict[str, Any]
         dict: A dictionary of xyz services.
     """
     xyz_bunch = xyzservices.providers
-    
+
     if free_only:
         xyz_bunch = xyz_bunch.filter(requires_token=False)
     if not france:
@@ -290,6 +290,7 @@ def xyz_to_leaflet() -> dict[str, dict[str, Any]]:
         leaflet_dict[tile_info["name"]] = tile_info
 
     return leaflet_dict
+
 
 def xyz_to_folium() -> dict[str, Any]:
     """Convert xyz tile services to folium tile layers.
@@ -336,6 +337,7 @@ def xyz_to_folium() -> dict[str, Any]:
         folium_dict.update(planet_dict)
 
     return folium_dict
+
 
 # ******************************************************************************#
 # The classes and functions above are the core features of the geemap package.  #

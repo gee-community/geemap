@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Module for creating interactive maps with kepler.gl."""
 
 # *******************************************************************************#

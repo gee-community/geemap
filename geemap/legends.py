@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Module of sample legends for some commonly used geospatial datasets.
 """
 

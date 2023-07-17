@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """"Module for interacting with deck.gl in Python."""
 
 # *******************************************************************************#

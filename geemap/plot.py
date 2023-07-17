@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 "Module for plotting data using plotly.express."
 
 # *******************************************************************************#

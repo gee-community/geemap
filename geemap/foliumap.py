@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Module for creating interactive maps with the folium library."""
 
 # *******************************************************************************#
@@ -912,9 +913,9 @@ class Map(folium.Map):
         ee_object: Any,
         column: str,
         palette: Union[list[str], dict[str, str]],
-        layer_name: str="Untitled",
-        shown: bool=True,
-        opacity: float=1.0,
+        layer_name: str = "Untitled",
+        shown: bool = True,
+        opacity: float = 1.0,
         **kwargs: Any,
     ) -> None:
         """Adds a styled vector to the map.
@@ -1712,16 +1713,16 @@ class Map(folium.Map):
     def add_markers_from_xy(
         self,
         data: str,
-        x: Optional[str]="longitude",
-        y: Optional[str]="latitude",
-        popup: Optional[list]=None,
-        min_width: Optional[int]=100,
-        max_width: Optional[int]=200,
-        layer_name: Optional[str]="Markers",
-        icon: Optional[str]=None,
-        icon_shape: Optional[str]='circle-dot',
-        border_width: Optional[int]=3,
-        border_color: Optional[str]='#0000ff',
+        x: Optional[str] = "longitude",
+        y: Optional[str] = "latitude",
+        popup: Optional[list] = None,
+        min_width: Optional[int] = 100,
+        max_width: Optional[int] = 200,
+        layer_name: Optional[str] = "Markers",
+        icon: Optional[str] = None,
+        icon_shape: Optional[str] = "circle-dot",
+        border_width: Optional[int] = 3,
+        border_color: Optional[str] = "#0000ff",
         **kwargs: Optional[dict],
     ) -> None:
         """Adds markers to the map from a csv or Pandas DataFrame containing x, y values.
