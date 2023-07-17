@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.24.4 - Jul 17, 2023
+
+**Improvement**
+
+-   Fixed timelapse bug (#1631)
+-   Fixed typo (#1630)
+
 ## v0.24.3 - Jul 11, 2023
 
 **Improvement**
