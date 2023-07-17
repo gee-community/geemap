@@ -1540,12 +1540,29 @@ def sentinel2_timeseries(
         .filterBounds(roi)
     )
 
-    if bands is not None:
-        collection = collection.select(bands)
-
     if mask_cloud:
         collection = collection.map(maskS2clouds)
-    print(collection.size().getInfo())
+
+    if bands is not None:
+        allowed_bands = {
+            "Blue": "B2",
+            "Green": "B3",
+            "Red": "B4",
+            "Red Edge 1": "B5",
+            "Red Edge 2": "B6",
+            "Red Edge 3": "B7",
+            "NIR": "B8",
+            "Red Edge 4": "B8A",
+            "SWIR1": "B11",
+            "SWIR2": "B12",
+            "QA60": "QA60",
+        }
+
+        for index, band in enumerate(bands):
+            if band in allowed_bands:
+                bands[index] = allowed_bands[band]
+
+        collection = collection.select(bands)
 
     ts = create_timeseries(
         collection, start, end, roi, bands, frequency, reducer, drop_empty, date_format
@@ -3328,6 +3345,7 @@ def sentinel2_timelapse(
     frames_per_second=5,
     crs="EPSG:3857",
     apply_fmask=True,
+    cloud_pct=30,
     overlay_data=None,
     overlay_color="black",
     overlay_width=1,
@@ -3348,6 +3366,7 @@ def sentinel2_timelapse(
     loop=0,
     mp4=False,
     fading=False,
+    **kwargs,
 ):
     """Generates a Sentinel-2 timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
 
@@ -3364,6 +3383,7 @@ def sentinel2_timelapse(
         frames_per_second (int, optional): Animation speed. Defaults to 10.
         crs (str, optional): Coordinate reference system. Defaults to 'EPSG:3857'.
         apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+        cloud_pct (int, optional): Maximum percentage of cloud coverage allowed. Defaults to 30.
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
         overlay_width (int, optional): Line width of the overlay. Defaults to 1.
@@ -3384,6 +3404,7 @@ def sentinel2_timelapse(
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
         fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+        kwargs (optional): Additional arguments to pass the geemap.create_timeseries() function.
 
     Returns:
         str: File path to the output GIF image.
@@ -3428,21 +3449,28 @@ def sentinel2_timelapse(
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
-    allowed_bands = [
-        "Blue",
-        "Green",
-        "Red",
-        "Red Edge 1",
-        "Red Edge 2",
-        "Red Edge 3",
-        "NIR",
-        "Red Edge 4",
-        "SWIR1",
-        "SWIR2",
-        "QA60",
-    ]
+    allowed_bands = {
+        "Blue": "B2",
+        "Green": "B3",
+        "Red": "B4",
+        "Red Edge 1": "B5",
+        "Red Edge 2": "B6",
+        "Red Edge 3": "B7",
+        "NIR": "B8",
+        "Red Edge 4": "B8A",
+        "SWIR1": "B11",
+        "SWIR2": "B12",
+        "QA60": "QA60",
+    }
 
-    if len(bands) == 3 and all(x in allowed_bands for x in bands):
+    if bands is None:
+        bands = ["SWIR1", "NIR", "Red"]
+
+    for index, band in enumerate(bands):
+        if band in allowed_bands:
+            bands[index] = allowed_bands[band]
+
+    if len(bands) == 3:
         pass
     else:
         raise Exception(
@@ -3456,19 +3484,26 @@ def sentinel2_timelapse(
             vis_params = {}
             vis_params["bands"] = bands
             vis_params["min"] = 0
-            vis_params["max"] = 4000
+            vis_params["max"] = 0.4
             vis_params["gamma"] = [1, 1, 1]
-        col = sentinel2_timeseries_legacy(
+
+        if "reducer" not in kwargs:
+            kwargs["reducer"] = "median"
+        if "drop_empty" not in kwargs:
+            kwargs["drop_empty"] = True
+        kwargs["date_format"] = date_format
+        col = sentinel2_timeseries(
             roi,
             start_year,
             end_year,
             start_date,
             end_date,
+            bands,
             apply_fmask,
+            cloud_pct,
             frequency,
-            date_format,
+            **kwargs,
         )
-
         col = col.select(bands).map(
             lambda img: img.visualize(**vis_params).set(
                 {
