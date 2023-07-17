@@ -12484,7 +12484,7 @@ based on mean composites following a steady frequency (f.e. 1 image per month)
 
 
 <h2 id="geemap.timelapse.sentinel2_timelapse" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">sentinel2_timelapse</span><span class="p">(</span><span class="n">roi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out_gif</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="mi">2015</span><span class="p">,</span> <span class="n">end_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;06-10&#39;</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s1">&#39;09-20&#39;</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;NIR&#39;</span><span class="p">,</span> <span class="s1">&#39;Red&#39;</span><span class="p">,</span> <span class="s1">&#39;Green&#39;</span><span class="p">],</span> <span class="n">vis_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">768</span><span class="p">,</span> <span class="n">frames_per_second</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s1">&#39;EPSG:3857&#39;</span><span class="p">,</span> <span class="n">apply_fmask</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overlay_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overlay_color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">overlay_width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">overlay_opacity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title_xy</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;2%&#39;</span><span class="p">,</span> <span class="s1">&#39;90%&#39;</span><span class="p">),</span> <span class="n">add_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text_xy</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;2%&#39;</span><span class="p">,</span> <span class="s1">&#39;2%&#39;</span><span class="p">),</span> <span class="n">text_sequence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">font_type</span><span class="o">=</span><span class="s1">&#39;arial.ttf&#39;</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">font_color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">add_progress_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">progress_bar_color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">progress_bar_height</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mp4</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fading</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">sentinel2_timelapse</span><span class="p">(</span><span class="n">roi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out_gif</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="mi">2015</span><span class="p">,</span> <span class="n">end_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;06-10&#39;</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s1">&#39;09-20&#39;</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;NIR&#39;</span><span class="p">,</span> <span class="s1">&#39;Red&#39;</span><span class="p">,</span> <span class="s1">&#39;Green&#39;</span><span class="p">],</span> <span class="n">vis_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">768</span><span class="p">,</span> <span class="n">frames_per_second</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s1">&#39;EPSG:3857&#39;</span><span class="p">,</span> <span class="n">apply_fmask</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cloud_pct</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">overlay_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overlay_color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">overlay_width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">overlay_opacity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title_xy</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;2%&#39;</span><span class="p">,</span> <span class="s1">&#39;90%&#39;</span><span class="p">),</span> <span class="n">add_text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text_xy</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;2%&#39;</span><span class="p">,</span> <span class="s1">&#39;2%&#39;</span><span class="p">),</span> <span class="n">text_sequence</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">font_type</span><span class="o">=</span><span class="s1">&#39;arial.ttf&#39;</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">font_color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">add_progress_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">progress_bar_color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">progress_bar_height</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mp4</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fading</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 
 <a href="#geemap.timelapse.sentinel2_timelapse" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -12575,6 +12575,12 @@ based on mean composites following a steady frequency (f.e. 1 image per month)
         <td><code>bool</code></td>
         <td><p>Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.</p></td>
         <td><code>True</code></td>
+      </tr>
+      <tr>
+        <td><code>cloud_pct</code></td>
+        <td><code>int</code></td>
+        <td><p>Maximum percentage of cloud coverage allowed. Defaults to 30.</p></td>
+        <td><code>30</code></td>
       </tr>
       <tr>
         <td><code>overlay_data</code></td>
@@ -12696,6 +12702,12 @@ based on mean composites following a steady frequency (f.e. 1 image per month)
         <td><p>If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).</p></td>
         <td><code>False</code></td>
       </tr>
+      <tr>
+        <td><code>kwargs</code></td>
+        <td><code>optional</code></td>
+        <td><p>Additional arguments to pass the geemap.create_timeseries() function.</p></td>
+        <td><code>{}</code></td>
+      </tr>
   </tbody>
 </table>
 <p><strong>Returns:</strong></p>
@@ -12728,6 +12740,7 @@ based on mean composites following a steady frequency (f.e. 1 image per month)
     <span class="n">frames_per_second</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
     <span class="n">crs</span><span class="o">=</span><span class="s2">&quot;EPSG:3857&quot;</span><span class="p">,</span>
     <span class="n">apply_fmask</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">cloud_pct</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
     <span class="n">overlay_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">overlay_color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
     <span class="n">overlay_width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -12748,6 +12761,7 @@ based on mean composites following a steady frequency (f.e. 1 image per month)
     <span class="n">loop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">mp4</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">fading</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates a Sentinel-2 timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.</span>
 
@@ -12764,6 +12778,7 @@ based on mean composites following a steady frequency (f.e. 1 image per month)
 <span class="sd">        frames_per_second (int, optional): Animation speed. Defaults to 10.</span>
 <span class="sd">        crs (str, optional): Coordinate reference system. Defaults to &#39;EPSG:3857&#39;.</span>
 <span class="sd">        apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.</span>
+<span class="sd">        cloud_pct (int, optional): Maximum percentage of cloud coverage allowed. Defaults to 30.</span>
 <span class="sd">        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.</span>
 <span class="sd">        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to &#39;black&#39;.</span>
 <span class="sd">        overlay_width (int, optional): Line width of the overlay. Defaults to 1.</span>
@@ -12784,6 +12799,7 @@ based on mean composites following a steady frequency (f.e. 1 image per month)
 <span class="sd">        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.</span>
 <span class="sd">        mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.</span>
 <span class="sd">        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).</span>
+<span class="sd">        kwargs (optional): Additional arguments to pass the geemap.create_timeseries() function.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str: File path to the output GIF image.</span>
@@ -12828,21 +12844,28 @@ based on mean composites following a steady frequency (f.e. 1 image per month)
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_dir</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
 
-    <span class="n">allowed_bands</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;Blue&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Green&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Red&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Red Edge 1&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Red Edge 2&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Red Edge 3&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;NIR&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;Red Edge 4&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;SWIR1&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;SWIR2&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;QA60&quot;</span><span class="p">,</span>
-    <span class="p">]</span>
+    <span class="n">allowed_bands</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Blue&quot;</span><span class="p">:</span> <span class="s2">&quot;B2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Green&quot;</span><span class="p">:</span> <span class="s2">&quot;B3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Red&quot;</span><span class="p">:</span> <span class="s2">&quot;B4&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Red Edge 1&quot;</span><span class="p">:</span> <span class="s2">&quot;B5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Red Edge 2&quot;</span><span class="p">:</span> <span class="s2">&quot;B6&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Red Edge 3&quot;</span><span class="p">:</span> <span class="s2">&quot;B7&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;NIR&quot;</span><span class="p">:</span> <span class="s2">&quot;B8&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Red Edge 4&quot;</span><span class="p">:</span> <span class="s2">&quot;B8A&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SWIR1&quot;</span><span class="p">:</span> <span class="s2">&quot;B11&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SWIR2&quot;</span><span class="p">:</span> <span class="s2">&quot;B12&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;QA60&quot;</span><span class="p">:</span> <span class="s2">&quot;QA60&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">allowed_bands</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SWIR1&quot;</span><span class="p">,</span> <span class="s2">&quot;NIR&quot;</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">band</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bands</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">allowed_bands</span><span class="p">:</span>
+            <span class="n">bands</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">allowed_bands</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
@@ -12856,19 +12879,26 @@ based on mean composites following a steady frequency (f.e. 1 image per month)
             <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">vis_params</span><span class="p">[</span><span class="s2">&quot;bands&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bands</span>
             <span class="n">vis_params</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">vis_params</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4000</span>
+            <span class="n">vis_params</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.4</span>
             <span class="n">vis_params</span><span class="p">[</span><span class="s2">&quot;gamma&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">col</span> <span class="o">=</span> <span class="n">sentinel2_timeseries_legacy</span><span class="p">(</span>
+
+        <span class="k">if</span> <span class="s2">&quot;reducer&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;reducer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;median&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;drop_empty&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;drop_empty&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;date_format&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">date_format</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">sentinel2_timeseries</span><span class="p">(</span>
             <span class="n">roi</span><span class="p">,</span>
             <span class="n">start_year</span><span class="p">,</span>
             <span class="n">end_year</span><span class="p">,</span>
             <span class="n">start_date</span><span class="p">,</span>
             <span class="n">end_date</span><span class="p">,</span>
+            <span class="n">bands</span><span class="p">,</span>
             <span class="n">apply_fmask</span><span class="p">,</span>
+            <span class="n">cloud_pct</span><span class="p">,</span>
             <span class="n">frequency</span><span class="p">,</span>
-            <span class="n">date_format</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
-
         <span class="n">col</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">img</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="o">**</span><span class="n">vis_params</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
                 <span class="p">{</span>
@@ -13167,12 +13197,29 @@ based on mean composites following a steady frequency (f.e. 1 image per month)
         <span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
     <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">collection</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
-
     <span class="k">if</span> <span class="n">mask_cloud</span><span class="p">:</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">maskS2clouds</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">allowed_bands</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Blue&quot;</span><span class="p">:</span> <span class="s2">&quot;B2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Green&quot;</span><span class="p">:</span> <span class="s2">&quot;B3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Red&quot;</span><span class="p">:</span> <span class="s2">&quot;B4&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Red Edge 1&quot;</span><span class="p">:</span> <span class="s2">&quot;B5&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Red Edge 2&quot;</span><span class="p">:</span> <span class="s2">&quot;B6&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Red Edge 3&quot;</span><span class="p">:</span> <span class="s2">&quot;B7&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;NIR&quot;</span><span class="p">:</span> <span class="s2">&quot;B8&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Red Edge 4&quot;</span><span class="p">:</span> <span class="s2">&quot;B8A&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;SWIR1&quot;</span><span class="p">:</span> <span class="s2">&quot;B11&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;SWIR2&quot;</span><span class="p">:</span> <span class="s2">&quot;B12&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;QA60&quot;</span><span class="p">:</span> <span class="s2">&quot;QA60&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">band</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bands</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">allowed_bands</span><span class="p">:</span>
+                <span class="n">bands</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">allowed_bands</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
 
     <span class="n">ts</span> <span class="o">=</span> <span class="n">create_timeseries</span><span class="p">(</span>
         <span class="n">collection</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="n">bands</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">reducer</span><span class="p">,</span> <span class="n">drop_empty</span><span class="p">,</span> <span class="n">date_format</span>
