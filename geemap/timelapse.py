@@ -1533,7 +1533,7 @@ def sentinel2_timeseries(
     doy_start = ee.Number.parse(ee.Date(start).format("D"))
     doy_end = ee.Number.parse(ee.Date(end).format("D"))
     collection = (
-        ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+        ee.ImageCollection("COPERNICUS/S2_HARMONIZED")
         .filterDate(start, end)
         .filter(ee.Filter.calendarRange(doy_start, doy_end, "day_of_year"))
         .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", cloud_pct))
@@ -1542,6 +1542,10 @@ def sentinel2_timeseries(
 
     if mask_cloud:
         collection = collection.map(maskS2clouds)
+    else:
+        collection = collection.map(
+            lambda img: img.divide(10000).set(img.toDictionary(img.propertyNames()))
+        )
 
     if bands is not None:
         allowed_bands = {
