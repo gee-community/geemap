@@ -2794,6 +2794,8 @@ class Map(ipyleaflet.Map):
 
         Args:
             position (str, optional): The position of the Layer Manager. Defaults to "topright".
+            opened (bool, optional): Whether the control is opened. Defaults to True.
+            show_close_button (bool, optional): Whether to show the close button. Defaults to True.
         """
         from .toolbar import layer_manager_gui
 
@@ -2806,7 +2808,11 @@ class Map(ipyleaflet.Map):
         self.layer_manager_widget.children = layer_manager_gui(self, return_widget=True)
 
     def add_draw_control(self, position="topleft"):
-        """Add a draw control to the map"""
+        """Add a draw control to the map
+
+        Args:
+            position (str, optional): The position of the draw control. Defaults to "topleft".
+        """
 
         draw_control = ipyleaflet.DrawControl(
             marker={"shapeOptions": {"color": "#3388ff"}},
@@ -2865,7 +2871,11 @@ class Map(ipyleaflet.Map):
         self.draw_control = draw_control
 
     def add_draw_control_lite(self, position="topleft"):
-        """Add a lite version draw control to the map for the plotting tool."""
+        """Add a lite version draw control to the map for the plotting tool.
+
+        Args:
+            position (str, optional): The position of the draw control. Defaults to "topleft".
+        """
 
         draw_control_lite = ipyleaflet.DrawControl(
             marker={},
@@ -2881,6 +2891,12 @@ class Map(ipyleaflet.Map):
         self.draw_control_lite = draw_control_lite
 
     def add_toolbar(self, position="topright", **kwargs):
+        """Add a toolbar to the map.
+
+        Args:
+            position (str, optional): The position of the toolbar. Defaults to "topright".
+        """
+
         from .toolbar import main_toolbar
 
         main_toolbar(self, position, **kwargs)
@@ -2899,6 +2915,14 @@ class Map(ipyleaflet.Map):
     def add_gui(
         self, name, position="topright", opened=True, show_close_button=True, **kwargs
     ):
+        """Add a GUI to the map.
+
+        Args:
+            name (str): The name of the GUI. Options include "layer_manager", "inspector", "plot", and "timelapse".
+            position (str, optional): The position of the GUI. Defaults to "topright".
+            opened (bool, optional): Whether the GUI is opened. Defaults to True.
+            show_close_button (bool, optional): Whether to show the close button. Defaults to True.
+        """
         name = name.lower()
         if name == "layer_manager":
             self.add_layer_manager(position, opened, show_close_button, **kwargs)
