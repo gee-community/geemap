@@ -26,8 +26,9 @@ from .basemaps import xyz_to_leaflet
 from .common import *
 from .conversion import *
 from .ee_tile_layers import *
-from .timelapse import *
+from . import map_widgets
 from .plot import *
+from .timelapse import *
 
 from . import examples
 
@@ -1035,137 +1036,27 @@ class Map(ipyleaflet.Map):
         Raises:
             TypeError: If the vis_params is not a dictionary.
             ValueError: If the orientation is not either horizontal or vertical.
-            ValueError: If the provided min value is not scalar type.
-            ValueError: If the provided max value is not scalar type.
-            ValueError: If the provided opacity value is not scalar type.
-            ValueError: If cmap or palette is not provided.
+            TypeError: If the provided min value is not scalar type.
+            TypeError: If the provided max value is not scalar type.
+            TypeError: If the provided opacity value is not scalar type.
+            TypeError: If cmap or palette is not provided.
         """
-        import matplotlib as mpl
-        import matplotlib.pyplot as plt
-        import numpy as np
 
-        if isinstance(vis_params, list):
-            vis_params = {"palette": vis_params}
-        elif isinstance(vis_params, tuple):
-            vis_params = {"palette": list(vis_params)}
-        elif vis_params is None:
-            vis_params = {}
-
-        if "colors" in kwargs and isinstance(kwargs["colors"], list):
-            vis_params["palette"] = kwargs["colors"]
-
-        if "colors" in kwargs and isinstance(kwargs["colors"], tuple):
-            vis_params["palette"] = list(kwargs["colors"])
-
-        if "vmin" in kwargs:
-            vis_params["min"] = kwargs["vmin"]
-            del kwargs["vmin"]
-
-        if "vmax" in kwargs:
-            vis_params["max"] = kwargs["vmax"]
-            del kwargs["vmax"]
-
-        if "caption" in kwargs:
-            label = kwargs["caption"]
-            del kwargs["caption"]
-
-        if not isinstance(vis_params, dict):
-            raise TypeError("The vis_params must be a dictionary.")
-
-        if orientation not in ["horizontal", "vertical"]:
-            raise ValueError("The orientation must be either horizontal or vertical.")
-
-        if orientation == "horizontal":
-            width, height = 3.0, 0.3
-        else:
-            width, height = 0.3, 3.0
-
-        if "width" in kwargs:
-            width = kwargs["width"]
-            kwargs.pop("width")
-
-        if "height" in kwargs:
-            height = kwargs["height"]
-            kwargs.pop("height")
-
-        vis_keys = list(vis_params.keys())
-
-        if "min" in vis_params:
-            vmin = vis_params["min"]
-            if type(vmin) not in (int, float):
-                raise ValueError("The provided min value must be scalar type.")
-        else:
-            vmin = 0
-
-        if "max" in vis_params:
-            vmax = vis_params["max"]
-            if type(vmax) not in (int, float):
-                raise ValueError("The provided max value must be scalar type.")
-        else:
-            vmax = 1
-
-        if "opacity" in vis_params:
-            alpha = vis_params["opacity"]
-            if type(alpha) not in (int, float):
-                raise ValueError("The provided opacity value must be type scalar.")
-        elif "alpha" in kwargs:
-            alpha = kwargs["alpha"]
-        else:
-            alpha = 1
-
-        if cmap is not None:
-            cmap = mpl.pyplot.get_cmap(cmap)
-            norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
-
-        if "palette" in vis_keys:
-            hexcodes = to_hex_colors(check_cmap(vis_params["palette"]))
-            if discrete:
-                cmap = mpl.colors.ListedColormap(hexcodes)
-                vals = np.linspace(vmin, vmax, cmap.N + 1)
-                norm = mpl.colors.BoundaryNorm(vals, cmap.N)
-
-            else:
-                cmap = mpl.colors.LinearSegmentedColormap.from_list(
-                    "custom", hexcodes, N=256
-                )
-                norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
-
-        elif cmap is not None:
-            cmap = mpl.pyplot.get_cmap(cmap)
-            norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
-
-        else:
-            raise ValueError(
-                'cmap keyword or "palette" key in vis_params must be provided.'
-            )
-
-        fig, ax = plt.subplots(figsize=(width, height))
-        cb = mpl.colorbar.ColorbarBase(
-            ax, norm=norm, alpha=alpha, cmap=cmap, orientation=orientation, **kwargs
+        colorbar = map_widgets.Colorbar(
+            vis_params,
+            cmap,
+            discrete,
+            label,
+            orientation,
+            transparent_bg,
+            font_size,
+            axis_off,
+            max_width,
+            **kwargs,
         )
-
-        if label is not None:
-            cb.set_label(label, fontsize=font_size)
-        elif "bands" in vis_keys:
-            cb.set_label(vis_params["bands"], fontsize=font_size)
-
-        if axis_off:
-            ax.set_axis_off()
-        ax.tick_params(labelsize=font_size)
-
-        # set the background color to transparent
-        if transparent_bg:
-            fig.patch.set_alpha(0.0)
-
-        output = widgets.Output(layout=widgets.Layout(width=max_width))
         colormap_ctrl = ipyleaflet.WidgetControl(
-            widget=output,
-            position=position,
-            transparent_bg=transparent_bg,
+            widget=colorbar, position=position, transparent_bg=transparent_bg
         )
-        with output:
-            output.outputs = ()
-            plt.show()
 
         self._colorbar = colormap_ctrl
         if layer_name in self.ee_layer_names:
