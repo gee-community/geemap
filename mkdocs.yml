@@ -116,6 +116,7 @@ nav:
           - geemap module: geemap.md
           - kepler module: kepler.md
           - legends module: legends.md
+          - map_widgets module: map_widgets.md
           - ml module: ml.md
           - osm module: osm.md
           - plot module: plot.md
