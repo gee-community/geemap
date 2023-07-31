@@ -111,6 +111,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://geemap.org/map_widgets/</loc>
+         <lastmod>2023-07-31</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://geemap.org/ml/</loc>
          <lastmod>2023-07-31</lastmod>
          <changefreq>daily</changefreq>
