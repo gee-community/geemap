@@ -1015,7 +1015,7 @@ class Map(ipyleaflet.Map):
         layer_name=None,
         font_size=9,
         axis_off=False,
-        max_width="270px",
+        max_width=None,
         **kwargs,
     ):
         """Add a matplotlib colorbar to the map
@@ -1031,7 +1031,7 @@ class Map(ipyleaflet.Map):
             layer_name (str, optional): The layer name associated with the colorbar. Defaults to None.
             font_size (int, optional): Font size for the colorbar. Defaults to 9.
             axis_off (bool, optional): Whether to turn off the axis. Defaults to False.
-            max_width (str, optional): Maximum width of the colorbar in pixels. Defaults to "300px".
+            max_width (str, optional): Maximum width of the colorbar in pixels. Defaults to None.
 
         Raises:
             TypeError: If the vis_params is not a dictionary.

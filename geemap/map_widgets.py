@@ -18,7 +18,7 @@ class Colorbar(ipywidgets.Output):
         transparent_bg=False,
         font_size=9,
         axis_off=False,
-        max_width="270px",
+        max_width=None,
         **kwargs,
     ):
         """Add a matplotlib colorbar to the map.
@@ -32,7 +32,7 @@ class Colorbar(ipywidgets.Output):
             transparent_bg (bool, optional): Whether to use transparent background. Defaults to False.
             font_size (int, optional): Font size for the colorbar. Defaults to 9.
             axis_off (bool, optional): Whether to turn off the axis. Defaults to False.
-            max_width (str, optional): Maximum width of the colorbar in pixels. Defaults to "270px".
+            max_width (str, optional): Maximum width of the colorbar in pixels. Defaults to None.
 
         Raises:
             TypeError: If the vis_params is not a dictionary.
@@ -45,6 +45,12 @@ class Colorbar(ipywidgets.Output):
 
         import matplotlib  # pylint: disable=import-outside-toplevel
         import numpy  # pylint: disable=import-outside-toplevel
+
+        if max_width is None:
+            if orientation == "horizontal":
+                max_width = "270px"
+            else:
+                max_width = "100px"
 
         if isinstance(vis_params, (list, tuple)):
             vis_params = {"palette": list(vis_params)}

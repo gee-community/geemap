@@ -60,6 +60,8 @@ def _ee_object_to_image(ee_object, vis_params):
 
 
 def _validate_palette(palette):
+    if isinstance(palette, tuple):
+        palette = list(palette)
     if isinstance(palette, box.Box):
         if "default" not in palette:
             raise ValueError("The provided palette Box object is invalid.")
@@ -92,7 +94,9 @@ class EEFoliumTileLayer(folium.raster_layers.TileLayer):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
-        self.url_format = _get_tile_url_format(ee_object, _validate_vis_params(vis_params))
+        self.url_format = _get_tile_url_format(
+            ee_object, _validate_vis_params(vis_params)
+        )
         super().__init__(
             tiles=self.url_format,
             attr="Google Earth Engine",
@@ -127,7 +131,9 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
-        self.url_format = _get_tile_url_format(ee_object, _validate_vis_params(vis_params))
+        self.url_format = _get_tile_url_format(
+            ee_object, _validate_vis_params(vis_params)
+        )
         super().__init__(
             url=self.url_format,
             attribution="Google Earth Engine",
