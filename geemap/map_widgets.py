@@ -6,6 +6,8 @@ from . import common
 
 
 class Colorbar(ipywidgets.Output):
+    """A matplotlib colorbar widget that can be added to the map."""
+
     def __init__(
         self,
         vis_params=None,
