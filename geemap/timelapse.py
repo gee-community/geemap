@@ -15,8 +15,12 @@ import shutil
 import ee
 
 from .common import *
-from PIL import Image
 from typing import Union, List
+
+try:
+    from PIL import Image
+except:
+    pass
 
 
 def add_overlay(

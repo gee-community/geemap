@@ -60,6 +60,8 @@ def _ee_object_to_image(ee_object, vis_params):
 
 
 def _validate_palette(palette):
+    if isinstance(palette, tuple):
+        palette = list(palette)
     if isinstance(palette, box.Box):
         if "default" not in palette:
             raise ValueError("The provided palette Box object is invalid.")

@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.25.0 - Jul 30, 2023
+
+**Improvement**
+
+-   Refactor colorbar into an ipywidgets subclass (#1640)
+-   Fixed PIL import error on Windows (#1649)
+-   Added codes to 114_dynamic_world.ipynb
+-   Added book release (#1645)
+-   Updated installation.md (#1643)
+-   Improved Sentinel-2 timelapse function (#1635)
+-   Fixed Sentinel-2 timelapse bug (#1633)
+
+**Contributors**
+
+@eocce @giswqs @naschmitz @osgeokr
+
 ## v0.24.4 - Jul 17, 2023
 
 **Improvement**

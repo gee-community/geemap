@@ -32,7 +32,7 @@ conda create -n gee python=3.10
 conda activate gee
 conda install -n base mamba -c conda-forge
 mamba install geemap -c conda-forge
-mamba geopandas localtileserver -c conda-forge
+mamba install geopandas localtileserver -c conda-forge
 ```
 
 All the optional dependencies are listed in [requirements_all.txt](https://github.com/gee-community/geemap/blob/master/requirements_all.txt), which can be installed using one of the following:
