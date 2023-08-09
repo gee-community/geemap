@@ -20,7 +20,7 @@ jobs:
               uses: actions/setup-python@v4
               with:
                   python-version: ${{ matrix.python-version }}
-            - name: Install dependencies
-              run: |
-                  pip install .
-                  python -c "import geemap; print('geemap import successful')"
+            - name: Install package
+              run: pip install .
+            - name: Test import
+              run: python -c "import geemap; print('geemap import successful')"
