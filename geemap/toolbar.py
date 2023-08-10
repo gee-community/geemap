@@ -21,6 +21,7 @@ from typing import Callable
 
 from .common import *
 from .timelapse import *
+from .geemap import MapDrawControl
 
 
 class Toolbar(widgets.VBox):
@@ -2157,7 +2158,8 @@ def collect_samples(m):
         if change["new"] == "Apply":
             if len(color.value) != 7:
                 color.value = "#3388ff"
-            draw_control = ipyleaflet.DrawControl(
+            draw_control = MapDrawControl(
+                host_map = m,
                 marker={"shapeOptions": {"color": color.value}, "repeatMode": False},
                 rectangle={"shapeOptions": {"color": color.value}, "repeatMode": False},
                 polygon={"shapeOptions": {"color": color.value}, "repeatMode": False},
@@ -2166,19 +2168,8 @@ def collect_samples(m):
                 edit=False,
                 remove=False,
             )
-
-            controls = []
-            old_draw_control = None
-            for control in m.controls:
-                if isinstance(control, ipyleaflet.DrawControl):
-                    controls.append(draw_control)
-                    old_draw_control = control
-
-                else:
-                    controls.append(control)
-
-            m.controls = tuple(controls)
-            old_draw_control.close()
+            m.remove_draw_control()
+            m.add(draw_control)
             m.draw_control = draw_control
 
             train_props = {}
@@ -2197,52 +2188,10 @@ def collect_samples(m):
                 train_props["color"] = color.value
 
             # Handles draw events
-            def handle_draw(target, action, geo_json):
-                from .ee_tile_layers import EELeafletTileLayer
-
-                try:
-                    geom = geojson_to_ee(geo_json, False)
-                    m.user_roi = geom
-
-                    if len(train_props) > 0:
-                        feature = ee.Feature(geom, train_props)
-                    else:
-                        feature = ee.Feature(geom)
-                    m.draw_last_feature = feature
-                    if not hasattr(m, "_draw_count"):
-                        m._draw_count = 0
-                    if action == "deleted" and len(m.draw_features) > 0:
-                        m.draw_features.remove(feature)
-                        m._draw_count -= 1
-                    else:
-                        m.draw_features.append(feature)
-                        m._draw_count += 1
-                    collection = ee.FeatureCollection(m.draw_features)
-                    m.user_rois = collection
-                    ee_draw_layer = EELeafletTileLayer(
-                        collection, {"color": "blue"}, "Drawn Features", False, 0.5
-                    )
-                    draw_layer_index = m.find_layer_index("Drawn Features")
-
-                    if draw_layer_index == -1:
-                        m.add_layer(ee_draw_layer)
-                        m.draw_layer = ee_draw_layer
-                    else:
-                        m.substitute_layer(m.draw_layer, ee_draw_layer)
-                        m.draw_layer = ee_draw_layer
-
-                except Exception as e:
-                    m._draw_count = 0
-                    m.draw_features = []
-                    m.draw_last_feature = None
-                    m.draw_layer = None
-                    m.user_roi = None
-                    m._roi_start = False
-                    m._roi_end = False
-                    print("There was an error creating Earth Engine Feature.")
-                    raise Exception(e)
-
-            draw_control.on_draw(handle_draw)
+            def set_properties(_, geometry):
+                if len(train_props) > 0:
+                    draw_control.set_geometry_properties(geometry, train_props)
+            draw_control.on_geometry_create(set_properties)
 
         elif change["new"] == "Clear":
             prop_text1.value = ""
@@ -2255,6 +2204,9 @@ def collect_samples(m):
             if m.training_ctrl is not None and m.training_ctrl in m.controls:
                 m.remove_control(m.training_ctrl)
             full_widget.close()
+            # Restore default draw control.
+            m.remove_draw_control()
+            m.add_draw_control()
         buttons.value = None
 
     buttons.observe(button_clicked, "value")
