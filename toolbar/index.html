@@ -4826,7 +4826,10 @@
                         <span class="k">else</span><span class="p">:</span>
                             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_vis_widget&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                                 <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="o">=</span> <span class="kc">None</span>
-                            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">(</span>
+                                <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_vis_control&quot;</span><span class="p">)</span>
+                                <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                            <span class="p">):</span>
                                 <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
                                     <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span><span class="p">)</span>
                                 <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="o">=</span> <span class="kc">None</span>
