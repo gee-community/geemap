@@ -1071,7 +1071,10 @@ def layer_manager_gui(
                         else:
                             if hasattr(m, "_vis_widget") and m._vis_widget is not None:
                                 m._vis_widget = None
-                            if m._vis_control is not None:
+                            if (
+                                hasattr(m, "_vis_control")
+                                and m._vis_control is not None
+                            ):
                                 if m._vis_control in m.controls:
                                     m.remove_control(m._vis_control)
                                 m._vis_control = None
