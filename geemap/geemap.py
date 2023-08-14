@@ -75,9 +75,7 @@ class MapDrawControl(ipyleaflet.DrawControl, map_widgets.AbstractDrawControl):
                 self._roi_end = True
                 self._roi_start = False
             except Exception as e:
-                self.geometries = []
-                self.properties = []
-                self.last_geometry = None
+                self.reset(clear_draw_control=False)
                 self._roi_start = False
                 self._roi_end = False
                 print("There was an error creating Earth Engine Feature.")

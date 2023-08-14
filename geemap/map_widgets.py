@@ -434,7 +434,7 @@ class AbstractDrawControl(object):
     def count(self):
         return len(self.geometries)
 
-    def reset(self):
+    def reset(self, clear_draw_control=True):
         """Resets the draw controls."""
         if self.layer is not None:
             self.host_map.remove_layer(self.layer)
@@ -442,7 +442,8 @@ class AbstractDrawControl(object):
         self.properties = []
         self.last_geometry = None
         self.layer = None
-        self._clear_draw_control()
+        if clear_draw_control:
+            self._clear_draw_control()
 
     def remove_geometry(self, geometry):
         index = self.geometries.index(geometry)
