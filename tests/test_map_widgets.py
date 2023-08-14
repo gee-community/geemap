@@ -296,7 +296,7 @@ class TestInspector(unittest.TestCase):
             map_widgets.Inspector(None)
 
     def test_inspector(self):
-        """Tests that the inspector's inital UI is set up properly."""
+        """Tests that the inspector's initial UI is set up properly."""
         self.assertEqual(self.map_fake.cursor_style, "crosshair")
         self.assertFalse(self._point_checkbox.value)
         self.assertTrue(self._pixels_checkbox.value)
