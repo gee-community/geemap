@@ -2788,9 +2788,10 @@ class Map(ipyleaflet.Map):
             position (str, optional): The position of the toolbar. Defaults to "topright".
         """
 
-        from .toolbar import main_toolbar
-
-        main_toolbar(self, position, **kwargs)
+        from .toolbar import Toolbar, main_tools, extra_tools
+        self._toolbar = Toolbar(self, main_tools, extra_tools)
+        toolbar_control = ipyleaflet.WidgetControl(widget=self._toolbar, position=position)
+        self.add(toolbar_control)
 
     def add_plot_gui(self, position="topright", **kwargs):
         """Adds the plot widget to the map.
@@ -4145,10 +4146,7 @@ class Map(ipyleaflet.Map):
     def toolbar_reset(self):
         """Reset the toolbar so that no tool is selected."""
         if hasattr(self, "_toolbar"):
-            toolbar_grid = self._toolbar
-            if toolbar_grid is not None:
-                for tool in toolbar_grid.children:
-                    tool.value = False
+            self._toolbar.reset()
 
     def add_raster(
         self,

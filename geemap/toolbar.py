@@ -10,327 +10,198 @@
 
 import os
 
+from dataclasses import dataclass
 import ee
 import ipyevents
 import ipyleaflet
 import ipywidgets as widgets
 from ipyfilechooser import FileChooser
 from IPython.core.display import display
+from typing import Callable
 
 from .common import *
 from .timelapse import *
 
 
-def main_toolbar(m, position="topright", **kwargs):
-    """Add a toolbar control to the map
+class Toolbar(widgets.VBox):
+    """A toolbar that can be added to the map."""
 
-    Args:
-        m (geemap.Map): An instance of geemap.Map.
-        position (str, optional): Position of the toolbar. Defaults to "topright".
-    """
+    @dataclass
+    class Item:
+        """A represenation of an item in the toolbar.
 
-    tools = {
-        "info": {"name": "inspector", "tooltip": "Inspector"},
-        "bar-chart": {"name": "plotting", "tooltip": "Plotting"},
-        "globe": {
-            "name": "timelapse",
-            "tooltip": "Create timelapse",
-        },
-        "map": {
-            "name": "basemap",
-            "tooltip": "Change basemap",
-        },
-        "retweet": {
-            "name": "convert_js",
-            "tooltip": "Convert Earth Engine JavaScript to Python",
-        },
-        "plus": {
-            "name": "expand",
-            "tooltip": "Expand toolbar",
-        },
-        "eraser": {
-            "name": "eraser",
-            "tooltip": "Remove all drawn features",
-        },
-        "folder-open": {
-            "name": "open_data",
-            "tooltip": "Open local vector/raster data",
-        },
-        "gears": {
-            "name": "whitebox",
-            "tooltip": "WhiteboxTools for local geoprocessing",
-        },
-        # "google": {
-        #     "name": "geetoolbox",
-        #     "tooltip": "GEE Toolbox for cloud computing",
-        # },
-        "fast-forward": {
-            "name": "timeslider",
-            "tooltip": "Activate timeslider",
-        },
-        "hand-o-up": {
-            "name": "draw",
-            "tooltip": "Collect training samples",
-        },
-        "line-chart": {
-            "name": "transect",
-            "tooltip": "Creating and plotting transects",
-        },
-        "random": {
-            "name": "sankee",
-            "tooltip": "Sankey plots",
-        },
-        "adjust": {
-            "name": "planet",
-            "tooltip": "Planet imagery",
-        },
-        "info-circle": {
-            "name": "cog-inspector",
-            "tooltip": "Get COG/STAC pixel value",
-        },
-        "minus": {
-            "name": "collapse",
-            "tooltip": "Collapse toolbar",
-        },
-        # "spinner": {
-        #     "name": "placehold2",
-        #     "tooltip": "This is a placehold",
-        # },
-        # "question": {
-        #     "name": "help",
-        #     "tooltip": "Get help",
-        # },
-    }
+        Attributes:
+            icon: The icon to use for the item, from https://fontawesome.com/icons.
+            tooltip: The tooltip text to show a user on hover.
+            callback: A callback function to execute when the item icon is clicked.
+                Its signature should be `callback(map, selected)`, where `map` is the
+                host map and `selected` is a boolean indicating if the user selected
+                or unselected the tool.
+            reset: Whether to reset the selection after the callback has finished.
+        """
 
-    icons = list(tools.keys())[:-1]
-    tooltips = [item["tooltip"] for item in list(tools.values())]
+        icon: str
+        tooltip: str
+        callback: Callable[[any, bool], None]
+        reset: bool = True
 
-    icon_width = "32px"
-    icon_height = "32px"
-    n_cols = 3
-    n_rows = -int(-(len(icons) / n_cols))
+    ICON_WIDTH = "32px"
+    ICON_HEIGHT = "32px"
+    NUM_COLS = 3
 
-    all_children = [
-        widgets.ToggleButton(
-            layout=widgets.Layout(
-                width="auto", height="auto", padding="0px 0px 0px 4px"
-            ),
-            button_style="primary",
-            icon=icons[i],
-            tooltip=tooltips[i],
+    _TOGGLE_TOOL_EXPAND_ICON = "plus"
+    _TOGGLE_TOOL_EXPAND_TOOLTIP = "Expand toolbar"
+    _TOGGLE_TOOL_COLLAPSE_ICON = "minus"
+    _TOGGLE_TOOL_COLLAPSE_TOOLTIP = "Collapse toolbar"
+
+    def __init__(self, host_map, main_tools, extra_tools=None):
+        """Adds a toolbar with `main_tools` and `extra_tools` to the `host_map`."""
+        if not main_tools:
+            raise ValueError("A toolbar cannot be initialized without `main_tools`.")
+        self.host_map = host_map
+        self.toggle_tool = Toolbar.Item(
+            icon=self._TOGGLE_TOOL_EXPAND_ICON,
+            tooltip=self._TOGGLE_TOOL_EXPAND_TOOLTIP,
+            callback=self._toggle_callback,
         )
-        for i in range(len(icons))
-    ]
 
-    expand_button = all_children[5]
-
-    toolbar_grid = widgets.GridBox(
-        children=all_children[:6],
-        layout=widgets.Layout(
-            width="109px",
-            grid_template_columns=(icon_width + " ") * n_cols,
-            grid_template_rows=(icon_height + " ") * 2,
-            grid_gap="1px 1px",
-            padding="5px",
-        ),
-    )
-    m._toolbar = toolbar_grid
-
-    def tool_callback(change):
-        if change["new"]:
-            current_tool = change["owner"]
-            for tool in toolbar_grid.children:
-                if tool is not current_tool:
-                    tool.value = False
-            tool = change["owner"]
-            tool_name = tools[tool.icon]["name"]
-            if tool_name == "expand":
-                toolbar_grid.layout.grid_template_rows = (icon_height + " ") * n_rows
-                toolbar_grid.children = all_children
-                expand_button.icon = "minus"
-                tool.value = False
-            if tool_name == "collapse":
-                toolbar_grid.layout.grid_template_rows = (icon_height + " ") * 2
-                toolbar_grid.children = all_children[:6]
-                expand_button.icon = "plus"
-                tool.value = False
-            elif tool_name == "eraser":
-                m.remove_drawn_features()
-                tool.value = False
-            elif tool_name == "inspector":
-                if not hasattr(m, "inspector_control"):
-                    m.add_inspector()
-                tool.value = False
-            elif tool_name == "plotting":
-                ee_plot_gui(m)
-            elif tool_name == "open_data":
-                open_data_widget(m)
-            elif tool_name == "convert_js":
-                convert_js2py(m)
-            elif tool_name == "whitebox":
-                import whiteboxgui.whiteboxgui as wbt
-
-                tools_dict = wbt.get_wbt_dict()
-                wbt_toolbox = wbt.build_toolbox(
-                    tools_dict,
-                    max_width="800px",
-                    max_height="500px",
-                    sandbox_path=m.sandbox_path,
-                )
-                wbt_control = ipyleaflet.WidgetControl(
-                    widget=wbt_toolbox, position="bottomright"
-                )
-                m.whitebox = wbt_control
-                m.add(wbt_control)
-            elif tool_name == "geetoolbox":
-                tools_dict = get_tools_dict()
-                gee_toolbox = build_toolbox(
-                    tools_dict, max_width="800px", max_height="500px"
-                )
-                geetoolbox_control = ipyleaflet.WidgetControl(
-                    widget=gee_toolbox, position="bottomright"
-                )
-                m.geetoolbox = geetoolbox_control
-                m.add(geetoolbox_control)
-
-            elif tool_name == "basemap":
-                change_basemap(m)
-            elif tool_name == "timelapse":
-                timelapse_gui(m)
-                m.toolbar_reset()
-            elif tool_name == "timeslider":
-                time_slider(m)
-                m.toolbar_reset()
-            elif tool_name == "draw":
-                m.training_ctrl = None
-                collect_samples(m)
-            elif tool_name == "transect":
-                plot_transect(m)
-            elif tool_name == "sankee":
-                sankee_gui(m)
-            elif tool_name == "planet":
-                try:
-                    split_basemaps(m, layers_dict=planet_tiles())
-                except Exception as e:
-                    print(e)
-                m.toolbar_reset()
-            elif tool_name == "cog-inspector":
-                inspector_gui(m)
-
-            elif tool_name == "help":
-                import webbrowser
-
-                webbrowser.open_new_tab("https://geemap.org")
-                current_tool.value = False
-
-            # current_tool.value = False
-
+        if extra_tools:
+            all_tools = main_tools + [self.toggle_tool] + extra_tools
         else:
-            tool = change["owner"]
-            tool_name = tools[tool.icon]["name"]
-            if tool_name == "inspector":
-                pass
-            elif tool_name == "plotting":
-                if not hasattr(m, "_plot_dropdown_widget"):
-                    m._plot_dropdown_widget = None
-                if not hasattr(m, "_plot_dropdown_control"):
-                    m._plot_dropdown_control = None
-                plot_dropdown_widget = m._plot_dropdown_widget
-                plot_dropdown_control = m._plot_dropdown_control
-                if plot_dropdown_control in m.controls:
-                    m.remove_control(plot_dropdown_control)
-                del plot_dropdown_widget
-                del plot_dropdown_control
+            all_tools = main_tools
+        icons = [tool.icon for tool in all_tools]
+        tooltips = [tool.tooltip for tool in all_tools]
+        callbacks = [tool.callback for tool in all_tools]
+        resets = [tool.reset for tool in all_tools]
+        self.num_collapsed_tools = len(main_tools) + 1
+        # -(-a//b) is the same as math.ceil(a/b)
+        self.num_rows_expanded = -(-(len(all_tools) // self.NUM_COLS))
+        self.num_rows_collapsed = -(-(self.num_collapsed_tools) // self.NUM_COLS)
 
-                if not hasattr(m, "_plot_widget"):
-                    m._plot_widget = None
-                if not hasattr(m, "_plot_control"):
-                    m._plot_control = None
+        self.all_widgets = [
+            widgets.ToggleButton(
+                layout=widgets.Layout(
+                    width="auto", height="auto", padding="0px 0px 0px 4px"
+                ),
+                button_style="primary",
+                icon=icons[i],
+                tooltip=tooltips[i],
+            )
+            for i in range(len(all_tools))
+        ]
+        self.toggle_widget = self.all_widgets[len(main_tools)] if extra_tools else None
 
-                if m._plot_control in m.controls:
-                    plot_control = m._plot_control
-                    plot_widget = m._plot_widget
-                    m.remove_control(plot_control)
-                    m._plot_control = None
-                    m._plot_widget = None
-                    del plot_control
-                    del plot_widget
-                if (
-                    hasattr(m, "_plot_marker_cluster")
-                    and m._plot_marker_cluster is not None
-                    and m._plot_marker_cluster in m.layers
-                ):
-                    m.remove_layer(m._plot_marker_cluster)
-                if m.draw_control_lite in m.controls:
-                    m.remove_control(m.draw_control_lite)
-                m.add(m.draw_control)
-            elif tool_name == "whitebox":
-                if m.whitebox is not None and m.whitebox in m.controls:
-                    m.remove_control(m.whitebox)
-            elif tool_name == "convert_js":
-                if m._convert_ctrl is not None and m._convert_ctrl in m.controls:
-                    m.remove_control(m._convert_ctrl)
+        # We start with a collapsed grid of just the main tools and the toggle one.
+        self.grid = widgets.GridBox(
+            children=self.all_widgets[: self.num_collapsed_tools],
+            layout=widgets.Layout(
+                width="109px",
+                grid_template_columns=(self.ICON_WIDTH + " ") * self.NUM_COLS,
+                grid_template_rows=(self.ICON_HEIGHT + " ") * self.num_rows_collapsed,
+                grid_gap="1px 1px",
+                padding="5px",
+            ),
+        )
 
-    for tool in all_children:
-        tool.observe(tool_callback, "value")
+        def curry_callback(callback, should_reset_after, widget):
+            def returned_callback(change):
+                if change["type"] != "change":
+                    return
+                # Unselect all other tool widgets.
+                self._reset_others(widget)
+                callback(self.host_map, change["new"])
+                if should_reset_after:
+                    widget.value = False
 
-    toolbar_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Toolbar",
-        icon="wrench",
-        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
-    )
+            return returned_callback
 
-    layers_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Layers",
-        icon="server",
-        layout=widgets.Layout(height="28px", width="72px"),
-    )
+        for id, widget in enumerate(self.all_widgets):
+            widget.observe(curry_callback(callbacks[id], resets[id], widget), "value")
 
-    toolbar_widget = widgets.VBox()
-    toolbar_widget.children = [toolbar_button]
-    toolbar_header = widgets.HBox()
-    toolbar_header.children = [layers_button, toolbar_button]
-    toolbar_footer = widgets.VBox()
-    toolbar_footer.children = [toolbar_grid]
+        self.toolbar_button = widgets.ToggleButton(
+            value=False,
+            tooltip="Toolbar",
+            icon="wrench",
+            layout=widgets.Layout(
+                width="28px", height="28px", padding="0px 0px 0px 4px"
+            ),
+        )
 
-    toolbar_event = ipyevents.Event(
-        source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
-    )
+        self.layers_button = widgets.ToggleButton(
+            value=False,
+            tooltip="Layers",
+            icon="server",
+            layout=widgets.Layout(height="28px", width="72px"),
+        )
 
-    def handle_toolbar_event(event):
+        self.toolbar_header = widgets.HBox()
+        self.toolbar_header.children = [self.layers_button, self.toolbar_button]
+        self.toolbar_footer = widgets.VBox()
+        self.toolbar_footer.children = [self.grid]
+
+        self.toolbar_button.observe(self._toolbar_btn_click, "value")
+        self.layers_button.observe(self._layers_btn_click, "value")
+
+        super().__init__(children=[self.toolbar_button])
+        toolbar_event = ipyevents.Event(
+            source=self, watched_events=["mouseenter", "mouseleave"]
+        )
+        toolbar_event.on_dom_event(self._handle_toolbar_event)
+
+    def reset(self):
+        """Resets the toolbar so that no widget is selected."""
+        for widget in self.all_widgets:
+            widget.value = False
+
+    def _reset_others(self, current):
+        for other in self.all_widgets:
+            if other is not current:
+                other.value = False
+
+    def _toggle_callback(self, m, selected):
+        del m  # unused
+        if not selected:
+            return
+        if self.toggle_widget.icon == self._TOGGLE_TOOL_EXPAND_ICON:
+            self.grid.layout.grid_template_rows = (
+                self.ICON_HEIGHT + " "
+            ) * self.num_rows_expanded
+            self.grid.children = self.all_widgets
+            self.toggle_widget.tooltip = self._TOGGLE_TOOL_COLLAPSE_TOOLTIP
+            self.toggle_widget.icon = self._TOGGLE_TOOL_COLLAPSE_ICON
+        elif self.toggle_widget.icon == self._TOGGLE_TOOL_COLLAPSE_ICON:
+            self.grid.layout.grid_template_rows = (
+                self.ICON_HEIGHT + " "
+            ) * self.num_rows_collapsed
+            self.grid.children = self.all_widgets[: self.num_collapsed_tools]
+            self.toggle_widget.tooltip = self._TOGGLE_TOOL_EXPAND_TOOLTIP
+            self.toggle_widget.icon = self._TOGGLE_TOOL_EXPAND_ICON
+
+    def _handle_toolbar_event(self, event):
         if event["type"] == "mouseenter":
-            toolbar_widget.children = [toolbar_header, toolbar_footer]
+            self.children = [self.toolbar_header, self.toolbar_footer]
         elif event["type"] == "mouseleave":
-            if not toolbar_button.value:
-                toolbar_widget.children = [toolbar_button]
-                toolbar_button.value = False
-                layers_button.value = False
+            if not self.toolbar_button.value:
+                self.children = [self.toolbar_button]
+                self.toolbar_button.value = False
+                self.layers_button.value = False
 
-    toolbar_event.on_dom_event(handle_toolbar_event)
-
-    def toolbar_btn_click(change):
+    def _toolbar_btn_click(self, change):
         if change["new"]:
-            layers_button.value = False
-            toolbar_widget.children = [toolbar_header, toolbar_footer]
+            self.layers_button.value = False
+            self.children = [self.toolbar_header, self.toolbar_footer]
         else:
-            if not layers_button.value:
-                toolbar_widget.children = [toolbar_button]
+            if not self.layers_button.value:
+                self.children = [self.toolbar_button]
 
-    toolbar_button.observe(toolbar_btn_click, "value")
-
-    def layers_btn_click(change):
+    def _layers_btn_click(self, change):
         if change["new"]:
             # Create Layer Manager Widget
-            toolbar_footer.children = layer_manager_gui(m, return_widget=True)
+            self.toolbar_footer.children = layer_manager_gui(
+                self.host_map, return_widget=True
+            )
         else:
-            toolbar_footer.children = [toolbar_grid]
-
-    layers_button.observe(layers_btn_click, "value")
-    toolbar_control = ipyleaflet.WidgetControl(widget=toolbar_widget, position=position)
-
-    m.add(toolbar_control)
+            self.toolbar_footer.children = [self.grid]
 
 
 def inspector_gui(m=None):
@@ -1145,6 +1016,46 @@ def layer_manager_gui(
         if layer_control not in m.controls:
             m.add_control(layer_control)
             m.layer_manager = layer_control
+
+
+def _plotting_tool_callback(map, selected):
+    if selected:
+        ee_plot_gui(map)
+        return
+    # User has unselected tool.
+    if not hasattr(map, "_plot_dropdown_widget"):
+        map._plot_dropdown_widget = None
+    if not hasattr(map, "_plot_dropdown_control"):
+        map._plot_dropdown_control = None
+    plot_dropdown_widget = map._plot_dropdown_widget
+    plot_dropdown_control = map._plot_dropdown_control
+    if plot_dropdown_control in map.controls:
+        map.remove_control(plot_dropdown_control)
+    del plot_dropdown_widget
+    del plot_dropdown_control
+
+    if not hasattr(map, "_plot_widget"):
+        map._plot_widget = None
+    if not hasattr(map, "_plot_control"):
+        map._plot_control = None
+
+    if map._plot_control in map.controls:
+        plot_control = map._plot_control
+        plot_widget = map._plot_widget
+        map.remove_control(plot_control)
+        map._plot_control = None
+        map._plot_widget = None
+        del plot_control
+        del plot_widget
+    if (
+        hasattr(map, "_plot_marker_cluster")
+        and map._plot_marker_cluster is not None
+        and map._plot_marker_cluster in map.layers
+    ):
+        map.remove_layer(map._plot_marker_cluster)
+    if map.draw_control_lite in map.controls:
+        map.remove_control(map.draw_control_lite)
+    map.add(map.draw_control)
 
 
 def ee_plot_gui(m, position="topright", **kwargs):
@@ -2325,6 +2236,15 @@ def open_data_widget(m):
     m._tool_output_ctrl = tool_output_ctrl
 
 
+def _convert_js_tool_callback(map, selected):
+    if selected:
+        convert_js2py(map)
+        return
+    # User has unselected tool.
+    if map._convert_ctrl is not None and map._convert_ctrl in map.controls:
+        map.remove_control(map._convert_ctrl)
+
+
 def convert_js2py(m):
     """A widget for converting Earth Engine JavaScript to Python.
 
@@ -2381,6 +2301,12 @@ def convert_js2py(m):
     widget_control = ipyleaflet.WidgetControl(widget=full_widget, position="topright")
     m.add_control(widget_control)
     m._convert_ctrl = widget_control
+
+
+def _collect_samples_tool_callback(map, selected):
+    if selected:
+        map.training_ctrl = None
+        collect_samples(map)
 
 
 def collect_samples(m):
@@ -4826,6 +4752,15 @@ def sankee_gui(m=None):
         return toolbar_widget
 
 
+def _split_basemaps_tool_callback(map, selected):
+    if selected:
+        try:
+            split_basemaps(map, layers_dict=planet_tiles())
+        except Exception as e:
+            print(e)
+        return
+
+
 def split_basemaps(
     m, layers_dict=None, left_name=None, right_name=None, width="120px", **kwargs
 ):
@@ -4915,6 +4850,147 @@ def split_basemaps(
         split_control.right_layer.url = layers_dict[right_dropdown.value].url
 
     right_dropdown.observe(right_change, "value")
+
+
+def _whitebox_tool_callback(map, selected):
+    if selected:
+        import whiteboxgui.whiteboxgui as wbt
+
+        tools_dict = wbt.get_wbt_dict()
+        wbt_toolbox = wbt.build_toolbox(
+            tools_dict,
+            max_width="800px",
+            max_height="500px",
+            sandbox_path=map.sandbox_path,
+        )
+        wbt_control = ipyleaflet.WidgetControl(
+            widget=wbt_toolbox, position="bottomright"
+        )
+        map.whitebox = wbt_control
+        map.add(wbt_control)
+        return
+    # User has unselected tool.
+    if map.whitebox is not None and map.whitebox in map.controls:
+        map.remove_control(map.whitebox)
+
+
+def _gee_toolbox_tool_callback(map, selected):
+    if not selected:
+        return
+    tools_dict = get_tools_dict()
+    gee_toolbox = build_toolbox(tools_dict, max_width="800px", max_height="500px")
+    geetoolbox_control = ipyleaflet.WidgetControl(
+        widget=gee_toolbox, position="bottomright"
+    )
+    map.geetoolbox = geetoolbox_control
+    map.add(geetoolbox_control)
+
+
+def _open_help_page_callback(map, selected):
+    del map
+    if selected:
+        import webbrowser
+
+        webbrowser.open_new_tab("https://geemap.org")
+
+
+main_tools = [
+    Toolbar.Item(
+        icon="info",
+        tooltip="Inspector",
+        callback=lambda m, selected: m.add_inspector()
+        if selected and not hasattr(m, "inspector_control")
+        else None,
+    ),
+    Toolbar.Item(
+        icon="bar-chart",
+        tooltip="Plotting",
+        callback=_plotting_tool_callback,
+        reset=False,
+    ),
+    Toolbar.Item(
+        icon="globe",
+        tooltip="Create timelapse",
+        callback=lambda m, selected: timelapse_gui(m) if selected else None,
+    ),
+    Toolbar.Item(
+        icon="map",
+        tooltip="Change basemap",
+        callback=lambda m, selected: change_basemap(m) if selected else None,
+        reset=False,
+    ),
+    Toolbar.Item(
+        icon="retweet",
+        tooltip="Convert Earth Engine JavaScript to Python",
+        callback=_convert_js_tool_callback,
+        reset=False,
+    ),
+]
+
+extra_tools = [
+    Toolbar.Item(
+        icon="eraser",
+        tooltip="Remove all drawn features",
+        callback=lambda m, selected: max.remove_drawn_features() if selected else None,
+    ),
+    Toolbar.Item(
+        icon="folder-open",
+        tooltip="Open local vector/raster data",
+        callback=lambda m, selected: open_data_widget(m) if selected else None,
+        reset=False,
+    ),
+    Toolbar.Item(
+        icon="gears",
+        tooltip="WhiteboxTools for local geoprocessing",
+        callback=_whitebox_tool_callback,
+        reset=False,
+    ),
+    Toolbar.Item(
+        icon="google",
+        tooltip="GEE Toolbox for cloud computing",
+        callback=_gee_toolbox_tool_callback,
+        reset=False,
+    ),
+    Toolbar.Item(
+        icon="fast-forward",
+        tooltip="Activate timeslider",
+        callback=lambda m, selected: time_slider(m) if selected else None,
+    ),
+    Toolbar.Item(
+        icon="hand-o-up",
+        tooltip="Collect training samples",
+        callback=_collect_samples_tool_callback,
+        reset=False,
+    ),
+    Toolbar.Item(
+        icon="line-chart",
+        tooltip="Creating and plotting transects",
+        callback=lambda m, selected: plot_transect(m) if selected else None,
+        reset=False,
+    ),
+    Toolbar.Item(
+        icon="random",
+        tooltip="Sankey plots",
+        callback=lambda m, selected: sankee_gui(m) if selected else None,
+        reset=False,
+    ),
+    Toolbar.Item(
+        icon="adjust",
+        tooltip="Planet imagery",
+        callback=_split_basemaps_tool_callback,
+    ),
+    Toolbar.Item(
+        icon="info-circle",
+        tooltip="Get COG/STAC pixel value",
+        callback=lambda m, selected: inspector_gui(m) if selected else None,
+        reset=False,
+    ),
+    Toolbar.Item(
+        icon="question",
+        tooltip="Get help",
+        callback=_open_help_page_callback,
+    ),
+]
 
 
 def plotly_toolbar(
