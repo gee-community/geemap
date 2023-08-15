@@ -396,3 +396,23 @@ class TestInspector(unittest.TestCase):
         self.assertIsNotNone(self._query_node(layer_3_root, "linearid: 110469267091"))
         self.assertIsNotNone(self._query_node(layer_3_root, "mtfcc: S1400"))
         self.assertIsNotNone(self._query_node(layer_3_root, "rttyp: "))
+
+    def test_map_click_twice(self):
+        """Tests that clicking the map a second time removes the original output."""
+        self.map_fake.ee_layer_dict = {
+            "test-map-1": {
+                "ee_object": ee.Image(1),
+                "ee_layer": fake_map.FakeEeTileLayer(visible=True),
+                "vis_params": None,
+            },
+        }
+        self.map_fake.scale = 32
+        self.map_fake.click((1, 2), "click")
+        self.map_fake.click((4, 1), "click")
+
+        self.assertIsNotNone(
+            self._query_node(self.inspector, "Point (1.00, 4.00) at 32m/px")
+        )
+        self.assertIsNone(
+            self._query_node(self.inspector, "Point (2.00, 1.00) at 1024m/px")
+        )
