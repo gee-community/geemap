@@ -28,7 +28,7 @@ class Toolbar(widgets.VBox):
 
     @dataclass
     class Item:
-        """A represenation of an item in the toolbar.
+        """A representation of an item in the toolbar.
 
         Attributes:
             icon: The icon to use for the item, from https://fontawesome.com/icons.
