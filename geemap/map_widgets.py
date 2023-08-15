@@ -370,13 +370,10 @@ class Inspector(ipywidgets.VBox):
                     geom.type().compareTo(ee.String("Point")), point, bbox
                 )
                 ee_object = ee_object.filterBounds(is_point).first()
-                nodes.append(
-                    common.get_info(
-                        ee_object,
-                        layer_name,
-                        opened=self._expand_objects_tree,
-                        return_node=True,
-                    )
+                tree_node = common.get_info(
+                    ee_object, layer_name, self._expand_objects_tree, True
                 )
+                if tree_node:
+                    nodes.append(tree_node)
 
         return self._root_node("Objects", nodes)
