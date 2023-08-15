@@ -36,11 +36,11 @@ class TestToolbar(unittest.TestCase):
         self.callback_calls += 1
 
     def test_no_tools_throws(self):
-        map = geemap.Map()
+        map = geemap.Map(ee_initialize=False)
         self.assertRaises(ValueError, Toolbar, map, [], [])
 
     def test_only_main_tools_exist_if_no_extra_tools(self):
-        map = geemap.Map()
+        map = geemap.Map(ee_initialize=False)
         toolbar = Toolbar(map, [self.item], [])
         self.assertIsNone(toolbar.toggle_widget)
         self.assertEqual(len(toolbar.all_widgets), 1)
@@ -49,7 +49,7 @@ class TestToolbar(unittest.TestCase):
         self.assertFalse(toolbar.all_widgets[0].value)
 
     def test_all_tools_and_toggle_exist_if_extra_tools(self):
-        map = geemap.Map()
+        map = geemap.Map(ee_initialize=False)
         toolbar = Toolbar(map, [self.item], [self.no_reset_item])
         self.assertIsNotNone(toolbar.toggle_widget)
         self.assertEqual(len(toolbar.all_widgets), 3)
@@ -58,7 +58,7 @@ class TestToolbar(unittest.TestCase):
         self.assertFalse(toolbar.all_widgets[2].value)
 
     def test_toggle_expands_and_collapses(self):
-        map = geemap.Map()
+        map = geemap.Map(ee_initialize=False)
         toolbar = Toolbar(map, [self.item], [self.no_reset_item])
         self.assertEqual(len(toolbar.grid.children), 2)
         self.assertIsNotNone(toolbar.toggle_widget)
@@ -83,7 +83,7 @@ class TestToolbar(unittest.TestCase):
         self.assertFalse(toggle.value)
 
     def test_triggers_callbacks(self):
-        map = geemap.Map()
+        map = geemap.Map(ee_initialize=False)
         toolbar = Toolbar(map, [self.item, self.no_reset_item])
         self.assertIsNone(self.last_called_with_selected)
 
