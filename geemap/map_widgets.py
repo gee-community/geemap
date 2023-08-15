@@ -1,6 +1,5 @@
 """Various ipywidgets that can be added to a map."""
 
-import ipyleaflet
 import ipywidgets
 
 from . import common
