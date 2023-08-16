@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 
 """Tests for `map_widgets` module."""
-
-
 import unittest
-from unittest.mock import patch, MagicMock, ANY
+from unittest.mock import patch, MagicMock, Mock, ANY
+
+import ipytree
+import ipywidgets
+import ee
+
 from geemap import map_widgets
+from tests import fake_ee, fake_map
 
 
 class TestColorbar(unittest.TestCase):
@@ -220,3 +224,195 @@ class TestColorbar(unittest.TestCase):
     def test_colorbar_vis_params_throws_for_not_dict(self):
         with self.assertRaisesRegex(TypeError, "vis_params must be a dictionary"):
             map_widgets.Colorbar(vis_params="NOT a dict")
+
+
+@patch.object(ee, "Algorithms", fake_ee.Algorithms)
+@patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
+@patch.object(ee, "Feature", fake_ee.Feature)
+@patch.object(ee, "Geometry", fake_ee.Geometry)
+@patch.object(ee, "Image", fake_ee.Image)
+@patch.object(ee, "String", fake_ee.String)
+class TestInspector(unittest.TestCase):
+    """Tests for the Inspector class in the `map_widgets` module."""
+
+    def setUp(self):
+        # ee.Reducer is dynamically initialized (can't use @patch.object).
+        ee.Reducer = fake_ee.Reducer
+
+        self.map_fake = fake_map.FakeMap()
+        self.inspector = map_widgets.Inspector(self.map_fake)
+
+    def tearDown(self):
+        pass
+
+    def _query_checkbox(self, description):
+        return self._query_widget(
+            self.inspector, ipywidgets.Checkbox, lambda c: c.description == description
+        )
+
+    def _query_node(self, root, name):
+        return self._query_widget(root, ipytree.Node, lambda c: c.name == name)
+
+    def _query_widget(self, node, type_matcher, matcher):
+        children = getattr(node, "children", getattr(node, "nodes", None))
+        if children is not None:
+            for child in children:
+                result = self._query_widget(child, type_matcher, matcher)
+                if result:
+                    return result
+        if isinstance(node, type_matcher) and matcher(node):
+            return node
+        return None
+
+    @property
+    def _point_checkbox(self):
+        return self._query_checkbox("Point")
+
+    @property
+    def _pixels_checkbox(self):
+        return self._query_checkbox("Pixels")
+
+    @property
+    def _objects_checkbox(self):
+        return self._query_checkbox("Objects")
+
+    @property
+    def _inspector_toggle(self):
+        return self._query_widget(
+            self.inspector, ipywidgets.ToggleButton, lambda c: c.tooltip == "Inspector"
+        )
+
+    @property
+    def _close_toggle(self):
+        return self._query_widget(
+            self.inspector,
+            ipywidgets.ToggleButton,
+            lambda c: c.tooltip == "Close the tool",
+        )
+
+    def test_inspector_no_map(self):
+        """Tests that a valid map must be passed in."""
+        with self.assertRaisesRegex(ValueError, "valid map"):
+            map_widgets.Inspector(None)
+
+    def test_inspector(self):
+        """Tests that the inspector's initial UI is set up properly."""
+        self.assertEqual(self.map_fake.cursor_style, "crosshair")
+        self.assertFalse(self._point_checkbox.value)
+        self.assertTrue(self._pixels_checkbox.value)
+        self.assertFalse(self._objects_checkbox.value)
+        self.assertTrue(self._inspector_toggle.value)
+        self.assertIsNotNone(self._close_toggle)
+
+    def test_inspector_toggle(self):
+        """Tests that toggling the inspector button hides/shows the inspector."""
+        self._point_checkbox.value = True
+        self._pixels_checkbox.value = False
+        self._objects_checkbox.value = True
+
+        self._inspector_toggle.value = False
+
+        self.assertEqual(self.map_fake.cursor_style, "default")
+        self.assertIsNotNone(self._inspector_toggle)
+        self.assertIsNone(self._point_checkbox)
+        self.assertIsNone(self._pixels_checkbox)
+        self.assertIsNone(self._objects_checkbox)
+        self.assertIsNone(self._close_toggle)
+
+        self._inspector_toggle.value = True
+
+        self.assertEqual(self.map_fake.cursor_style, "crosshair")
+        self.assertIsNotNone(self._inspector_toggle)
+        self.assertTrue(self._point_checkbox.value)
+        self.assertFalse(self._pixels_checkbox.value)
+        self.assertTrue(self._objects_checkbox.value)
+        self.assertIsNotNone(self._close_toggle.value)
+
+    def test_inspector_close(self):
+        """Tests that toggling the close button fires the close event."""
+        on_close_mock = Mock()
+        self.inspector.on_close = on_close_mock
+        self._close_toggle.value = True
+
+        on_close_mock.assert_called_once()
+        self.assertEqual(self.map_fake.cursor_style, "default")
+        self.assertSetEqual(self.map_fake.interaction_handlers, set())
+
+    def test_map_empty_click(self):
+        """Tests that clicking the map triggers inspection."""
+        self.map_fake.click((1, 2), "click")
+
+        self.assertEqual(self.map_fake.cursor_style, "crosshair")
+        point_root = self._query_node(self.inspector, "Point (2.00, 1.00) at 1024m/px")
+        self.assertIsNotNone(point_root)
+        self.assertIsNotNone(self._query_node(point_root, "Longitude: 2"))
+        self.assertIsNotNone(self._query_node(point_root, "Latitude: 1"))
+        self.assertIsNotNone(self._query_node(point_root, "Zoom Level: 7"))
+        self.assertIsNotNone(self._query_node(point_root, "Scale (approx. m/px): 1024"))
+        self.assertIsNone(self._query_node(self.inspector, "Pixels"))
+        self.assertIsNone(self._query_node(self.inspector, "Objects"))
+
+    def test_map_click(self):
+        """Tests that clicking the map triggers inspection."""
+        self.map_fake.ee_layer_dict = {
+            "test-map-1": {
+                "ee_object": ee.Image(1),
+                "ee_layer": fake_map.FakeEeTileLayer(visible=True),
+                "vis_params": None,
+            },
+            "test-map-2": {
+                "ee_object": ee.Image(2),
+                "ee_layer": fake_map.FakeEeTileLayer(visible=False),
+                "vis_params": None,
+            },
+            "test-map-3": {
+                "ee_object": ee.FeatureCollection([]),
+                "ee_layer": fake_map.FakeEeTileLayer(visible=True),
+                "vis_params": None,
+            },
+        }
+        self.map_fake.click((1, 2), "click")
+
+        self.assertEqual(self.map_fake.cursor_style, "crosshair")
+        self.assertIsNotNone(
+            self._query_node(self.inspector, "Point (2.00, 1.00) at 1024m/px")
+        )
+
+        pixels_root = self._query_node(self.inspector, "Pixels")
+        self.assertIsNotNone(pixels_root)
+        layer_1_root = self._query_node(pixels_root, "test-map-1: Image (2 bands)")
+        self.assertIsNotNone(layer_1_root)
+        self.assertIsNotNone(self._query_node(layer_1_root, "B1: 42"))
+        self.assertIsNotNone(self._query_node(layer_1_root, "B2: 3.14"))
+        self.assertIsNone(self._query_node(pixels_root, "test-map-2: Image (2 bands)"))
+
+        objects_root = self._query_node(self.inspector, "Objects")
+        self.assertIsNotNone(objects_root)
+        layer_3_root = self._query_node(objects_root, "test-map-3: Feature ")
+        self.assertIsNotNone(layer_3_root)
+        self.assertIsNotNone(self._query_node(layer_3_root, "type: Feature"))
+        self.assertIsNotNone(self._query_node(layer_3_root, "id: 00000000000000000001"))
+        self.assertIsNotNone(self._query_node(layer_3_root, "fullname: "))
+        self.assertIsNotNone(self._query_node(layer_3_root, "linearid: 110469267091"))
+        self.assertIsNotNone(self._query_node(layer_3_root, "mtfcc: S1400"))
+        self.assertIsNotNone(self._query_node(layer_3_root, "rttyp: "))
+
+    def test_map_click_twice(self):
+        """Tests that clicking the map a second time removes the original output."""
+        self.map_fake.ee_layer_dict = {
+            "test-map-1": {
+                "ee_object": ee.Image(1),
+                "ee_layer": fake_map.FakeEeTileLayer(visible=True),
+                "vis_params": None,
+            },
+        }
+        self.map_fake.scale = 32
+        self.map_fake.click((1, 2), "click")
+        self.map_fake.click((4, 1), "click")
+
+        self.assertIsNotNone(
+            self._query_node(self.inspector, "Point (1.00, 4.00) at 32m/px")
+        )
+        self.assertIsNone(
+            self._query_node(self.inspector, "Point (2.00, 1.00) at 1024m/px")
+        )
