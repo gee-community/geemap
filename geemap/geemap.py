@@ -84,6 +84,8 @@ class Map(ipyleaflet.Map):
         center = [20, 0]
         zoom = 2
 
+        self.inspector_control = None
+
         # Set map width and height
         if "height" not in kwargs:
             kwargs["height"] = "600px"
@@ -2436,223 +2438,6 @@ class Map(ipyleaflet.Map):
 
             return vis_widget
 
-    def _point_info(self, latlon, decimals=3, return_node=False):
-        """Create the ipytree widget for displaying the mouse clicking info.
-
-        Args:
-            latlon (list | tuple): The coordinates (lat, lon) of the point.
-            decimals (int, optional): Number of decimals to round the coordinates to. Defaults to 3.
-            return_node (bool, optional): If True, return the ipytree node.
-                Otherwise, return the ipytree tree widget. Defaults to False.
-
-        Returns:
-            ipytree.Node | ipytree.Tree: The ipytree node or tree widget.
-        """
-        from ipytree import Node, Tree
-
-        point_nodes = [
-            Node(f"Longitude: {latlon[1]}"),
-            Node(f"Latitude: {latlon[0]}"),
-            Node(f"Zoom Level: {self.zoom}"),
-            Node(f"Scale (approx. m/px): {self.get_scale()}"),
-        ]
-        label = f"Point ({latlon[1]:.{decimals}f}, {latlon[0]:.{decimals}f}) at {int(self.get_scale())}m/px"
-        root_node = Node(
-            label, nodes=point_nodes, icon="map", opened=self._expand_point
-        )
-
-        root_node.open_icon = "plus-square"
-        root_node.open_icon_style = "success"
-        root_node.close_icon = "minus-square"
-        root_node.close_icon_style = "info"
-
-        if return_node:
-            return root_node
-        else:
-            return Tree(nodes=[root_node])
-
-    def _pixels_info(
-        self, latlon, names=None, visible=True, decimals=2, return_node=False
-    ):
-        """Create the ipytree widget for displaying the pixel values at the mouse clicking point.
-
-        Args:
-            latlon (list | tuple): The coordinates (lat, lon) of the point.
-            names (str | list, optional): The names of the layers to be included. Defaults to None.
-            visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
-            decimals (int, optional): Number of decimals to round the pixel values. Defaults to 2.
-            return_node (bool, optional): If True, return the ipytree node.
-                Otherwise, return the ipytree tree widget. Defaults to False.
-
-        Returns:
-            ipytree.Node | ipytree.Tree: The ipytree node or tree widget.
-        """
-        from ipytree import Node, Tree
-
-        if names is not None:
-            if isinstance(names, str):
-                names = [names]
-            layers = {}
-            for name in names:
-                if name in self.ee_layer_names:
-                    layers[name] = self.ee_layer_dict[name]
-        else:
-            layers = self.ee_layer_dict
-        xy = ee.Geometry.Point(latlon[::-1])
-        sample_scale = self.getScale()
-
-        root_node = Node("Pixels", icon="archive")
-
-        nodes = []
-
-        for layer in layers:
-            layer_name = layer
-            ee_object = layers[layer]["ee_object"]
-            object_type = ee_object.__class__.__name__
-
-            if visible:
-                if not self.ee_layer_dict[layer_name]["ee_layer"].visible:
-                    continue
-
-            try:
-                if isinstance(ee_object, ee.ImageCollection):
-                    ee_object = ee_object.mosaic()
-
-                if isinstance(ee_object, ee.Image):
-                    item = ee_object.reduceRegion(
-                        ee.Reducer.first(), xy, sample_scale
-                    ).getInfo()
-                    b_name = "band"
-                    if len(item) > 1:
-                        b_name = "bands"
-
-                    label = f"{layer_name}: {object_type} ({len(item)} {b_name})"
-                    layer_node = Node(label, opened=self._expand_pixels)
-
-                    keys = sorted(item.keys())
-                    for key in keys:
-                        value = item[key]
-                        if isinstance(value, float):
-                            value = round(value, decimals)
-                        layer_node.add_node(Node(f"{key}: {value}", icon="file"))
-
-                    nodes.append(layer_node)
-            except:
-                pass
-
-        root_node.nodes = nodes
-
-        root_node.open_icon = "plus-square"
-        root_node.open_icon_style = "success"
-        root_node.close_icon = "minus-square"
-        root_node.close_icon_style = "info"
-
-        if return_node:
-            return root_node
-        else:
-            return Tree(nodes=[root_node])
-
-    def _objects_info(self, latlon, names=None, visible=True, return_node=False):
-        """Create the ipytree widget for displaying the Earth Engine objects at the mouse clicking point.
-
-        Args:
-            latlon (list | tuple): The coordinates (lat, lon) of the point.
-            names (str | list, optional): The names of the layers to be included. Defaults to None.
-            visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
-            return_node (bool, optional): If True, return the ipytree node.
-                Otherwise, return the ipytree tree widget. Defaults to False.
-
-        Returns:
-            ipytree.Node | ipytree.Tree: The ipytree node or tree widget.
-        """
-        from ipytree import Node, Tree
-
-        if names is not None:
-            if isinstance(names, str):
-                names = [names]
-            layers = {}
-            for name in names:
-                if name in self.ee_layer_names:
-                    layers[name] = self.ee_layer_dict[name]
-        else:
-            layers = self.ee_layer_dict
-
-        xy = ee.Geometry.Point(latlon[::-1])
-        root_node = Node("Objects", icon="archive")
-
-        nodes = []
-
-        for layer in layers:
-            layer_name = layer
-            ee_object = layers[layer]["ee_object"]
-
-            if visible:
-                if not self.ee_layer_dict[layer_name]["ee_layer"].visible:
-                    continue
-
-            if isinstance(ee_object, ee.FeatureCollection):
-                # Check geometry type
-                geom_type = ee.Feature(ee_object.first()).geometry().type()
-                lat, lon = latlon
-                delta = 0.005
-                bbox = ee.Geometry.BBox(
-                    lon - delta,
-                    lat - delta,
-                    lon + delta,
-                    lat + delta,
-                )
-                # Create a bounding box to filter points
-                xy = ee.Algorithms.If(
-                    geom_type.compareTo(ee.String("Point")),
-                    xy,
-                    bbox,
-                )
-
-                ee_object = ee_object.filterBounds(xy).first()
-
-            try:
-                node = get_info(
-                    ee_object, layer_name, opened=self._expand_objects, return_node=True
-                )
-                nodes.append(node)
-            except:
-                pass
-
-        root_node.nodes = nodes
-
-        root_node.open_icon = "plus-square"
-        root_node.open_icon_style = "success"
-        root_node.close_icon = "minus-square"
-        root_node.close_icon_style = "info"
-
-        if return_node:
-            return root_node
-        else:
-            return Tree(nodes=[root_node])
-
-    def inspect(self, latlon):
-        """Create the Inspector GUI.
-
-        Args:
-            latlon (list | tuple): The coordinates (lat, lon) of the point.
-        Returns:
-            ipytree.Tree: The ipytree tree widget for the Inspector GUI.
-        """
-        from ipytree import Tree
-
-        tree = Tree()
-        nodes = []
-        point_node = self._point_info(latlon, return_node=True)
-        nodes.append(point_node)
-        pixels_node = self._pixels_info(latlon, return_node=True)
-        if pixels_node.nodes:
-            nodes.append(pixels_node)
-        objects_node = self._objects_info(latlon, return_node=True)
-        if objects_node.nodes:
-            nodes.append(objects_node)
-        tree.nodes = nodes
-        return tree
-
     def add_inspector(
         self,
         names=None,
@@ -2670,13 +2455,24 @@ class Map(ipyleaflet.Map):
             decimals (int, optional): The number of decimal places to round the coordinates. Defaults to 2.
             position (str, optional): The position of the Inspector GUI. Defaults to "topright".
             opened (bool, optional): Whether the control is opened. Defaults to True.
-
         """
-        from .toolbar import ee_inspector_gui
+        if self.inspector_control:
+            return
 
-        ee_inspector_gui(
-            self, names, visible, decimals, position, opened, show_close_button
+        def _on_close():
+            self.toolbar_reset()
+            if self.inspector_control:
+                if self.inspector_control in self.controls:
+                    self.remove_control(self.inspector_control)
+                self.inspector_control.close()
+                self.inspector_control = None
+
+        inspector = map_widgets.Inspector(self, names, visible, decimals, opened, show_close_button)
+        inspector.on_close = _on_close
+        self.inspector_control = ipyleaflet.WidgetControl(
+            widget=inspector, position=position
         )
+        self.add(self.inspector_control)
 
     def add_layer_manager(
         self, position="topright", opened=True, show_close_button=True
