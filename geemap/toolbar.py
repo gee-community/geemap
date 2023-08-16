@@ -4706,8 +4706,7 @@ main_tools = [
     Toolbar.Item(
         icon="info",
         tooltip="Inspector",
-        callback=lambda m, selected: m.add_inspector() if selected
-        else None,
+        callback=lambda m, selected: m.add_inspector() if selected else None,
     ),
     Toolbar.Item(
         icon="bar-chart",
