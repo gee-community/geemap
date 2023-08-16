@@ -1,0 +1,26 @@
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+        branches:
+            - master
+
+name: Linux installation
+jobs:
+    test-ubuntu:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                python-version: ["3.10"]
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: ${{ matrix.python-version }}
+            - name: Install package
+              run: pip install .
+            - name: Test import
+              run: python -c "import geemap; print('geemap import successful')"

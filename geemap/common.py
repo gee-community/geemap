@@ -13930,6 +13930,9 @@ def get_info(ee_object, layer_name="", opened=False, return_node=False):
     if isinstance(ee_object, ee.FeatureCollection):
         ee_object = ee_object.map(lambda f: ee.Feature(None, f.toDictionary()))
     layer_info = ee_object.getInfo()
+    if not layer_info:
+        return None
+    
     props = layer_info.get("properties", {})
     layer_info["properties"] = dict(sorted(props.items()))
 
