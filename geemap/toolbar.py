@@ -75,8 +75,8 @@ class Toolbar(widgets.VBox):
         resets = [tool.reset for tool in all_tools]
         self.num_collapsed_tools = len(main_tools) + 1
         # -(-a//b) is the same as math.ceil(a/b)
-        self.num_rows_expanded = -(-(len(all_tools) // self.NUM_COLS))
-        self.num_rows_collapsed = -(-(self.num_collapsed_tools) // self.NUM_COLS)
+        self.num_rows_expanded = -(-len(all_tools) // self.NUM_COLS)
+        self.num_rows_collapsed = -(-self.num_collapsed_tools // self.NUM_COLS)
 
         self.all_widgets = [
             widgets.ToggleButton(
