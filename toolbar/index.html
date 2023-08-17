@@ -856,6 +856,40 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.toolbar.Toolbar" class="md-nav__link">
+    Toolbar
+  </a>
+  
+    <nav class="md-nav" aria-label="Toolbar">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.toolbar.Toolbar.Item" class="md-nav__link">
+    Item
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.toolbar.Toolbar.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.toolbar.Toolbar.reset" class="md-nav__link">
+    reset()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.toolbar.build_toolbox" class="md-nav__link">
     build_toolbox()
   </a>
@@ -893,13 +927,6 @@
         <li class="md-nav__item">
   <a href="#geemap.toolbar.layer_manager_gui" class="md-nav__link">
     layer_manager_gui()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#geemap.toolbar.main_toolbar" class="md-nav__link">
-    main_toolbar()
   </a>
   
 </li>
@@ -3151,6 +3178,40 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.toolbar.Toolbar" class="md-nav__link">
+    Toolbar
+  </a>
+  
+    <nav class="md-nav" aria-label="Toolbar">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.toolbar.Toolbar.Item" class="md-nav__link">
+    Item
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.toolbar.Toolbar.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.toolbar.Toolbar.reset" class="md-nav__link">
+    reset()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.toolbar.build_toolbox" class="md-nav__link">
     build_toolbox()
   </a>
@@ -3188,13 +3249,6 @@
         <li class="md-nav__item">
   <a href="#geemap.toolbar.layer_manager_gui" class="md-nav__link">
     layer_manager_gui()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#geemap.toolbar.main_toolbar" class="md-nav__link">
-    main_toolbar()
   </a>
   
 </li>
@@ -3307,6 +3361,488 @@
 
 
 
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="geemap.toolbar.Toolbar" class="doc doc-heading">
+        <code>
+Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
+        </code>
+
+
+
+<a href="#geemap.toolbar.Toolbar" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>A toolbar that can be added to the map.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/toolbar.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Toolbar</span><span class="p">(</span><span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A toolbar that can be added to the map.&quot;&quot;&quot;</span>
+
+    <span class="nd">@dataclass</span>
+    <span class="k">class</span> <span class="nc">Item</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A representation of an item in the toolbar.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            icon: The icon to use for the item, from https://fontawesome.com/icons.</span>
+<span class="sd">            tooltip: The tooltip text to show a user on hover.</span>
+<span class="sd">            callback: A callback function to execute when the item icon is clicked.</span>
+<span class="sd">                Its signature should be `callback(map, selected)`, where `map` is the</span>
+<span class="sd">                host map and `selected` is a boolean indicating if the user selected</span>
+<span class="sd">                or unselected the tool.</span>
+<span class="sd">            reset: Whether to reset the selection after the callback has finished.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="n">tooltip</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">reset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">ICON_WIDTH</span> <span class="o">=</span> <span class="s2">&quot;32px&quot;</span>
+    <span class="n">ICON_HEIGHT</span> <span class="o">=</span> <span class="s2">&quot;32px&quot;</span>
+    <span class="n">NUM_COLS</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="n">_TOGGLE_TOOL_EXPAND_ICON</span> <span class="o">=</span> <span class="s2">&quot;plus&quot;</span>
+    <span class="n">_TOGGLE_TOOL_EXPAND_TOOLTIP</span> <span class="o">=</span> <span class="s2">&quot;Expand toolbar&quot;</span>
+    <span class="n">_TOGGLE_TOOL_COLLAPSE_ICON</span> <span class="o">=</span> <span class="s2">&quot;minus&quot;</span>
+    <span class="n">_TOGGLE_TOOL_COLLAPSE_TOOLTIP</span> <span class="o">=</span> <span class="s2">&quot;Collapse toolbar&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">main_tools</span><span class="p">,</span> <span class="n">extra_tools</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a toolbar with `main_tools` and `extra_tools` to the `host_map`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">main_tools</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;A toolbar cannot be initialized without `main_tools`.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span> <span class="o">=</span> <span class="n">host_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toggle_tool</span> <span class="o">=</span> <span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">(</span>
+            <span class="n">icon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_EXPAND_ICON</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_EXPAND_TOOLTIP</span><span class="p">,</span>
+            <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_toggle_callback</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">extra_tools</span><span class="p">:</span>
+            <span class="n">all_tools</span> <span class="o">=</span> <span class="n">main_tools</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toggle_tool</span><span class="p">]</span> <span class="o">+</span> <span class="n">extra_tools</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">all_tools</span> <span class="o">=</span> <span class="n">main_tools</span>
+        <span class="n">icons</span> <span class="o">=</span> <span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">icon</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">all_tools</span><span class="p">]</span>
+        <span class="n">tooltips</span> <span class="o">=</span> <span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">tooltip</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">all_tools</span><span class="p">]</span>
+        <span class="n">callbacks</span> <span class="o">=</span> <span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">callback</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">all_tools</span><span class="p">]</span>
+        <span class="n">resets</span> <span class="o">=</span> <span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">reset</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">all_tools</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_collapsed_tools</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">main_tools</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="c1"># -(-a//b) is the same as math.ceil(a/b)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_rows_expanded</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_tools</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">NUM_COLS</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_rows_collapsed</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_collapsed_tools</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">NUM_COLS</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
+                <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+                    <span class="n">width</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span>
+                <span class="p">),</span>
+                <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
+                <span class="n">icon</span><span class="o">=</span><span class="n">icons</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">tooltip</span><span class="o">=</span><span class="n">tooltips</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_tools</span><span class="p">))</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">main_tools</span><span class="p">)]</span> <span class="k">if</span> <span class="n">extra_tools</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="c1"># We start with a collapsed grid of just the main tools and the toggle one.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">GridBox</span><span class="p">(</span>
+            <span class="n">children</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_collapsed_tools</span><span class="p">],</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+                <span class="n">width</span><span class="o">=</span><span class="s2">&quot;109px&quot;</span><span class="p">,</span>
+                <span class="n">grid_template_columns</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ICON_WIDTH</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">NUM_COLS</span><span class="p">,</span>
+                <span class="n">grid_template_rows</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ICON_HEIGHT</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows_collapsed</span><span class="p">,</span>
+                <span class="n">grid_gap</span><span class="o">=</span><span class="s2">&quot;1px 1px&quot;</span><span class="p">,</span>
+                <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;5px&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">curry_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">should_reset_after</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">returned_callback</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;change&quot;</span><span class="p">:</span>
+                    <span class="k">return</span>
+                <span class="c1"># Unselect all other tool widgets.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reset_others</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+                <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">,</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">should_reset_after</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">return</span> <span class="n">returned_callback</span>
+
+        <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">widget</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">):</span>
+            <span class="n">widget</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">curry_callback</span><span class="p">(</span><span class="n">callbacks</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">resets</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">widget</span><span class="p">),</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Toolbar&quot;</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;wrench&quot;</span><span class="p">,</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+                <span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Layers&quot;</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;server&quot;</span><span class="p">,</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;72px&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layers_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">])</span>
+        <span class="n">toolbar_event</span> <span class="o">=</span> <span class="n">ipyevents</span><span class="o">.</span><span class="n">Event</span><span class="p">(</span>
+            <span class="n">source</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">watched_events</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;mouseenter&quot;</span><span class="p">,</span> <span class="s2">&quot;mouseleave&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">toolbar_event</span><span class="o">.</span><span class="n">on_dom_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_toolbar_event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the toolbar so that no widget is selected.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">:</span>
+            <span class="n">widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_reset_others</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">current</span><span class="p">:</span>
+                <span class="n">other</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_toggle_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">selected</span><span class="p">):</span>
+        <span class="k">del</span> <span class="n">m</span>  <span class="c1"># unused</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">selected</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span><span class="o">.</span><span class="n">icon</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_EXPAND_ICON</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">grid_template_rows</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ICON_HEIGHT</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows_expanded</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_COLLAPSE_TOOLTIP</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_COLLAPSE_ICON</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span><span class="o">.</span><span class="n">icon</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_COLLAPSE_ICON</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">grid_template_rows</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ICON_HEIGHT</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span>
+            <span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows_collapsed</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_collapsed_tools</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_EXPAND_TOOLTIP</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_EXPAND_ICON</span>
+
+    <span class="k">def</span> <span class="nf">_handle_toolbar_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;mouseenter&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;mouseleave&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_toolbar_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_layers_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
+            <span class="c1"># Create Layer Manager Widget</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">layer_manager_gui</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">,</span> <span class="n">return_widget</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">]</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="geemap.toolbar.Toolbar.Item" class="doc doc-heading">
+        <code>
+Item        </code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#geemap.toolbar.Toolbar.Item" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>A representation of an item in the toolbar.</p>
+
+<p><strong>Attributes:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>icon</code></td>
+        <td><code>str</code></td>
+        <td><p>The icon to use for the item, from https://fontawesome.com/icons.</p></td>
+      </tr>
+      <tr>
+        <td><code>tooltip</code></td>
+        <td><code>str</code></td>
+        <td><p>The tooltip text to show a user on hover.</p></td>
+      </tr>
+      <tr>
+        <td><code>callback</code></td>
+        <td><code>Callable[[&lt;built-in function any&gt;, bool], NoneType]</code></td>
+        <td><p>A callback function to execute when the item icon is clicked.
+Its signature should be <code>callback(map, selected)</code>, where <code>map</code> is the
+host map and <code>selected</code> is a boolean indicating if the user selected
+or unselected the tool.</p></td>
+      </tr>
+      <tr>
+        <td><code>reset</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether to reset the selection after the callback has finished.</p></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/toolbar.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Item</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A representation of an item in the toolbar.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        icon: The icon to use for the item, from https://fontawesome.com/icons.</span>
+<span class="sd">        tooltip: The tooltip text to show a user on hover.</span>
+<span class="sd">        callback: A callback function to execute when the item icon is clicked.</span>
+<span class="sd">            Its signature should be `callback(map, selected)`, where `map` is the</span>
+<span class="sd">            host map and `selected` is a boolean indicating if the user selected</span>
+<span class="sd">            or unselected the tool.</span>
+<span class="sd">        reset: Whether to reset the selection after the callback has finished.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">tooltip</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="n">reset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.toolbar.Toolbar.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">main_tools</span><span class="p">,</span> <span class="n">extra_tools</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+<a href="#geemap.toolbar.Toolbar.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Adds a toolbar with <code>main_tools</code> and <code>extra_tools</code> to the <code>host_map</code>.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/toolbar.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">main_tools</span><span class="p">,</span> <span class="n">extra_tools</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a toolbar with `main_tools` and `extra_tools` to the `host_map`.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">main_tools</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;A toolbar cannot be initialized without `main_tools`.&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span> <span class="o">=</span> <span class="n">host_map</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">toggle_tool</span> <span class="o">=</span> <span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">(</span>
+        <span class="n">icon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_EXPAND_ICON</span><span class="p">,</span>
+        <span class="n">tooltip</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_EXPAND_TOOLTIP</span><span class="p">,</span>
+        <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_toggle_callback</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">extra_tools</span><span class="p">:</span>
+        <span class="n">all_tools</span> <span class="o">=</span> <span class="n">main_tools</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toggle_tool</span><span class="p">]</span> <span class="o">+</span> <span class="n">extra_tools</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">all_tools</span> <span class="o">=</span> <span class="n">main_tools</span>
+    <span class="n">icons</span> <span class="o">=</span> <span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">icon</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">all_tools</span><span class="p">]</span>
+    <span class="n">tooltips</span> <span class="o">=</span> <span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">tooltip</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">all_tools</span><span class="p">]</span>
+    <span class="n">callbacks</span> <span class="o">=</span> <span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">callback</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">all_tools</span><span class="p">]</span>
+    <span class="n">resets</span> <span class="o">=</span> <span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">reset</span> <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">all_tools</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">num_collapsed_tools</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">main_tools</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="c1"># -(-a//b) is the same as math.ceil(a/b)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">num_rows_expanded</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_tools</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">NUM_COLS</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">num_rows_collapsed</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_collapsed_tools</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">NUM_COLS</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+                <span class="n">width</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span>
+            <span class="p">),</span>
+            <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="n">icons</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">tooltips</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_tools</span><span class="p">))</span>
+    <span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">main_tools</span><span class="p">)]</span> <span class="k">if</span> <span class="n">extra_tools</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="c1"># We start with a collapsed grid of just the main tools and the toggle one.</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">GridBox</span><span class="p">(</span>
+        <span class="n">children</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_collapsed_tools</span><span class="p">],</span>
+        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="s2">&quot;109px&quot;</span><span class="p">,</span>
+            <span class="n">grid_template_columns</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ICON_WIDTH</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">NUM_COLS</span><span class="p">,</span>
+            <span class="n">grid_template_rows</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ICON_HEIGHT</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_rows_collapsed</span><span class="p">,</span>
+            <span class="n">grid_gap</span><span class="o">=</span><span class="s2">&quot;1px 1px&quot;</span><span class="p">,</span>
+            <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;5px&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">curry_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">should_reset_after</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">returned_callback</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;change&quot;</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="c1"># Unselect all other tool widgets.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset_others</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+            <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">,</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">should_reset_after</span><span class="p">:</span>
+                <span class="n">widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">returned_callback</span>
+
+    <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">widget</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">):</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">curry_callback</span><span class="p">(</span><span class="n">callbacks</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">resets</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">widget</span><span class="p">),</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
+        <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Toolbar&quot;</span><span class="p">,</span>
+        <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;wrench&quot;</span><span class="p">,</span>
+        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
+        <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Layers&quot;</span><span class="p">,</span>
+        <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;server&quot;</span><span class="p">,</span>
+        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;72px&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">]</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layers_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">])</span>
+    <span class="n">toolbar_event</span> <span class="o">=</span> <span class="n">ipyevents</span><span class="o">.</span><span class="n">Event</span><span class="p">(</span>
+        <span class="n">source</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">watched_events</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;mouseenter&quot;</span><span class="p">,</span> <span class="s2">&quot;mouseleave&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">toolbar_event</span><span class="o">.</span><span class="n">on_dom_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_toolbar_event</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.toolbar.Toolbar.reset" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#geemap.toolbar.Toolbar.reset" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Resets the toolbar so that no widget is selected.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/toolbar.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resets the toolbar so that no widget is selected.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">:</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
 
 
 
@@ -4617,364 +5153,6 @@
         <span class="k">if</span> <span class="n">layer_control</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
             <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">layer_control</span><span class="p">)</span>
             <span class="n">m</span><span class="o">.</span><span class="n">layer_manager</span> <span class="o">=</span> <span class="n">layer_control</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h2 id="geemap.toolbar.main_toolbar" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">main_toolbar</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;topright&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
-
-
-<a href="#geemap.toolbar.main_toolbar" class="headerlink" title="Permanent link">&para;</a></h2>
-
-    <div class="doc doc-contents ">
-
-      <p>Add a toolbar control to the map</p>
-
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>m</code></td>
-        <td><code>geemap.Map</code></td>
-        <td><p>An instance of geemap.Map.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>position</code></td>
-        <td><code>str</code></td>
-        <td><p>Position of the toolbar. Defaults to "topright".</p></td>
-        <td><code>&#39;topright&#39;</code></td>
-      </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>geemap/toolbar.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">main_toolbar</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add a toolbar control to the map</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        m (geemap.Map): An instance of geemap.Map.</span>
-<span class="sd">        position (str, optional): Position of the toolbar. Defaults to &quot;topright&quot;.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">tools</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;inspector&quot;</span><span class="p">,</span> <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Inspector&quot;</span><span class="p">},</span>
-        <span class="s2">&quot;bar-chart&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;plotting&quot;</span><span class="p">,</span> <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Plotting&quot;</span><span class="p">},</span>
-        <span class="s2">&quot;globe&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;timelapse&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Create timelapse&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;map&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;basemap&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Change basemap&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;retweet&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;convert_js&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Convert Earth Engine JavaScript to Python&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;plus&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;expand&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Expand toolbar&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;eraser&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;eraser&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Remove all drawn features&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;folder-open&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;open_data&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Open local vector/raster data&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;gears&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;whitebox&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;WhiteboxTools for local geoprocessing&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="c1"># &quot;google&quot;: {</span>
-        <span class="c1">#     &quot;name&quot;: &quot;geetoolbox&quot;,</span>
-        <span class="c1">#     &quot;tooltip&quot;: &quot;GEE Toolbox for cloud computing&quot;,</span>
-        <span class="c1"># },</span>
-        <span class="s2">&quot;fast-forward&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;timeslider&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Activate timeslider&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;hand-o-up&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;draw&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Collect training samples&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;line-chart&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;transect&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Creating and plotting transects&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;random&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;sankee&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Sankey plots&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;adjust&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;planet&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Planet imagery&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;info-circle&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cog-inspector&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Get COG/STAC pixel value&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;minus&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;collapse&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tooltip&quot;</span><span class="p">:</span> <span class="s2">&quot;Collapse toolbar&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="c1"># &quot;spinner&quot;: {</span>
-        <span class="c1">#     &quot;name&quot;: &quot;placehold2&quot;,</span>
-        <span class="c1">#     &quot;tooltip&quot;: &quot;This is a placehold&quot;,</span>
-        <span class="c1"># },</span>
-        <span class="c1"># &quot;question&quot;: {</span>
-        <span class="c1">#     &quot;name&quot;: &quot;help&quot;,</span>
-        <span class="c1">#     &quot;tooltip&quot;: &quot;Get help&quot;,</span>
-        <span class="c1"># },</span>
-    <span class="p">}</span>
-
-    <span class="n">icons</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">tools</span><span class="o">.</span><span class="n">keys</span><span class="p">())[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">tooltips</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;tooltip&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">tools</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span>
-
-    <span class="n">icon_width</span> <span class="o">=</span> <span class="s2">&quot;32px&quot;</span>
-    <span class="n">icon_height</span> <span class="o">=</span> <span class="s2">&quot;32px&quot;</span>
-    <span class="n">n_cols</span> <span class="o">=</span> <span class="mi">3</span>
-    <span class="n">n_rows</span> <span class="o">=</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">icons</span><span class="p">)</span> <span class="o">/</span> <span class="n">n_cols</span><span class="p">))</span>
-
-    <span class="n">all_children</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
-            <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
-                <span class="n">width</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span>
-            <span class="p">),</span>
-            <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
-            <span class="n">icon</span><span class="o">=</span><span class="n">icons</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-            <span class="n">tooltip</span><span class="o">=</span><span class="n">tooltips</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-        <span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">icons</span><span class="p">))</span>
-    <span class="p">]</span>
-
-    <span class="n">expand_button</span> <span class="o">=</span> <span class="n">all_children</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
-
-    <span class="n">toolbar_grid</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">GridBox</span><span class="p">(</span>
-        <span class="n">children</span><span class="o">=</span><span class="n">all_children</span><span class="p">[:</span><span class="mi">6</span><span class="p">],</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
-            <span class="n">width</span><span class="o">=</span><span class="s2">&quot;109px&quot;</span><span class="p">,</span>
-            <span class="n">grid_template_columns</span><span class="o">=</span><span class="p">(</span><span class="n">icon_width</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_cols</span><span class="p">,</span>
-            <span class="n">grid_template_rows</span><span class="o">=</span><span class="p">(</span><span class="n">icon_height</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="n">grid_gap</span><span class="o">=</span><span class="s2">&quot;1px 1px&quot;</span><span class="p">,</span>
-            <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;5px&quot;</span><span class="p">,</span>
-        <span class="p">),</span>
-    <span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">_toolbar</span> <span class="o">=</span> <span class="n">toolbar_grid</span>
-
-    <span class="k">def</span> <span class="nf">tool_callback</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="n">current_tool</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;owner&quot;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">tool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">current_tool</span><span class="p">:</span>
-                    <span class="n">tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">tool</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;owner&quot;</span><span class="p">]</span>
-            <span class="n">tool_name</span> <span class="o">=</span> <span class="n">tools</span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">icon</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;expand&quot;</span><span class="p">:</span>
-                <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">grid_template_rows</span> <span class="o">=</span> <span class="p">(</span><span class="n">icon_height</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_rows</span>
-                <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">all_children</span>
-                <span class="n">expand_button</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;minus&quot;</span>
-                <span class="n">tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">if</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;collapse&quot;</span><span class="p">:</span>
-                <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">grid_template_rows</span> <span class="o">=</span> <span class="p">(</span><span class="n">icon_height</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
-                <span class="n">toolbar_grid</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">all_children</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span>
-                <span class="n">expand_button</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;plus&quot;</span>
-                <span class="n">tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;eraser&quot;</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">remove_drawn_features</span><span class="p">()</span>
-                <span class="n">tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;inspector&quot;</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">add_inspector</span><span class="p">()</span>
-                <span class="n">tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;plotting&quot;</span><span class="p">:</span>
-                <span class="n">ee_plot_gui</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;open_data&quot;</span><span class="p">:</span>
-                <span class="n">open_data_widget</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;convert_js&quot;</span><span class="p">:</span>
-                <span class="n">convert_js2py</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;whitebox&quot;</span><span class="p">:</span>
-                <span class="kn">import</span> <span class="nn">whiteboxgui.whiteboxgui</span> <span class="k">as</span> <span class="nn">wbt</span>
-
-                <span class="n">tools_dict</span> <span class="o">=</span> <span class="n">wbt</span><span class="o">.</span><span class="n">get_wbt_dict</span><span class="p">()</span>
-                <span class="n">wbt_toolbox</span> <span class="o">=</span> <span class="n">wbt</span><span class="o">.</span><span class="n">build_toolbox</span><span class="p">(</span>
-                    <span class="n">tools_dict</span><span class="p">,</span>
-                    <span class="n">max_width</span><span class="o">=</span><span class="s2">&quot;800px&quot;</span><span class="p">,</span>
-                    <span class="n">max_height</span><span class="o">=</span><span class="s2">&quot;500px&quot;</span><span class="p">,</span>
-                    <span class="n">sandbox_path</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">sandbox_path</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">wbt_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-                    <span class="n">widget</span><span class="o">=</span><span class="n">wbt_toolbox</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span>
-                <span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">whitebox</span> <span class="o">=</span> <span class="n">wbt_control</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">wbt_control</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;geetoolbox&quot;</span><span class="p">:</span>
-                <span class="n">tools_dict</span> <span class="o">=</span> <span class="n">get_tools_dict</span><span class="p">()</span>
-                <span class="n">gee_toolbox</span> <span class="o">=</span> <span class="n">build_toolbox</span><span class="p">(</span>
-                    <span class="n">tools_dict</span><span class="p">,</span> <span class="n">max_width</span><span class="o">=</span><span class="s2">&quot;800px&quot;</span><span class="p">,</span> <span class="n">max_height</span><span class="o">=</span><span class="s2">&quot;500px&quot;</span>
-                <span class="p">)</span>
-                <span class="n">geetoolbox_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-                    <span class="n">widget</span><span class="o">=</span><span class="n">gee_toolbox</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span>
-                <span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">geetoolbox</span> <span class="o">=</span> <span class="n">geetoolbox_control</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">geetoolbox_control</span><span class="p">)</span>
-
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;basemap&quot;</span><span class="p">:</span>
-                <span class="n">change_basemap</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;timelapse&quot;</span><span class="p">:</span>
-                <span class="n">timelapse_gui</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;timeslider&quot;</span><span class="p">:</span>
-                <span class="n">time_slider</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;draw&quot;</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">training_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="n">collect_samples</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;transect&quot;</span><span class="p">:</span>
-                <span class="n">plot_transect</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;sankee&quot;</span><span class="p">:</span>
-                <span class="n">sankee_gui</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;planet&quot;</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">split_basemaps</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">layers_dict</span><span class="o">=</span><span class="n">planet_tiles</span><span class="p">())</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;cog-inspector&quot;</span><span class="p">:</span>
-                <span class="n">inspector_gui</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;help&quot;</span><span class="p">:</span>
-                <span class="kn">import</span> <span class="nn">webbrowser</span>
-
-                <span class="n">webbrowser</span><span class="o">.</span><span class="n">open_new_tab</span><span class="p">(</span><span class="s2">&quot;https://geemap.org&quot;</span><span class="p">)</span>
-                <span class="n">current_tool</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-
-            <span class="c1"># current_tool.value = False</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">tool</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;owner&quot;</span><span class="p">]</span>
-            <span class="n">tool_name</span> <span class="o">=</span> <span class="n">tools</span><span class="p">[</span><span class="n">tool</span><span class="o">.</span><span class="n">icon</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;inspector&quot;</span><span class="p">:</span>
-                <span class="k">pass</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;plotting&quot;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_dropdown_widget&quot;</span><span class="p">):</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_widget</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_dropdown_control&quot;</span><span class="p">):</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="n">plot_dropdown_widget</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_widget</span>
-                <span class="n">plot_dropdown_control</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span>
-                <span class="k">if</span> <span class="n">plot_dropdown_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">plot_dropdown_control</span><span class="p">)</span>
-                <span class="k">del</span> <span class="n">plot_dropdown_widget</span>
-                <span class="k">del</span> <span class="n">plot_dropdown_control</span>
-
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_widget&quot;</span><span class="p">):</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_control&quot;</span><span class="p">):</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span> <span class="o">=</span> <span class="kc">None</span>
-
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">plot_control</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span>
-                    <span class="n">plot_widget</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">plot_control</span><span class="p">)</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="k">del</span> <span class="n">plot_control</span>
-                    <span class="k">del</span> <span class="n">plot_widget</span>
-                <span class="k">if</span> <span class="p">(</span>
-                    <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_marker_cluster&quot;</span><span class="p">)</span>
-                    <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_marker_cluster</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                    <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_marker_cluster</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">layers</span>
-                <span class="p">):</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_plot_marker_cluster</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">draw_control_lite</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">draw_control_lite</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">draw_control</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;whitebox&quot;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">whitebox</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">whitebox</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">whitebox</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">tool_name</span> <span class="o">==</span> <span class="s2">&quot;convert_js&quot;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">all_children</span><span class="p">:</span>
-        <span class="n">tool</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">tool_callback</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-
-    <span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
-        <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Toolbar&quot;</span><span class="p">,</span>
-        <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;wrench&quot;</span><span class="p">,</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span><span class="p">),</span>
-    <span class="p">)</span>
-
-    <span class="n">layers_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
-        <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Layers&quot;</span><span class="p">,</span>
-        <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;server&quot;</span><span class="p">,</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;72px&quot;</span><span class="p">),</span>
-    <span class="p">)</span>
-
-    <span class="n">toolbar_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
-    <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toolbar_button</span><span class="p">]</span>
-    <span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">()</span>
-    <span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">layers_button</span><span class="p">,</span> <span class="n">toolbar_button</span><span class="p">]</span>
-    <span class="n">toolbar_footer</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
-    <span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toolbar_grid</span><span class="p">]</span>
-
-    <span class="n">toolbar_event</span> <span class="o">=</span> <span class="n">ipyevents</span><span class="o">.</span><span class="n">Event</span><span class="p">(</span>
-        <span class="n">source</span><span class="o">=</span><span class="n">toolbar_widget</span><span class="p">,</span> <span class="n">watched_events</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;mouseenter&quot;</span><span class="p">,</span> <span class="s2">&quot;mouseleave&quot;</span><span class="p">]</span>
-    <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">handle_toolbar_event</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;mouseenter&quot;</span><span class="p">:</span>
-            <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="n">toolbar_footer</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;mouseleave&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-                <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toolbar_button</span><span class="p">]</span>
-                <span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="n">layers_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="n">toolbar_event</span><span class="o">.</span><span class="n">on_dom_event</span><span class="p">(</span><span class="n">handle_toolbar_event</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">toolbar_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="n">layers_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="n">toolbar_footer</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">layers_button</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-                <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toolbar_button</span><span class="p">]</span>
-
-    <span class="n">toolbar_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">toolbar_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">layers_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="c1"># Create Layer Manager Widget</span>
-            <span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">layer_manager_gui</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">return_widget</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toolbar_grid</span><span class="p">]</span>
-
-    <span class="n">layers_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">layers_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-    <span class="n">toolbar_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">toolbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
-
-    <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">toolbar_control</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
