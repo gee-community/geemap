@@ -47,6 +47,8 @@ class TestToolbar(unittest.TestCase):
         self.assertEqual(toolbar.all_widgets[0].icon, "info")
         self.assertEqual(toolbar.all_widgets[0].tooltip, "dummy item")
         self.assertFalse(toolbar.all_widgets[0].value)
+        self.assertEqual(toolbar.num_rows_collapsed, 1)
+        self.assertEqual(toolbar.num_rows_expanded, 1)
 
     def test_all_tools_and_toggle_exist_if_extra_tools(self):
         map = geemap.Map(ee_initialize=False)
@@ -56,6 +58,14 @@ class TestToolbar(unittest.TestCase):
         self.assertEqual(toolbar.all_widgets[2].icon, "question")
         self.assertEqual(toolbar.all_widgets[2].tooltip, "no reset item")
         self.assertFalse(toolbar.all_widgets[2].value)
+        self.assertEqual(toolbar.num_rows_collapsed, 1)
+        self.assertEqual(toolbar.num_rows_expanded, 1)
+
+    def test_has_correct_number_of_rows(self):
+        map = geemap.Map(ee_initialize=False)
+        toolbar = Toolbar(map, [self.item, self.item], [self.item, self.item])
+        self.assertEqual(toolbar.num_rows_collapsed, 1)
+        self.assertEqual(toolbar.num_rows_expanded, 2)
 
     def test_toggle_expands_and_collapses(self):
         map = geemap.Map(ee_initialize=False)
