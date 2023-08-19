@@ -142,6 +142,8 @@ class Colorbar(ipywidgets.Output):
 
 
 class Inspector(ipywidgets.VBox):
+    """Inspector widget for Earth Engine data."""
+
     def __init__(
         self,
         host_map,
@@ -151,6 +153,17 @@ class Inspector(ipywidgets.VBox):
         opened=True,
         show_close_button=True,
     ):
+        """Creates an Inspector widget for Earth Engine data.
+
+        Args:
+            host_map (geemap.Map): The map to add the inspector widget to.
+            names (list, optional): The list of layer names to be inspected. Defaults to None.
+            visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
+            decimals (int, optional): The number of decimal places to round the values. Defaults to 2.
+            opened (bool, optional): Whether the inspector is opened. Defaults to True.
+            show_close_button (bool, optional): Whether to show the close button. Defaults to True.
+        """
+
         self._host_map = host_map
         if not host_map:
             raise ValueError("Must pass a valid map when creating an inspector.")
@@ -383,13 +396,21 @@ class Inspector(ipywidgets.VBox):
 
 
 class DrawActions(enum.Enum):
-    CREATED = 'created'
-    EDITED = 'edited'
-    DELETED = 'deleted'
-    REMOVED_LAST = 'removed-last'
+    """Action types for the draw control.
+
+    Args:
+        enum (str): Action type.
+    """
+
+    CREATED = "created"
+    EDITED = "edited"
+    DELETED = "deleted"
+    REMOVED_LAST = "removed-last"
 
 
 class AbstractDrawControl(object):
+    """Abstract class for the draw control."""
+
     host_map = None
     layer = None
     geometries = []
@@ -401,6 +422,12 @@ class AbstractDrawControl(object):
     _geometry_delete_dispatcher = ipywidgets.CallbackDispatcher()
 
     def __init__(self, host_map):
+        """Initialize the draw control.
+
+        Args:
+            host_map (geemap.Map): The geemap.Map instance to be linked with the draw control.
+        """
+
         self.host_map = host_map
         self.layer = None
         self.geometries = []
@@ -451,6 +478,7 @@ class AbstractDrawControl(object):
             self._clear_draw_control()
 
     def remove_geometry(self, geometry):
+        """Removes a geometry from the draw control."""
         if not geometry:
             return
         try:
@@ -469,6 +497,7 @@ class AbstractDrawControl(object):
                 self._redraw_layer()
 
     def get_geometry_properties(self, geometry):
+        """Gets the properties of a geometry."""
         if not geometry:
             return None
         try:
@@ -481,6 +510,7 @@ class AbstractDrawControl(object):
             return None
 
     def set_geometry_properties(self, geometry, property):
+        """Sets the properties of a geometry."""
         if not geometry:
             return
         try:

@@ -37,19 +37,35 @@ basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class MapDrawControl(ipyleaflet.DrawControl, map_widgets.AbstractDrawControl):
-    """"Implements the AbstractDrawControl for the map."""
+    """ "Implements the AbstractDrawControl for the map."""
+
     _roi_start = False
     _roi_end = False
 
     def __init__(self, host_map, **kwargs):
+        """Initialize the map draw control.
+
+        Args:
+            host_map (geemap.Map): The geemap.Map object that the control will be added to.
+        """
         super(MapDrawControl, self).__init__(host_map=host_map, **kwargs)
 
     @property
     def user_roi(self):
+        """Returns the last drawn geometry.
+
+        Returns:
+            ee.Geometry: Last drawn geometry.
+        """
         return self.last_geometry
 
     @property
     def user_rois(self):
+        """Returns all drawn geometries as an ee.FeatureCollection.
+
+        Returns:
+            ee.FeatureCollection: All drawn geometries.
+        """
         return self.collection
 
     # NOTE: Overridden for backwards compatibility, where edited geometries are
@@ -81,6 +97,7 @@ class MapDrawControl(ipyleaflet.DrawControl, map_widgets.AbstractDrawControl):
                 self._roi_end = False
                 print("There was an error creating Earth Engine Feature.")
                 raise Exception(e)
+
         self.on_draw(handle_draw)
         # NOTE: Uncomment the following code once
         # https://github.com/jupyter-widgets/ipyleaflet/issues/1119 is fixed
@@ -2546,7 +2563,9 @@ class Map(ipyleaflet.Map):
                 self.inspector_control.close()
                 self.inspector_control = None
 
-        inspector = map_widgets.Inspector(self, names, visible, decimals, opened, show_close_button)
+        inspector = map_widgets.Inspector(
+            self, names, visible, decimals, opened, show_close_button
+        )
         inspector.on_close = _on_close
         self.inspector_control = ipyleaflet.WidgetControl(
             widget=inspector, position=position
@@ -2620,8 +2639,11 @@ class Map(ipyleaflet.Map):
         """
 
         from .toolbar import Toolbar, main_tools, extra_tools
+
         self._toolbar = Toolbar(self, main_tools, extra_tools)
-        toolbar_control = ipyleaflet.WidgetControl(widget=self._toolbar, position=position)
+        toolbar_control = ipyleaflet.WidgetControl(
+            widget=self._toolbar, position=position
+        )
         self.add(toolbar_control)
 
     def add_plot_gui(self, position="topright", **kwargs):
@@ -4096,6 +4118,7 @@ class Map(ipyleaflet.Map):
             raise Exception("The source must be a URL.")
 
     def remove_draw_control(self):
+        """Removes the draw control from the map"""
         controls = []
         old_draw_control = None
         for control in self.controls:
@@ -4121,9 +4144,9 @@ class Map(ipyleaflet.Map):
                 self.remove_drawn_features()
             elif self.draw_control.count:
                 self.draw_control.remove_geometry(self.draw_control.geometries[-1])
-                if hasattr(self, '_chart_values'):
+                if hasattr(self, "_chart_values"):
                     self._chart_values = self._chart_values[:-1]
-                if hasattr(self, '_chart_points'):
+                if hasattr(self, "_chart_points"):
                     self._chart_points = self._chart_points[:-1]
                 # self._chart_labels = None
 
