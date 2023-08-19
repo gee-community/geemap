@@ -35,13 +35,14 @@ from . import examples
 
 basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
+
 class MapDrawControl(ipyleaflet.DrawControl, map_widgets.AbstractDrawControl):
     """"Implements the AbstractDrawControl for the map."""
     _roi_start = False
     _roi_end = False
 
     def __init__(self, host_map, **kwargs):
-         super(MapDrawControl,self).__init__(host_map=host_map, **kwargs)
+        super(MapDrawControl, self).__init__(host_map=host_map, **kwargs)
 
     @property
     def user_roi(self):
@@ -50,7 +51,7 @@ class MapDrawControl(ipyleaflet.DrawControl, map_widgets.AbstractDrawControl):
     @property
     def user_rois(self):
         return self.collection
-    
+
     # NOTE: Overridden for backwards compatibility, where edited geometries are
     # added to the layer instead of modified in place. Remove when
     # https://github.com/jupyter-widgets/ipyleaflet/issues/1119 is fixed to
@@ -114,15 +115,19 @@ class Map(ipyleaflet.Map):
     @property
     def draw_features(self):
         return self.draw_control.features if self.draw_control else []
+
     @property
     def draw_last_feature(self):
         return self.draw_control.last_feature if self.draw_control else None
+
     @property
     def draw_layer(self):
         return self.draw_control.layer if self.draw_control else None
+
     @property
     def user_roi(self):
         return self.draw_control.user_roi if self.draw_control else None
+
     @property
     def user_rois(self):
         return self.draw_control.user_rois if self.draw_control else None

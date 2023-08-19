@@ -2159,7 +2159,7 @@ def collect_samples(m):
             if len(color.value) != 7:
                 color.value = "#3388ff"
             draw_control = MapDrawControl(
-                host_map = m,
+                host_map=m,
                 marker={"shapeOptions": {"color": color.value}, "repeatMode": False},
                 rectangle={"shapeOptions": {"color": color.value}, "repeatMode": False},
                 polygon={"shapeOptions": {"color": color.value}, "repeatMode": False},

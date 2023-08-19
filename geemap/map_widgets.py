@@ -383,10 +383,10 @@ class Inspector(ipywidgets.VBox):
 
 
 class DrawActions(enum.Enum):
-    CREATED='created'
-    EDITED='edited'
-    DELETED='deleted'
-    REMOVED_LAST='removed-last'
+    CREATED = 'created'
+    EDITED = 'edited'
+    DELETED = 'deleted'
+    REMOVED_LAST = 'removed-last'
 
 
 class AbstractDrawControl(object):
@@ -415,9 +415,14 @@ class AbstractDrawControl(object):
     @property
     def features(self):
         if self.count:
-            return [
-                ee.Feature(geometry, self.properties[i]) for i, geometry in enumerate(self.geometries)
-            ]
+            features = []
+            for i, geometry in enumerate(self.geometries):
+                if i < len(self.properties):
+                    property = self.properties[i]
+                else:
+                    property = None
+                features.append(ee.Feature(geometry, property))
+            return features
         else:
             return []
 
@@ -497,7 +502,7 @@ class AbstractDrawControl(object):
     def _bind_to_draw_control(self):
         """Set up draw control event handling like create, edit, and delete."""
         raise NotImplementedError()
-    
+
     def _remove_geometry_at_index_on_draw_control(self):
         """Remove the geometry at the given index on the draw control."""
         raise NotImplementedError()
@@ -528,7 +533,7 @@ class AbstractDrawControl(object):
                 else:
                     break
             if i < self.count and test_geometry is not None:
-                    self.geometries[i] = test_geometry
+                self.geometries[i] = test_geometry
         if self.layer is not None:
             self._redraw_layer()
 
@@ -543,7 +548,7 @@ class AbstractDrawControl(object):
             else:
                 self.host_map.substitute(self.host_map.layers[layer_index], layer)
         self.layer = layer
-    
+
     def _handle_geometry_created(self, geo_json):
         geometry = common.geojson_to_ee(geo_json, False)
         self.last_geometry = geometry
