@@ -20,7 +20,7 @@ geemap
 .. image:: https://img.shields.io/conda/vn/conda-forge/geemap.svg
         :target: https://anaconda.org/conda-forge/geemap
 
-.. image:: https://pepy.tech/badge/geemap
+.. image:: https://static.pepy.tech/badge/geemap
         :target: https://pepy.tech/project/geemap
 
 .. image:: https://github.com/gee-community/geemap/workflows/docs/badge.svg
