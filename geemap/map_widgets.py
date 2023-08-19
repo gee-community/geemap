@@ -382,7 +382,7 @@ class Inspector(ipywidgets.VBox):
         return self._root_node("Objects", nodes)
 
 
-class DrawActions(enum.StrEnum):
+class DrawActions(enum.Enum):
     CREATED='created'
     EDITED='edited'
     DELETED='deleted'
@@ -423,7 +423,7 @@ class AbstractDrawControl(object):
 
     @property
     def collection(self):
-        return ee.FeatureCollection(self.features) if self.count else None
+        return ee.FeatureCollection(self.features if self.count else [])
 
     @property
     def last_feature(self):
@@ -434,7 +434,7 @@ class AbstractDrawControl(object):
     def count(self):
         return len(self.geometries)
 
-    def reset(self, clear_draw_control=True):
+    def reset(self, clear_draw_control=False):
         """Resets the draw controls."""
         if self.layer is not None:
             self.host_map.remove_layer(self.layer)
@@ -446,7 +446,12 @@ class AbstractDrawControl(object):
             self._clear_draw_control()
 
     def remove_geometry(self, geometry):
-        index = self.geometries.index(geometry)
+        if not geometry:
+            return
+        try:
+            index = self.geometries.index(geometry)
+        except ValueError:
+            return
         if index >= 0:
             del self.geometries[index]
             del self.properties[index]
@@ -459,14 +464,24 @@ class AbstractDrawControl(object):
                 self._redraw_layer()
 
     def get_geometry_properties(self, geometry):
-        index = self.geometries.index(geometry)
+        if not geometry:
+            return None
+        try:
+            index = self.geometries.index(geometry)
+        except ValueError:
+            return None
         if index >= 0:
             return self.properties[index]
         else:
             return None
 
     def set_geometry_properties(self, geometry, property):
-        index = self.geometries.index(geometry)
+        if not geometry:
+            return
+        try:
+            index = self.geometries.index(geometry)
+        except ValueError:
+            return
         if index >= 0:
             self.properties[index] = property
 
