@@ -3358,6 +3358,8 @@ class Map(ipyleaflet.Map):
 
                 if right_label is not None:
                     self.remove_control(right_control)
+                    
+                self.dragging = True
 
             close_button.observe(close_btn_click, "value")
             close_control = ipyleaflet.WidgetControl(
