@@ -2191,6 +2191,7 @@ def collect_samples(m):
             def set_properties(_, geometry):
                 if len(train_props) > 0:
                     draw_control.set_geometry_properties(geometry, train_props)
+
             draw_control.on_geometry_create(set_properties)
 
         elif change["new"] == "Clear":
@@ -4689,7 +4690,7 @@ extra_tools = [
     Toolbar.Item(
         icon="eraser",
         tooltip="Remove all drawn features",
-        callback=lambda m, selected: max.remove_drawn_features() if selected else None,
+        callback=lambda m, selected: m.remove_drawn_features() if selected else None,
     ),
     Toolbar.Item(
         icon="folder-open",

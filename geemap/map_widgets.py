@@ -470,6 +470,7 @@ class AbstractDrawControl(object):
         """Resets the draw controls."""
         if self.layer is not None:
             self.host_map.remove_layer(self.layer)
+        self.data = []  # Remove all drawn features from the map.
         self.geometries = []
         self.properties = []
         self.last_geometry = None
