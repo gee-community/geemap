@@ -772,6 +772,54 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.map_widgets.AbstractDrawControl" class="md-nav__link">
+    AbstractDrawControl
+  </a>
+  
+    <nav class="md-nav" aria-label="AbstractDrawControl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.AbstractDrawControl.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.AbstractDrawControl.get_geometry_properties" class="md-nav__link">
+    get_geometry_properties()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.AbstractDrawControl.remove_geometry" class="md-nav__link">
+    remove_geometry()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.AbstractDrawControl.reset" class="md-nav__link">
+    reset()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.AbstractDrawControl.set_geometry_properties" class="md-nav__link">
+    set_geometry_properties()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.map_widgets.Colorbar" class="md-nav__link">
     Colorbar
   </a>
@@ -781,6 +829,33 @@
         
           <li class="md-nav__item">
   <a href="#geemap.map_widgets.Colorbar.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geemap.map_widgets.DrawActions" class="md-nav__link">
+    DrawActions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geemap.map_widgets.Inspector" class="md-nav__link">
+    Inspector
+  </a>
+  
+    <nav class="md-nav" aria-label="Inspector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.Inspector.__init__" class="md-nav__link">
     __init__()
   </a>
   
@@ -3052,6 +3127,54 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.map_widgets.AbstractDrawControl" class="md-nav__link">
+    AbstractDrawControl
+  </a>
+  
+    <nav class="md-nav" aria-label="AbstractDrawControl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.AbstractDrawControl.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.AbstractDrawControl.get_geometry_properties" class="md-nav__link">
+    get_geometry_properties()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.AbstractDrawControl.remove_geometry" class="md-nav__link">
+    remove_geometry()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.AbstractDrawControl.reset" class="md-nav__link">
+    reset()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.AbstractDrawControl.set_geometry_properties" class="md-nav__link">
+    set_geometry_properties()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.map_widgets.Colorbar" class="md-nav__link">
     Colorbar
   </a>
@@ -3061,6 +3184,33 @@
         
           <li class="md-nav__item">
   <a href="#geemap.map_widgets.Colorbar.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geemap.map_widgets.DrawActions" class="md-nav__link">
+    DrawActions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geemap.map_widgets.Inspector" class="md-nav__link">
+    Inspector
+  </a>
+  
+    <nav class="md-nav" aria-label="Inspector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.Inspector.__init__" class="md-nav__link">
     __init__()
   </a>
   
@@ -3109,6 +3259,470 @@
 
 
 
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="geemap.map_widgets.AbstractDrawControl" class="doc doc-heading">
+        <code>
+AbstractDrawControl        </code>
+
+
+
+<a href="#geemap.map_widgets.AbstractDrawControl" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Abstract class for the draw control.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">AbstractDrawControl</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract class for the draw control.&quot;&quot;&quot;</span>
+
+    <span class="n">host_map</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">layer</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">last_draw_action</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">_geometry_create_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
+    <span class="n">_geometry_edit_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
+    <span class="n">_geometry_delete_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the draw control.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            host_map (geemap.Map): The geemap.Map instance to be linked with the draw control.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span> <span class="o">=</span> <span class="n">host_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_create_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_edit_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_delete_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bind_to_draw_control</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">:</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">geometry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">):</span>
+                    <span class="nb">property</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">property</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="nb">property</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">features</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">collection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="k">else</span> <span class="p">[])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">last_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">property</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">,</span> <span class="nb">property</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_draw_control</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the draw controls.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Remove all drawn features from the map.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">clear_draw_control</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_clear_draw_control</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">remove_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes a geometry from the draw control.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_remove_geometry_at_index_on_draw_control</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">geometry</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">:</span>
+                <span class="c1"># Treat this like an &quot;undo&quot; of the last drawn geometry.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">REMOVED_LAST</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the properties of a geometry.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">set_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the properties of a geometry.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">property</span>
+
+    <span class="k">def</span> <span class="nf">on_geometry_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_create_dispatcher</span><span class="o">.</span><span class="n">register_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="n">remove</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">on_geometry_edit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_edit_dispatcher</span><span class="o">.</span><span class="n">register_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="n">remove</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">on_geometry_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_delete_dispatcher</span><span class="o">.</span><span class="n">register_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="n">remove</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_bind_to_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up draw control event handling like create, edit, and delete.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_remove_geometry_at_index_on_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the geometry at the given index on the draw control.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_clear_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clears the geometries from the draw control.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_synced_geojson_from_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an up-to-date of GeoJSON from the draw control.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_sync_geometries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sync the local geometries with those from the draw control.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># The current geometries from the draw_control.</span>
+        <span class="n">test_geojsons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_synced_geojson_from_draw_control</span><span class="p">()</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_geojsons</span><span class="p">):</span>
+            <span class="n">local_geometry</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">test_geometry</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_geojsons</span><span class="p">):</span>
+                <span class="n">local_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">test_geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">test_geojsons</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">test_geometry</span> <span class="o">==</span> <span class="n">local_geometry</span><span class="p">:</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">test_geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_geometry</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_redraw_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="n">EELeafletTileLayer</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">},</span> <span class="s2">&quot;Drawn Features&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mf">0.5</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">:</span>
+            <span class="n">layer_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">find_layer_index</span><span class="p">(</span><span class="s2">&quot;Drawn Features&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">layer_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer_index</span><span class="p">],</span> <span class="n">layer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
+
+    <span class="k">def</span> <span class="nf">_handle_geometry_created</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geo_json</span><span class="p">):</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">CREATED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_create_dispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_handle_geometry_edited</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geo_json</span><span class="p">):</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">EDITED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sync_geometries</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_edit_dispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_handle_geometry_deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geo_json</span><span class="p">):</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">DELETED</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_delete_dispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.map_widgets.AbstractDrawControl.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+<a href="#geemap.map_widgets.AbstractDrawControl.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Initialize the draw control.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>host_map</code></td>
+        <td><code>geemap.Map</code></td>
+        <td><p>The geemap.Map instance to be linked with the draw control.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the draw control.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        host_map (geemap.Map): The geemap.Map instance to be linked with the draw control.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span> <span class="o">=</span> <span class="n">host_map</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_create_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_edit_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_delete_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_bind_to_draw_control</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.map_widgets.AbstractDrawControl.get_geometry_properties" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">)</span></code>
+
+
+<a href="#geemap.map_widgets.AbstractDrawControl.get_geometry_properties" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Gets the properties of a geometry.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the properties of a geometry.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.map_widgets.AbstractDrawControl.remove_geometry" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">remove_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">)</span></code>
+
+
+<a href="#geemap.map_widgets.AbstractDrawControl.remove_geometry" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Removes a geometry from the draw control.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">remove_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes a geometry from the draw control.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_geometry_at_index_on_draw_control</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">geometry</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">:</span>
+            <span class="c1"># Treat this like an &quot;undo&quot; of the last drawn geometry.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">REMOVED_LAST</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.map_widgets.AbstractDrawControl.reset" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_draw_control</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+<a href="#geemap.map_widgets.AbstractDrawControl.reset" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Resets the draw controls.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_draw_control</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resets the draw controls.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Remove all drawn features from the map.</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">clear_draw_control</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clear_draw_control</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.map_widgets.AbstractDrawControl.set_geometry_properties" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="nb">property</span><span class="p">)</span></code>
+
+
+<a href="#geemap.map_widgets.AbstractDrawControl.set_geometry_properties" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Sets the properties of a geometry.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets the properties of a geometry.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">property</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
 
 
 
@@ -3526,6 +4140,547 @@ Colorbar            (<span title="ipywidgets.widgets.widget_output.Output">Outpu
 
   </div>
 
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="geemap.map_widgets.DrawActions" class="doc doc-heading">
+        <code>
+DrawActions            (<span title="enum.Enum">Enum</span>)
+        </code>
+
+
+
+<a href="#geemap.map_widgets.DrawActions" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Action types for the draw control.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>enum</code></td>
+        <td><code>str</code></td>
+        <td><p>Action type.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">DrawActions</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Action types for the draw control.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        enum (str): Action type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">CREATED</span> <span class="o">=</span> <span class="s2">&quot;created&quot;</span>
+    <span class="n">EDITED</span> <span class="o">=</span> <span class="s2">&quot;edited&quot;</span>
+    <span class="n">DELETED</span> <span class="o">=</span> <span class="s2">&quot;deleted&quot;</span>
+    <span class="n">REMOVED_LAST</span> <span class="o">=</span> <span class="s2">&quot;removed-last&quot;</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="geemap.map_widgets.Inspector" class="doc doc-heading">
+        <code>
+Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
+        </code>
+
+
+
+<a href="#geemap.map_widgets.Inspector" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Inspector widget for Earth Engine data.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Inspector</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inspector widget for Earth Engine data.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">host_map</span><span class="p">,</span>
+        <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">opened</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">show_close_button</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an Inspector widget for Earth Engine data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            host_map (geemap.Map): The map to add the inspector widget to.</span>
+<span class="sd">            names (list, optional): The list of layer names to be inspected. Defaults to None.</span>
+<span class="sd">            visible (bool, optional): Whether to inspect visible layers only. Defaults to True.</span>
+<span class="sd">            decimals (int, optional): The number of decimal places to round the values. Defaults to 2.</span>
+<span class="sd">            opened (bool, optional): Whether the inspector is opened. Defaults to True.</span>
+<span class="sd">            show_close_button (bool, optional): Whether to show the close button. Defaults to True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span> <span class="o">=</span> <span class="n">host_map</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">host_map</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must pass a valid map when creating an inspector.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="n">names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span> <span class="o">=</span> <span class="n">visible</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_decimals</span> <span class="o">=</span> <span class="n">decimals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_opened</span> <span class="o">=</span> <span class="n">opened</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_expand_point_tree</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_expand_pixels_tree</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_expand_objects_tree</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
+
+        <span class="n">left_padded_square</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">opened</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Inspector&quot;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">left_padded_square</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_toolbar_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+
+        <span class="n">close_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Close the tool&quot;</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;times&quot;</span><span class="p">,</span>
+            <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">left_padded_square</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">close_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_close_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+
+        <span class="n">point_checkbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_checkbox</span><span class="p">(</span><span class="s2">&quot;Point&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_point_tree</span><span class="p">)</span>
+        <span class="n">pixels_checkbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_checkbox</span><span class="p">(</span><span class="s2">&quot;Pixels&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_pixels_tree</span><span class="p">)</span>
+        <span class="n">objects_checkbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_checkbox</span><span class="p">(</span><span class="s2">&quot;Objects&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_objects_tree</span><span class="p">)</span>
+        <span class="n">point_checkbox</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_point_checkbox_changed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+        <span class="n">pixels_checkbox</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_pixels_checkbox_changed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+        <span class="n">objects_checkbox</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_objects_checkbox_changed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inspector_checks</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span>
+            <span class="n">children</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+                    <span class="s2">&quot;Expand&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 8px 0px 4px&quot;</span><span class="p">)</span>
+                <span class="p">),</span>
+                <span class="n">point_checkbox</span><span class="p">,</span>
+                <span class="n">pixels_checkbox</span><span class="p">,</span>
+                <span class="n">objects_checkbox</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show_close_button</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span>
+                <span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">close_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span>
+            <span class="n">children</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+                <span class="n">max_width</span><span class="o">=</span><span class="s2">&quot;600px&quot;</span><span class="p">,</span> <span class="n">max_height</span><span class="o">=</span><span class="s2">&quot;300px&quot;</span><span class="p">,</span> <span class="n">overflow</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;block&quot;</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clear_inspector_output</span><span class="p">()</span>
+
+        <span class="n">host_map</span><span class="o">.</span><span class="n">on_interaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_map_interaction</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">opened</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inspector_checks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_checkbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">checked</span><span class="p">):</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 6px 0px 0px&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">checked</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_map_interaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">latlon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;click&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_map_click</span><span class="p">(</span><span class="n">latlon</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_map_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;wait&quot;</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_clear_inspector_output</span><span class="p">()</span>
+
+            <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_point_info</span><span class="p">(</span><span class="n">latlon</span><span class="p">)]</span>
+            <span class="n">pixels_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixels_info</span><span class="p">(</span><span class="n">latlon</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pixels_node</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pixels_node</span><span class="p">)</span>
+            <span class="n">objects_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objects_info</span><span class="p">(</span><span class="n">latlon</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">objects_node</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">objects_node</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">ipytree</span><span class="o">.</span><span class="n">Tree</span><span class="p">(</span><span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_clear_inspector_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inspector_checks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_on_point_checkbox_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_expand_point_tree</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_on_pixels_checkbox_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_expand_pixels_tree</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_on_objects_checkbox_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_expand_objects_tree</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_on_toolbar_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inspector_checks</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_clear_inspector_output</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_on_close_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">on_interaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_map_interaction</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_visible_map_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">names</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">ee_layer_names</span><span class="p">:</span>
+                    <span class="n">layers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">ee_layer_dict</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;ee_layer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">visible</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_root_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
+            <span class="n">title</span><span class="p">,</span>
+            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;archive&quot;</span><span class="p">,</span>
+            <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span>
+            <span class="n">open_icon</span><span class="o">=</span><span class="s2">&quot;plus-square&quot;</span><span class="p">,</span>
+            <span class="n">open_icon_style</span><span class="o">=</span><span class="s2">&quot;success&quot;</span><span class="p">,</span>
+            <span class="n">close_icon</span><span class="o">=</span><span class="s2">&quot;minus-square&quot;</span><span class="p">,</span>
+            <span class="n">close_icon_style</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_point_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">):</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">get_scale</span><span class="p">()</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Point (</span><span class="si">{</span><span class="n">latlon</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_decimals</span><span class="si">}</span><span class="s2">f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">latlon</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_decimals</span><span class="si">}</span><span class="s2">f</span><span class="si">}</span><span class="s2">) at </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span><span class="si">}</span><span class="s2">m/px&quot;</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Longitude: </span><span class="si">{</span><span class="n">latlon</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+            <span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Latitude: </span><span class="si">{</span><span class="n">latlon</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+            <span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Zoom Level: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">zoom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+            <span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scale (approx. m/px): </span><span class="si">{</span><span class="n">scale</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_node</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">opened</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_expand_point_tree</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_query_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">):</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">latlon</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">get_scale</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">):</span>
+            <span class="n">ee_object</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">mosaic</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">reduceRegion</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">first</span><span class="p">(),</span> <span class="n">point</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_pixels_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_node</span><span class="p">(</span><span class="s2">&quot;Pixels&quot;</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="n">layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_map_layers</span><span class="p">()</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ee_object</span> <span class="o">=</span> <span class="n">layer</span><span class="p">[</span><span class="s2">&quot;ee_object&quot;</span><span class="p">]</span>
+            <span class="n">pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_point</span><span class="p">(</span><span class="n">latlon</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pixel</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">pluralized_band</span> <span class="o">=</span> <span class="s2">&quot;band&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pixel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;bands&quot;</span>
+            <span class="n">ee_obj_type</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">ee_obj_type</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pixel</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">pluralized_band</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="n">layer_node</span> <span class="o">=</span> <span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">opened</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_expand_pixels_tree</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pixel</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decimals</span><span class="p">)</span>
+                <span class="n">layer_node</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">))</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer_node</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_node</span><span class="p">(</span><span class="s2">&quot;Pixels&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">):</span>
+        <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">latlon</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.005</span>
+        <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="n">lon</span> <span class="o">-</span> <span class="n">delta</span><span class="p">,</span> <span class="n">lat</span> <span class="o">-</span> <span class="n">delta</span><span class="p">,</span> <span class="n">lon</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="n">lat</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_objects_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_node</span><span class="p">(</span><span class="s2">&quot;Objects&quot;</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="n">layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_visible_map_layers</span><span class="p">()</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">latlon</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ee_object</span> <span class="o">=</span> <span class="n">layer</span><span class="p">[</span><span class="s2">&quot;ee_object&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">):</span>
+                <span class="n">geom</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="n">ee_object</span><span class="o">.</span><span class="n">first</span><span class="p">())</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
+                <span class="n">bbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bbox</span><span class="p">(</span><span class="n">latlon</span><span class="p">)</span>
+                <span class="n">is_point</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Algorithms</span><span class="o">.</span><span class="n">If</span><span class="p">(</span>
+                    <span class="n">geom</span><span class="o">.</span><span class="n">type</span><span class="p">()</span><span class="o">.</span><span class="n">compareTo</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="s2">&quot;Point&quot;</span><span class="p">)),</span> <span class="n">point</span><span class="p">,</span> <span class="n">bbox</span>
+                <span class="p">)</span>
+                <span class="n">ee_object</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">is_point</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+                <span class="n">tree_node</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">get_info</span><span class="p">(</span>
+                    <span class="n">ee_object</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_objects_tree</span><span class="p">,</span> <span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">tree_node</span><span class="p">:</span>
+                    <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tree_node</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_node</span><span class="p">(</span><span class="s2">&quot;Objects&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.map_widgets.Inspector.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">opened</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_close_button</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+<a href="#geemap.map_widgets.Inspector.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates an Inspector widget for Earth Engine data.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>host_map</code></td>
+        <td><code>geemap.Map</code></td>
+        <td><p>The map to add the inspector widget to.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>names</code></td>
+        <td><code>list</code></td>
+        <td><p>The list of layer names to be inspected. Defaults to None.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>visible</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether to inspect visible layers only. Defaults to True.</p></td>
+        <td><code>True</code></td>
+      </tr>
+      <tr>
+        <td><code>decimals</code></td>
+        <td><code>int</code></td>
+        <td><p>The number of decimal places to round the values. Defaults to 2.</p></td>
+        <td><code>2</code></td>
+      </tr>
+      <tr>
+        <td><code>opened</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether the inspector is opened. Defaults to True.</p></td>
+        <td><code>True</code></td>
+      </tr>
+      <tr>
+        <td><code>show_close_button</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether to show the close button. Defaults to True.</p></td>
+        <td><code>True</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">host_map</span><span class="p">,</span>
+    <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">opened</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_close_button</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an Inspector widget for Earth Engine data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        host_map (geemap.Map): The map to add the inspector widget to.</span>
+<span class="sd">        names (list, optional): The list of layer names to be inspected. Defaults to None.</span>
+<span class="sd">        visible (bool, optional): Whether to inspect visible layers only. Defaults to True.</span>
+<span class="sd">        decimals (int, optional): The number of decimal places to round the values. Defaults to 2.</span>
+<span class="sd">        opened (bool, optional): Whether the inspector is opened. Defaults to True.</span>
+<span class="sd">        show_close_button (bool, optional): Whether to show the close button. Defaults to True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span> <span class="o">=</span> <span class="n">host_map</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">host_map</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must pass a valid map when creating an inspector.&quot;</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="n">names</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span> <span class="o">=</span> <span class="n">visible</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_decimals</span> <span class="o">=</span> <span class="n">decimals</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_opened</span> <span class="o">=</span> <span class="n">opened</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_expand_point_tree</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_expand_pixels_tree</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_expand_objects_tree</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
+
+    <span class="n">left_padded_square</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+        <span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span>
+    <span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">opened</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Inspector&quot;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">left_padded_square</span>
+    <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_toolbar_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+
+    <span class="n">close_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
+        <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Close the tool&quot;</span><span class="p">,</span>
+        <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;times&quot;</span><span class="p">,</span>
+        <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
+        <span class="n">layout</span><span class="o">=</span><span class="n">left_padded_square</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">close_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_close_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+
+    <span class="n">point_checkbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_checkbox</span><span class="p">(</span><span class="s2">&quot;Point&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_point_tree</span><span class="p">)</span>
+    <span class="n">pixels_checkbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_checkbox</span><span class="p">(</span><span class="s2">&quot;Pixels&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_pixels_tree</span><span class="p">)</span>
+    <span class="n">objects_checkbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_checkbox</span><span class="p">(</span><span class="s2">&quot;Objects&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_objects_tree</span><span class="p">)</span>
+    <span class="n">point_checkbox</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_point_checkbox_changed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+    <span class="n">pixels_checkbox</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_pixels_checkbox_changed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+    <span class="n">objects_checkbox</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_objects_checkbox_changed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">inspector_checks</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span>
+        <span class="n">children</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+                <span class="s2">&quot;Expand&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 8px 0px 4px&quot;</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">point_checkbox</span><span class="p">,</span>
+            <span class="n">pixels_checkbox</span><span class="p">,</span>
+            <span class="n">objects_checkbox</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">show_close_button</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span>
+            <span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="n">close_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span>
+        <span class="n">children</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+            <span class="n">max_width</span><span class="o">=</span><span class="s2">&quot;600px&quot;</span><span class="p">,</span> <span class="n">max_height</span><span class="o">=</span><span class="s2">&quot;300px&quot;</span><span class="p">,</span> <span class="n">overflow</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="s2">&quot;block&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_clear_inspector_output</span><span class="p">()</span>
+
+    <span class="n">host_map</span><span class="o">.</span><span class="n">on_interaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_map_interaction</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">opened</span>
+
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inspector_checks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span><span class="p">]</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
 
 
 
