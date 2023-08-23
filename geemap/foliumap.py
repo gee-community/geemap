@@ -2664,11 +2664,11 @@ class Map(folium.Map):
         """
 
         if background:
-            text = f"""<div style="font-size: {fontsize}px; color: {fontcolor}; font-weight: {'bold' if bold else 'normal'}; 
-            padding: {padding}; background-color: {bg_color}; 
+            text = f"""<div style="font-size: {fontsize}px; color: {fontcolor}; font-weight: {'bold' if bold else 'normal'};
+            padding: {padding}; background-color: {bg_color};
             border-radius: {border_radius};">{text}</div>"""
         else:
-            text = f"""<div style="font-size: {fontsize}px; color: {fontcolor}; font-weight: {'bold' if bold else 'normal'}; 
+            text = f"""<div style="font-size: {fontsize}px; color: {fontcolor}; font-weight: {'bold' if bold else 'normal'};
             padding: {padding};">{text}</div>"""
 
         self.add_html(text, position=position, **kwargs)
@@ -2712,10 +2712,10 @@ class Map(folium.Map):
             else:
                 output.append(line + "\n")
 
-        return f"""<iframe style="width: {width}; height: {height}" name="result" allow="midi; geolocation; microphone; camera; 
-        display-capture; encrypted-media;" sandbox="allow-modals allow-forms 
-        allow-scripts allow-same-origin allow-popups 
-        allow-top-navigation-by-user-activation allow-downloads" allowfullscreen="" 
+        return f"""<iframe style="width: {width}; height: {height}" name="result" allow="midi; geolocation; microphone; camera;
+        display-capture; encrypted-media;" sandbox="allow-modals allow-forms
+        allow-scripts allow-same-origin allow-popups
+        allow-top-navigation-by-user-activation allow-downloads" allowfullscreen=""
         allowpaymentrequest="" frameborder="0" srcdoc='{"".join(output)}'></iframe>"""
 
     def remove_labels(self, **kwargs):
