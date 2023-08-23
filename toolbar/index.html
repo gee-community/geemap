@@ -1135,13 +1135,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#geemap.toolbar.layer_manager_gui" class="md-nav__link">
-    layer_manager_gui()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#geemap.toolbar.open_data_widget" class="md-nav__link">
     open_data_widget()
   </a>
@@ -4352,13 +4345,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#geemap.toolbar.layer_manager_gui" class="md-nav__link">
-    layer_manager_gui()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#geemap.toolbar.open_data_widget" class="md-nav__link">
     open_data_widget()
   </a>
@@ -4664,11 +4650,31 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
     <span class="k">def</span> <span class="nf">_layers_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
             <span class="c1"># Create Layer Manager Widget</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">layer_manager_gui</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">,</span> <span class="n">return_widget</span><span class="o">=</span><span class="kc">True</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="k">def</span> <span class="nf">_on_open_vis</span><span class="p">(</span><span class="n">layer_name</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">create_vis_widget</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span><span class="o">.</span><span class="n">header_hidden</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span><span class="o">.</span><span class="n">close_button_hidden</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span><span class="o">.</span><span class="n">on_open_vis</span> <span class="o">=</span> <span class="n">_on_open_vis</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
+                <span class="n">widget</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span>
             <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div>
         </details>
 
@@ -5967,297 +5973,6 @@ or unselected the tool.</p></td>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">toolbar_widget</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h2 id="geemap.toolbar.layer_manager_gui" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">layer_manager_gui</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;topright&#39;</span><span class="p">,</span> <span class="n">opened</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_widget</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_close_button</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
-
-
-<a href="#geemap.toolbar.layer_manager_gui" class="headerlink" title="Permanent link">&para;</a></h2>
-
-    <div class="doc doc-contents ">
-
-      <p>Creates a layer manager widget.</p>
-
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>m</code></td>
-        <td><code>geemap.Map</code></td>
-        <td><p>The geemap.Map object.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>position</code></td>
-        <td><code>str</code></td>
-        <td><p>The position of the widget. Defaults to "topright".</p></td>
-        <td><code>&#39;topright&#39;</code></td>
-      </tr>
-      <tr>
-        <td><code>return_widget</code></td>
-        <td><code>bool</code></td>
-        <td><p>Whether to return the widget. Defaults to False.</p></td>
-        <td><code>False</code></td>
-      </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>geemap/toolbar.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">layer_manager_gui</span><span class="p">(</span>
-    <span class="n">m</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span><span class="p">,</span> <span class="n">opened</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_widget</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_close_button</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a layer manager widget.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        m (geemap.Map): The geemap.Map object.</span>
-<span class="sd">        position (str, optional): The position of the widget. Defaults to &quot;topright&quot;.</span>
-<span class="sd">        return_widget (bool, optional): Whether to return the widget. Defaults to False.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">layers_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
-        <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Layer Manager&quot;</span><span class="p">,</span>
-        <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;server&quot;</span><span class="p">,</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span><span class="p">),</span>
-    <span class="p">)</span>
-
-    <span class="n">close_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
-        <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Close the tool&quot;</span><span class="p">,</span>
-        <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;times&quot;</span><span class="p">,</span>
-        <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span><span class="p">),</span>
-    <span class="p">)</span>
-
-    <span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">()</span>
-    <span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">layers_button</span><span class="p">]</span>
-    <span class="n">toolbar_footer</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
-    <span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">toolbar_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
-    <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toolbar_header</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">toolbar_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="n">close_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="n">toolbar_footer</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">close_button</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-                <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">layers_button</span><span class="p">]</span>
-
-    <span class="n">layers_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">toolbar_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">close_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="n">layers_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">layer_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">layer_manager</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">layer_manager</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">layer_manager</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-    <span class="n">close_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">close_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">layers_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="n">layers_hbox</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">all_layers_chk</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
-                <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;All layers on/off&quot;</span><span class="p">,</span>
-                <span class="n">indent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;18px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 8px 25px 8px&quot;</span><span class="p">),</span>
-            <span class="p">)</span>
-            <span class="n">all_layers_chk</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="s2">&quot;30ex&quot;</span>
-            <span class="n">layers_hbox</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">all_layers_chk</span><span class="p">)</span>
-
-            <span class="k">def</span> <span class="nf">all_layers_chk_changed</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-                    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;visible&quot;</span><span class="p">):</span>
-                            <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;visible&quot;</span><span class="p">):</span>
-                            <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
-
-            <span class="n">all_layers_chk</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">all_layers_chk_changed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-
-            <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">lyr</span> <span class="k">for</span> <span class="n">lyr</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>
-
-            <span class="c1"># if the layers contain unsupported layers (e.g., GeoJSON, GeoData), adds the ipyleaflet built-in LayerControl</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">layer_control</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">layer_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">LayersControl</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span><span class="p">)</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">layer_control</span> <span class="o">=</span> <span class="n">layer_control</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">layer_control</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">layer_control</span><span class="p">)</span>
-
-            <span class="c1"># for non-TileLayer, use layer.style={&#39;opacity&#39;:0, &#39;fillOpacity&#39;: 0} to turn layer off.</span>
-            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
-                <span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;visible&quot;</span><span class="p">):</span>
-                    <span class="n">visible</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">visible</span>
-                <span class="n">layer_chk</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
-                    <span class="n">value</span><span class="o">=</span><span class="n">visible</span><span class="p">,</span>
-                    <span class="n">description</span><span class="o">=</span><span class="n">layer</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="n">indent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;18px&quot;</span><span class="p">),</span>
-                <span class="p">)</span>
-                <span class="n">layer_chk</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="s2">&quot;140px&quot;</span>
-
-                <span class="k">if</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">geojson_layers</span><span class="p">:</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">opacity</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
-                            <span class="n">layer</span><span class="o">.</span><span class="n">style</span><span class="p">[</span><span class="s2">&quot;opacity&quot;</span><span class="p">],</span> <span class="n">layer</span><span class="o">.</span><span class="n">style</span><span class="p">[</span><span class="s2">&quot;fillOpacity&quot;</span><span class="p">]</span>
-                        <span class="p">)</span>
-                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                        <span class="n">opacity</span> <span class="o">=</span> <span class="mf">1.0</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;opacity&quot;</span><span class="p">):</span>
-                        <span class="n">opacity</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">opacity</span>
-
-                <span class="n">layer_opacity</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">FloatSlider</span><span class="p">(</span>
-                    <span class="n">value</span><span class="o">=</span><span class="n">opacity</span><span class="p">,</span>
-                    <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                    <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                    <span class="n">step</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-                    <span class="n">readout</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;80px&quot;</span><span class="p">),</span>
-                <span class="p">)</span>
-                <span class="n">layer_settings</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
-                    <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;gear&quot;</span><span class="p">,</span>
-                    <span class="n">tooltip</span><span class="o">=</span><span class="n">layer</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
-                        <span class="n">width</span><span class="o">=</span><span class="s2">&quot;25px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;25px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 5px&quot;</span>
-                    <span class="p">),</span>
-                <span class="p">)</span>
-
-                <span class="k">def</span> <span class="nf">layer_opacity_changed</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-                        <span class="n">layer</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="p">{</span>
-                            <span class="s2">&quot;opacity&quot;</span><span class="p">:</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">],</span>
-                            <span class="s2">&quot;fillOpacity&quot;</span><span class="p">:</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">],</span>
-                        <span class="p">}</span>
-
-                <span class="k">def</span> <span class="nf">layer_vis_on_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-                        <span class="n">layer_name</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;owner&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tooltip</span>
-                        <span class="c1"># if layer_name in m.ee_raster_layer_names:</span>
-                        <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_names</span><span class="p">:</span>
-                            <span class="n">layer_dict</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span>
-
-                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_vis_widget&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                                <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="o">=</span> <span class="kc">None</span>
-                            <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">create_vis_widget</span><span class="p">(</span><span class="n">layer_dict</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="p">(</span>
-                                <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_vis_control&quot;</span><span class="p">)</span>
-                                <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span>
-                            <span class="p">):</span>
-                                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span><span class="p">)</span>
-                                <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="o">=</span> <span class="kc">None</span>
-                            <span class="n">vis_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-                                <span class="n">widget</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span>
-                            <span class="p">)</span>
-                            <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">vis_control</span><span class="p">))</span>
-                            <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="o">=</span> <span class="n">vis_control</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_vis_widget&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                                <span class="n">m</span><span class="o">.</span><span class="n">_vis_widget</span> <span class="o">=</span> <span class="kc">None</span>
-                            <span class="k">if</span> <span class="p">(</span>
-                                <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_vis_control&quot;</span><span class="p">)</span>
-                                <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                            <span class="p">):</span>
-                                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span><span class="p">)</span>
-                                <span class="n">m</span><span class="o">.</span><span class="n">_vis_control</span> <span class="o">=</span> <span class="kc">None</span>
-                        <span class="n">change</span><span class="p">[</span><span class="s2">&quot;owner&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-
-                <span class="n">layer_settings</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">layer_vis_on_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-
-                <span class="k">def</span> <span class="nf">layer_chk_changed</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-                    <span class="n">layer_name</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;owner&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">description</span>
-                    <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_names</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-                            <span class="k">if</span> <span class="s2">&quot;legend&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                                <span class="n">legend</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">][</span><span class="s2">&quot;legend&quot;</span><span class="p">]</span>
-                                <span class="k">if</span> <span class="n">legend</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                                    <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">legend</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="s2">&quot;colorbar&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                                <span class="n">colorbar</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">][</span><span class="s2">&quot;colorbar&quot;</span><span class="p">]</span>
-                                <span class="k">if</span> <span class="n">colorbar</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                                    <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">colorbar</span><span class="p">)</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="s2">&quot;legend&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                                <span class="n">legend</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">][</span><span class="s2">&quot;legend&quot;</span><span class="p">]</span>
-                                <span class="k">if</span> <span class="n">legend</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">legend</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="s2">&quot;colorbar&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                                <span class="n">colorbar</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">][</span><span class="s2">&quot;colorbar&quot;</span><span class="p">]</span>
-                                <span class="k">if</span> <span class="n">colorbar</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">colorbar</span><span class="p">)</span>
-
-                <span class="n">layer_chk</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">layer_chk_changed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;visible&quot;</span><span class="p">):</span>
-                    <span class="n">widgets</span><span class="o">.</span><span class="n">jslink</span><span class="p">((</span><span class="n">layer_chk</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;visible&quot;</span><span class="p">))</span>
-
-                <span class="k">if</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">geojson_layers</span><span class="p">:</span>
-                    <span class="n">layer_opacity</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">layer_opacity_changed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;opacity&quot;</span><span class="p">):</span>
-                    <span class="n">widgets</span><span class="o">.</span><span class="n">jsdlink</span><span class="p">((</span><span class="n">layer_opacity</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;opacity&quot;</span><span class="p">))</span>
-                <span class="n">hbox</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">layer_chk</span><span class="p">,</span> <span class="n">layer_settings</span><span class="p">,</span> <span class="n">layer_opacity</span><span class="p">],</span>
-                    <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 8px 0px 8px&quot;</span><span class="p">),</span>
-                <span class="p">)</span>
-                <span class="n">layers_hbox</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hbox</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">layer_widget</span> <span class="o">=</span> <span class="n">layers_hbox</span>
-
-            <span class="k">if</span> <span class="n">show_close_button</span><span class="p">:</span>
-                <span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">close_button</span><span class="p">,</span> <span class="n">layers_button</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">layers_button</span><span class="p">]</span>
-            <span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">layers_hbox</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">layers_button</span><span class="p">]</span>
-
-    <span class="n">layers_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">layers_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-    <span class="n">layers_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">opened</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;layer_manager_widget&quot;</span><span class="p">):</span>
-        <span class="n">m</span><span class="o">.</span><span class="n">layer_manager_widget</span> <span class="o">=</span> <span class="n">toolbar_footer</span>
-
-    <span class="k">if</span> <span class="n">return_widget</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;layer_widget&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">layer_widget</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">layer_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-            <span class="n">widget</span><span class="o">=</span><span class="n">toolbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span>
-        <span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">layer_control</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">layer_control</span><span class="p">)</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">layer_manager</span> <span class="o">=</span> <span class="n">layer_control</span>
 </code></pre></div>
         </details>
     </div>
