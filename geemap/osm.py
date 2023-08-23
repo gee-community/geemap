@@ -1,7 +1,7 @@
-"""The module contains functions for downloading OpenStreetMap data. It wraps the geometries module of the osmnx package 
-(see https://osmnx.readthedocs.io/en/stable/osmnx.html#module-osmnx.geometries). Credits to Geoff Boeing, the developer of the osmnx package. 
-Most functions for downloading OpenStreetMap data require tags of map features. The list of commonly used tags can be found at 
-https://wiki.openstreetmap.org/wiki/Map_features 
+"""The module contains functions for downloading OpenStreetMap data. It wraps the geometries module of the osmnx package
+(see https://osmnx.readthedocs.io/en/stable/osmnx.html#module-osmnx.geometries). Credits to Geoff Boeing, the developer of the osmnx package.
+Most functions for downloading OpenStreetMap data require tags of map features. The list of commonly used tags can be found at
+https://wiki.openstreetmap.org/wiki/Map_features
 """
 
 # *******************************************************************************#

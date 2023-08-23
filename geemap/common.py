@@ -4177,7 +4177,7 @@ def ee_data_html(asset):
             bool(thumbnail_url)
             * f"""
                     <h4>Dataset Thumbnail</h4>
-                    <img src="{thumbnail_url}">  
+                    <img src="{thumbnail_url}">
                     """
         )
         ## only community datasets have a code_url
@@ -13892,7 +13892,7 @@ def get_info(ee_object, layer_name="", opened=False, return_node=False):
     layer_info = ee_object.getInfo()
     if not layer_info:
         return None
-    
+
     props = layer_info.get("properties", {})
     layer_info["properties"] = dict(sorted(props.items()))
 
@@ -14358,10 +14358,10 @@ def html_to_gradio(html, width="100%", height="500px", **kwargs):
         else:
             output.append(line + "\n")
 
-    return f"""<iframe style="width: {width}; height: {height}" name="result" allow="midi; geolocation; microphone; camera; 
-    display-capture; encrypted-media;" sandbox="allow-modals allow-forms 
-    allow-scripts allow-same-origin allow-popups 
-    allow-top-navigation-by-user-activation allow-downloads" allowfullscreen="" 
+    return f"""<iframe style="width: {width}; height: {height}" name="result" allow="midi; geolocation; microphone; camera;
+    display-capture; encrypted-media;" sandbox="allow-modals allow-forms
+    allow-scripts allow-same-origin allow-popups
+    allow-top-navigation-by-user-activation allow-downloads" allowfullscreen=""
     allowpaymentrequest="" frameborder="0" srcdoc='{"".join(output)}'></iframe>"""
 
 
