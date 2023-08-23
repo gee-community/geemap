@@ -189,6 +189,8 @@ class Map(ipyleaflet.Map):
         zoom = 2
 
         self.inspector_control = None
+        self.layer_manager_widget = None
+        self.layer_manager_control = None
 
         # Set map width and height
         if "height" not in kwargs:
@@ -1203,7 +1205,29 @@ class Map(ipyleaflet.Map):
         Returns:
             object: An ipywidget.
         """
+        has_vis_widget = hasattr(self, "_vis_widget") and self._vis_widget is not None
+        if layer_dict:
+            if has_vis_widget:
+                self._vis_widget = None
+            self._vis_widget = self._render_vis_widget(layer_dict)
+            if hasattr(self, "_vis_control") and self._vis_control in self.controls:
+                self.remove_control(self._vis_control)
+                self._vis_control = None
+            vis_control = ipyleaflet.WidgetControl(
+                widget=self._vis_widget, position="topright"
+            )
+            self.add((vis_control))
+            self._vis_control = vis_control
+        else:
+            if has_vis_widget:
+                self._vis_widget = None
+            if hasattr(self, "_vis_control") and self._vis_control is not None:
+                if self._vis_control in self.controls:
+                    self.remove_control(self._vis_control)
+                self._vis_control = None
 
+    def _render_vis_widget(self, layer_dict):
+        """Returns the vis widget."""
         import matplotlib as mpl
         import matplotlib.pyplot as plt
 
@@ -2583,15 +2607,34 @@ class Map(ipyleaflet.Map):
             opened (bool, optional): Whether the control is opened. Defaults to True.
             show_close_button (bool, optional): Whether to show the close button. Defaults to True.
         """
-        from .toolbar import layer_manager_gui
+        if self.layer_manager_control:
+            return
 
-        layer_manager_gui(self, position, opened, show_close_button=show_close_button)
+        def _on_close():
+            self.toolbar_reset()
+            if self.layer_manager_control:
+                if self.layer_manager_control in self.controls:
+                    self.remove_control(self.layer_manager_control)
+                self.layer_manager_control.close()
+                self.layer_manager_control = None
+
+        def _on_open_vis(layer_name):
+            self.create_vis_widget(self.ee_layer_dict.get(layer_name, None))
+
+        self.layer_manager_widget = map_widgets.LayerManager(self)
+        self.layer_manager_widget.collapsed = not opened
+        self.layer_manager_widget.close_button_hidden = not show_close_button
+        self.layer_manager_widget.on_close = _on_close
+        self.layer_manager_widget.on_open_vis = _on_open_vis
+        self.layer_manager_control = ipyleaflet.WidgetControl(
+            widget=self.layer_manager_widget, position=position
+        )
+        self.add(self.layer_manager_control)
 
     def update_layer_manager(self):
         """Update the Layer Manager."""
-        from .toolbar import layer_manager_gui
-
-        self.layer_manager_widget.children = layer_manager_gui(self, return_widget=True)
+        if self.layer_manager_widget:
+            self.layer_manager_widget.refresh_layers()
 
     def add_draw_control(self, position="topleft"):
         """Add a draw control to the map
@@ -3359,7 +3402,7 @@ class Map(ipyleaflet.Map):
 
                 if right_label is not None:
                     self.remove_control(right_control)
-                    
+
                 self.dragging = True
 
             close_button.observe(close_btn_click, "value")

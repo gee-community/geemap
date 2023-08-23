@@ -4,7 +4,7 @@
 - To convert a GEE Python script to Jupyter notebook:                                 py_to_ipynb(in_file, template_file, out_file)
 - To convert all GEE Python scripts in a folder recursively to Jupyter notebooks:     py_to_ipynb_dir(in_dir, template_file, out_dir)
 - To execute a Jupyter notebook and save output cells:                                execute_notebook(in_file)
-- To execute all Jupyter notebooks in a folder recursively:                           execute_notebook_dir(in_dir)           
+- To execute all Jupyter notebooks in a folder recursively:                           execute_notebook_dir(in_dir)
 """
 
 # *******************************************************************************#

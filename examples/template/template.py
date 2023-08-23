@@ -30,8 +30,8 @@ import geemap
 
 # %%
 """
-## Create an interactive map 
-The default basemap is `Google Maps`. [Additional basemaps](https://github.com/gee-community/geemap/blob/master/geemap/basemaps.py) can be added using the `Map.add_basemap()` function. 
+## Create an interactive map
+The default basemap is `Google Maps`. [Additional basemaps](https://github.com/gee-community/geemap/blob/master/geemap/basemaps.py) can be added using the `Map.add_basemap()` function.
 """
 
 # %%
@@ -40,7 +40,7 @@ Map
 
 # %%
 """
-## Add Earth Engine Python script 
+## Add Earth Engine Python script
 """
 
 # %%
@@ -69,7 +69,7 @@ Map.setCenter(86.9250, 27.9881, 4)
 
 # %%
 """
-## Display Earth Engine data layers 
+## Display Earth Engine data layers
 """
 
 # %%

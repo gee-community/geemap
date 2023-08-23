@@ -22,6 +22,7 @@ from typing import Callable
 from .common import *
 from .timelapse import *
 from .geemap import MapDrawControl
+from . import map_widgets
 
 
 class Toolbar(widgets.VBox):
@@ -198,11 +199,31 @@ class Toolbar(widgets.VBox):
     def _layers_btn_click(self, change):
         if change["new"]:
             # Create Layer Manager Widget
-            self.toolbar_footer.children = layer_manager_gui(
-                self.host_map, return_widget=True
+            if self.host_map.layer_manager_control:
+                return
+
+            def _on_open_vis(layer_name):
+                self.host_map.create_vis_widget(
+                    self.host_map.ee_layer_dict.get(layer_name, None)
+                )
+
+            self.host_map.layer_manager_widget = map_widgets.LayerManager(self.host_map)
+            self.host_map.layer_manager_widget.header_hidden = True
+            self.host_map.layer_manager_widget.close_button_hidden = True
+            self.host_map.layer_manager_widget.on_open_vis = _on_open_vis
+            self.host_map.layer_manager_control = ipyleaflet.WidgetControl(
+                widget=self.host_map.layer_manager_widget
             )
+            self.toolbar_footer.children = [self.host_map.layer_manager_widget]
         else:
             self.toolbar_footer.children = [self.grid]
+
+            self.host_map.toolbar_reset()
+            if self.host_map.layer_manager_control:
+                if self.host_map.layer_manager_control in self.host_map.controls:
+                    self.host_map.remove_control(self.host_map.layer_manager_control)
+                self.host_map.layer_manager_control.close()
+                self.host_map.layer_manager_control = None
 
 
 def inspector_gui(m=None):
@@ -587,244 +608,6 @@ def inspector_gui(m=None):
 
     else:
         return toolbar_widget
-
-
-def layer_manager_gui(
-    m, position="topright", opened=True, return_widget=False, show_close_button=True
-):
-    """Creates a layer manager widget.
-
-    Args:
-        m (geemap.Map): The geemap.Map object.
-        position (str, optional): The position of the widget. Defaults to "topright".
-        return_widget (bool, optional): Whether to return the widget. Defaults to False.
-    """
-
-    layers_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Layer Manager",
-        icon="server",
-        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
-    )
-
-    close_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Close the tool",
-        icon="times",
-        button_style="primary",
-        layout=widgets.Layout(height="28px", width="28px", padding="0px 0px 0px 4px"),
-    )
-
-    toolbar_header = widgets.HBox()
-    toolbar_header.children = [layers_button]
-    toolbar_footer = widgets.VBox()
-    toolbar_footer.children = []
-    toolbar_widget = widgets.VBox()
-    toolbar_widget.children = [toolbar_header]
-
-    def toolbar_btn_click(change):
-        if change["new"]:
-            close_button.value = False
-            toolbar_widget.children = [toolbar_header, toolbar_footer]
-        else:
-            if not close_button.value:
-                toolbar_widget.children = [layers_button]
-
-    layers_button.observe(toolbar_btn_click, "value")
-
-    def close_btn_click(change):
-        if change["new"]:
-            layers_button.value = False
-            m.toolbar_reset()
-            if m.layer_manager is not None and m.layer_manager in m.controls:
-                m.remove_control(m.layer_manager)
-                m.layer_manager = None
-            toolbar_widget.close()
-
-    close_button.observe(close_btn_click, "value")
-
-    def layers_btn_click(change):
-        if change["new"]:
-            layers_hbox = []
-            all_layers_chk = widgets.Checkbox(
-                value=False,
-                description="All layers on/off",
-                indent=False,
-                layout=widgets.Layout(height="18px", padding="0px 8px 25px 8px"),
-            )
-            all_layers_chk.layout.width = "30ex"
-            layers_hbox.append(all_layers_chk)
-
-            def all_layers_chk_changed(change):
-                if change["new"]:
-                    for layer in m.layers:
-                        if hasattr(layer, "visible"):
-                            layer.visible = True
-                else:
-                    for layer in m.layers:
-                        if hasattr(layer, "visible"):
-                            layer.visible = False
-
-            all_layers_chk.observe(all_layers_chk_changed, "value")
-
-            layers = [lyr for lyr in m.layers[1:]]
-
-            # if the layers contain unsupported layers (e.g., GeoJSON, GeoData), adds the ipyleaflet built-in LayerControl
-            if len(layers) < (len(m.layers) - 1):
-                if m.layer_control is None:
-                    layer_control = ipyleaflet.LayersControl(position="topright")
-                    m.layer_control = layer_control
-                if m.layer_control not in m.controls:
-                    m.add(m.layer_control)
-
-            # for non-TileLayer, use layer.style={'opacity':0, 'fillOpacity': 0} to turn layer off.
-            for layer in layers:
-                visible = True
-                if hasattr(layer, "visible"):
-                    visible = layer.visible
-                layer_chk = widgets.Checkbox(
-                    value=visible,
-                    description=layer.name,
-                    indent=False,
-                    layout=widgets.Layout(height="18px"),
-                )
-                layer_chk.layout.width = "140px"
-
-                if layer in m.geojson_layers:
-                    try:
-                        opacity = max(
-                            layer.style["opacity"], layer.style["fillOpacity"]
-                        )
-                    except KeyError:
-                        opacity = 1.0
-                else:
-                    if hasattr(layer, "opacity"):
-                        opacity = layer.opacity
-
-                layer_opacity = widgets.FloatSlider(
-                    value=opacity,
-                    min=0,
-                    max=1,
-                    step=0.01,
-                    readout=False,
-                    layout=widgets.Layout(width="80px"),
-                )
-                layer_settings = widgets.ToggleButton(
-                    icon="gear",
-                    tooltip=layer.name,
-                    layout=widgets.Layout(
-                        width="25px", height="25px", padding="0px 0px 0px 5px"
-                    ),
-                )
-
-                def layer_opacity_changed(change):
-                    if change["new"]:
-                        layer.style = {
-                            "opacity": change["new"],
-                            "fillOpacity": change["new"],
-                        }
-
-                def layer_vis_on_click(change):
-                    if change["new"]:
-                        layer_name = change["owner"].tooltip
-                        # if layer_name in m.ee_raster_layer_names:
-                        if layer_name in m.ee_layer_names:
-                            layer_dict = m.ee_layer_dict[layer_name]
-
-                            if hasattr(m, "_vis_widget") and m._vis_widget is not None:
-                                m._vis_widget = None
-                            m._vis_widget = m.create_vis_widget(layer_dict)
-                            if (
-                                hasattr(m, "_vis_control")
-                                and m._vis_control in m.controls
-                            ):
-                                m.remove_control(m._vis_control)
-                                m._vis_control = None
-                            vis_control = ipyleaflet.WidgetControl(
-                                widget=m._vis_widget, position="topright"
-                            )
-                            m.add((vis_control))
-                            m._vis_control = vis_control
-                        else:
-                            if hasattr(m, "_vis_widget") and m._vis_widget is not None:
-                                m._vis_widget = None
-                            if (
-                                hasattr(m, "_vis_control")
-                                and m._vis_control is not None
-                            ):
-                                if m._vis_control in m.controls:
-                                    m.remove_control(m._vis_control)
-                                m._vis_control = None
-                        change["owner"].value = False
-
-                layer_settings.observe(layer_vis_on_click, "value")
-
-                def layer_chk_changed(change):
-                    layer_name = change["owner"].description
-                    if layer_name in m.ee_layer_names:
-                        if change["new"]:
-                            if "legend" in m.ee_layer_dict[layer_name].keys():
-                                legend = m.ee_layer_dict[layer_name]["legend"]
-                                if legend not in m.controls:
-                                    m.add(legend)
-                            if "colorbar" in m.ee_layer_dict[layer_name].keys():
-                                colorbar = m.ee_layer_dict[layer_name]["colorbar"]
-                                if colorbar not in m.controls:
-                                    m.add(colorbar)
-                        else:
-                            if "legend" in m.ee_layer_dict[layer_name].keys():
-                                legend = m.ee_layer_dict[layer_name]["legend"]
-                                if legend in m.controls:
-                                    m.remove_control(legend)
-                            if "colorbar" in m.ee_layer_dict[layer_name].keys():
-                                colorbar = m.ee_layer_dict[layer_name]["colorbar"]
-                                if colorbar in m.controls:
-                                    m.remove_control(colorbar)
-
-                layer_chk.observe(layer_chk_changed, "value")
-
-                if hasattr(layer, "visible"):
-                    widgets.jslink((layer_chk, "value"), (layer, "visible"))
-
-                if layer in m.geojson_layers:
-                    layer_opacity.observe(layer_opacity_changed, "value")
-                elif hasattr(layer, "opacity"):
-                    widgets.jsdlink((layer_opacity, "value"), (layer, "opacity"))
-                hbox = widgets.HBox(
-                    [layer_chk, layer_settings, layer_opacity],
-                    layout=widgets.Layout(padding="0px 8px 0px 8px"),
-                )
-                layers_hbox.append(hbox)
-                m.layer_widget = layers_hbox
-
-            if show_close_button:
-                toolbar_header.children = [close_button, layers_button]
-            else:
-                toolbar_header.children = [layers_button]
-            toolbar_footer.children = layers_hbox
-
-        else:
-            toolbar_header.children = [layers_button]
-
-    layers_button.observe(layers_btn_click, "value")
-    layers_button.value = opened
-
-    if not hasattr(m, "layer_manager_widget"):
-        m.layer_manager_widget = toolbar_footer
-
-    if return_widget:
-        if hasattr(m, "layer_widget"):
-            return m.layer_widget
-        else:
-            return
-    else:
-        layer_control = ipyleaflet.WidgetControl(
-            widget=toolbar_widget, position=position
-        )
-
-        if layer_control not in m.controls:
-            m.add_control(layer_control)
-            m.layer_manager = layer_control
 
 
 def _plotting_tool_callback(map, selected):
