@@ -606,3 +606,176 @@ class AbstractDrawControl(object):
         del self.properties[i]
         self._redraw_layer()
         self._geometry_delete_dispatcher(self, geometry=geometry)
+
+
+class LayerManager(ipywidgets.VBox):
+    def __init__(self, host_map):
+        """Initializes a layer manager widget.
+        Args:
+            host_map (geemap.Map): The geemap.Map object.
+        """
+        self._host_map = host_map
+        if not host_map:
+            raise ValueError("Must pass a valid map when creating a layer manager.")
+
+        self._collapse_button = ipywidgets.ToggleButton(
+            value=False,
+            tooltip="Layer Manager",
+            icon="server",
+            layout=ipywidgets.Layout(
+                width="28px", height="28px", padding="0px 0px 0px 4px"
+            ),
+        )
+        self._close_button = ipywidgets.Button(
+            tooltip="Close the tool",
+            icon="times",
+            button_style="primary",
+            layout=ipywidgets.Layout(width="28px", height="28px", padding="0px"),
+        )
+
+        self._toolbar_header = ipywidgets.HBox(
+            children=[self._close_button, self._collapse_button]
+        )
+        self._toolbar_footer = ipywidgets.VBox(children=[])
+
+        self._collapse_button.observe(self._on_collapse_click, "value")
+        self._close_button.on_click(self._on_close_click)
+
+        self.on_close = None
+        self.on_open_vis = None
+
+        self.collapsed = False
+        self.header_hidden = False
+        self.close_button_hidden = False
+
+        super().__init__([self._toolbar_header, self._toolbar_footer])
+
+    @property
+    def collapsed(self):
+        return not self._collapse_button.value
+
+    @collapsed.setter
+    def collapsed(self, value):
+        self._collapse_button.value = not value
+
+    @property
+    def header_hidden(self):
+        return self._toolbar_header.layout.display == "none"
+
+    @header_hidden.setter
+    def header_hidden(self, value):
+        self._toolbar_header.layout.display = "none" if value else "block"
+
+    @property
+    def close_button_hidden(self):
+        return self._close_button.style.display == "none"
+
+    @close_button_hidden.setter
+    def close_button_hidden(self, value):
+        self._close_button.style.display = "none" if value else "inline-block"
+
+    def refresh_layers(self):
+        """Recreates all the layer widgets."""
+        toggle_all_layout = ipywidgets.Layout(
+            height="18px", width="30ex", padding="0px 8px 25px 8px"
+        )
+        toggle_all_checkbox = ipywidgets.Checkbox(
+            value=False,
+            description="All layers on/off",
+            indent=False,
+            layout=toggle_all_layout,
+        )
+        toggle_all_checkbox.observe(self._on_all_layers_visibility_toggled, "value")
+
+        layer_rows = [toggle_all_checkbox]
+        for layer in self._host_map.layers[1:]:
+            layer_rows.append(self._render_layer_row(layer))
+        self._toolbar_footer.children = layer_rows
+
+    def _on_close_click(self, _):
+        if self.on_close:
+            self.on_close()
+
+    def _on_collapse_click(self, change):
+        if change["new"]:
+            self.refresh_layers()
+            self.children = [self._toolbar_header, self._toolbar_footer]
+        else:
+            self.children = [self._collapse_button]
+
+    def _render_layer_row(self, layer):
+        visibility_checkbox = ipywidgets.Checkbox(
+            value=self._compute_layer_visibility(layer),
+            description=layer.name,
+            indent=False,
+            layout=ipywidgets.Layout(height="18px", width="140px"),
+        )
+        visibility_checkbox.observe(
+            lambda change: self._on_layer_visibility_changed(change, layer), "value"
+        )
+
+        opacity_slider = ipywidgets.FloatSlider(
+            value=self._compute_layer_opacity(layer),
+            min=0,
+            max=1,
+            step=0.01,
+            readout=False,
+            layout=ipywidgets.Layout(width="80px"),
+        )
+        opacity_slider.observe(
+            lambda change: self._on_layer_opacity_changed(change, layer), "value"
+        )
+
+        settings_button = ipywidgets.Button(
+            icon="gear",
+            layout=ipywidgets.Layout(width="25px", height="25px", padding="0px"),
+        )
+        settings_button.on_click(self._on_layer_settings_click)
+
+        return ipywidgets.HBox(
+            [visibility_checkbox, settings_button, opacity_slider],
+            layout=ipywidgets.Layout(padding="0px 8px 0px 8px"),
+        )
+
+    def _compute_layer_opacity(self, layer):
+        if layer in self._host_map.geojson_layers:
+            opacity = layer.style.get("opacity", 1.0)
+            fill_opacity = layer.style.get("fillOpacity", 1.0)
+            return max(opacity, fill_opacity)
+        return layer.opacity if hasattr(layer, "opacity") else 1.0
+
+    def _compute_layer_visibility(self, layer):
+        return layer.visible if hasattr(layer, "visible") else True
+
+    def _on_layer_settings_click(self, button):
+        if self.on_open_vis:
+            self.on_open_vis(button.tooltip)
+
+    def _on_all_layers_visibility_toggled(self, change):
+        for layer in self._host_map.layers:
+            if hasattr(layer, "visible"):
+                layer.visible = change["new"]
+
+    def _on_layer_opacity_changed(self, change, layer):
+        if layer in self._host_map.geojson_layers:
+            # For non-TileLayer, use layer.style.opacity and layer.style.fillOpacity.
+            layer.style.update({"opacity": change["new"], "fillOpacity": change["new"]})
+        elif hasattr(layer, "opacity"):
+            layer.opacity = change["new"]
+
+    def _on_layer_visibility_changed(self, change, layer):
+        if hasattr(layer, "visible"):
+            layer.visible = change["new"]
+
+        layer_name = change["owner"].description
+        if layer_name not in self._host_map.ee_layer_names:
+            return
+
+        layer_dict = self._host_map.ee_layer_dict[layer_name]
+        for attachment_name in ["legend", "colorbar"]:
+            attachment = layer_dict.get(attachment_name, None)
+            attachment_on_map = attachment in self._host_map.controls
+            if change["new"] and not attachment_on_map:
+                self._host_map.add(attachment)
+            elif not change["new"] and attachment_on_map:
+                self._host_map.remove_control(attachment)
