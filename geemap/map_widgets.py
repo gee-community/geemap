@@ -466,11 +466,10 @@ class AbstractDrawControl(object):
     def count(self):
         return len(self.geometries)
 
-    def reset(self, clear_draw_control=False):
+    def reset(self, clear_draw_control=True):
         """Resets the draw controls."""
         if self.layer is not None:
             self.host_map.remove_layer(self.layer)
-        self.data = []  # Remove all drawn features from the map.
         self.geometries = []
         self.properties = []
         self.last_geometry = None
@@ -492,7 +491,10 @@ class AbstractDrawControl(object):
             self._remove_geometry_at_index_on_draw_control(index)
             if index == self.count and geometry == self.last_geometry:
                 # Treat this like an "undo" of the last drawn geometry.
-                self.last_geometry = self.geometries[-1]
+                if len(self.geometries):
+                    self.last_geometry = self.geometries[-1]
+                else:
+                    self.last_geometry = geometry
                 self.last_draw_action = DrawActions.REMOVED_LAST
             if self.layer is not None:
                 self._redraw_layer()
@@ -543,7 +545,7 @@ class AbstractDrawControl(object):
         raise NotImplementedError()
 
     def _get_synced_geojson_from_draw_control(self):
-        """Returns an up-to-date of GeoJSON from the draw control."""
+        """Returns an up-to-date list of GeoJSON from the draw control."""
         raise NotImplementedError()
 
     def _sync_geometries(self):
@@ -601,8 +603,12 @@ class AbstractDrawControl(object):
         geometry = common.geojson_to_ee(geo_json, False)
         self.last_geometry = geometry
         self.last_draw_action = DrawActions.DELETED
-        i = self.geometries.index(geometry)
-        del self.geometries[i]
-        del self.properties[i]
-        self._redraw_layer()
-        self._geometry_delete_dispatcher(self, geometry=geometry)
+        try:
+            index = self.geometries.index(geometry)
+        except ValueError:
+            return
+        if index >= 0:
+            del self.geometries[index]
+            del self.properties[index]
+            self._redraw_layer()
+            self._geometry_delete_dispatcher(self, geometry=geometry)

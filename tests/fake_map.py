@@ -7,6 +7,7 @@ class FakeMap:
         self.scale = 1024
         self.zoom = 7
         self.ee_layer_dict = {}
+        self.layers = []
 
         self._recognized_attrs = self.__dict__.keys()
 
@@ -33,6 +34,27 @@ class FakeMap:
 
     def get_scale(self):
         return self.scale
+
+    def find_layer_index(self, name):
+        layers = self.layers
+
+        for index, layer in enumerate(layers):
+            if layer.name == name:
+                return index
+
+        return -1
+
+    def add_layer(self, layer):
+        self.layers.append(layer)
+
+    def remove_layer(self, layer):
+        self.layers.remove(layer)
+
+    def substitute(self, old_layer, new_layer):
+        i = self.find_layer_index(old_layer)
+        if i >= 0:
+            self.layers[i] = new_layer
+        pass
 
     @property
     def cursor_style(self):
