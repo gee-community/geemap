@@ -6,7 +6,9 @@ class FakeMap:
         self.interaction_handlers = set()
         self.scale = 1024
         self.zoom = 7
+        self.layers = []
         self.ee_layer_dict = {}
+        self.geojson_layers = []
 
         self._recognized_attrs = self.__dict__.keys()
 
@@ -40,5 +42,21 @@ class FakeMap:
 
 
 class FakeEeTileLayer:
-    def __init__(self, visible):
+    def __init__(self, name="test-layer", visible=True, opacity=1.0):
+        self.name = name
         self.visible = visible
+        self.opacity = opacity
+
+
+class FakeTileLayer:
+    def __init__(self, name="test-layer", visible=True, opacity=1.0):
+        self.name = name
+        self.visible = visible
+        self.opacity = opacity
+
+
+class FakeGeoJSONLayer:
+    def __init__(self, name="test-layer", visible=True, style=None):
+        self.name = name
+        self.visible = visible
+        self.style = style or {}

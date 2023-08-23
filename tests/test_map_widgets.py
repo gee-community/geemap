@@ -12,6 +12,28 @@ from geemap import map_widgets
 from tests import fake_ee, fake_map
 
 
+def _query_widget(node, type_matcher, matcher):
+    """Recursively searches the widget hierarchy for the widget."""
+    if hasattr(node, "layout"):
+        if hasattr(node.layout, "display"):
+            if node.layout.display == "none":
+                return None
+    if hasattr(node, "style"):
+        if hasattr(node.style, "display"):
+            if node.style.display == "none":
+                return None
+
+    children = getattr(node, "children", getattr(node, "nodes", None))
+    if children is not None:
+        for child in children:
+            result = _query_widget(child, type_matcher, matcher)
+            if result:
+                return result
+    if isinstance(node, type_matcher) and matcher(node):
+        return node
+    return None
+
+
 class TestColorbar(unittest.TestCase):
     """Tests for the Colorbar class in the `map_widgets` module."""
 
@@ -246,23 +268,12 @@ class TestInspector(unittest.TestCase):
         pass
 
     def _query_checkbox(self, description):
-        return self._query_widget(
+        return _query_widget(
             self.inspector, ipywidgets.Checkbox, lambda c: c.description == description
         )
 
     def _query_node(self, root, name):
-        return self._query_widget(root, ipytree.Node, lambda c: c.name == name)
-
-    def _query_widget(self, node, type_matcher, matcher):
-        children = getattr(node, "children", getattr(node, "nodes", None))
-        if children is not None:
-            for child in children:
-                result = self._query_widget(child, type_matcher, matcher)
-                if result:
-                    return result
-        if isinstance(node, type_matcher) and matcher(node):
-            return node
-        return None
+        return _query_widget(root, ipytree.Node, lambda c: c.name == name)
 
     @property
     def _point_checkbox(self):
@@ -278,13 +289,13 @@ class TestInspector(unittest.TestCase):
 
     @property
     def _inspector_toggle(self):
-        return self._query_widget(
+        return _query_widget(
             self.inspector, ipywidgets.ToggleButton, lambda c: c.tooltip == "Inspector"
         )
 
     @property
     def _close_toggle(self):
-        return self._query_widget(
+        return _query_widget(
             self.inspector,
             ipywidgets.ToggleButton,
             lambda c: c.tooltip == "Close the tool",
@@ -416,3 +427,201 @@ class TestInspector(unittest.TestCase):
         self.assertIsNone(
             self._query_node(self.inspector, "Point (2.00, 1.00) at 1024m/px")
         )
+
+
+class TestLayerManager(unittest.TestCase):
+    """Tests for the LayerManager class in the `map_widgets` module."""
+
+    @property
+    def collapse_button(self):
+        """Returns the collapse button on layer_manager or None."""
+        return _query_widget(
+            self.layer_manager,
+            ipywidgets.ToggleButton,
+            lambda c: c.tooltip == "Layer Manager",
+        )
+
+    @property
+    def close_button(self):
+        """Returns the close button on layer_manager or None."""
+        return _query_widget(
+            self.layer_manager,
+            ipywidgets.Button,
+            lambda c: c.tooltip == "Close the tool",
+        )
+
+    @property
+    def toggle_all_checkbox(self):
+        """Returns the toggle all checkbox on layer_manager or None."""
+        return _query_widget(
+            self.layer_manager,
+            ipywidgets.Checkbox,
+            lambda c: c.description == "All layers on/off",
+        )
+
+    @property
+    def layer_rows(self):
+        """Returns the ipywidgets rows on layer_manager."""
+        return _query_widget(
+            self.layer_manager, ipywidgets.VBox, lambda c: True
+        ).children[1:]
+
+    def _query_checkbox_on_row(self, row, name):
+        return _query_widget(row, ipywidgets.Checkbox, lambda c: c.description == name)
+
+    def _query_slider_on_row(self, row):
+        return _query_widget(row, ipywidgets.FloatSlider, lambda _: True)
+
+    def _query_button_on_row(self, row):
+        return _query_widget(row, ipywidgets.Button, lambda _: True)
+
+    def _validate_row(self, row, name, checked, opacity):
+        self.assertEqual(self._query_checkbox_on_row(row, name).value, checked)
+        self.assertEqual(self._query_slider_on_row(row).value, opacity)
+        self.assertIsNotNone(self._query_button_on_row(row))
+
+    def setUp(self):
+        self.fake_map = fake_map.FakeMap()
+        self.fake_map.layers = [
+            fake_map.FakeTileLayer(name=None),  # Basemap
+            fake_map.FakeTileLayer(
+                name="GMaps", visible=False, opacity=0.5
+            ),  # Extra basemap
+            fake_map.FakeEeTileLayer(name="test-layer", visible=True, opacity=0.8),
+            fake_map.FakeGeoJSONLayer(
+                name="test-geojson-layer",
+                visible=False,
+                style={"some-style": "red", "opacity": 0.3, "fillOpacity": 0.2},
+            ),
+        ]
+        self.fake_map.ee_layer_dict = {
+            "test-layer": {
+                "ee_object": None,
+                "ee_layer": self.fake_map.layers[2],
+                "vis_params": None,
+            },
+        }
+        self.fake_map.geojson_layers = [self.fake_map.layers[3]]
+
+        self.layer_manager = map_widgets.LayerManager(self.fake_map)
+
+    def test_layer_manager_no_map(self):
+        """Tests that a valid map must be passed in."""
+        with self.assertRaisesRegex(ValueError, "valid map"):
+            map_widgets.LayerManager(None)
+
+    def test_layer_manager(self):
+        self.assertIsNotNone(self.collapse_button)
+        self.assertIsNotNone(self.close_button)
+        self.assertIsNotNone(self.toggle_all_checkbox)
+
+        # Verify computed properties are correct.
+        self.assertFalse(self.layer_manager.collapsed)
+        self.assertFalse(self.layer_manager.header_hidden)
+        self.assertFalse(self.layer_manager.close_button_hidden)
+
+        self.assertEqual(len(self.layer_rows), 3)
+        self._validate_row(self.layer_rows[0], "GMaps", False, 0.5)
+        self._validate_row(self.layer_rows[1], "test-layer", True, 0.8)
+        self._validate_row(self.layer_rows[2], "test-geojson-layer", False, 0.3)
+
+    def test_layer_manager_toggle_all_visibility(self):
+        """Tests that the toggle all checkbox changes visibilities."""
+        # True then False because the event doesn't fire if the value doesn't change.
+        self.toggle_all_checkbox.value = True
+        self.toggle_all_checkbox.value = False
+
+        for layer in self.fake_map.layers:
+            self.assertEqual(
+                layer.visible, False, f"{layer.name} should not be visible"
+            )
+
+        self.toggle_all_checkbox.value = True
+
+        for layer in self.fake_map.layers:
+            self.assertEqual(layer.visible, True, f"{layer.name} should be visible")
+
+    def test_layer_manager_opacity_changed(self):
+        """Tests that the opacity slider changes opacities."""
+        ee_layer = self.layer_rows[1]
+        ee_layer_slider = self._query_slider_on_row(ee_layer)
+        ee_layer_slider.value = 0.01
+        self.assertEqual(self.fake_map.layers[2].opacity, 0.01)
+
+        geojson_layer = self.layer_rows[2]
+        geojson_layer_slider = self._query_slider_on_row(geojson_layer)
+        geojson_layer_slider.value = 0.02
+        self.assertEqual(
+            self.fake_map.layers[3].style,
+            {"some-style": "red", "opacity": 0.02, "fillOpacity": 0.02},
+        )
+
+    def test_layer_manager_click_settings(self):
+        """Tests that the settings button fires an event."""
+        on_open_vis_mock = Mock()
+        self.layer_manager.on_open_vis = on_open_vis_mock
+        ee_layer_button = self._query_button_on_row(self.layer_rows[1])
+
+        ee_layer_button.click()
+
+        on_open_vis_mock.assert_called_once()
+
+    def test_layer_manager_click_close(self):
+        """Tests that the close button fires an event."""
+        on_close_mock = Mock()
+        self.layer_manager.on_close = on_close_mock
+
+        self.close_button.click()
+
+        on_close_mock.assert_called_once()
+
+    def test_layer_manager_refresh_layers(self):
+        """Tests that refresh_layers refreshes the layers."""
+        self.fake_map.layers = []
+        self.layer_manager.refresh_layers()
+
+        self.assertEqual(len(self.layer_rows), 0)
+
+    def test_layer_manager_collapsed(self):
+        """Tests that setting the collapsed property collapses the widget."""
+        self.layer_manager.collapsed = True
+
+        self.assertIsNotNone(self.collapse_button)
+        self.assertIsNone(self.close_button)
+        self.assertIsNone(self.toggle_all_checkbox)
+        self.assertEqual(len(self.layer_rows), 0)
+
+        self.layer_manager.collapsed = False
+
+        self.assertIsNotNone(self.collapse_button)
+        self.assertIsNotNone(self.close_button)
+        self.assertIsNotNone(self.toggle_all_checkbox)
+        self.assertEqual(len(self.layer_rows), 3)
+
+    def test_layer_manager_header_hidden(self):
+        """Tests that setting the header_hidden property hides the header."""
+        self.layer_manager.header_hidden = True
+
+        self.assertIsNone(self.collapse_button)
+        self.assertIsNone(self.close_button)
+        self.assertIsNotNone(self.toggle_all_checkbox)
+
+        self.layer_manager.header_hidden = False
+
+        self.assertIsNotNone(self.collapse_button)
+        self.assertIsNotNone(self.close_button)
+        self.assertIsNotNone(self.toggle_all_checkbox)
+
+    def test_layer_manager_close_button_hidden(self):
+        """Tests that setting the close_button_hidden property hides the close button."""
+        self.layer_manager.close_button_hidden = True
+
+        self.assertIsNotNone(self.collapse_button)
+        self.assertIsNone(self.close_button)
+        self.assertIsNotNone(self.toggle_all_checkbox)
+
+        self.layer_manager.close_button_hidden = False
+
+        self.assertIsNotNone(self.collapse_button)
+        self.assertIsNotNone(self.close_button)
+        self.assertIsNotNone(self.toggle_all_checkbox)
