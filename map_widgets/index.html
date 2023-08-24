@@ -4497,11 +4497,10 @@ AbstractDrawControl        </code>
     <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_draw_control</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_draw_control</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the draw controls.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Remove all drawn features from the map.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
@@ -4523,7 +4522,10 @@ AbstractDrawControl        </code>
             <span class="bp">self</span><span class="o">.</span><span class="n">_remove_geometry_at_index_on_draw_control</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">geometry</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">:</span>
                 <span class="c1"># Treat this like an &quot;undo&quot; of the last drawn geometry.</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">REMOVED_LAST</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
@@ -4574,7 +4576,7 @@ AbstractDrawControl        </code>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_synced_geojson_from_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an up-to-date of GeoJSON from the draw control.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an up-to-date list of GeoJSON from the draw control.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_sync_geometries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -4632,11 +4634,15 @@ AbstractDrawControl        </code>
         <span class="n">geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">DELETED</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_delete_dispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_delete_dispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
 </code></pre></div>
         </details>
 
@@ -4794,7 +4800,10 @@ AbstractDrawControl        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">_remove_geometry_at_index_on_draw_control</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">geometry</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">:</span>
             <span class="c1"># Treat this like an &quot;undo&quot; of the last drawn geometry.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">REMOVED_LAST</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
@@ -4811,7 +4820,7 @@ AbstractDrawControl        </code>
 
 
 <h3 id="geemap.map_widgets.AbstractDrawControl.reset" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_draw_control</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_draw_control</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 
 <a href="#geemap.map_widgets.AbstractDrawControl.reset" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4822,11 +4831,10 @@ AbstractDrawControl        </code>
 
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_draw_control</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_draw_control</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Resets the draw controls.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Remove all drawn features from the map.</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
