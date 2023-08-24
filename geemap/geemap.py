@@ -37,7 +37,7 @@ basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class MapDrawControl(ipyleaflet.DrawControl, map_widgets.AbstractDrawControl):
-    """ "Implements the AbstractDrawControl for the map."""
+    """Implements the AbstractDrawControl for the map."""
 
     _roi_start = False
     _roi_end = False
@@ -115,6 +115,7 @@ class MapDrawControl(ipyleaflet.DrawControl, map_widgets.AbstractDrawControl):
         pass
 
     def _clear_draw_control(self):
+        self.data = []  # Remove all drawn features from the map.
         return self.clear()
 
 

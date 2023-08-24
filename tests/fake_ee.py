@@ -38,12 +38,16 @@ class ReduceRegionResult:
 
 
 class Geometry:
-    def __init__(self, *_, **kwargs):
+    geometry = None
+
+    def __init__(self, *args, **kwargs):
+        if len(args):
+            self.geometry = args[0]
         if kwargs.get("type"):
             self.geom_type = kwargs.get("type")
 
     @classmethod
-    def Point(self, *_, **__):
+    def Point(self, lat, **__):
         return Geometry(type=String("Point"))
 
     @classmethod
@@ -52,6 +56,9 @@ class Geometry:
 
     def type(self, *_, **__):
         return self.geom_type
+
+    def __eq__(self, other: object):
+        return self.geometry == getattr(other, 'geometry')
 
 
 class String:
@@ -63,8 +70,11 @@ class String:
 
 
 class FeatureCollection:
-    def __init__(self, *_, **__):
-        pass
+    features = []
+
+    def __init__(self, *args, **_):
+        if len(args):
+            self.features = args[0]
 
     def style(self, *_, **__):
         return Image()
@@ -75,10 +85,19 @@ class FeatureCollection:
     def filterBounds(self, *_, **__):
         return FeatureCollection()
 
+    def __eq__(self, other: object):
+        return self.features == getattr(other, 'features')
+
 
 class Feature:
-    def __init__(self, *_, **__):
-        pass
+    feature = None
+    properties = None
+
+    def __init__(self, *args, **_):
+        if len(args) > 0:
+            self.feature = args[0]
+        if len(args) >= 2:
+            self.properties = args[1]
 
     def geometry(self, *_, **__):
         return Geometry(type=String("Polygon"))
@@ -98,6 +117,11 @@ class Feature:
                 "rttyp": "",
             },
         }
+
+    def __eq__(self, other: object):
+        featuresEqual = self.feature == getattr(other, 'feature')
+        propertiesEqual = self.properties == getattr(other, 'properties')
+        return featuresEqual and propertiesEqual
 
 
 class ImageCollection:
