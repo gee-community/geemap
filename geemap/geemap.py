@@ -239,8 +239,8 @@ class Map(ipyleaflet.Map):
                 self.sandbox_path = None
 
         # Add Google Maps as the default basemap
-        if kwargs.get("add_google_map", True):
-            self.add("Google Maps")
+        if kwargs.get("add_google_map", False):
+            self.add_basemap("ROADMAP")
 
         # Remove all default controls
         self.clear_controls()
@@ -589,7 +589,9 @@ class Map(ipyleaflet.Map):
 
             if isinstance(basemap, str):
                 if basemap.upper() in map_dict:
-                    basemap = map_dict[basemap.upper()]
+                    layer = get_google_map(basemap.upper(), **kwargs)
+                    self.add(layer)
+                    return
 
             if isinstance(basemap, xyzservices.TileProvider):
                 name = basemap.name

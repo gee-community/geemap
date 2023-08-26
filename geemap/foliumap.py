@@ -78,7 +78,7 @@ class Map(folium.Map):
             kwargs["max_zoom"] = 30
 
         if "add_google_map" not in kwargs.keys() and "basemap" not in kwargs.keys():
-            kwargs["add_google_map"] = True
+            kwargs["add_google_map"] = False
         if "plugin_LatLngPopup" not in kwargs.keys():
             kwargs["plugin_LatLngPopup"] = False
         if "plugin_Fullscreen" not in kwargs.keys():
@@ -182,14 +182,18 @@ class Map(folium.Map):
 
     set_options = setOptions
 
-    def add_basemap(self, basemap="HYBRID"):
+    def add_basemap(self, basemap="HYBRID", **kwargs):
         """Adds a basemap to the map.
 
         Args:
             basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'HYBRID'.
         """
         try:
-            basemaps[basemap].add_to(self)
+            if basemap in ["ROADMAP", "SATELLITE", "HYBRID", "TERRAIN"]:
+                layer = get_google_map(basemap, backend="folium", **kwargs)
+                layer.add_to(self)
+            else:
+                basemaps[basemap].add_to(self)
         except Exception:
             raise Exception(
                 "Basemap can only be one of the following: {}".format(
@@ -1692,9 +1696,9 @@ class Map(folium.Map):
         max_width=200,
         layer_name="Markers",
         icon=None,
-        icon_shape='circle-dot',
+        icon_shape="circle-dot",
         border_width=3,
-        border_color='#0000ff',
+        border_color="#0000ff",
         **kwargs,
     ):
         """Adds markers to the map from a csv or Pandas DataFrame containing x, y values.
