@@ -7,7 +7,7 @@ class FakeMap:
         self.scale = 1024
         self.zoom = 7
         self.layers = []
-        self.ee_layer_dict = {}
+        self.ee_layers = {}
         self.layers = []
         self.geojson_layers = []
 
