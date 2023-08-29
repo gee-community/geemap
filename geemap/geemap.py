@@ -278,13 +278,7 @@ class Map(ipyleaflet.Map):
 
         # Map attributes for layers
         self.geojson_layers = []
-        self.ee_layers = []
-        self.ee_layer_names = []
-        self.ee_raster_layers = []
-        self.ee_raster_layer_names = []
-        self.ee_vector_layers = []
-        self.ee_vector_layer_names = []
-        self.ee_layer_dict = {}
+        self.ee_layers = {}
 
         # ipyleaflet built-in layer control
         self.layer_control = None
@@ -293,6 +287,53 @@ class Map(ipyleaflet.Map):
         if kwargs["ee_initialize"]:
             self.roi_reducer = ee.Reducer.mean()
         self.roi_reducer_scale = None
+
+    @property
+    def ee_layer_names(self):
+        warnings.warn(
+            "ee_layer_names is deprecated. Use ee_layers.keys() instead.",
+            DeprecationWarning,
+        )
+        return self.ee_layers.keys()
+
+    @property
+    def ee_layer_dict(self):
+        warnings.warn(
+            "ee_layer_dict is deprecated. Use ee_layers instead.", DeprecationWarning
+        )
+        return self.ee_layers
+
+    @property
+    def ee_raster_layer_names(self):
+        warnings.warn(
+            "ee_raster_layer_names is deprecated. Use self.ee_raster_layers.keys() instead.",
+            DeprecationWarning,
+        )
+        return self.ee_raster_layers.keys()
+
+    @property
+    def ee_vector_layer_names(self):
+        warnings.warn(
+            "ee_vector_layer_names is deprecated. Use self.ee_vector_layers.keys() instead.",
+            DeprecationWarning,
+        )
+        return self.ee_vector_layers.keys()
+
+    @property
+    def ee_raster_layers(self):
+        return dict(filter(self._raster_filter, self.ee_layers.items()))
+
+    @property
+    def ee_vector_layers(self):
+        return dict(filter(self._vector_filter, self.ee_layers.items()))
+
+    def _raster_filter(self, pair):
+        return isinstance(pair[1]["ee_object"], (ee.Image, ee.ImageCollection))
+
+    def _vector_filter(self, pair):
+        return isinstance(
+            pair[1]["ee_object"], (ee.Geometry, ee.Feature, ee.FeatureCollection)
+        )
 
     def add(self, object):
         """Adds a layer or control to the map.
@@ -406,30 +447,21 @@ class Map(ipyleaflet.Map):
 
         layer = self.find_layer(name=name)
         if layer is not None:
-            existing_object = self.ee_layer_dict[name]["ee_object"]
+            existing_object = self.ee_layers[name]["ee_object"]
 
             if isinstance(existing_object, (ee.Image, ee.ImageCollection)):
-                self.ee_raster_layers.remove(existing_object)
-                self.ee_raster_layer_names.remove(name)
                 if (
                     hasattr(self, "_plot_dropdown_widget")
                     and self._plot_dropdown_widget is not None
                 ):
                     self._plot_dropdown_widget.options = list(
-                        self.ee_raster_layer_names
+                        self.ee_raster_layers.keys()
                     )
-            elif isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
-                self.ee_vector_layers.remove(existing_object)
-                self.ee_vector_layer_names.remove(name)
 
-            self.ee_layers.remove(existing_object)
-            self.ee_layer_names.remove(name)
+            self.ee_layers.pop(name, None)
             self.remove_layer(layer)
 
-        self.ee_layers.append(ee_object)
-        if name not in self.ee_layer_names:
-            self.ee_layer_names.append(name)
-        self.ee_layer_dict[name] = {
+        self.ee_layers[name] = {
             "ee_object": ee_object,
             "ee_layer": tile_layer,
             "vis_params": vis_params,
@@ -438,16 +470,11 @@ class Map(ipyleaflet.Map):
         self.add(tile_layer)
 
         if isinstance(ee_object, (ee.Image, ee.ImageCollection)):
-            self.ee_raster_layers.append(ee_object)
-            self.ee_raster_layer_names.append(name)
             if (
                 hasattr(self, "_plot_dropdown_widget")
                 and self._plot_dropdown_widget is not None
             ):
-                self._plot_dropdown_widget.options = list(self.ee_raster_layer_names)
-        elif isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
-            self.ee_vector_layers.append(ee_object)
-            self.ee_vector_layer_names.append(name)
+                self._plot_dropdown_widget.options = list(self.ee_raster_layers.keys())
 
         arc_add_layer(tile_layer.url_format, name, shown, opacity)
 
@@ -459,17 +486,9 @@ class Map(ipyleaflet.Map):
         Args:
             name (str): The name of the Earth Engine layer to remove.
         """
-        if name in self.ee_layer_dict:
-            ee_object = self.ee_layer_dict[name]["ee_object"]
-            ee_layer = self.ee_layer_dict[name]["ee_layer"]
-            if name in self.ee_raster_layer_names:
-                self.ee_raster_layer_names.remove(name)
-                self.ee_raster_layers.remove(ee_object)
-            elif name in self.ee_vector_layer_names:
-                self.ee_vector_layer_names.remove(name)
-                self.ee_vector_layers.remove(ee_object)
-            self.ee_layers.remove(ee_object)
-            self.ee_layer_names.remove(name)
+        if name in self.ee_layers:
+            ee_layer = self.ee_layers[name]["ee_layer"]
+            self.ee_layers.pop(name, None)
             if ee_layer in self.layers:
                 self.remove_layer(ee_layer)
 
@@ -1098,8 +1117,8 @@ class Map(ipyleaflet.Map):
             else:
                 self.legends.append(legend_control)
 
-            if layer_name in self.ee_layer_names:
-                self.ee_layer_dict[layer_name]["legend"] = legend_control
+            if layer_name in self.ee_layers:
+                self.ee_layers[layer_name]["legend"] = legend_control
 
         except Exception as e:
             raise Exception(e)
@@ -1160,10 +1179,10 @@ class Map(ipyleaflet.Map):
         )
 
         self._colorbar = colormap_ctrl
-        if layer_name in self.ee_layer_names:
-            if "colorbar" in self.ee_layer_dict[layer_name]:
-                self.remove_control(self.ee_layer_dict[layer_name]["colorbar"])
-            self.ee_layer_dict[layer_name]["colorbar"] = colormap_ctrl
+        if layer_name in self.ee_layers:
+            if "colorbar" in self.ee_layers[layer_name]:
+                self.remove_control(self.ee_layers[layer_name]["colorbar"])
+            self.ee_layers[layer_name]["colorbar"] = colormap_ctrl
         if not hasattr(self, "colorbars"):
             self.colorbars = [colormap_ctrl]
         else:
@@ -1200,7 +1219,7 @@ class Map(ipyleaflet.Map):
         """Create a GUI for changing layer visualization parameters interactively.
 
         Args:
-            layer_dict (dict): A dict containning information about the layer. It is an element from Map.ee_layer_dict.
+            layer_dict (dict): A dict containing information about the layer. It is an element from Map.ee_layers.
 
         Returns:
             object: An ipywidget.
@@ -2427,16 +2446,16 @@ class Map(ipyleaflet.Map):
             def apply_btn_clicked(b):
                 compute_label.value = "Computing ..."
 
-                if new_layer_name.value in self.ee_layer_names:
+                if new_layer_name.value in self.ee_layers:
                     old_layer = new_layer_name.value
 
-                    if "legend" in self.ee_layer_dict[old_layer].keys():
-                        legend = self.ee_layer_dict[old_layer]["legend"]
+                    if "legend" in self.ee_layers[old_layer].keys():
+                        legend = self.ee_layers[old_layer]["legend"]
                         if legend in self.controls:
                             self.remove_control(legend)
                         legend.close()
-                    if "colorbar" in self.ee_layer_dict[old_layer].keys():
-                        colorbar = self.ee_layer_dict[old_layer]["colorbar"]
+                    if "colorbar" in self.ee_layers[old_layer].keys():
+                        colorbar = self.ee_layers[old_layer]["colorbar"]
                         if colorbar in self.controls:
                             self.remove_control(colorbar)
                         colorbar.close()
@@ -2619,7 +2638,7 @@ class Map(ipyleaflet.Map):
                 self.layer_manager_control = None
 
         def _on_open_vis(layer_name):
-            self.create_vis_widget(self.ee_layer_dict.get(layer_name, None))
+            self.create_vis_widget(self.ee_layers.get(layer_name, None))
 
         self.layer_manager_widget = map_widgets.LayerManager(self)
         self.layer_manager_widget.collapsed = not opened
@@ -3137,7 +3156,7 @@ class Map(ipyleaflet.Map):
         self.default_style = {"cursor": "crosshair"}
         msg = "The plot function can only be used on ee.Image or ee.ImageCollection with more than one band."
         if (ee_object is None) and len(self.ee_raster_layers) > 0:
-            ee_object = self.ee_raster_layers[-1]
+            ee_object = self.ee_raster_layers.values()[-1]["ee_object"]
             if isinstance(ee_object, ee.ImageCollection):
                 ee_object = ee_object.mosaic()
         elif isinstance(ee_object, ee.ImageCollection):
@@ -3709,8 +3728,8 @@ class Map(ipyleaflet.Map):
         else:
             self.colorbars.append(colormap_ctrl)
 
-        if layer_name in self.ee_layer_names:
-            self.ee_layer_dict[layer_name]["colorbar"] = colormap_ctrl
+        if layer_name in self.ee_layers:
+            self.ee_layers[layer_name]["colorbar"] = colormap_ctrl
 
     def image_overlay(self, url, bounds, name):
         """Overlays an image from the Internet or locally on the map.
@@ -5134,7 +5153,7 @@ class Map(ipyleaflet.Map):
                     ee_object = ee_object.clip(region)
                 elif isinstance(region, ee.FeatureCollection):
                     ee_object = ee_object.clipToCollection(region)
-            if layer_name not in self.ee_raster_layer_names:
+            if layer_name not in self.ee_layers:
                 self.addLayer(ee_object, {}, layer_name, False, opacity)
             band_names = ee_object.bandNames()
             ee_object = ee.ImageCollection(
@@ -5178,7 +5197,7 @@ class Map(ipyleaflet.Map):
 
         first = ee.Image(ee_object.first())
 
-        if layer_name not in self.ee_raster_layer_names:
+        if layer_name not in self.ee_layers:
             self.addLayer(ee_object.toBands(), {}, layer_name, False, opacity)
         self.addLayer(first, vis_params, "Image X", True, opacity)
 
@@ -5245,7 +5264,7 @@ class Map(ipyleaflet.Map):
             index = slider.value - 1
             label.value = labels[index]
             image = ee.Image(ee_object.toList(ee_object.size()).get(index))
-            if layer_name not in self.ee_raster_layer_names:
+            if layer_name not in self.ee_layers:
                 self.addLayer(ee_object.toBands(), {}, layer_name, False, opacity)
             self.addLayer(image, vis_params, "Image X", True, opacity)
             self.default_style = {"cursor": "default"}
