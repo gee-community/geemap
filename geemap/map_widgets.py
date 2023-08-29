@@ -304,10 +304,10 @@ class Inspector(ipywidgets.VBox):
         if self._names is not None:
             names = [names] if isinstance(names, str) else self._names
             for name in names:
-                if name in self._host_map.ee_layers:
-                    layers[name] = self._host_map.ee_layers[name]
+                if name in self._host_map.ee_layer_names:
+                    layers[name] = self._host_map.ee_layer_dict[name]
         else:
-            layers = self._host_map.ee_layers
+            layers = self._host_map.ee_layer_dict
         return {k: v for k, v in layers.items() if v["ee_layer"].visible}
 
     def _root_node(self, title, nodes, **kwargs):
@@ -774,10 +774,10 @@ class LayerManager(ipywidgets.VBox):
             layer.visible = change["new"]
 
         layer_name = change["owner"].description
-        if layer_name not in self._host_map.ee_layers:
+        if layer_name not in self._host_map.ee_layer_names:
             return
 
-        layer_dict = self._host_map.ee_layers[layer_name]
+        layer_dict = self._host_map.ee_layer_dict[layer_name]
         for attachment_name in ["legend", "colorbar"]:
             attachment = layer_dict.get(attachment_name, None)
             attachment_on_map = attachment in self._host_map.controls
