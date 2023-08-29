@@ -365,7 +365,7 @@ class TestInspector(unittest.TestCase):
 
     def test_map_click(self):
         """Tests that clicking the map triggers inspection."""
-        self.map_fake.ee_layers = {
+        self.map_fake.ee_layer_dict = {
             "test-map-1": {
                 "ee_object": ee.Image(1),
                 "ee_layer": fake_map.FakeEeTileLayer(visible=True),
@@ -410,7 +410,7 @@ class TestInspector(unittest.TestCase):
 
     def test_map_click_twice(self):
         """Tests that clicking the map a second time removes the original output."""
-        self.map_fake.ee_layers = {
+        self.map_fake.ee_layer_dict = {
             "test-map-1": {
                 "ee_object": ee.Image(1),
                 "ee_layer": fake_map.FakeEeTileLayer(visible=True),
@@ -494,7 +494,7 @@ class TestLayerManager(unittest.TestCase):
                 style={"some-style": "red", "opacity": 0.3, "fillOpacity": 0.2},
             ),
         ]
-        self.fake_map.ee_layers = {
+        self.fake_map.ee_layer_dict = {
             "test-layer": {
                 "ee_object": None,
                 "ee_layer": self.fake_map.layers[2],
@@ -633,39 +633,42 @@ class TestLayerManager(unittest.TestCase):
 @patch.object(ee, "Image", fake_ee.Image)
 class TestAbstractDrawControl(unittest.TestCase):
     """Tests for the draw control interface in the `map_widgets` module."""
-
     geo_json = {
-        "type": "Feature",
-        "geometry": {
-            "type": "Polygon",
-            "coordinates": [
-                [
-                    [0, 1],
-                    [0, -1],
-                    [1, -1],
-                    [1, 1],
-                    [0, 1],
-                ]
-            ],
-        },
-        "properties": {"name": "Null Island"},
-    }
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [0, 1],
+                        [0, -1],
+                        [1, -1],
+                        [1, 1],
+                        [0, 1],
+                    ]
+                ],
+            },
+            "properties": {
+                "name": "Null Island"
+            }
+        }
     geo_json2 = {
-        "type": "Feature",
-        "geometry": {
-            "type": "Polygon",
-            "coordinates": [
-                [
-                    [0, 2],
-                    [0, -2],
-                    [2, -2],
-                    [2, 2],
-                    [0, 2],
-                ]
-            ],
-        },
-        "properties": {"name": "Null Island 2x"},
-    }
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [0, 2],
+                        [0, -2],
+                        [2, -2],
+                        [2, 2],
+                        [0, 2],
+                    ]
+                ],
+            },
+            "properties": {
+                "name": "Null Island 2x"
+            }
+        }
 
     def setUp(self):
         map = fake_map.FakeMap()
@@ -726,14 +729,16 @@ class TestAbstractDrawControl(unittest.TestCase):
         self.assertEquals(self.draw_control.last_geometry, geometry)
         # Test last_draw_action accessor.
         self.assertEquals(
-            self.draw_control.last_draw_action, map_widgets.DrawActions.CREATED
+            self.draw_control.last_draw_action,
+            map_widgets.DrawActions.CREATED
         )
         # Test features accessor.
         feature = fake_ee.Feature(geometry, None)
         self.assertEquals(self.draw_control.features, [feature])
         # Test collection accessor.
         self.assertEquals(
-            self.draw_control.collection, fake_ee.FeatureCollection([feature])
+            self.draw_control.collection,
+            fake_ee.FeatureCollection([feature])
         )
         # Test last_feature accessor.
         self.assertEquals(self.draw_control.last_feature, feature)
@@ -743,11 +748,17 @@ class TestAbstractDrawControl(unittest.TestCase):
     def test_feature_property_access(self):
         self.draw_control.create(self.geo_json)
         geometry = self.draw_control.geometries[0]
-        self.assertIsNone(self.draw_control.get_geometry_properties(geometry))
-        self.assertEquals(self.draw_control.features, [fake_ee.Feature(geometry, None)])
+        self.assertIsNone(
+            self.draw_control.get_geometry_properties(geometry)
+        )
+        self.assertEquals(
+            self.draw_control.features,
+            [fake_ee.Feature(geometry, None)]
+        )
         self.draw_control.set_geometry_properties(geometry, {"test": 1})
         self.assertEquals(
-            self.draw_control.features, [fake_ee.Feature(geometry, {"test": 1})]
+            self.draw_control.features,
+            [fake_ee.Feature(geometry, {"test": 1})]
         )
 
     def test_reset(self):
@@ -775,7 +786,8 @@ class TestAbstractDrawControl(unittest.TestCase):
         self.assertEquals(len(self.draw_control.geometries), 2)
         self.assertEquals(len(self.draw_control.properties), 2)
         self.assertEquals(
-            self.draw_control.last_draw_action, map_widgets.DrawActions.CREATED
+            self.draw_control.last_draw_action,
+            map_widgets.DrawActions.CREATED
         )
         self.assertEquals(self.draw_control.last_geometry, geometry2)
 
@@ -785,7 +797,8 @@ class TestAbstractDrawControl(unittest.TestCase):
         self.assertEquals(len(self.draw_control.geometries), 1)
         self.assertEquals(len(self.draw_control.properties), 1)
         self.assertEquals(
-            self.draw_control.last_draw_action, map_widgets.DrawActions.REMOVED_LAST
+            self.draw_control.last_draw_action,
+            map_widgets.DrawActions.REMOVED_LAST
         )
         self.assertEquals(self.draw_control.last_geometry, geometry1)
 
@@ -794,7 +807,8 @@ class TestAbstractDrawControl(unittest.TestCase):
         self.assertEquals(len(self.draw_control.geometries), 0)
         self.assertEquals(len(self.draw_control.properties), 0)
         self.assertEquals(
-            self.draw_control.last_draw_action, map_widgets.DrawActions.REMOVED_LAST
+            self.draw_control.last_draw_action,
+            map_widgets.DrawActions.REMOVED_LAST
         )
         self.assertEquals(self.draw_control.last_geometry, geometry1)
 
@@ -808,13 +822,13 @@ class TestAbstractDrawControl(unittest.TestCase):
         self.assertEquals(len(self.draw_control.geometries), 1)
         self.assertEquals(len(self.draw_control.properties), 1)
         self.assertEquals(
-            self.draw_control.last_draw_action, map_widgets.DrawActions.DELETED
+            self.draw_control.last_draw_action,
+            map_widgets.DrawActions.DELETED
         )
         self.assertEquals(self.draw_control.last_geometry, geometry1)
 
     class TestDrawControl(map_widgets.AbstractDrawControl):
         """Implements an AbstractDrawControl for tests."""
-
         geo_jsons = []
         initialized = False
 
@@ -825,7 +839,8 @@ class TestAbstractDrawControl(unittest.TestCase):
                 host_map (geemap.Map): The geemap.Map object
             """
             super(TestAbstractDrawControl.TestDrawControl, self).__init__(
-                host_map=host_map, **kwargs
+                host_map=host_map,
+                **kwargs
             )
             self.geo_jsons = []
 
