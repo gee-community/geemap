@@ -1107,13 +1107,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#geemap.toolbar.change_basemap" class="md-nav__link">
-    change_basemap()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#geemap.toolbar.convert_js2py" class="md-nav__link">
     convert_js2py()
   </a>
@@ -4337,13 +4330,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#geemap.toolbar.change_basemap" class="md-nav__link">
-    change_basemap()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#geemap.toolbar.convert_js2py" class="md-nav__link">
     convert_js2py()
   </a>
@@ -5139,108 +5125,6 @@ or unselected the tool.</p></td>
     <span class="n">center_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">tools_widget</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">full_widget</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h2 id="geemap.toolbar.change_basemap" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">change_basemap</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></code>
-
-
-<a href="#geemap.toolbar.change_basemap" class="headerlink" title="Permanent link">&para;</a></h2>
-
-    <div class="doc doc-contents ">
-
-      <p>Widget for changing basemaps.</p>
-
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>m</code></td>
-        <td><code>object</code></td>
-        <td><p>geemap.Map.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>geemap/toolbar.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">change_basemap</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for changing basemaps.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        m (object): geemap.Map.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.basemaps</span> <span class="kn">import</span> <span class="n">get_xyz_dict</span>
-    <span class="kn">from</span> <span class="nn">.geemap</span> <span class="kn">import</span> <span class="n">basemaps</span><span class="p">,</span> <span class="n">get_basemap</span>
-
-    <span class="n">xyz_dict</span> <span class="o">=</span> <span class="n">get_xyz_dict</span><span class="p">()</span>
-
-    <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;OpenStreetMap&quot;</span>
-
-    <span class="n">dropdown</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-        <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">basemaps</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
-        <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;200px&quot;</span><span class="p">),</span>
-    <span class="p">)</span>
-
-    <span class="n">close_btn</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-        <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;times&quot;</span><span class="p">,</span>
-        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Close the basemap widget&quot;</span><span class="p">,</span>
-        <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;32px&quot;</span><span class="p">),</span>
-    <span class="p">)</span>
-
-    <span class="n">basemap_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="n">dropdown</span><span class="p">,</span> <span class="n">close_btn</span><span class="p">])</span>
-
-    <span class="k">def</span> <span class="nf">on_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="n">basemap_name</span> <span class="o">=</span> <span class="n">dropdown</span><span class="o">.</span><span class="n">value</span>
-            <span class="k">if</span> <span class="n">basemap_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">get_layer_names</span><span class="p">():</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="n">basemap_name</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">basemap_name</span> <span class="ow">in</span> <span class="n">xyz_dict</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="s2">&quot;bounds&quot;</span> <span class="ow">in</span> <span class="n">xyz_dict</span><span class="p">[</span><span class="n">basemap_name</span><span class="p">]:</span>
-                        <span class="n">bounds</span> <span class="o">=</span> <span class="n">xyz_dict</span><span class="p">[</span><span class="n">basemap_name</span><span class="p">][</span><span class="s2">&quot;bounds&quot;</span><span class="p">]</span>
-                        <span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span>
-                            <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-                            <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-                            <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-                            <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-                        <span class="p">]</span>
-                        <span class="n">m</span><span class="o">.</span><span class="n">zoom_to_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
-
-    <span class="n">dropdown</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">on_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">close_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-        <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">basemap_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">basemap_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">basemap_ctrl</span><span class="p">)</span>
-        <span class="n">basemap_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-    <span class="n">close_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">close_click</span><span class="p">)</span>
-
-    <span class="n">basemap_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-        <span class="n">widget</span><span class="o">=</span><span class="n">basemap_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span>
-    <span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">basemap_control</span><span class="p">)</span>
-    <span class="n">m</span><span class="o">.</span><span class="n">basemap_ctrl</span> <span class="o">=</span> <span class="n">basemap_control</span>
 </code></pre></div>
         </details>
     </div>
