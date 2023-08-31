@@ -365,7 +365,7 @@ class TestInspector(unittest.TestCase):
 
     def test_map_click(self):
         """Tests that clicking the map triggers inspection."""
-        self.map_fake.ee_layer_dict = {
+        self.map_fake.ee_layers = {
             "test-map-1": {
                 "ee_object": ee.Image(1),
                 "ee_layer": fake_map.FakeEeTileLayer(visible=True),
@@ -410,7 +410,7 @@ class TestInspector(unittest.TestCase):
 
     def test_map_click_twice(self):
         """Tests that clicking the map a second time removes the original output."""
-        self.map_fake.ee_layer_dict = {
+        self.map_fake.ee_layers = {
             "test-map-1": {
                 "ee_object": ee.Image(1),
                 "ee_layer": fake_map.FakeEeTileLayer(visible=True),
@@ -494,7 +494,7 @@ class TestLayerManager(unittest.TestCase):
                 style={"some-style": "red", "opacity": 0.3, "fillOpacity": 0.2},
             ),
         ]
-        self.fake_map.ee_layer_dict = {
+        self.fake_map.ee_layers = {
             "test-layer": {
                 "ee_object": None,
                 "ee_layer": self.fake_map.layers[2],
