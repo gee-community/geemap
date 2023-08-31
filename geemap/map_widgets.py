@@ -735,6 +735,7 @@ class LayerManager(ipywidgets.VBox):
         settings_button = ipywidgets.Button(
             icon="gear",
             layout=ipywidgets.Layout(width="25px", height="25px", padding="0px"),
+            tooltip=layer.name,
         )
         settings_button.on_click(self._on_layer_settings_click)
 
