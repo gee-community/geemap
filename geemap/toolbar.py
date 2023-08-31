@@ -814,67 +814,6 @@ def ee_plot_gui(m, position="topright", **kwargs):
     close_btn.on_click(close_click)
 
 
-def change_basemap(m):
-    """Widget for changing basemaps.
-
-    Args:
-        m (object): geemap.Map.
-    """
-    from .basemaps import get_xyz_dict
-    from .geemap import basemaps, get_basemap
-
-    xyz_dict = get_xyz_dict()
-
-    value = "OpenStreetMap"
-
-    dropdown = widgets.Dropdown(
-        options=list(basemaps.keys()),
-        value=value,
-        layout=widgets.Layout(width="200px"),
-    )
-
-    close_btn = widgets.Button(
-        icon="times",
-        tooltip="Close the basemap widget",
-        button_style="primary",
-        layout=widgets.Layout(width="32px"),
-    )
-
-    basemap_widget = widgets.HBox([dropdown, close_btn])
-
-    def on_click(change):
-        if change["new"]:
-            basemap_name = dropdown.value
-            if basemap_name not in m.get_layer_names():
-                m.add_basemap(basemap_name)
-                if basemap_name in xyz_dict:
-                    if "bounds" in xyz_dict[basemap_name]:
-                        bounds = xyz_dict[basemap_name]["bounds"]
-                        bounds = [
-                            bounds[0][1],
-                            bounds[0][0],
-                            bounds[1][1],
-                            bounds[1][0],
-                        ]
-                        m.zoom_to_bounds(bounds)
-
-    dropdown.observe(on_click, "value")
-
-    def close_click(change):
-        m.toolbar_reset()
-        if m.basemap_ctrl is not None and m.basemap_ctrl in m.controls:
-            m.remove_control(m.basemap_ctrl)
-        basemap_widget.close()
-
-    close_btn.on_click(close_click)
-
-    basemap_control = ipyleaflet.WidgetControl(
-        widget=basemap_widget, position="topright"
-    )
-    m.add(basemap_control)
-    m.basemap_ctrl = basemap_control
-
-
 def search_data_gui(m, position="topleft"):
     """The GUI widget for searching Earth Engine data catalog.
 
@@ -4458,7 +4397,7 @@ main_tools = [
     Toolbar.Item(
         icon="map",
         tooltip="Change basemap",
-        callback=lambda m, selected: change_basemap(m) if selected else None,
+        callback=lambda m, selected: m.add_basemap_widget() if selected else None,
         reset=False,
     ),
     Toolbar.Item(
