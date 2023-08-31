@@ -797,7 +797,7 @@ class Basemap(ipywidgets.HBox):
             host_map (geemap.Map): The map to add the basemap widget to.
             basemaps (list): The list of basemap names to make available for selection.
             value (str): The default value from basemaps to select.
-            xyz_services (dict): A dictionary of xyz servcies for bounds lookup.
+            xyz_services (dict): A dictionary of xyz services for bounds lookup.
         """
 
         self._host_map = host_map
