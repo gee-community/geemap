@@ -880,3 +880,71 @@ class TestAbstractDrawControl(unittest.TestCase):
             geo_json = self.geo_jsons[i]
             del self.geo_jsons[i]
             self._on_draw("deleted", geo_json)
+
+
+class TestBasemap(unittest.TestCase):
+    """Tests for the Basemap class in the `map_widgets` module."""
+
+    def setUp(self):
+        self.map_fake = fake_map.FakeMap()
+        self.basemaps = ["first", "default", "bounded"]
+        self.default = "default"
+        self.xyz_services = {"bounded": {"bounds": [[2, 1], [4, 3]]}}
+        self.basemap_widget = map_widgets.Basemap(
+            self.map_fake, self.basemaps, self.default, self.xyz_services
+        )
+
+    def tearDown(self):
+        pass
+
+    @property
+    def _close_button(self):
+        return _query_widget(
+            self.basemap_widget,
+            ipywidgets.Button,
+            lambda c: c.tooltip == "Close the basemap widget",
+        )
+
+    @property
+    def _droopdown(self):
+        return _query_widget(
+            self.basemap_widget,
+            ipywidgets.Dropdown,
+            lambda _: True,
+        )
+
+    def test_basemap_no_map(self):
+        """Tests that a valid map must be passed in."""
+        with self.assertRaisesRegex(ValueError, "valid map"):
+            map_widgets.Basemap(None, self.basemaps, self.default, self.xyz_services)
+
+    def test_basemap(self):
+        """Tests that the basemap's initial UI is set up properly."""
+        self.assertIsNotNone(self._close_button)
+        self.assertIsNotNone(self._droopdown)
+        self.assertEqual(self._droopdown.value, "default")
+        self.assertEqual(len(self._droopdown.options), 3)
+
+    def test_basemap_close(self):
+        """Tests that triggering the closing button fires the close event."""
+        on_close_mock = Mock()
+        self.basemap_widget.on_close = on_close_mock
+        self._close_button.click()
+
+        on_close_mock.assert_called_once()
+
+    @patch.object(fake_map.FakeMap, "zoom_to_bounds")
+    def test_basemap_selection(self, zoom_to_bounds_mock):
+        """Tests that a basemap selection updates the map."""
+        self.assertEqual(self.map_fake.find_layer_index("first"), -1)
+        self.assertEqual(self.map_fake.find_layer_index("bounded"), -1)
+
+        self._droopdown.value = "first"
+        self.assertEqual(self.map_fake.find_layer_index("first"), 0)
+        self.assertEqual(self.map_fake.find_layer_index("bounded"), -1)
+        zoom_to_bounds_mock.assert_not_called()
+
+        self._droopdown.value = "bounded"
+        self.assertEqual(self.map_fake.find_layer_index("first"), 0)
+        self.assertEqual(self.map_fake.find_layer_index("bounded"), 1)
+        zoom_to_bounds_mock.assert_called_with([1, 2, 3, 4])

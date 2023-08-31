@@ -51,11 +51,20 @@ class FakeMap:
     def remove_layer(self, layer):
         self.layers.remove(layer)
 
+    def get_layer_names(self):
+        return [layer.name for layer in self.layers]
+
+    def zoom_to_bounds(self, _):
+        pass
+
     def substitute(self, old_layer, new_layer):
         i = self.find_layer_index(old_layer)
         if i >= 0:
             self.layers[i] = new_layer
         pass
+
+    def add_basemap(self, basemap="HYBRID", show=True, **kwargs):
+        self.add_layer(FakeTileLayer(name=basemap, visible=show))
 
     @property
     def cursor_style(self):

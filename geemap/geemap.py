@@ -22,7 +22,7 @@ from box import Box
 from bqplot import pyplot as plt
 
 from IPython.display import display
-from .basemaps import xyz_to_leaflet
+from .basemaps import get_xyz_dict, xyz_to_leaflet
 from .common import *
 from .conversion import *
 from .ee_tile_layers import *
@@ -189,6 +189,7 @@ class Map(ipyleaflet.Map):
         zoom = 2
 
         self.inspector_control = None
+        self.basemap_control = None
         self.layer_manager_widget = None
         self.layer_manager_control = None
 
@@ -2654,6 +2655,36 @@ class Map(ipyleaflet.Map):
         """Update the Layer Manager."""
         if self.layer_manager_widget:
             self.layer_manager_widget.refresh_layers()
+
+    def add_basemap_widget(
+        self,
+        value="OpenStreetMap",
+        position="topright",
+    ):
+        """Add the Basemap GUI to the map.
+
+        Args:
+            value (str): The default value from basemaps to select. Defaults to "OpenStreetMap".
+            position (str, optional): The position of the Inspector GUI. Defaults to "topright".
+        """
+        if self.basemap_control:
+            return
+
+        def _on_close():
+            self.toolbar_reset()
+            if self.basemap_control and self.basemap_control in self.controls:
+                self.remove_control(self.basemap_control)
+                self.basemap_control.close()
+                self.basemap_control = None
+
+        basemap_widget = map_widgets.Basemap(
+            self, list(basemaps.keys()), value, get_xyz_dict()
+        )
+        basemap_widget.on_close = _on_close
+        self.basemap_control = ipyleaflet.WidgetControl(
+            widget=basemap_widget, position=position
+        )
+        self.add(self.basemap_control)
 
     def add_draw_control(self, position="topleft"):
         """Add a draw control to the map
