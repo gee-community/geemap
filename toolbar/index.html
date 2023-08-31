@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.5">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.6">
     
     
       
@@ -4675,7 +4675,7 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
 
             <span class="k">def</span> <span class="nf">_on_open_vis</span><span class="p">(</span><span class="n">layer_name</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">create_vis_widget</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">)</span>
@@ -5406,9 +5406,7 @@ or unselected the tool.</p></td>
     <span class="p">)</span>
 
     <span class="n">m</span><span class="o">.</span><span class="n">_plot_checked</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">dropdown</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-        <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layer_names</span><span class="p">),</span>
-    <span class="p">)</span>
+    <span class="n">dropdown</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layers</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
     <span class="n">dropdown</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="s2">&quot;18ex&quot;</span>
     <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_widget</span> <span class="o">=</span> <span class="n">dropdown</span>
 
@@ -5437,10 +5435,7 @@ or unselected the tool.</p></td>
             <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="p">):</span>
             <span class="n">plot_layer_name</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_widget</span><span class="o">.</span><span class="n">value</span>
-            <span class="n">layer_names</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layer_names</span>
-            <span class="n">layers</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layers</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">layer_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">plot_layer_name</span><span class="p">)</span>
-            <span class="n">ee_object</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="n">ee_object</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">plot_layer_name</span><span class="p">)[</span><span class="s2">&quot;ee_object&quot;</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">):</span>
                 <span class="n">ee_object</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">mosaic</span><span class="p">()</span>
@@ -7528,7 +7523,7 @@ or unselected the tool.</p></td>
     <span class="n">col_options</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">col_options_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
     <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">col_options</span> <span class="o">+=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layer_names</span>
+        <span class="n">col_options</span> <span class="o">+=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layers</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 
     <span class="n">collection</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
         <span class="n">options</span><span class="o">=</span><span class="n">col_options</span><span class="p">,</span>
@@ -7539,7 +7534,7 @@ or unselected the tool.</p></td>
     <span class="p">)</span>
 
     <span class="n">region</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-        <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;User-drawn ROI&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_vector_layer_names</span><span class="p">,</span>
+        <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;User-drawn ROI&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_vector_layers</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
         <span class="n">value</span><span class="o">=</span><span class="s2">&quot;User-drawn ROI&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Region:&quot;</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">widget_width</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
@@ -7942,8 +7937,8 @@ or unselected the tool.</p></td>
                 <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Use the Drawing tool to create an ROI.&quot;</span><span class="p">)</span>
                     <span class="k">return</span>
-            <span class="k">elif</span> <span class="n">region</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">:</span>
-                <span class="n">roi</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">region</span><span class="o">.</span><span class="n">value</span><span class="p">][</span><span class="s2">&quot;ee_object&quot;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">region</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
+                <span class="n">roi</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">region</span><span class="o">.</span><span class="n">value</span><span class="p">][</span><span class="s2">&quot;ee_object&quot;</span><span class="p">]</span>
 
             <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing... Please wait...&quot;</span><span class="p">)</span>
@@ -7991,8 +7986,8 @@ or unselected the tool.</p></td>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layer_names</span><span class="p">:</span>
-                <span class="n">layer</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">collection</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">collection</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_raster_layers</span><span class="p">:</span>
+                <span class="n">layer</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">collection</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
                 <span class="n">ee_object</span> <span class="o">=</span> <span class="n">layer</span><span class="p">[</span><span class="s2">&quot;ee_object&quot;</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">collection</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">col_options_dict</span><span class="p">:</span>
                 <span class="n">start_date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">start_month</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-01&quot;</span>
@@ -8099,13 +8094,13 @@ or unselected the tool.</p></td>
     <span class="k">def</span> <span class="nf">collection_changed</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
             <span class="n">selected</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;owner&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
-            <span class="k">if</span> <span class="n">selected</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">selected</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
                 <span class="n">prebuilt_options</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="n">labels</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
                 <span class="n">region</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
 
-                <span class="n">ee_object</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">selected</span><span class="p">][</span><span class="s2">&quot;ee_object&quot;</span><span class="p">]</span>
-                <span class="n">vis_params</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="p">[</span><span class="n">selected</span><span class="p">][</span><span class="s2">&quot;vis_params&quot;</span><span class="p">]</span>
+                <span class="n">ee_object</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">selected</span><span class="p">][</span><span class="s2">&quot;ee_object&quot;</span><span class="p">]</span>
+                <span class="n">vis_params</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">selected</span><span class="p">][</span><span class="s2">&quot;vis_params&quot;</span><span class="p">]</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
                     <span class="n">palette_vbox</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
                         <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="n">classes</span><span class="p">,</span> <span class="n">colormap</span><span class="p">]),</span>
