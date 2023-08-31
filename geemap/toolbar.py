@@ -204,7 +204,7 @@ class Toolbar(widgets.VBox):
 
             def _on_open_vis(layer_name):
                 self.host_map.create_vis_widget(
-                    self.host_map.ee_layer_dict.get(layer_name, None)
+                    self.host_map.ee_layers.get(layer_name, None)
                 )
 
             self.host_map.layer_manager_widget = map_widgets.LayerManager(self.host_map)
@@ -666,9 +666,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
     )
 
     m._plot_checked = True
-    dropdown = widgets.Dropdown(
-        options=list(m.ee_raster_layer_names),
-    )
+    dropdown = widgets.Dropdown(options=list(m.ee_raster_layers.keys()))
     dropdown.layout.width = "18ex"
     m._plot_dropdown_widget = dropdown
 
@@ -697,10 +695,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
             and len(m.ee_raster_layers) > 0
         ):
             plot_layer_name = m._plot_dropdown_widget.value
-            layer_names = m.ee_raster_layer_names
-            layers = m.ee_raster_layers
-            index = layer_names.index(plot_layer_name)
-            ee_object = layers[index]
+            ee_object = m.ee_layers.get(plot_layer_name)["ee_object"]
 
             if isinstance(ee_object, ee.ImageCollection):
                 ee_object = ee_object.mosaic()
@@ -2730,7 +2725,7 @@ def time_slider(m=None):
     col_options = list(col_options_dict.keys())
 
     if m is not None:
-        col_options += m.ee_raster_layer_names
+        col_options += m.ee_raster_layers.keys()
 
     collection = widgets.Dropdown(
         options=col_options,
@@ -2741,7 +2736,7 @@ def time_slider(m=None):
     )
 
     region = widgets.Dropdown(
-        options=["User-drawn ROI"] + m.ee_vector_layer_names,
+        options=["User-drawn ROI"] + m.ee_vector_layers.keys(),
         value="User-drawn ROI",
         description="Region:",
         layout=widgets.Layout(width=widget_width, padding=padding),
@@ -3144,8 +3139,8 @@ def time_slider(m=None):
                 with output:
                     print("Use the Drawing tool to create an ROI.")
                     return
-            elif region.value in m.ee_layer_dict:
-                roi = m.ee_layer_dict[region.value]["ee_object"]
+            elif region.value in m.ee_layers:
+                roi = m.ee_layers[region.value]["ee_object"]
 
             with output:
                 print("Computing... Please wait...")
@@ -3193,8 +3188,8 @@ def time_slider(m=None):
                 except Exception as e:
                     raise ValueError(e)
 
-            if collection.value in m.ee_raster_layer_names:
-                layer = m.ee_layer_dict[collection.value]
+            if collection.value in m.ee_raster_layers:
+                layer = m.ee_layers[collection.value]
                 ee_object = layer["ee_object"]
             elif collection.value in col_options_dict:
                 start_date = str(start_month.value).zfill(2) + "-01"
@@ -3301,13 +3296,13 @@ def time_slider(m=None):
     def collection_changed(change):
         if change["new"]:
             selected = change["owner"].value
-            if selected in m.ee_layer_dict:
+            if selected in m.ee_layers:
                 prebuilt_options.children = []
                 labels.value = ""
                 region.value = None
 
-                ee_object = m.ee_layer_dict[selected]["ee_object"]
-                vis_params = m.ee_layer_dict[selected]["vis_params"]
+                ee_object = m.ee_layers[selected]["ee_object"]
+                vis_params = m.ee_layers[selected]["vis_params"]
                 if isinstance(ee_object, ee.Image):
                     palette_vbox.children = [
                         widgets.HBox([classes, colormap]),
@@ -3642,10 +3637,10 @@ def plot_transect(m=None):
     )
 
     if m is not None:
-        layer.options = m.ee_raster_layer_names
+        layer.options = m.ee_raster_layers.keys()
         layer.value = layer.options[0]
         if len(layer.options) > 0:
-            image = m.ee_layer_dict[layer.value]["ee_object"]
+            image = m.ee_layers[layer.value]["ee_object"]
             if isinstance(image, ee.ImageCollection):
                 image = image.toBands()
             band.options = image.bandNames().getInfo()
@@ -3659,7 +3654,7 @@ def plot_transect(m=None):
     def layer_changed(change):
         if change["new"]:
             if m is not None:
-                image = m.ee_layer_dict[layer.value]["ee_object"]
+                image = m.ee_layers[layer.value]["ee_object"]
                 if isinstance(image, ee.ImageCollection):
                     image = image.toBands()
                 band.options = image.bandNames().getInfo()
@@ -3714,7 +3709,7 @@ def plot_transect(m=None):
                         if geom_type != "LineString":
                             print("Use drawing tool to draw a line")
                         else:
-                            image = m.ee_layer_dict[layer.value]["ee_object"]
+                            image = m.ee_layers[layer.value]["ee_object"]
                             if isinstance(image, ee.ImageCollection):
                                 image = image.toBands()
                             image = image.select([band.value])
@@ -3919,10 +3914,10 @@ def sankee_gui(m=None):
     )
 
     if m is not None:
-        if "Las Vegas" not in m.ee_vector_layer_names:
-            region.options = ["User-drawn ROI", "Las Vegas"] + m.ee_vector_layer_names
+        if "Las Vegas" not in m.ee_vector_layers.keys():
+            region.options = ["User-drawn ROI", "Las Vegas"] + m.ee_vector_layers.keys()
         else:
-            region.options = ["User-drawn ROI"] + m.ee_vector_layer_names
+            region.options = ["User-drawn ROI"] + m.ee_vector_layers.keys()
 
         plot_close_btn = widgets.Button(
             tooltip="Close the plot",
@@ -4140,7 +4135,7 @@ def sankee_gui(m=None):
                         image1 = image1.clip(geom)
                         image2 = image2.clip(geom)
                     else:
-                        roi_object = m.ee_layer_dict[region.value]["ee_object"]
+                        roi_object = m.ee_layers[region.value]["ee_object"]
                         if region.value == "Las Vegas":
                             m.centerObject(roi_object, 10)
                         if isinstance(roi_object, ee.Geometry):
