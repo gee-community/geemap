@@ -133,6 +133,7 @@ nav:
           - workshops/GEE_Workshop_2022_Part2.ipynb
           - workshops/AmericaView_2023.ipynb
           - workshops/SciPy_2023.ipynb
+          - workshops/City_Plus_2023.ipynb
           - workshops/G4G_2023.ipynb
     - Notebooks:
           - notebooks/00_geemap_key_features.ipynb
