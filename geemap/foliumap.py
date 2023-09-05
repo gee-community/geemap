@@ -182,18 +182,31 @@ class Map(folium.Map):
 
     set_options = setOptions
 
-    def add_basemap(self, basemap="HYBRID", **kwargs):
+    def add_basemap(self, basemap="ROADMAP", **kwargs):
         """Adds a basemap to the map.
 
         Args:
-            basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'HYBRID'.
+            basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'ROADMAP'.
         """
         try:
-            if basemap in ["ROADMAP", "SATELLITE", "HYBRID", "TERRAIN"]:
-                layer = get_google_map(basemap, backend="folium", **kwargs)
-                layer.add_to(self)
-            else:
-                basemaps[basemap].add_to(self)
+            map_dict = {
+                "ROADMAP": "Esri.WorldStreetMap",
+                "SATELLITE": "Esri.WorldImagery",
+                "TERRAIN": "Esri.WorldTopoMap",
+                "HYBRID": "Esri.WorldImagery",
+            }
+
+            if isinstance(basemap, str):
+                if basemap.upper() in map_dict:
+                    if basemap in os.environ:
+                        if "name" in kwargs:
+                            kwargs["name"] = basemap
+                        basemap = os.environ[basemap]
+                        self.add_tile_layer(tiles=basemap, **kwargs)
+
+                    else:
+                        basemap = basemap.upper()
+                        basemaps[basemap].add_to(self)
         except Exception:
             raise Exception(
                 "Basemap can only be one of the following: {}".format(

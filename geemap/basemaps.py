@@ -2,14 +2,6 @@
 
 Each basemap is defined as an item in the `basemaps` dictionary.
 
-For example, to access Google basemaps, users first need to get a Google Maps API key from https://bit.ly/3sw0THG.
-    Then, set the environment variable using geemap.set_api_key(<API-KEY>). Then Google basemaps can be accessed using:
-
-    * `basemaps['ROADMAP']`
-    * `basemaps['SATELLITE']`
-    * `basemaps['TERRAIN']`
-    * `basemaps['HYBRID']`
-
 More WMS basemaps can be found at the following websites:
 
   1. USGS National Map: https://viewer.nationalmap.gov/services/
@@ -33,67 +25,33 @@ import ipyleaflet
 import xyzservices
 from .common import check_package, planet_tiles
 
-GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY", "")
-
 XYZ_TILES = {
     "OpenStreetMap": {
         "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         "attribution": "OpenStreetMap",
         "name": "OpenStreetMap",
     },
+    "ROADMAP": {
+        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+        "attribution": "Esri",
+        "name": "Esri.WorldStreetMap",
+    },
+    "SATELLITE": {
+        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        "attribution": "Esri",
+        "name": "Esri.WorldImagery",
+    },
+    "TERRAIN": {
+        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+        "attribution": "Esri",
+        "name": "Esri.WorldTopoMap",
+    },
+    "HYBRID": {
+        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        "attribution": "Esri",
+        "name": "Esri.WorldImagery",
+    },
 }
-
-# Add Google basemaps if API key is detected in the environment variables.
-if GOOGLE_MAPS_API_KEY != "":
-    XYZ_TILES.update(
-        {
-            "ROADMAP": {
-                "url": f"https://mt1.google.com/vt/lyrs=m&x={{x}}&y={{y}}&z={{z}}&key={GOOGLE_MAPS_API_KEY}",
-                "attribution": "Google",
-                "name": "Google Maps",
-            },
-            "SATELLITE": {
-                "url": f"https://mt1.google.com/vt/lyrs=s&x={{x}}&y={{y}}&z={{z}}&key={GOOGLE_MAPS_API_KEY}",
-                "attribution": "Google",
-                "name": "Google Satellite",
-            },
-            "TERRAIN": {
-                "url": f"https://mt1.google.com/vt/lyrs=p&x={{x}}&y={{y}}&z={{z}}&key={GOOGLE_MAPS_API_KEY}",
-                "attribution": "Google",
-                "name": "Google Terrain",
-            },
-            "HYBRID": {
-                "url": f"https://mt1.google.com/vt/lyrs=y&x={{x}}&y={{y}}&z={{z}}&key={GOOGLE_MAPS_API_KEY}",
-                "attribution": "Google",
-                "name": "Google Hybrid",
-            },
-        }
-    )
-else:  # If Google Maps API key is not detected, defaulting to Esri basemaps.
-    XYZ_TILES.update(
-        {
-            "ROADMAP": {
-                "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
-                "attribution": "Esri",
-                "name": "Esri.WorldStreetMap",
-            },
-            "SATELLITE": {
-                "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-                "attribution": "Esri",
-                "name": "Esri.WorldImagery",
-            },
-            "TERRAIN": {
-                "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-                "attribution": "Esri",
-                "name": "Esri.WorldTopoMap",
-            },
-            "HYBRID": {
-                "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-                "attribution": "Esri",
-                "name": "Esri.WorldImagery",
-            },
-        }
-    )
 
 
 # Custom WMS tile services.
