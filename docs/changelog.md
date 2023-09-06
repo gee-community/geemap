@@ -2,7 +2,7 @@
 
 ## v0.26.0 - Sep 6, 2023
 
-### What's Changed
+**What's Changed**
 
 -   Add installation CI by @giswqs in [#1656](https://github.com/gee-community/geemap/pull/1656)
 -   Fix vis control error by @giswqs in [#1660](https://github.com/gee-community/geemap/pull/1660)
@@ -26,7 +26,7 @@
 -   Add City+ conference workshop notebook by @giswqs in [#1688](https://github.com/gee-community/geemap/pull/1688)
 -   Remove Google basemaps by @giswqs in [#1681](https://github.com/gee-community/geemap/pull/1681)
 
-### New Contributors
+**New Contributors**
 
 -   @bengalin made their first contribution in [#1664](https://github.com/gee-community/geemap/pull/1664)
 -   @sufyanAbbasi made their first contribution in [#1666](https://github.com/gee-community/geemap/pull/1666)
