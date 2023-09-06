@@ -786,3 +786,61 @@ class LayerManager(ipywidgets.VBox):
                 self._host_map.add(attachment)
             elif not change["new"] and attachment_on_map:
                 self._host_map.remove_control(attachment)
+
+
+class Basemap(ipywidgets.HBox):
+    """Widget for selecting a basemap."""
+
+    def __init__(self, host_map, basemaps, value, xyz_services):
+        """Creates a widget for selecting a basemap.
+
+        Args:
+            host_map (geemap.Map): The map to add the basemap widget to.
+            basemaps (list): The list of basemap names to make available for selection.
+            value (str): The default value from basemaps to select.
+            xyz_services (dict): A dictionary of xyz services for bounds lookup.
+        """
+
+        self._host_map = host_map
+        if not host_map:
+            raise ValueError("Must pass a valid map when creating a basemap widget.")
+
+        self._xyz_services = xyz_services
+        self.on_close = None
+
+        self._dropdown = ipywidgets.Dropdown(
+            options=list(basemaps),
+            value=value,
+            layout=ipywidgets.Layout(width="200px"),
+        )
+        self._dropdown.observe(self._on_dropdown_click, "value")
+
+        close_button = ipywidgets.Button(
+            icon="times",
+            tooltip="Close the basemap widget",
+            button_style="primary",
+            layout=ipywidgets.Layout(width="32px"),
+        )
+        close_button.on_click(self._on_close_click)
+
+        super().__init__([self._dropdown, close_button])
+
+    def _on_dropdown_click(self, change):
+        if change["new"]:
+            basemap_name = self._dropdown.value
+            if basemap_name not in self._host_map.get_layer_names():
+                self._host_map.add_basemap(basemap_name)
+                if basemap_name in self._xyz_services:
+                    if "bounds" in self._xyz_services[basemap_name]:
+                        bounds = self._xyz_services[basemap_name]["bounds"]
+                        bounds = [
+                            bounds[0][1],
+                            bounds[0][0],
+                            bounds[1][1],
+                            bounds[1][0],
+                        ]
+                        self._host_map.zoom_to_bounds(bounds)
+
+    def _on_close_click(self, _):
+        if self.on_close:
+            self.on_close()

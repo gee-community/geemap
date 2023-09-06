@@ -22,7 +22,7 @@ from box import Box
 from bqplot import pyplot as plt
 
 from IPython.display import display
-from .basemaps import xyz_to_leaflet
+from .basemaps import get_xyz_dict, xyz_to_leaflet
 from .common import *
 from .conversion import *
 from .ee_tile_layers import *
@@ -205,6 +205,8 @@ class Map(core.Map):
             else:
                 kwargs.pop("basemap")
 
+        self.basemap_control = None
+
         self.baseclass = "ipyleaflet"
         self.kwargs = kwargs
         super().__init__(**kwargs)
@@ -220,8 +222,8 @@ class Map(core.Map):
                 self.sandbox_path = None
 
         # Add Google Maps as the default basemap
-        if kwargs.get("add_google_map", True):
-            self.add("Google Maps")
+        if kwargs.get("add_google_map", False):
+            self.add_basemap("ROADMAP")
 
         # ipyleaflet built-in layer control
         self.layer_control = None
@@ -459,11 +461,11 @@ class Map(core.Map):
 
     getScale = get_scale
 
-    def add_basemap(self, basemap="HYBRID", show=True, **kwargs):
+    def add_basemap(self, basemap="ROADMAP", show=True, **kwargs):
         """Adds a basemap to the map.
 
         Args:
-            basemap (str, optional): Can be one of string from basemaps. Defaults to 'HYBRID'.
+            basemap (str, optional): Can be one of string from basemaps. Defaults to 'ROADMAP'.
             visible (bool, optional): Whether the basemap is visible or not. Defaults to True.
             **kwargs: Keyword arguments for the TileLayer.
         """
@@ -473,15 +475,20 @@ class Map(core.Map):
             layer_names = self.get_layer_names()
 
             map_dict = {
-                "ROADMAP": "Google Maps",
-                "SATELLITE": "Google Satellite",
-                "TERRAIN": "Google Terrain",
-                "HYBRID": "Google Hybrid",
+                "ROADMAP": "Esri.WorldStreetMap",
+                "SATELLITE": "Esri.WorldImagery",
+                "TERRAIN": "Esri.WorldTopoMap",
+                "HYBRID": "Esri.WorldImagery",
             }
 
             if isinstance(basemap, str):
                 if basemap.upper() in map_dict:
-                    basemap = map_dict[basemap.upper()]
+                    if basemap in os.environ:
+                        if "name" in kwargs:
+                            kwargs["name"] = basemap
+                        basemap = os.environ[basemap]
+                    else:
+                        basemap = map_dict[basemap.upper()]
 
             if isinstance(basemap, xyzservices.TileProvider):
                 name = basemap.name
@@ -507,6 +514,8 @@ class Map(core.Map):
                 arc_add_layer(basemaps[basemap].url, basemap)
             elif basemap in basemaps and basemaps[basemap].name in layer_names:
                 print(f"{basemap} has been already added before.")
+            elif basemap.startswith("http"):
+                self.add_tile_layer(url=basemap, shown=show, **kwargs)
             else:
                 print(
                     "Basemap can only be one of the following:\n  {}".format(
@@ -2492,6 +2501,36 @@ class Map(core.Map):
         self.layer_manager_widget.collapsed = not opened
         self.layer_manager_widget.close_button_hidden = not show_close_button
 
+    def add_basemap_widget(
+        self,
+        value="OpenStreetMap",
+        position="topright",
+    ):
+        """Add the Basemap GUI to the map.
+
+        Args:
+            value (str): The default value from basemaps to select. Defaults to "OpenStreetMap".
+            position (str, optional): The position of the Inspector GUI. Defaults to "topright".
+        """
+        if self.basemap_control:
+            return
+
+        def _on_close():
+            self.toolbar_reset()
+            if self.basemap_control and self.basemap_control in self.controls:
+                self.remove_control(self.basemap_control)
+                self.basemap_control.close()
+                self.basemap_control = None
+
+        basemap_widget = map_widgets.Basemap(
+            self, list(basemaps.keys()), value, get_xyz_dict()
+        )
+        basemap_widget.on_close = _on_close
+        self.basemap_control = ipyleaflet.WidgetControl(
+            widget=basemap_widget, position=position
+        )
+        self.add(self.basemap_control)
+
     def add_draw_control(self, position="topleft"):
         """Add a draw control to the map
 
@@ -3335,14 +3374,14 @@ class Map(core.Map):
             return
 
         left_layer = ipyleaflet.TileLayer(
-            url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-            attribution="Google",
-            name="Google Maps",
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+            attribution="Esri",
+            name="Esri.WorldStreetMap",
         )
         right_layer = ipyleaflet.TileLayer(
-            url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-            attribution="Google",
-            name="Google Maps",
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+            attribution="Esri",
+            name="Esri.WorldStreetMap",
         )
 
         self.clear_controls()
