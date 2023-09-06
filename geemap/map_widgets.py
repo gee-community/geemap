@@ -29,15 +29,25 @@ class Colorbar(ipywidgets.Output):
         """Add a matplotlib colorbar to the map.
 
         Args:
-            vis_params (dict): Visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.
-            cmap (str, optional): Matplotlib colormap. Defaults to "gray". See https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py for options.
-            discrete (bool, optional): Whether to create a discrete colorbar. Defaults to False.
+            vis_params (dict): Visualization parameters as a dictionary. See
+                https://developers.google.com/earth-engine/guides/image_visualization # noqa
+                for options.
+            cmap (str, optional): Matplotlib colormap. Defaults to "gray". See
+                https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py # noqa
+                for options.
+            discrete (bool, optional): Whether to create a discrete colorbar.
+                Defaults to False.
             label (str, optional): Label for the colorbar. Defaults to None.
-            orientation (str, optional): Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
-            transparent_bg (bool, optional): Whether to use transparent background. Defaults to False.
-            font_size (int, optional): Font size for the colorbar. Defaults to 9.
-            axis_off (bool, optional): Whether to turn off the axis. Defaults to False.
-            max_width (str, optional): Maximum width of the colorbar in pixels. Defaults to None.
+            orientation (str, optional): Orientation of the colorbar, such as
+                "vertical" and "horizontal". Defaults to "horizontal".
+            transparent_bg (bool, optional): Whether to use transparent
+                background. Defaults to False.
+            font_size (int, optional): Font size for the colorbar. Defaults
+                to 9.
+            axis_off (bool, optional): Whether to turn off the axis. Defaults
+                to False.
+            max_width (str, optional): Maximum width of the colorbar in pixels.
+                Defaults to None.
 
         Raises:
             TypeError: If the vis_params is not a dictionary.
@@ -141,6 +151,215 @@ class Colorbar(ipywidgets.Output):
         )
 
 
+class Legend(ipywidgets.VBox):
+    """A legend widget that can be added to the map."""
+
+    ALLOWED_POSITIONS = ["topleft", "topright", "bottomleft", "bottomright"]
+    DEFAULT_COLORS = ["#8DD3C7", "#FFFFB3", "#BEBADA", "#FB8072", "#80B1D3"]
+    DEFAULT_KEYS = ["One", "Two", "Three", "Four", "etc"]
+    DEFAULT_MAX_HEIGHT = "400px"
+    DEFAULT_MAX_WIDTH = "300px"
+
+    def __init__(
+        self,
+        title="Legend",
+        legend_dict=None,
+        keys=None,
+        colors=None,
+        position="bottomright",
+        builtin_legend=None,
+        add_header=True,
+        widget_args={},
+        **kwargs,
+    ):
+        """Adds a customized legend to the map.
+
+         Args:
+            title (str, optional): Title of the legend. Defaults to 'Legend'.
+            legend_dict (dict, optional): A dictionary containing legend items
+                as keys and color as values. If provided, keys and colors will
+                be ignored. Defaults to None.
+            keys (list, optional): A list of legend keys. Defaults to None.
+            colors (list, optional): A list of legend colors. Defaults to None.
+            position (str, optional): Position of the legend. Defaults to
+                'bottomright'.
+            builtin_legend (str, optional): Name of the builtin legend to add
+                to the map. Defaults to None.
+            add_header (bool, optional): Whether the legend can be closed or
+                not. Defaults to True.
+            widget_args (dict, optional): Additional arguments passed to the
+                widget_template() function. Defaults to {}.
+
+        Raises:
+            TypeError: If the keys are not a list.
+            TypeError: If the colors are not list.
+            TypeError: If the colors are not a list of tuples.
+            TypeError: If the legend_dict is not a dictionary.
+            ValueError: If the legend template does not exist.
+            ValueError: If a rgb value cannot to be converted to hex.
+            ValueError: If the keys and colors are not the same length.
+            ValueError: If the builtin_legend is not allowed.
+            ValueError: If the position is not allowed.
+
+        """
+        import os  # pylint: disable=import-outside-toplevel
+        from IPython.display import display  # pylint: disable=import-outside-toplevel
+        import pkg_resources  # pylint: disable=import-outside-toplevel
+        from .legends import builtin_legends  # pylint: disable=import-outside-toplevel
+
+        pkg_dir = os.path.dirname(
+            pkg_resources.resource_filename("geemap", "geemap.py")
+        )
+        legend_template = os.path.join(pkg_dir, "data/template/legend.html")
+
+        if not os.path.exists(legend_template):
+            raise ValueError("The legend template does not exist.")
+
+        if keys is not None:
+            if not isinstance(keys, list):
+                raise TypeError("The legend keys must be a list.")
+        else:
+            keys = Legend.DEFAULT_KEYS
+
+        if colors is not None:
+            if not isinstance(colors, list):
+                raise TypeError("The legend colors must be a list.")
+            elif all(isinstance(item, tuple) for item in colors):
+                colors = Legend.__convert_rgb_colors_to_hex(colors)
+            elif all((item.startswith("#") and len(item) == 7) for item in colors):
+                pass
+            elif all((len(item) == 6) for item in colors):
+                pass
+            else:
+                raise TypeError("The legend colors must be a list of tuples.")
+        else:
+            colors = Legend.DEFAULT_COLORS
+
+        if len(keys) != len(colors):
+            raise ValueError(
+                "The legend keys and colors must be the same length.")
+
+        allowed_builtin_legends = builtin_legends.keys()
+        if builtin_legend is not None:
+            builtin_legend_allowed = Legend.__check_if_allowed(
+                builtin_legend, "builtin legend", allowed_builtin_legends)
+            if builtin_legend_allowed:
+                legend_dict = builtin_legends[builtin_legend]
+                keys = list(legend_dict.keys())
+                colors = list(legend_dict.values())
+
+        if legend_dict is not None:
+            if not isinstance(legend_dict, dict):
+                raise TypeError("The legend dict must be a dictionary.")
+            else:
+                keys = list(legend_dict.keys())
+                colors = list(legend_dict.values())
+                if all(isinstance(item, tuple) for item in colors):
+                    colors = Legend.__convert_rgb_colors_to_hex(colors)
+
+        Legend.__check_if_allowed(
+            position, "position", Legend.ALLOWED_POSITIONS)
+
+        header = []
+        footer = []
+        content = Legend.__create_legend_items(keys, colors)
+
+        with open(legend_template) as f:
+            lines = f.readlines()
+            lines[3] = lines[3].replace("Legend", title)
+            header = lines[:6]
+            footer = lines[11:]
+
+        legend_html = header + content + footer
+        legend_text = "".join(legend_html)
+        legend_output = ipywidgets.Output(
+            layout=Legend.__create_layout(**kwargs))
+        legend_widget = ipywidgets.HTML(value=legend_text)
+
+        if add_header:
+            if "show_close_button" not in widget_args:
+                widget_args["show_close_button"] = False
+            if "widget_icon" not in widget_args:
+                widget_args["widget_icon"] = "bars"
+
+            legend_output_widget = common.widget_template(
+                legend_output,
+                position=position,
+                display_widget=legend_widget,
+                **widget_args,
+            )
+        else:
+            legend_output_widget = legend_widget
+
+        super().__init__(children=[legend_output_widget])
+
+        legend_output.clear_output()
+        with legend_output:
+            display(legend_widget)
+
+    def __check_if_allowed(value, value_name, allowed_list):
+        if value not in allowed_list:
+            raise ValueError(
+                "The " + value_name + " must be one of the following: {}."
+                .format(", ".join(allowed_list))
+            )
+        return True
+
+    def __convert_rgb_colors_to_hex(colors):
+        try:
+            return [common.rgb_to_hex(x) for x in colors]
+        except:
+            raise ValueError("Unable to convert rgb value to hex.")
+
+    def __create_legend_items(keys, colors):
+        legend_items = []
+        for index, key in enumerate(keys):
+            color = colors[index]
+            if not color.startswith("#"):
+                color = "#" + color
+            item = "<li><span style='background:{};'></span>{}</li>\n".format(
+                color, key
+            )
+            legend_items.append(item)
+        return legend_items
+
+    def __create_layout(**kwargs):
+        height = Legend.__create_layout_property("height", None, **kwargs)
+
+        min_height = Legend.__create_layout_property(
+            "min_height", None, **kwargs)
+
+        if height is None:
+            max_height = Legend.DEFAULT_MAX_HEIGHT
+        else:
+            max_height = Legend.__create_layout_property(
+                "max_height", None, **kwargs)
+
+        width = Legend.__create_layout_property("width", None, **kwargs)
+
+        if "min_width" not in kwargs:
+            min_width = None
+
+        if width is None:
+            max_width = Legend.DEFAULT_MAX_WIDTH
+        else:
+            max_width = Legend.__create_layout_property(
+                "max_width", Legend.DEFAULT_MAX_WIDTH, **kwargs)
+
+        return {
+            "height": height,
+            "max_height": max_height,
+            "max_width": max_width,
+            "min_height": min_height,
+            "min_width": min_width,
+            "overflow": "scroll",
+            "width": width,
+        }
+
+    def __create_layout_property(name, default_value, **kwargs):
+        return default_value if name not in kwargs else kwargs[name]
+
+
 class Inspector(ipywidgets.VBox):
     """Inspector widget for Earth Engine data."""
 
@@ -157,11 +376,16 @@ class Inspector(ipywidgets.VBox):
 
         Args:
             host_map (geemap.Map): The map to add the inspector widget to.
-            names (list, optional): The list of layer names to be inspected. Defaults to None.
-            visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
-            decimals (int, optional): The number of decimal places to round the values. Defaults to 2.
-            opened (bool, optional): Whether the inspector is opened. Defaults to True.
-            show_close_button (bool, optional): Whether to show the close button. Defaults to True.
+            names (list, optional): The list of layer names to be inspected.
+                Defaults to None.
+            visible (bool, optional): Whether to inspect visible layers only.
+                Defaults to True.
+            decimals (int, optional): The number of decimal places to round the
+                values. Defaults to 2.
+            opened (bool, optional): Whether the inspector is opened. Defaults
+                to True.
+            show_close_button (bool, optional): Whether to show the close
+                button. Defaults to True.
         """
 
         self._host_map = host_map
@@ -324,7 +548,8 @@ class Inspector(ipywidgets.VBox):
 
     def _point_info(self, latlon):
         scale = self._host_map.get_scale()
-        label = f"Point ({latlon[1]:.{self._decimals}f}, {latlon[0]:.{self._decimals}f}) at {int(scale)}m/px"
+        label = (f"Point ({latlon[1]:.{self._decimals}f}, " +
+                 f"{latlon[0]:.{self._decimals}f}) at {int(scale)}m/px")
         nodes = [
             ipytree.Node(f"Longitude: {latlon[1]}"),
             ipytree.Node(f"Latitude: {latlon[0]}"),
@@ -425,7 +650,8 @@ class AbstractDrawControl(object):
         """Initialize the draw control.
 
         Args:
-            host_map (geemap.Map): The geemap.Map instance to be linked with the draw control.
+            host_map (geemap.Map): The geemap.Map instance to be linked with
+                the draw control.
         """
 
         self.host_map = host_map
