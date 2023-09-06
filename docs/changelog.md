@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.26.0 - Sep 6, 2023
+
+## What's Changed
+
+-   Add installation CI by @giswqs in [#1656](https://github.com/gee-community/geemap/pull/1656)
+-   Fix vis control error by @giswqs in [#1660](https://github.com/gee-community/geemap/pull/1660)
+-   Fix plotly notebook typo by @giswqs in [#1661](https://github.com/gee-community/geemap/pull/1661)
+-   Refactor inspector into an ipywidgets subclass by @naschmitz in [#1663](https://github.com/gee-community/geemap/pull/1663)
+-   Refactor toolbar into an ipywidgets subclass by @bengalin in [#1664](https://github.com/gee-community/geemap/pull/1664)
+-   Fix computation for number of rows in toolbar by @bengalin in [#1665](https://github.com/gee-community/geemap/pull/1665)
+-   Update pepy badge by @giswqs in [#1668](https://github.com/gee-community/geemap/pull/1668)
+-   Defines an AbstractDrawControl and implementation for the current draw control features. by @sufyanAbbasi in [#1666](https://github.com/gee-community/geemap/pull/1666)
+-   Restore dragging mode after existing split map mode by @kirimaru-jp in [#1669](https://github.com/gee-community/geemap/pull/1669)
+-   Remove trailing spaces by @schwehr in [#1673](https://github.com/gee-community/geemap/pull/1673)
+-   Clean up docs folder by @schwehr in [#1672](https://github.com/gee-community/geemap/pull/1672)
+-   Clean up docs folder by @giswqs in [#1675](https://github.com/gee-community/geemap/pull/1675)
+-   Refactor layer manager into an ipywidgets subclass by @naschmitz in [#1671](https://github.com/gee-community/geemap/pull/1671)
+-   Add unit tests for draw control by @sufyanAbbasi in [#1674](https://github.com/gee-community/geemap/pull/1674)
+-   Add G4G workshop notebook by @giswqs in [#1676](https://github.com/gee-community/geemap/pull/1676)
+-   Add NLCD 2021 basemap by @giswqs in [#1680](https://github.com/gee-community/geemap/pull/1680)
+-   Clean up layer management ivars. by @naschmitz in [#1684](https://github.com/gee-community/geemap/pull/1684)
+-   Refactor basemap into an ipywidgets subclass by @bengalin in [#1685](https://github.com/gee-community/geemap/pull/1685)
+-   Fix layer visualization GUI bug by @giswqs in [#1687](https://github.com/gee-community/geemap/pull/1687)
+-   Add City+ conference workshop notebook by @giswqs in [#1688](https://github.com/gee-community/geemap/pull/1688)
+-   Remove Google basemaps by @giswqs in [#1681](https://github.com/gee-community/geemap/pull/1681)
+
+## New Contributors
+
+-   @bengalin made their first contribution in [#1664](https://github.com/gee-community/geemap/pull/1664)
+-   @sufyanAbbasi made their first contribution in [#1666](https://github.com/gee-community/geemap/pull/1666)
+-   @kirimaru-jp made their first contribution in [#1669](https://github.com/gee-community/geemap/pull/1669)
+-   @schwehr made their first contribution in [#1673](https://github.com/gee-community/geemap/pull/1673)
+
+**Full Changelog**: [v0.25.0...v0.26.0](https://github.com/gee-community/geemap/compare/v0.25.0...v0.26.0)
+
 ## v0.25.0 - Jul 30, 2023
 
 **Improvement**
