@@ -33,7 +33,10 @@ for line in formatted_text.splitlines():
         prefix = line.split(": ")[0]
         link = line.split(": ")[1]
         version = line.split("/")[-1]
-        formatted_text = formatted_text.replace(line, f"{prefix}: [{version}]({link})")
+        formatted_text = formatted_text.replace(
+            line, f"{prefix}: [{version}]({link})"
+        ).replace("## ", "### ")
+
 with open("docs/changelog_update.md", "w") as f:
     f.write(formatted_text)
 
