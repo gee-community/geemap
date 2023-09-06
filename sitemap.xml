@@ -21,6 +21,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://geemap.org/changelog_update/</loc>
+         <lastmod>2023-09-06</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://geemap.org/chart/</loc>
          <lastmod>2023-09-06</lastmod>
          <changefreq>daily</changefreq>
