@@ -5149,7 +5149,7 @@ Licensed under the Apache License, Version 2.0.
     init_mathjax();
     </script>
 <!-- End of mathjax configuration --><div class="jupyter-wrapper"><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fa870109">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=217d8d3f">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5176,7 +5176,7 @@ Licensed under the Apache License, Version 2.0.
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=db530e4c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=810690f2">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5229,7 +5229,7 @@ markdown_text = """
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7f363017">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4c2da121">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5258,7 +5258,7 @@ pattern = r"https://github\.com/gee-community/geemap/pull/(\d+)"</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7f728ad2">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=626fa93b">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5291,7 +5291,7 @@ def replace_url(match):
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ab529409">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a93a3e4f">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5320,7 +5320,7 @@ formatted_text = re.sub(pattern, replace_url, markdown_text)</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ef9b36fa">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6cbc2652">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5343,25 +5343,29 @@ formatted_text = re.sub(pattern, replace_url, markdown_text)</div>
         <span class="n">prefix</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">": "</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">link</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">": "</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">version</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">formatted_text</span> <span class="o">=</span> <span class="n">formatted_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-            <span class="n">line</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">: [</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">](</span><span class="si">{</span><span class="n">link</span><span class="si">}</span><span class="s2">)"</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"## "</span><span class="p">,</span> <span class="s2">"### "</span><span class="p">)</span>
+        <span class="n">formatted_text</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">formatted_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">: [</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">](</span><span class="si">{</span><span class="n">link</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"## What's Changed"</span><span class="p">,</span> <span class="s2">"**What's Changed**"</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"## New Contributors"</span><span class="p">,</span> <span class="s2">"**New Contributors**"</span><span class="p">)</span>
+        <span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-6">for line in formatted_text.splitlines():
     if "Full Changelog" in line:
         prefix = line.split(": ")[0]
         link = line.split(": ")[1]
         version = line.split("/")[-1]
-        formatted_text = formatted_text.replace(
-            line, f"{prefix}: [{version}]({link})"
-        ).replace("## ", "### ")</div>
+        formatted_text = (
+            formatted_text.replace(line, f"{prefix}: [{version}]({link})")
+            .replace("## What's Changed", "**What's Changed**")
+            .replace("## New Contributors", "**New Contributors**")
+        )</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=33df9e79">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1fe4781b">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5390,7 +5394,7 @@ formatted_text = re.sub(pattern, replace_url, markdown_text)</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=06e9e382">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2e9ac4d5">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5419,7 +5423,7 @@ print(formatted_text)</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b0c9f070">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1f7e7ac4">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5438,7 +5442,7 @@ print(formatted_text)</div>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-06T14:23:30+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-06</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-06T15:28:47+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-06</span>
       
         <br>
         Created:
