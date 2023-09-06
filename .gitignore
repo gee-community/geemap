@@ -16,6 +16,7 @@ docs/notebooks/*.nc
 docs/notebooks/*.html
 docs/notebooks/countries.*
 docs/notebooks/cache/*
+docs/changelog_update.md
 **/.DS_Store
 private/
 
