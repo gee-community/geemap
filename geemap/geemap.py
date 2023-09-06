@@ -240,8 +240,8 @@ class Map(ipyleaflet.Map):
                 self.sandbox_path = None
 
         # Add Google Maps as the default basemap
-        if kwargs.get("add_google_map", True):
-            self.add("Google Maps")
+        if kwargs.get("add_google_map", False):
+            self.add_basemap("ROADMAP")
 
         # Remove all default controls
         self.clear_controls()
@@ -587,11 +587,11 @@ class Map(ipyleaflet.Map):
 
     getScale = get_scale
 
-    def add_basemap(self, basemap="HYBRID", show=True, **kwargs):
+    def add_basemap(self, basemap="ROADMAP", show=True, **kwargs):
         """Adds a basemap to the map.
 
         Args:
-            basemap (str, optional): Can be one of string from basemaps. Defaults to 'HYBRID'.
+            basemap (str, optional): Can be one of string from basemaps. Defaults to 'ROADMAP'.
             visible (bool, optional): Whether the basemap is visible or not. Defaults to True.
             **kwargs: Keyword arguments for the TileLayer.
         """
@@ -601,15 +601,20 @@ class Map(ipyleaflet.Map):
             layer_names = self.get_layer_names()
 
             map_dict = {
-                "ROADMAP": "Google Maps",
-                "SATELLITE": "Google Satellite",
-                "TERRAIN": "Google Terrain",
-                "HYBRID": "Google Hybrid",
+                "ROADMAP": "Esri.WorldStreetMap",
+                "SATELLITE": "Esri.WorldImagery",
+                "TERRAIN": "Esri.WorldTopoMap",
+                "HYBRID": "Esri.WorldImagery",
             }
 
             if isinstance(basemap, str):
                 if basemap.upper() in map_dict:
-                    basemap = map_dict[basemap.upper()]
+                    if basemap in os.environ:
+                        if "name" in kwargs:
+                            kwargs["name"] = basemap
+                        basemap = os.environ[basemap]
+                    else:
+                        basemap = map_dict[basemap.upper()]
 
             if isinstance(basemap, xyzservices.TileProvider):
                 name = basemap.name
@@ -635,6 +640,8 @@ class Map(ipyleaflet.Map):
                 arc_add_layer(basemaps[basemap].url, basemap)
             elif basemap in basemaps and basemaps[basemap].name in layer_names:
                 print(f"{basemap} has been already added before.")
+            elif basemap.startswith("http"):
+                self.add_tile_layer(url=basemap, shown=show, **kwargs)
             else:
                 print(
                     "Basemap can only be one of the following:\n  {}".format(
@@ -3530,14 +3537,14 @@ class Map(ipyleaflet.Map):
             return
 
         left_layer = ipyleaflet.TileLayer(
-            url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-            attribution="Google",
-            name="Google Maps",
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+            attribution="Esri",
+            name="Esri.WorldStreetMap",
         )
         right_layer = ipyleaflet.TileLayer(
-            url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-            attribution="Google",
-            name="Google Maps",
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+            attribution="Esri",
+            name="Esri.WorldStreetMap",
         )
 
         self.clear_controls()

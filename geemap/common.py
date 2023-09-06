@@ -9489,19 +9489,6 @@ def get_api_key(token_name, m=None):
     return api_key
 
 
-def set_api_key(token_name, api_key, m=None):
-    """Sets an API key as an environment variable.
-
-    Args:
-        token_name (str): The token name.
-        api_key (str): The API key.
-        m (ipyleaflet.Map | folium.Map, optional): A Map instance.. Defaults to None.
-    """
-    os.environ[token_name] = api_key
-    if m is not None:
-        m.api_keys[token_name] = api_key
-
-
 def planet_monthly_tropical(api_key=None, token_name="PLANET_API_KEY"):
     """Generates Planet monthly imagery URLs based on an API key. See https://assets.planet.com/docs/NICFI_UserGuidesFAQ.pdf
 
@@ -14886,32 +14873,32 @@ def tms_to_geotiff(
         SESSION = requests.Session()
 
     xyz_tiles = {
-        "OPENSTREETMAP": {
-            "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-            "attribution": "OpenStreetMap",
-            "name": "OpenStreetMap",
-        },
-        "ROADMAP": {
-            "url": "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-            "attribution": "Google",
-            "name": "Google Maps",
-        },
-        "SATELLITE": {
-            "url": "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-            "attribution": "Google",
-            "name": "Google Satellite",
-        },
-        "TERRAIN": {
-            "url": "https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",
-            "attribution": "Google",
-            "name": "Google Terrain",
-        },
-        "HYBRID": {
-            "url": "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
-            "attribution": "Google",
-            "name": "Google Satellite",
-        },
-    }
+    "OpenStreetMap": {
+        "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "attribution": "OpenStreetMap",
+        "name": "OpenStreetMap",
+    },
+    "ROADMAP": {
+        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+        "attribution": "Esri",
+        "name": "Esri.WorldStreetMap",
+    },
+    "SATELLITE": {
+        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        "attribution": "Esri",
+        "name": "Esri.WorldImagery",
+    },
+    "TERRAIN": {
+        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+        "attribution": "Esri",
+        "name": "Esri.WorldTopoMap",
+    },
+    "HYBRID": {
+        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        "attribution": "Esri",
+        "name": "Esri.WorldImagery",
+    },
+}
 
     if isinstance(source, str) and source.upper() in xyz_tiles:
         source = xyz_tiles[source.upper()]["url"]
