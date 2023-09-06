@@ -113,6 +113,14 @@ class EEFoliumTileLayer(folium.raster_layers.TileLayer):
 class EELeafletTileLayer(ipyleaflet.TileLayer):
     """An ipyleaflet TileLayer that shows an EE object."""
 
+    EE_TYPES = (
+        ee.Geometry,
+        ee.Feature,
+        ee.FeatureCollection,
+        ee.Image,
+        ee.ImageCollection,
+    )
+
     def __init__(
         self,
         ee_object,

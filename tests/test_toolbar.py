@@ -4,13 +4,30 @@
 
 
 import unittest
-from unittest.mock import patch, MagicMock, ANY
+from unittest.mock import patch, Mock
+
+import ipywidgets
+
 import geemap
-from geemap.toolbar import Toolbar, main_tools, extra_tools
+from geemap.toolbar import Toolbar
+from tests import fake_map, utils
 
 
 class TestToolbar(unittest.TestCase):
     """Tests for the Toolbar class in the `toolbar` module."""
+
+    def _query_layers_button(self, toolbar):
+        return utils.query_widget(
+            toolbar, ipywidgets.ToggleButton, lambda c: c.tooltip == "Layers"
+        )
+
+    def _query_open_button(self, toolbar):
+        return utils.query_widget(
+            toolbar, ipywidgets.ToggleButton, lambda c: c.tooltip == "Toolbar"
+        )
+
+    def _query_tool_grid(self, toolbar):
+        return utils.query_widget(toolbar, ipywidgets.GridBox, lambda c: True)
 
     def setUp(self) -> None:
         self.callback_calls = 0
@@ -108,3 +125,32 @@ class TestToolbar(unittest.TestCase):
         self.assertTrue(self.last_called_with_selected)
         self.assertEqual(self.callback_calls, 3)
         self.assertTrue(toolbar.all_widgets[1].value)
+
+    def test_layers_toggle_callback(self):
+        """Verifies the on_layers_toggled callback is triggered."""
+        map_fake = fake_map.FakeMap()
+        toolbar = Toolbar(map_fake, [self.item, self.no_reset_item])
+        self._query_open_button(toolbar).value = True
+
+        self.assertIsNotNone(layers_button := self._query_layers_button(toolbar))
+        on_toggled_mock = Mock()
+        toolbar.on_layers_toggled = on_toggled_mock
+        layers_button.value = True
+
+        on_toggled_mock.assert_called_once()
+
+    def test_accessory_widget(self):
+        """Verifies the accessory widget replaces the tool grid."""
+        map_fake = fake_map.FakeMap()
+        toolbar = Toolbar(map_fake, [self.item, self.no_reset_item])
+        self._query_open_button(toolbar).value = True
+        self.assertIsNotNone(self._query_tool_grid(toolbar))
+
+        toolbar.accessory_widget = ipywidgets.ToggleButton(tooltip="test-button")
+
+        self.assertIsNone(self._query_tool_grid(toolbar))
+        self.assertIsNotNone(
+            utils.query_widget(
+                toolbar, ipywidgets.ToggleButton, lambda c: c.tooltip == "test-button"
+            )
+        )
