@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.6">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.8">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.0e669242.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.046329b4.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.85d0ee34.min.css">
@@ -4305,13 +4305,6 @@
 
       <p>Module for basemaps.</p>
 <p>Each basemap is defined as an item in the <code>basemaps</code> dictionary.</p>
-<p>For example, to access Google basemaps, use the following:</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code>* `basemaps[&#39;ROADMAP&#39;]`
-* `basemaps[&#39;SATELLITE&#39;]`
-* `basemaps[&#39;HYBRID&#39;]`
-</code></pre></div></td></tr></table></div>
 <p>More WMS basemaps can be found at the following websites:</p>
 <ol>
 <li>USGS National Map: https://viewer.nationalmap.gov/services/</li>
@@ -4611,6 +4604,8 @@ Defaults to False.</p></td>
 <span class="sd">        dict: A dictionary of folium tile layers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">folium_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Ignore Esri basemaps if they are already in the custom XYZ_TILES.</span>
+    <span class="n">ignore_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">XYZ_TILES</span><span class="p">[</span><span class="n">tile</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">XYZ_TILES</span><span class="p">]</span>
 
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">custom_tiles</span><span class="p">[</span><span class="s2">&quot;xyz&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">folium_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">(</span>
@@ -4635,6 +4630,8 @@ Defaults to False.</p></td>
         <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">ignore_list</span><span class="p">:</span>
+            <span class="k">continue</span>
         <span class="n">folium_dict</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">folium</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">(</span>
             <span class="n">tiles</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">build_url</span><span class="p">(),</span>
             <span class="n">attr</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">attribution</span><span class="p">,</span>
@@ -4695,6 +4692,8 @@ Defaults to False.</p></td>
 <span class="sd">        dict: A dictionary of ipyleaflet tile layers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">leaflet_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Ignore Esri basemaps if they are already in the custom XYZ_TILES.</span>
+    <span class="n">ignore_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">XYZ_TILES</span><span class="p">[</span><span class="n">tile</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">XYZ_TILES</span><span class="p">]</span>
 
     <span class="c1"># Add custom tiles.</span>
     <span class="k">for</span> <span class="n">tile_type</span><span class="p">,</span> <span class="n">tile_dict</span> <span class="ow">in</span> <span class="n">custom_tiles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -4704,6 +4703,8 @@ Defaults to False.</p></td>
 
     <span class="c1"># Add xyzservices.provider tiles.</span>
     <span class="k">for</span> <span class="n">tile_provider</span><span class="p">,</span> <span class="n">tile_info</span> <span class="ow">in</span> <span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">ignore_list</span><span class="p">:</span>
+            <span class="k">continue</span>
         <span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">build_url</span><span class="p">()</span>
         <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tile_info</span>
 
@@ -4754,6 +4755,8 @@ Defaults to False.</p></td>
 <span class="sd">        dict: A dictionary of plotly tile layers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">plotly_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Ignore Esri basemaps if they are already in the custom XYZ_TILES.</span>
+    <span class="n">ignore_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">XYZ_TILES</span><span class="p">[</span><span class="n">tile</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">XYZ_TILES</span><span class="p">]</span>
 
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">custom_tiles</span><span class="p">[</span><span class="s2">&quot;xyz&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">plotly_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
@@ -4765,6 +4768,8 @@ Defaults to False.</p></td>
         <span class="p">}</span>
 
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">ignore_list</span><span class="p">:</span>
+            <span class="k">continue</span>
         <span class="n">plotly_dict</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;below&quot;</span><span class="p">:</span> <span class="s2">&quot;traces&quot;</span><span class="p">,</span>
             <span class="s2">&quot;sourcetype&quot;</span><span class="p">:</span> <span class="s2">&quot;raster&quot;</span><span class="p">,</span>
@@ -4824,12 +4829,16 @@ Defaults to False.</p></td>
     <span class="kn">import</span> <span class="nn">pydeck</span> <span class="k">as</span> <span class="nn">pdk</span>
 
     <span class="n">pydeck_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Ignore Esri basemaps if they are already in the custom XYZ_TILES.</span>
+    <span class="n">ignore_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">XYZ_TILES</span><span class="p">[</span><span class="n">tile</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">XYZ_TILES</span><span class="p">]</span>
 
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">custom_tiles</span><span class="p">[</span><span class="s2">&quot;xyz&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">tile</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span>
         <span class="n">pydeck_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">url</span>
 
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">ignore_list</span><span class="p">:</span>
+            <span class="k">continue</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">build_url</span><span class="p">()</span>
         <span class="n">pydeck_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">url</span>
 
@@ -4992,7 +5001,7 @@ Defaults to False.</p></td>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.78eede0e.min.js"></script>
+      <script src="../assets/javascripts/bundle.dff1b7c8.min.js"></script>
       
         <script src="../js/timeago.min.js"></script>
       
