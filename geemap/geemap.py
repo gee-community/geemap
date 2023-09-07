@@ -182,13 +182,6 @@ class Map(core.Map):
         if isinstance(kwargs.get("width"), int):
             kwargs["width"] = str(kwargs["width"]) + "px"
 
-        # Authenticates Earth Engine and initializes an Earth Engine session
-        if "ee_initialize" not in kwargs:
-            kwargs["ee_initialize"] = True
-
-        if kwargs["ee_initialize"]:
-            ee_initialize()
-
         if "max_zoom" not in kwargs:
             kwargs["max_zoom"] = 24
 

@@ -124,6 +124,7 @@ class Map(ipyleaflet.Map, MapInterface):
         "zoom": 2,
         "zoom_control": False,
         "attribution_control": False,
+        "ee_initialize": True,
     }
 
     @property
@@ -164,12 +165,16 @@ class Map(ipyleaflet.Map, MapInterface):
         self.ee_layers: Dict[str, Dict[str, Any]] = {}
         self.geojson_layers: List[Any] = []
 
-        super().__init__(**self._apply_kwarg_defaults(kwargs))
+        kwargs = self._apply_kwarg_defaults(kwargs)
+        super().__init__(**kwargs)
 
         for position, widgets in self._control_config().items():
             for widget in widgets:
                 self.add(widget, position=position)
-        common.ee_initialize()
+
+        # Authenticate and initialize EE.
+        if kwargs.get("ee_initialize", False):
+            common.ee_initialize()
 
     def get_zoom(self) -> int:
         return self.zoom
