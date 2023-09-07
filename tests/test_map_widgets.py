@@ -864,7 +864,7 @@ class TestBasemap(unittest.TestCase):
 
     @property
     def _close_button(self):
-        return _query_widget(
+        return utils.query_widget(
             self.basemap_widget,
             ipywidgets.Button,
             lambda c: c.tooltip == "Close the basemap widget",
@@ -872,10 +872,8 @@ class TestBasemap(unittest.TestCase):
 
     @property
     def _droopdown(self):
-        return _query_widget(
-            self.basemap_widget,
-            ipywidgets.Dropdown,
-            lambda _: True,
+        return utils.query_widget(
+            self.basemap_widget, ipywidgets.Dropdown, lambda _: True
         )
 
     def test_basemap_no_map(self):
