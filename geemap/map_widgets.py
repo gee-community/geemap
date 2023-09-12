@@ -142,14 +142,19 @@ class Colorbar(ipywidgets.Output):
 
 
 class Legend(ipywidgets.VBox):
-
     """A legend widget that can be added to the map."""
+
+    ALLOWED_POSITIONS = ["topleft", "topright", "bottomleft", "bottomright"]
+    DEFAULT_COLORS = ["#8DD3C7", "#FFFFB3", "#BEBADA", "#FB8072", "#80B1D3"]
+    DEFAULT_KEYS = ["One", "Two", "Three", "Four", "etc"]
+    DEFAULT_MAX_HEIGHT = "400px"
+    DEFAULT_MAX_WIDTH = "300px"
 
     def __init__(
         self,
         title="Legend",
         legend_dict=None,
-        labels=None,
+        keys=None,
         colors=None,
         position="bottomright",
         builtin_legend=None,
@@ -162,9 +167,9 @@ class Legend(ipywidgets.VBox):
          Args:
             title (str, optional): Title of the legend. Defaults to 'Legend'.
             legend_dict (dict, optional): A dictionary containing legend items
-                as keys and color as values. If provided, legend_keys and
-                legend_colors will be ignored. Defaults to None.
-            labels (list, optional): A list of legend keys. Defaults to None.
+                as keys and color as values. If provided, keys and colors will
+                be ignored. Defaults to None.
+            keys (list, optional): A list of legend keys. Defaults to None.
             colors (list, optional): A list of legend colors. Defaults to None.
             position (str, optional): Position of the legend. Defaults to
                 'bottomright'.
@@ -175,6 +180,15 @@ class Legend(ipywidgets.VBox):
             widget_args (dict, optional): Additional arguments passed to the
                 widget_template() function. Defaults to {}.
 
+        Raises:
+            ValueError: If the legend template does not exist.
+            ValueError: If the keys and colors are not the same length.
+            ValueError: If the builtin_legend is not allowed.
+            ValueError: If the position is not allowed.
+            TypeError: If the keys are not a list. 
+            TypeError: If the colors are not list.
+            TypeError: If the colors are not a list of tuples.
+            TypeError: If the legend_dict is not a dictionary.
 
         """
         import os # pylint: disable=import-outside-toplevel
@@ -186,120 +200,58 @@ class Legend(ipywidgets.VBox):
             pkg_resources.resource_filename("geemap", "geemap.py")
         )
         legend_template = os.path.join(pkg_dir, "data/template/legend.html")
-
-        if "min_width" not in kwargs:
-            min_width = None
-        if "max_width" not in kwargs:
-            max_width = "300px"
-        else:
-            max_width = kwargs["max_width"]
-        if "min_height" not in kwargs:
-            min_height = None
-        else:
-            min_height = kwargs["min_height"]
-        if "max_height" not in kwargs:
-            max_height = None
-        else:
-            max_height = kwargs["max_height"]
-        if "height" not in kwargs:
-            height = None
-        else:
-            height = kwargs["height"]
-        if "width" not in kwargs:
-            width = None
-        else:
-            width = kwargs["width"]
-
-        if width is None:
-            max_width = "300px"
-        if height is None:
-            max_height = "400px"
-
+    
         if not os.path.exists(legend_template):
-            print("The legend template does not exist.")
-            return
+            raise ValueError("The legend template does not exist.")
 
-        if labels is not None:
-            if not isinstance(labels, list):
-                print("The legend keys must be a list.")
-                return
+        if keys is not None:
+            if not isinstance(keys, list):
+                raise TypeError("The legend keys must be a list.")
         else:
-            labels = ["One", "Two", "Three", "Four", "etc"]
+            keys = Legend.DEFAULT_KEYS
 
         if colors is not None:
             if not isinstance(colors, list):
-                print("The legend colors must be a list.")
-                return
+                raise TypeError("The legend colors must be a list.")
             elif all(isinstance(item, tuple) for item in colors):
-                try:
-                    colors = [common.rgb_to_hex(x) for x in colors]
-                except Exception as e:
-                    print(e)
+                Legend.__validate_colors(colors)
             elif all((item.startswith("#") and len(item) == 7) for item in colors):
                 pass
             elif all((len(item) == 6) for item in colors):
                 pass
             else:
-                print("The legend colors must be a list of tuples.")
-                return
+                raise TypeError("The legend colors must be a list of tuples.")
         else:
-            colors = [
-                "#8DD3C7",
-                "#FFFFB3",
-                "#BEBADA",
-                "#FB8072",
-                "#80B1D3",
-            ]
+            colors = Legend.DEFAULT_COLORS
 
-        if len(labels) != len(colors):
-            print("The legend keys and values must be the same length.")
-            return
+        if len(keys) != len(colors):
+            raise ValueError(
+                "The legend keys and colors must be the same length.")
 
         allowed_builtin_legends = builtin_legends.keys()
         if builtin_legend is not None:
-            if builtin_legend not in allowed_builtin_legends:
-                print(
-                    "The builtin legend must be one of the following: {}".format(
-                        ", ".join(allowed_builtin_legends)
-                    )
-                )
-                return
-            else:
+            builtin_legend_allowed = Legend.__check_if_allowed(
+                builtin_legend, "builtin legend", allowed_builtin_legends)
+            if builtin_legend_allowed:
                 legend_dict = builtin_legends[builtin_legend]
-                labels = list(legend_dict.keys())
+                keys = list(legend_dict.keys())
                 colors = list(legend_dict.values())
 
         if legend_dict is not None:
             if not isinstance(legend_dict, dict):
-                print("The legend dict must be a dictionary.")
-                return
+                raise TypeError("The legend dict must be a dictionary.")
             else:
-                labels = list(legend_dict.keys())
+                keys = list(legend_dict.keys())
                 colors = list(legend_dict.values())
                 if all(isinstance(item, tuple) for item in colors):
-                    try:
-                        colors = [common.rgb_to_hex(x) for x in colors]
-                    except Exception as e:
-                        print(e)
+                    Legend.__validate_colors(colors)
 
-        allowed_positions = [
-            "topleft",
-            "topright",
-            "bottomleft",
-            "bottomright",
-        ]
-
-        if position not in allowed_positions:
-            print(
-                "The position must be one of the following: {}".format(
-                    ", ".join(allowed_positions)
-                )
-            )
-            return
+        Legend.__check_if_allowed(
+            position, "position", Legend.ALLOWED_POSITIONS)
 
         header = []
-        content = []
         footer = []
+        content = Legend.__create_legend_items(keys, colors)
 
         with open(legend_template) as f:
             lines = f.readlines()
@@ -307,30 +259,10 @@ class Legend(ipywidgets.VBox):
             header = lines[:6]
             footer = lines[11:]
 
-        for index, key in enumerate(labels):
-            color = colors[index]
-            if not color.startswith("#"):
-                color = "#" + color
-            item = "<li><span style='background:{};'></span>{}</li>\n".format(
-                color, key
-            )
-            content.append(item)
-
         legend_html = header + content + footer
         legend_text = "".join(legend_html)
-
         legend_output = ipywidgets.Output(
-            layout={
-                "max_width": max_width,
-                "min_width": min_width,
-                "max_height": max_height,
-                "min_height": min_height,
-                "height": height,
-                "width": width,
-                "overflow": "scroll",
-            }
-        )
-
+            layout=Legend.__create_layout(**kwargs))
         legend_widget = ipywidgets.HTML(value=legend_text)
         
         if add_header:
@@ -353,6 +285,69 @@ class Legend(ipywidgets.VBox):
         legend_output.clear_output()
         with legend_output:
             display(legend_widget)
+
+    def __check_if_allowed(value, value_name, allowed_list):
+        if value not in allowed_list:
+            raise ValueError(
+                "The " + value_name + " must be one of the following: {}"
+                    .format(", ".join(allowed_list)
+                )
+            )
+        return True
+
+    def __validate_colors(colors):
+        try:
+            colors = [common.rgb_to_hex(x) for x in colors]
+        except Exception as e:
+            print(e)
+
+    def __create_legend_items(keys, colors):
+        legend_items = []
+        for index, key in enumerate(keys):
+            color = colors[index]
+            if not color.startswith("#"):
+                color = "#" + color
+            item = "<li><span style='background:{};'></span>{}</li>\n".format(
+                color, key
+            )
+            legend_items.append(item)
+        return legend_items
+
+    def __create_layout(**kwargs):
+        height = Legend.__create_layout_property("height", None, **kwargs)
+
+        min_height = Legend.__create_layout_property(
+            "min_height", None, **kwargs)
+
+        if height is None:
+            max_height = Legend.DEFAULT_MAX_HEIGHT
+        else:
+            max_height = Legend.__create_layout_property(
+                "max_height", None, **kwargs)
+
+        width = Legend.__create_layout_property("width", None, **kwargs)
+
+        if "min_width" not in kwargs:
+            min_width = None
+
+        if width is None:
+            max_width = Legend.DEFAULT_MAX_WIDTH
+        else:
+            max_width = Legend.__create_layout_property(
+                "max_width", Legend.DEFAULT_MAX_WIDTH, **kwargs)
+
+        return {
+            "height": height,
+            "max_height": max_height,
+            "max_width": max_width,
+            "min_height": min_height,
+            "min_width": min_width,
+            "overflow": "scroll",
+            "width": width,
+        }
+
+    def __create_layout_property(name, default_value, **kwargs):
+        return default_value if name not in kwargs else kwargs[name]
 
 
 class Inspector(ipywidgets.VBox):

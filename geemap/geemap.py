@@ -914,7 +914,7 @@ class Map(ipyleaflet.Map):
         self,
         title="Legend",
         legend_dict=None,
-        labels=None,
+        keys=None,
         colors=None,
         position="bottomright",
         builtin_legend=None,
@@ -927,30 +927,31 @@ class Map(ipyleaflet.Map):
 
         Args:
             title (str, optional): Title of the legend. Defaults to 'Legend'.
-            legend_dict (dict, optional): A dictionary containing legend items as keys and color as values. If provided, legend_keys and legend_colors will be ignored. Defaults to None.
-            labels (list, optional): A list of legend keys. Defaults to None.
+            legend_dict (dict, optional): A dictionary containing legend items
+                as keys and color as values. If provided, keys and
+                colors will be ignored. Defaults to None.
+            keys (list, optional): A list of legend keys. Defaults to None.
             colors (list, optional): A list of legend colors. Defaults to None.
-            position (str, optional): Position of the legend. Defaults to 'bottomright'.
-            builtin_legend (str, optional): Name of the builtin legend to add to the map. Defaults to None.
-            add_header (bool, optional): Whether the legend can be closed or not. Defaults to True.
-            widget_args (dict, optional): Additional arguments passed to the widget_template() function. Defaults to {}.
-
-
+            position (str, optional): Position of the legend. Defaults to
+                'bottomright'.
+            builtin_legend (str, optional): Name of the builtin legend to add
+                to the map. Defaults to None.
+            add_header (bool, optional): Whether the legend can be closed or
+                not. Defaults to True.
+            widget_args (dict, optional): Additional arguments passed to the
+                widget_template() function. Defaults to {}.
         """
-        from IPython.display import display
-        import pkg_resources
-        from .legends import builtin_legends
-
         try:
             legend = map_widgets.Legend(
                 title,
                 legend_dict,
-                labels,
+                keys,
                 colors,
                 position,
                 builtin_legend,
                 add_header,
                 widget_args,
+                **kwargs
             )
            
             legend_control = ipyleaflet.WidgetControl(
@@ -1593,8 +1594,8 @@ class Map(ipyleaflet.Map):
 
                             self.add_legend(
                                 title=legend_title.value,
-                                legend_keys=labels,
-                                legend_colors=colors,
+                                keys=labels,
+                                colors=colors,
                                 layer_name=layer_name,
                             )
                 else:
@@ -2378,8 +2379,8 @@ class Map(ipyleaflet.Map):
                             ]
                             self.add_legend(
                                 title=legend_title.value,
-                                legend_keys=legend_keys,
-                                legend_colors=legend_colors,
+                                keys=legend_keys,
+                                colors=legend_colors,
                                 layer_name=new_layer_name.value,
                             )
                     except Exception as e:
@@ -5467,7 +5468,7 @@ class Map(ipyleaflet.Map):
         if items is not None and add_legend:
             marker_colors = [check_color(c) for c in marker_colors]
             self.add_legend(
-                title=color_column.title(), colors=marker_colors, labels=items
+                title=color_column.title(), colors=marker_colors, keys=items
             )
 
         self.default_style = {"cursor": "default"}
