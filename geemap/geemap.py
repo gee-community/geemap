@@ -3311,12 +3311,13 @@ class Map(ipyleaflet.Map):
 
     def split_map(
         self,
-        left_layer="HYBRID",
-        right_layer="ROADMAP",
+        left_layer="OpenTopoMap",
+        right_layer="Esri.WorldTopoMap",
         zoom_control=True,
         fullscreen_control=True,
         layer_control=True,
         add_close_button=False,
+        close_button_position="topright",
         left_label=None,
         right_label=None,
         left_position="bottomleft",
@@ -3327,12 +3328,13 @@ class Map(ipyleaflet.Map):
         """Adds split map.
 
         Args:
-            left_layer (str, optional): The layer tile layer. Defaults to 'HYBRID'.
-            right_layer (str, optional): The right tile layer. Defaults to 'ROADMAP'.
+            left_layer (str, optional): The layer tile layer. Defaults to 'OpenTopoMap'.
+            right_layer (str, optional): The right tile layer. Defaults to 'Esri.WorldTopoMap'.
             zoom_control (bool, optional): Whether to show the zoom control. Defaults to True.
             fullscreen_control (bool, optional): Whether to show the full screen control. Defaults to True.
             layer_control (bool, optional): Whether to show the layer control. Defaults to True.
             add_close_button (bool, optional): Whether to add a close button. Defaults to False.
+            close_button_position (str, optional): The position of the close button. Defaults to 'topright'.
             left_label (str, optional): The label for the left map. Defaults to None.
             right_label (str, optional): The label for the right map. Defaults to None.
             left_position (str, optional): The position of the left label. Defaults to 'bottomleft'.
@@ -3464,7 +3466,7 @@ class Map(ipyleaflet.Map):
 
             close_button.observe(close_btn_click, "value")
             close_control = ipyleaflet.WidgetControl(
-                widget=close_button, position="bottomright"
+                widget=close_button, position=close_button_position
             )
 
             if add_close_button:
