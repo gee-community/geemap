@@ -173,7 +173,7 @@ class Map(ipyleaflet.Map, MapInterface):
                 self.add(widget, position=position)
 
         # Authenticate and initialize EE.
-        if kwargs.get("ee_initialize", False):
+        if kwargs.get("ee_initialize", True):
             common.ee_initialize()
 
     def get_zoom(self) -> int:
