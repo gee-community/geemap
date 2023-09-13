@@ -263,6 +263,12 @@ class TestLegend(unittest.TestCase):
     #             "The legend template does not exist."):
     #         map_widgets.Legend()
 
+    def test_legend_unable_to_convert_rgb_to_hex(self):
+        with self.assertRaisesRegex(ValueError,
+                                    "Unable to convert rgb value to hex."):
+            test_colors = [(255, 255)]
+            map_widgets.Legend(keys=TestLegend.TEST_KEYS, colors=test_colors)
+
     def test_legend_keys_and_colors_not_same_length(self):
         with self.assertRaisesRegex(ValueError,
                                     ("The legend keys and colors must be the "

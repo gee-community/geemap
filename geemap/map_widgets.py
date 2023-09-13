@@ -192,6 +192,7 @@ class Legend(ipywidgets.VBox):
 
         Raises:
             ValueError: If the legend template does not exist.
+            ValueError: If a rgb value cannot to be converted to hex.
             ValueError: If the keys and colors are not the same length.
             ValueError: If the builtin_legend is not allowed.
             ValueError: If the position is not allowed.
@@ -299,7 +300,7 @@ class Legend(ipywidgets.VBox):
     def __check_if_allowed(value, value_name, allowed_list):
         if value not in allowed_list:
             raise ValueError(
-                "The " + value_name + " must be one of the following: {}"
+                "The " + value_name + " must be one of the following: {}."
                 .format(", ".join(allowed_list))
             )
         return True
@@ -307,8 +308,8 @@ class Legend(ipywidgets.VBox):
     def __convert_rgb_colors_to_hex(colors):
         try:
             return [common.rgb_to_hex(x) for x in colors]
-        except Exception as e:
-            print(e)
+        except:
+            raise ValueError("Unable to convert from rgb value to hex.")
 
     def __create_legend_items(keys, colors):
         legend_items = []
