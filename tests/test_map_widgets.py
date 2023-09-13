@@ -10,6 +10,7 @@ import ee
 
 from geemap import map_widgets
 from tests import fake_ee, fake_map
+from geemap.legends import builtin_legends
 
 
 def _query_widget(node, type_matcher, matcher):
@@ -247,53 +248,61 @@ class TestColorbar(unittest.TestCase):
         with self.assertRaisesRegex(TypeError, "vis_params must be a dictionary"):
             map_widgets.Colorbar(vis_params="NOT a dict")
 
+
 class TestLegend(unittest.TestCase):
     """Tests for the Legend class in the `map_widgets` module."""
 
-    TEST_COLORS = ["#ff0000", "#00ff00", "#00000ff"]
+    TEST_COLORS = ["#ff0000", "#00ff00", "#0000ff"]
     TEST_KEYS = ["developed", "forest", "open water"]
 
     def test_legend_no_args(self):
         map_widgets.Legend()
 
-    def test_legend_template_does_not_exist(self):
-        with self.assertRaises(ValueError,
-                "The legend template does not exist."):
-            map_widgets.Legend()
-    
+    # def test_legend_template_does_not_exist(self):
+    #     with self.assertRaises(ValueError,
+    #             "The legend template does not exist."):
+    #         map_widgets.Legend()
+
     def test_legend_keys_and_colors_not_same_length(self):
-        with self.assertRaises(ValueError,
-                "The legend keys and colors must be the same length."):
+        with self.assertRaisesRegex(ValueError,
+                                    ("The legend keys and colors must be the "
+                                        + "same length.")):
             test_keys = ["one", "two", "three", "four"]
             map_widgets.Legend(keys=test_keys, colors=TestLegend.TEST_COLORS)
 
     def test_legend_builtin_legend_not_allowed(self):
-        with self.assertRaises(ValueError, "xyz"):
-            map_widgets.Legend(builtin_legend="xyz")
+        expected_regex = ("The builtin legend must be one of the following: {}"
+                          .format(", ".join(builtin_legends)))
+        with self.assertRaisesRegex(ValueError, expected_regex):
+            map_widgets.Legend(builtin_legend="invalid_builtin_legend")
 
     def test_legend_position_not_allowed(self):
-        with self.assertRaises(ValueError,
-                "The position must be one of the following:"
-                + " topleft, topright, bottomleft", "bottomright, "):
+        expected_regex = ("The position must be one of the following: " +
+                          "topleft, topright, bottomleft, bottomright")
+        with self.assertRaisesRegex(ValueError, expected_regex):
             map_widgets.Legend(position="invalid_position")
 
     def test_legend_keys_not_a_dict(self):
-        with self.assertRaises(TypeError, "The legend keys must be a list."):
+        with self.assertRaisesRegex(TypeError,
+                                    "The legend keys must be a list."):
             map_widgets.Legend(keys="invalid_keys")
 
     def test_legend_colors_not_a_list(self):
-        with self.assertRaises(TypeError, "The legend colors must be a list."):
+        with self.assertRaisesRegex(TypeError,
+                                    "The legend colors must be a list."):
             map_widgets.Legend(colors="invalid_colors")
-    
+
     def test_legend_colors_not_a_list_of_tuples(self):
-        with self.assertRaises(TypeError,
-                "The legend colors must be a list of tuples."):
+        with self.assertRaisesRegex(TypeError,
+                                    ("The legend colors must be a list of " +
+                                        "tuples.")):
             map_widgets.Legend(colors=["invalid_tuple"])
 
     def test_legend_dict_not_a_dictionary(self):
-        with self.assertRaises(TypeError,
-                "The legend dict must be a dictionary."):
+        with self.assertRaisesRegex(TypeError,
+                                    "The legend dict must be a dictionary."):
             map_widgets.Legend(legend_dict="invalid_legend_dict")
+
 
 @patch.object(ee, "Algorithms", fake_ee.Algorithms)
 @patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
@@ -660,7 +669,9 @@ class TestLayerManager(unittest.TestCase):
         self.assertIsNotNone(self.toggle_all_checkbox)
 
     def test_layer_manager_close_button_hidden(self):
-        """Tests that setting the close_button_hidden property hides the close button."""
+        """Tests that setting the close_button_hidden property hides the close
+        button.
+        """
         self.layer_manager.close_button_hidden = True
 
         self.assertIsNotNone(self.collapse_button)

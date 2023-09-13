@@ -29,15 +29,25 @@ class Colorbar(ipywidgets.Output):
         """Add a matplotlib colorbar to the map.
 
         Args:
-            vis_params (dict): Visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.
-            cmap (str, optional): Matplotlib colormap. Defaults to "gray". See https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py for options.
-            discrete (bool, optional): Whether to create a discrete colorbar. Defaults to False.
+            vis_params (dict): Visualization parameters as a dictionary. See
+                https://developers.google.com/earth-engine/guides/image_visualization # noqa
+                for options.
+            cmap (str, optional): Matplotlib colormap. Defaults to "gray". See
+                https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py # noqa
+                for options.
+            discrete (bool, optional): Whether to create a discrete colorbar.
+                Defaults to False.
             label (str, optional): Label for the colorbar. Defaults to None.
-            orientation (str, optional): Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
-            transparent_bg (bool, optional): Whether to use transparent background. Defaults to False.
-            font_size (int, optional): Font size for the colorbar. Defaults to 9.
-            axis_off (bool, optional): Whether to turn off the axis. Defaults to False.
-            max_width (str, optional): Maximum width of the colorbar in pixels. Defaults to None.
+            orientation (str, optional): Orientation of the colorbar, such as
+                "vertical" and "horizontal". Defaults to "horizontal".
+            transparent_bg (bool, optional): Whether to use transparent
+                background. Defaults to False.
+            font_size (int, optional): Font size for the colorbar. Defaults
+                to 9.
+            axis_off (bool, optional): Whether to turn off the axis. Defaults
+                to False.
+            max_width (str, optional): Maximum width of the colorbar in pixels.
+                Defaults to None.
 
         Raises:
             TypeError: If the vis_params is not a dictionary.
@@ -185,22 +195,22 @@ class Legend(ipywidgets.VBox):
             ValueError: If the keys and colors are not the same length.
             ValueError: If the builtin_legend is not allowed.
             ValueError: If the position is not allowed.
-            TypeError: If the keys are not a list. 
+            TypeError: If the keys are not a list.
             TypeError: If the colors are not list.
             TypeError: If the colors are not a list of tuples.
             TypeError: If the legend_dict is not a dictionary.
 
         """
-        import os # pylint: disable=import-outside-toplevel
-        from IPython.display import display # pylint: disable=import-outside-toplevel
-        import pkg_resources # pylint: disable=import-outside-toplevel
-        from .legends import builtin_legends # pylint: disable=import-outside-toplevel
+        import os  # pylint: disable=import-outside-toplevel
+        from IPython.display import display  # pylint: disable=import-outside-toplevel
+        import pkg_resources  # pylint: disable=import-outside-toplevel
+        from .legends import builtin_legends  # pylint: disable=import-outside-toplevel
 
         pkg_dir = os.path.dirname(
             pkg_resources.resource_filename("geemap", "geemap.py")
         )
         legend_template = os.path.join(pkg_dir, "data/template/legend.html")
-    
+
         if not os.path.exists(legend_template):
             raise ValueError("The legend template does not exist.")
 
@@ -214,7 +224,7 @@ class Legend(ipywidgets.VBox):
             if not isinstance(colors, list):
                 raise TypeError("The legend colors must be a list.")
             elif all(isinstance(item, tuple) for item in colors):
-                Legend.__validate_colors(colors)
+                colors = Legend.__validate_colors(colors)
             elif all((item.startswith("#") and len(item) == 7) for item in colors):
                 pass
             elif all((len(item) == 6) for item in colors):
@@ -244,7 +254,7 @@ class Legend(ipywidgets.VBox):
                 keys = list(legend_dict.keys())
                 colors = list(legend_dict.values())
                 if all(isinstance(item, tuple) for item in colors):
-                    Legend.__validate_colors(colors)
+                    colors = Legend.__validate_colors(colors)
 
         Legend.__check_if_allowed(
             position, "position", Legend.ALLOWED_POSITIONS)
@@ -264,7 +274,7 @@ class Legend(ipywidgets.VBox):
         legend_output = ipywidgets.Output(
             layout=Legend.__create_layout(**kwargs))
         legend_widget = ipywidgets.HTML(value=legend_text)
-        
+
         if add_header:
             if "show_close_button" not in widget_args:
                 widget_args["show_close_button"] = False
@@ -281,7 +291,7 @@ class Legend(ipywidgets.VBox):
             legend_output_widget = legend_widget
 
         super().__init__(children=[legend_output_widget])
-        
+
         legend_output.clear_output()
         with legend_output:
             display(legend_widget)
@@ -290,14 +300,13 @@ class Legend(ipywidgets.VBox):
         if value not in allowed_list:
             raise ValueError(
                 "The " + value_name + " must be one of the following: {}"
-                    .format(", ".join(allowed_list)
-                )
+                .format(", ".join(allowed_list))
             )
         return True
 
     def __validate_colors(colors):
         try:
-            colors = [common.rgb_to_hex(x) for x in colors]
+            return [common.rgb_to_hex(x) for x in colors]
         except Exception as e:
             print(e)
 
@@ -366,11 +375,16 @@ class Inspector(ipywidgets.VBox):
 
         Args:
             host_map (geemap.Map): The map to add the inspector widget to.
-            names (list, optional): The list of layer names to be inspected. Defaults to None.
-            visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
-            decimals (int, optional): The number of decimal places to round the values. Defaults to 2.
-            opened (bool, optional): Whether the inspector is opened. Defaults to True.
-            show_close_button (bool, optional): Whether to show the close button. Defaults to True.
+            names (list, optional): The list of layer names to be inspected.
+                Defaults to None.
+            visible (bool, optional): Whether to inspect visible layers only.
+                Defaults to True.
+            decimals (int, optional): The number of decimal places to round the
+                values. Defaults to 2.
+            opened (bool, optional): Whether the inspector is opened. Defaults
+                to True.
+            show_close_button (bool, optional): Whether to show the close
+                button. Defaults to True.
         """
 
         self._host_map = host_map
@@ -533,7 +547,8 @@ class Inspector(ipywidgets.VBox):
 
     def _point_info(self, latlon):
         scale = self._host_map.get_scale()
-        label = f"Point ({latlon[1]:.{self._decimals}f}, {latlon[0]:.{self._decimals}f}) at {int(scale)}m/px"
+        label = (f"Point ({latlon[1]:.{self._decimals}f}, " +
+                 f"{latlon[0]:.{self._decimals}f}) at {int(scale)}m/px")
         nodes = [
             ipytree.Node(f"Longitude: {latlon[1]}"),
             ipytree.Node(f"Latitude: {latlon[0]}"),
@@ -634,7 +649,8 @@ class AbstractDrawControl(object):
         """Initialize the draw control.
 
         Args:
-            host_map (geemap.Map): The geemap.Map instance to be linked with the draw control.
+            host_map (geemap.Map): The geemap.Map instance to be linked with
+                the draw control.
         """
 
         self.host_map = host_map
