@@ -224,7 +224,7 @@ class Legend(ipywidgets.VBox):
             if not isinstance(colors, list):
                 raise TypeError("The legend colors must be a list.")
             elif all(isinstance(item, tuple) for item in colors):
-                colors = Legend.__validate_colors(colors)
+                colors = Legend.__convert_rgb_colors_to_hex(colors)
             elif all((item.startswith("#") and len(item) == 7) for item in colors):
                 pass
             elif all((len(item) == 6) for item in colors):
@@ -254,7 +254,7 @@ class Legend(ipywidgets.VBox):
                 keys = list(legend_dict.keys())
                 colors = list(legend_dict.values())
                 if all(isinstance(item, tuple) for item in colors):
-                    colors = Legend.__validate_colors(colors)
+                    colors = Legend.__convert_rgb_colors_to_hex(colors)
 
         Legend.__check_if_allowed(
             position, "position", Legend.ALLOWED_POSITIONS)
@@ -304,7 +304,7 @@ class Legend(ipywidgets.VBox):
             )
         return True
 
-    def __validate_colors(colors):
+    def __convert_rgb_colors_to_hex(colors):
         try:
             return [common.rgb_to_hex(x) for x in colors]
         except Exception as e:
