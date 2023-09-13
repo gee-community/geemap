@@ -9,34 +9,7 @@ import ipywidgets
 import ee
 
 from geemap import map_widgets
-<<<<<<< HEAD
-from tests import fake_ee, fake_map
-from geemap.legends import builtin_legends
-
-
-def _query_widget(node, type_matcher, matcher):
-    """Recursively searches the widget hierarchy for the widget."""
-    if hasattr(node, "layout"):
-        if hasattr(node.layout, "display"):
-            if node.layout.display == "none":
-                return None
-    if hasattr(node, "style"):
-        if hasattr(node.style, "display"):
-            if node.style.display == "none":
-                return None
-
-    children = getattr(node, "children", getattr(node, "nodes", None))
-    if children is not None:
-        for child in children:
-            result = _query_widget(child, type_matcher, matcher)
-            if result:
-                return result
-    if isinstance(node, type_matcher) and matcher(node):
-        return node
-    return None
-=======
 from tests import fake_ee, fake_map, utils
->>>>>>> f550fc9 (Add core module (#1692))
 
 
 class TestColorbar(unittest.TestCase):

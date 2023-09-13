@@ -191,6 +191,13 @@ class Legend(ipywidgets.VBox):
                 widget_template() function. Defaults to {}.
 
         Raises:
+<<<<<<< HEAD
+=======
+            ValueError: If the legend template does not exist.
+            ValueError: If the keys and colors are not the same length.
+            ValueError: If the builtin_legend is not allowed.
+            ValueError: If the position is not allowed.
+>>>>>>> 9e0b3c8 (formatting)
             TypeError: If the keys are not a list.
             TypeError: If the colors are not list.
             TypeError: If the colors are not a list of tuples.
@@ -225,7 +232,11 @@ class Legend(ipywidgets.VBox):
             if not isinstance(colors, list):
                 raise TypeError("The legend colors must be a list.")
             elif all(isinstance(item, tuple) for item in colors):
+<<<<<<< HEAD
                 colors = Legend.__convert_rgb_colors_to_hex(colors)
+=======
+                colors = Legend.__validate_colors(colors)
+>>>>>>> 9e0b3c8 (formatting)
             elif all((item.startswith("#") and len(item) == 7) for item in colors):
                 pass
             elif all((len(item) == 6) for item in colors):
@@ -255,7 +266,11 @@ class Legend(ipywidgets.VBox):
                 keys = list(legend_dict.keys())
                 colors = list(legend_dict.values())
                 if all(isinstance(item, tuple) for item in colors):
+<<<<<<< HEAD
                     colors = Legend.__convert_rgb_colors_to_hex(colors)
+=======
+                    colors = Legend.__validate_colors(colors)
+>>>>>>> 9e0b3c8 (formatting)
 
         Legend.__check_if_allowed(
             position, "position", Legend.ALLOWED_POSITIONS)
@@ -300,7 +315,11 @@ class Legend(ipywidgets.VBox):
     def __check_if_allowed(value, value_name, allowed_list):
         if value not in allowed_list:
             raise ValueError(
+<<<<<<< HEAD
                 "The " + value_name + " must be one of the following: {}."
+=======
+                "The " + value_name + " must be one of the following: {}"
+>>>>>>> 9e0b3c8 (formatting)
                 .format(", ".join(allowed_list))
             )
         return True
@@ -308,8 +327,13 @@ class Legend(ipywidgets.VBox):
     def __convert_rgb_colors_to_hex(colors):
         try:
             return [common.rgb_to_hex(x) for x in colors]
+<<<<<<< HEAD
         except:
             raise ValueError("Unable to convert rgb value to hex.")
+=======
+        except Exception as e:
+            print(e)
+>>>>>>> 9e0b3c8 (formatting)
 
     def __create_legend_items(keys, colors):
         legend_items = []
