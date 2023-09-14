@@ -221,6 +221,9 @@ class Map(core.Map):
         # ipyleaflet built-in layer control
         self.layer_control = None
 
+        if "ee_initialize" not in kwargs:
+            kwargs["ee_initialize"] = True
+
         # Default reducer to use
         if kwargs["ee_initialize"]:
             self.roi_reducer = ee.Reducer.mean()
