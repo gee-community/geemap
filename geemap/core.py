@@ -377,6 +377,7 @@ class Map(ipyleaflet.Map, MapInterface):
         # Call super if not an EE object.
         if not isinstance(ee_object, ee_tile_layers.EELeafletTileLayer.EE_TYPES):
             super().add_layer(ee_object)
+            return
 
         if vis_params is None:
             vis_params = {}
