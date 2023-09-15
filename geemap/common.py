@@ -8918,12 +8918,13 @@ def ee_to_df(ee_object, col_names=None, sort_columns=False, **kwargs):
         raise TypeError("ee_object must be an ee.FeatureCollection")
 
     try:
-        data = ee_object.map(lambda f: ee.Feature(None, f.toDictionary()))
+        property_names = ee_object.first().propertyNames().sort().getInfo()
+        data = ee_object.map(lambda f: ee.Feature(None, f.toDictionary(property_names)))
         data = [x["properties"] for x in data.getInfo()["features"]]
         df = pd.DataFrame(data)
 
         if col_names is None:
-            col_names = ee_object.first().propertyNames().getInfo()
+            col_names = property_names
             col_names.remove("system:index")
         elif not isinstance(col_names, list):
             raise TypeError("col_names must be a list")
