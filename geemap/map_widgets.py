@@ -694,7 +694,7 @@ class LayerManager(ipywidgets.VBox):
         toggle_all_checkbox.observe(self._on_all_layers_visibility_toggled, "value")
 
         layer_rows = [toggle_all_checkbox]
-        for layer in self._host_map.layers[1:]:
+        for layer in self._host_map.layers[1:]:  # Skip the basemap.
             layer_rows.append(self._render_layer_row(layer))
         self._toolbar_footer.children = layer_rows
 
@@ -759,7 +759,7 @@ class LayerManager(ipywidgets.VBox):
             self.on_open_vis(button.tooltip)
 
     def _on_all_layers_visibility_toggled(self, change):
-        for layer in self._host_map.layers:
+        for layer in self._host_map.layers[1:]:  # Skip the basemap.
             if hasattr(layer, "visible"):
                 layer.visible = change["new"]
 

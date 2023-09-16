@@ -108,6 +108,7 @@ nav:
           - colormaps module: colormaps.md
           - common module: common.md
           - conversion module: conversion.md
+          - core module: core.md
           - datasets module: datasets.md
           - deck module: deck.md
           - ee_tile_layers module: ee_tile_layers.md
@@ -121,6 +122,7 @@ nav:
           - osm module: osm.md
           - plot module: plot.md
           - plotlymap module: plotlymap.md
+          - report module: report.md
           - timelapse module: timelapse.md
           - toolbar module: toolbar.md
     - Workshops:

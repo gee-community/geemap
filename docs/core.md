@@ -1,0 +1,3 @@
+# core module
+
+::: geemap.core
