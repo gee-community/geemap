@@ -21,7 +21,8 @@ from typing import Callable
 
 from .common import *
 from .timelapse import *
-from .geemap import MapDrawControl
+
+# from .geemap import MapDrawControl
 from . import map_widgets
 
 
@@ -66,6 +67,8 @@ class Toolbar(widgets.VBox):
             tooltip=self._TOGGLE_TOOL_EXPAND_TOOLTIP,
             callback=self._toggle_callback,
         )
+        self.on_layers_toggled = None
+        self._accessory_widget = None
 
         if extra_tools:
             all_tools = main_tools + [self.toggle_tool] + extra_tools
@@ -196,34 +199,23 @@ class Toolbar(widgets.VBox):
             if not self.layers_button.value:
                 self.children = [self.toolbar_button]
 
-    def _layers_btn_click(self, change):
-        if change["new"]:
-            # Create Layer Manager Widget
-            if self.host_map.layer_manager_control:
-                return
+    @property
+    def accessory_widget(self):
+        """A widget that temporarily replaces the tool grid."""
+        return self._accessory_widget
 
-            def _on_open_vis(layer_name):
-                self.host_map.create_vis_widget(
-                    self.host_map.ee_layers.get(layer_name, None)
-                )
-
-            self.host_map.layer_manager_widget = map_widgets.LayerManager(self.host_map)
-            self.host_map.layer_manager_widget.header_hidden = True
-            self.host_map.layer_manager_widget.close_button_hidden = True
-            self.host_map.layer_manager_widget.on_open_vis = _on_open_vis
-            self.host_map.layer_manager_control = ipyleaflet.WidgetControl(
-                widget=self.host_map.layer_manager_widget
-            )
-            self.toolbar_footer.children = [self.host_map.layer_manager_widget]
+    @accessory_widget.setter
+    def accessory_widget(self, value):
+        """Sets the widget that temporarily replaces the tool grid."""
+        self._accessory_widget = value
+        if self._accessory_widget:
+            self.toolbar_footer.children = [self._accessory_widget]
         else:
             self.toolbar_footer.children = [self.grid]
 
-            self.host_map.toolbar_reset()
-            if self.host_map.layer_manager_control:
-                if self.host_map.layer_manager_control in self.host_map.controls:
-                    self.host_map.remove_control(self.host_map.layer_manager_control)
-                self.host_map.layer_manager_control.close()
-                self.host_map.layer_manager_control = None
+    def _layers_btn_click(self, change):
+        if self.on_layers_toggled:
+            self.on_layers_toggled(change["new"])
 
 
 def inspector_gui(m=None):
@@ -1875,19 +1867,19 @@ def collect_samples(m):
         if change["new"] == "Apply":
             if len(color.value) != 7:
                 color.value = "#3388ff"
-            draw_control = MapDrawControl(
-                host_map=m,
-                marker={"shapeOptions": {"color": color.value}, "repeatMode": False},
-                rectangle={"shapeOptions": {"color": color.value}, "repeatMode": False},
-                polygon={"shapeOptions": {"color": color.value}, "repeatMode": False},
-                circlemarker={},
-                polyline={},
-                edit=False,
-                remove=False,
-            )
-            m.remove_draw_control()
-            m.add(draw_control)
-            m.draw_control = draw_control
+            # draw_control = MapDrawControl(
+            #     host_map=m,
+            #     marker={"shapeOptions": {"color": color.value}, "repeatMode": False},
+            #     rectangle={"shapeOptions": {"color": color.value}, "repeatMode": False},
+            #     polygon={"shapeOptions": {"color": color.value}, "repeatMode": False},
+            #     circlemarker={},
+            #     polyline={},
+            #     edit=False,
+            #     remove=False,
+            # )
+            # m.remove_draw_control()
+            # m.add(draw_control)
+            # m.draw_control = draw_control
 
             train_props = {}
 

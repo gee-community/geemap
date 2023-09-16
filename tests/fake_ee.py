@@ -47,18 +47,48 @@ class Geometry:
             self.geom_type = kwargs.get("type")
 
     @classmethod
-    def Point(self, lat, **__):
+    def Point(self, *_, **__):
         return Geometry(type=String("Point"))
 
     @classmethod
     def BBox(self, *_, **__):
         return Geometry(type=String("BBox"))
 
+    @classmethod
+    def Polygon(self, *_, **__):
+        return Geometry(type=String("Polygon"))
+
+    def transform(self, *_, **__):
+        return Geometry(type=self.geom_type)
+
+    def bounds(self, *_, **__):
+        return Geometry.Polygon()
+
+    def centroid(self, *_, **__):
+        return Geometry.Point()
+
     def type(self, *_, **__):
         return self.geom_type
 
+    def getInfo(self, *_, **__):
+        if self.type().value == "Polygon":
+            return {
+                "geodesic": False,
+                "type": "Polygon",
+                "coordinates": [
+                    [[-178, -76], [179, -76], [179, 80], [-178, 80], [-178, -76]]
+                ],
+            }
+        if self.type().value == "Point":
+            return {
+                "geodesic": False,
+                "type": "Point",
+                "coordinates": [120, -70],
+            }
+        raise ValueError("Unexpected geometry type in test: ", self.type().value)
+
     def __eq__(self, other: object):
-        return self.geometry == getattr(other, 'geometry')
+        return self.geometry == getattr(other, "geometry")
 
 
 class String:
@@ -85,8 +115,11 @@ class FeatureCollection:
     def filterBounds(self, *_, **__):
         return FeatureCollection()
 
+    def geometry(self, *_, **__):
+        return Geometry.Polygon()
+
     def __eq__(self, other: object):
-        return self.features == getattr(other, 'features')
+        return self.features == getattr(other, "features")
 
 
 class Feature:
@@ -119,8 +152,8 @@ class Feature:
         }
 
     def __eq__(self, other: object):
-        featuresEqual = self.feature == getattr(other, 'feature')
-        propertiesEqual = self.properties == getattr(other, 'properties')
+        featuresEqual = self.feature == getattr(other, "feature")
+        propertiesEqual = self.properties == getattr(other, "properties")
         return featuresEqual and propertiesEqual
 
 
