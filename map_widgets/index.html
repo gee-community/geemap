@@ -733,6 +733,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../core/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    core module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../datasets/" class="md-nav__link">
         
   
@@ -1167,6 +1187,26 @@
   
   <span class="md-ellipsis">
     plotlymap module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../report/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    report module
   </span>
   
 
@@ -6226,7 +6266,7 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
         <span class="n">toggle_all_checkbox</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_all_layers_visibility_toggled</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
         <span class="n">layer_rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">toggle_all_checkbox</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>  <span class="c1"># Skip the basemap.</span>
             <span class="n">layer_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_render_layer_row</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">layer_rows</span>
 
@@ -6291,7 +6331,7 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
             <span class="bp">self</span><span class="o">.</span><span class="n">on_open_vis</span><span class="p">(</span><span class="n">button</span><span class="o">.</span><span class="n">tooltip</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_on_all_layers_visibility_toggled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>  <span class="c1"># Skip the basemap.</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;visible&quot;</span><span class="p">):</span>
                 <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
 
@@ -6452,7 +6492,7 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
     <span class="n">toggle_all_checkbox</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_all_layers_visibility_toggled</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
     <span class="n">layer_rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">toggle_all_checkbox</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>  <span class="c1"># Skip the basemap.</span>
         <span class="n">layer_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_render_layer_row</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">layer_rows</span>
 </code></pre></div>

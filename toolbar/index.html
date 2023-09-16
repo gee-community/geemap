@@ -733,6 +733,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../core/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    core module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../datasets/" class="md-nav__link">
         
   
@@ -993,6 +1013,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../report/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    report module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../timelapse/" class="md-nav__link">
         
   
@@ -1072,6 +1112,13 @@
   
     <nav class="md-nav" aria-label="Toolbar">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.toolbar.Toolbar.accessory_widget" class="md-nav__link">
+    accessory_widget
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#geemap.toolbar.Toolbar.Item" class="md-nav__link">
@@ -4317,6 +4364,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#geemap.toolbar.Toolbar.accessory_widget" class="md-nav__link">
+    accessory_widget
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geemap.toolbar.Toolbar.Item" class="md-nav__link">
     Item
   </a>
@@ -4543,6 +4597,8 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
             <span class="n">tooltip</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_EXPAND_TOOLTIP</span><span class="p">,</span>
             <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_toggle_callback</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_layers_toggled</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_accessory_widget</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">extra_tools</span><span class="p">:</span>
             <span class="n">all_tools</span> <span class="o">=</span> <span class="n">main_tools</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toggle_tool</span><span class="p">]</span> <span class="o">+</span> <span class="n">extra_tools</span>
@@ -4673,34 +4729,23 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_layers_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="c1"># Create Layer Manager Widget</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span><span class="p">:</span>
-                <span class="k">return</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">accessory_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A widget that temporarily replaces the tool grid.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accessory_widget</span>
 
-            <span class="k">def</span> <span class="nf">_on_open_vis</span><span class="p">(</span><span class="n">layer_name</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">create_vis_widget</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span><span class="o">.</span><span class="n">header_hidden</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span><span class="o">.</span><span class="n">close_button_hidden</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span><span class="o">.</span><span class="n">on_open_vis</span> <span class="o">=</span> <span class="n">_on_open_vis</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-                <span class="n">widget</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_widget</span><span class="p">]</span>
+    <span class="nd">@accessory_widget</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">accessory_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the widget that temporarily replaces the tool grid.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_accessory_widget</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accessory_widget</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_accessory_widget</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">]</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layer_manager_control</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">def</span> <span class="nf">_layers_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_layers_toggled</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_layers_toggled</span><span class="p">(</span><span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">])</span>
 </code></pre></div>
         </details>
 
@@ -4713,6 +4758,29 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
 
 
 
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="geemap.toolbar.Toolbar.accessory_widget" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">accessory_widget</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-writable"><code>writable</code></small>
+  </span>
+
+<a href="#geemap.toolbar.Toolbar.accessory_widget" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>A widget that temporarily replaces the tool grid.</p>
+    </div>
+
+  </div>
 
 
 
@@ -4854,6 +4922,8 @@ or unselected the tool.</p></td>
         <span class="n">tooltip</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_EXPAND_TOOLTIP</span><span class="p">,</span>
         <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_toggle_callback</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">on_layers_toggled</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_accessory_widget</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="n">extra_tools</span><span class="p">:</span>
         <span class="n">all_tools</span> <span class="o">=</span> <span class="n">main_tools</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toggle_tool</span><span class="p">]</span> <span class="o">+</span> <span class="n">extra_tools</span>

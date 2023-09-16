@@ -733,6 +733,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../core/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    core module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../datasets/" class="md-nav__link">
         
   
@@ -1065,6 +1085,26 @@
   
   <span class="md-ellipsis">
     plotlymap module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../report/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    report module
   </span>
   
 
@@ -4500,6 +4540,14 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">EELeafletTileLayer</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An ipyleaflet TileLayer that shows an EE object.&quot;&quot;&quot;</span>
 
+    <span class="n">EE_TYPES</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
+    <span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ee_object</span><span class="p">,</span>
@@ -4536,6 +4584,7 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
 
 
   <div class="doc doc-children">
+
 
 
 
