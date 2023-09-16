@@ -6241,7 +6241,7 @@ class Map(core.Map):
         else:
             raise Exception("Invalid image")
 
-        self.add_widget(image, position=position)
+        self.add_widget(image, position=position, **kwargs)
 
     def add_html(self, html, position="bottomright", **kwargs):
         """Add HTML to the map.
