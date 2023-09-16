@@ -3122,17 +3122,17 @@ class Map(core.Map):
             )
 
             def close_btn_click(change):
-                if change["new"]:
-                    self.controls = controls
-                    self.layers = layers[:-1]
-                    self.add(layers[-1])
-
                 if left_label is not None:
                     self.remove_control(left_control)
 
                 if right_label is not None:
                     self.remove_control(right_control)
 
+                if change["new"]:
+                    self.controls = controls
+                    self.layers = layers[:-1]
+                    self.add(layers[-1])
+                    
                 self.dragging = True
 
             close_button.observe(close_btn_click, "value")
