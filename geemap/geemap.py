@@ -5997,7 +5997,7 @@ class Map(core.Map):
         self,
         content,
         position="bottomright",
-        add_header=True,
+        add_header=False,
         opened=True,
         show_close_button=True,
         widget_icon="gear",
@@ -6012,7 +6012,7 @@ class Map(core.Map):
         Args:
             content (str | ipywidgets.Widget | object): The widget to add.
             position (str, optional): The position of the widget. Defaults to "bottomright".
-            add_header (bool, optional): Whether to add a header with close buttons to the widget. Defaults to True.
+            add_header (bool, optional): Whether to add a header with close buttons to the widget. Defaults to False.
             opened (bool, optional): Whether to open the toolbar. Defaults to True.
             show_close_button (bool, optional): Whether to show the close button. Defaults to True.
             widget_icon (str, optional): The icon name for the toolbar button. Defaults to 'gear'.
@@ -6083,7 +6083,7 @@ class Map(core.Map):
         else:
             raise Exception("Invalid image")
 
-        self.add_widget(image, position=position)
+        self.add_widget(image, position=position, **kwargs)
 
     def add_html(self, html, position="bottomright", **kwargs):
         """Add HTML to the map.
