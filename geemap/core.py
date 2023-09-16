@@ -407,6 +407,8 @@ class Map(ipyleaflet.Map, MapInterface):
         if self._layer_manager:
             self._layer_manager.refresh_layers()
 
+    addLayer = add_layer
+
     def _open_help_page(self, host_map: MapInterface, selected: bool) -> None:
         del host_map  # Unused.
         if selected:
