@@ -185,10 +185,6 @@ class Map(core.Map):
         if "max_zoom" not in kwargs:
             kwargs["max_zoom"] = 24
 
-        # Enable scroll wheel zoom by default
-        if "scroll_wheel_zoom" not in kwargs:
-            kwargs["scroll_wheel_zoom"] = True
-
         # Use any basemap available through the basemap module, such as 'ROADMAP', 'OpenTopoMap'
         if "basemap" in kwargs:
             kwargs["basemap"] = check_basemap(kwargs["basemap"])
