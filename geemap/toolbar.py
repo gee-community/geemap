@@ -127,6 +127,7 @@ class Toolbar(widgets.VBox):
             value=False,
             tooltip="Toolbar",
             icon="wrench",
+            button_style="primary",
             layout=widgets.Layout(
                 width="28px", height="28px", padding="0px 0px 0px 4px"
             ),
@@ -136,6 +137,7 @@ class Toolbar(widgets.VBox):
             value=False,
             tooltip="Layers",
             icon="server",
+            button_style="primary",
             layout=widgets.Layout(height="28px", width="72px"),
         )
 
@@ -822,6 +824,7 @@ def search_data_gui(m, position="topleft"):
         value=False,
         tooltip="Search location/data",
         icon="globe",
+        button_style="primary",
         layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
     )
 
@@ -832,6 +835,7 @@ def search_data_gui(m, position="topleft"):
             "Search by lat-lon coordinates",
             "Search Earth Engine data catalog",
         ],
+        button_style="primary",
     )
     search_type.style.button_width = "110px"
 
