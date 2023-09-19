@@ -252,29 +252,24 @@ class TestColorbar(unittest.TestCase):
 class TestLegend(unittest.TestCase):
     """Tests for the Legend class in the `map_widgets` module."""
 
-    TEST_COLORS = ["#ff0000", "#00ff00", "#0000ff"]
+    TEST_COLORS_HEX = ["#ff0000", "#00ff00", "#0000ff"]
+    TEST_COLORS_RGB = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
     TEST_KEYS = ["developed", "forest", "open water"]
-
-    def test_legend_no_args(self):
-        map_widgets.Legend()
-
-    # def test_legend_template_does_not_exist(self):
-    #     with self.assertRaises(ValueError,
-    #             "The legend template does not exist."):
-    #         map_widgets.Legend()
 
     def test_legend_unable_to_convert_rgb_to_hex(self):
         with self.assertRaisesRegex(ValueError,
                                     "Unable to convert rgb value to hex."):
-            test_colors = [(255, 255)]
-            map_widgets.Legend(keys=TestLegend.TEST_KEYS, colors=test_colors)
+            test_keys = ["Key 1"]
+            test_colors = [("invalid", "invalid")]
+            map_widgets.Legend(keys=test_keys, colors=test_colors)
 
     def test_legend_keys_and_colors_not_same_length(self):
         with self.assertRaisesRegex(ValueError,
                                     ("The legend keys and colors must be the "
                                         + "same length.")):
             test_keys = ["one", "two", "three", "four"]
-            map_widgets.Legend(keys=test_keys, colors=TestLegend.TEST_COLORS)
+            map_widgets.Legend(keys=test_keys,
+                               colors=TestLegend.TEST_COLORS_HEX)
 
     def test_legend_builtin_legend_not_allowed(self):
         expected_regex = ("The builtin legend must be one of the following: {}"

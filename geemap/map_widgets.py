@@ -191,15 +191,15 @@ class Legend(ipywidgets.VBox):
                 widget_template() function. Defaults to {}.
 
         Raises:
+            TypeError: If the keys are not a list.
+            TypeError: If the colors are not list.
+            TypeError: If the colors are not a list of tuples.
+            TypeError: If the legend_dict is not a dictionary.
             ValueError: If the legend template does not exist.
             ValueError: If a rgb value cannot to be converted to hex.
             ValueError: If the keys and colors are not the same length.
             ValueError: If the builtin_legend is not allowed.
             ValueError: If the position is not allowed.
-            TypeError: If the keys are not a list.
-            TypeError: If the colors are not list.
-            TypeError: If the colors are not a list of tuples.
-            TypeError: If the legend_dict is not a dictionary.
 
         """
         import os  # pylint: disable=import-outside-toplevel
@@ -309,7 +309,7 @@ class Legend(ipywidgets.VBox):
         try:
             return [common.rgb_to_hex(x) for x in colors]
         except:
-            raise ValueError("Unable to convert from rgb value to hex.")
+            raise ValueError("Unable to convert rgb value to hex.")
 
     def __create_legend_items(keys, colors):
         legend_items = []
