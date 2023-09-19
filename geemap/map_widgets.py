@@ -865,25 +865,41 @@ class LayerEditor(ipywidgets.VBox):
                 f"Must pass a valid map when creating a {self.__class__.__name__} widget."
             )
 
-        layout = ipywidgets.Layout(width="97.5px")
-        import_button = ipywidgets.Button(
+        self._toggle_button = ipywidgets.ToggleButton(
+            value=True,
+            tooltip="Layer editor",
+            icon="gear",
+            layout=ipywidgets.Layout(
+                width="28px", height="28px", padding="0px 0 0 3px"
+            ),
+        )
+        self._toggle_button.observe(self._on_toggle_click, "value")
+
+        self._close_button = ipywidgets.Button(
+            tooltip="Close the vis params dialog",
+            icon="times",
+            button_style="primary",
+            layout=ipywidgets.Layout(width="28px", height="28px", padding="0"),
+        )
+        self._close_button.on_click(self._on_close_click)
+
+        layout = ipywidgets.Layout(width="95px")
+        self._import_button = ipywidgets.Button(
             description="Import",
             button_style="primary",
             tooltip="Import vis params to notebook",
             layout=layout,
         )
-        apply_button = ipywidgets.Button(
+        self._apply_button = ipywidgets.Button(
             description="Apply", tooltip="Apply vis params to the layer", layout=layout
         )
-        close_button = ipywidgets.Button(
-            description="Close", tooltip="Close vis params dialog", layout=layout
+        self._import_button.on_click(self._on_import_click)
+        self._apply_button.on_click(self._on_apply_click)
+
+        self._label = ipywidgets.Label(
+            value="Layer name",
+            layout=ipywidgets.Layout(max_width="250px", padding="1px 8px 0 4px"),
         )
-        import_button.on_click(self._on_import_click)
-        apply_button.on_click(self._on_apply_click)
-        close_button.on_click(self._on_close_click)
-
-        button_hbox = ipywidgets.HBox([import_button, apply_button, close_button])
-
         self._embedded_widget = ipywidgets.Label(value="Vis params are uneditable")
         if layer_dict is not None:
             self._ee_object = layer_dict["ee_object"]
@@ -891,9 +907,7 @@ class LayerEditor(ipywidgets.VBox):
                 self._ee_object = ee.FeatureCollection(self._ee_object)
 
             self._ee_layer = layer_dict["ee_layer"]
-            label = ipywidgets.Label(
-                value=f"{self._ee_layer.name} visualization parameters"
-            )
+            self._label.value = self._ee_layer.name
             if isinstance(self._ee_object, ee.FeatureCollection):
                 self._embedded_widget = _VectorLayerEditor(
                     host_map=host_map, layer_dict=layer_dict
@@ -903,16 +917,20 @@ class LayerEditor(ipywidgets.VBox):
                     host_map=host_map, layer_dict=layer_dict
                 )
 
-        super().__init__(
-            layout=ipywidgets.Layout(
-                padding="5px 5px 5px 8px",
-                width="330px",
-                max_height="300px",
-                overflow="auto",
-                display="block",
-            ),
-            children=[label, self._embedded_widget, button_hbox],
-        )
+        super().__init__(children=[])
+        self._on_toggle_click({"new": True})
+
+    def _on_toggle_click(self, change):
+        if change["new"]:
+            self.children = [
+                ipywidgets.HBox([self._close_button, self._toggle_button, self._label]),
+                self._embedded_widget,
+                ipywidgets.HBox([self._import_button, self._apply_button]),
+            ]
+        else:
+            self.children = [
+                ipywidgets.HBox([self._close_button, self._toggle_button, self._label]),
+            ]
 
     def _on_import_click(self, _):
         self._embedded_widget.on_import_click()
@@ -1168,7 +1186,16 @@ class _RasterLayerEditor(ipywidgets.VBox):
         self._greyscale_radio_button.observe(self._radio1_observer, names=["value"])
         self._rgb_radio_button.observe(self._radio2_observer, names=["value"])
 
-        super().__init__(children=children)
+        super().__init__(
+            layout=ipywidgets.Layout(
+                padding="5px 5px 5px 8px",
+                width="330px",
+                max_height="250px",
+                overflow="auto",
+                display="block",
+            ),
+            children=children,
+        )
 
     def _get_tool_layout(self, grayscale):
         return [
@@ -1712,7 +1739,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
         )
 
         self._colorbar_output = ipywidgets.Output(
-            layout=ipywidgets.Layout(height="60px", width="100%")
+            layout=ipywidgets.Layout(height="60px", width="300px")
         )
 
         is_point = common.geometry_type(self._ee_object) in ["Point", "MultiPoint"]
@@ -1720,6 +1747,13 @@ class _VectorLayerEditor(ipywidgets.VBox):
         self._point_shape_dropdown.disabled = not is_point
 
         super().__init__(
+            layout=ipywidgets.Layout(
+                padding="5px 5px 5px 8px",
+                width="330px",
+                max_height="250px",
+                overflow="auto",
+                display="block",
+            ),
             children=[
                 self._new_layer_name,
                 ipywidgets.HBox(
@@ -1859,7 +1893,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
 
         colors = common.to_hex_colors(colors)
 
-        _, ax = pyplot.subplots(figsize=(3, 0.3))
+        _, ax = pyplot.subplots(figsize=(4, 0.3))
         cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
             "custom", colors, N=256
         )
