@@ -780,7 +780,7 @@ class Map(core.Map):
         self,
         title="Legend",
         legend_dict=None,
-        labels=None,
+        keys=None,
         colors=None,
         position="bottomright",
         builtin_legend=None,
@@ -793,196 +793,38 @@ class Map(core.Map):
 
         Args:
             title (str, optional): Title of the legend. Defaults to 'Legend'.
-            legend_dict (dict, optional): A dictionary containing legend items as keys and color as values. If provided, legend_keys and legend_colors will be ignored. Defaults to None.
-            labels (list, optional): A list of legend keys. Defaults to None.
+            legend_dict (dict, optional): A dictionary containing legend items
+                as keys and color as values. If provided, keys and
+                colors will be ignored. Defaults to None.
+            keys (list, optional): A list of legend keys. Defaults to None.
             colors (list, optional): A list of legend colors. Defaults to None.
-            position (str, optional): Position of the legend. Defaults to 'bottomright'.
-            builtin_legend (str, optional): Name of the builtin legend to add to the map. Defaults to None.
-            layer_name (str, optional): Layer name of the legend to be associated with. Defaults to None.
-            add_header (bool, optional): Whether the legend can be closed or not. Defaults to True.
-            widget_args (dict, optional): Additional arguments passed to the widget_template() function. Defaults to {}.
-
-
+            position (str, optional): Position of the legend. Defaults to
+                'bottomright'.
+            builtin_legend (str, optional): Name of the builtin legend to add
+                to the map. Defaults to None.
+            add_header (bool, optional): Whether the legend can be closed or
+                not. Defaults to True.
+            widget_args (dict, optional): Additional arguments passed to the
+                widget_template() function. Defaults to {}.
         """
-        from IPython.display import display
-        import pkg_resources
-        from .legends import builtin_legends
-
-        pkg_dir = os.path.dirname(
-            pkg_resources.resource_filename("geemap", "geemap.py")
-        )
-        legend_template = os.path.join(pkg_dir, "data/template/legend.html")
-
-        if "min_width" not in kwargs:
-            min_width = None
-        if "max_width" not in kwargs:
-            max_width = "300px"
-        else:
-            max_width = kwargs["max_width"]
-        if "min_height" not in kwargs:
-            min_height = None
-        else:
-            min_height = kwargs["min_height"]
-        if "max_height" not in kwargs:
-            max_height = None
-        else:
-            max_height = kwargs["max_height"]
-        if "height" not in kwargs:
-            height = None
-        else:
-            height = kwargs["height"]
-        if "width" not in kwargs:
-            width = None
-        else:
-            width = kwargs["width"]
-
-        if width is None:
-            max_width = "300px"
-        if height is None:
-            max_height = "400px"
-
-        if not os.path.exists(legend_template):
-            print("The legend template does not exist.")
-            return
-
-        if labels is not None:
-            if not isinstance(labels, list):
-                print("The legend keys must be a list.")
-                return
-        else:
-            labels = ["One", "Two", "Three", "Four", "etc"]
-
-        if colors is not None:
-            if not isinstance(colors, list):
-                print("The legend colors must be a list.")
-                return
-            elif all(isinstance(item, tuple) for item in colors):
-                try:
-                    colors = [rgb_to_hex(x) for x in colors]
-                except Exception as e:
-                    print(e)
-            elif all((item.startswith("#") and len(item) == 7) for item in colors):
-                pass
-            elif all((len(item) == 6) for item in colors):
-                pass
-            else:
-                print("The legend colors must be a list of tuples.")
-                return
-        else:
-            colors = [
-                "#8DD3C7",
-                "#FFFFB3",
-                "#BEBADA",
-                "#FB8072",
-                "#80B1D3",
-            ]
-
-        if len(labels) != len(colors):
-            print("The legend keys and values must be the same length.")
-            return
-
-        allowed_builtin_legends = builtin_legends.keys()
-        if builtin_legend is not None:
-            if builtin_legend not in allowed_builtin_legends:
-                print(
-                    "The builtin legend must be one of the following: {}".format(
-                        ", ".join(allowed_builtin_legends)
-                    )
-                )
-                return
-            else:
-                legend_dict = builtin_legends[builtin_legend]
-                labels = list(legend_dict.keys())
-                colors = list(legend_dict.values())
-
-        if legend_dict is not None:
-            if not isinstance(legend_dict, dict):
-                print("The legend dict must be a dictionary.")
-                return
-            else:
-                labels = list(legend_dict.keys())
-                colors = list(legend_dict.values())
-                if all(isinstance(item, tuple) for item in colors):
-                    try:
-                        colors = [rgb_to_hex(x) for x in colors]
-                    except Exception as e:
-                        print(e)
-
-        allowed_positions = [
-            "topleft",
-            "topright",
-            "bottomleft",
-            "bottomright",
-        ]
-        if position not in allowed_positions:
-            print(
-                "The position must be one of the following: {}".format(
-                    ", ".join(allowed_positions)
-                )
-            )
-            return
-
-        header = []
-        content = []
-        footer = []
-
-        with open(legend_template) as f:
-            lines = f.readlines()
-            lines[3] = lines[3].replace("Legend", title)
-            header = lines[:6]
-            footer = lines[11:]
-
-        for index, key in enumerate(labels):
-            color = colors[index]
-            if not color.startswith("#"):
-                color = "#" + color
-            item = "      <li><span style='background:{};'></span>{}</li>\n".format(
-                color, key
-            )
-            content.append(item)
-
-        legend_html = header + content + footer
-        legend_text = "".join(legend_html)
-
         try:
-            legend_output = widgets.Output(
-                layout={
-                    # "border": "1px solid black",
-                    "max_width": max_width,
-                    "min_width": min_width,
-                    "max_height": max_height,
-                    "min_height": min_height,
-                    "height": height,
-                    "width": width,
-                    "overflow": "scroll",
-                }
+            legend = map_widgets.Legend(
+                title,
+                legend_dict,
+                keys,
+                colors,
+                position,
+                builtin_legend,
+                add_header,
+                widget_args,
+                **kwargs
             )
-            legend_widget = widgets.HTML(value=legend_text)
-
-            if add_header:
-                if "show_close_button" not in widget_args:
-                    widget_args["show_close_button"] = False
-                if "widget_icon" not in widget_args:
-                    widget_args["widget_icon"] = "bars"
-
-                legend_output_widget = widget_template(
-                    legend_output,
-                    position=position,
-                    display_widget=legend_widget,
-                    **widget_args,
-                )
-            else:
-                legend_output_widget = legend_output
-
+           
             legend_control = ipyleaflet.WidgetControl(
-                widget=legend_output_widget, position=position
+                widget=legend, position=position
             )
-            # legend_output.append_display_data(legend_widget)
-            legend_output.clear_output()
-            with legend_output:
-                display(legend_widget)
 
-            self._legend_widget = legend_output_widget
+            self._legend_widget = legend
             self._legend = legend_control
             self.add(legend_control)
 
@@ -1618,8 +1460,8 @@ class Map(core.Map):
 
                             self.add_legend(
                                 title=legend_title.value,
-                                legend_keys=labels,
-                                legend_colors=colors,
+                                keys=labels,
+                                colors=colors,
                                 layer_name=layer_name,
                             )
                 else:
@@ -2403,8 +2245,8 @@ class Map(core.Map):
                             ]
                             self.add_legend(
                                 title=legend_title.value,
-                                legend_keys=legend_keys,
-                                legend_colors=legend_colors,
+                                keys=legend_keys,
+                                colors=legend_colors,
                                 layer_name=new_layer_name.value,
                             )
                     except Exception as e:
@@ -5457,7 +5299,7 @@ class Map(core.Map):
         if items is not None and add_legend:
             marker_colors = [check_color(c) for c in marker_colors]
             self.add_legend(
-                title=color_column.title(), colors=marker_colors, labels=items
+                title=color_column.title(), colors=marker_colors, keys=items
             )
 
         self.default_style = {"cursor": "default"}
