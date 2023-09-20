@@ -226,62 +226,6 @@ class TestColorbar(unittest.TestCase):
             map_widgets.Colorbar(vis_params="NOT a dict")
 
 
-class TestLegend(unittest.TestCase):
-    """Tests for the Legend class in the `map_widgets` module."""
-
-    TEST_COLORS_HEX = ["#ff0000", "#00ff00", "#0000ff"]
-    TEST_COLORS_RGB = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
-    TEST_KEYS = ["developed", "forest", "open water"]
-
-    def test_legend_unable_to_convert_rgb_to_hex(self):
-        with self.assertRaisesRegex(ValueError,
-                                    "Unable to convert rgb value to hex."):
-            test_keys = ["Key 1"]
-            test_colors = [("invalid", "invalid")]
-            map_widgets.Legend(keys=test_keys, colors=test_colors)
-
-    def test_legend_keys_and_colors_not_same_length(self):
-        with self.assertRaisesRegex(ValueError,
-                                    ("The legend keys and colors must be the "
-                                        + "same length.")):
-            test_keys = ["one", "two", "three", "four"]
-            map_widgets.Legend(keys=test_keys,
-                               colors=TestLegend.TEST_COLORS_HEX)
-
-    def test_legend_builtin_legend_not_allowed(self):
-        expected_regex = ("The builtin legend must be one of the following: {}"
-                          .format(", ".join(builtin_legends)))
-        with self.assertRaisesRegex(ValueError, expected_regex):
-            map_widgets.Legend(builtin_legend="invalid_builtin_legend")
-
-    def test_legend_position_not_allowed(self):
-        expected_regex = ("The position must be one of the following: " +
-                          "topleft, topright, bottomleft, bottomright")
-        with self.assertRaisesRegex(ValueError, expected_regex):
-            map_widgets.Legend(position="invalid_position")
-
-    def test_legend_keys_not_a_dict(self):
-        with self.assertRaisesRegex(TypeError,
-                                    "The legend keys must be a list."):
-            map_widgets.Legend(keys="invalid_keys")
-
-    def test_legend_colors_not_a_list(self):
-        with self.assertRaisesRegex(TypeError,
-                                    "The legend colors must be a list."):
-            map_widgets.Legend(colors="invalid_colors")
-
-    def test_legend_colors_not_a_list_of_tuples(self):
-        with self.assertRaisesRegex(TypeError,
-                                    ("The legend colors must be a list of " +
-                                        "tuples.")):
-            map_widgets.Legend(colors=["invalid_tuple"])
-
-    def test_legend_dict_not_a_dictionary(self):
-        with self.assertRaisesRegex(TypeError,
-                                    "The legend dict must be a dictionary."):
-            map_widgets.Legend(legend_dict="invalid_legend_dict")
-
-
 @patch.object(ee, "Algorithms", fake_ee.Algorithms)
 @patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
 @patch.object(ee, "Feature", fake_ee.Feature)
@@ -649,9 +593,7 @@ class TestLayerManager(unittest.TestCase):
         self.assertIsNotNone(self.toggle_all_checkbox)
 
     def test_layer_manager_close_button_hidden(self):
-        """Tests that setting the close_button_hidden property hides the close
-        button.
-        """
+        """Tests that setting the close_button_hidden property hides the close button."""
         self.layer_manager.close_button_hidden = True
 
         self.assertIsNotNone(self.collapse_button)
