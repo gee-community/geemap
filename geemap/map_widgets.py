@@ -1171,6 +1171,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
                 self._render_colorbar(colors)
         else:
             self._rgb_radio_button.index = 0
+            sel_bands = self._sel_bands
             if (sel_bands is None) or (len(sel_bands) < 2):
                 sel_bands = band_names[0:3]
             self._band_1_dropdown.value = sel_bands[0]
