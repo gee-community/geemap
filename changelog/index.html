@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.3.2">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.0">
     
     
       
@@ -30,10 +30,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.30068a00.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.9f615399.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.85d0ee34.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.649f08f9.min.css">
       
       
 
@@ -526,6 +526,13 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#v0270-sep-21-2023" class="md-nav__link">
+    v0.27.0 - Sep 21, 2023
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#v0260-sep-6-2023" class="md-nav__link">
@@ -5027,6 +5034,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v0270-sep-21-2023" class="md-nav__link">
+    v0.27.0 - Sep 21, 2023
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v0260-sep-6-2023" class="md-nav__link">
     v0.26.0 - Sep 6, 2023
   </a>
@@ -5874,6 +5888,53 @@
 
 
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
+<h2 id="v0270-sep-21-2023">v0.27.0 - Sep 21, 2023<a class="headerlink" href="#v0270-sep-21-2023" title="Permanent link">&para;</a></h2>
+<p><strong>What's Changed</strong></p>
+<ul>
+<li>Add installation CI by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1656">#1656</a></li>
+<li>Fix vis control error by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1660">#1660</a></li>
+<li>Fix plotly notebook typo by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1661">#1661</a></li>
+<li>Refactor inspector into an ipywidgets subclass by @naschmitz in <a href="https://github.com/gee-community/geemap/pull/1663">#1663</a></li>
+<li>Refactor toolbar into an ipywidgets subclass by @bengalin in <a href="https://github.com/gee-community/geemap/pull/1664">#1664</a></li>
+<li>Fix computation for number of rows in toolbar by @bengalin in <a href="https://github.com/gee-community/geemap/pull/1665">#1665</a></li>
+<li>Update pepy badge by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1668">#1668</a></li>
+<li>Defines an AbstractDrawControl and implementation for the current draw control features. by @sufyanAbbasi in <a href="https://github.com/gee-community/geemap/pull/1666">#1666</a></li>
+<li>Restore dragging mode after existing split map mode by @kirimaru-jp in <a href="https://github.com/gee-community/geemap/pull/1669">#1669</a></li>
+<li>Remove trailing spaces by @schwehr in <a href="https://github.com/gee-community/geemap/pull/1673">#1673</a></li>
+<li>Clean up docs folder by @schwehr in <a href="https://github.com/gee-community/geemap/pull/1672">#1672</a></li>
+<li>Clean up docs folder by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1675">#1675</a></li>
+<li>Refactor layer manager into an ipywidgets subclass by @naschmitz in <a href="https://github.com/gee-community/geemap/pull/1671">#1671</a></li>
+<li>Add unit tests for draw control, defaults to clearing the draw control on reset, handle the last_geometry differently when calling <code>remove_geometry</code> by @sufyanAbbasi in <a href="https://github.com/gee-community/geemap/pull/1674">#1674</a></li>
+<li>Add G4G workshop notebook by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1676">#1676</a></li>
+<li>Add NLCD 2021 basemap by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1680">#1680</a></li>
+<li>Clean up layer management ivars. by @naschmitz in <a href="https://github.com/gee-community/geemap/pull/1684">#1684</a></li>
+<li>Refactor basemap into an ipywidgets subclass by @bengalin in <a href="https://github.com/gee-community/geemap/pull/1685">#1685</a></li>
+<li>Fix layer visualization GUI bug by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1687">#1687</a></li>
+<li>Add City+ conference workshop notebook by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1688">#1688</a></li>
+<li>Remove Google basemaps by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1681">#1681</a></li>
+<li>Update changelog for v0.26.0 by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1689">#1689</a></li>
+<li>Add script for generating changelog for mkdocs by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1690">#1690</a></li>
+<li>Update changelog by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1691">#1691</a></li>
+<li>Update workshop notebooks by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1694">#1694</a></li>
+<li>Add close_button_position to split_map by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1699">#1699</a></li>
+<li>fix notebook link in the docs and example notebook by @biplovbhandari in <a href="https://github.com/gee-community/geemap/pull/1701">#1701</a></li>
+<li><code>ee_to_df</code> Make prop names and col names same by @jdbcode in <a href="https://github.com/gee-community/geemap/pull/1703">#1703</a></li>
+<li>Add core module by @naschmitz in <a href="https://github.com/gee-community/geemap/pull/1692">#1692</a></li>
+<li>Remove left_control/right_control in split_map() before restoring previous value of self.controls by @kirimaru-jp in <a href="https://github.com/gee-community/geemap/pull/1706">#1706</a></li>
+<li>Set default add_header to False for add_widget by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1707">#1707</a></li>
+<li>Revert 1 colorbar refactor by @jgarcia525 in <a href="https://github.com/gee-community/geemap/pull/1721">#1721</a></li>
+<li>Fix ipywidgets dark mode for toolbar buttons on Colab by @giswqs in <a href="https://github.com/gee-community/geemap/pull/1716">#1716</a></li>
+</ul>
+<p><strong>New Contributors</strong></p>
+<ul>
+<li>@bengalin made their first contribution in <a href="https://github.com/gee-community/geemap/pull/1664">#1664</a></li>
+<li>@sufyanAbbasi made their first contribution in <a href="https://github.com/gee-community/geemap/pull/1666">#1666</a></li>
+<li>@kirimaru-jp made their first contribution in <a href="https://github.com/gee-community/geemap/pull/1669">#1669</a></li>
+<li>@schwehr made their first contribution in <a href="https://github.com/gee-community/geemap/pull/1673">#1673</a></li>
+<li>@biplovbhandari made their first contribution in <a href="https://github.com/gee-community/geemap/pull/1701">#1701</a></li>
+<li>@jgarcia525 made their first contribution in <a href="https://github.com/gee-community/geemap/pull/1721">#1721</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/gee-community/geemap/compare/v0.25.0...v0.27.0">v0.25.0...v0.27.0</a></p>
 <h2 id="v0260-sep-6-2023">v0.26.0 - Sep 6, 2023<a class="headerlink" href="#v0260-sep-6-2023" title="Permanent link">&para;</a></h2>
 <p><strong>What's Changed</strong></p>
 <ul>
@@ -7103,7 +7164,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-06T15:28:47+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-06</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-22T02:39:11+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-22</span>
       
         <br>
         Created:
@@ -7221,10 +7282,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.dff1b7c8.min.js"></script>
+      <script src="../assets/javascripts/bundle.4e0fa4ba.min.js"></script>
       
         <script src="../js/timeago.min.js"></script>
       
