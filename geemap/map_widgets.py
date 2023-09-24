@@ -215,6 +215,10 @@ class Legend(ipywidgets.VBox):
         if not os.path.exists(legend_template):
             raise ValueError("The legend template does not exist.")
 
+        if "labels" in kwargs:
+            keys = kwargs["labels"]
+            kwargs.pop("labels")
+
         if keys is not None:
             if not isinstance(keys, list):
                 raise TypeError("The legend keys must be a list.")
@@ -236,13 +240,13 @@ class Legend(ipywidgets.VBox):
             colors = Legend.DEFAULT_COLORS
 
         if len(keys) != len(colors):
-            raise ValueError(
-                "The legend keys and colors must be the same length.")
+            raise ValueError("The legend keys and colors must be the same length.")
 
         allowed_builtin_legends = builtin_legends.keys()
         if builtin_legend is not None:
             builtin_legend_allowed = Legend.__check_if_allowed(
-                builtin_legend, "builtin legend", allowed_builtin_legends)
+                builtin_legend, "builtin legend", allowed_builtin_legends
+            )
             if builtin_legend_allowed:
                 legend_dict = builtin_legends[builtin_legend]
                 keys = list(legend_dict.keys())
@@ -257,8 +261,7 @@ class Legend(ipywidgets.VBox):
                 if all(isinstance(item, tuple) for item in colors):
                     colors = Legend.__convert_rgb_colors_to_hex(colors)
 
-        Legend.__check_if_allowed(
-            position, "position", Legend.ALLOWED_POSITIONS)
+        Legend.__check_if_allowed(position, "position", Legend.ALLOWED_POSITIONS)
 
         header = []
         footer = []
@@ -272,8 +275,7 @@ class Legend(ipywidgets.VBox):
 
         legend_html = header + content + footer
         legend_text = "".join(legend_html)
-        legend_output = ipywidgets.Output(
-            layout=Legend.__create_layout(**kwargs))
+        legend_output = ipywidgets.Output(layout=Legend.__create_layout(**kwargs))
         legend_widget = ipywidgets.HTML(value=legend_text)
 
         if add_header:
@@ -300,8 +302,9 @@ class Legend(ipywidgets.VBox):
     def __check_if_allowed(value, value_name, allowed_list):
         if value not in allowed_list:
             raise ValueError(
-                "The " + value_name + " must be one of the following: {}."
-                .format(", ".join(allowed_list))
+                "The "
+                + value_name
+                + " must be one of the following: {}.".format(", ".join(allowed_list))
             )
         return True
 
@@ -326,14 +329,12 @@ class Legend(ipywidgets.VBox):
     def __create_layout(**kwargs):
         height = Legend.__create_layout_property("height", None, **kwargs)
 
-        min_height = Legend.__create_layout_property(
-            "min_height", None, **kwargs)
+        min_height = Legend.__create_layout_property("min_height", None, **kwargs)
 
         if height is None:
             max_height = Legend.DEFAULT_MAX_HEIGHT
         else:
-            max_height = Legend.__create_layout_property(
-                "max_height", None, **kwargs)
+            max_height = Legend.__create_layout_property("max_height", None, **kwargs)
 
         width = Legend.__create_layout_property("width", None, **kwargs)
 
@@ -344,7 +345,8 @@ class Legend(ipywidgets.VBox):
             max_width = Legend.DEFAULT_MAX_WIDTH
         else:
             max_width = Legend.__create_layout_property(
-                "max_width", Legend.DEFAULT_MAX_WIDTH, **kwargs)
+                "max_width", Legend.DEFAULT_MAX_WIDTH, **kwargs
+            )
 
         return {
             "height": height,
@@ -548,8 +550,10 @@ class Inspector(ipywidgets.VBox):
 
     def _point_info(self, latlon):
         scale = self._host_map.get_scale()
-        label = (f"Point ({latlon[1]:.{self._decimals}f}, " +
-                 f"{latlon[0]:.{self._decimals}f}) at {int(scale)}m/px")
+        label = (
+            f"Point ({latlon[1]:.{self._decimals}f}, "
+            + f"{latlon[0]:.{self._decimals}f}) at {int(scale)}m/px"
+        )
         nodes = [
             ipytree.Node(f"Longitude: {latlon[1]}"),
             ipytree.Node(f"Latitude: {latlon[0]}"),

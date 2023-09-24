@@ -31,6 +31,7 @@ from . import map_widgets
 from . import toolbar
 from .plot import *
 from .timelapse import *
+from .legends import builtin_legends
 
 
 basemaps = Box(xyz_to_leaflet(), frozen_box=True)
@@ -817,12 +818,10 @@ class Map(core.Map):
                 builtin_legend,
                 add_header,
                 widget_args,
-                **kwargs
+                **kwargs,
             )
-           
-            legend_control = ipyleaflet.WidgetControl(
-                widget=legend, position=position
-            )
+
+            legend_control = ipyleaflet.WidgetControl(widget=legend, position=position)
 
             self._legend_widget = legend
             self._legend = legend_control
@@ -1777,7 +1776,7 @@ class Map(core.Map):
                     self.controls = controls
                     self.layers = layers[:-1]
                     self.add(layers[-1])
-                    
+
                 self.dragging = True
 
             close_button.observe(close_btn_click, "value")
