@@ -1362,6 +1362,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
         vis["gamma"] = self._gamma_slider.value
 
         common.create_code_cell(f"vis_params = {str(vis)}")
+        print(f"vis_params = {str(vis)}")
 
     def on_apply_click(self):
         vis = {}
@@ -1806,6 +1807,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
                 self._ee_object.style(**vis), {}, self._new_layer_name.value
             )
             self._ee_layer.visible = False
+            self._compute_label.value = ""
 
         elif (
             self._style_chk.value
@@ -2069,4 +2071,5 @@ class _VectorLayerEditor(ipywidgets.VBox):
 
     def on_import_click(self):
         vis = self._get_vis_params()
-        common.create_code_cell(f"vis_params = {str(vis)}")
+        common.create_code_cell(f"style = {str(vis)}")
+        print(f"style = {str(vis)}")
