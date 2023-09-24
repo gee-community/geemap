@@ -4788,7 +4788,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c8134e77">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c9439bd0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4800,7 +4800,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3012ef0d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f1ada2c0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4827,7 +4827,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=072a30fb">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e4bfb2c9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4855,8 +4855,20 @@ import geemap</div>
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f71d4767">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="add-builtin-legends-from-geemap-python-package">Add builtin legends from geemap Python package<a class="anchor-link" href="#add-builtin-legends-from-geemap-python-package">¶</a></h2><p><a href="https://github.com/gee-community/geemap/blob/master/geemap/legends.py">https://github.com/gee-community/geemap/blob/master/geemap/legends.py</a></p>
+<h3 id="available-builtin-legends">Available builtin legends:<a class="anchor-link" href="#available-builtin-legends">¶</a></h3>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1876f34d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=af55bb24">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4874,28 +4886,42 @@ import geemap</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">show_youtube</span><span class="p">(</span><span class="s1">'NwnW_qOkNRw'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">legends</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">builtin_legends</span>
+<span class="k">for</span> <span class="n">legend</span> <span class="ow">in</span> <span class="n">legends</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">legend</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3">geemap.show_youtube('NwnW_qOkNRw')</div>
+<div class="clipboard-copy-txt" id="cell-3">legends = geemap.builtin_legends
+for legend in legends:
+    print(legend)</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a87d8e95">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f01fa622">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="add-builtin-legends-from-geemap-python-package">Add builtin legends from geemap Python package<a class="anchor-link" href="#add-builtin-legends-from-geemap-python-package">¶</a></h2><p><a href="https://github.com/gee-community/geemap/blob/master/geemap/legends.py">https://github.com/gee-community/geemap/blob/master/geemap/legends.py</a></p>
-<h3 id="available-builtin-legends">Available builtin legends:<a class="anchor-link" href="#available-builtin-legends">¶</a></h3>
+<h3 id="available-land-cover-datasets-in-earth-engine">Available Land Cover Datasets in Earth Engine<a class="anchor-link" href="#available-land-cover-datasets-in-earth-engine">¶</a></h3><p><a href="https://developers.google.com/earth-engine/datasets/tags/landcover">https://developers.google.com/earth-engine/datasets/tags/landcover</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=20a6ed32">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="national-land-cover-database-nlcd">National Land Cover Database (NLCD)<a class="anchor-link" href="#national-land-cover-database-nlcd">¶</a></h3><p><a href="https://developers.google.com/earth-engine/datasets/catalog/USGS_NLCD_RELEASES_2019_REL_NLCD">https://developers.google.com/earth-engine/datasets/catalog/USGS_NLCD_RELEASES_2019_REL_NLCD</a></p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=687e8b66">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0eddc14b">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4913,42 +4939,37 @@ import geemap</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">legends</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">builtin_legends</span>
-<span class="k">for</span> <span class="n">legend</span> <span class="ow">in</span> <span class="n">legends</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">legend</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="s1">'HYBRID'</span><span class="p">)</span>
+<span class="n">landcover</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/NLCD_RELEASES/2019_REL/NLCD/2019'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'landcover'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">landcover</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'NLCD Land Cover'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">builtin_legend</span><span class="o">=</span><span class="s1">'NLCD'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'NLCD Land Cover'</span><span class="p">)</span>
+<span class="n">Map</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">legends = geemap.builtin_legends
-for legend in legends:
-    print(legend)</div>
+<div class="clipboard-copy-txt" id="cell-4">Map = geemap.Map()
+Map.add_basemap('HYBRID')
+landcover = ee.Image('USGS/NLCD_RELEASES/2019_REL/NLCD/2019').select('landcover')
+Map.addLayer(landcover, {}, 'NLCD Land Cover')
+Map.add_legend(builtin_legend='NLCD', title='NLCD Land Cover')
+Map</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ccb2c0b0">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0a93e9cc">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="available-land-cover-datasets-in-earth-engine">Available Land Cover Datasets in Earth Engine<a class="anchor-link" href="#available-land-cover-datasets-in-earth-engine">¶</a></h3><p><a href="https://developers.google.com/earth-engine/datasets/tags/landcover">https://developers.google.com/earth-engine/datasets/tags/landcover</a></p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=83905e0b">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="national-land-cover-database-nlcd">National Land Cover Database (NLCD)<a class="anchor-link" href="#national-land-cover-database-nlcd">¶</a></h3><p><a href="https://developers.google.com/earth-engine/datasets/catalog/USGS_NLCD_RELEASES_2019_REL_NLCD">https://developers.google.com/earth-engine/datasets/catalog/USGS_NLCD_RELEASES_2019_REL_NLCD</a></p>
+<h3 id="national-wetlands-inventory-nwi">National Wetlands Inventory (NWI)<a class="anchor-link" href="#national-wetlands-inventory-nwi">¶</a></h3><p><a href="https://www.fws.gov/program/national-wetlands-inventory/wetlands-mapper">https://www.fws.gov/program/national-wetlands-inventory/wetlands-mapper</a></p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=dbd49ed0">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=dbc58fbe">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4968,59 +4989,11 @@ for legend in legends:
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="s1">'HYBRID'</span><span class="p">)</span>
-<span class="n">landcover</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/NLCD_RELEASES/2019_REL/NLCD/2019'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'landcover'</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">landcover</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'NLCD Land Cover'</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">builtin_legend</span><span class="o">=</span><span class="s1">'NLCD'</span><span class="p">)</span>
-<span class="n">Map</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-5">Map = geemap.Map()
-Map.add_basemap('HYBRID')
-landcover = ee.Image('USGS/NLCD_RELEASES/2019_REL/NLCD/2019').select('landcover')
-Map.addLayer(landcover, {}, 'NLCD Land Cover')
-Map.add_legend(builtin_legend='NLCD')
-Map</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=94d5a2b9">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="national-wetlands-inventory-nwi">National Wetlands Inventory (NWI)<a class="anchor-link" href="#national-wetlands-inventory-nwi">¶</a></h3><p><a href="https://www.fws.gov/program/national-wetlands-inventory/wetlands-mapper">https://www.fws.gov/program/national-wetlands-inventory/wetlands-mapper</a></p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=39c265d9">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy for="cell-6">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="s1">'HYBRID'</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="s1">'FWS NWI Wetlands'</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">builtin_legend</span><span class="o">=</span><span class="s1">'NWI'</span><span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">Map = geemap.Map()
+<div class="clipboard-copy-txt" id="cell-5">Map = geemap.Map()
 Map.add_basemap('HYBRID')
 Map.add_basemap('FWS NWI Wetlands')
 Map.add_legend(builtin_legend='NWI')
@@ -5031,7 +5004,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7d980df1">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=56901588">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5042,7 +5015,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8cd355d8">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9b9153b6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5050,7 +5023,7 @@ Map</div>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy for="cell-7">
+<clipboard-copy for="cell-6">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -5071,7 +5044,7 @@ Map</div>
 
 <span class="n">Map</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7">Map = geemap.Map()
+<div class="clipboard-copy-txt" id="cell-6">Map = geemap.Map()
 Map.add_basemap('HYBRID')
 
 landcover = ee.Image('MODIS/051/MCD12Q1/2013_01_01').select('Land_Cover_Type_1')
@@ -5087,7 +5060,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a64f4e56">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3e93db15">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5104,7 +5077,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e805faa1">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=aa0c6986">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5112,7 +5085,7 @@ Map</div>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy for="cell-8">
+<clipboard-copy for="cell-7">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -5130,11 +5103,11 @@ Map</div>
 <span class="c1"># legend_colors = [(255, 0, 0), (127, 255, 0), (127, 18, 25), (36, 70, 180), (96, 68 123)]</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span>
-    <span class="n">legend_keys</span><span class="o">=</span><span class="n">legend_keys</span><span class="p">,</span> <span class="n">legend_colors</span><span class="o">=</span><span class="n">legend_colors</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">'bottomleft'</span>
+    <span class="n">keys</span><span class="o">=</span><span class="n">legend_keys</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">legend_colors</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">'bottomleft'</span>
 <span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8">Map = geemap.Map()
+<div class="clipboard-copy-txt" id="cell-7">Map = geemap.Map()
 
 legend_keys = ['One', 'Two', 'Three', 'Four', 'ect']
 # colorS can be defined using either hex code or RGB (0-255, 0-255, 0-255)
@@ -5142,7 +5115,7 @@ legend_colors = ['#8DD3C7', '#FFFFB3', '#BEBADA', '#FB8072', '#80B1D3']
 # legend_colors = [(255, 0, 0), (127, 255, 0), (127, 18, 25), (36, 70, 180), (96, 68 123)]
 
 Map.add_legend(
-    legend_keys=legend_keys, legend_colors=legend_colors, position='bottomleft'
+    keys=legend_keys, colors=legend_colors, position='bottomleft'
 )
 Map</div>
 </div>
@@ -5151,7 +5124,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=348cd2ca">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=14e6af06">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5162,7 +5135,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=90008454">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6587cbbb">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5170,7 +5143,7 @@ Map</div>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy for="cell-9">
+<clipboard-copy for="cell-8">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -5208,10 +5181,10 @@ Map</div>
 <span class="n">landcover</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/NLCD/NLCD2016'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'landcover'</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">landcover</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'NLCD Land Cover'</span><span class="p">)</span>
 
-<span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">legend_title</span><span class="o">=</span><span class="s2">"NLCD Land Cover Classification"</span><span class="p">,</span> <span class="n">legend_dict</span><span class="o">=</span><span class="n">legend_dict</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"NLCD Land Cover Classification"</span><span class="p">,</span> <span class="n">legend_dict</span><span class="o">=</span><span class="n">legend_dict</span><span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-9">Map = geemap.Map()
+<div class="clipboard-copy-txt" id="cell-8">Map = geemap.Map()
 
 legend_dict = {
     '11 Open Water': '466b9f',
@@ -5239,7 +5212,7 @@ legend_dict = {
 landcover = ee.Image('USGS/NLCD/NLCD2016').select('landcover')
 Map.addLayer(landcover, {}, 'NLCD Land Cover')
 
-Map.add_legend(legend_title="NLCD Land Cover Classification", legend_dict=legend_dict)
+Map.add_legend(title="NLCD Land Cover Classification", legend_dict=legend_dict)
 Map</div>
 </div>
 </div>
@@ -5247,7 +5220,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=efb7c2cd">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1dfd7d6b">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5259,7 +5232,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=121875cf">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a6412c02">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5267,7 +5240,7 @@ Map</div>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="CodeMirror cm-s-jupyter">
 <div class="zeroclipboard-container">
-<clipboard-copy for="cell-10">
+<clipboard-copy for="cell-9">
 <div>
 <span class="notice" hidden="">Copied!</span>
 <svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
@@ -5280,7 +5253,6 @@ Map</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
 <span class="n">ee_class_table</span> <span class="o">=</span> <span class="s2">"""</span>
-
 <span class="s2">Value	Color	Description</span>
 <span class="s2">0	1c0dff	Water</span>
 <span class="s2">1	05450a	Evergreen needleleaf forest</span>
@@ -5300,7 +5272,6 @@ Map</div>
 <span class="s2">15	69fff8	Snow and ice</span>
 <span class="s2">16	f9ffa4	Barren or sparsely vegetated</span>
 <span class="s2">254	ffffff	Unclassified</span>
-
 <span class="s2">"""</span>
 
 <span class="n">landcover</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'MODIS/051/MCD12Q1/2013_01_01'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'Land_Cover_Type_1'</span><span class="p">)</span>
@@ -5308,14 +5279,13 @@ Map</div>
 <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">landcover</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'MODIS Land Cover'</span><span class="p">)</span>
 
 <span class="n">legend_dict</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">legend_from_ee</span><span class="p">(</span><span class="n">ee_class_table</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">legend_title</span><span class="o">=</span><span class="s2">"MODIS Global Land Cover"</span><span class="p">,</span> <span class="n">legend_dict</span><span class="o">=</span><span class="n">legend_dict</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"MODIS Global Land Cover"</span><span class="p">,</span> <span class="n">legend_dict</span><span class="o">=</span><span class="n">legend_dict</span><span class="p">)</span>
 
 <span class="n">Map</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-10">Map = geemap.Map()
+<div class="clipboard-copy-txt" id="cell-9">Map = geemap.Map()
 
 ee_class_table = """
-
 Value	Color	Description
 0	1c0dff	Water
 1	05450a	Evergreen needleleaf forest
@@ -5335,7 +5305,6 @@ Value	Color	Description
 15	69fff8	Snow and ice
 16	f9ffa4	Barren or sparsely vegetated
 254	ffffff	Unclassified
-
 """
 
 landcover = ee.Image('MODIS/051/MCD12Q1/2013_01_01').select('Land_Cover_Type_1')
@@ -5343,7 +5312,7 @@ Map.setCenter(6.746, 46.529, 2)
 Map.addLayer(landcover, {}, 'MODIS Land Cover')
 
 legend_dict = geemap.legend_from_ee(ee_class_table)
-Map.add_legend(legend_title="MODIS Global Land Cover", legend_dict=legend_dict)
+Map.add_legend(title="MODIS Global Land Cover", legend_dict=legend_dict)
 
 Map</div>
 </div>
@@ -5365,7 +5334,7 @@ Map</div>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-24T22:01:09+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-24</span>
       
         <br>
         Created:
