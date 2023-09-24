@@ -158,6 +158,10 @@ class Map(ipyleaflet.Map, MapInterface):
                 return toolbar_widget.accessory_widget
         return self._find_widget_of_type(map_widgets.LayerManager)
 
+    @property
+    def _layer_editor(self) -> ipyleaflet.WidgetControl:
+        return self._find_widget_of_type(map_widgets.LayerEditor)
+
     def __init__(self, **kwargs):
         self.width: str = kwargs.pop("width", "100%")
         self.height: str = kwargs.pop("height", "600px")
@@ -280,6 +284,8 @@ class Map(ipyleaflet.Map, MapInterface):
             self._add_inspector(position, **kwargs)
         elif obj == "layer_manager":
             self._add_layer_manager(position, **kwargs)
+        elif obj == "layer_editor":
+            self._add_layer_editor(position, **kwargs)
         else:
             super().add(obj)
         if self._layer_manager:
@@ -292,9 +298,8 @@ class Map(ipyleaflet.Map, MapInterface):
                 return
 
             def _on_open_vis(layer_name: str) -> None:
-                # TODO: Widgetize the visualization editor.
-                if hasattr(self, "create_vis_widget"):
-                    self.create_vis_widget(self.ee_layers.get(layer_name, None))
+                layer = self.ee_layers.get(layer_name, None)
+                self._add_layer_editor(position="bottomright", layer_dict=layer)
 
             layer_manager = map_widgets.LayerManager(self)
             layer_manager.header_hidden = True
@@ -311,9 +316,8 @@ class Map(ipyleaflet.Map, MapInterface):
             return
 
         def _on_open_vis(layer_name: str) -> None:
-            # TODO: Widgetize the visualization editor.
-            if hasattr(self, "create_vis_widget"):
-                self.create_vis_widget(self.ee_layers.get(layer_name, None))
+            layer = self.ee_layers.get(layer_name, None)
+            self._add_layer_editor(position="bottomright", layer_dict=layer)
 
         layer_manager = map_widgets.LayerManager(self, **kwargs)
         layer_manager.on_close = lambda: self.remove("layer_manager")
@@ -349,7 +353,17 @@ class Map(ipyleaflet.Map, MapInterface):
         )
         super().add(inspector_control)
 
-    def remove(self, widget: str) -> None:
+    def _add_layer_editor(self, position: str, **kwargs) -> None:
+        if widget := self._layer_editor:
+            self._log_widget_already_present(widget)
+            return
+
+        widget = map_widgets.LayerEditor(self, **kwargs)
+        widget.on_close = lambda: self.remove("layer_editor")
+        control = ipyleaflet.WidgetControl(widget=widget, position=position)
+        super().add(control)
+
+    def remove(self, widget: Any) -> None:
         """Removes a widget to the map."""
 
         basic_controls: Dict[str, ipyleaflet.Control] = {
@@ -360,13 +374,27 @@ class Map(ipyleaflet.Map, MapInterface):
             "toolbar": toolbar.Toolbar,
             "inspector": map_widgets.Inspector,
             "layer_manager": map_widgets.LayerManager,
+            "layer_editor": map_widgets.LayerEditor,
         }
         if widget_type := basic_controls.get(widget, None):
             if control := self._find_widget_of_type(widget_type, return_control=True):
                 self.remove(control)
                 control.close()
-        else:
-            super().remove(widget)
+            return
+
+        if ee_layer := self.ee_layers.pop(widget, None):
+            tile_layer = ee_layer.get("ee_layer", None)
+            if tile_layer is not None:
+                self.remove_layer(tile_layer)
+            if legend := ee_layer.get("legend", None):
+                self.remove(legend)
+            if colorbar := ee_layer.get("colorbar", None):
+                self.remove(colorbar)
+            return
+
+        super().remove(widget)
+        if isinstance(widget, ipywidgets.Widget):
+            widget.close()
 
     def add_layer(
         self,
@@ -392,11 +420,7 @@ class Map(ipyleaflet.Map, MapInterface):
         )
 
         # Remove the layer if it already exists.
-        ee_layer = self.ee_layers.get(name, {})
-        layer = ee_layer.get("ee_layer", None)
-        if layer is not None:
-            self.ee_layers.pop(name)
-            self.remove_layer(layer)
+        self.remove(name)
 
         self.ee_layers[name] = {
             "ee_object": ee_object,
