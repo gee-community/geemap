@@ -20,8 +20,19 @@ class Image:
     def blend(self, *_, **__):
         return self
 
+    def bandNames(self, *_, **__):
+        return List(["B1", "B2"])
+
     def reduceRegion(self, *_, **__):
         return Dictionary({"B1": 42, "B2": 3.14})
+
+
+class List:
+    def __init__(self, items, *_, **__):
+        self.items = items
+
+    def getInfo(self, *_, **__):
+        return self.items
 
 
 class Dictionary:
@@ -97,6 +108,9 @@ class String:
 
     def compareTo(self, other_str):
         return self.value == other_str.value
+
+    def getInfo(self, *_, **__):
+        return self.value
 
 
 class FeatureCollection:
