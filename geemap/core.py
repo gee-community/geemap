@@ -163,7 +163,8 @@ class Map(ipyleaflet.Map, MapInterface):
         return self._find_widget_of_type(map_widgets.LayerEditor)
 
     def __init__(self, **kwargs):
-        self.width: str = kwargs.pop("width", "100%")
+        if "width" in kwargs:
+            self.width: str = kwargs.pop("width", "100%")
         self.height: str = kwargs.pop("height", "600px")
 
         self.ee_layers: Dict[str, Dict[str, Any]] = {}
