@@ -1189,9 +1189,9 @@ class _RasterLayerEditor(ipywidgets.VBox):
 
         super().__init__(
             layout=ipywidgets.Layout(
-                padding="5px 5px 5px 8px",
-                width="330px",
-                max_height="250px",
+                padding="5px 0px 5px 8px",  # top, right, bottom, left
+                # width="330px",
+                max_height="280px",
                 overflow="auto",
                 display="block",
             ),
@@ -1750,7 +1750,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
         super().__init__(
             layout=ipywidgets.Layout(
                 padding="5px 5px 5px 8px",
-                width="330px",
+                # width="330px",
                 max_height="250px",
                 overflow="auto",
                 display="block",
