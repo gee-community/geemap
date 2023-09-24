@@ -1070,3 +1070,1232 @@ class Basemap(ipywidgets.HBox):
     def _on_close_click(self, _):
         if self.on_close:
             self.on_close()
+
+
+class LayerEditor(ipywidgets.VBox):
+    """Widget for displaying and editing layer visualization properties."""
+
+    def __init__(self, host_map, layer_dict):
+        """Initializes a layer editor widget.
+
+        Args:
+            host_map (geemap.Map): The geemap.Map object.
+            layer_dict (dict): The layer object to edit.
+        """
+
+        self.on_close = None
+
+        self._host_map = host_map
+        if not host_map:
+            raise ValueError(
+                f"Must pass a valid map when creating a {self.__class__.__name__} widget."
+            )
+
+        self._toggle_button = ipywidgets.ToggleButton(
+            value=True,
+            tooltip="Layer editor",
+            icon="gear",
+            layout=ipywidgets.Layout(
+                width="28px", height="28px", padding="0px 0 0 3px"
+            ),
+        )
+        self._toggle_button.observe(self._on_toggle_click, "value")
+
+        self._close_button = ipywidgets.Button(
+            tooltip="Close the vis params dialog",
+            icon="times",
+            button_style="primary",
+            layout=ipywidgets.Layout(width="28px", height="28px", padding="0"),
+        )
+        self._close_button.on_click(self._on_close_click)
+
+        layout = ipywidgets.Layout(width="95px")
+        self._import_button = ipywidgets.Button(
+            description="Import",
+            button_style="primary",
+            tooltip="Import vis params to notebook",
+            layout=layout,
+        )
+        self._apply_button = ipywidgets.Button(
+            description="Apply", tooltip="Apply vis params to the layer", layout=layout
+        )
+        self._import_button.on_click(self._on_import_click)
+        self._apply_button.on_click(self._on_apply_click)
+
+        self._label = ipywidgets.Label(
+            value="Layer name",
+            layout=ipywidgets.Layout(max_width="250px", padding="1px 8px 0 4px"),
+        )
+        self._embedded_widget = ipywidgets.Label(value="Vis params are uneditable")
+        if layer_dict is not None:
+            self._ee_object = layer_dict["ee_object"]
+            if isinstance(self._ee_object, (ee.Feature, ee.Geometry)):
+                self._ee_object = ee.FeatureCollection(self._ee_object)
+
+            self._ee_layer = layer_dict["ee_layer"]
+            self._label.value = self._ee_layer.name
+            if isinstance(self._ee_object, ee.FeatureCollection):
+                self._embedded_widget = _VectorLayerEditor(
+                    host_map=host_map, layer_dict=layer_dict
+                )
+            elif isinstance(self._ee_object, ee.Image):
+                self._embedded_widget = _RasterLayerEditor(
+                    host_map=host_map, layer_dict=layer_dict
+                )
+
+        super().__init__(children=[])
+        self._on_toggle_click({"new": True})
+
+    def _on_toggle_click(self, change):
+        if change["new"]:
+            self.children = [
+                ipywidgets.HBox([self._close_button, self._toggle_button, self._label]),
+                self._embedded_widget,
+                ipywidgets.HBox([self._import_button, self._apply_button]),
+            ]
+        else:
+            self.children = [
+                ipywidgets.HBox([self._close_button, self._toggle_button, self._label]),
+            ]
+
+    def _on_import_click(self, _):
+        self._embedded_widget.on_import_click()
+
+    def _on_apply_click(self, _):
+        self._embedded_widget.on_apply_click()
+
+    def _on_close_click(self, _):
+        if self.on_close:
+            self.on_close()
+
+
+class _RasterLayerEditor(ipywidgets.VBox):
+    """Widget for displaying and editing layer visualization properties for raster layers."""
+
+    def __init__(self, host_map, layer_dict):
+        """Initializes a raster layer editor widget.
+
+        Args:
+            host_map (geemap.Map): The geemap.Map object.
+            layer_dict (dict): The layer object to edit.
+        """
+        self._host_map = host_map
+        self._layer_dict = layer_dict
+
+        self._ee_object = layer_dict["ee_object"]
+        self._ee_layer = layer_dict["ee_layer"]
+        self._vis_params = layer_dict["vis_params"]
+
+        self._layer_name = self._ee_layer.name
+        self._layer_opacity = self._ee_layer.opacity
+
+        self._min_value = 0
+        self._max_value = 100
+        self._sel_bands = None
+        self._layer_palette = []
+        self._layer_gamma = 1
+        self._left_value = 0
+        self._right_value = 10000
+
+        band_names = self._ee_object.bandNames().getInfo()
+        self._band_count = len(band_names)
+
+        if "min" in self._vis_params.keys():
+            self._min_value = self._vis_params["min"]
+            if self._min_value < self._left_value:
+                self._left_value = self._min_value - self._max_value
+        if "max" in self._vis_params.keys():
+            self._max_value = self._vis_params["max"]
+            self._right_value = 2 * self._max_value
+        if "gamma" in self._vis_params.keys():
+            self._layer_gamma = self._vis_params["gamma"]
+        if "bands" in self._vis_params.keys():
+            self._sel_bands = self._vis_params["bands"]
+        if "palette" in self._vis_params.keys():
+            self._layer_palette = [
+                color.replace("#", "") for color in list(self._vis_params["palette"])
+            ]
+
+        # ipywidgets doesn't support horizontal radio buttons
+        # (https://github.com/jupyter-widgets/ipywidgets/issues/1247). Instead,
+        # use two individual radio buttons with some hackery.
+        self._greyscale_radio_button = ipywidgets.RadioButtons(
+            options=["1 band (Grayscale)"],
+            layout={"width": "max-content", "margin": "0 15px 0 0"},
+        )
+        self._rgb_radio_button = ipywidgets.RadioButtons(
+            options=["3 bands (RGB)"], layout={"width": "max-content"}
+        )
+        self._greyscale_radio_button.index = None
+        self._rgb_radio_button.index = None
+
+        band_dropdown_layout = ipywidgets.Layout(width="98px")
+        self._band_1_dropdown = ipywidgets.Dropdown(
+            options=band_names, value=band_names[0], layout=band_dropdown_layout
+        )
+        self._band_2_dropdown = ipywidgets.Dropdown(
+            options=band_names, value=band_names[0], layout=band_dropdown_layout
+        )
+        self._band_3_dropdown = ipywidgets.Dropdown(
+            options=band_names, value=band_names[0], layout=band_dropdown_layout
+        )
+        self._bands_hbox = ipywidgets.HBox(layout=ipywidgets.Layout(margin="0 0 6px 0"))
+
+        self._color_picker = ipywidgets.ColorPicker(
+            concise=False,
+            value="#000000",
+            layout=ipywidgets.Layout(width="116px"),
+            style={"description_width": "initial"},
+        )
+
+        self._add_color_button = ipywidgets.Button(
+            icon="plus",
+            tooltip="Add a hex color string to the palette",
+            layout=ipywidgets.Layout(width="32px"),
+        )
+        self._del_color_button = ipywidgets.Button(
+            icon="minus",
+            tooltip="Remove a hex color string from the palette",
+            layout=ipywidgets.Layout(width="32px"),
+        )
+        self._reset_color_button = ipywidgets.Button(
+            icon="eraser",
+            tooltip="Remove all color strings from the palette",
+            layout=ipywidgets.Layout(width="34px"),
+        )
+        self._add_color_button.on_click(self._add_color_clicked)
+        self._del_color_button.on_click(self._del_color_clicked)
+        self._reset_color_button.on_click(self._reset_color_clicked)
+
+        self._classes_dropdown = ipywidgets.Dropdown(
+            options=["Any"] + [str(i) for i in range(3, 13)],
+            description="Classes:",
+            layout=ipywidgets.Layout(width="115px"),
+            style={"description_width": "initial"},
+        )
+        self._classes_dropdown.observe(self._classes_changed, "value")
+
+        self._colormap_dropdown = ipywidgets.Dropdown(
+            options=self._get_colormaps(),
+            value=None,
+            description="Colormap:",
+            layout=ipywidgets.Layout(width="181px"),
+            style={"description_width": "initial"},
+        )
+        self._colormap_dropdown.observe(self._colormap_changed, "value")
+
+        self._palette_label = ipywidgets.Text(
+            value=", ".join(self._layer_palette),
+            placeholder="List of hex color code (RRGGBB)",
+            description="Palette:",
+            tooltip="Enter a list of hex color code (RRGGBB)",
+            layout=ipywidgets.Layout(width="300px"),
+            style={"description_width": "initial"},
+        )
+
+        self._value_range_slider = ipywidgets.FloatRangeSlider(
+            value=[self._min_value, self._max_value],
+            min=self._left_value,
+            max=self._right_value,
+            step=0.1,
+            description="Range:",
+            disabled=False,
+            continuous_update=False,
+            readout=True,
+            readout_format=".1f",
+            layout=ipywidgets.Layout(width="300px"),
+            style={"description_width": "45px"},
+        )
+
+        self._opacity_slider = ipywidgets.FloatSlider(
+            value=self._layer_opacity,
+            min=0,
+            max=1,
+            step=0.01,
+            description="Opacity:",
+            continuous_update=False,
+            readout=True,
+            readout_format=".2f",
+            layout=ipywidgets.Layout(width="320px"),
+            style={"description_width": "50px"},
+        )
+
+        self._gamma_slider = ipywidgets.FloatSlider(
+            value=self._layer_gamma,
+            min=0.1,
+            max=10,
+            step=0.01,
+            description="Gamma:",
+            continuous_update=False,
+            readout=True,
+            readout_format=".2f",
+            layout=ipywidgets.Layout(width="320px"),
+            style={"description_width": "50px"},
+        )
+
+        self._legend_checkbox = ipywidgets.Checkbox(
+            value=False,
+            description="Legend",
+            indent=False,
+            layout=ipywidgets.Layout(width="70px"),
+        )
+
+        self._linear_checkbox = ipywidgets.Checkbox(
+            value=True,
+            description="Linear colormap",
+            indent=False,
+            layout=ipywidgets.Layout(width="150px"),
+        )
+        self._step_checkbox = ipywidgets.Checkbox(
+            value=False,
+            description="Step colormap",
+            indent=False,
+            layout=ipywidgets.Layout(width="140px"),
+        )
+        self._linear_checkbox.observe(self._linear_checkbox_changed, "value")
+        self._step_checkbox.observe(self._step_checkbox_changed, "value")
+
+        self._legend_title_label = ipywidgets.Text(
+            value="Legend",
+            description="Legend title:",
+            tooltip="Enter a title for the legend",
+            layout=ipywidgets.Layout(width="300px"),
+            style={"description_width": "initial"},
+        )
+
+        self._legend_labels_label = ipywidgets.Text(
+            value="Class 1, Class 2, Class 3",
+            description="Legend labels:",
+            tooltip="Enter a a list of labels for the legend",
+            layout=ipywidgets.Layout(width="300px"),
+            style={"description_width": "initial"},
+        )
+
+        self._colormap_hbox = ipywidgets.HBox(
+            [self._linear_checkbox, self._step_checkbox]
+        )
+        self._legend_vbox = ipywidgets.VBox()
+
+        self._colorbar_output = ipywidgets.Output(
+            layout=ipywidgets.Layout(height="60px", max_width="300px")
+        )
+
+        self._legend_checkbox.observe(self._legend_checkbox_changed, "value")
+
+        children = []
+        if self._band_count < 3:
+            self._greyscale_radio_button.index = 0
+            self._band_1_dropdown.layout.width = "300px"
+            self._bands_hbox.children = [self._band_1_dropdown]
+            children = self._get_tool_layout(grayscale=True)
+            self._legend_checkbox.value = False
+
+            if len(self._palette_label.value) > 0 and "," in self._palette_label.value:
+                colors = common.to_hex_colors(
+                    [color.strip() for color in self._palette_label.value.split(",")]
+                )
+                self._render_colorbar(colors)
+        else:
+            self._rgb_radio_button.index = 0
+            sel_bands = self._sel_bands
+            if (sel_bands is None) or (len(sel_bands) < 2):
+                sel_bands = band_names[0:3]
+            self._band_1_dropdown.value = sel_bands[0]
+            self._band_2_dropdown.value = sel_bands[1]
+            self._band_3_dropdown.value = sel_bands[2]
+            self._bands_hbox.children = [
+                self._band_1_dropdown,
+                self._band_2_dropdown,
+                self._band_3_dropdown,
+            ]
+            children = self._get_tool_layout(grayscale=False)
+
+        self._greyscale_radio_button.observe(self._radio1_observer, names=["value"])
+        self._rgb_radio_button.observe(self._radio2_observer, names=["value"])
+
+        super().__init__(
+            layout=ipywidgets.Layout(
+                padding="5px 0px 5px 8px",  # top, right, bottom, left
+                # width="330px",
+                max_height="280px",
+                overflow="auto",
+                display="block",
+            ),
+            children=children,
+        )
+
+    def _get_tool_layout(self, grayscale):
+        return [
+            ipywidgets.HBox([self._greyscale_radio_button, self._rgb_radio_button]),
+            self._bands_hbox,
+            self._value_range_slider,
+            self._opacity_slider,
+            self._gamma_slider,
+        ] + (
+            [
+                ipywidgets.HBox([self._classes_dropdown, self._colormap_dropdown]),
+                self._palette_label,
+                self._colorbar_output,
+                ipywidgets.HBox(
+                    [
+                        self._legend_checkbox,
+                        self._color_picker,
+                        self._add_color_button,
+                        self._del_color_button,
+                        self._reset_color_button,
+                    ]
+                ),
+                self._legend_vbox,
+            ]
+            if grayscale
+            else []
+        )
+
+    def _get_colormaps(self):
+        from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
+
+        colormap_options = pyplot.colormaps()
+        colormap_options.sort()
+        return colormap_options
+
+    def _render_colorbar(self, colors):
+        import matplotlib  # pylint: disable=import-outside-toplevel
+        from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
+
+        colors = common.to_hex_colors(colors)
+
+        _, ax = pyplot.subplots(figsize=(4, 0.3))
+        cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+            "custom", colors, N=256
+        )
+        norm = matplotlib.colors.Normalize(
+            vmin=self._value_range_slider.value[0],
+            vmax=self._value_range_slider.value[1],
+        )
+        matplotlib.colorbar.ColorbarBase(
+            ax, norm=norm, cmap=cmap, orientation="horizontal"
+        )
+
+        self._palette_label.value = ", ".join(colors)
+
+        self._colorbar_output.clear_output()
+        with self._colorbar_output:
+            pyplot.show()
+
+    def _classes_changed(self, change):
+        import matplotlib  # pylint: disable=import-outside-toplevel
+        from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
+
+        if not change["new"]:
+            return
+
+        selected = change["owner"].value
+        if self._colormap_dropdown.value is not None:
+            n_class = None
+            if selected != "Any":
+                n_class = int(self._classes_dropdown.value)
+
+            colors = pyplot.cm.get_cmap(self._colormap_dropdown.value, n_class)
+            cmap_colors = [
+                matplotlib.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
+            ]
+            self._render_colorbar(cmap_colors)
+
+            if len(self._palette_label.value) > 0 and "," in self._palette_label.value:
+                labels = [
+                    f"Class {i+1}"
+                    for i in range(len(self._palette_label.value.split(",")))
+                ]
+                self._legend_labels_label.value = ", ".join(labels)
+
+    def _add_color_clicked(self, _):
+        if self._color_picker.value is not None:
+            if len(self._palette_label.value) == 0:
+                self._palette_label.value = self._color_picker.value[1:]
+            else:
+                self._palette_label.value += ", " + self._color_picker.value[1:]
+
+    def _del_color_clicked(self, _):
+        if "," in self._palette_label.value:
+            items = [item.strip() for item in self._palette_label.value.split(",")]
+            self._palette_label.value = ", ".join(items[:-1])
+        else:
+            self._palette_label.value = ""
+
+    def _reset_color_clicked(self, _):
+        self._palette_label.value = ""
+
+    def _linear_checkbox_changed(self, change):
+        if change["new"]:
+            self._step_checkbox.value = False
+            self._legend_vbox.children = [self._colormap_hbox]
+        else:
+            self._step_checkbox.value = True
+
+    def _step_checkbox_changed(self, change):
+        if change["new"]:
+            self._linear_checkbox.value = False
+            if len(self._layer_palette) > 0:
+                self._legend_labels_label.value = ",".join(
+                    ["Class " + str(i) for i in range(1, len(self._layer_palette) + 1)]
+                )
+            self._legend_vbox.children = [
+                self._colormap_hbox,
+                self._legend_title_label,
+                self._legend_labels_label,
+            ]
+        else:
+            self._linear_checkbox.value = True
+
+    def _colormap_changed(self, change):
+        import matplotlib  # pylint: disable=import-outside-toplevel
+        from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
+
+        if change["new"]:
+            n_class = None
+            if self._classes_dropdown.value != "Any":
+                n_class = int(self._classes_dropdown.value)
+
+            colors = pyplot.cm.get_cmap(self._colormap_dropdown.value, n_class)
+            cmap_colors = [
+                matplotlib.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
+            ]
+            self._render_colorbar(cmap_colors)
+
+            if len(self._palette_label.value) > 0 and "," in self._palette_label.value:
+                labels = [
+                    f"Class {i+1}"
+                    for i in range(len(self._palette_label.value.split(",")))
+                ]
+                self._legend_labels_label.value = ", ".join(labels)
+
+    def on_import_click(self):
+        vis = {}
+        if self._greyscale_radio_button.index == 0:
+            vis["bands"] = [self._band_1_dropdown.value]
+            if len(self._palette_label.value) > 0:
+                vis["palette"] = self._palette_label.value.split(",")
+        else:
+            vis["bands"] = [
+                self._band_1_dropdown.value,
+                self._band_2_dropdown.value,
+                self._band_3_dropdown.value,
+            ]
+
+        vis["min"] = self._value_range_slider.value[0]
+        vis["max"] = self._value_range_slider.value[1]
+        vis["opacity"] = self._opacity_slider.value
+        vis["gamma"] = self._gamma_slider.value
+
+        common.create_code_cell(f"vis_params = {str(vis)}")
+        print(f"vis_params = {str(vis)}")
+
+    def on_apply_click(self):
+        vis = {}
+        if self._greyscale_radio_button.index == 0:
+            vis["bands"] = [self._band_1_dropdown.value]
+            if len(self._palette_label.value) > 0:
+                vis["palette"] = [
+                    c.strip() for c in self._palette_label.value.split(",")
+                ]
+        else:
+            vis["bands"] = [
+                self._band_1_dropdown.value,
+                self._band_2_dropdown.value,
+                self._band_3_dropdown.value,
+            ]
+            vis["gamma"] = self._gamma_slider.value
+
+        vis["min"] = self._value_range_slider.value[0]
+        vis["max"] = self._value_range_slider.value[1]
+
+        self._host_map.add_layer(
+            self._ee_object, vis, self._layer_name, True, self._opacity_slider.value
+        )
+        self._ee_layer.visible = False
+
+        def _remove_control(key):
+            if widget := self._layer_dict.get(key, None):
+                if widget in self._host_map.controls:
+                    self._host_map.remove(widget)
+                del self._layer_dict[key]
+
+        if self._legend_checkbox.value:
+            _remove_control("colorbar")
+            if self._linear_checkbox.value:
+                _remove_control("legend")
+
+                if (
+                    len(self._palette_label.value) > 0
+                    and "," in self._palette_label.value
+                ):
+                    colors = common.to_hex_colors(
+                        [
+                            color.strip()
+                            for color in self._palette_label.value.split(",")
+                        ]
+                    )
+
+                    if hasattr(self._host_map, "colorbar"):
+                        self._host_map.add_colorbar(
+                            vis_params={
+                                "palette": colors,
+                                "min": self._value_range_slider.value[0],
+                                "max": self._value_range_slider.value[1],
+                            },
+                            layer_name=self._layer_name,
+                        )
+            elif self._step_checkbox.value:
+                if (
+                    len(self._palette_label.value) > 0
+                    and "," in self._palette_label.value
+                ):
+                    colors = common.to_hex_colors(
+                        [
+                            color.strip()
+                            for color in self._palette_label.value.split(",")
+                        ]
+                    )
+                    labels = [
+                        label.strip()
+                        for label in self._legend_labels_label.value.split(",")
+                    ]
+
+                    if hasattr(self._host_map, "add_legend"):
+                        self._host_map.add_legend(
+                            title=self._legend_title_label.value,
+                            legend_keys=labels,
+                            legend_colors=colors,
+                            layer_name=self._layer_name,
+                        )
+        else:
+            if self._greyscale_radio_button.index == 0 and "palette" in vis:
+                self._render_colorbar(vis["palette"])
+                _remove_control("colorbar")
+                _remove_control("legend")
+
+    def _legend_checkbox_changed(self, change):
+        if change["new"]:
+            self._linear_checkbox.value = True
+            self._legend_vbox.children = [
+                ipywidgets.HBox([self._linear_checkbox, self._step_checkbox]),
+            ]
+        else:
+            self._legend_vbox.children = []
+
+    def _radio1_observer(self, _):
+        self._rgb_radio_button.unobserve(self._radio2_observer, names=["value"])
+        self._rgb_radio_button.index = None
+        self._rgb_radio_button.observe(self._radio2_observer, names=["value"])
+        self._band_1_dropdown.layout.width = "300px"
+        self._bands_hbox.children = [self._band_1_dropdown]
+        self._palette_label.value = ", ".join(self._layer_palette)
+        self._palette_label.disabled = False
+        self._color_picker.disabled = False
+        self._add_color_button.disabled = False
+        self._del_color_button.disabled = False
+        self._reset_color_button.disabled = False
+        self.children = self._get_tool_layout(grayscale=True)
+
+        if len(self._palette_label.value) > 0 and "," in self._palette_label.value:
+            colors = [color.strip() for color in self._palette_label.value.split(",")]
+            self._render_colorbar(colors)
+
+    def _radio2_observer(self, _):
+        dropdown_width = "98px"
+        self._greyscale_radio_button.unobserve(self._radio1_observer, names=["value"])
+        self._greyscale_radio_button.index = None
+        self._greyscale_radio_button.observe(self._radio1_observer, names=["value"])
+        self._band_1_dropdown.layout.width = dropdown_width
+        self._bands_hbox.children = [
+            self._band_1_dropdown,
+            self._band_2_dropdown,
+            self._band_3_dropdown,
+        ]
+        self._palette_label.value = ""
+        self._palette_label.disabled = True
+        self._color_picker.disabled = True
+        self._add_color_button.disabled = True
+        self._del_color_button.disabled = True
+        self._reset_color_button.disabled = True
+        self.children = self._get_tool_layout(grayscale=False)
+        self._colorbar_output.clear_output()
+
+
+class _VectorLayerEditor(ipywidgets.VBox):
+    """Widget for displaying and editing layer visualization properties."""
+
+    _POINT_SHAPES = [
+        "circle",
+        "square",
+        "diamond",
+        "cross",
+        "plus",
+        "pentagram",
+        "hexagram",
+        "triangle",
+        "triangle_up",
+        "triangle_down",
+        "triangle_left",
+        "triangle_right",
+        "pentagon",
+        "hexagon",
+        "star5",
+        "star6",
+    ]
+
+    @property
+    def _layer_name(self):
+        return self._ee_layer.name
+
+    @property
+    def _layer_opacity(self):
+        return self._ee_layer.opacity
+
+    def __init__(self, host_map, layer_dict):
+        """Initializes a layer manager widget.
+
+        Args:
+            host_map (geemap.Map): The geemap.Map object.
+        """
+
+        self._host_map = host_map
+        if not host_map:
+            raise ValueError("Must pass a valid map when creating a layer manager.")
+
+        self._layer_dict = layer_dict
+
+        self._ee_object = layer_dict["ee_object"]
+        if isinstance(self._ee_object, (ee.Feature, ee.Geometry)):
+            self._ee_object = ee.FeatureCollection(self._ee_object)
+
+        self._ee_layer = layer_dict["ee_layer"]
+
+        self._new_layer_name = ipywidgets.Text(
+            value=f"{self._layer_name} style",
+            description="New layer name:",
+            style={"description_width": "initial"},
+        )
+
+        self._color_picker = ipywidgets.ColorPicker(
+            concise=False,
+            value="#000000",
+            description="Color:",
+            layout=ipywidgets.Layout(width="140px"),
+            style={"description_width": "initial"},
+        )
+
+        self._color_opacity_slider = ipywidgets.FloatSlider(
+            value=self._layer_opacity,
+            min=0,
+            max=1,
+            step=0.01,
+            description="Opacity:",
+            continuous_update=True,
+            readout=False,
+            layout=ipywidgets.Layout(width="130px"),
+            style={"description_width": "50px"},
+        )
+        self._color_opacity_slider.observe(self._color_opacity_change, names="value")
+
+        self._color_opacity_label = ipywidgets.Label(
+            style={"description_width": "initial"},
+            layout=ipywidgets.Layout(padding="0px"),
+        )
+
+        self._point_size_label = ipywidgets.IntText(
+            value=3,
+            description="Point size:",
+            layout=ipywidgets.Layout(width="110px"),
+            style={"description_width": "initial"},
+        )
+
+        self._point_shape_dropdown = ipywidgets.Dropdown(
+            options=self._POINT_SHAPES,
+            value="circle",
+            description="Point shape:",
+            layout=ipywidgets.Layout(width="185px"),
+            style={"description_width": "initial"},
+        )
+
+        self._line_width_label = ipywidgets.IntText(
+            value=2,
+            description="Line width:",
+            layout=ipywidgets.Layout(width="110px"),
+            style={"description_width": "initial"},
+        )
+
+        self._line_type_label = ipywidgets.Dropdown(
+            options=["solid", "dotted", "dashed"],
+            value="solid",
+            description="Line type:",
+            layout=ipywidgets.Layout(width="185px"),
+            style={"description_width": "initial"},
+        )
+
+        self._fill_color_picker = ipywidgets.ColorPicker(
+            concise=False,
+            value="#000000",
+            description="Fill Color:",
+            layout=ipywidgets.Layout(width="160px"),
+            style={"description_width": "initial"},
+        )
+
+        self._fill_color_opacity_slider = ipywidgets.FloatSlider(
+            value=0.66,
+            min=0,
+            max=1,
+            step=0.01,
+            description="Opacity:",
+            continuous_update=True,
+            readout=False,
+            layout=ipywidgets.Layout(width="110px"),
+            style={"description_width": "50px"},
+        )
+        self._fill_color_opacity_slider.observe(
+            self._fill_color_opacity_change, names="value"
+        )
+
+        self._fill_color_opacity_label = ipywidgets.Label(
+            style={"description_width": "initial"},
+            layout=ipywidgets.Layout(padding="0px"),
+        )
+
+        self._color_picker = ipywidgets.ColorPicker(
+            concise=False,
+            value="#000000",
+            layout=ipywidgets.Layout(width="116px"),
+            style={"description_width": "initial"},
+        )
+
+        self._add_color = ipywidgets.Button(
+            icon="plus",
+            tooltip="Add a hex color string to the palette",
+            layout=ipywidgets.Layout(width="32px"),
+        )
+        self._del_color = ipywidgets.Button(
+            icon="minus",
+            tooltip="Remove a hex color string from the palette",
+            layout=ipywidgets.Layout(width="32px"),
+        )
+        self._reset_color = ipywidgets.Button(
+            icon="eraser",
+            tooltip="Remove all color strings from the palette",
+            layout=ipywidgets.Layout(width="34px"),
+        )
+        self._add_color.on_click(self._add_color_clicked)
+        self._del_color.on_click(self._del_color_clicked)
+        self._reset_color.on_click(self._reset_color_clicked)
+
+        self._palette_label = ipywidgets.Text(
+            value="",
+            placeholder="List of hex code (RRGGBB) separated by comma",
+            description="Palette:",
+            tooltip="Enter a list of hex code (RRGGBB) separated by comma",
+            layout=ipywidgets.Layout(width="300px"),
+            style={"description_width": "initial"},
+        )
+
+        self._legend_title_label = ipywidgets.Text(
+            value="Legend",
+            description="Legend title:",
+            tooltip="Enter a title for the legend",
+            layout=ipywidgets.Layout(width="300px"),
+            style={"description_width": "initial"},
+        )
+
+        self._legend_labels_label = ipywidgets.Text(
+            value="Labels",
+            description="Legend labels:",
+            tooltip="Enter a a list of labels for the legend",
+            layout=ipywidgets.Layout(width="300px"),
+            style={"description_width": "initial"},
+        )
+
+        self._field_dropdown = ipywidgets.Dropdown(
+            options=[],
+            value=None,
+            description="Field:",
+            layout=ipywidgets.Layout(width="140px"),
+            style={"description_width": "initial"},
+        )
+        self._field_dropdown.observe(self._field_changed, "value")
+
+        self._field_values_dropdown = ipywidgets.Dropdown(
+            options=[],
+            value=None,
+            description="Values:",
+            layout=ipywidgets.Layout(width="156px"),
+            style={"description_width": "initial"},
+        )
+
+        self._classes_dropdown = ipywidgets.Dropdown(
+            options=["Any"] + [str(i) for i in range(3, 13)],
+            description="Classes:",
+            layout=ipywidgets.Layout(width="115px"),
+            style={"description_width": "initial"},
+        )
+        self._colormap_dropdown = ipywidgets.Dropdown(
+            options=["viridis"],
+            value="viridis",
+            description="Colormap:",
+            layout=ipywidgets.Layout(width="181px"),
+            style={"description_width": "initial"},
+        )
+        self._classes_dropdown.observe(self._classes_changed, "value")
+        self._colormap_dropdown.observe(self._colormap_changed, "value")
+
+        self._style_chk = ipywidgets.Checkbox(
+            value=False,
+            description="Style by attribute",
+            indent=False,
+            layout=ipywidgets.Layout(width="140px"),
+        )
+        self._legend_checkbox = ipywidgets.Checkbox(
+            value=False,
+            description="Legend",
+            indent=False,
+            layout=ipywidgets.Layout(width="70px"),
+        )
+        self._style_chk.observe(self._style_chk_changed, "value")
+        self._legend_checkbox.observe(self._legend_chk_changed, "value")
+
+        self._compute_label = ipywidgets.Label(value="")
+
+        self._style_vbox = ipywidgets.VBox(
+            [ipywidgets.HBox([self._style_chk, self._compute_label])]
+        )
+
+        self._colorbar_output = ipywidgets.Output(
+            layout=ipywidgets.Layout(height="60px", width="300px")
+        )
+
+        is_point = common.geometry_type(self._ee_object) in ["Point", "MultiPoint"]
+        self._point_size_label.disabled = not is_point
+        self._point_shape_dropdown.disabled = not is_point
+
+        super().__init__(
+            layout=ipywidgets.Layout(
+                padding="5px 5px 5px 8px",
+                # width="330px",
+                max_height="250px",
+                overflow="auto",
+                display="block",
+            ),
+            children=[
+                self._new_layer_name,
+                ipywidgets.HBox(
+                    [
+                        self._color_picker,
+                        self._color_opacity_slider,
+                        self._color_opacity_label,
+                    ]
+                ),
+                ipywidgets.HBox([self._point_size_label, self._point_shape_dropdown]),
+                ipywidgets.HBox([self._line_width_label, self._line_type_label]),
+                ipywidgets.HBox(
+                    [
+                        self._fill_color_picker,
+                        self._fill_color_opacity_slider,
+                        self._fill_color_opacity_label,
+                    ]
+                ),
+                self._style_vbox,
+            ],
+        )
+
+    def _get_vis_params(self):
+        vis = {}
+        vis["color"] = self._color_picker.value[1:] + str(
+            hex(int(self._color_opacity_slider.value * 255))
+        )[2:].zfill(2)
+        if common.geometry_type(self._ee_object) in ["Point", "MultiPoint"]:
+            vis["pointSize"] = self._point_size_label.value
+            vis["pointShape"] = self._point_shape_dropdown.value
+        vis["width"] = self._line_width_label.value
+        vis["lineType"] = self._line_type_label.value
+        vis["fillColor"] = self._fill_color_picker.value[1:] + str(
+            hex(int(self._fill_color_opacity_slider.value * 255))
+        )[2:].zfill(2)
+
+        return vis
+
+    def on_apply_click(self):
+        self._compute_label.value = "Computing ..."
+
+        if self._new_layer_name.value in self._host_map.ee_layers:
+            old_layer = self._new_layer_name.value
+            self._host_map.remove(old_layer)
+
+        if not self._style_chk.value:
+            vis = self._get_vis_params()
+            self._host_map.add_layer(
+                self._ee_object.style(**vis), {}, self._new_layer_name.value
+            )
+            self._ee_layer.visible = False
+            self._compute_label.value = ""
+
+        elif (
+            self._style_chk.value
+            and len(self._palette_label.value) > 0
+            and "," in self._palette_label.value
+        ):
+            try:
+                colors = ee.List(
+                    [
+                        color.strip()
+                        + str(hex(int(self._fill_color_opacity_slider.value * 255)))[
+                            2:
+                        ].zfill(2)
+                        for color in self._palette_label.value.split(",")
+                    ]
+                )
+                arr = (
+                    self._ee_object.aggregate_array(self._field_dropdown.value)
+                    .distinct()
+                    .sort()
+                )
+                fc = self._ee_object.map(
+                    lambda f: f.set(
+                        {"styleIndex": arr.indexOf(f.get(self._field_dropdown.value))}
+                    )
+                )
+                step = arr.size().divide(colors.size()).ceil()
+                fc = fc.map(
+                    lambda f: f.set(
+                        {
+                            "style": {
+                                "color": self._color_picker.value[1:]
+                                + str(hex(int(self._color_opacity_slider.value * 255)))[
+                                    2:
+                                ].zfill(2),
+                                "pointSize": self._point_size_label.value,
+                                "pointShape": self._point_shape_dropdown.value,
+                                "width": self._line_width_label.value,
+                                "lineType": self._line_type_label.value,
+                                "fillColor": colors.get(
+                                    ee.Number(
+                                        ee.Number(f.get("styleIndex")).divide(step)
+                                    ).floor()
+                                ),
+                            }
+                        }
+                    )
+                )
+
+                self._host_map.add_layer(
+                    fc.style(**{"styleProperty": "style"}),
+                    {},
+                    f"{self._new_layer_name.value}",
+                )
+
+                if (
+                    len(self._palette_label.value)
+                    and self._legend_checkbox.value
+                    and len(self._legend_labels_label.value) > 0
+                    and hasattr(self._host_map, "add_legend")
+                ):
+                    legend_colors = [
+                        color.strip() for color in self._palette_label.value.split(",")
+                    ]
+                    legend_keys = [
+                        label.strip()
+                        for label in self._legend_labels_label.value.split(",")
+                    ]
+
+                    if hasattr(self._host_map, "add_legend"):
+                        self._host_map.add_legend(
+                            title=self._legend_title_label.value,
+                            legend_keys=legend_keys,
+                            legend_colors=legend_colors,
+                            layer_name=self._new_layer_name.value,
+                        )
+            except Exception as exc:
+                self._compute_label.value = "Error: " + str(exc)
+
+            self._ee_layer.visible = False
+            self._compute_label.value = ""
+
+    def _render_colorbar(self, colors):
+        import matplotlib  # pylint: disable=import-outside-toplevel
+        from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
+
+        colors = common.to_hex_colors(colors)
+
+        _, ax = pyplot.subplots(figsize=(4, 0.3))
+        cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+            "custom", colors, N=256
+        )
+        norm = matplotlib.colors.Normalize(vmin=0, vmax=1)
+        matplotlib.colorbar.ColorbarBase(
+            ax, norm=norm, cmap=cmap, orientation="horizontal"
+        )
+
+        self._palette_label.value = ", ".join(colors)
+        self._colorbar_output.clear_output()
+        with self._colorbar_output:
+            pyplot.show()
+
+    def _classes_changed(self, change):
+        import matplotlib  # pylint: disable=import-outside-toplevel
+        from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
+
+        if change["new"]:
+            selected = change["owner"].value
+            if self._colormap_dropdown.value is not None:
+                n_class = None
+                if selected != "Any":
+                    n_class = int(self._classes_dropdown.value)
+
+                colors = pyplot.cm.get_cmap(self._colormap_dropdown.value, n_class)
+                cmap_colors = [
+                    matplotlib.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
+                ]
+                self._render_colorbar(cmap_colors)
+
+                if (
+                    len(self._palette_label.value) > 0
+                    and "," in self._palette_label.value
+                ):
+                    labels = [
+                        f"Class {i+1}"
+                        for i in range(len(self._palette_label.value.split(",")))
+                    ]
+                    self._legend_labels_label.value = ", ".join(labels)
+
+    def _colormap_changed(self, change):
+        import matplotlib  # pylint: disable=import-outside-toplevel
+        from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
+
+        if change["new"]:
+            n_class = None
+            if self._classes_dropdown.value != "Any":
+                n_class = int(self._classes_dropdown.value)
+
+            colors = pyplot.cm.get_cmap(self._colormap_dropdown.value, n_class)
+            cmap_colors = [
+                matplotlib.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
+            ]
+            self._render_colorbar(cmap_colors)
+
+            if len(self._palette_label.value) > 0 and "," in self._palette_label.value:
+                labels = [
+                    f"Class {i+1}"
+                    for i in range(len(self._palette_label.value.split(",")))
+                ]
+                self._legend_labels_label.value = ", ".join(labels)
+
+    def _fill_color_opacity_change(self, change):
+        self._fill_color_opacity_label.value = str(change["new"])
+
+    def _color_opacity_change(self, change):
+        self._color_opacity_label.value = str(change["new"])
+
+    def _add_color_clicked(self, _):
+        if self._color_picker.value is not None:
+            if len(self._palette_label.value) == 0:
+                self._palette_label.value = self._color_picker.value[1:]
+            else:
+                self._palette_label.value += ", " + self._color_picker.value[1:]
+
+    def _del_color_clicked(self, _):
+        if "," in self._palette_label.value:
+            items = [item.strip() for item in self._palette_label.value.split(",")]
+            self._palette_label.value = ", ".join(items[:-1])
+        else:
+            self._palette_label.value = ""
+
+    def _reset_color_clicked(self, _):
+        self._palette_label.value = ""
+
+    def _style_chk_changed(self, change):
+        from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
+
+        if change["new"]:
+            self._colorbar_output.clear_output()
+
+            self._fill_color_picker.disabled = True
+            colormap_options = pyplot.colormaps()
+            colormap_options.sort()
+            self._colormap_dropdown.options = colormap_options
+            self._colormap_dropdown.value = "viridis"
+            self._style_vbox.children = [
+                ipywidgets.HBox([self._style_chk, self._compute_label]),
+                ipywidgets.HBox([self._field_dropdown, self._field_values_dropdown]),
+                ipywidgets.HBox([self._classes_dropdown, self._colormap_dropdown]),
+                self._palette_label,
+                self._colorbar_output,
+                ipywidgets.HBox(
+                    [
+                        self._legend_checkbox,
+                        self._color_picker,
+                        self._add_color,
+                        self._del_color,
+                        self._reset_color,
+                    ]
+                ),
+            ]
+            self._compute_label.value = "Computing ..."
+
+            self._field_dropdown.options = (
+                ee.Feature(self._ee_object.first()).propertyNames().getInfo()
+            )
+            self._compute_label.value = ""
+            self._classes_dropdown.value = "Any"
+            self._legend_checkbox.value = False
+
+        else:
+            self._fill_color_picker.disabled = False
+            self._style_vbox.children = [
+                ipywidgets.HBox([self._style_chk, self._compute_label])
+            ]
+            self._compute_label.value = ""
+            self._colorbar_output.clear_output()
+
+    def _legend_chk_changed(self, change):
+        if change["new"]:
+            self._style_vbox.children = list(self._style_vbox.children) + [
+                ipywidgets.VBox([self._legend_title_label, self._legend_labels_label])
+            ]
+
+            if len(self._palette_label.value) > 0 and "," in self._palette_label.value:
+                labels = [
+                    f"Class {i+1}"
+                    for i in range(len(self._palette_label.value.split(",")))
+                ]
+                self._legend_labels_label.value = ", ".join(labels)
+
+        else:
+            self._style_vbox.children = [
+                ipywidgets.HBox([self._style_chk, self._compute_label]),
+                ipywidgets.HBox([self._field_dropdown, self._field_values_dropdown]),
+                ipywidgets.HBox([self._classes_dropdown, self._colormap_dropdown]),
+                self._palette_label,
+                ipywidgets.HBox(
+                    [
+                        self._legend_checkbox,
+                        self._color_picker,
+                        self._add_color,
+                        self._del_color,
+                        self._reset_color,
+                    ]
+                ),
+            ]
+
+    def _field_changed(self, change):
+        if change["new"]:
+            self._compute_label.value = "Computing ..."
+            options = self._ee_object.aggregate_array(
+                self._field_dropdown.value
+            ).getInfo()
+            if options is not None:
+                options = list(set(options))
+                options.sort()
+
+            self._field_values_dropdown.options = options
+            self._compute_label.value = ""
+
+    def on_import_click(self):
+        vis = self._get_vis_params()
+        common.create_code_cell(f"style = {str(vis)}")
+        print(f"style = {str(vis)}")

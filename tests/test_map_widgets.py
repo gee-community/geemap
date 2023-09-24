@@ -970,3 +970,64 @@ class TestBasemap(unittest.TestCase):
         self.assertEqual(self.map_fake.find_layer_index("first"), 0)
         self.assertEqual(self.map_fake.find_layer_index("bounded"), 1)
         zoom_to_bounds_mock.assert_called_with([1, 2, 3, 4])
+
+
+@patch.object(ee, "Feature", fake_ee.Feature)
+@patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
+@patch.object(ee, "Geometry", fake_ee.Geometry)
+@patch.object(ee, "Image", fake_ee.Image)
+class TestLayerEditor(unittest.TestCase):
+    """Tests for the `LayerEditor` class in the `map_widgets` module."""
+
+    def _fake_layer_dict(self, ee_object):
+        return {
+            "ee_object": ee_object,
+            "ee_layer": fake_map.FakeEeTileLayer(name="fake-ee-layer-name"),
+            "vis_params": {},
+        }
+
+    def setUp(self):
+        self._fake_map = fake_map.FakeMap()
+
+    def test_layer_editor_no_map(self):
+        """Tests that a valid map must be passed in."""
+        with self.assertRaisesRegex(
+            ValueError, "valid map when creating a LayerEditor widget"
+        ):
+            map_widgets.LayerEditor(None, {})
+
+    def test_layer_editor_feature(self):
+        """Tests that an ee.Feature can be passed in."""
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.Feature())
+        )
+        self.assertIsNotNone(
+            utils.query_widget(widget, map_widgets._VectorLayerEditor, lambda _: True)
+        )
+
+    def test_layer_editor_geometry(self):
+        """Tests that an ee.Geometry can be passed in."""
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.Geometry())
+        )
+        self.assertIsNotNone(
+            utils.query_widget(widget, map_widgets._VectorLayerEditor, lambda _: True)
+        )
+
+    def test_layer_editor_feature_collection(self):
+        """Tests that an ee.FeatureCollection can be passed in."""
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.FeatureCollection())
+        )
+        self.assertIsNotNone(
+            utils.query_widget(widget, map_widgets._VectorLayerEditor, lambda _: True)
+        )
+
+    def test_layer_editor_image(self):
+        """Tests that an ee.Image can be passed in."""
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.Image())
+        )
+        self.assertIsNotNone(
+            utils.query_widget(widget, map_widgets._RasterLayerEditor, lambda _: True)
+        )
