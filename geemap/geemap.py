@@ -32,6 +32,7 @@ from . import toolbar
 from .plot import *
 from .timelapse import *
 from .legends import builtin_legends
+from . import examples
 
 
 basemaps = Box(xyz_to_leaflet(), frozen_box=True)
@@ -235,7 +236,7 @@ class Map(core.Map):
         topright = []
         bottomright = []
 
-        for control in ["data_ctrl", "zoom_ctrl", "fullscreen_ctrl", "search_ctrl"]:
+        for control in ["data_ctrl", "zoom_ctrl", "fullscreen_ctrl", "draw_ctrl"]:
             if self.kwargs.get(control, True):
                 topleft.append(control)
 
@@ -247,7 +248,7 @@ class Map(core.Map):
             if self.kwargs.get(control, True):
                 topright.append(control)
 
-        for control in ["attribution_ctrl"]:
+        for control in ["attribution_control"]:
             if self.kwargs.get(control, True):
                 bottomright.append(control)
 
