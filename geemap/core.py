@@ -9,6 +9,7 @@ import ee
 import ipyleaflet
 import ipywidgets
 
+from . import basemaps
 from . import common
 from . import ee_tile_layers
 from . import map_widgets
@@ -128,6 +129,14 @@ class Map(ipyleaflet.Map, MapInterface):
         "scroll_wheel_zoom": True,
     }
 
+    _BASEMAP_ALIASES: Dict[str, str] = {
+        "DEFAULT": "OpenStreetMap.Mapnik",
+        "ROADMAP": "Esri.WorldStreetMap",
+        "SATELLITE": "Esri.WorldImagery",
+        "TERRAIN": "Esri.WorldTopoMap",
+        "HYBRID": "Esri.WorldImagery",
+    }
+
     @property
     def width(self) -> str:
         return self.layout.width
@@ -163,7 +172,13 @@ class Map(ipyleaflet.Map, MapInterface):
     def _layer_editor(self) -> Optional[map_widgets.LayerEditor]:
         return self._find_widget_of_type(map_widgets.LayerEditor)
 
+    @property
+    def _basemap_selector(self) -> Optional[map_widgets.Basemap]:
+        return self._find_widget_of_type(map_widgets.Basemap)
+
     def __init__(self, **kwargs):
+        self._available_basemaps = self._get_available_basemaps()
+
         if "width" in kwargs:
             self.width: str = kwargs.pop("width", "100%")
         self.height: str = kwargs.pop("height", "600px")
@@ -284,6 +299,8 @@ class Map(ipyleaflet.Map, MapInterface):
             self._add_layer_manager(position, **kwargs)
         elif obj == "layer_editor":
             self._add_layer_editor(position, **kwargs)
+        elif obj == "basemap_selector":
+            self._add_basemap_selector(position, **kwargs)
         else:
             super().add(obj)
         if self._layer_manager:
@@ -361,6 +378,21 @@ class Map(ipyleaflet.Map, MapInterface):
         control = ipyleaflet.WidgetControl(widget=widget, position=position)
         super().add(control)
 
+    def _add_basemap_selector(self, position: str, **kwargs) -> None:
+        if widget := self._basemap_selector:
+            self._log_widget_already_present(widget)
+            return
+
+        basemap_names = kwargs.pop("basemaps", list(self._available_basemaps.keys()))
+        value = kwargs.pop(
+            "value", self._get_preferred_basemap_name(self.layers[0].name)
+        )
+        basemap = map_widgets.Basemap(basemap_names, value, **kwargs)
+        basemap.on_close = lambda: self.remove("basemap_selector")
+        basemap.on_basemap_changed = self._replace_basemap
+        basemap_control = ipyleaflet.WidgetControl(widget=basemap, position=position)
+        super().add(basemap_control)
+
     def remove(self, widget: Any) -> None:
         """Removes a widget to the map."""
 
@@ -373,6 +405,7 @@ class Map(ipyleaflet.Map, MapInterface):
             "inspector": map_widgets.Inspector,
             "layer_manager": map_widgets.LayerManager,
             "layer_editor": map_widgets.LayerEditor,
+            "basemap_selector": map_widgets.Basemap,
         }
         if widget_type := basic_controls.get(widget, None):
             if control := self._find_widget_of_type(widget_type, return_control=True):
@@ -439,6 +472,14 @@ class Map(ipyleaflet.Map, MapInterface):
     def _toolbar_main_tools(self) -> List[toolbar.Toolbar.Item]:
         return [
             toolbar.Toolbar.Item(
+                icon="map",
+                tooltip="Basemap selector",
+                callback=lambda m, selected: m.add("basemap_selector")
+                if selected
+                else None,
+                reset=False,
+            ),
+            toolbar.Toolbar.Item(
                 icon="info",
                 tooltip="Inspector",
                 callback=lambda m, selected: m.add("inspector") if selected else None,
@@ -465,3 +506,36 @@ class Map(ipyleaflet.Map, MapInterface):
             ret_kwargs[kwarg] = kwargs.pop(kwarg, default)
         ret_kwargs.update(kwargs)
         return ret_kwargs
+
+    def _replace_basemap(self, basemap_name: str) -> None:
+        basemap = self._available_basemaps.get(basemap_name, None)
+        if basemap is None:
+            logging.warning("Invalid basemap selected: %s", basemap_name)
+            return
+        self.substitute_layer(
+            self.layers[0],
+            ipyleaflet.TileLayer(
+                url=basemap["url"],
+                name=basemap["name"],
+                max_zoom=basemap.get("max_zoom", 22),
+                attribution=basemap.get("attribution", None),
+            ),
+        )
+
+    def _get_available_basemaps(self) -> Dict[str, Any]:
+        """Convert xyz tile services to a dictionary of basemaps."""
+        ret_dict = {}
+        for tile_info in basemaps.get_xyz_dict().values():
+            tile_info["url"] = tile_info.build_url()
+            ret_dict[tile_info["name"]] = tile_info
+        extra_dict = {k: ret_dict[v] for k, v in self._BASEMAP_ALIASES.items()}
+        return {**extra_dict, **ret_dict}
+
+    def _get_preferred_basemap_name(self, basemap_name: str) -> str:
+        """Returns the aliased basemap name."""
+        try:
+            return list(self._BASEMAP_ALIASES.keys())[
+                list(self._BASEMAP_ALIASES.values()).index(basemap_name)
+            ]
+        except ValueError:
+            return basemap_name
