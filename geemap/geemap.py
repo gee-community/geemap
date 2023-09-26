@@ -998,9 +998,10 @@ class Map(core.Map):
             opened (bool, optional): Whether the control is opened. Defaults to True.
             show_close_button (bool, optional): Whether to show the close button. Defaults to True.
         """
-        super()._add_layer_manager("layer_manager", position)
-        self.layer_manager_widget.collapsed = not opened
-        self.layer_manager_widget.close_button_hidden = not show_close_button
+        super()._add_layer_manager(position)
+        if layer_manager := self._layer_manager:
+            layer_manager.collapsed = not opened
+            layer_manager.close_button_hidden = not show_close_button
 
     def add_basemap_widget(
         self,
