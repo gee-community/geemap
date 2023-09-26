@@ -36,89 +36,6 @@ from .timelapse import *
 basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
 
-class MapDrawControl(ipyleaflet.DrawControl, map_widgets.AbstractDrawControl):
-    """Implements the AbstractDrawControl for the map."""
-
-    _roi_start = False
-    _roi_end = False
-
-    def __init__(self, host_map, **kwargs):
-        """Initialize the map draw control.
-
-        Args:
-            host_map (geemap.Map): The geemap.Map object that the control will be added to.
-        """
-        super(MapDrawControl, self).__init__(host_map=host_map, **kwargs)
-
-    @property
-    def user_roi(self):
-        """Returns the last drawn geometry.
-
-        Returns:
-            ee.Geometry: Last drawn geometry.
-        """
-        return self.last_geometry
-
-    @property
-    def user_rois(self):
-        """Returns all drawn geometries as an ee.FeatureCollection.
-
-        Returns:
-            ee.FeatureCollection: All drawn geometries.
-        """
-        return self.collection
-
-    # NOTE: Overridden for backwards compatibility, where edited geometries are
-    # added to the layer instead of modified in place. Remove when
-    # https://github.com/jupyter-widgets/ipyleaflet/issues/1119 is fixed to
-    # allow geometry edits to be reflected on the tile layer.
-    def _handle_geometry_edited(self, geo_json):
-        return self._handle_geometry_created(geo_json)
-
-    def _get_synced_geojson_from_draw_control(self):
-        return [data.copy() for data in self.data]
-
-    def _bind_to_draw_control(self):
-        # Handles draw events
-        def handle_draw(_, action, geo_json):
-            try:
-                self._roi_start = True
-                if action == "created":
-                    self._handle_geometry_created(geo_json)
-                elif action == "edited":
-                    self._handle_geometry_edited(geo_json)
-                elif action == "deleted":
-                    self._handle_geometry_deleted(geo_json)
-                self._roi_end = True
-                self._roi_start = False
-            except Exception as e:
-                self.reset(clear_draw_control=False)
-                self._roi_start = False
-                self._roi_end = False
-                print("There was an error creating Earth Engine Feature.")
-                raise Exception(e)
-
-        self.on_draw(handle_draw)
-        # NOTE: Uncomment the following code once
-        # https://github.com/jupyter-widgets/ipyleaflet/issues/1119 is fixed
-        # to allow edited geometries to be reflected instead of added.
-        # def handle_data_update(_):
-        #     self._sync_geometries()
-        # self.observe(handle_data_update, 'data')
-
-    def _remove_geometry_at_index_on_draw_control(self, index):
-        # NOTE: Uncomment the following code once
-        # https://github.com/jupyter-widgets/ipyleaflet/issues/1119 is fixed to
-        # remove drawn geometries with `remove_last_drawn()`.
-        # del self.data[index]
-        # self.send_state(key='data')
-        pass
-
-    def _clear_draw_control(self):
-        self.data = []  # Remove all drawn features from the map.
-        return self.clear()
-
-
 class Map(core.Map):
     """The Map class inherits the core Map class. The arguments you can pass to the Map initialization
         can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html.
@@ -131,24 +48,32 @@ class Map(core.Map):
 
     # Map attributes for drawing features
     @property
+    def draw_control(self):
+        return self.get_draw_control()
+
+    @property
+    def draw_control_lite(self):
+        return self.get_draw_control()
+
+    @property
     def draw_features(self):
-        return self.draw_control.features if self.draw_control else []
+        return self._draw_control.features if self._draw_control else []
 
     @property
     def draw_last_feature(self):
-        return self.draw_control.last_feature if self.draw_control else None
+        return self._draw_control.last_feature if self._draw_control else None
 
     @property
     def draw_layer(self):
-        return self.draw_control.layer if self.draw_control else None
+        return self._draw_control.layer if self._draw_control else None
 
     @property
     def user_roi(self):
-        return self.draw_control.user_roi if self.draw_control else None
+        return self._draw_control.last_geometry if self._draw_control else None
 
     @property
     def user_rois(self):
-        return self.draw_control.user_rois if self.draw_control else None
+        return self._draw_control.collection if self._draw_control else None
 
     def __init__(self, **kwargs):
         """Initialize a map object. The following additional parameters can be passed in addition to the ipyleaflet.Map parameters:
@@ -305,6 +230,7 @@ class Map(core.Map):
             "fullscreen_ctrl": "fullscreen_control",
             "scale_ctrl": "scale_control",
             "toolbar_ctrl": "toolbar",
+            "draw_ctrl": "draw_control",
         }
         obj = backward_compatibilities.get(obj, obj)
 
@@ -312,8 +238,6 @@ class Map(core.Map):
             toolbar.search_data_gui(self, position=position)
         elif obj == "search_ctrl":
             self.add_search_control(position=position)
-        elif obj == "draw_ctrl":
-            self.add_draw_control(position=position)
         elif obj == "measure_ctrl":
             measure = ipyleaflet.MeasureControl(
                 position=position,
@@ -2529,18 +2453,7 @@ class Map(core.Map):
         Args:
             position (str, optional): The position of the draw control. Defaults to "topleft".
         """
-        draw_control = MapDrawControl(
-            host_map=self,
-            marker={"shapeOptions": {"color": "#3388ff"}},
-            rectangle={"shapeOptions": {"color": "#3388ff"}},
-            # circle={"shapeOptions": {"color": "#3388ff"}},
-            circlemarker={},
-            edit=True,
-            remove=True,
-            position=position,
-        )
-        self.add(draw_control)
-        self.draw_control = draw_control
+        super().add("draw_control", position=position)
 
     def add_draw_control_lite(self, position="topleft"):
         """Add a lite version draw control to the map for the plotting tool.
@@ -2548,8 +2461,9 @@ class Map(core.Map):
         Args:
             position (str, optional): The position of the draw control. Defaults to "topleft".
         """
-
-        draw_control_lite = ipyleaflet.DrawControl(
+        super().add(
+            "draw_control",
+            position=position,
             marker={},
             rectangle={"shapeOptions": {"color": "#3388ff"}},
             circle={"shapeOptions": {"color": "#3388ff"}},
@@ -2558,9 +2472,7 @@ class Map(core.Map):
             polygon={},
             edit=False,
             remove=False,
-            position=position,
         )
-        self.draw_control_lite = draw_control_lite
 
     def add_toolbar(self, position="topright", **kwargs):
         """Add a toolbar to the map.
@@ -4053,31 +3965,20 @@ class Map(core.Map):
 
     def remove_draw_control(self):
         """Removes the draw control from the map"""
-        controls = []
-        old_draw_control = None
-        for control in self.controls:
-            if isinstance(control, MapDrawControl):
-                old_draw_control = control
-
-            else:
-                controls.append(control)
-
-        self.controls = tuple(controls)
-        if old_draw_control:
-            old_draw_control.close()
+        self.remove("draw_control")
 
     def remove_drawn_features(self):
         """Removes user-drawn geometries from the map"""
-        if self.draw_control is not None:
-            self.draw_control.reset()
+        if self._draw_control is not None:
+            self._draw_control.reset()
 
     def remove_last_drawn(self):
         """Removes last user-drawn geometry from the map"""
-        if self.draw_control is not None:
-            if self.draw_control.count == 1:
+        if self._draw_control is not None:
+            if self._draw_control.count == 1:
                 self.remove_drawn_features()
-            elif self.draw_control.count:
-                self.draw_control.remove_geometry(self.draw_control.geometries[-1])
+            elif self._draw_control.count:
+                self._draw_control.remove_geometry(self._draw_control.geometries[-1])
                 if hasattr(self, "_chart_values"):
                     self._chart_values = self._chart_values[:-1]
                 if hasattr(self, "_chart_points"):

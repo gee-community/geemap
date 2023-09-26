@@ -1,3 +1,8 @@
+import fake_ee
+
+from geemap import ee_tile_layers
+
+
 class FakeMap:
     """A fake map used for initializing widgets."""
 
@@ -45,7 +50,32 @@ class FakeMap:
 
         return -1
 
-    def add_layer(self, layer):
+    def add_layer(
+        self,
+        ee_object,
+        vis_params=None,
+        name=None,
+        shown=True,
+        opacity=1.0,
+    ):
+        layer = ee_object
+        if isinstance(
+            ee_object,
+            (
+                fake_ee.FeatureCollection,
+                fake_ee.Feature,
+                fake_ee.Geometry,
+                fake_ee.Image,
+            ),
+        ):
+            layer = ee_tile_layers.EELeafletTileLayer(
+                ee_object, vis_params, name, shown, opacity
+            )
+            self.ee_layers[name] = {
+                "ee_object": ee_object,
+                "ee_layer": layer,
+                "vis_params": vis_params,
+            }
         self.layers.append(layer)
 
     def remove_layer(self, layer):

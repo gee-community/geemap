@@ -10,6 +10,7 @@ import ipyleaflet
 import ipywidgets
 
 from . import common
+from . import draw_control
 from . import ee_tile_layers
 from . import map_widgets
 from . import toolbar
@@ -152,6 +153,10 @@ class Map(ipyleaflet.Map, MapInterface):
         return self._find_widget_of_type(map_widgets.Inspector)
 
     @property
+    def _draw_control(self) -> draw_control.MapDrawControl:
+        return self._find_widget_of_type(draw_control.MapDrawControl)
+
+    @property
     def _layer_manager(self) -> ipyleaflet.WidgetControl:
         if toolbar_widget := self._toolbar:
             if isinstance(toolbar_widget.accessory_widget, map_widgets.LayerManager):
@@ -280,6 +285,8 @@ class Map(ipyleaflet.Map, MapInterface):
             self._add_inspector(position, **kwargs)
         elif obj == "layer_manager":
             self._add_layer_manager(position, **kwargs)
+        elif obj == "draw_control":
+            self._add_draw_control(position, **kwargs)
         else:
             super().add(obj)
         if self._layer_manager:
@@ -349,6 +356,32 @@ class Map(ipyleaflet.Map, MapInterface):
         )
         super().add(inspector_control)
 
+    def _add_draw_control(self, position: str, **kwargs) -> None:
+        """Add a draw control to the map
+
+        Args:
+            position (str, optional): The position of the draw control. Defaults to "topleft".
+        """
+        if widget := self._draw_control:
+            self._log_widget_already_present(widget)
+            return
+        default_args = dict(
+            marker={"shapeOptions": {"color": "#3388ff"}},
+            rectangle={"shapeOptions": {"color": "#3388ff"}},
+            circlemarker={},
+            edit=True,
+            remove=True,
+            position=position,
+        )
+        control = draw_control.MapDrawControl(
+            host_map=self,
+            **{**default_args, **kwargs},
+        )
+        super().add(control)
+
+    def get_draw_control(self) -> draw_control.MapDrawControl | None:
+        return self._draw_control
+
     def remove(self, widget: str) -> None:
         """Removes a widget to the map."""
 
@@ -360,6 +393,7 @@ class Map(ipyleaflet.Map, MapInterface):
             "toolbar": toolbar.Toolbar,
             "inspector": map_widgets.Inspector,
             "layer_manager": map_widgets.LayerManager,
+            "draw_control": draw_control.MapDrawControl,
         }
         if widget_type := basic_controls.get(widget, None):
             if control := self._find_widget_of_type(widget_type, return_control=True):
@@ -431,7 +465,7 @@ class Map(ipyleaflet.Map, MapInterface):
 
     def _control_config(self) -> Dict[str, List[str]]:
         return {
-            "topleft": ["zoom_control", "fullscreen_control"],
+            "topleft": ["zoom_control", "fullscreen_control", "draw_control"],
             "bottomleft": ["scale_control", "measure_control"],
             "topright": ["toolbar"],
             "bottomright": ["attribution_control"],

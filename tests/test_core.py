@@ -8,7 +8,7 @@ import ee
 import ipyleaflet
 import ipywidgets
 
-from geemap import core, toolbar
+from geemap import core, draw_control, toolbar
 from tests import fake_ee, utils
 
 
@@ -26,6 +26,7 @@ class TestMap(unittest.TestCase):
             "toolbar",
             "inspector",
             "layer_manager",
+            "draw_control",
         ]
         for widget in widgets:
             self.core_map.remove(widget)
@@ -41,12 +42,13 @@ class TestMap(unittest.TestCase):
         self.assertEqual(self.core_map.get_zoom(), 2)
 
         controls = self.core_map.controls
-        self.assertEqual(len(controls), 5)
+        self.assertEqual(len(controls), 6)
         self.assertIsInstance(controls[0], ipyleaflet.ZoomControl)
         self.assertIsInstance(controls[1], ipyleaflet.FullScreenControl)
-        self.assertIsInstance(controls[2], ipyleaflet.ScaleControl)
-        self.assertIsInstance(controls[3].widget, toolbar.Toolbar)
-        self.assertIsInstance(controls[4], ipyleaflet.AttributionControl)
+        self.assertIsInstance(controls[2], draw_control.MapDrawControl)
+        self.assertIsInstance(controls[3], ipyleaflet.ScaleControl)
+        self.assertIsInstance(controls[4].widget, toolbar.Toolbar)
+        self.assertIsInstance(controls[5], ipyleaflet.AttributionControl)
 
     def test_set_center(self):
         """Tests that `set_center` sets the center and zoom."""
@@ -113,13 +115,13 @@ class TestMap(unittest.TestCase):
 
     def test_add_duplicate_basic_widget(self):
         """Tests adding a duplicate widget to the map."""
-        self.assertEqual(len(self.core_map.controls), 5)
+        self.assertEqual(len(self.core_map.controls), 6)
         self.assertIsInstance(self.core_map.controls[0], ipyleaflet.ZoomControl)
         self.assertEqual(self.core_map.controls[0].position, "topleft")
 
         self.core_map.add("zoom_control", position="bottomright")
 
-        self.assertEqual(len(self.core_map.controls), 5)
+        self.assertEqual(len(self.core_map.controls), 6)
         self.assertIsInstance(self.core_map.controls[0], ipyleaflet.ZoomControl)
         self.assertEqual(self.core_map.controls[0].position, "topleft")
 
@@ -138,3 +140,14 @@ class TestMap(unittest.TestCase):
         self.assertEqual(len(tool_grid), 2)
         self.assertEqual(tool_grid[0].tooltip, "Inspector")
         self.assertEqual(tool_grid[1].tooltip, "Get help")
+
+    def test_add_draw_control(self):
+        """Tests adding and getting the draw widget."""
+
+        self._clear_default_widgets()
+        self.core_map.add("draw_control", position="topleft")
+
+        self.assertEqual(len(self.core_map.controls), 1)
+        self.assertIsInstance(
+            self.core_map.get_draw_control(), draw_control.MapDrawControl
+        )
