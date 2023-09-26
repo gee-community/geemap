@@ -125,6 +125,7 @@ class Map(ipyleaflet.Map, MapInterface):
         "zoom_control": False,
         "attribution_control": False,
         "ee_initialize": True,
+        "scroll_wheel_zoom": True,
     }
 
     @property
@@ -169,10 +170,6 @@ class Map(ipyleaflet.Map, MapInterface):
 
         self.ee_layers: Dict[str, Dict[str, Any]] = {}
         self.geojson_layers: List[Any] = []
-
-        # Enable scroll wheel zoom by default
-        if "scroll_wheel_zoom" not in kwargs:
-            kwargs["scroll_wheel_zoom"] = True
 
         kwargs = self._apply_kwarg_defaults(kwargs)
         super().__init__(**kwargs)
