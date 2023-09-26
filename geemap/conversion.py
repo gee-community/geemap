@@ -581,7 +581,9 @@ def js_snippet_to_py(
         print(e)
 
 
-def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
+def js_to_python_dir(
+    in_dir, out_dir=None, use_qgis=True, github_repo=None, import_geemap=False
+):
     """Converts all Earth Engine JavaScripts in a folder recursively to Python scripts.
 
     Args:
@@ -589,6 +591,7 @@ def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
         out_dir (str, optional): The output folder containing Earth Engine Python scripts. Defaults to None.
         use_qgis (bool, optional): Whether to add "from ee_plugin import Map \n" to the output script. Defaults to True.
         github_repo (str, optional): GitHub repo url. Defaults to None.
+        import_geemap (bool, optional): Whether to add "import geemap" to the output script. Defaults to False.
     """
     print("Converting Earth Engine JavaScripts to Python scripts...\n")
     in_dir = os.path.abspath(in_dir)
@@ -609,7 +612,9 @@ def js_to_python_dir(in_dir, out_dir=None, use_qgis=True, github_repo=None):
         # else:
         out_file = os.path.splitext(in_file)[0] + "_geemap.py"
         out_file = out_file.replace(in_dir, out_dir)
-        js_to_python(in_file, out_file, use_qgis, github_repo, import_geemap=True)
+        js_to_python(
+            in_file, out_file, use_qgis, github_repo, import_geemap=import_geemap
+        )
     # print("Output Python script folder: {}".format(out_dir))
 
 

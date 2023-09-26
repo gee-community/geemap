@@ -10,6 +10,7 @@ import ee
 
 from geemap import map_widgets
 from tests import fake_ee, fake_map, utils
+from geemap.legends import builtin_legends
 
 
 class TestColorbar(unittest.TestCase):
@@ -224,6 +225,62 @@ class TestColorbar(unittest.TestCase):
     def test_colorbar_vis_params_throws_for_not_dict(self):
         with self.assertRaisesRegex(TypeError, "vis_params must be a dictionary"):
             map_widgets.Colorbar(vis_params="NOT a dict")
+
+
+class TestLegend(unittest.TestCase):
+    """Tests for the Legend class in the `map_widgets` module."""
+
+    TEST_COLORS_HEX = ["#ff0000", "#00ff00", "#0000ff"]
+    TEST_COLORS_RGB = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
+    TEST_KEYS = ["developed", "forest", "open water"]
+
+    def test_legend_unable_to_convert_rgb_to_hex(self):
+        with self.assertRaisesRegex(ValueError,
+                                    "Unable to convert rgb value to hex."):
+            test_keys = ["Key 1"]
+            test_colors = [("invalid", "invalid")]
+            map_widgets.Legend(keys=test_keys, colors=test_colors)
+
+    def test_legend_keys_and_colors_not_same_length(self):
+        with self.assertRaisesRegex(ValueError,
+                                    ("The legend keys and colors must be the "
+                                        + "same length.")):
+            test_keys = ["one", "two", "three", "four"]
+            map_widgets.Legend(keys=test_keys,
+                               colors=TestLegend.TEST_COLORS_HEX)
+
+    def test_legend_builtin_legend_not_allowed(self):
+        expected_regex = ("The builtin legend must be one of the following: {}"
+                          .format(", ".join(builtin_legends)))
+        with self.assertRaisesRegex(ValueError, expected_regex):
+            map_widgets.Legend(builtin_legend="invalid_builtin_legend")
+
+    def test_legend_position_not_allowed(self):
+        expected_regex = ("The position must be one of the following: " +
+                          "topleft, topright, bottomleft, bottomright")
+        with self.assertRaisesRegex(ValueError, expected_regex):
+            map_widgets.Legend(position="invalid_position")
+
+    def test_legend_keys_not_a_dict(self):
+        with self.assertRaisesRegex(TypeError,
+                                    "The legend keys must be a list."):
+            map_widgets.Legend(keys="invalid_keys")
+
+    def test_legend_colors_not_a_list(self):
+        with self.assertRaisesRegex(TypeError,
+                                    "The legend colors must be a list."):
+            map_widgets.Legend(colors="invalid_colors")
+
+    def test_legend_colors_not_a_list_of_tuples(self):
+        with self.assertRaisesRegex(TypeError,
+                                    ("The legend colors must be a list of " +
+                                        "tuples.")):
+            map_widgets.Legend(colors=["invalid_tuple"])
+
+    def test_legend_dict_not_a_dictionary(self):
+        with self.assertRaisesRegex(TypeError,
+                                    "The legend dict must be a dictionary."):
+            map_widgets.Legend(legend_dict="invalid_legend_dict")
 
 
 @patch.object(ee, "Algorithms", fake_ee.Algorithms)
@@ -593,7 +650,9 @@ class TestLayerManager(unittest.TestCase):
         self.assertIsNotNone(self.toggle_all_checkbox)
 
     def test_layer_manager_close_button_hidden(self):
-        """Tests that setting the close_button_hidden property hides the close button."""
+        """Tests that setting the close_button_hidden property hides the close
+        button.
+        """
         self.layer_manager.close_button_hidden = True
 
         self.assertIsNotNone(self.collapse_button)
@@ -670,3 +729,64 @@ class TestBasemap(unittest.TestCase):
         self.assertEqual(self.map_fake.find_layer_index("first"), 0)
         self.assertEqual(self.map_fake.find_layer_index("bounded"), 1)
         zoom_to_bounds_mock.assert_called_with([1, 2, 3, 4])
+
+
+@patch.object(ee, "Feature", fake_ee.Feature)
+@patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
+@patch.object(ee, "Geometry", fake_ee.Geometry)
+@patch.object(ee, "Image", fake_ee.Image)
+class TestLayerEditor(unittest.TestCase):
+    """Tests for the `LayerEditor` class in the `map_widgets` module."""
+
+    def _fake_layer_dict(self, ee_object):
+        return {
+            "ee_object": ee_object,
+            "ee_layer": fake_map.FakeEeTileLayer(name="fake-ee-layer-name"),
+            "vis_params": {},
+        }
+
+    def setUp(self):
+        self._fake_map = fake_map.FakeMap()
+
+    def test_layer_editor_no_map(self):
+        """Tests that a valid map must be passed in."""
+        with self.assertRaisesRegex(
+            ValueError, "valid map when creating a LayerEditor widget"
+        ):
+            map_widgets.LayerEditor(None, {})
+
+    def test_layer_editor_feature(self):
+        """Tests that an ee.Feature can be passed in."""
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.Feature())
+        )
+        self.assertIsNotNone(
+            utils.query_widget(widget, map_widgets._VectorLayerEditor, lambda _: True)
+        )
+
+    def test_layer_editor_geometry(self):
+        """Tests that an ee.Geometry can be passed in."""
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.Geometry())
+        )
+        self.assertIsNotNone(
+            utils.query_widget(widget, map_widgets._VectorLayerEditor, lambda _: True)
+        )
+
+    def test_layer_editor_feature_collection(self):
+        """Tests that an ee.FeatureCollection can be passed in."""
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.FeatureCollection())
+        )
+        self.assertIsNotNone(
+            utils.query_widget(widget, map_widgets._VectorLayerEditor, lambda _: True)
+        )
+
+    def test_layer_editor_image(self):
+        """Tests that an ee.Image can be passed in."""
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.Image())
+        )
+        self.assertIsNotNone(
+            utils.query_widget(widget, map_widgets._RasterLayerEditor, lambda _: True)
+        )

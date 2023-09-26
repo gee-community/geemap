@@ -32,7 +32,7 @@ class TestMap(unittest.TestCase):
             self.core_map.remove(widget)
 
     def setUp(self):
-        self.core_map = core.Map(ee_initialize=False)
+        self.core_map = core.Map(ee_initialize=False, width="100%")
 
     def test_defaults(self):
         """Tests that map defaults are set properly."""

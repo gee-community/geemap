@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.27.1 - Sep 24, 2023
+
+**What's Changed**
+
+-   Refactor layer editor into an ipywidgets subclass by @naschmitz in [#1717](https://github.com/gee-community/geemap/pull/1717)
+-   Refactor the legend into an ipywidgets subclass by @jgarcia525 in [#1722](https://github.com/gee-community/geemap/pull/1722)
+-   Fix map horizontal scrollbar issue by @giswqs in [#1728](https://github.com/gee-community/geemap/pull/1728)
+-   Fix map width test error by @giswqs in [#1729](https://github.com/gee-community/geemap/pull/1729)
+-   Update G4G workshop notebook by @giswqs in [#1730](https://github.com/gee-community/geemap/pull/1730)
+
+**New Contributors**
+
+-   @jgarcia525 made their first contribution in [#1721](https://github.com/gee-community/geemap/pull/1721)
+
+**Full Changelog**: [v0.25.0...v0.27.1](https://github.com/gee-community/geemap/compare/v0.25.0...v0.27.1)
+
 ## v0.27.0 - Sep 21, 2023
 
 **What's Changed**
