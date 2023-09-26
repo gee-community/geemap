@@ -647,8 +647,6 @@ def _plotting_tool_callback(map, selected):
         map._chart_values = []
     if hasattr(map, "_chart_labels"):
         map._chart_labels = None
-    map.remove_draw_control()
-    map.add_draw_control()
 
 
 def ee_plot_gui(m, position="topright", **kwargs):
@@ -677,6 +675,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
     m._plot_dropdown_control = plot_dropdown_control
     m.add(plot_dropdown_control)
 
+    old_draw_control = m.get_draw_control()
     m.remove_draw_control()
     m.add_draw_control_lite()
     draw_control = m.get_draw_control()
@@ -818,6 +817,11 @@ def ee_plot_gui(m, position="topright", **kwargs):
         m.on_interaction(handle_interaction, remove=True)
         m._plot_widget = None
         m.default_style = {"cursor": "default"}
+        if old_draw_control:
+            old_draw_control.open()
+            m.substitute(m.get_draw_control(), old_draw_control)
+        else:
+            m.remove_draw_control()
 
     close_btn.on_click(close_click)
 
@@ -1888,6 +1892,8 @@ def collect_samples(m):
     )
     buttons.style.button_width = "99px"
 
+    old_draw_control = m.get_draw_control()
+
     def button_clicked(change):
         if change["new"] == "Apply":
             if len(color.value) != 7:
@@ -1940,8 +1946,11 @@ def collect_samples(m):
                 m.remove_control(m.training_ctrl)
             full_widget.close()
             # Restore default draw control.
-            m.remove_draw_control()
-            m.add_draw_control()
+            if old_draw_control:
+                old_draw_control.open()
+                m.substitute(m.get_draw_control(), old_draw_control)
+            else:
+                m.remove_draw_control()
         buttons.value = None
 
     buttons.observe(button_clicked, "value")

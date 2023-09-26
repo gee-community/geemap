@@ -1,4 +1,4 @@
-import fake_ee
+import ee
 
 from geemap import ee_tile_layers
 
@@ -62,10 +62,10 @@ class FakeMap:
         if isinstance(
             ee_object,
             (
-                fake_ee.FeatureCollection,
-                fake_ee.Feature,
-                fake_ee.Geometry,
-                fake_ee.Image,
+                ee.FeatureCollection,
+                ee.Feature,
+                ee.Geometry,
+                ee.Image,
             ),
         ):
             layer = ee_tile_layers.EELeafletTileLayer(
