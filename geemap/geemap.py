@@ -959,7 +959,7 @@ class Map(core.Map):
         Args:
             layer_dict (dict): A dict containing information about the layer. It is an element from Map.ee_layers.
         """
-        self.add("layer_editor")
+        self._add_layer_editor(position="topright", layer_dict=layer_dict)
 
     def add_inspector(
         self,
