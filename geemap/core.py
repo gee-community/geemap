@@ -144,22 +144,22 @@ class Map(ipyleaflet.Map, MapInterface):
         self.layout.height = value
 
     @property
-    def _toolbar(self) -> toolbar.Toolbar:
+    def _toolbar(self) -> Optional[toolbar.Toolbar]:
         return self._find_widget_of_type(toolbar.Toolbar)
 
     @property
-    def _inspector(self) -> ipyleaflet.WidgetControl:
+    def _inspector(self) -> Optional[map_widgets.Inspector]:
         return self._find_widget_of_type(map_widgets.Inspector)
 
     @property
-    def _layer_manager(self) -> ipyleaflet.WidgetControl:
+    def _layer_manager(self) -> Optional[map_widgets.LayerManager]:
         if toolbar_widget := self._toolbar:
             if isinstance(toolbar_widget.accessory_widget, map_widgets.LayerManager):
                 return toolbar_widget.accessory_widget
         return self._find_widget_of_type(map_widgets.LayerManager)
 
     @property
-    def _layer_editor(self) -> ipyleaflet.WidgetControl:
+    def _layer_editor(self) -> Optional[map_widgets.LayerEditor]:
         return self._find_widget_of_type(map_widgets.LayerEditor)
 
     def __init__(self, **kwargs):
