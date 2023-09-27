@@ -667,7 +667,7 @@ class Map(ipyleaflet.Map, MapInterface):
         )
         super().add(control)
 
-    def get_draw_control(self) -> MapDrawControl | None:
+    def get_draw_control(self) -> Optional[MapDrawControl]:
         return self._draw_control
 
     def remove(self, widget: Any) -> None:
