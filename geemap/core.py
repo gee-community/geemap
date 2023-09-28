@@ -182,7 +182,7 @@ class AbstractDrawControl(object):
             test_geometry = None
             while i < self.count and i < len(test_geojsons):
                 local_geometry = self.geometries[i]
-                test_geometry = common.geojson_to_ee(test_geojsons[i], False)
+                test_geometry = common.geojson_to_ee(test_geojsons[i], geodesic=False)
                 if test_geometry == local_geometry:
                     i += 1
                 else:
@@ -202,7 +202,7 @@ class AbstractDrawControl(object):
             )
 
     def _handle_geometry_created(self, geo_json):
-        geometry = common.geojson_to_ee(geo_json, False)
+        geometry = common.geojson_to_ee(geo_json, geodesic=False)
         self.last_geometry = geometry
         self.last_draw_action = DrawActions.CREATED
         self.geometries.append(geometry)
@@ -211,7 +211,7 @@ class AbstractDrawControl(object):
         self._geometry_create_dispatcher(self, geometry=geometry)
 
     def _handle_geometry_edited(self, geo_json):
-        geometry = common.geojson_to_ee(geo_json, False)
+        geometry = common.geojson_to_ee(geo_json, geodesic=False)
         self.last_geometry = geometry
         self.last_draw_action = DrawActions.EDITED
         self._sync_geometries()
@@ -219,7 +219,7 @@ class AbstractDrawControl(object):
         self._geometry_edit_dispatcher(self, geometry=geometry)
 
     def _handle_geometry_deleted(self, geo_json):
-        geometry = common.geojson_to_ee(geo_json, False)
+        geometry = common.geojson_to_ee(geo_json, geodesic=False)
         self.last_geometry = geometry
         self.last_draw_action = DrawActions.DELETED
         try:
@@ -691,7 +691,7 @@ class Map(ipyleaflet.Map, MapInterface):
 
     def get_draw_control(self) -> Optional[MapDrawControl]:
         return self._draw_control
-      
+
     def _add_basemap_selector(self, position: str, **kwargs) -> None:
         if widget := self._basemap_selector:
             self._log_widget_already_present(widget)
