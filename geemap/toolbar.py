@@ -139,10 +139,6 @@ class Toolbar(widgets.VBox):
             layout=widgets.Layout(height="28px", width="72px"),
         )
 
-        if in_colab_shell():
-            self.toolbar_button.button_style = "primary"
-            self.layers_button.button_style = "primary"
-
         self.toolbar_header = widgets.HBox()
         self.toolbar_header.children = [self.layers_button, self.toolbar_button]
         self.toolbar_footer = widgets.VBox()
@@ -859,10 +855,6 @@ def search_data_gui(m, position="topleft"):
         ],
     )
     search_type.style.button_width = "110px"
-
-    if in_colab_shell():
-        search_button.button_style = "primary"
-        search_type.button_style = "primary"
 
     search_box = widgets.Text(
         placeholder="Search by place name or address",
