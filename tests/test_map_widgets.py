@@ -567,8 +567,7 @@ class TestLayerManager(unittest.TestCase):
         self.toggle_all_checkbox.value = False
 
         layers = self.fake_map.layers
-        self.assertTrue(layers[0].visible, f"{layers[0].name} should be visible")
-        for layer in layers[1:]:
+        for layer in layers:
             self.assertFalse(layer.visible, f"{layer.name} shouldn't be visible")
 
         self.toggle_all_checkbox.value = True
@@ -662,6 +661,7 @@ class TestLayerManager(unittest.TestCase):
         self.assertIsNotNone(self.collapse_button)
         self.assertIsNotNone(self.close_button)
         self.assertIsNotNone(self.toggle_all_checkbox)
+
 
 class TestBasemap(unittest.TestCase):
     """Tests for the Basemap class in the `map_widgets` module."""
