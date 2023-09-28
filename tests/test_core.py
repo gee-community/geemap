@@ -137,6 +137,7 @@ class TestMap(unittest.TestCase):
             toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Toolbar"
         ).value = True  # Open the grid of tools.
         tool_grid = utils.query_widget(toolbar_control, ipywidgets.GridBox).children
+
         self.assertEqual(len(tool_grid), 2)
         self.assertEqual(tool_grid[0].tooltip, "Inspector")
         self.assertEqual(tool_grid[1].tooltip, "Get help")
@@ -391,3 +392,8 @@ class TestAbstractDrawControl(unittest.TestCase):
             geo_json = self.geo_jsons[i]
             del self.geo_jsons[i]
             self._on_draw("deleted", geo_json)
+            
+        self.assertEqual(len(tool_grid), 3)
+        self.assertEqual(tool_grid[0].tooltip, "Basemap selector")
+        self.assertEqual(tool_grid[1].tooltip, "Inspector")
+        self.assertEqual(tool_grid[2].tooltip, "Get help")

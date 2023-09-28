@@ -235,51 +235,49 @@ class TestLegend(unittest.TestCase):
     TEST_KEYS = ["developed", "forest", "open water"]
 
     def test_legend_unable_to_convert_rgb_to_hex(self):
-        with self.assertRaisesRegex(ValueError,
-                                    "Unable to convert rgb value to hex."):
+        with self.assertRaisesRegex(ValueError, "Unable to convert rgb value to hex."):
             test_keys = ["Key 1"]
             test_colors = [("invalid", "invalid")]
             map_widgets.Legend(keys=test_keys, colors=test_colors)
 
     def test_legend_keys_and_colors_not_same_length(self):
-        with self.assertRaisesRegex(ValueError,
-                                    ("The legend keys and colors must be the "
-                                        + "same length.")):
+        with self.assertRaisesRegex(
+            ValueError, ("The legend keys and colors must be the " + "same length.")
+        ):
             test_keys = ["one", "two", "three", "four"]
-            map_widgets.Legend(keys=test_keys,
-                               colors=TestLegend.TEST_COLORS_HEX)
+            map_widgets.Legend(keys=test_keys, colors=TestLegend.TEST_COLORS_HEX)
 
     def test_legend_builtin_legend_not_allowed(self):
-        expected_regex = ("The builtin legend must be one of the following: {}"
-                          .format(", ".join(builtin_legends)))
+        expected_regex = "The builtin legend must be one of the following: {}".format(
+            ", ".join(builtin_legends)
+        )
         with self.assertRaisesRegex(ValueError, expected_regex):
             map_widgets.Legend(builtin_legend="invalid_builtin_legend")
 
     def test_legend_position_not_allowed(self):
-        expected_regex = ("The position must be one of the following: " +
-                          "topleft, topright, bottomleft, bottomright")
+        expected_regex = (
+            "The position must be one of the following: "
+            + "topleft, topright, bottomleft, bottomright"
+        )
         with self.assertRaisesRegex(ValueError, expected_regex):
             map_widgets.Legend(position="invalid_position")
 
     def test_legend_keys_not_a_dict(self):
-        with self.assertRaisesRegex(TypeError,
-                                    "The legend keys must be a list."):
+        with self.assertRaisesRegex(TypeError, "The legend keys must be a list."):
             map_widgets.Legend(keys="invalid_keys")
 
     def test_legend_colors_not_a_list(self):
-        with self.assertRaisesRegex(TypeError,
-                                    "The legend colors must be a list."):
+        with self.assertRaisesRegex(TypeError, "The legend colors must be a list."):
             map_widgets.Legend(colors="invalid_colors")
 
     def test_legend_colors_not_a_list_of_tuples(self):
-        with self.assertRaisesRegex(TypeError,
-                                    ("The legend colors must be a list of " +
-                                        "tuples.")):
+        with self.assertRaisesRegex(
+            TypeError, ("The legend colors must be a list of " + "tuples.")
+        ):
             map_widgets.Legend(colors=["invalid_tuple"])
 
     def test_legend_dict_not_a_dictionary(self):
-        with self.assertRaisesRegex(TypeError,
-                                    "The legend dict must be a dictionary."):
+        with self.assertRaisesRegex(TypeError, "The legend dict must be a dictionary."):
             map_widgets.Legend(legend_dict="invalid_legend_dict")
 
 
@@ -669,16 +667,9 @@ class TestBasemap(unittest.TestCase):
     """Tests for the Basemap class in the `map_widgets` module."""
 
     def setUp(self):
-        self.map_fake = fake_map.FakeMap()
         self.basemaps = ["first", "default", "bounded"]
         self.default = "default"
-        self.xyz_services = {"bounded": {"bounds": [[2, 1], [4, 3]]}}
-        self.basemap_widget = map_widgets.Basemap(
-            self.map_fake, self.basemaps, self.default, self.xyz_services
-        )
-
-    def tearDown(self):
-        pass
+        self.basemap_widget = map_widgets.Basemap(self.basemaps, self.default)
 
     @property
     def _close_button(self):
@@ -689,22 +680,17 @@ class TestBasemap(unittest.TestCase):
         )
 
     @property
-    def _droopdown(self):
+    def _dropdown(self):
         return utils.query_widget(
             self.basemap_widget, ipywidgets.Dropdown, lambda _: True
         )
 
-    def test_basemap_no_map(self):
-        """Tests that a valid map must be passed in."""
-        with self.assertRaisesRegex(ValueError, "valid map"):
-            map_widgets.Basemap(None, self.basemaps, self.default, self.xyz_services)
-
     def test_basemap(self):
         """Tests that the basemap's initial UI is set up properly."""
         self.assertIsNotNone(self._close_button)
-        self.assertIsNotNone(self._droopdown)
-        self.assertEqual(self._droopdown.value, "default")
-        self.assertEqual(len(self._droopdown.options), 3)
+        self.assertIsNotNone(self._dropdown)
+        self.assertEqual(self._dropdown.value, "default")
+        self.assertEqual(len(self._dropdown.options), 3)
 
     def test_basemap_close(self):
         """Tests that triggering the closing button fires the close event."""
@@ -714,21 +700,14 @@ class TestBasemap(unittest.TestCase):
 
         on_close_mock.assert_called_once()
 
-    @patch.object(fake_map.FakeMap, "zoom_to_bounds")
-    def test_basemap_selection(self, zoom_to_bounds_mock):
-        """Tests that a basemap selection updates the map."""
-        self.assertEqual(self.map_fake.find_layer_index("first"), -1)
-        self.assertEqual(self.map_fake.find_layer_index("bounded"), -1)
+    def test_basemap_selection(self):
+        """Tests that a basemap selection fires the selected event."""
+        on_basemap_changed_mock = Mock()
+        self.basemap_widget.on_basemap_changed = on_basemap_changed_mock
 
-        self._droopdown.value = "first"
-        self.assertEqual(self.map_fake.find_layer_index("first"), 0)
-        self.assertEqual(self.map_fake.find_layer_index("bounded"), -1)
-        zoom_to_bounds_mock.assert_not_called()
+        self._dropdown.value = "first"
 
-        self._droopdown.value = "bounded"
-        self.assertEqual(self.map_fake.find_layer_index("first"), 0)
-        self.assertEqual(self.map_fake.find_layer_index("bounded"), 1)
-        zoom_to_bounds_mock.assert_called_with([1, 2, 3, 4])
+        on_basemap_changed_mock.assert_called_once()
 
 
 @patch.object(ee, "Feature", fake_ee.Feature)

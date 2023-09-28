@@ -121,7 +121,7 @@ class Map(core.Map):
             else:
                 kwargs.pop("basemap")
 
-        self.basemap_control = None
+        self._xyz_dict = get_xyz_dict()
 
         self.baseclass = "ipyleaflet"
         self.kwargs = kwargs
@@ -883,7 +883,7 @@ class Map(core.Map):
         Args:
             layer_dict (dict): A dict containing information about the layer. It is an element from Map.ee_layers.
         """
-        self.add("layer_editor")
+        self._add_layer_editor(position="topright", layer_dict=layer_dict)
 
     def add_inspector(
         self,
@@ -922,39 +922,32 @@ class Map(core.Map):
             opened (bool, optional): Whether the control is opened. Defaults to True.
             show_close_button (bool, optional): Whether to show the close button. Defaults to True.
         """
-        super()._add_layer_manager("layer_manager", position)
-        self.layer_manager_widget.collapsed = not opened
-        self.layer_manager_widget.close_button_hidden = not show_close_button
+        super()._add_layer_manager(position)
+        if layer_manager := self._layer_manager:
+            layer_manager.collapsed = not opened
+            layer_manager.close_button_hidden = not show_close_button
 
-    def add_basemap_widget(
-        self,
-        value="OpenStreetMap",
-        position="topright",
-    ):
+    def _on_basemap_changed(self, basemap_name):
+        if basemap_name not in self.get_layer_names():
+            self.add_basemap(basemap_name)
+            if basemap_name in self._xyz_dict:
+                if "bounds" in self._xyz_dict[basemap_name]:
+                    bounds = self._xyz_dict[basemap_name]["bounds"]
+                    bounds = [bounds[0][1], bounds[0][0], bounds[1][1], bounds[1][0]]
+                    self.zoom_to_bounds(bounds)
+
+    def add_basemap_widget(self, value="OpenStreetMap", position="topright"):
         """Add the Basemap GUI to the map.
 
         Args:
             value (str): The default value from basemaps to select. Defaults to "OpenStreetMap".
             position (str, optional): The position of the Inspector GUI. Defaults to "topright".
         """
-        if self.basemap_control:
-            return
-
-        def _on_close():
-            self.toolbar_reset()
-            if self.basemap_control and self.basemap_control in self.controls:
-                self.remove_control(self.basemap_control)
-                self.basemap_control.close()
-                self.basemap_control = None
-
-        basemap_widget = map_widgets.Basemap(
-            self, list(basemaps.keys()), value, get_xyz_dict()
+        super()._add_basemap_selector(
+            position, basemaps=list(basemaps.keys()), value=value
         )
-        basemap_widget.on_close = _on_close
-        self.basemap_control = ipyleaflet.WidgetControl(
-            widget=basemap_widget, position=position
-        )
-        self.add(self.basemap_control)
+        if basemap_selector := self._basemap_selector:
+            basemap_selector.on_basemap_changed = self._on_basemap_changed
 
     def add_draw_control(self, position="topleft"):
         """Add a draw control to the map
