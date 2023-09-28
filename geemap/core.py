@@ -466,7 +466,7 @@ class Map(ipyleaflet.Map, MapInterface):
     def _open_help_page(self, host_map: MapInterface, selected: bool) -> None:
         del host_map  # Unused.
         if selected:
-            webbrowser.open_new_tab("https://geemap.org")
+            common.open_url("https://geemap.org")
 
     def _toolbar_main_tools(self) -> List[toolbar.Toolbar.Item]:
         return [

@@ -26,7 +26,7 @@ import ipywidgets as widgets
 from ipytree import Node, Tree
 
 try:
-    from IPython.display import display, IFrame
+    from IPython.display import display, IFrame, Javascript
 except ImportError:
     pass
 
@@ -3477,6 +3477,16 @@ def screen_capture(filename, monitor=1):
 ########################################
 #               geemap GUI             #
 ########################################
+
+
+def open_url(url):
+    """Opens the URL in a new browser tab."""
+    if in_colab_shell():
+        display(Javascript('window.open("{url}");'.format(url=url)))
+    else:
+        import webbrowser
+
+        webbrowser.open_new_tab(url)
 
 
 def api_docs():
