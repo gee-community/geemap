@@ -4675,10 +4675,6 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
             <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;72px&quot;</span><span class="p">),</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">in_colab_shell</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">button_style</span> <span class="o">=</span> <span class="s2">&quot;primary&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">button_style</span> <span class="o">=</span> <span class="s2">&quot;primary&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
@@ -5003,10 +4999,6 @@ or unselected the tool.</p></td>
         <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;server&quot;</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;72px&quot;</span><span class="p">),</span>
     <span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">in_colab_shell</span><span class="p">():</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">button_style</span> <span class="o">=</span> <span class="s2">&quot;primary&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">button_style</span> <span class="o">=</span> <span class="s2">&quot;primary&quot;</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
@@ -7075,10 +7067,6 @@ or unselected the tool.</p></td>
         <span class="p">],</span>
     <span class="p">)</span>
     <span class="n">search_type</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">button_width</span> <span class="o">=</span> <span class="s2">&quot;110px&quot;</span>
-
-    <span class="k">if</span> <span class="n">in_colab_shell</span><span class="p">():</span>
-        <span class="n">search_button</span><span class="o">.</span><span class="n">button_style</span> <span class="o">=</span> <span class="s2">&quot;primary&quot;</span>
-        <span class="n">search_type</span><span class="o">.</span><span class="n">button_style</span> <span class="o">=</span> <span class="s2">&quot;primary&quot;</span>
 
     <span class="n">search_box</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span>
         <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;Search by place name or address&quot;</span><span class="p">,</span>
