@@ -141,6 +141,10 @@ class TestMap(unittest.TestCase):
         self.assertEqual(len(tool_grid), 2)
         self.assertEqual(tool_grid[0].tooltip, "Inspector")
         self.assertEqual(tool_grid[1].tooltip, "Get help")
+        self.assertEqual(len(tool_grid), 3)
+        self.assertEqual(tool_grid[0].tooltip, "Basemap selector")
+        self.assertEqual(tool_grid[1].tooltip, "Inspector")
+        self.assertEqual(tool_grid[2].tooltip, "Get help")
 
     def test_add_draw_control(self):
         """Tests adding and getting the draw widget."""
@@ -250,9 +254,7 @@ class TestAbstractDrawControl(unittest.TestCase):
         # Test last_geometry accessor.
         self.assertEquals(self._draw_control.last_geometry, geometry)
         # Test last_draw_action accessor.
-        self.assertEquals(
-            self._draw_control.last_draw_action, core.DrawActions.CREATED
-        )
+        self.assertEquals(self._draw_control.last_draw_action, core.DrawActions.CREATED)
         # Test features accessor.
         feature = fake_ee.Feature(geometry, None)
         self.assertEquals(self._draw_control.features, [feature])
@@ -301,9 +303,7 @@ class TestAbstractDrawControl(unittest.TestCase):
         geometry2 = self._draw_control.geometries[1]
         self.assertEquals(len(self._draw_control.geometries), 2)
         self.assertEquals(len(self._draw_control.properties), 2)
-        self.assertEquals(
-            self._draw_control.last_draw_action, core.DrawActions.CREATED
-        )
+        self.assertEquals(self._draw_control.last_draw_action, core.DrawActions.CREATED)
         self.assertEquals(self._draw_control.last_geometry, geometry2)
 
         # When there are two geometries and the removed geometry is the last
@@ -334,9 +334,7 @@ class TestAbstractDrawControl(unittest.TestCase):
         self._draw_control.remove_geometry(geometry1)
         self.assertEquals(len(self._draw_control.geometries), 1)
         self.assertEquals(len(self._draw_control.properties), 1)
-        self.assertEquals(
-            self._draw_control.last_draw_action, core.DrawActions.DELETED
-        )
+        self.assertEquals(self._draw_control.last_draw_action, core.DrawActions.DELETED)
         self.assertEquals(self._draw_control.last_geometry, geometry1)
 
     class TestDrawControl(core.AbstractDrawControl):
@@ -392,8 +390,3 @@ class TestAbstractDrawControl(unittest.TestCase):
             geo_json = self.geo_jsons[i]
             del self.geo_jsons[i]
             self._on_draw("deleted", geo_json)
-            
-        self.assertEqual(len(tool_grid), 3)
-        self.assertEqual(tool_grid[0].tooltip, "Basemap selector")
-        self.assertEqual(tool_grid[1].tooltip, "Inspector")
-        self.assertEqual(tool_grid[2].tooltip, "Get help")
