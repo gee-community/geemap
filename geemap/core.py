@@ -306,8 +306,6 @@ class Map(ipyleaflet.Map, MapInterface):
             self._add_basemap_selector(position, **kwargs)
         else:
             super().add(obj)
-        if self._layer_manager:
-            self._layer_manager.refresh_layers()
 
     def _on_toggle_toolbar_layers(self, is_open: bool) -> None:
         if is_open:

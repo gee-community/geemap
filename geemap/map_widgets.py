@@ -923,10 +923,11 @@ class LayerManager(ipywidgets.VBox):
         )
         toggle_all_checkbox.observe(self._on_all_layers_visibility_toggled, "value")
 
-        layer_rows = [toggle_all_checkbox]
-        for layer in self._host_map.layers[1:]:  # Skip the basemap.
+        layer_rows = []
+        non_basemap_layers = self._host_map.layers[1:]  # Skip the basemap.
+        for layer in non_basemap_layers:
             layer_rows.append(self._render_layer_row(layer))
-        self._toolbar_footer.children = layer_rows
+        self._toolbar_footer.children = [toggle_all_checkbox] + layer_rows
 
     def _on_close_click(self, _):
         if self.on_close:
@@ -989,9 +990,11 @@ class LayerManager(ipywidgets.VBox):
             self.on_open_vis(button.tooltip)
 
     def _on_all_layers_visibility_toggled(self, change):
-        for layer in self._host_map.layers[1:]:  # Skip the basemap.
-            if hasattr(layer, "visible"):
-                layer.visible = change["new"]
+        checkboxes = [
+            row.children[0] for row in self._toolbar_footer.children[1:]
+        ]  # Skip the all on/off checkbox.
+        for checkbox in checkboxes:
+            checkbox.value = change["new"]
 
     def _on_layer_opacity_changed(self, change, layer):
         if layer in self._host_map.geojson_layers:
