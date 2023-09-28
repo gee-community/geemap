@@ -993,6 +993,9 @@ class LayerManager(ipywidgets.VBox):
         checkboxes = [
             row.children[0] for row in self._toolbar_footer.children[1:]
         ]  # Skip the all on/off checkbox.
+        self._host_map.layers[0].visible = change[
+            "new"
+        ]  # The first layer is the basemap.
         for checkbox in checkboxes:
             checkbox.value = change["new"]
 
