@@ -5124,22 +5124,15 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Basemap</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for selecting a basemap.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">xyz_services</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a widget for selecting a basemap.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            host_map (geemap.Map): The map to add the basemap widget to.</span>
 <span class="sd">            basemaps (list): The list of basemap names to make available for selection.</span>
 <span class="sd">            value (str): The default value from basemaps to select.</span>
-<span class="sd">            xyz_services (dict): A dictionary of xyz services for bounds lookup.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span> <span class="o">=</span> <span class="n">host_map</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">host_map</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must pass a valid map when creating a basemap widget.&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xyz_services</span> <span class="o">=</span> <span class="n">xyz_services</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
             <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">basemaps</span><span class="p">),</span>
@@ -5159,20 +5152,8 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span><span class="p">,</span> <span class="n">close_button</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_on_dropdown_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="n">basemap_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span><span class="o">.</span><span class="n">value</span>
-            <span class="k">if</span> <span class="n">basemap_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">get_layer_names</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="n">basemap_name</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">basemap_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xyz_services</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="s2">&quot;bounds&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xyz_services</span><span class="p">[</span><span class="n">basemap_name</span><span class="p">]:</span>
-                        <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xyz_services</span><span class="p">[</span><span class="n">basemap_name</span><span class="p">][</span><span class="s2">&quot;bounds&quot;</span><span class="p">]</span>
-                        <span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span>
-                            <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-                            <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-                            <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-                            <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
-                        <span class="p">]</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">zoom_to_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="ow">and</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">:</span>
@@ -5197,7 +5178,7 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
 
 
 <h3 id="geemap.map_widgets.Basemap.__init__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">xyz_services</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
@@ -5221,12 +5202,6 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
   </thead>
   <tbody>
       <tr>
-        <td><code>host_map</code></td>
-        <td><code>geemap.Map</code></td>
-        <td><p>The map to add the basemap widget to.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
         <td><code>basemaps</code></td>
         <td><code>list</code></td>
         <td><p>The list of basemap names to make available for selection.</p></td>
@@ -5238,32 +5213,19 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
         <td><p>The default value from basemaps to select.</p></td>
         <td><em>required</em></td>
       </tr>
-      <tr>
-        <td><code>xyz_services</code></td>
-        <td><code>dict</code></td>
-        <td><p>A dictionary of xyz services for bounds lookup.</p></td>
-        <td><em>required</em></td>
-      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">xyz_services</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a widget for selecting a basemap.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        host_map (geemap.Map): The map to add the basemap widget to.</span>
 <span class="sd">        basemaps (list): The list of basemap names to make available for selection.</span>
 <span class="sd">        value (str): The default value from basemaps to select.</span>
-<span class="sd">        xyz_services (dict): A dictionary of xyz services for bounds lookup.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span> <span class="o">=</span> <span class="n">host_map</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">host_map</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must pass a valid map when creating a basemap widget.&quot;</span><span class="p">)</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">_xyz_services</span> <span class="o">=</span> <span class="n">xyz_services</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
         <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">basemaps</span><span class="p">),</span>
