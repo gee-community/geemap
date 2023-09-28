@@ -553,7 +553,14 @@ class Map(ipyleaflet.Map, MapInterface):
                 return widget
         return None
 
-    def add(self, obj: Any, position: str = "topright", **kwargs) -> None:
+    def add(self, obj: Any, position: str = "", **kwargs) -> None:
+        if not position:
+            for default_position, widgets in self._control_config().items():
+                if obj in widgets:
+                    position = default_position
+            if not position:
+                position = "topright"
+
         # Basic controls:
         #   - can only be added to the map once,
         #   - have a constructor that takes a position arg, and
@@ -659,7 +666,7 @@ class Map(ipyleaflet.Map, MapInterface):
         control = ipyleaflet.WidgetControl(widget=widget, position=position)
         super().add(control)
 
-    def _add_draw_control(self, position: str, **kwargs) -> None:
+    def _add_draw_control(self, position="topleft", **kwargs) -> None:
         """Add a draw control to the map
 
         Args:
@@ -674,10 +681,10 @@ class Map(ipyleaflet.Map, MapInterface):
             circlemarker={},
             edit=True,
             remove=True,
-            position=position,
         )
         control = MapDrawControl(
             host_map=self,
+            position=position,
             **{**default_args, **kwargs},
         )
         super().add(control)
