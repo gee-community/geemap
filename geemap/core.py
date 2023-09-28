@@ -197,6 +197,9 @@ class Map(ipyleaflet.Map, MapInterface):
         if kwargs.get("ee_initialize", True):
             common.ee_initialize()
 
+        # Listen for layers being added/removed so we can update the layer manager.
+        self.observe(self._on_layers_change, "layers")
+
     def get_zoom(self) -> int:
         return self.zoom
 
@@ -459,8 +462,6 @@ class Map(ipyleaflet.Map, MapInterface):
             "vis_params": vis_params,
         }
         super().add(tile_layer)
-        if self._layer_manager:
-            self._layer_manager.refresh_layers()
 
     addLayer = add_layer
 
@@ -542,3 +543,8 @@ class Map(ipyleaflet.Map, MapInterface):
             ]
         except ValueError:
             return basemap_name
+
+    def _on_layers_change(self, change) -> None:
+        del change  # Unused.
+        if self._layer_manager:
+            self._layer_manager.refresh_layers()
