@@ -512,15 +512,18 @@ class Map(ipyleaflet.Map, MapInterface):
         if basemap is None:
             logging.warning("Invalid basemap selected: %s", basemap_name)
             return
-        self.substitute_layer(
-            self.layers[0],
-            ipyleaflet.TileLayer(
-                url=basemap["url"],
-                name=basemap["name"],
-                max_zoom=basemap.get("max_zoom", 24),
-                attribution=basemap.get("attribution", None),
-            ),
+        new_layer = ipyleaflet.TileLayer(
+            url=basemap["url"],
+            name=basemap["name"],
+            max_zoom=basemap.get("max_zoom", 24),
+            attribution=basemap.get("attribution", None),
         )
+        # substitute_layer is broken when the map has a single layer.
+        if len(self.layers) == 1:
+            self.clear_layers()
+            self.add_layer(new_layer)
+        else:
+            self.substitute_layer(self.layers[0], new_layer)
 
     def _get_available_basemaps(self) -> Dict[str, Any]:
         """Convert xyz tile services to a dictionary of basemaps."""
