@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.27.2 - Sep 28, 2023
+
+**What's Changed**
+
+-   Fix JS-PY conversion bug by @giswqs in [#1733](https://github.com/gee-community/geemap/pull/1733)
+-   Revert dark mode changes to toolbar by @naschmitz in [#1738](https://github.com/gee-community/geemap/pull/1738)
+-   Fix several bugs and add basemap selector to core. by @naschmitz in [#1735](https://github.com/gee-community/geemap/pull/1735)
+
+**Full Changelog**: [v0.27.1...v0.27.2](https://github.com/gee-community/geemap/compare/v0.27.1...v0.27.2)
+
 ## v0.27.1 - Sep 24, 2023
 
 **What's Changed**
