@@ -517,7 +517,7 @@ class Map(ipyleaflet.Map, MapInterface):
             ipyleaflet.TileLayer(
                 url=basemap["url"],
                 name=basemap["name"],
-                max_zoom=basemap.get("max_zoom", 22),
+                max_zoom=basemap.get("max_zoom", 24),
                 attribution=basemap.get("attribution", None),
             ),
         )
