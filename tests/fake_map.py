@@ -9,6 +9,7 @@ class FakeMap:
         self.layers = []
         self.ee_layers = {}
         self.geojson_layers = []
+        self.controls = []
 
         self._recognized_attrs = self.__dict__.keys()
 
@@ -44,6 +45,10 @@ class FakeMap:
                 return index
 
         return -1
+
+    def add(self, obj):
+        del obj  # Unused.
+        pass
 
     def add_layer(self, layer):
         self.layers.append(layer)
