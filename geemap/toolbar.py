@@ -637,9 +637,12 @@ def _plotting_tool_callback(map, selected):
         and map._plot_marker_cluster in map.layers
     ):
         map.remove_layer(map._plot_marker_cluster)
-    if map.draw_control_lite in map.controls:
-        map.remove_control(map.draw_control_lite)
-    map.add(map.draw_control)
+    if hasattr(map, "_chart_points"):
+        map._chart_points = []
+    if hasattr(map, "_chart_values"):
+        map._chart_values = []
+    if hasattr(map, "_chart_labels"):
+        map._chart_labels = None
 
 
 def ee_plot_gui(m, position="topright", **kwargs):
@@ -668,9 +671,10 @@ def ee_plot_gui(m, position="topright", **kwargs):
     m._plot_dropdown_control = plot_dropdown_control
     m.add(plot_dropdown_control)
 
-    if m.draw_control in m.controls:
-        m.remove_control(m.draw_control)
+    old_draw_control = m.get_draw_control()
+    m.remove_draw_control()
     m.add_draw_control_lite()
+    draw_control = m.get_draw_control()
 
     if not hasattr(m, "_chart_points"):
         m._chart_points = []
@@ -679,100 +683,112 @@ def ee_plot_gui(m, position="topright", **kwargs):
     if not hasattr(m, "_chart_labels"):
         m._chart_labels = None
 
+    def get_layer_name_and_ee_object():
+        if not m._plot_checked or not len(m.ee_raster_layers) > 0:
+            raise AssertionError(
+                "Plot widget must be active and one raster layer available."
+            )
+        plot_layer_name = m._plot_dropdown_widget.value
+        ee_object = m.ee_layers.get(plot_layer_name)["ee_object"]
+        if isinstance(ee_object, ee.ImageCollection):
+            ee_object = ee_object.mosaic()
+        return plot_layer_name, ee_object
+
+    def generate_chart(dict_values, chart_point):
+        try:
+            plot_layer_name, ee_object = get_layer_name_and_ee_object()
+            m.default_style = {"cursor": "wait"}
+            plot_options = {}
+            if hasattr(m, "_plot_options"):
+                plot_options = m._plot_options
+            if "title" not in plot_options.keys():
+                plot_options["title"] = plot_layer_name
+            if ("add_marker_cluster" in plot_options.keys()) and plot_options[
+                "add_marker_cluster"
+            ]:
+                if not hasattr(m, "_plot_markers"):
+                    m._plot_markers = []
+                markers = m._plot_markers
+                marker_cluster = m._plot_marker_cluster
+                markers.append(ipyleaflet.Marker(location=chart_point))
+                marker_cluster.markers = markers
+                m._plot_marker_cluster = marker_cluster
+
+            band_names = ee_object.bandNames().getInfo()
+            if any(len(name) > 3 for name in band_names):
+                band_names = list(range(1, len(band_names) + 1))
+
+            m._chart_labels = band_names
+            m._chart_points.append(chart_point)
+
+            band_values = list(dict_values.values())
+            m._chart_values.append(band_values)
+            m.plot(band_names, band_values, **plot_options)
+            if plot_options["title"] == plot_layer_name:
+                del plot_options["title"]
+            m.default_style = {"cursor": "crosshair"}
+        except Exception as e:
+            if not hasattr(map, "_plot_widget"):
+                m._plot_widget = None
+            if m._plot_widget is not None:
+                with m._plot_widget:
+                    m._plot_widget.outputs = ()
+                    print("No data for the clicked location.")
+            else:
+                print(e)
+            m.default_style = {"cursor": "crosshair"}
+
     def handle_interaction(**kwargs):
+        try:
+            _, ee_object = get_layer_name_and_ee_object()
+        except AssertionError:
+            return
+
         latlon = kwargs.get("coordinates")
-        if (
-            kwargs.get("type") == "click"
-            and m._plot_checked
-            and len(m.ee_raster_layers) > 0
-        ):
-            plot_layer_name = m._plot_dropdown_widget.value
-            ee_object = m.ee_layers.get(plot_layer_name)["ee_object"]
-
-            if isinstance(ee_object, ee.ImageCollection):
-                ee_object = ee_object.mosaic()
-
-            try:
-                m.default_style = {"cursor": "wait"}
-                plot_options = {}
-                if hasattr(m, "_plot_options"):
-                    plot_options = m._plot_options
-                sample_scale = m.getScale()
-                if "sample_scale" in plot_options.keys() and (
-                    plot_options["sample_scale"] is not None
-                ):
-                    sample_scale = plot_options["sample_scale"]
-                if "title" not in plot_options.keys():
-                    plot_options["title"] = plot_layer_name
-                if ("add_marker_cluster" in plot_options.keys()) and plot_options[
-                    "add_marker_cluster"
-                ]:
-                    if not hasattr(m, "_plot_markers"):
-                        m._plot_markers = []
-                    markers = m._plot_markers
-                    marker_cluster = m._plot_marker_cluster
-                    markers.append(ipyleaflet.Marker(location=latlon))
-                    marker_cluster.markers = markers
-                    m._plot_marker_cluster = marker_cluster
-
-                band_names = ee_object.bandNames().getInfo()
-                if any(len(name) > 3 for name in band_names):
-                    band_names = list(range(1, len(band_names) + 1))
-
-                m._chart_labels = band_names
-
-                if not hasattr(m, "_roi_end"):
-                    m._roi_end = False
-
-                if m._roi_end:
-                    if m.roi_reducer_scale is None:
-                        scale = ee_object.select(0).projection().nominalScale()
-                    else:
-                        scale = m.roi_reducer_scale
-                    dict_values_tmp = ee_object.reduceRegion(
-                        reducer=m.roi_reducer,
-                        geometry=m.user_roi,
-                        scale=scale,
-                        bestEffort=True,
-                    ).getInfo()
-                    b_names = ee_object.bandNames().getInfo()
-                    dict_values = dict(
-                        zip(b_names, [dict_values_tmp[b] for b in b_names])
-                    )
-                    m._chart_points.append(
-                        m.user_roi.centroid(1).coordinates().getInfo()
-                    )
-                else:
-                    xy = ee.Geometry.Point(latlon[::-1])
-                    dict_values_tmp = (
-                        ee_object.sample(xy, scale=sample_scale)
-                        .first()
-                        .toDictionary()
-                        .getInfo()
-                    )
-                    b_names = ee_object.bandNames().getInfo()
-                    dict_values = dict(
-                        zip(b_names, [dict_values_tmp[b] for b in b_names])
-                    )
-                    m._chart_points.append(xy.coordinates().getInfo())
-                band_values = list(dict_values.values())
-                m._chart_values.append(band_values)
-                m.plot(band_names, band_values, **plot_options)
-                if plot_options["title"] == plot_layer_name:
-                    del plot_options["title"]
-                m.default_style = {"cursor": "crosshair"}
-                m._roi_end = False
-            except Exception as e:
-                if m._plot_widget is not None:
-                    with m._plot_widget:
-                        m._plot_widget.outputs = ()
-                        print("No data for the clicked location.")
-                else:
-                    print(e)
-                m.default_style = {"cursor": "crosshair"}
-                m._roi_end = False
+        if kwargs.get("type") == "click":
+            xy = ee.Geometry.Point(latlon[::-1])
+            plot_options = {}
+            if hasattr(m, "_plot_options"):
+                plot_options = m._plot_options
+            sample_scale = m.getScale()
+            if "sample_scale" in plot_options.keys() and (
+                plot_options["sample_scale"] is not None
+            ):
+                sample_scale = plot_options["sample_scale"]
+            dict_values_tmp = (
+                ee_object.sample(xy, scale=sample_scale)
+                .first()
+                .toDictionary()
+                .getInfo()
+            )
+            b_names = ee_object.bandNames().getInfo()
+            dict_values = dict(zip(b_names, [dict_values_tmp[b] for b in b_names]))
+            generate_chart(dict_values, latlon)
 
     m.on_interaction(handle_interaction)
+
+    def handle_draw(_, geometry):
+        try:
+            _, ee_object = get_layer_name_and_ee_object()
+        except AssertionError:
+            return
+
+        if m.roi_reducer_scale is None:
+            scale = ee_object.select(0).projection().nominalScale()
+        else:
+            scale = m.roi_reducer_scale
+        dict_values_tmp = ee_object.reduceRegion(
+            reducer=m.roi_reducer,
+            geometry=geometry,
+            scale=scale,
+            bestEffort=True,
+        ).getInfo()
+        b_names = ee_object.bandNames().getInfo()
+        dict_values = dict(zip(b_names, [dict_values_tmp[b] for b in b_names]))
+        chart_point = geometry.centroid(1).coordinates().getInfo()
+        generate_chart(dict_values, chart_point)
+
+    draw_control.on_geometry_create(handle_draw)
 
     def close_click(change):
         m.toolbar_reset()
@@ -797,6 +813,11 @@ def ee_plot_gui(m, position="topright", **kwargs):
         m.on_interaction(handle_interaction, remove=True)
         m._plot_widget = None
         m.default_style = {"cursor": "default"}
+        if old_draw_control:
+            old_draw_control.open()
+            m.substitute(m.get_draw_control(), old_draw_control)
+        else:
+            m.remove_draw_control()
 
     close_btn.on_click(close_click)
 
@@ -1863,23 +1884,25 @@ def collect_samples(m):
     )
     buttons.style.button_width = "99px"
 
+    old_draw_control = m.get_draw_control()
+
     def button_clicked(change):
         if change["new"] == "Apply":
             if len(color.value) != 7:
                 color.value = "#3388ff"
-            # draw_control = MapDrawControl(
-            #     host_map=m,
-            #     marker={"shapeOptions": {"color": color.value}, "repeatMode": False},
-            #     rectangle={"shapeOptions": {"color": color.value}, "repeatMode": False},
-            #     polygon={"shapeOptions": {"color": color.value}, "repeatMode": False},
-            #     circlemarker={},
-            #     polyline={},
-            #     edit=False,
-            #     remove=False,
-            # )
-            # m.remove_draw_control()
-            # m.add(draw_control)
-            # m.draw_control = draw_control
+            m.remove_draw_control()
+            m.add(
+                "draw_control",
+                position="topleft",
+                marker={"shapeOptions": {"color": color.value}, "repeatMode": False},
+                rectangle={"shapeOptions": {"color": color.value}, "repeatMode": False},
+                polygon={"shapeOptions": {"color": color.value}, "repeatMode": False},
+                circlemarker={},
+                polyline={},
+                edit=False,
+                remove=False,
+            )
+            draw_control = m.get_draw_control()
 
             train_props = {}
 
@@ -1915,8 +1938,11 @@ def collect_samples(m):
                 m.remove_control(m.training_ctrl)
             full_widget.close()
             # Restore default draw control.
-            m.remove_draw_control()
-            m.add_draw_control()
+            if old_draw_control:
+                old_draw_control.open()
+                m.substitute(m.get_draw_control(), old_draw_control)
+            else:
+                m.remove_draw_control()
         buttons.value = None
 
     buttons.observe(button_clicked, "value")
