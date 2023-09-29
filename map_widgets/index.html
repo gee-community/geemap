@@ -968,54 +968,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#geemap.map_widgets.AbstractDrawControl" class="md-nav__link">
-    AbstractDrawControl
-  </a>
-  
-    <nav class="md-nav" aria-label="AbstractDrawControl">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#geemap.map_widgets.AbstractDrawControl.__init__" class="md-nav__link">
-    __init__()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#geemap.map_widgets.AbstractDrawControl.get_geometry_properties" class="md-nav__link">
-    get_geometry_properties()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#geemap.map_widgets.AbstractDrawControl.remove_geometry" class="md-nav__link">
-    remove_geometry()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#geemap.map_widgets.AbstractDrawControl.reset" class="md-nav__link">
-    reset()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#geemap.map_widgets.AbstractDrawControl.set_geometry_properties" class="md-nav__link">
-    set_geometry_properties()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#geemap.map_widgets.Basemap" class="md-nav__link">
     Basemap
   </a>
@@ -1052,13 +1004,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#geemap.map_widgets.DrawActions" class="md-nav__link">
-    DrawActions
-  </a>
   
 </li>
       
@@ -4405,54 +4350,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#geemap.map_widgets.AbstractDrawControl" class="md-nav__link">
-    AbstractDrawControl
-  </a>
-  
-    <nav class="md-nav" aria-label="AbstractDrawControl">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#geemap.map_widgets.AbstractDrawControl.__init__" class="md-nav__link">
-    __init__()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#geemap.map_widgets.AbstractDrawControl.get_geometry_properties" class="md-nav__link">
-    get_geometry_properties()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#geemap.map_widgets.AbstractDrawControl.remove_geometry" class="md-nav__link">
-    remove_geometry()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#geemap.map_widgets.AbstractDrawControl.reset" class="md-nav__link">
-    reset()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#geemap.map_widgets.AbstractDrawControl.set_geometry_properties" class="md-nav__link">
-    set_geometry_properties()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#geemap.map_widgets.Basemap" class="md-nav__link">
     Basemap
   </a>
@@ -4489,13 +4386,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#geemap.map_widgets.DrawActions" class="md-nav__link">
-    DrawActions
-  </a>
   
 </li>
       
@@ -4624,481 +4514,6 @@
 
 
 
-
-
-
-  <div class="doc doc-object doc-class">
-
-
-
-<h2 id="geemap.map_widgets.AbstractDrawControl" class="doc doc-heading">
-        <code>
-AbstractDrawControl        </code>
-
-
-
-<a href="#geemap.map_widgets.AbstractDrawControl" class="headerlink" title="Permanent link">&para;</a></h2>
-
-    <div class="doc doc-contents ">
-
-      <p>Abstract class for the draw control.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">AbstractDrawControl</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract class for the draw control.&quot;&quot;&quot;</span>
-
-    <span class="n">host_map</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">layer</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">last_draw_action</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">_geometry_create_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
-    <span class="n">_geometry_edit_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
-    <span class="n">_geometry_delete_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the draw control.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            host_map (geemap.Map): The geemap.Map instance to be linked with</span>
-<span class="sd">                the draw control.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span> <span class="o">=</span> <span class="n">host_map</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_create_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_edit_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_delete_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_bind_to_draw_control</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">:</span>
-            <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">geometry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">):</span>
-                    <span class="nb">property</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">property</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="nb">property</span><span class="p">))</span>
-            <span class="k">return</span> <span class="n">features</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">collection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="k">else</span> <span class="p">[])</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">last_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">property</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">,</span> <span class="nb">property</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="k">else</span> <span class="kc">None</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_draw_control</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the draw controls.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">clear_draw_control</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_clear_draw_control</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">remove_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes a geometry from the draw control.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_remove_geometry_at_index_on_draw_control</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">geometry</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">:</span>
-                <span class="c1"># Treat this like an &quot;undo&quot; of the last drawn geometry.</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">REMOVED_LAST</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">get_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the properties of a geometry.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="nf">set_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the properties of a geometry.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">property</span>
-
-    <span class="k">def</span> <span class="nf">on_geometry_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_create_dispatcher</span><span class="o">.</span><span class="n">register_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="n">remove</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">on_geometry_edit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_edit_dispatcher</span><span class="o">.</span><span class="n">register_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="n">remove</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">on_geometry_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_delete_dispatcher</span><span class="o">.</span><span class="n">register_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="n">remove</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_bind_to_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up draw control event handling like create, edit, and delete.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_remove_geometry_at_index_on_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the geometry at the given index on the draw control.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_clear_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clears the geometries from the draw control.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_get_synced_geojson_from_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an up-to-date list of GeoJSON from the draw control.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_sync_geometries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sync the local geometries with those from the draw control.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="c1"># The current geometries from the draw_control.</span>
-        <span class="n">test_geojsons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_synced_geojson_from_draw_control</span><span class="p">()</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_geojsons</span><span class="p">):</span>
-            <span class="n">local_geometry</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">test_geometry</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_geojsons</span><span class="p">):</span>
-                <span class="n">local_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">test_geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">test_geojsons</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">test_geometry</span> <span class="o">==</span> <span class="n">local_geometry</span><span class="p">:</span>
-                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">break</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">test_geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_geometry</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_redraw_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">layer</span> <span class="o">=</span> <span class="n">EELeafletTileLayer</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">},</span> <span class="s2">&quot;Drawn Features&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mf">0.5</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">:</span>
-            <span class="n">layer_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">find_layer_index</span><span class="p">(</span><span class="s2">&quot;Drawn Features&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">layer_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer_index</span><span class="p">],</span> <span class="n">layer</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span>
-
-    <span class="k">def</span> <span class="nf">_handle_geometry_created</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geo_json</span><span class="p">):</span>
-        <span class="n">geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">CREATED</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_create_dispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_handle_geometry_edited</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geo_json</span><span class="p">):</span>
-        <span class="n">geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">EDITED</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sync_geometries</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_edit_dispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_handle_geometry_deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geo_json</span><span class="p">):</span>
-        <span class="n">geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">DELETED</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_delete_dispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
-</code></pre></div>
-        </details>
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h3 id="geemap.map_widgets.AbstractDrawControl.__init__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">)</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-special"><code>special</code></small>
-  </span>
-
-<a href="#geemap.map_widgets.AbstractDrawControl.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents ">
-
-      <p>Initialize the draw control.</p>
-
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>host_map</code></td>
-        <td><code>geemap.Map</code></td>
-        <td><p>The geemap.Map instance to be linked with
-the draw control.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the draw control.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        host_map (geemap.Map): The geemap.Map instance to be linked with</span>
-<span class="sd">            the draw control.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span> <span class="o">=</span> <span class="n">host_map</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_create_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_edit_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_delete_dispatcher</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">CallbackDispatcher</span><span class="p">()</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_bind_to_draw_control</span><span class="p">()</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h3 id="geemap.map_widgets.AbstractDrawControl.get_geometry_properties" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">)</span></code>
-
-
-<a href="#geemap.map_widgets.AbstractDrawControl.get_geometry_properties" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents ">
-
-      <p>Gets the properties of a geometry.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the properties of a geometry.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h3 id="geemap.map_widgets.AbstractDrawControl.remove_geometry" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">remove_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">)</span></code>
-
-
-<a href="#geemap.map_widgets.AbstractDrawControl.remove_geometry" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents ">
-
-      <p>Removes a geometry from the draw control.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">remove_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes a geometry from the draw control.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry</span><span class="p">:</span>
-        <span class="k">return</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="k">return</span>
-    <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_geometry_at_index_on_draw_control</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">geometry</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">:</span>
-            <span class="c1"># Treat this like an &quot;undo&quot; of the last drawn geometry.</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">REMOVED_LAST</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h3 id="geemap.map_widgets.AbstractDrawControl.reset" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_draw_control</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
-
-
-<a href="#geemap.map_widgets.AbstractDrawControl.reset" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents ">
-
-      <p>Resets the draw controls.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_draw_control</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resets the draw controls.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="n">clear_draw_control</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_clear_draw_control</span><span class="p">()</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h3 id="geemap.map_widgets.AbstractDrawControl.set_geometry_properties" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">set_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="nb">property</span><span class="p">)</span></code>
-
-
-<a href="#geemap.map_widgets.AbstractDrawControl.set_geometry_properties" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents ">
-
-      <p>Sets the properties of a geometry.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets the properties of a geometry.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">geometry</span><span class="p">:</span>
-        <span class="k">return</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="k">return</span>
-    <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="nb">property</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
 
 
 
@@ -5694,84 +5109,6 @@ Defaults to None.</p></td>
     </div>
 
   </div>
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-class">
-
-
-
-<h2 id="geemap.map_widgets.DrawActions" class="doc doc-heading">
-        <code>
-DrawActions            (<span title="enum.Enum">Enum</span>)
-        </code>
-
-
-
-<a href="#geemap.map_widgets.DrawActions" class="headerlink" title="Permanent link">&para;</a></h2>
-
-    <div class="doc doc-contents ">
-
-      <p>Action types for the draw control.</p>
-
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>enum</code></td>
-        <td><code>str</code></td>
-        <td><p>Action type.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">DrawActions</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Action types for the draw control.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        enum (str): Action type.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">CREATED</span> <span class="o">=</span> <span class="s2">&quot;created&quot;</span>
-    <span class="n">EDITED</span> <span class="o">=</span> <span class="s2">&quot;edited&quot;</span>
-    <span class="n">DELETED</span> <span class="o">=</span> <span class="s2">&quot;deleted&quot;</span>
-    <span class="n">REMOVED_LAST</span> <span class="o">=</span> <span class="s2">&quot;removed-last&quot;</span>
-</code></pre></div>
-        </details>
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -6625,10 +5962,11 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
         <span class="p">)</span>
         <span class="n">toggle_all_checkbox</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_all_layers_visibility_toggled</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
-        <span class="n">layer_rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">toggle_all_checkbox</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>  <span class="c1"># Skip the basemap.</span>
+        <span class="n">layer_rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">non_basemap_layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># Skip the basemap.</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">non_basemap_layers</span><span class="p">:</span>
             <span class="n">layer_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_render_layer_row</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">layer_rows</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toggle_all_checkbox</span><span class="p">]</span> <span class="o">+</span> <span class="n">layer_rows</span>
 
     <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">:</span>
@@ -6691,9 +6029,14 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
             <span class="bp">self</span><span class="o">.</span><span class="n">on_open_vis</span><span class="p">(</span><span class="n">button</span><span class="o">.</span><span class="n">tooltip</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_on_all_layers_visibility_toggled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>  <span class="c1"># Skip the basemap.</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;visible&quot;</span><span class="p">):</span>
-                <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
+        <span class="n">checkboxes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="p">]</span>  <span class="c1"># Skip the all on/off checkbox.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span>
+            <span class="s2">&quot;new&quot;</span>
+        <span class="p">]</span>  <span class="c1"># The first layer is the basemap.</span>
+        <span class="k">for</span> <span class="n">checkbox</span> <span class="ow">in</span> <span class="n">checkboxes</span><span class="p">:</span>
+            <span class="n">checkbox</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_on_layer_opacity_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">geojson_layers</span><span class="p">:</span>
@@ -6851,10 +6194,11 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
     <span class="p">)</span>
     <span class="n">toggle_all_checkbox</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_all_layers_visibility_toggled</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
-    <span class="n">layer_rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">toggle_all_checkbox</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>  <span class="c1"># Skip the basemap.</span>
+    <span class="n">layer_rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">non_basemap_layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># Skip the basemap.</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">non_basemap_layers</span><span class="p">:</span>
         <span class="n">layer_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_render_layer_row</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">layer_rows</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toggle_all_checkbox</span><span class="p">]</span> <span class="o">+</span> <span class="n">layer_rows</span>
 </code></pre></div>
         </details>
     </div>
