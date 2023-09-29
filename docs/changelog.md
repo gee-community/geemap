@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.27.3 - Sep 28, 2023
+
+**What's Changed**
+
+-   Fix layer management issues by @naschmitz in [#1740](https://github.com/gee-community/geemap/pull/1740)
+-   Implement draw controls in geemap.core (with toolbar fixes) by @sufyanAbbasi in [#1736](https://github.com/gee-community/geemap/pull/1736)
+
+**Full Changelog**: [v0.27.2...v0.27.3](https://github.com/gee-community/geemap/compare/v0.27.2...v0.27.3)
+
 ## v0.27.2 - Sep 28, 2023
 
 **What's Changed**
@@ -24,7 +33,7 @@
 
 -   @jgarcia525 made their first contribution in [#1721](https://github.com/gee-community/geemap/pull/1721)
 
-**Full Changelog**: [v0.25.0...v0.27.1](https://github.com/gee-community/geemap/compare/v0.25.0...v0.27.1)
+**Full Changelog**: [v0.27.0...v0.27.1](https://github.com/gee-community/geemap/compare/v0.27.0...v0.27.1)
 
 ## v0.27.0 - Sep 21, 2023
 
@@ -73,7 +82,7 @@
 -   @biplovbhandari made their first contribution in [#1701](https://github.com/gee-community/geemap/pull/1701)
 -   @jgarcia525 made their first contribution in [#1721](https://github.com/gee-community/geemap/pull/1721)
 
-**Full Changelog**: [v0.25.0...v0.27.0](https://github.com/gee-community/geemap/compare/v0.25.0...v0.27.0)
+**Full Changelog**: [v0.26.0...v0.27.0](https://github.com/gee-community/geemap/compare/v0.26.0...v0.27.0)
 
 ## v0.26.0 - Sep 6, 2023
 
