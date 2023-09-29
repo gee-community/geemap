@@ -124,3 +124,4 @@ ENV/
 
 # IDE settings
 .vscode/
+docs/changelog_update.py
