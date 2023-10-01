@@ -138,6 +138,7 @@ nav:
           - workshops/City_Plus_2023.ipynb
           - workshops/G4G_2023.ipynb
     - Notebooks:
+          - notebooks/00_geemap_colab.ipynb
           - notebooks/00_geemap_key_features.ipynb
           - notebooks/01_geemap_intro.ipynb
           - notebooks/02_using_basemaps.ipynb
