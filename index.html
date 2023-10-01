@@ -4282,19 +4282,20 @@
 
 
 <h1 id="welcome-to-geemap">Welcome to geemap<a class="headerlink" href="#welcome-to-geemap" title="Permanent link">&para;</a></h1>
-<p><a href="https://gishub.org/geemap-colab"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a>
-<a href="https://gishub.org/geemap-binder"><img alt="Open in Binder" src="https://mybinder.org/badge_logo.svg" /></a>
-<a href="https://studiolab.sagemaker.aws/import/github/gee-community/geemap/blob/master/examples/notebooks/00_geemap_key_features.ipynb"><img alt="Open In Studio Lab" src="https://studiolab.sagemaker.aws/studiolab.svg" /></a>
+<p><a href="https://colab.research.google.com/github/gee-community/geemap/blob/master/docs/notebooks/00_geemap_colab.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a>
+<a href="https://mybinder.org/v2/gh/gee-community/geemap/master?labpath=docs%2Fnotebooks%2F00_geemap_colab.ipynb"><img alt="Open in Binder" src="https://mybinder.org/badge_logo.svg" /></a>
+<a href="https://studiolab.sagemaker.aws/import/github/gee-community/geemap/blob/master/docs/notebooks/00_geemap_colab.ipynb"><img alt="Open In Studio Lab" src="https://studiolab.sagemaker.aws/studiolab.svg" /></a>
 <a href="https://pypi.python.org/pypi/geemap"><img alt="image" src="https://img.shields.io/pypi/v/geemap.svg" /></a>
-<a href="https://anaconda.org/conda-forge/geemap"><img alt="image" src="https://img.shields.io/conda/vn/conda-forge/geemap.svg" /></a>
 <a href="https://pepy.tech/project/geemap"><img alt="image" src="https://static.pepy.tech/badge/geemap" /></a>
+<a href="https://github.com/giswqs/geemap-feedstock"><img alt="Conda Recipe" src="https://img.shields.io/badge/recipe-geemap-green.svg" /></a>
+<a href="https://anaconda.org/conda-forge/geemap"><img alt="image" src="https://img.shields.io/conda/vn/conda-forge/geemap.svg" /></a>
+<a href="https://anaconda.org/conda-forge/geemap"><img alt="Conda Downloads" src="https://img.shields.io/conda/dn/conda-forge/geemap.svg" /></a>
 <a href="https://geemap.org"><img alt="image" src="https://github.com/gee-community/geemap/workflows/docs/badge.svg" /></a>
-<a href="https://github.com/gee-community/geemap/actions?query=workflow%3Abuild"><img alt="image" src="https://github.com/gee-community/geemap/workflows/build/badge.svg" /></a>
 <a href="https://youtube.com/@giswqs"><img alt="image" src="https://img.shields.io/badge/YouTube-Channel-red" /></a>
 <a href="https://opensource.org/licenses/MIT"><img alt="image" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a>
 <a href="https://joss.theoj.org/papers/10.21105/joss.02305"><img alt="image" src="https://joss.theoj.org/papers/10.21105/joss.02305/status.svg" /></a></p>
 <p><a href="https://github.com/gee-community/geemap/blob/master/docs/assets/logo.png"><img alt="logo" src="https://i.imgur.com/9OOSpDm.png" /></a></p>
-<p><strong>A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.</strong></p>
+<p><strong>A Python package for interactive geospatial analysis and visualization with Google Earth Engine</strong></p>
 <ul>
 <li>GitHub repo: <a href="https://github.com/gee-community/geemap">https://github.com/gee-community/geemap</a></li>
 <li>Documentation: <a href="https://geemap.org">https://geemap.org</a></li>
@@ -4304,12 +4305,12 @@
 <li>GEE Tutorials on YouTube: <a href="https://youtube.com/@giswqs">https://youtube.com/@giswqs</a></li>
 <li>Free software: <a href="https://opensource.org/licenses/MIT">MIT license</a></li>
 </ul>
-<p><strong>Acknowledgment:</strong> This material is based upon work supported by the National Aeronautics and Space Administration (NASA) under Grant No. 80NSSC22K1742 issued through the <a href="https://bit.ly/3RVBRcQ">Open Source Tools, Frameworks, and Libraries 2020 Program</a>.</p>
+<p><strong>Acknowledgment:</strong> The geemap project is supported by the National Aeronautics and Space Administration (NASA) under Grant No. 80NSSC22K1742 issued through the <a href="https://bit.ly/3RVBRcQ">Open Source Tools, Frameworks, and Libraries 2020 Program</a>.</p>
 <h2 id="announcement">Announcement<a class="headerlink" href="#announcement" title="Permanent link">&para;</a></h2>
-<p>The book <em><strong>Earth Engine and Geemap - Geospatial Data Science with Python</strong></em>, written by <a href="https://gishub.org">Qiusheng Wu</a>, has been published by Locate Press in July 2023. If you're interested in purchasing the book, please visit this URL: <a href="https://locatepress.com/book/gee">https://locatepress.com/book/gee</a>.</p>
+<p>The book <em><strong>Earth Engine and Geemap: Geospatial Data Science with Python</strong></em>, written by <a href="https://gishub.org">Qiusheng Wu</a>, has been published by Locate Press in July 2023. If you're interested in purchasing the book, please visit this URL: <a href="https://locatepress.com/book/gee">https://locatepress.com/book/gee</a>.</p>
 <p><img alt="book" src="https://images.geemap.org/book.png" /></p>
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
-<p><strong>Geemap</strong> is a Python package for interactive mapping with <a href="https://earthengine.google.com/">Google Earth Engine</a> (GEE), which is a cloud computing platform with a <a href="https://developers.google.com/earth-engine/datasets/">multi-petabyte catalog</a> of satellite imagery and geospatial datasets. During the past few years, GEE has become very popular in the geospatial community and it has empowered numerous environmental applications at local, regional, and global scales. GEE provides both JavaScript and Python APIs for making computational requests to the Earth Engine servers. Compared with the comprehensive <a href="https://developers.google.com/earth-engine">documentation</a> and interactive IDE (i.e., <a href="https://code.earthengine.google.com/">GEE JavaScript Code Editor</a>) of the GEE JavaScript API, the GEE Python API has relatively little documentation and limited functionality for visualizing results interactively. The geemap Python package was created to fill this gap. It is built upon <a href="https://github.com/jupyter-widgets/ipyleaflet">ipyleaflet</a> and <a href="https://github.com/jupyter-widgets/ipywidgets">ipywidgets</a>, and enables users to analyze and visualize Earth Engine datasets interactively within a Jupyter-based environment.</p>
+<p><strong>Geemap</strong> is a Python package for interactive geospatial analysis and visualization with <a href="https://earthengine.google.com/">Google Earth Engine</a> (GEE), which is a cloud computing platform with a <a href="https://developers.google.com/earth-engine/datasets/">multi-petabyte catalog</a> of satellite imagery and geospatial datasets. During the past few years, GEE has become very popular in the geospatial community and it has empowered numerous environmental applications at local, regional, and global scales. GEE provides both JavaScript and Python APIs for making computational requests to the Earth Engine servers. Compared with the comprehensive <a href="https://developers.google.com/earth-engine">documentation</a> and interactive IDE (i.e., <a href="https://code.earthengine.google.com/">GEE JavaScript Code Editor</a>) of the GEE JavaScript API, the GEE Python API has relatively little documentation and limited functionality for visualizing results interactively. The geemap Python package was created to fill this gap. It is built upon <a href="https://github.com/jupyter-widgets/ipyleaflet">ipyleaflet</a> and <a href="https://github.com/jupyter-widgets/ipywidgets">ipywidgets</a>, and enables users to analyze and visualize Earth Engine datasets interactively within a Jupyter-based environment.</p>
 <p><strong>Geemap</strong> is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python <a href="https://github.com/gee-community/geemap/blob/master/geemap/conversion.py">conversion module</a> of the geemap package can greatly reduce the time needed to convert existing GEE JavaScripts to Python scripts and Jupyter notebooks.</p>
 <p>For video tutorials and notebook examples, please visit the <a href="https://github.com/gee-community/geemap/tree/master/examples">examples page</a>. For complete documentation on geemap modules and methods, please visit the <a href="https://geemap.org/geemap/">API Reference</a>.</p>
 <p>If you find geemap useful in your research, please consider citing the following papers to support my work. Thank you for your support.</p>
@@ -4317,8 +4318,8 @@
 <li>Wu, Q., (2020). geemap: A Python package for interactive mapping with Google Earth Engine. The Journal of Open Source Software, 5(51), 2305. <a href="https://doi.org/10.21105/joss.02305">https://doi.org/10.21105/joss.02305</a></li>
 <li>Wu, Q., Lane, C. R., Li, X., Zhao, K., Zhou, Y., Clinton, N., DeVries, B., Golden, H. E., &amp; Lang, M. W. (2019). Integrating LiDAR data and multi-temporal aerial imagery to map wetland inundation dynamics using Google Earth Engine. Remote Sensing of Environment, 228, 1-13. <a href="https://doi.org/10.1016/j.rse.2019.04.015">https://doi.org/10.1016/j.rse.2019.04.015</a> (<a href="https://gishub.org/2019_rse">pdf</a> | <a href="https://doi.org/10.6084/m9.figshare.8864921">source code</a>)</li>
 </ul>
-<p>Check out the geemap workshop I presented at the GeoPython Conference 2021. This workshop gives a comprehensive introduction to the key features of geemap.</p>
-<p><a href="https://www.youtube.com/watch?v=wGjpjh9IQ5I"><img alt="geemap workship" src="https://img.youtube.com/vi/wGjpjh9IQ5I/0.jpg" /></a></p>
+<p>Check out the geemap workshop presented at the GeoPython Conference 2021. This workshop gives a comprehensive introduction to the key features of geemap.</p>
+<p><a href="https://www.youtube.com/watch?v=wGjpjh9IQ5I"><img alt="geemap workshop" src="https://img.youtube.com/vi/wGjpjh9IQ5I/0.jpg" /></a></p>
 <h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
 <p>Below is a partial list of features available for the geemap package. Please check the <a href="https://github.com/gee-community/geemap/tree/master/examples">examples</a> page for notebook examples, GIF animations, and video tutorials.</p>
 <ul>
@@ -4359,7 +4360,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-08-19T17:56:02+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-08-19</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-10-01T00:07:48+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-10-01</span>
       
         <br>
         Created:
