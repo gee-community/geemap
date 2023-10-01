@@ -3,25 +3,28 @@ geemap
 ======
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
-        :target: https://gishub.org/geemap-colab
+        :target: https://colab.research.google.com/github/gee-community/geemap/blob/master/docs/notebooks/00_geemap_colab.ipynb
 
 .. image:: https://mybinder.org/badge_logo.svg
-        :target: https://gishub.org/geemap-binder
+        :target: https://mybinder.org/v2/gh/gee-community/geemap/master?labpath=docs%2Fnotebooks%2F00_geemap_colab.ipynb
 
 .. image:: https://studiolab.sagemaker.aws/studiolab.svg
-        :target: https://studiolab.sagemaker.aws/import/github/gee-community/geemap/blob/master/examples/notebooks/00_geemap_key_features.ipynb
-
-.. image:: https://renkulab.io/renku-badge.svg
-        :target: https://renkulab.io/projects/renku-stories/geemap/sessions/new?autostart=1
+        :target: https://studiolab.sagemaker.aws/import/github/gee-community/geemap/blob/master/docs/notebooks/00_geemap_colab.ipynb
 
 .. image:: https://img.shields.io/pypi/v/geemap.svg
         :target: https://pypi.python.org/pypi/geemap
 
+.. image:: https://static.pepy.tech/badge/geemap
+        :target: https://pepy.tech/project/geemap
+
+.. image:: https://img.shields.io/badge/recipe-geemap-green.svg
+        :target: https://github.com/giswqs/geemap-feedstock
+
 .. image:: https://img.shields.io/conda/vn/conda-forge/geemap.svg
         :target: https://anaconda.org/conda-forge/geemap
 
-.. image:: https://static.pepy.tech/badge/geemap
-        :target: https://pepy.tech/project/geemap
+.. image:: https://img.shields.io/conda/dn/conda-forge/geemap.svg
+        :target: https://anaconda.org/conda-forge/geemap
 
 .. image:: https://github.com/gee-community/geemap/workflows/docs/badge.svg
         :target: https://geemap.org
@@ -38,7 +41,7 @@ geemap
 .. image:: https://joss.theoj.org/papers/10.21105/joss.02305/status.svg
         :target: https://joss.theoj.org/papers/10.21105/joss.02305
 
-**A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.**
+**A Python package for interactive geospatial analysis and visualization with Google Earth Engine.**
 
 * GitHub repo: https://github.com/gee-community/geemap
 * Documentation: https://geemap.org
@@ -48,7 +51,7 @@ geemap
 * GEE Tutorials on YouTube: https://youtube.com/@giswqs
 * Free software: MIT license
 
-**Acknowledgment:** This material is based upon work partially supported by the National Aeronautics and Space Administration (NASA) under Grant No. 80NSSC22K1742 issued through the `Open Source Tools, Frameworks, and Libraries 2020 Program <https://bit.ly/3RVBRcQ>`__.
+**Acknowledgment:** The geemap project is supported by the National Aeronautics and Space Administration (NASA) under Grant No. 80NSSC22K1742 issued through the `Open Source Tools, Frameworks, and Libraries 2020 Program <https://bit.ly/3RVBRcQ>`__.
 
 **Contents**
 
@@ -62,7 +65,7 @@ geemap
 Announcement
 ------------
 
-The book **Earth Engine and Geemap - Geospatial Data Science with Python**, written by `Qiusheng Wu <https://gishub.org>`__, has been published by Locate Press in July 2023. If you’re interested in
+The book **Earth Engine and Geemap: Geospatial Data Science with Python**, written by `Qiusheng Wu <https://gishub.org>`__, has been published by Locate Press in July 2023. If you’re interested in
 purchasing the book, please visit this URL: https://locatepress.com/book/gee.
 
 .. figure:: https://images.geemap.org/book.png
@@ -72,7 +75,7 @@ purchasing the book, please visit this URL: https://locatepress.com/book/gee.
 Introduction
 ------------
 
-**Geemap** is a Python package for interactive mapping with `Google Earth Engine <https://earthengine.google.com/>`__ (GEE), which is a cloud computing platform with a `multi-petabyte catalog <https://developers.google.com/earth-engine/datasets/>`__ of satellite imagery and geospatial datasets. During the past few years, 
+**Geemap** is a Python package for geospatial analysis and visualization with `Google Earth Engine <https://earthengine.google.com/>`__ (GEE), which is a cloud computing platform with a `multi-petabyte catalog <https://developers.google.com/earth-engine/datasets/>`__ of satellite imagery and geospatial datasets. During the past few years, 
 GEE has become very popular in the geospatial community and it has empowered numerous environmental applications at local, regional, and global scales. GEE provides both JavaScript and Python APIs for 
 making computational requests to the Earth Engine servers. Compared with the comprehensive `documentation <https://developers.google.com/earth-engine>`__ and interactive IDE (i.e., `GEE JavaScript Code Editor <https://code.earthengine.google.com/>`__) of the GEE JavaScript API, 
 the GEE Python API has relatively little documentation and limited functionality for visualizing results interactively. The **geemap** Python package was created to fill this gap. It is built upon `ipyleaflet <https://github.com/jupyter-widgets/ipyleaflet>`__ and `ipywidgets <https://github.com/jupyter-widgets/ipywidgets>`__, and enables users to 
@@ -88,7 +91,7 @@ If you find geemap useful in your research, please consider citing the following
 - Wu, Q., (2020). geemap: A Python package for interactive mapping with Google Earth Engine. *The Journal of Open Source Software*, 5(51), 2305. `<https://doi.org/10.21105/joss.02305>`__ 
 - Wu, Q., Lane, C. R., Li, X., Zhao, K., Zhou, Y., Clinton, N., DeVries, B., Golden, H. E., & Lang, M. W. (2019). Integrating LiDAR data and multi-temporal aerial imagery to map wetland inundation dynamics using Google Earth Engine. *Remote Sensing of Environment*, 228, 1-13. https://doi.org/10.1016/j.rse.2019.04.015 (`pdf <https://gishub.org/2019_rse>`_ | `source code <https://doi.org/10.6084/m9.figshare.8864921>`_)
 
-Check out the geemap workshop I presented at the GeoPython Conference 2021. This workshop gives a comprehensive introduction to the key features of geemap. 
+Check out the geemap workshop presented at the GeoPython Conference 2021. This workshop gives a comprehensive introduction to the key features of geemap. 
 
 .. image:: https://img.youtube.com/vi/wGjpjh9IQ5I/0.jpg
         :target: https://www.youtube.com/watch?v=wGjpjh9IQ5I
