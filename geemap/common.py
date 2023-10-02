@@ -36,6 +36,7 @@ def ee_initialize(
     auth_mode="notebook",
     service_account=False,
     auth_args={},
+    user_agent_prefix="geemap",
     **kwargs,
 ):
     """Authenticates Earth Engine and initialize an Earth Engine session
@@ -45,13 +46,14 @@ def ee_initialize(
         auth_mode (str, optional): The authentication mode, can be one of paste,notebook,gcloud,appdefault. Defaults to "notebook".
         service_account (bool, optional): If True, use a service account. Defaults to False.
         auth_args (dict, optional): Additional authentication parameters for aa.Authenticate(). Defaults to {}.
+        user_agent_prefix (str, optional): If set, the prefix (version-less) value used for setting the user-agent string. Defaults to "geemap".
         kwargs (dict, optional): Additional parameters for ee.Initialize(). For example,
             opt_url='https://earthengine-highvolume.googleapis.com' to use the Earth Engine High-Volume platform. Defaults to {}.
     """
     import httplib2
     from .__init__ import __version__
 
-    user_agent = f"geemap/{__version__}"
+    user_agent = f"{user_agent_prefix}/{__version__}"
     if "http_transport" not in kwargs:
         kwargs["http_transport"] = httplib2.Http()
 
@@ -122,7 +124,7 @@ def ee_initialize(
                 ee.Authenticate(**auth_args)
                 ee.Initialize(**kwargs)
 
-        ee.data.setUserAgent(user_agent)
+    ee.data.setUserAgent(user_agent)
 
 
 def ee_export_image(
