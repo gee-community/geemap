@@ -358,7 +358,7 @@ def ee_export_image_to_drive(
             lists of numbers or a serialized string. Defaults to the image's
             region.
         scale: The resolution in meters per pixel. Defaults to the
-            native resolution of the image  unless a crsTransform
+            native resolution of the image asset unless a crsTransform
             is specified.
         crs: The coordinate reference system of the exported image's
             projection. Defaults to the image's default projection.
