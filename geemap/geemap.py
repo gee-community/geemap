@@ -2127,7 +2127,7 @@ class Map(core.Map):
             download (bool, optional): Whether to download the gif. Defaults to False.
             apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
             nd_bands (list, optional): A list of names specifying the bands to use, e.g., ['Green', 'SWIR1']. The normalized difference is computed as (first − second) / (first + second). Note that negative input values are forced to 0 so that the result is confined to the range (-1, 1).
-            nd_threshold (float, optional): The threshold for extacting pixels from the normalized difference band.
+            nd_threshold (float, optional): The threshold for extracting pixels from the normalized difference band.
             nd_palette (str, optional): The color palette to use for displaying the normalized difference band.
 
         """

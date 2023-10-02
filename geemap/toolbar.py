@@ -3197,7 +3197,7 @@ def time_slider(m=None):
 
             except Exception as _:
                 with output:
-                    print("The vis parmas are invalid.")
+                    print("The vis params are invalid.")
                     return
 
             if labels.value != "" and "," in labels.value:
