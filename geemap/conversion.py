@@ -369,7 +369,7 @@ def js_to_python(
                         bracket_index = line.index("{")
                     except Exception as e:
                         print(
-                            f"An error occurred when processing {in_file}. The closing curly bracket could not be found in Line {index+1}: {line}. Please reformat the function definition and make sure that both the opening and closing curly brackets apprear on the same line as the function keyword. "
+                            f"An error occurred when processing {in_file}. The closing curly bracket could not be found in Line {index+1}: {line}. Please reformat the function definition and make sure that both the opening and closing curly brackets appear on the same line as the function keyword. "
                         )
                         return
 

@@ -358,7 +358,7 @@ def ee_export_image_to_drive(
             lists of numbers or a serialized string. Defaults to the image's
             region.
         scale: The resolution in meters per pixel. Defaults to the
-            native resolution of the image assset unless a crsTransform
+            native resolution of the image  unless a crsTransform
             is specified.
         crs: The coordinate reference system of the exported image's
             projection. Defaults to the image's default projection.
@@ -444,7 +444,7 @@ def ee_export_image_to_asset(
             lists of numbers or a serialized string. Defaults to the image's
             region.
         scale: The resolution in meters per pixel. Defaults to the
-            native resolution of the image assset unless a crsTransform
+            native resolution of the image asset unless a crsTransform
             is specified.
         crs: The coordinate reference system of the exported image's
             projection. Defaults to the image's default projection.
@@ -521,7 +521,7 @@ def ee_export_image_to_cloud_storage(
             lists of numbers or a serialized string. Defaults to the image's
             region.
         scale: The resolution in meters per pixel. Defaults to the
-            native resolution of the image assset unless a crsTransform
+            native resolution of the image asset unless a crsTransform
             is specified.
         crs: The coordinate reference system of the exported image's
             projection. Defaults to the image's default projection.
@@ -613,7 +613,7 @@ def ee_export_image_collection_to_drive(
             lists of numbers or a serialized string. Defaults to the image's
             region.
         scale: The resolution in meters per pixel. Defaults to the
-            native resolution of the image assset unless a crsTransform
+            native resolution of the image asset unless a crsTransform
             is specified.
         crs: The coordinate reference system of the exported image's
             projection. Defaults to the image's default projection.
@@ -721,7 +721,7 @@ def ee_export_image_collection_to_asset(
             lists of numbers or a serialized string. Defaults to the image's
             region.
         scale: The resolution in meters per pixel. Defaults to the
-            native resolution of the image assset unless a crsTransform
+            native resolution of the image asset unless a crsTransform
             is specified.
         crs: The coordinate reference system of the exported image's
             projection. Defaults to the image's default projection.
@@ -815,7 +815,7 @@ def ee_export_image_collection_to_cloud_storage(
             lists of numbers or a serialized string. Defaults to the image's
             region.
         scale: The resolution in meters per pixel. Defaults to the
-            native resolution of the image assset unless a crsTransform
+            native resolution of the image asset unless a crsTransform
             is specified.
         crs: The coordinate reference system of the exported image's
             projection. Defaults to the image's default projection.
@@ -7708,7 +7708,7 @@ def longitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
 
 
 def latlon_grid(lat_step=1.0, lon_step=1.0, west=-180, east=180, south=-85, north=85):
-    """Create a retangular grid of latitude and longitude.
+    """Create a rectangular grid of latitude and longitude.
 
     Args:
         lat_step (float, optional): The step size in degrees. Defaults to 1.0.
