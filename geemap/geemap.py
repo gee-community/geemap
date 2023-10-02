@@ -124,6 +124,7 @@ class Map(core.Map):
         self._xyz_dict = get_xyz_dict()
 
         self.baseclass = "ipyleaflet"
+        self._USER_AGENT_PREFIX = "geemap"
         self.kwargs = kwargs
         super().__init__(**kwargs)
 
