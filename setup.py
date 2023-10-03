@@ -90,6 +90,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/gee-community/geemap",
-    version="0.27.2",
+    version="0.27.4",
     zip_safe=False,
 )

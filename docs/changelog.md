@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.27.4 - Oct 2, 2023
+
+**What's Changed**
+
+-   Update v0.27.3 changelog by @giswqs in [#1741](https://github.com/gee-community/geemap/pull/1741)
+-   Update badges and Colab notebook by @giswqs in [#1743](https://github.com/gee-community/geemap/pull/1743)
+-   Add Colab notebook for core features demo by @giswqs in [#1744](https://github.com/gee-community/geemap/pull/1744)
+-   Update 00_geemap_colab.ipynb by @jdbcode in [#1747](https://github.com/gee-community/geemap/pull/1747)
+-   Modify user agent string for geemap.core by @bengalin in [#1748](https://github.com/gee-community/geemap/pull/1748)
+-   Fix typos by @giswqs in [#1749](https://github.com/gee-community/geemap/pull/1749)
+-   Update Colab notebook by @giswqs in [#1750](https://github.com/gee-community/geemap/pull/1750)
+
+**Full Changelog**: [v0.27.3...v0.27.4](https://github.com/gee-community/geemap/compare/v0.27.3...v0.27.4)
+
+## v0.27.3 - Sep 28, 2023
+
+**What's Changed**
+
+-   Fix layer management issues by @naschmitz in [#1740](https://github.com/gee-community/geemap/pull/1740)
+-   Implement draw controls in geemap.core (with toolbar fixes) by @sufyanAbbasi in [#1736](https://github.com/gee-community/geemap/pull/1736)
+
+**Full Changelog**: [v0.27.2...v0.27.3](https://github.com/gee-community/geemap/compare/v0.27.2...v0.27.3)
+
 ## v0.27.2 - Sep 28, 2023
 
 **What's Changed**
@@ -24,7 +47,7 @@
 
 -   @jgarcia525 made their first contribution in [#1721](https://github.com/gee-community/geemap/pull/1721)
 
-**Full Changelog**: [v0.25.0...v0.27.1](https://github.com/gee-community/geemap/compare/v0.25.0...v0.27.1)
+**Full Changelog**: [v0.27.0...v0.27.1](https://github.com/gee-community/geemap/compare/v0.27.0...v0.27.1)
 
 ## v0.27.0 - Sep 21, 2023
 
@@ -73,7 +96,7 @@
 -   @biplovbhandari made their first contribution in [#1701](https://github.com/gee-community/geemap/pull/1701)
 -   @jgarcia525 made their first contribution in [#1721](https://github.com/gee-community/geemap/pull/1721)
 
-**Full Changelog**: [v0.25.0...v0.27.0](https://github.com/gee-community/geemap/compare/v0.25.0...v0.27.0)
+**Full Changelog**: [v0.26.0...v0.27.0](https://github.com/gee-community/geemap/compare/v0.26.0...v0.27.0)
 
 ## v0.26.0 - Sep 6, 2023
 

@@ -1,20 +1,21 @@
 # Welcome to geemap
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://gishub.org/geemap-colab)
-[![Open in Binder](https://mybinder.org/badge_logo.svg)](https://gishub.org/geemap-binder)
-[![Open In Studio Lab](https://studiolab.sagemaker.aws/studiolab.svg)](https://studiolab.sagemaker.aws/import/github/gee-community/geemap/blob/master/examples/notebooks/00_geemap_key_features.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gee-community/geemap/blob/master/docs/notebooks/00_geemap_colab.ipynb)
+[![Open in Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gee-community/geemap/master?labpath=docs%2Fnotebooks%2F00_geemap_colab.ipynb)
+[![Open In Studio Lab](https://studiolab.sagemaker.aws/studiolab.svg)](https://studiolab.sagemaker.aws/import/github/gee-community/geemap/blob/master/docs/notebooks/00_geemap_colab.ipynb)
 [![image](https://img.shields.io/pypi/v/geemap.svg)](https://pypi.python.org/pypi/geemap)
-[![image](https://img.shields.io/conda/vn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
 [![image](https://static.pepy.tech/badge/geemap)](https://pepy.tech/project/geemap)
+[![Conda Recipe](https://img.shields.io/badge/recipe-geemap-green.svg)](https://github.com/giswqs/geemap-feedstock)
+[![image](https://img.shields.io/conda/vn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
+[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
 [![image](https://github.com/gee-community/geemap/workflows/docs/badge.svg)](https://geemap.org)
-[![image](https://github.com/gee-community/geemap/workflows/build/badge.svg)](https://github.com/gee-community/geemap/actions?query=workflow%3Abuild)
 [![image](https://img.shields.io/badge/YouTube-Channel-red)](https://youtube.com/@giswqs)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![image](https://joss.theoj.org/papers/10.21105/joss.02305/status.svg)](https://joss.theoj.org/papers/10.21105/joss.02305)
 
 [![logo](https://i.imgur.com/9OOSpDm.png)](https://github.com/gee-community/geemap/blob/master/docs/assets/logo.png)
 
-**A Python package for interactive mapping with Google Earth Engine, ipyleaflet, and ipywidgets.**
+**A Python package for interactive geospatial analysis and visualization with Google Earth Engine**
 
 -   GitHub repo: <https://github.com/gee-community/geemap>
 -   Documentation: <https://geemap.org>
@@ -24,17 +25,17 @@
 -   GEE Tutorials on YouTube: <https://youtube.com/@giswqs>
 -   Free software: [MIT license](https://opensource.org/licenses/MIT)
 
-**Acknowledgment:** This material is based upon work supported by the National Aeronautics and Space Administration (NASA) under Grant No. 80NSSC22K1742 issued through the [Open Source Tools, Frameworks, and Libraries 2020 Program](https://bit.ly/3RVBRcQ).
+**Acknowledgment:** The geemap project is supported by the National Aeronautics and Space Administration (NASA) under Grant No. 80NSSC22K1742 issued through the [Open Source Tools, Frameworks, and Libraries 2020 Program](https://bit.ly/3RVBRcQ).
 
 ## Announcement
 
-The book _**Earth Engine and Geemap - Geospatial Data Science with Python**_, written by [Qiusheng Wu](https://gishub.org), has been published by Locate Press in July 2023. If you're interested in purchasing the book, please visit this URL: <https://locatepress.com/book/gee>.
+The book _**Earth Engine and Geemap: Geospatial Data Science with Python**_, written by [Qiusheng Wu](https://gishub.org), has been published by Locate Press in July 2023. If you're interested in purchasing the book, please visit this URL: <https://locatepress.com/book/gee>.
 
 ![book](https://images.geemap.org/book.png)
 
 ## Introduction
 
-**Geemap** is a Python package for interactive mapping with [Google Earth Engine](https://earthengine.google.com/) (GEE), which is a cloud computing platform with a [multi-petabyte catalog](https://developers.google.com/earth-engine/datasets/) of satellite imagery and geospatial datasets. During the past few years, GEE has become very popular in the geospatial community and it has empowered numerous environmental applications at local, regional, and global scales. GEE provides both JavaScript and Python APIs for making computational requests to the Earth Engine servers. Compared with the comprehensive [documentation](https://developers.google.com/earth-engine) and interactive IDE (i.e., [GEE JavaScript Code Editor](https://code.earthengine.google.com/)) of the GEE JavaScript API, the GEE Python API has relatively little documentation and limited functionality for visualizing results interactively. The geemap Python package was created to fill this gap. It is built upon [ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet) and [ipywidgets](https://github.com/jupyter-widgets/ipywidgets), and enables users to analyze and visualize Earth Engine datasets interactively within a Jupyter-based environment.
+**Geemap** is a Python package for interactive geospatial analysis and visualization with [Google Earth Engine](https://earthengine.google.com/) (GEE), which is a cloud computing platform with a [multi-petabyte catalog](https://developers.google.com/earth-engine/datasets/) of satellite imagery and geospatial datasets. During the past few years, GEE has become very popular in the geospatial community and it has empowered numerous environmental applications at local, regional, and global scales. GEE provides both JavaScript and Python APIs for making computational requests to the Earth Engine servers. Compared with the comprehensive [documentation](https://developers.google.com/earth-engine) and interactive IDE (i.e., [GEE JavaScript Code Editor](https://code.earthengine.google.com/)) of the GEE JavaScript API, the GEE Python API has relatively little documentation and limited functionality for visualizing results interactively. The geemap Python package was created to fill this gap. It is built upon [ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet) and [ipywidgets](https://github.com/jupyter-widgets/ipywidgets), and enables users to analyze and visualize Earth Engine datasets interactively within a Jupyter-based environment.
 
 **Geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python [conversion module](https://github.com/gee-community/geemap/blob/master/geemap/conversion.py) of the geemap package can greatly reduce the time needed to convert existing GEE JavaScripts to Python scripts and Jupyter notebooks.
 
@@ -45,9 +46,9 @@ If you find geemap useful in your research, please consider citing the following
 -   Wu, Q., (2020). geemap: A Python package for interactive mapping with Google Earth Engine. The Journal of Open Source Software, 5(51), 2305. <https://doi.org/10.21105/joss.02305>
 -   Wu, Q., Lane, C. R., Li, X., Zhao, K., Zhou, Y., Clinton, N., DeVries, B., Golden, H. E., & Lang, M. W. (2019). Integrating LiDAR data and multi-temporal aerial imagery to map wetland inundation dynamics using Google Earth Engine. Remote Sensing of Environment, 228, 1-13. <https://doi.org/10.1016/j.rse.2019.04.015> ([pdf](https://gishub.org/2019_rse) | [source code](https://doi.org/10.6084/m9.figshare.8864921))
 
-Check out the geemap workshop I presented at the GeoPython Conference 2021. This workshop gives a comprehensive introduction to the key features of geemap.
+Check out the geemap workshop presented at the GeoPython Conference 2021. This workshop gives a comprehensive introduction to the key features of geemap.
 
-[![geemap workship](https://img.youtube.com/vi/wGjpjh9IQ5I/0.jpg)](https://www.youtube.com/watch?v=wGjpjh9IQ5I)
+[![geemap workshop](https://img.youtube.com/vi/wGjpjh9IQ5I/0.jpg)](https://www.youtube.com/watch?v=wGjpjh9IQ5I)
 
 ## Key Features
 
