@@ -506,12 +506,6 @@ class Map(ipyleaflet.Map, MapInterface):
         if zoom is not None:
             self.zoom = zoom
 
-    def _log_widget_already_present(self, widget: ipywidgets.Widget) -> None:
-        logging.warning(
-            "A widget of type %s is already present on the map.",
-            widget.__class__,
-        )
-
     def _get_geometry(
         self, ee_object: ee.ComputedObject, max_error: float
     ) -> ee.Geometry:
@@ -576,8 +570,7 @@ class Map(ipyleaflet.Map, MapInterface):
         if obj in basic_controls:
             basic_control = basic_controls[obj]
             # Check if widget is already on the map.
-            if widget := self._find_widget_of_type(basic_control[0]):
-                self._log_widget_already_present(widget)
+            if self._find_widget_of_type(basic_control[0]):
                 return
             new_kwargs = {**basic_control[1], **kwargs}
             super().add(basic_control[0](position=position, **new_kwargs))
@@ -598,8 +591,7 @@ class Map(ipyleaflet.Map, MapInterface):
 
     def _on_toggle_toolbar_layers(self, is_open: bool) -> None:
         if is_open:
-            if widget := self._layer_manager:
-                self._log_widget_already_present(widget)
+            if self._layer_manager:
                 return
 
             def _on_open_vis(layer_name: str) -> None:
@@ -616,8 +608,7 @@ class Map(ipyleaflet.Map, MapInterface):
             self.remove("layer_manager")
 
     def _add_layer_manager(self, position: str, **kwargs) -> None:
-        if widget := self._layer_manager:
-            self._log_widget_already_present(widget)
+        if self._layer_manager:
             return
 
         def _on_open_vis(layer_name: str) -> None:
@@ -633,8 +624,7 @@ class Map(ipyleaflet.Map, MapInterface):
         super().add(layer_manager_control)
 
     def _add_toolbar(self, position: str, **kwargs) -> None:
-        if widget := self._toolbar:
-            self._log_widget_already_present(widget)
+        if self._toolbar:
             return
 
         toolbar_val = toolbar.Toolbar(
@@ -647,8 +637,7 @@ class Map(ipyleaflet.Map, MapInterface):
         super().add(toolbar_control)
 
     def _add_inspector(self, position: str, **kwargs) -> None:
-        if widget := self._inspector:
-            self._log_widget_already_present(widget)
+        if self._inspector:
             return
 
         inspector = map_widgets.Inspector(self, **kwargs)
@@ -659,8 +648,7 @@ class Map(ipyleaflet.Map, MapInterface):
         super().add(inspector_control)
 
     def _add_layer_editor(self, position: str, **kwargs) -> None:
-        if widget := self._layer_editor:
-            self._log_widget_already_present(widget)
+        if self._layer_editor:
             return
 
         widget = map_widgets.LayerEditor(self, **kwargs)
@@ -674,8 +662,7 @@ class Map(ipyleaflet.Map, MapInterface):
         Args:
             position (str, optional): The position of the draw control. Defaults to "topleft".
         """
-        if widget := self._draw_control:
-            self._log_widget_already_present(widget)
+        if self._draw_control:
             return
         default_args = dict(
             marker={"shapeOptions": {"color": "#3388ff"}},
@@ -695,8 +682,7 @@ class Map(ipyleaflet.Map, MapInterface):
         return self._draw_control
 
     def _add_basemap_selector(self, position: str, **kwargs) -> None:
-        if widget := self._basemap_selector:
-            self._log_widget_already_present(widget)
+        if self._basemap_selector:
             return
 
         basemap_names = kwargs.pop("basemaps", list(self._available_basemaps.keys()))
