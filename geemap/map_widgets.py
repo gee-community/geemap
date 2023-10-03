@@ -22,10 +22,17 @@ def set_css_in_cell_output():
                 --jp-layout-color2: #454545;
                 background-color: #383838;
             }
+                 
+            .geemap-dark .jupyter-button {
+                --jp-layout-color3: #383838;
+            }
             
             .geemap-colab {
-                --jp-layout-color3: var(--colab-primary-text-color, black);
                 background-color: var(--colab-primary-surface-color, white);
+            }
+                 
+            .geemap-colab .jupyter-button {
+                --jp-layout-color3: var(--colab-primary-surface-color, white);
             }
         </style>
     """)
@@ -43,7 +50,7 @@ def in_colab_shell():
         return False
 
 class Theme:
-    current_theme = 'colab' if in_colab_shell() else 'dark' 
+    current_theme = 'colab' if in_colab_shell() else 'light' 
 
     @staticmethod
     def apply(cls):
