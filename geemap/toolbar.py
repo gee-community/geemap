@@ -25,7 +25,7 @@ from .timelapse import *
 from . import map_widgets
 
 
-@map_widgets.Theme.Primary
+@map_widgets.Theme.apply
 class Toolbar(widgets.VBox):
     """A toolbar that can be added to the map."""
 
