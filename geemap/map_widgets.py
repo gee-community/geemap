@@ -12,8 +12,11 @@ import ipywidgets
 
 from . import common
 
+
 def set_css_in_cell_output():
-    display(HTML("""
+    display(
+        HTML(
+            """
         <style>
             .geemap-dark {
                 --jp-widgets-color: white;
@@ -35,10 +38,13 @@ def set_css_in_cell_output():
                 --jp-layout-color3: var(--colab-primary-surface-color, white);
             }
         </style>
-    """)
+    """
+        )
     )
 
-IPython.get_ipython().events.register('pre_run_cell', set_css_in_cell_output)
+
+IPython.get_ipython().events.register("pre_run_cell", set_css_in_cell_output)
+
 
 def in_colab_shell():
     """Tests if the code is being executed within Google Colab."""
@@ -49,17 +55,19 @@ def in_colab_shell():
     else:
         return False
 
+
 class Theme:
-    current_theme = 'colab' if in_colab_shell() else 'light' 
+    current_theme = "colab" if in_colab_shell() else "light"
 
     @staticmethod
     def apply(cls):
         original_init = cls.__init__
-        
+
         @functools.wraps(cls.__init__)
         def wrapper(self, *args, **kwargs):
             original_init(self, *args, **kwargs)
             self.add_class("geemap-{}".format(Theme.current_theme))
+
         cls.__init__ = wrapper
         return cls
 
@@ -1552,6 +1560,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
         self._reset_color_button.disabled = True
         self.children = self._get_tool_layout(grayscale=False)
         self._colorbar_output.clear_output()
+
 
 @Theme.apply
 class _VectorLayerEditor(ipywidgets.VBox):
