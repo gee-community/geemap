@@ -42,7 +42,10 @@ def set_css_in_cell_output():
     )
 
 
-IPython.get_ipython().events.register("pre_run_cell", set_css_in_cell_output)
+try:
+    IPython.get_ipython().events.register("pre_run_cell", set_css_in_cell_output)
+except AttributeError:
+    pass
 
 
 def in_colab_shell():
