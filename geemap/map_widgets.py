@@ -16,28 +16,28 @@ def set_css_in_cell_output():
     display(
         HTML(
             """
-        <style>
-            .geemap-dark {
-                --jp-widgets-color: white;
-                --jp-widgets-label-color: white;
-                --jp-ui-font-color1: white;
-                --jp-layout-color2: #454545;
-                background-color: #383838;
-            }
-                 
-            .geemap-dark .jupyter-button {
-                --jp-layout-color3: #383838;
-            }
-            
-            .geemap-colab {
-                background-color: var(--colab-primary-surface-color, white);
-            }
-                 
-            .geemap-colab .jupyter-button {
-                --jp-layout-color3: var(--colab-primary-surface-color, white);
-            }
-        </style>
-    """
+            <style>
+                .geemap-dark {
+                    --jp-widgets-color: white;
+                    --jp-widgets-label-color: white;
+                    --jp-ui-font-color1: white;
+                    --jp-layout-color2: #454545;
+                    background-color: #383838;
+                }
+                    
+                .geemap-dark .jupyter-button {
+                    --jp-layout-color3: #383838;
+                }
+                
+                .geemap-colab {
+                    background-color: var(--colab-primary-surface-color, white);
+                }
+                    
+                .geemap-colab .jupyter-button {
+                    --jp-layout-color3: var(--colab-primary-surface-color, white);
+                }
+            </style>
+            """
         )
     )
 
