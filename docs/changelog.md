@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.27.4 - Oct 2, 2023
+
+**What's Changed**
+
+-   Update v0.27.3 changelog by @giswqs in [#1741](https://github.com/gee-community/geemap/pull/1741)
+-   Update badges and Colab notebook by @giswqs in [#1743](https://github.com/gee-community/geemap/pull/1743)
+-   Add Colab notebook for core features demo by @giswqs in [#1744](https://github.com/gee-community/geemap/pull/1744)
+-   Update 00_geemap_colab.ipynb by @jdbcode in [#1747](https://github.com/gee-community/geemap/pull/1747)
+-   Modify user agent string for geemap.core by @bengalin in [#1748](https://github.com/gee-community/geemap/pull/1748)
+-   Fix typos by @giswqs in [#1749](https://github.com/gee-community/geemap/pull/1749)
+-   Update Colab notebook by @giswqs in [#1750](https://github.com/gee-community/geemap/pull/1750)
+
+**Full Changelog**: [v0.27.3...v0.27.4](https://github.com/gee-community/geemap/compare/v0.27.3...v0.27.4)
+
 ## v0.27.3 - Sep 28, 2023
 
 **What's Changed**
