@@ -1,5 +1,10 @@
 """Various ipywidgets that can be added to a map."""
 
+import functools
+
+import IPython
+from IPython.core.display import HTML, display
+
 import ee
 import ipytree
 import ipywidgets
@@ -7,6 +12,60 @@ import ipywidgets
 from . import common
 
 
+def _set_css_in_cell_output():
+    display(
+        HTML(
+            """
+            <style>
+                .geemap-dark {
+                    --jp-widgets-color: white;
+                    --jp-widgets-label-color: white;
+                    --jp-ui-font-color1: white;
+                    --jp-layout-color2: #454545;
+                    background-color: #383838;
+                }
+                    
+                .geemap-dark .jupyter-button {
+                    --jp-layout-color3: #383838;
+                }
+                
+                .geemap-colab {
+                    background-color: var(--colab-primary-surface-color, white);
+                }
+                    
+                .geemap-colab .jupyter-button {
+                    --jp-layout-color3: var(--colab-primary-surface-color, white);
+                }
+            </style>
+            """
+        )
+    )
+
+
+try:
+    IPython.get_ipython().events.register("pre_run_cell", _set_css_in_cell_output)
+except AttributeError:
+    pass
+
+
+class Theme:
+    """Applies dynamic theme in Colab, otherwise light."""
+    current_theme = "colab" if common.in_colab_shell() else "light"
+
+    @staticmethod
+    def apply(cls):
+        original_init = cls.__init__
+
+        @functools.wraps(cls.__init__)
+        def wrapper(self, *args, **kwargs):
+            original_init(self, *args, **kwargs)
+            self.add_class("geemap-{}".format(Theme.current_theme))
+
+        cls.__init__ = wrapper
+        return cls
+
+
+@Theme.apply
 class Colorbar(ipywidgets.Output):
     """A matplotlib colorbar widget that can be added to the map."""
 
@@ -148,6 +207,7 @@ class Colorbar(ipywidgets.Output):
         )
 
 
+@Theme.apply
 class Legend(ipywidgets.VBox):
     """A legend widget that can be added to the map."""
 
@@ -359,6 +419,7 @@ class Legend(ipywidgets.VBox):
         return default_value if name not in kwargs else kwargs[name]
 
 
+@Theme.apply
 class Inspector(ipywidgets.VBox):
     """Inspector widget for Earth Engine data."""
 
@@ -621,6 +682,7 @@ class Inspector(ipywidgets.VBox):
         return self._root_node("Objects", nodes)
 
 
+@Theme.apply
 class LayerManager(ipywidgets.VBox):
     def __init__(self, host_map):
         """Initializes a layer manager widget.
@@ -801,6 +863,7 @@ class LayerManager(ipywidgets.VBox):
                 self._host_map.remove_control(attachment)
 
 
+@Theme.apply
 class Basemap(ipywidgets.HBox):
     """Widget for selecting a basemap."""
 
@@ -840,6 +903,7 @@ class Basemap(ipywidgets.HBox):
             self.on_close()
 
 
+@Theme.apply
 class LayerEditor(ipywidgets.VBox):
     """Widget for displaying and editing layer visualization properties."""
 
@@ -937,6 +1001,7 @@ class LayerEditor(ipywidgets.VBox):
             self.on_close()
 
 
+@Theme.apply
 class _RasterLayerEditor(ipywidgets.VBox):
     """Widget for displaying and editing layer visualization properties for raster layers."""
 
@@ -1490,6 +1555,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
         self._colorbar_output.clear_output()
 
 
+@Theme.apply
 class _VectorLayerEditor(ipywidgets.VBox):
     """Widget for displaying and editing layer visualization properties."""
 
