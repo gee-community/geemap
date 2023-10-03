@@ -1,12 +1,96 @@
 """Various ipywidgets that can be added to a map."""
 
+import functools
+
+from IPython.core.display import display, HTML
+
 import ee
 import ipytree
 import ipywidgets
 
+
 from . import common
 
+display(HTML("""
+<style>
+    .geemap-primary.geemap-light {
+        background-color: white;
+        --jp-widgets-color: black;
+        --jp-widgets-label-color: black;
+    }
 
+    .geemap-secondary.geemap-light {
+        background-color: #f7f7f7;
+        --jp-widgets-color: black;
+        --jp-widgets-label-color: black;
+    }
+
+    .geemap-primary.geemap-dark {
+        background-color: #383838;
+        --jp-widgets-color: #d5d5d5;
+        --jp-wiwidgets-labelolor: #d5d5d5;
+    }
+
+    .geemap-secondary.geemap-dark {
+        background-color: #454545;
+        --jp-widgets-color: #d5d5d5;
+        --jp-wiwidgets-labelolor: #d5d5d5;
+    }
+     
+    .geemap-primary.geemap-colab {
+        background-color: var(--colab-primary-surface-color, white);
+        --jp-widgets-color: --c
+        --widgets-labelets-color: --colab-primary-text-color, black);
+    }
+
+    .geemap-secondary.geemap-colab {
+        background-color: var(--colab-secondary-surface-color, white);
+        --jp-widgets-color: --c
+        --widgets-labelets-color: --colab-secondary-text-color, black);
+    }
+</style>
+"""
+))
+
+def in_colab_shell():
+    """Tests if the code is being executed within Google Colab."""
+    import sys
+
+    if "google.colab" in sys.modules:
+        return True
+    else:
+        return False
+
+class Theme:
+    current_theme = 'colab' if in_colab_shell() else 'dark' 
+
+    @staticmethod
+    def Primary(cls):
+        original_init = cls.__init__
+        
+        @functools.wraps(cls.__init__)
+        def wrapper(self, *args, **kwargs):
+            original_init(self, *args, **kwargs)
+            self.add_class('geemap-primary')
+            self.add_class("geemap-{}".format(Theme.current_theme))
+        cls.__init__ = wrapper
+        return cls
+
+    
+    @staticmethod
+    def Secondary(cls):
+        original_init = cls.__init__
+        
+        @functools.wraps(cls.__init__)
+        def wrapper(self, *args, **kwargs):
+            original_init(self, *args, **kwargs)
+            self.add_class('geemap-secondary')
+            self.add_class(Theme.current_theme)
+        cls.__init__ = wrapper
+        return cls
+
+
+@Theme.Primary
 class Colorbar(ipywidgets.Output):
     """A matplotlib colorbar widget that can be added to the map."""
 
@@ -148,6 +232,7 @@ class Colorbar(ipywidgets.Output):
         )
 
 
+@Theme.Primary
 class Legend(ipywidgets.VBox):
     """A legend widget that can be added to the map."""
 
@@ -359,6 +444,7 @@ class Legend(ipywidgets.VBox):
         return default_value if name not in kwargs else kwargs[name]
 
 
+@Theme.Primary
 class Inspector(ipywidgets.VBox):
     """Inspector widget for Earth Engine data."""
 
@@ -621,6 +707,7 @@ class Inspector(ipywidgets.VBox):
         return self._root_node("Objects", nodes)
 
 
+@Theme.Primary
 class LayerManager(ipywidgets.VBox):
     def __init__(self, host_map):
         """Initializes a layer manager widget.
@@ -801,6 +888,7 @@ class LayerManager(ipywidgets.VBox):
                 self._host_map.remove_control(attachment)
 
 
+@Theme.Primary
 class Basemap(ipywidgets.HBox):
     """Widget for selecting a basemap."""
 
@@ -840,6 +928,7 @@ class Basemap(ipywidgets.HBox):
             self.on_close()
 
 
+@Theme.Primary
 class LayerEditor(ipywidgets.VBox):
     """Widget for displaying and editing layer visualization properties."""
 
@@ -937,6 +1026,7 @@ class LayerEditor(ipywidgets.VBox):
             self.on_close()
 
 
+@Theme.Primary
 class _RasterLayerEditor(ipywidgets.VBox):
     """Widget for displaying and editing layer visualization properties for raster layers."""
 
@@ -1489,7 +1579,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
         self.children = self._get_tool_layout(grayscale=False)
         self._colorbar_output.clear_output()
 
-
+@Theme.Primary
 class _VectorLayerEditor(ipywidgets.VBox):
     """Widget for displaying and editing layer visualization properties."""
 
