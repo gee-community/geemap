@@ -567,7 +567,7 @@ class TestLayerManager(unittest.TestCase):
         self.toggle_all_checkbox.value = False
 
         layers = self.fake_map.layers
-        for layer in layers:
+        for layer in layers[1:]:  # The base layer doesn't get toggled.
             self.assertFalse(layer.visible, f"{layer.name} shouldn't be visible")
 
         self.toggle_all_checkbox.value = True
