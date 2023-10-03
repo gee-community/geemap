@@ -3,12 +3,11 @@
 import functools
 
 import IPython
-from IPython.core.display import display, HTML
+from IPython.core.display import HTML, display
 
 import ee
 import ipytree
 import ipywidgets
-
 
 from . import common
 
