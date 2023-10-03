@@ -22,10 +22,10 @@ from typing import Callable
 from .common import *
 from .timelapse import *
 
-# from .geemap import MapDrawControl
 from . import map_widgets
 
 
+@map_widgets.Theme.Primary
 class Toolbar(widgets.VBox):
     """A toolbar that can be added to the map."""
 
