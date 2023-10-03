@@ -13,40 +13,17 @@ from . import common
 
 display(HTML("""
 <style>
-    .geemap-primary.geemap-light {
-        background-color: white;
-        --jp-widgets-color: black;
-        --jp-widgets-label-color: black;
-    }
-
-    .geemap-secondary.geemap-light {
-        background-color: #f7f7f7;
-        --jp-widgets-color: black;
-        --jp-widgets-label-color: black;
-    }
-
-    .geemap-primary.geemap-dark {
+    .geemap-dark {
+        --jp-widgets-color: white;
+        --jp-widgets-label-color: white;
+        --jp-ui-font-color1: white;
+        --jp-layout-color2: #454545;
         background-color: #383838;
-        --jp-widgets-color: #d5d5d5;
-        --jp-wiwidgets-labelolor: #d5d5d5;
-    }
-
-    .geemap-secondary.geemap-dark {
-        background-color: #454545;
-        --jp-widgets-color: #d5d5d5;
-        --jp-wiwidgets-labelolor: #d5d5d5;
     }
      
-    .geemap-primary.geemap-colab {
+    .geemap-colab {
+        --jp-layout-color3: var(--colab-primary-text-color, black);
         background-color: var(--colab-primary-surface-color, white);
-        --jp-widgets-color: --c
-        --widgets-labelets-color: --colab-primary-text-color, black);
-    }
-
-    .geemap-secondary.geemap-colab {
-        background-color: var(--colab-secondary-surface-color, white);
-        --jp-widgets-color: --c
-        --widgets-labelets-color: --colab-secondary-text-color, black);
     }
 </style>
 """
@@ -65,32 +42,18 @@ class Theme:
     current_theme = 'colab' if in_colab_shell() else 'dark' 
 
     @staticmethod
-    def Primary(cls):
+    def apply(cls):
         original_init = cls.__init__
         
         @functools.wraps(cls.__init__)
         def wrapper(self, *args, **kwargs):
             original_init(self, *args, **kwargs)
-            self.add_class('geemap-primary')
             self.add_class("geemap-{}".format(Theme.current_theme))
         cls.__init__ = wrapper
         return cls
 
-    
-    @staticmethod
-    def Secondary(cls):
-        original_init = cls.__init__
-        
-        @functools.wraps(cls.__init__)
-        def wrapper(self, *args, **kwargs):
-            original_init(self, *args, **kwargs)
-            self.add_class('geemap-secondary')
-            self.add_class(Theme.current_theme)
-        cls.__init__ = wrapper
-        return cls
 
-
-@Theme.Primary
+@Theme.apply
 class Colorbar(ipywidgets.Output):
     """A matplotlib colorbar widget that can be added to the map."""
 
@@ -232,7 +195,7 @@ class Colorbar(ipywidgets.Output):
         )
 
 
-@Theme.Primary
+@Theme.apply
 class Legend(ipywidgets.VBox):
     """A legend widget that can be added to the map."""
 
@@ -444,7 +407,7 @@ class Legend(ipywidgets.VBox):
         return default_value if name not in kwargs else kwargs[name]
 
 
-@Theme.Primary
+@Theme.apply
 class Inspector(ipywidgets.VBox):
     """Inspector widget for Earth Engine data."""
 
@@ -707,7 +670,7 @@ class Inspector(ipywidgets.VBox):
         return self._root_node("Objects", nodes)
 
 
-@Theme.Primary
+@Theme.apply
 class LayerManager(ipywidgets.VBox):
     def __init__(self, host_map):
         """Initializes a layer manager widget.
@@ -888,7 +851,7 @@ class LayerManager(ipywidgets.VBox):
                 self._host_map.remove_control(attachment)
 
 
-@Theme.Primary
+@Theme.apply
 class Basemap(ipywidgets.HBox):
     """Widget for selecting a basemap."""
 
@@ -928,7 +891,7 @@ class Basemap(ipywidgets.HBox):
             self.on_close()
 
 
-@Theme.Primary
+@Theme.apply
 class LayerEditor(ipywidgets.VBox):
     """Widget for displaying and editing layer visualization properties."""
 
@@ -1026,7 +989,7 @@ class LayerEditor(ipywidgets.VBox):
             self.on_close()
 
 
-@Theme.Primary
+@Theme.apply
 class _RasterLayerEditor(ipywidgets.VBox):
     """Widget for displaying and editing layer visualization properties for raster layers."""
 
@@ -1579,7 +1542,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
         self.children = self._get_tool_layout(grayscale=False)
         self._colorbar_output.clear_output()
 
-@Theme.Primary
+@Theme.apply
 class _VectorLayerEditor(ipywidgets.VBox):
     """Widget for displaying and editing layer visualization properties."""
 
