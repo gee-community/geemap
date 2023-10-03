@@ -12,7 +12,7 @@ import ipywidgets
 from . import common
 
 
-def set_css_in_cell_output():
+def _set_css_in_cell_output():
     display(
         HTML(
             """
@@ -43,23 +43,14 @@ def set_css_in_cell_output():
 
 
 try:
-    IPython.get_ipython().events.register("pre_run_cell", set_css_in_cell_output)
+    IPython.get_ipython().events.register("pre_run_cell", _set_css_in_cell_output)
 except AttributeError:
     pass
 
 
-def in_colab_shell():
-    """Tests if the code is being executed within Google Colab."""
-    import sys
-
-    if "google.colab" in sys.modules:
-        return True
-    else:
-        return False
-
-
 class Theme:
-    current_theme = "colab" if in_colab_shell() else "light"
+    """Applies dynamic theme in Colab, otherwise light."""
+    current_theme = "colab" if common.in_colab_shell() else "light"
 
     @staticmethod
     def apply(cls):
