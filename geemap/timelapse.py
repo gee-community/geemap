@@ -2646,7 +2646,7 @@ def landsat_timelapse(
         crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
         apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
         nd_bands (list, optional): A list of names specifying the bands to use, e.g., ['Green', 'SWIR1']. The normalized difference is computed as (first − second) / (first + second). Note that negative input values are forced to 0 so that the result is confined to the range (-1, 1).
-        nd_threshold (float, optional): The threshold for extacting pixels from the normalized difference band.
+        nd_threshold (float, optional): The threshold for extracting pixels from the normalized difference band.
         nd_palette (list, optional): The color palette to use for displaying the normalized difference band.
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
@@ -2925,7 +2925,7 @@ def landsat_timelapse_legacy(
         crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
         apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
         nd_bands (list, optional): A list of names specifying the bands to use, e.g., ['Green', 'SWIR1']. The normalized difference is computed as (first − second) / (first + second). Note that negative input values are forced to 0 so that the result is confined to the range (-1, 1).
-        nd_threshold (float, optional): The threshold for extacting pixels from the normalized difference band.
+        nd_threshold (float, optional): The threshold for extracting pixels from the normalized difference band.
         nd_palette (list, optional): The color palette to use for displaying the normalized difference band.
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
@@ -5147,7 +5147,7 @@ def vector_to_gif(
         progress_bar_color (str, optional): The color of the progress bar. Defaults to "blue".
         progress_bar_height (int, optional): The height of the progress bar. Defaults to 5.
         dpi (int, optional): The dpi of the figure. Defaults to 300.
-        fps (int, optional): The frames per seconc (fps) of the gif. Defaults to 10.
+        fps (int, optional): The frames per second (fps) of the gif. Defaults to 10.
         loop (int, optional): The number of loops of the gif. Defaults to 0, infinite loop.
         mp4 (bool, optional): Whether to convert the gif to mp4. Defaults to False.
         keep_png (bool, optional): Whether to keep the png files. Defaults to False.

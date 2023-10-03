@@ -411,6 +411,8 @@ class Map(ipyleaflet.Map, MapInterface):
         "HYBRID": "Esri.WorldImagery",
     }
 
+    _USER_AGENT_PREFIX = "geemap-core"
+
     @property
     def width(self) -> str:
         return self.layout.width
@@ -473,7 +475,7 @@ class Map(ipyleaflet.Map, MapInterface):
 
         # Authenticate and initialize EE.
         if kwargs.get("ee_initialize", True):
-            common.ee_initialize()
+            common.ee_initialize(user_agent_prefix=self._USER_AGENT_PREFIX)
 
         # Listen for layers being added/removed so we can update the layer manager.
         self.observe(self._on_layers_change, "layers")
