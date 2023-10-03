@@ -2,6 +2,7 @@
 
 import functools
 
+import IPython
 from IPython.core.display import display, HTML
 
 import ee
@@ -11,23 +12,26 @@ import ipywidgets
 
 from . import common
 
-display(HTML("""
-<style>
-    .geemap-dark {
-        --jp-widgets-color: white;
-        --jp-widgets-label-color: white;
-        --jp-ui-font-color1: white;
-        --jp-layout-color2: #454545;
-        background-color: #383838;
-    }
-     
-    .geemap-colab {
-        --jp-layout-color3: var(--colab-primary-text-color, black);
-        background-color: var(--colab-primary-surface-color, white);
-    }
-</style>
-"""
-))
+def set_css_in_cell_output():
+    display(HTML("""
+        <style>
+            .geemap-dark {
+                --jp-widgets-color: white;
+                --jp-widgets-label-color: white;
+                --jp-ui-font-color1: white;
+                --jp-layout-color2: #454545;
+                background-color: #383838;
+            }
+            
+            .geemap-colab {
+                --jp-layout-color3: var(--colab-primary-text-color, black);
+                background-color: var(--colab-primary-surface-color, white);
+            }
+        </style>
+    """)
+    )
+
+IPython.get_ipython().events.register('pre_run_cell', set_css_in_cell_output)
 
 def in_colab_shell():
     """Tests if the code is being executed within Google Colab."""
