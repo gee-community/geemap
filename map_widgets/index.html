@@ -1094,6 +1094,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#geemap.map_widgets.Theme" class="md-nav__link">
+    Theme
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4496,6 +4503,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#geemap.map_widgets.Theme" class="md-nav__link">
+    Theme
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4556,7 +4570,8 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
 
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Basemap</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="k">class</span> <span class="nc">Basemap</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for selecting a basemap.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -4715,7 +4730,8 @@ Colorbar            (<span title="ipywidgets.widgets.widget_output.Output">Outpu
 
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Colorbar</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Output</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="k">class</span> <span class="nc">Colorbar</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Output</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A matplotlib colorbar widget that can be added to the map.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -5161,7 +5177,8 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
 
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Inspector</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="k">class</span> <span class="nc">Inspector</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inspector widget for Earth Engine data.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -5643,7 +5660,8 @@ LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</s
 
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LayerEditor</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="k">class</span> <span class="nc">LayerEditor</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for displaying and editing layer visualization properties.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">layer_dict</span><span class="p">):</span>
@@ -5903,7 +5921,8 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
 
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LayerManager</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="k">class</span> <span class="nc">LayerManager</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes a layer manager widget.</span>
 <span class="sd">        Args:</span>
@@ -6256,7 +6275,8 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
 
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Legend</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="k">class</span> <span class="nc">Legend</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A legend widget that can be added to the map.&quot;&quot;&quot;</span>
 
     <span class="n">ALLOWED_POSITIONS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;topleft&quot;</span><span class="p">,</span> <span class="s2">&quot;topright&quot;</span><span class="p">,</span> <span class="s2">&quot;bottomleft&quot;</span><span class="p">,</span> <span class="s2">&quot;bottomright&quot;</span><span class="p">]</span>
@@ -6709,6 +6729,66 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
     </div>
 
   </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="geemap.map_widgets.Theme" class="doc doc-heading">
+        <code>
+Theme        </code>
+
+
+
+<a href="#geemap.map_widgets.Theme" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Applies dynamic theme in Colab, otherwise light.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Theme</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies dynamic theme in Colab, otherwise light.&quot;&quot;&quot;</span>
+    <span class="n">current_theme</span> <span class="o">=</span> <span class="s2">&quot;colab&quot;</span> <span class="k">if</span> <span class="n">common</span><span class="o">.</span><span class="n">in_colab_shell</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;light&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="n">original_init</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span>
+
+        <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">original_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_class</span><span class="p">(</span><span class="s2">&quot;geemap-</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Theme</span><span class="o">.</span><span class="n">current_theme</span><span class="p">))</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="n">wrapper</span>
+        <span class="k">return</span> <span class="bp">cls</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
 
 
 

@@ -4582,7 +4582,8 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
 
         <details class="quote">
           <summary>Source code in <code>geemap/toolbar.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Toolbar</span><span class="p">(</span><span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="nd">@map_widgets</span><span class="o">.</span><span class="n">Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="k">class</span> <span class="nc">Toolbar</span><span class="p">(</span><span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A toolbar that can be added to the map.&quot;&quot;&quot;</span>
 
     <span class="nd">@dataclass</span>
