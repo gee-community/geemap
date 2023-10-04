@@ -518,7 +518,7 @@ class TestLayerManager(unittest.TestCase):
     def setUp(self):
         self.fake_map = fake_map.FakeMap()
         self.fake_map.layers = [
-            fake_map.FakeTileLayer(name=None),  # Basemap
+            fake_map.FakeTileLayer(name='OpenStreetMap'),  # Basemap
             fake_map.FakeTileLayer(
                 name="GMaps", visible=False, opacity=0.5
             ),  # Extra basemap
@@ -555,10 +555,10 @@ class TestLayerManager(unittest.TestCase):
         self.assertFalse(self.layer_manager.header_hidden)
         self.assertFalse(self.layer_manager.close_button_hidden)
 
-        self.assertEqual(len(self.layer_rows), 3)
-        self._validate_row(self.layer_rows[0], "GMaps", False, 0.5)
-        self._validate_row(self.layer_rows[1], "test-layer", True, 0.8)
-        self._validate_row(self.layer_rows[2], "test-geojson-layer", False, 0.3)
+        self.assertEqual(len(self.layer_rows), 4)
+        self._validate_row(self.layer_rows[1], "GMaps", False, 0.5)
+        self._validate_row(self.layer_rows[2], "test-layer", True, 0.8)
+        self._validate_row(self.layer_rows[3], "test-geojson-layer", False, 0.3)
 
     def test_layer_manager_toggle_all_visibility(self):
         """Tests that the toggle all checkbox changes visibilities."""
@@ -577,12 +577,12 @@ class TestLayerManager(unittest.TestCase):
 
     def test_layer_manager_opacity_changed(self):
         """Tests that the opacity slider changes opacities."""
-        ee_layer = self.layer_rows[1]
+        ee_layer = self.layer_rows[2]
         ee_layer_slider = self._query_slider_on_row(ee_layer)
         ee_layer_slider.value = 0.01
         self.assertEqual(self.fake_map.layers[2].opacity, 0.01)
 
-        geojson_layer = self.layer_rows[2]
+        geojson_layer = self.layer_rows[3]
         geojson_layer_slider = self._query_slider_on_row(geojson_layer)
         geojson_layer_slider.value = 0.02
         self.assertEqual(
@@ -630,7 +630,7 @@ class TestLayerManager(unittest.TestCase):
         self.assertIsNotNone(self.collapse_button)
         self.assertIsNotNone(self.close_button)
         self.assertIsNotNone(self.toggle_all_checkbox)
-        self.assertEqual(len(self.layer_rows), 3)
+        self.assertEqual(len(self.layer_rows), 4)
 
     def test_layer_manager_header_hidden(self):
         """Tests that setting the header_hidden property hides the header."""
