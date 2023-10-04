@@ -78,7 +78,7 @@ class Toolbar(widgets.VBox):
         tooltips = [tool.tooltip for tool in all_tools]
         callbacks = [tool.callback for tool in all_tools]
         resets = [tool.reset for tool in all_tools]
-        self.num_collapsed_tools = len(main_tools) + 1
+        self.num_collapsed_tools = len(main_tools) + (1 if extra_tools else 0)
         # -(-a//b) is the same as math.ceil(a/b)
         self.num_rows_expanded = -(-len(all_tools) // self.NUM_COLS)
         self.num_rows_collapsed = -(-self.num_collapsed_tools // self.NUM_COLS)
