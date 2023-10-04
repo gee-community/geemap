@@ -5567,6 +5567,9 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_kwarg_defaults</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;OpenStreetMap.Mapnik&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;OpenStreetMap&quot;</span>
+
         <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">widgets</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_config</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">widgets</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
@@ -5603,12 +5606,6 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">zoom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span> <span class="o">=</span> <span class="n">zoom</span>
-
-    <span class="k">def</span> <span class="nf">_log_widget_already_present</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="s2">&quot;A widget of type </span><span class="si">%s</span><span class="s2"> is already present on the map.&quot;</span><span class="p">,</span>
-            <span class="n">widget</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
-        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_geometry</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span> <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span>
@@ -5674,8 +5671,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="k">if</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">basic_controls</span><span class="p">:</span>
             <span class="n">basic_control</span> <span class="o">=</span> <span class="n">basic_controls</span><span class="p">[</span><span class="n">obj</span><span class="p">]</span>
             <span class="c1"># Check if widget is already on the map.</span>
-            <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">basic_control</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log_widget_already_present</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">basic_control</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                 <span class="k">return</span>
             <span class="n">new_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">basic_control</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">basic_control</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="o">**</span><span class="n">new_kwargs</span><span class="p">))</span>
@@ -5696,8 +5692,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
     <span class="k">def</span> <span class="nf">_on_toggle_toolbar_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_open</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">is_open</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_manager</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log_widget_already_present</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_manager</span><span class="p">:</span>
                 <span class="k">return</span>
 
             <span class="k">def</span> <span class="nf">_on_open_vis</span><span class="p">(</span><span class="n">layer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -5714,8 +5709,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;layer_manager&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_layer_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_manager</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_widget_already_present</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_manager</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="k">def</span> <span class="nf">_on_open_vis</span><span class="p">(</span><span class="n">layer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -5731,8 +5725,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layer_manager_control</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_toolbar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_widget_already_present</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="n">toolbar_val</span> <span class="o">=</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="p">(</span>
@@ -5745,8 +5738,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">toolbar_control</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_inspector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inspector</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_widget_already_present</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inspector</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="n">inspector</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">Inspector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -5757,8 +5749,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">inspector_control</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_layer_editor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_editor</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_widget_already_present</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_editor</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="n">widget</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerEditor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -5772,8 +5763,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 <span class="sd">        Args:</span>
 <span class="sd">            position (str, optional): The position of the draw control. Defaults to &quot;topleft&quot;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_control</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_widget_already_present</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_control</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">default_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">marker</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;shapeOptions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#3388ff&quot;</span><span class="p">}},</span>
@@ -5793,8 +5783,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_control</span>
 
     <span class="k">def</span> <span class="nf">_add_basemap_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basemap_selector</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_widget_already_present</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basemap_selector</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="n">basemap_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;basemaps&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_available_basemaps</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
@@ -5880,7 +5869,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
     <span class="k">def</span> <span class="nf">_open_help_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="n">MapInterface</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">del</span> <span class="n">host_map</span>  <span class="c1"># Unused.</span>
         <span class="k">if</span> <span class="n">selected</span><span class="p">:</span>
-            <span class="n">webbrowser</span><span class="o">.</span><span class="n">open_new_tab</span><span class="p">(</span><span class="s2">&quot;https://geemap.org&quot;</span><span class="p">)</span>
+            <span class="n">common</span><span class="o">.</span><span class="n">open_url</span><span class="p">(</span><span class="s2">&quot;https://geemap.org&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_toolbar_main_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span>
@@ -6064,8 +6053,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
     <span class="k">if</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">basic_controls</span><span class="p">:</span>
         <span class="n">basic_control</span> <span class="o">=</span> <span class="n">basic_controls</span><span class="p">[</span><span class="n">obj</span><span class="p">]</span>
         <span class="c1"># Check if widget is already on the map.</span>
-        <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">basic_control</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_widget_already_present</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">basic_control</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="k">return</span>
         <span class="n">new_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">basic_control</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">basic_control</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="o">**</span><span class="n">new_kwargs</span><span class="p">))</span>
