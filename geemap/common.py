@@ -3484,7 +3484,9 @@ def screen_capture(filename, monitor=1):
 def open_url(url):
     """Opens the URL in a new browser tab."""
     if in_colab_shell():
-        display(Javascript('window.open("{url}");'.format(url=url)))
+        display(
+            Javascript('window.open("{url}", "_blank", "noopener")'.format(url=url))
+        )
     else:
         import webbrowser
 
@@ -14886,32 +14888,32 @@ def tms_to_geotiff(
         SESSION = requests.Session()
 
     xyz_tiles = {
-    "OpenStreetMap": {
-        "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "attribution": "OpenStreetMap",
-        "name": "OpenStreetMap",
-    },
-    "ROADMAP": {
-        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
-        "attribution": "Esri",
-        "name": "Esri.WorldStreetMap",
-    },
-    "SATELLITE": {
-        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        "attribution": "Esri",
-        "name": "Esri.WorldImagery",
-    },
-    "TERRAIN": {
-        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-        "attribution": "Esri",
-        "name": "Esri.WorldTopoMap",
-    },
-    "HYBRID": {
-        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        "attribution": "Esri",
-        "name": "Esri.WorldImagery",
-    },
-}
+        "OpenStreetMap": {
+            "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "attribution": "OpenStreetMap",
+            "name": "OpenStreetMap",
+        },
+        "ROADMAP": {
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+            "attribution": "Esri",
+            "name": "Esri.WorldStreetMap",
+        },
+        "SATELLITE": {
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            "attribution": "Esri",
+            "name": "Esri.WorldImagery",
+        },
+        "TERRAIN": {
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+            "attribution": "Esri",
+            "name": "Esri.WorldTopoMap",
+        },
+        "HYBRID": {
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            "attribution": "Esri",
+            "name": "Esri.WorldImagery",
+        },
+    }
 
     if isinstance(source, str) and source.upper() in xyz_tiles:
         source = xyz_tiles[source.upper()]["url"]
