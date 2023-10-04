@@ -24,10 +24,10 @@ from typing import Any, Callable, Optional
 from .common import *
 from .timelapse import *
 
-# from .geemap import MapDrawControl
 from . import map_widgets
 
 
+@map_widgets.Theme.apply
 class Toolbar(widgets.VBox):
     """A toolbar that can be added to the map."""
 
@@ -83,7 +83,7 @@ class Toolbar(widgets.VBox):
         tooltips = [tool.tooltip for tool in all_tools]
         callbacks = [tool.callback for tool in all_tools]
         resets = [tool.reset for tool in all_tools]
-        self.num_collapsed_tools = len(main_tools) + 1
+        self.num_collapsed_tools = len(main_tools) + (1 if extra_tools else 0)
         # -(-a//b) is the same as math.ceil(a/b)
         self.num_rows_expanded = -(-len(all_tools) // self.NUM_COLS)
         self.num_rows_collapsed = -(-self.num_collapsed_tools // self.NUM_COLS)
@@ -816,226 +816,267 @@ def ee_plot_gui(m, position="topright", **kwargs):
     close_btn.on_click(close_click)
 
 
-def search_data_gui(m, position="topleft"):
-    """The GUI widget for searching Earth Engine data catalog.
+@map_widgets.Theme.apply
+class SearchDataGUI(widgets.HBox):
 
-    Args:
-        m (geemap.Map): The geemap.Map object.
-        position (str, optional): The position of the widget. Defaults to "topleft".
-    """
+    def __init__(self, m, **kwargs):
 
     # Adds search button and search box
 
-    from .conversion import js_snippet_to_py
+        from .conversion import js_snippet_to_py
 
-    m.search_locations = None
-    m.search_loc_marker = None
-    m.search_loc_geom = None
-    m.search_datasets = None
+        m.search_locations = None
+        m.search_loc_marker = None
+        m.search_loc_geom = None
+        m.search_datasets = None
 
-    search_button = widgets.ToggleButton(
-        value=False,
-        tooltip="Search location/data",
-        icon="globe",
-        layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
-    )
+        search_button = widgets.ToggleButton(
+            value=False,
+            tooltip="Search location/data",
+            icon="globe",
+            layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+        )
 
-    search_type = widgets.ToggleButtons(
-        options=["name/address", "lat-lon", "data"],
-        tooltips=[
-            "Search by place name or address",
-            "Search by lat-lon coordinates",
-            "Search Earth Engine data catalog",
-        ],
-    )
-    search_type.style.button_width = "110px"
+        search_type = widgets.ToggleButtons(
+            options=["name/address", "lat-lon", "data"],
+            tooltips=[
+                "Search by place name or address",
+                "Search by lat-lon coordinates",
+                "Search Earth Engine data catalog",
+            ],
+        )
+        search_type.style.button_width = "110px"
 
-    search_box = widgets.Text(
-        placeholder="Search by place name or address",
-        tooltip="Search location",
-        layout=widgets.Layout(width="340px"),
-    )
+        search_box = widgets.Text(
+            placeholder="Search by place name or address",
+            tooltip="Search location",
+            layout=widgets.Layout(width="340px"),
+        )
 
-    search_output = widgets.Output(
-        layout={
-            "max_width": "340px",
-            "max_height": "350px",
-            "overflow": "scroll",
-        }
-    )
+        search_output = widgets.Output(
+            layout={
+                "max_width": "340px",
+                "max_height": "350px",
+                "overflow": "scroll",
+            }
+        )
 
-    search_results = widgets.RadioButtons()
+        search_results = widgets.RadioButtons()
 
-    assets_dropdown = widgets.Dropdown(
-        options=[],
-        layout=widgets.Layout(min_width="279px", max_width="279px"),
-    )
+        assets_dropdown = widgets.Dropdown(
+            options=[],
+            layout=widgets.Layout(min_width="279px", max_width="279px"),
+        )
 
-    import_btn = widgets.Button(
-        description="import",
-        button_style="primary",
-        tooltip="Click to import the selected asset",
-        layout=widgets.Layout(min_width="57px", max_width="57px"),
-    )
+        import_btn = widgets.Button(
+            description="import",
+            button_style="primary",
+            tooltip="Click to import the selected asset",
+            layout=widgets.Layout(min_width="57px", max_width="57px"),
+        )
 
-    def get_ee_example(asset_id):
-        try:
-            import pkg_resources
-
-            pkg_dir = os.path.dirname(
-                pkg_resources.resource_filename("geemap", "geemap.py")
-            )
-            with open(os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8") as f:
-                functions = json.load(f)
-            details = [
-                dataset["code"]
-                for x in functions["examples"]
-                for dataset in x["contents"]
-                if x["name"] == "Datasets"
-                if dataset["name"] == asset_id.replace("/", "_")
-            ]
-
-            return js_snippet_to_py(
-                details[0],
-                add_new_cell=False,
-                import_ee=False,
-                import_geemap=False,
-                show_map=False,
-            )
-
-        except Exception as e:
-            pass
-        return
-
-    def import_btn_clicked(b):
-        if assets_dropdown.value is not None:
-            datasets = m.search_datasets
-            dataset = datasets[assets_dropdown.index]
-            id_ = dataset["id"]
-            code = get_ee_example(id_)
-
-            if not code:
-                dataset_uid = "dataset_" + random_string(string_length=3)
-                translate = {
-                    "image_collection": "ImageCollection",
-                    "image": "Image",
-                    "table": "FeatureCollection",
-                    "table_collection": "FeatureCollection",
-                }
-                datatype = translate[dataset["type"]]
-                id_ = dataset["id"]
-                line1 = "{} = ee.{}('{}')".format(dataset_uid, datatype, id_)
-                action = {
-                    "image_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                    "image": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                    "table": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                    "table_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                }
-                line2 = action[dataset["type"]]
-                code = [line1, line2]
-
-            contents = "".join(code).strip()
-            # create_code_cell(contents)
-
+        def get_ee_example(asset_id):
             try:
-                import pyperclip
+                import pkg_resources
 
-                pyperclip.copy(str(contents))
+                pkg_dir = os.path.dirname(
+                    pkg_resources.resource_filename("geemap", "geemap.py")
+                )
+                with open(os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8") as f:
+                    functions = json.load(f)
+                details = [
+                    dataset["code"]
+                    for x in functions["examples"]
+                    for dataset in x["contents"]
+                    if x["name"] == "Datasets"
+                    if dataset["name"] == asset_id.replace("/", "_")
+                ]
+
+                return js_snippet_to_py(
+                    details[0],
+                    add_new_cell=False,
+                    import_ee=False,
+                    import_geemap=False,
+                    show_map=False,
+                )
+
             except Exception as e:
                 pass
+            return
 
-            with search_output:
-                search_output.outputs = ()
-                print(
-                    "# The code has been copied to the clipboard. \n# Press Ctrl+V in a new cell to paste it.\n"
+        def import_btn_clicked(b):
+            if assets_dropdown.value is not None:
+                datasets = m.search_datasets
+                dataset = datasets[assets_dropdown.index]
+                id_ = dataset["id"]
+                code = get_ee_example(id_)
+
+                if not code:
+                    dataset_uid = "dataset_" + random_string(string_length=3)
+                    translate = {
+                        "image_collection": "ImageCollection",
+                        "image": "Image",
+                        "table": "FeatureCollection",
+                        "table_collection": "FeatureCollection",
+                    }
+                    datatype = translate[dataset["type"]]
+                    id_ = dataset["id"]
+                    line1 = "{} = ee.{}('{}')".format(dataset_uid, datatype, id_)
+                    action = {
+                        "image_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "image": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "table": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "table_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                    }
+                    line2 = action[dataset["type"]]
+                    code = [line1, line2]
+
+                contents = "".join(code).strip()
+                # create_code_cell(contents)
+
+                try:
+                    import pyperclip
+
+                    pyperclip.copy(str(contents))
+                except Exception as e:
+                    pass
+
+                with search_output:
+                    search_output.clear_output()
+                    print(
+                        "# The code has been copied to the clipboard. \n# Press Ctrl+V in a new cell to paste it.\n"
+                    )
+                    print(contents)
+
+        import_btn.on_click(import_btn_clicked)
+
+        html_widget = widgets.HTML()
+
+        def dropdown_change(change):
+            dropdown_index = assets_dropdown.index
+            if dropdown_index is not None and dropdown_index >= 0:
+                search_output.clear_output()
+                search_output.append_stdout("Loading ...")
+                datasets = m.search_datasets
+                dataset = datasets[dropdown_index]
+                dataset_html = ee_data_html(dataset)
+                html_widget.value = dataset_html
+                search_output.clear_output()
+                with search_output:
+                    display(html_widget)
+                # search_output.append_display_data(html_widget)
+
+        assets_dropdown.observe(dropdown_change, names="value")
+
+        assets_combo = widgets.HBox()
+        assets_combo.children = [import_btn, assets_dropdown]
+
+        def search_result_change(change):
+            result_index = search_results.index
+            locations = m.search_locations
+            location = locations[result_index]
+            latlon = (location.lat, location.lng)
+            m.search_loc_geom = ee.Geometry.Point(location.lng, location.lat)
+            marker = m.search_loc_marker
+            marker.location = latlon
+            m.center = latlon
+
+        search_results.observe(search_result_change, names="value")
+
+        def search_btn_click(change):
+            if change["new"]:
+                self.children = [search_button, search_result_widget]
+                search_type.value = "name/address"
+            else:
+                self.children = [search_button]
+                search_result_widget.children = [search_type, search_box]
+
+        search_button.observe(search_btn_click, "value")
+
+        def search_type_changed(change):
+            search_box.value = ""
+            search_output.clear_output()
+            if change["new"] == "data":
+                search_box.placeholder = (
+                    "Search GEE data catalog by keywords, e.g., elevation"
                 )
-                print(contents)
+                search_result_widget.children = [
+                    search_type,
+                    search_box,
+                    assets_combo,
+                    search_output,
+                ]
+            elif change["new"] == "lat-lon":
+                search_box.placeholder = "Search by lat-lon, e.g., 40, -100"
+                assets_dropdown.options = []
+                search_result_widget.children = [
+                    search_type,
+                    search_box,
+                    search_output,
+                ]
+            elif change["new"] == "name/address":
+                search_box.placeholder = "Search by place name or address, e.g., Paris"
+                assets_dropdown.options = []
+                search_result_widget.children = [
+                    search_type,
+                    search_box,
+                    search_output,
+                ]
 
-    import_btn.on_click(import_btn_clicked)
+        search_type.observe(search_type_changed, names="value")
 
-    html_widget = widgets.HTML()
+        def search_box_callback(text):
+            if text.value != "":
+                if search_type.value == "name/address":
+                    g = geocode(text.value)
+                elif search_type.value == "lat-lon":
+                    g = geocode(text.value, reverse=True)
+                    if g is None and latlon_from_text(text.value):
+                        search_output.clear_output()
+                        latlon = latlon_from_text(text.value)
+                        m.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
+                        if m.search_loc_marker is None:
+                            marker = ipyleaflet.Marker(
+                                location=latlon,
+                                draggable=False,
+                                name="Search location",
+                            )
+                            m.search_loc_marker = marker
+                            m.add(marker)
+                            m.center = latlon
+                        else:
+                            marker = m.search_loc_marker
+                            marker.location = latlon
+                            m.center = latlon
+                        with search_output:
+                            print(f"No address found for {latlon}")
+                        return
+                elif search_type.value == "data":
+                    search_output.clear_output()
+                    with search_output:
+                        print("Searching ...")
+                    m.default_style = {"cursor": "wait"}
+                    ee_assets = search_ee_data(text.value, source="all")
+                    m.search_datasets = ee_assets
+                    asset_titles = [x["title"] for x in ee_assets]
+                    assets_dropdown.options = asset_titles
+                    search_output.clear_output()
+                    if len(ee_assets) > 0:
+                        assets_dropdown.index = 0
+                        html_widget.value = ee_data_html(ee_assets[0])
+                    else:
+                        html_widget.value = "No results found."
+                    with search_output:
+                        display(html_widget)
+                    m.default_style = {"cursor": "default"}
 
-    def dropdown_change(change):
-        dropdown_index = assets_dropdown.index
-        if dropdown_index is not None and dropdown_index >= 0:
-            search_output.outputs = ()
-            search_output.append_stdout("Loading ...")
-            datasets = m.search_datasets
-            dataset = datasets[dropdown_index]
-            dataset_html = ee_data_html(dataset)
-            html_widget.value = dataset_html
-            search_output.outputs = ()
-            search_output.append_display_data(html_widget)
+                    return
 
-    assets_dropdown.observe(dropdown_change, names="value")
-
-    assets_combo = widgets.HBox()
-    assets_combo.children = [import_btn, assets_dropdown]
-
-    def search_result_change(change):
-        result_index = search_results.index
-        locations = m.search_locations
-        location = locations[result_index]
-        latlon = (location.lat, location.lng)
-        m.search_loc_geom = ee.Geometry.Point(location.lng, location.lat)
-        marker = m.search_loc_marker
-        marker.location = latlon
-        m.center = latlon
-
-    search_results.observe(search_result_change, names="value")
-
-    def search_btn_click(change):
-        if change["new"]:
-            search_widget.children = [search_button, search_result_widget]
-            search_type.value = "name/address"
-        else:
-            search_widget.children = [search_button]
-            search_result_widget.children = [search_type, search_box]
-
-    search_button.observe(search_btn_click, "value")
-
-    def search_type_changed(change):
-        search_box.value = ""
-        search_output.outputs = ()
-        if change["new"] == "data":
-            search_box.placeholder = (
-                "Search GEE data catalog by keywords, e.g., elevation"
-            )
-            search_result_widget.children = [
-                search_type,
-                search_box,
-                assets_combo,
-                search_output,
-            ]
-        elif change["new"] == "lat-lon":
-            search_box.placeholder = "Search by lat-lon, e.g., 40, -100"
-            assets_dropdown.options = []
-            search_result_widget.children = [
-                search_type,
-                search_box,
-                search_output,
-            ]
-        elif change["new"] == "name/address":
-            search_box.placeholder = "Search by place name or address, e.g., Paris"
-            assets_dropdown.options = []
-            search_result_widget.children = [
-                search_type,
-                search_box,
-                search_output,
-            ]
-
-    search_type.observe(search_type_changed, names="value")
-
-    def search_box_callback(text):
-        if text.value != "":
-            if search_type.value == "name/address":
-                g = geocode(text.value)
-            elif search_type.value == "lat-lon":
-                g = geocode(text.value, reverse=True)
-                if g is None and latlon_from_text(text.value):
-                    search_output.outputs = ()
-                    latlon = latlon_from_text(text.value)
-                    m.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
+                m.search_locations = g
+                if g is not None and len(g) > 0:
+                    top_loc = g[0]
+                    latlon = (top_loc.lat, top_loc.lng)
+                    m.search_loc_geom = ee.Geometry.Point(top_loc.lng, top_loc.lat)
                     if m.search_loc_marker is None:
                         marker = ipyleaflet.Marker(
                             location=latlon,
@@ -1049,85 +1090,40 @@ def search_data_gui(m, position="topleft"):
                         marker = m.search_loc_marker
                         marker.location = latlon
                         m.center = latlon
+                    search_results.options = [x.address for x in g]
+                    search_result_widget.children = [
+                        search_type,
+                        search_box,
+                        search_output,
+                    ]
                     with search_output:
-                        print(f"No address found for {latlon}")
-                    return
-            elif search_type.value == "data":
-                search_output.outputs = ()
-                with search_output:
-                    print("Searching ...")
-                m.default_style = {"cursor": "wait"}
-                ee_assets = search_ee_data(text.value, source="all")
-                m.search_datasets = ee_assets
-                asset_titles = [x["title"] for x in ee_assets]
-                assets_dropdown.options = asset_titles
-                search_output.outputs = ()
-                if len(ee_assets) > 0:
-                    assets_dropdown.index = 0
-                    html_widget.value = ee_data_html(ee_assets[0])
+                        search_output.clear_output()
+                        display(search_results)
                 else:
-                    html_widget.value = "No results found."
-                with search_output:
-                    display(html_widget)
-                m.default_style = {"cursor": "default"}
+                    with search_output:
+                        search_output.clear_output()
+                        print("No results could be found.")
 
-                return
+        search_box.on_submit(search_box_callback)
 
-            m.search_locations = g
-            if g is not None and len(g) > 0:
-                top_loc = g[0]
-                latlon = (top_loc.lat, top_loc.lng)
-                m.search_loc_geom = ee.Geometry.Point(top_loc.lng, top_loc.lat)
-                if m.search_loc_marker is None:
-                    marker = ipyleaflet.Marker(
-                        location=latlon,
-                        draggable=False,
-                        name="Search location",
-                    )
-                    m.search_loc_marker = marker
-                    m.add(marker)
-                    m.center = latlon
-                else:
-                    marker = m.search_loc_marker
-                    marker.location = latlon
-                    m.center = latlon
-                search_results.options = [x.address for x in g]
-                search_result_widget.children = [
-                    search_type,
-                    search_box,
-                    search_output,
-                ]
-                with search_output:
-                    search_output.outputs = ()
-                    display(search_results)
-            else:
-                with search_output:
-                    search_output.outputs = ()
-                    print("No results could be found.")
+        search_result_widget = widgets.VBox([search_type, search_box])
 
-    search_box.on_submit(search_box_callback)
+        super().__init__(children=[search_button], **kwargs)
 
-    search_result_widget = widgets.VBox([search_type, search_box])
-    search_widget = widgets.HBox([search_button])
+        search_event = ipyevents.Event(
+            source=self, watched_events=["mouseenter", "mouseleave"]
+        )
 
-    search_event = ipyevents.Event(
-        source=search_widget, watched_events=["mouseenter", "mouseleave"]
-    )
+        def handle_search_event(event):
+            if event["type"] == "mouseenter":
+                self.children = [search_button, search_result_widget]
+                # search_type.value = "name/address"
+            elif event["type"] == "mouseleave":
+                if not search_button.value:
+                    self.children = [search_button]
+                    search_result_widget.children = [search_type, search_box]
 
-    def handle_search_event(event):
-        if event["type"] == "mouseenter":
-            search_widget.children = [search_button, search_result_widget]
-            # search_type.value = "name/address"
-        elif event["type"] == "mouseleave":
-            if not search_button.value:
-                search_widget.children = [search_button]
-                search_result_widget.children = [search_type, search_box]
-
-    search_event.on_dom_event(handle_search_event)
-
-    data_control = ipyleaflet.WidgetControl(widget=search_widget, position=position)
-
-    m.add(data_control)
+        search_event.on_dom_event(handle_search_event)
 
 
 # ******************************************************************************#
