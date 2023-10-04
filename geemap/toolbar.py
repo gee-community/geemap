@@ -822,6 +822,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
     close_btn.on_click(close_click)
 
 
+@map_widgets.Theme.apply
 def search_data_gui(m, position="topleft"):
     """The GUI widget for searching Earth Engine data catalog.
 
