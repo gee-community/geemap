@@ -469,6 +469,9 @@ class Map(ipyleaflet.Map, MapInterface):
         kwargs = self._apply_kwarg_defaults(kwargs)
         super().__init__(**kwargs)
 
+        if len(self.layers) > 0 and self.layers[0].name == "OpenStreetMap.Mapnik":
+            self.layers[0].name = "OpenStreetMap"
+
         for position, widgets in self._control_config().items():
             for widget in widgets:
                 self.add(widget, position=position)
