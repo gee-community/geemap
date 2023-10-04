@@ -4682,19 +4682,19 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=25406193">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a6644dcd">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/58_add_shapefile.ipynb" target="_parent"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
+<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/58_add_vector.ipynb" target="_parent"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
 <p>Uncomment the following line to install <a href="https://geemap.org">geemap</a> if needed.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=36c30577">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b78b1796">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4721,7 +4721,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5d561a65">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=54cf3065">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4732,7 +4732,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=099cb5f8">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1fa07fbb">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4759,7 +4759,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ecf3ff89">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=af1bcb40">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4786,7 +4786,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e95f31cf">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8cc24aaa">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4806,14 +4806,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="n">in_geojson</span> <span class="o">=</span> <span class="s1">'https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/cable_geo.geojson'</span>
+<span class="n">in_geojson</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/cable_geo.geojson"</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">add_geojson</span><span class="p">(</span><span class="n">in_geojson</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"Cable lines"</span><span class="p">)</span>
 
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4">Map = geemap.Map(center=[0, 0], zoom=2)
 
-in_geojson = 'https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/cable_geo.geojson'
+in_geojson = "https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/cable_geo.geojson"
 Map.add_geojson(in_geojson, layer_name="Cable lines")
 
 Map</div>
@@ -4823,7 +4823,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2d270f68">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=47eeb825">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4844,14 +4844,14 @@ Map</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">url</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/countries.geojson"</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">add_geojson</span><span class="p">(</span>
-    <span class="n">url</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"Countries"</span><span class="p">,</span> <span class="n">fill_colors</span><span class="o">=</span><span class="p">[</span><span class="s1">'red'</span><span class="p">,</span> <span class="s1">'yellow'</span><span class="p">,</span> <span class="s1">'green'</span><span class="p">,</span> <span class="s1">'orange'</span><span class="p">]</span>
+    <span class="n">url</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"Countries"</span><span class="p">,</span> <span class="n">fill_colors</span><span class="o">=</span><span class="p">[</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"yellow"</span><span class="p">,</span> <span class="s2">"green"</span><span class="p">,</span> <span class="s2">"orange"</span><span class="p">]</span>
 <span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-5">Map = geemap.Map(center=[0, 0], zoom=2)
 url = "https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/countries.geojson"
 Map.add_geojson(
-    url, layer_name="Countries", fill_colors=['red', 'yellow', 'green', 'orange']
+    url, layer_name="Countries", fill_colors=["red", "yellow", "green", "orange"]
 )
 Map</div>
 </div>
@@ -4860,7 +4860,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6c2423a5">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8e156130">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4887,8 +4887,8 @@ Map</div>
 
 <span class="k">def</span> <span class="nf">random_color</span><span class="p">(</span><span class="n">feature</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">'color'</span><span class="p">:</span> <span class="s1">'black'</span><span class="p">,</span>
-        <span class="s1">'fillColor'</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s1">'red'</span><span class="p">,</span> <span class="s1">'yellow'</span><span class="p">,</span> <span class="s1">'green'</span><span class="p">,</span> <span class="s1">'orange'</span><span class="p">]),</span>
+        <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"black"</span><span class="p">,</span>
+        <span class="s2">"fillColor"</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"yellow"</span><span class="p">,</span> <span class="s2">"green"</span><span class="p">,</span> <span class="s2">"orange"</span><span class="p">]),</span>
     <span class="p">}</span>
 
 
@@ -4904,8 +4904,8 @@ url = "https://raw.githubusercontent.com/gee-community/geemap/master/examples/da
 
 def random_color(feature):
     return {
-        'color': 'black',
-        'fillColor': random.choice(['red', 'yellow', 'green', 'orange']),
+        "color": "black",
+        "fillColor": random.choice(["red", "yellow", "green", "orange"]),
     }
 
 
@@ -4917,7 +4917,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=459ddb55">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b4e5628d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4978,7 +4978,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3278c02b">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e1ddca8c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4996,26 +4996,29 @@ Map</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="n">in_shp</span> <span class="o">=</span> <span class="s1">'../data/countries.shp'</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">add_shapefile</span><span class="p">(</span><span class="n">in_shp</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"Countries"</span><span class="p">)</span>
-
-<span class="n">Map</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/countries.zip"</span>
+<span class="n">geemap</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8">Map = geemap.Map(center=[0, 0], zoom=2)
-
-in_shp = '../data/countries.shp'
-Map.add_shapefile(in_shp, layer_name="Countries")
-
-Map</div>
+<div class="clipboard-copy-txt" id="cell-8">url = "https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/countries.zip"
+geemap.download_file(url)</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e441583e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Uncomment to install <code>PyCRS</code> as needed</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d024270f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d0b3cf80">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5033,26 +5036,16 @@ Map</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-
-<span class="n">in_kml</span> <span class="o">=</span> <span class="s1">'../data/us_states.kml'</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">add_kml</span><span class="p">(</span><span class="n">in_kml</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"US States KML"</span><span class="p">)</span>
-
-<span class="n">Map</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># !pip install PyCRS</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-9">Map = geemap.Map()
-
-in_kml = '../data/us_states.kml'
-Map.add_kml(in_kml, layer_name="US States KML")
-
-Map</div>
+<div class="clipboard-copy-txt" id="cell-9"># !pip install PyCRS</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7d7ad398">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=06c68ff4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5071,36 +5064,25 @@ Map</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/countries.geojson"</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">add_vector</span><span class="p">(</span>
-    <span class="n">url</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"Countries"</span><span class="p">,</span> <span class="n">fill_colors</span><span class="o">=</span><span class="p">[</span><span class="s1">'red'</span><span class="p">,</span> <span class="s1">'yellow'</span><span class="p">,</span> <span class="s1">'green'</span><span class="p">,</span> <span class="s1">'orange'</span><span class="p">]</span>
-<span class="p">)</span>
+
+<span class="n">in_shp</span> <span class="o">=</span> <span class="s2">"countries.shp"</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_shapefile</span><span class="p">(</span><span class="n">in_shp</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"Countries"</span><span class="p">)</span>
+
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-10">Map = geemap.Map(center=[0, 0], zoom=2)
-url = "https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/countries.geojson"
-Map.add_vector(
-    url, layer_name="Countries", fill_colors=['red', 'yellow', 'green', 'orange']
-)
+
+in_shp = "countries.shp"
+Map.add_shapefile(in_shp, layer_name="Countries")
+
 Map</div>
 </div>
 </div>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3b99c6f2">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="for-folium">For folium<a class="anchor-link" href="#for-folium">¶</a></h2>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=bc9ddf70">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d6510b67">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5118,16 +5100,26 @@ Map</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">geemap.foliumap</span> <span class="k">as</span> <span class="nn">geemap</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
+
+<span class="n">in_kml</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/us_states.kml"</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_kml</span><span class="p">(</span><span class="n">in_kml</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"US States KML"</span><span class="p">)</span>
+
+<span class="n">Map</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-11">import geemap.foliumap as geemap</div>
+<div class="clipboard-copy-txt" id="cell-11">Map = geemap.Map()
+
+in_kml = "https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/us_states.kml"
+Map.add_kml(in_kml, layer_name="US States KML")
+
+Map</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=895c4df7">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8fe824c0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5145,16 +5137,37 @@ Map</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/countries.geojson"</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_vector</span><span class="p">(</span>
+    <span class="n">url</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"Countries"</span><span class="p">,</span> <span class="n">fill_colors</span><span class="o">=</span><span class="p">[</span><span class="s2">"red"</span><span class="p">,</span> <span class="s2">"yellow"</span><span class="p">,</span> <span class="s2">"green"</span><span class="p">,</span> <span class="s2">"orange"</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">Map</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-12">Map = geemap.Map()</div>
+<div class="clipboard-copy-txt" id="cell-12">Map = geemap.Map(center=[0, 0], zoom=2)
+url = "https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/countries.geojson"
+Map.add_vector(
+    url, layer_name="Countries", fill_colors=["red", "yellow", "green", "orange"]
+)
+Map</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=416034c1">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="for-folium">For folium<a class="anchor-link" href="#for-folium">¶</a></h2>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d18aabe4">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ccbb159a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5172,20 +5185,16 @@ Map</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">in_shp</span> <span class="o">=</span> <span class="s1">'../data/countries.shp'</span>
-<span class="n">in_geojson</span> <span class="o">=</span> <span class="s1">'../data/us_states.json'</span>
-<span class="n">in_kml</span> <span class="o">=</span> <span class="s1">'../data/us_states.kml'</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">geemap.foliumap</span> <span class="k">as</span> <span class="nn">geemap</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-13">in_shp = '../data/countries.shp'
-in_geojson = '../data/us_states.json'
-in_kml = '../data/us_states.kml'</div>
+<div class="clipboard-copy-txt" id="cell-13">import geemap.foliumap as geemap</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=625fd102">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=50b1e21d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5203,16 +5212,16 @@ in_kml = '../data/us_states.kml'</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">add_shapefile</span><span class="p">(</span><span class="n">in_shp</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"Shapefile"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-14">Map.add_shapefile(in_shp, layer_name="Shapefile")</div>
+<div class="clipboard-copy-txt" id="cell-14">Map = geemap.Map()</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=bf653a71">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e3316b97">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5230,16 +5239,20 @@ in_kml = '../data/us_states.kml'</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">add_geojson</span><span class="p">(</span><span class="n">in_geojson</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"GeoJSON"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">in_shp</span> <span class="o">=</span> <span class="s2">"countries.shp"</span>
+<span class="n">in_geojson</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/us_states.json"</span>
+<span class="n">in_kml</span> <span class="o">=</span> <span class="s2">"./us_states.kml"</span> <span class="c1"># the kml visualization above downloads this file</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-15">Map.add_geojson(in_geojson, layer_name="GeoJSON")</div>
+<div class="clipboard-copy-txt" id="cell-15">in_shp = "countries.shp"
+in_geojson = "https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/us_states.json"
+in_kml = "./us_states.kml" # the kml visualization above downloads this file</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4401372e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=eba8b0b4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5257,16 +5270,16 @@ in_kml = '../data/us_states.kml'</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">add_kml</span><span class="p">(</span><span class="n">in_kml</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"KML"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">add_shapefile</span><span class="p">(</span><span class="n">in_shp</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"Shapefile"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-16">Map.add_kml(in_kml, layer_name="KML")</div>
+<div class="clipboard-copy-txt" id="cell-16">Map.add_shapefile(in_shp, layer_name="Shapefile")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2627811d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=90472ad2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5284,9 +5297,63 @@ in_kml = '../data/us_states.kml'</div>
 </div>
 </clipboard-copy>
 </div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">add_geojson</span><span class="p">(</span><span class="n">in_geojson</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"GeoJSON"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-17">Map.add_geojson(in_geojson, layer_name="GeoJSON")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6a9fae24">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy for="cell-18">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">add_kml</span><span class="p">(</span><span class="n">in_kml</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"KML"</span><span class="p">)</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-18">Map.add_kml(in_kml, layer_name="KML")</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1c13facb">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy for="cell-19">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-17">Map</div>
+<div class="clipboard-copy-txt" id="cell-19">Map</div>
 </div>
 </div>
 </div>
@@ -5306,7 +5373,7 @@ in_kml = '../data/us_states.kml'</div>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-10-04T03:54:02+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-10-04</span>
       
         <br>
         Created:

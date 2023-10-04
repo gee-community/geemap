@@ -4678,13 +4678,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=776afe3c">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8dec640f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/57_cartoee_blend.ipynb" target="_parent"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
+<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/69_cartoee_vector.ipynb" target="_parent"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
 <p><strong>Plotting Earth Engine vector data with cartoee</strong></p>
 <p>Uncomment the following line to install <a href="https://geemap.org">geemap</a> and <a href="https://scitools.org.uk/cartopy/docs/latest/installing.html#installing">cartopy</a> if needed. Keep in mind that cartopy can be challenging to install. If you are unable to install cartopy on your computer, you can try Google Colab with this the <a href="https://colab.research.google.com/github/gee-community/geemap/blob/master/examples/notebooks/69_cartoee_vector.ipynb">notebook example</a>.</p>
 <p>See below the commands to install cartopy and geemap using conda/mamba:</p>
@@ -4698,7 +4698,7 @@ jupyter notebook
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=bddbfd7d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8c991e8e">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4727,7 +4727,7 @@ jupyter notebook
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c4ceee5e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a972b553">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4768,7 +4768,7 @@ import cartopy.crs as ccrs
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5619cbc3">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7e73b8a9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4779,7 +4779,7 @@ import cartopy.crs as ccrs
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5c73948a">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=53639258">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4801,7 +4801,7 @@ import cartopy.crs as ccrs
 
 <span class="n">features</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="n">DATA</span><span class="o">.</span><span class="n">users_giswqs_public_countries</span><span class="p">)</span>
 
-<span class="n">style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'color'</span><span class="p">:</span> <span class="s1">'000000ff'</span><span class="p">,</span> <span class="s1">'width'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'lineType'</span><span class="p">:</span> <span class="s1">'solid'</span><span class="p">,</span> <span class="s1">'fillColor'</span><span class="p">:</span> <span class="s1">'0000ff40'</span><span class="p">}</span>
+<span class="n">style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"color"</span><span class="p">:</span> <span class="s2">"000000ff"</span><span class="p">,</span> <span class="s2">"width"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"lineType"</span><span class="p">:</span> <span class="s2">"solid"</span><span class="p">,</span> <span class="s2">"fillColor"</span><span class="p">:</span> <span class="s2">"0000ff40"</span><span class="p">}</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="o">**</span><span class="n">style</span><span class="p">),</span> <span class="p">{},</span> <span class="s2">"Polygons"</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">setCenter</span><span class="p">(</span><span class="o">-</span><span class="mf">14.77</span><span class="p">,</span> <span class="mf">34.70</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -4811,7 +4811,7 @@ import cartopy.crs as ccrs
 
 features = ee.FeatureCollection(DATA.users_giswqs_public_countries)
 
-style = {'color': '000000ff', 'width': 1, 'lineType': 'solid', 'fillColor': '0000ff40'}
+style = {"color": "000000ff", "width": 1, "lineType": "solid", "fillColor": "0000ff40"}
 
 Map.addLayer(features.style(**style), {}, "Polygons")
 Map.setCenter(-14.77, 34.70, 2)
@@ -4822,7 +4822,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a9046567">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ba79358c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4851,7 +4851,7 @@ bbox = [180, -88, -180, 88]</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d923f301">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c77968d8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4873,7 +4873,7 @@ bbox = [180, -88, -180, 88]</div>
 
 <span class="c1"># plot the result with cartoee using a PlateCarre projection (default)</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'Countries'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Countries"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 <span class="n">cartoee</span><span class="o">.</span><span class="n">add_gridlines</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -4882,7 +4882,7 @@ bbox = [180, -88, -180, 88]</div>
 
 # plot the result with cartoee using a PlateCarre projection (default)
 ax = cartoee.get_map(features, region=bbox, style=style)
-ax.set_title(label='Countries', fontsize=15)
+ax.set_title(label="Countries", fontsize=15)
 cartoee.add_gridlines(ax, interval=30)
 
 plt.show()</div>
@@ -4892,7 +4892,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=59df79f6">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7a4bf5d8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4903,7 +4903,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fb0db779">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=120cfbe9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4925,7 +4925,7 @@ plt.show()</div>
 
 <span class="n">projection</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">EqualEarth</span><span class="p">(</span><span class="n">central_longitude</span><span class="o">=-</span><span class="mi">180</span><span class="p">)</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'Countries'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Countries"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -4933,7 +4933,7 @@ plt.show()</div>
 
 projection = ccrs.EqualEarth(central_longitude=-180)
 ax = cartoee.get_map(features, region=bbox, proj=projection, style=style)
-ax.set_title(label='Countries', fontsize=15)
+ax.set_title(label="Countries", fontsize=15)
 
 plt.show()</div>
 </div>
@@ -4942,7 +4942,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c8eb5805">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8a27f758">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4953,7 +4953,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ad40c32d">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0b511716">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4964,7 +4964,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1a8b1ec1">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cfef2dcc">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4989,7 +4989,7 @@ plt.show()</div>
 <span class="n">palette</span> <span class="o">=</span> <span class="n">cmap</span><span class="o">.</span><span class="n">palettes</span><span class="o">.</span><span class="n">gist_earth</span>
 <span class="n">features_styled</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">vector_styling</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s2">"name"</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="n">palette</span><span class="p">)</span>
 
-<span class="n">Map</span><span class="o">.</span><span class="n">add_styled_vector</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s2">"name"</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="n">palette</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s1">'Polygon'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_styled_vector</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s2">"name"</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="n">palette</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"Polygon"</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">setCenter</span><span class="p">(</span><span class="o">-</span><span class="mf">14.77</span><span class="p">,</span> <span class="mf">34.70</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
@@ -5000,7 +5000,7 @@ features = ee.FeatureCollection(DATA.users_giswqs_public_countries)
 palette = cmap.palettes.gist_earth
 features_styled = geemap.vector_styling(features, column="name", palette=palette)
 
-Map.add_styled_vector(features, column="name", palette=palette, layer_name='Polygon')
+Map.add_styled_vector(features, column="name", palette=palette, layer_name="Polygon")
 Map.setCenter(-14.77, 34.70, 2)
 Map</div>
 </div>
@@ -5009,7 +5009,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=be99b9db">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c6d8793f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5031,7 +5031,7 @@ Map</div>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 
 <span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">features_styled</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'Countries'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Countries"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 <span class="n">cartoee</span><span class="o">.</span><span class="n">add_gridlines</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -5040,7 +5040,7 @@ Map</div>
 fig = plt.figure(figsize=(15, 10))
 
 ax = cartoee.get_map(features_styled, region=bbox)
-ax.set_title(label='Countries', fontsize=15)
+ax.set_title(label="Countries", fontsize=15)
 cartoee.add_gridlines(ax, interval=30)
 
 plt.show()</div>
@@ -5050,7 +5050,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a159f28f">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a58afd53">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5061,7 +5061,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=732ec8cb">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c8bdaa29">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5083,7 +5083,7 @@ plt.show()</div>
 
 <span class="n">projection</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">EqualEarth</span><span class="p">(</span><span class="n">central_longitude</span><span class="o">=-</span><span class="mi">180</span><span class="p">)</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">features_styled</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'Countries'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Countries"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -5091,7 +5091,7 @@ plt.show()</div>
 
 projection = ccrs.EqualEarth(central_longitude=-180)
 ax = cartoee.get_map(features_styled, region=bbox, proj=projection)
-ax.set_title(label='Countries', fontsize=15)
+ax.set_title(label="Countries", fontsize=15)
 
 plt.show()</div>
 </div>
@@ -5100,7 +5100,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=43d8d143">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=187ec72f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5124,7 +5124,7 @@ plt.show()</div>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-10-04T03:54:02+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-10-04</span>
       
         <br>
         Created:
