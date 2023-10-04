@@ -948,7 +948,7 @@ class SearchDataGUI(widgets.HBox):
                     pass
 
                 with search_output:
-                    search_output.outputs = ()
+                    search_output.clear_output()
                     print(
                         "# The code has been copied to the clipboard. \n# Press Ctrl+V in a new cell to paste it.\n"
                     )
@@ -961,13 +961,13 @@ class SearchDataGUI(widgets.HBox):
         def dropdown_change(change):
             dropdown_index = assets_dropdown.index
             if dropdown_index is not None and dropdown_index >= 0:
-                search_output.outputs = ()
+                search_output.clear_output()
                 search_output.append_stdout("Loading ...")
                 datasets = m.search_datasets
                 dataset = datasets[dropdown_index]
                 dataset_html = ee_data_html(dataset)
                 html_widget.value = dataset_html
-                search_output.outputs = ()
+                search_output.clear_output()
                 with search_output:
                     display(html_widget)
                 # search_output.append_display_data(html_widget)
@@ -1001,7 +1001,7 @@ class SearchDataGUI(widgets.HBox):
 
         def search_type_changed(change):
             search_box.value = ""
-            search_output.outputs = ()
+            search_output.clear_output()
             if change["new"] == "data":
                 search_box.placeholder = (
                     "Search GEE data catalog by keywords, e.g., elevation"
@@ -1038,7 +1038,7 @@ class SearchDataGUI(widgets.HBox):
                 elif search_type.value == "lat-lon":
                     g = geocode(text.value, reverse=True)
                     if g is None and latlon_from_text(text.value):
-                        search_output.outputs = ()
+                        search_output.clear_output()
                         latlon = latlon_from_text(text.value)
                         m.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
                         if m.search_loc_marker is None:
@@ -1058,7 +1058,7 @@ class SearchDataGUI(widgets.HBox):
                             print(f"No address found for {latlon}")
                         return
                 elif search_type.value == "data":
-                    search_output.outputs = ()
+                    search_output.clear_output()
                     with search_output:
                         print("Searching ...")
                     m.default_style = {"cursor": "wait"}
@@ -1066,7 +1066,7 @@ class SearchDataGUI(widgets.HBox):
                     m.search_datasets = ee_assets
                     asset_titles = [x["title"] for x in ee_assets]
                     assets_dropdown.options = asset_titles
-                    search_output.outputs = ()
+                    search_output.clear_output()
                     if len(ee_assets) > 0:
                         assets_dropdown.index = 0
                         html_widget.value = ee_data_html(ee_assets[0])
@@ -1103,11 +1103,11 @@ class SearchDataGUI(widgets.HBox):
                         search_output,
                     ]
                     with search_output:
-                        search_output.outputs = ()
+                        search_output.clear_output()
                         display(search_results)
                 else:
                     with search_output:
-                        search_output.outputs = ()
+                        search_output.clear_output()
                         print("No results could be found.")
 
         search_box.on_submit(search_box_callback)
