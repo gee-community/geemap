@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.28.0 - Oct 3, 2023
+
+**What's Changed**
+
+-   Update changelog for v0.27.4 by @giswqs in [#1751](https://github.com/gee-community/geemap/pull/1751)
+-   Support adaptive theming (and dark mode) of map widgets in Colab by @sufyanAbbasi in [#1753](https://github.com/gee-community/geemap/pull/1753)
+-   Minor visual bug fixes by @naschmitz in [#1754](https://github.com/gee-community/geemap/pull/1754)
+-   more notebook fixes by @biplovbhandari in [#1752](https://github.com/gee-community/geemap/pull/1752)
+
+**Full Changelog**: [v0.27.4...v0.28.0](https://github.com/gee-community/geemap/compare/v0.27.4...v0.28.0)
+
 ## v0.27.4 - Oct 2, 2023
 
 **What's Changed**
