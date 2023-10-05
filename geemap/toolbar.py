@@ -117,6 +117,9 @@ class Toolbar(widgets.VBox):
             def returned_callback(change):
                 if change["type"] != "change":
                     return
+                if change["new"]:
+                    # Unselect all other tool widgets if one is enabled.
+                    self._reset_others(widget)
                 callback(self.host_map, change["new"], item)
                 if should_reset_after:
                     widget.value = False
@@ -4381,10 +4384,12 @@ def _gee_toolbox_tool_callback(map, _, item):
     item.control = geetoolbox_control
     map.add(geetoolbox_control)
 
+
 @_cleanup_toolbar_item
 def _time_slider_tool_callback(map, _, item):
     time_slider(map)
     item.control = map.tool_control
+
 
 @_cleanup_toolbar_item
 def _whitebox_tool_callback(map, _, item):

@@ -768,25 +768,37 @@ class Map(ipyleaflet.Map, MapInterface):
 
     addLayer = add_layer
 
-    def _open_help_page(self, host_map: MapInterface, selected: bool) -> None:
+    def _open_help_page(
+        self, host_map: MapInterface, selected: bool, item: toolbar.Toolbar.Item
+    ) -> None:
         del host_map  # Unused.
+        del item  # Unused.
         if selected:
             common.open_url("https://geemap.org")
 
     def _toolbar_main_tools(self) -> List[toolbar.Toolbar.Item]:
+        @toolbar._cleanup_toolbar_item
+        def inspector_tool_callback(map, _, item):
+            map.add("inspector")
+            item.control = map._inspector
+
+        @toolbar._cleanup_toolbar_item
+        def basemap_tool_callback(map, _, item):
+            map.add("basemap_selector")
+            item.control = map._basemap_selector
+
         return [
             toolbar.Toolbar.Item(
                 icon="map",
                 tooltip="Basemap selector",
-                callback=lambda m, selected: m.add("basemap_selector")
-                if selected
-                else None,
+                callback=basemap_tool_callback,
                 reset=False,
             ),
             toolbar.Toolbar.Item(
                 icon="info",
                 tooltip="Inspector",
-                callback=lambda m, selected: m.add("inspector") if selected else None,
+                callback=inspector_tool_callback,
+                reset=False
             ),
             toolbar.Toolbar.Item(
                 icon="question", tooltip="Get help", callback=self._open_help_page
