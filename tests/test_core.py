@@ -152,6 +152,14 @@ class TestMap(unittest.TestCase):
         self.assertEqual(len(self.core_map.controls), 1)
         self.assertIsInstance(self.core_map.get_draw_control(), core.MapDrawControl)
 
+    def test_add_basemap_selector(self):
+        """Tests adding the basemap selector widget."""
+        self._clear_default_widgets()
+
+        self.core_map.add("basemap_selector")
+
+        self.assertEqual(len(self.core_map.controls), 1)
+
 
 @patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
 @patch.object(ee, "Feature", fake_ee.Feature)
