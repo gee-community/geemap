@@ -50,6 +50,7 @@ except AttributeError:
 
 class Theme:
     """Applies dynamic theme in Colab, otherwise light."""
+
     current_theme = "colab" if common.in_colab_shell() else "light"
 
     @staticmethod
@@ -1038,7 +1039,10 @@ class _RasterLayerEditor(ipywidgets.VBox):
             self._max_value = self._vis_params["max"]
             self._right_value = 2 * self._max_value
         if "gamma" in self._vis_params.keys():
-            self._layer_gamma = self._vis_params["gamma"]
+            if isinstance(self._vis_params["gamma"], list):
+                self._layer_gamma = self._vis_params["gamma"][0]
+            else:
+                self._layer_gamma = self._vis_params["gamma"]
         if "bands" in self._vis_params.keys():
             self._sel_bands = self._vis_params["bands"]
         if "palette" in self._vis_params.keys():
