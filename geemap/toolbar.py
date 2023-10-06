@@ -45,6 +45,7 @@ class Toolbar(widgets.VBox):
             reset: Whether to reset the selection after the callback has finished.
             control: The control widget associated with this item. Used to
                 cleanup state when toggled off.
+            toggle_button: The toggle button controlling the item.
         """
 
         icon: str
@@ -52,6 +53,11 @@ class Toolbar(widgets.VBox):
         callback: Callable[[Any, bool, Any], None]
         reset: bool = True
         control: Optional[Widget] = None
+        toggle_button: Any = None
+
+        def toggle_off(self):
+            if self.toggle_button:
+                self.toggle_button.value = False
 
     ICON_WIDTH = "32px"
     ICON_HEIGHT = "32px"
@@ -127,6 +133,7 @@ class Toolbar(widgets.VBox):
             return returned_callback
 
         for id, widget in enumerate(self.all_widgets):
+            all_tools[id].toggle_button = widget
             widget.observe(
                 curry_callback(callbacks[id], resets[id], widget, all_tools[id]),
                 "value",
@@ -414,7 +421,7 @@ def inspector_gui(m=None):
 
     def close_btn_click(change):
         if change["new"]:
-            cleanup()
+            m.tool_control.cleanup()
 
     close_button.observe(close_btn_click, "value")
 
@@ -443,7 +450,7 @@ def inspector_gui(m=None):
             if hasattr(m, "marker_cluster"):
                 m.marker_cluster.markers = []
         elif change["new"] == "Close":
-            cleanup()
+            m.tool_control.cleanup()
 
         buttons.value = None
 
@@ -592,50 +599,6 @@ def inspector_gui(m=None):
 
     else:
         return toolbar_widget
-
-
-def _plotting_tool_callback(map, selected, item):
-    if selected:
-        ee_plot_gui(map)
-        item.control = map._plot_dropdown_control
-        return
-    # User has unselected tool.
-    if not hasattr(map, "_plot_dropdown_widget"):
-        map._plot_dropdown_widget = None
-    if not hasattr(map, "_plot_dropdown_control"):
-        map._plot_dropdown_control = None
-    plot_dropdown_widget = map._plot_dropdown_widget
-    plot_dropdown_control = map._plot_dropdown_control
-    if plot_dropdown_control in map.controls:
-        map.remove_control(plot_dropdown_control)
-    del plot_dropdown_widget
-    del plot_dropdown_control
-
-    if not hasattr(map, "_plot_widget"):
-        map._plot_widget = None
-    if not hasattr(map, "_plot_control"):
-        map._plot_control = None
-
-    if map._plot_control in map.controls:
-        plot_control = map._plot_control
-        plot_widget = map._plot_widget
-        map.remove_control(plot_control)
-        map._plot_control = None
-        map._plot_widget = None
-        del plot_control
-        del plot_widget
-    if (
-        hasattr(map, "_plot_marker_cluster")
-        and map._plot_marker_cluster is not None
-        and map._plot_marker_cluster in map.layers
-    ):
-        map.remove_layer(map._plot_marker_cluster)
-    if hasattr(map, "_chart_points"):
-        map._chart_points = []
-    if hasattr(map, "_chart_values"):
-        map._chart_values = []
-    if hasattr(map, "_chart_labels"):
-        map._chart_labels = None
 
 
 def ee_plot_gui(m, position="topright", **kwargs):
@@ -813,18 +776,56 @@ def ee_plot_gui(m, position="topright", **kwargs):
 
     setattr(m._plot_dropdown_control, "cleanup", cleanup)
 
+    def cleanup():
+        if not hasattr(m, "_plot_dropdown_widget"):
+            m._plot_dropdown_widget = None
+        if not hasattr(m, "_plot_dropdown_control"):
+            m._plot_dropdown_control = None
+        plot_dropdown_widget = m._plot_dropdown_widget
+        plot_dropdown_control = m._plot_dropdown_control
+        if plot_dropdown_control in m.controls:
+            m.remove_control(plot_dropdown_control)
+        del plot_dropdown_widget
+        del plot_dropdown_control
+
+        if not hasattr(m, "_plot_widget"):
+            m._plot_widget = None
+        if not hasattr(m, "_plot_control"):
+            m._plot_control = None
+
+        if m._plot_control in m.controls:
+            plot_control = m._plot_control
+            plot_widget = m._plot_widget
+            m.remove_control(plot_control)
+            m._plot_control = None
+            m._plot_widget = None
+            del plot_control
+            del plot_widget
+        if (
+            hasattr(m, "_plot_marker_cluster")
+            and m._plot_marker_cluster is not None
+            and m._plot_marker_cluster in m.layers
+        ):
+            m.remove_layer(m._plot_marker_cluster)
+        if hasattr(m, "_chart_points"):
+            m._chart_points = []
+        if hasattr(m, "_chart_values"):
+            m._chart_values = []
+        if hasattr(m, "_chart_labels"):
+            m._chart_labels = None
+
+    setattr(m._plot_dropdown_control, "cleanup", cleanup)
+
     def close_click(_):
-        cleanup()
+        m._plot_dropdown_control.cleanup()
 
     close_btn.on_click(close_click)
 
 
 @map_widgets.Theme.apply
 class SearchDataGUI(widgets.HBox):
-
     def __init__(self, m, **kwargs):
-
-    # Adds search button and search box
+        # Adds search button and search box
 
         from .conversion import js_snippet_to_py
 
@@ -837,7 +838,9 @@ class SearchDataGUI(widgets.HBox):
             value=False,
             tooltip="Search location/data",
             icon="globe",
-            layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+            layout=widgets.Layout(
+                width="28px", height="28px", padding="0px 0px 0px 4px"
+            ),
         )
 
         search_type = widgets.ToggleButtons(
@@ -885,7 +888,9 @@ class SearchDataGUI(widgets.HBox):
                 pkg_dir = os.path.dirname(
                     pkg_resources.resource_filename("geemap", "geemap.py")
                 )
-                with open(os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8") as f:
+                with open(
+                    os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8"
+                ) as f:
                     functions = json.load(f)
                 details = [
                     dataset["code"]
@@ -1758,7 +1763,7 @@ def open_data_widget(m):
             with tool_output:
                 display(main_widget)
         elif change["new"] == "Close":
-            cleanup()
+            tool_output_ctrl.cleanup()
         ok_cancel.value = None
 
     file_type.observe(file_type_changed, names="value")
@@ -1767,16 +1772,6 @@ def open_data_widget(m):
 
     m.add_control(tool_output_ctrl)
     m._tool_output_ctrl = tool_output_ctrl
-
-
-def _convert_js_tool_callback(map, selected, item):
-    if selected:
-        convert_js2py(map)
-        item.control = map._convert_ctrl
-        return
-    # User has unselected tool.
-    if map._convert_ctrl is not None and map._convert_ctrl in map.controls:
-        map.remove_control(map._convert_ctrl)
 
 
 def convert_js2py(m):
@@ -1801,6 +1796,11 @@ def convert_js2py(m):
     )
     buttons.style.button_width = "128px"
 
+    def cleanup():
+        if m._convert_ctrl is not None and m._convert_ctrl in m.controls:
+            m.remove_control(m._convert_ctrl)
+        full_widget.close()
+
     def button_clicked(change):
         if change["new"] == "Convert":
             from .conversion import create_new_cell, js_snippet_to_py
@@ -1823,15 +1823,14 @@ def convert_js2py(m):
         elif change["new"] == "Clear":
             text_widget.value = ""
         elif change["new"] == "Close":
-            if m._convert_ctrl is not None and m._convert_ctrl in m.controls:
-                m.remove_control(m._convert_ctrl)
-            full_widget.close()
+            m._convert_ctrl.cleanup()
         buttons.value = None
 
     buttons.observe(button_clicked, "value")
 
     full_widget.children = [text_widget, buttons]
     widget_control = ipyleaflet.WidgetControl(widget=full_widget, position="topright")
+    setattr(widget_control, "cleanup", cleanup)
     m.add_control(widget_control)
     m._convert_ctrl = widget_control
 
@@ -1932,7 +1931,7 @@ def collect_samples(m):
             value_text2.value = ""
             color.value = "#3388ff"
         elif change["new"] == "Close":
-            cleanup()
+            m.training_ctrl.cleanup()
         buttons.value = None
 
     buttons.observe(button_clicked, "value")
@@ -2181,8 +2180,13 @@ def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
 
     search_widget.observe(search_changed, "value")
 
-    def close_btn_clicked(b):
+    def cleanup():
         full_widget.close()
+
+    setattr(full_widget, "cleanup", cleanup)
+
+    def close_btn_clicked(b):
+        full_widget.cleanup()
 
     close_btn.on_click(close_btn_clicked)
 
@@ -2610,9 +2614,9 @@ def timelapse_gui(m=None):
 
     def close_btn_click(change):
         if change["new"]:
-            cleanup()
+            m.tool_control.cleanup()
 
-    close_btn.on_click(lambda _: cleanup())
+    close_btn.on_click(lambda _: m.tool_control.cleanup())
     close_button.observe(close_btn_click, "value")
 
     toolbar_button.value = True
@@ -3294,7 +3298,7 @@ def time_slider(m=None):
 
     def close_btn_click(change):
         if change["new"]:
-            cleanup()
+            m.tool_control.cleanup()
 
     close_button.observe(close_btn_click, "value")
 
@@ -3684,11 +3688,9 @@ def plot_transect(m=None):
                 m.transect_control = None
         toolbar_widget.close()
 
-    setattr(m.transect_control, "cleanup", cleanup)
-
     def close_btn_click(change):
         if change["new"]:
-            cleanup()
+            m.tool_control.cleanup()
 
     close_button.observe(close_btn_click, "value")
 
@@ -3734,14 +3736,7 @@ def plot_transect(m=None):
         elif change["new"] == "Reset":
             output.outputs = ()
         elif change["new"] == "Close":
-            if m is not None:
-                if m.tool_control is not None and m.tool_control in m.controls:
-                    m.remove_control(m.tool_control)
-                    m.tool_control = None
-                if m.transect_control is not None and m.transect_control in m.controls:
-                    m.remove_control(m.transect_control)
-                    m.transect_control = None
-            toolbar_widget.close()
+            m.tool_control.cleanup()
 
         buttons.value = None
 
@@ -4103,11 +4098,9 @@ def sankee_gui(m=None):
                 m.sankee_control = None
         toolbar_widget.close()
 
-    setattr(m.sankee_control, "cleanup", cleanup)
-
     def close_btn_click(change):
         if change["new"]:
-            cleanup()
+            m.tool_control.cleanup()
 
     close_button.observe(close_btn_click, "value")
 
@@ -4202,14 +4195,7 @@ def sankee_gui(m=None):
             plot_widget.children = []
 
         elif change["new"] == "Close":
-            if m is not None:
-                if m.tool_control is not None and m.tool_control in m.controls:
-                    m.remove_control(m.tool_control)
-                    m.tool_control = None
-                if m.sankee_control is not None and m.sankee_control in m.controls:
-                    m.remove_control(m.sankee_control)
-                    m.sankee_control = None
-            toolbar_widget.close()
+            m.tool_control.cleanup()
 
         buttons.value = None
 
@@ -4220,7 +4206,7 @@ def sankee_gui(m=None):
         toolbar_control = ipyleaflet.WidgetControl(
             widget=toolbar_widget, position="topright"
         )
-
+        setattr(toolbar_control, "cleanup", cleanup)
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
             m.tool_control = toolbar_control
@@ -4339,7 +4325,17 @@ def _open_help_page_callback(map, selected, _):
 def _cleanup_toolbar_item(func):
     def wrapper(map, selected, item):
         if selected:
-            func(map, selected, item)
+            item.control = func(map, selected, item)
+            if not hasattr(item.control, "toggle_off"):
+                setattr(item.control, "toggle_off", item.toggle_off)
+                if hasattr(item.control, "cleanup"):
+                    cleanup = item.control.cleanup
+
+                    def cleanup_and_toggle_off():
+                        cleanup()
+                        item.toggle_off()
+
+                    item.control.cleanup = cleanup_and_toggle_off
         elif item.control and hasattr(item.control, "cleanup"):
             item.control.cleanup()
 
@@ -4347,48 +4343,37 @@ def _cleanup_toolbar_item(func):
 
 
 @_cleanup_toolbar_item
-def _inspector_tool_callback(map, _, item):
+def _inspector_tool_callback(map, _, __):
     map.add_inspector()
-    item.control = map._inspector
+    return map._inspector
 
+@_cleanup_toolbar_item
+def _plotting_tool_callback(map, _, __):
+    ee_plot_gui(map)
+    return map._plot_dropdown_control
 
 @_cleanup_toolbar_item
 def _timelapse_tool_callback(map, _, item):
     timelapse_gui(map)
-    item.control = map.tool_control
+    return map.tool_control
+
+
+@_cleanup_toolbar_item
+def _convert_js_tool_callback(map, selected, item):
+    convert_js2py(map)
+    return map._convert_ctrl
 
 
 @_cleanup_toolbar_item
 def _basemap_tool_callback(map, _, item):
     map.add_basemap_widget()
-    item.control = map._basemap_selector
+    return map._basemap_selector
 
 
 @_cleanup_toolbar_item
 def _open_data_tool_callback(map, _, item):
     open_data_widget(map)
-    item.control = map._tool_output_ctrl
-
-
-@_cleanup_toolbar_item
-def _gee_toolbox_tool_callback(map, _, item):
-    tools_dict = get_tools_dict()
-    gee_toolbox = build_toolbox(tools_dict, max_width="800px", max_height="500px")
-    geetoolbox_control = ipyleaflet.WidgetControl(
-        widget=gee_toolbox, position="bottomright"
-    )
-    setattr(
-        geetoolbox_control, "cleanup", lambda: map.remove_control(geetoolbox_control)
-    )
-    map.geetoolbox = geetoolbox_control
-    item.control = geetoolbox_control
-    map.add(geetoolbox_control)
-
-
-@_cleanup_toolbar_item
-def _time_slider_tool_callback(map, _, item):
-    time_slider(map)
-    item.control = map.tool_control
+    return map._tool_output_ctrl
 
 
 @_cleanup_toolbar_item
@@ -4405,32 +4390,50 @@ def _whitebox_tool_callback(map, _, item):
     wbt_control = ipyleaflet.WidgetControl(widget=wbt_toolbox, position="bottomright")
     setattr(wbt_control, "cleanup", lambda: map.remove_control(wbt_control))
     map.whitebox = wbt_control
-    item.control = wbt_control
     map.add(wbt_control)
+    return wbt_control
+
+
+@_cleanup_toolbar_item
+def _gee_toolbox_tool_callback(map, _, item):
+    tools_dict = get_tools_dict()
+    gee_toolbox = build_toolbox(tools_dict, max_width="800px", max_height="500px")
+    geetoolbox_control = ipyleaflet.WidgetControl(
+        widget=gee_toolbox, position="bottomright"
+    )
+    map.geetoolbox = geetoolbox_control
+    map.add(geetoolbox_control)
+    return gee_toolbox
+
+
+@_cleanup_toolbar_item
+def _time_slider_tool_callback(map, _, item):
+    time_slider(map)
+    return map.tool_control
 
 
 @_cleanup_toolbar_item
 def _collect_samples_tool_callback(map, _, item):
     collect_samples(map)
-    item.control = map.training_ctrl
+    return map.training_ctrl
 
 
 @_cleanup_toolbar_item
 def _plot_transect_tool_callback(map, _, item):
     plot_transect(map)
-    item.control = map.transect_control
+    return map.tool_control
 
 
 @_cleanup_toolbar_item
 def _sankee_tool_callback(map, _, item):
     sankee_gui(map)
-    item.control = map.sankee_control
+    return map.tool_control
 
 
 @_cleanup_toolbar_item
 def _cog_stac_inspector_callback(map, _, item):
     inspector_gui(map)
-    item.control = map.tool_control
+    return map.tool_control
 
 
 main_tools = [

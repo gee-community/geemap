@@ -780,12 +780,12 @@ class Map(ipyleaflet.Map, MapInterface):
         @toolbar._cleanup_toolbar_item
         def inspector_tool_callback(map, _, item):
             map.add("inspector")
-            item.control = map._inspector
+            return map._inspector
 
         @toolbar._cleanup_toolbar_item
         def basemap_tool_callback(map, _, item):
             map.add("basemap_selector")
-            item.control = map._basemap_selector
+            return map._basemap_selector
 
         return [
             toolbar.Toolbar.Item(

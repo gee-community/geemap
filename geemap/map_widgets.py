@@ -585,7 +585,7 @@ class Inspector(ipywidgets.VBox):
 
     def _on_close_btn_click(self, change):
         if change["new"]:
-            self.close()
+            self.cleanup()
 
     def _get_visible_map_layers(self):
         layers = {}
@@ -902,6 +902,8 @@ class Basemap(ipywidgets.HBox):
     def cleanup(self):
         if self.on_close:
             self.on_close()
+        if hasattr(self, 'toggle_off'):
+            self.toggle_off()
 
     def _on_close_click(self, _):
         self.cleanup()
