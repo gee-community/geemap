@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.28.2 - Oct 4, 2023
+
+**What's Changed**
+
+-   Update changelog for v0.28.1 by @giswqs in [#1758](https://github.com/gee-community/geemap/pull/1758)
+-   Hotfix for broken basemap selector in core by @naschmitz in [#1759](https://github.com/gee-community/geemap/pull/1759)
+
+**Full Changelog**: [v0.28.1...v0.28.2](https://github.com/gee-community/geemap/compare/v0.28.1...v0.28.2)
+
 ## v0.28.1 - Oct 4, 2023
 
 **What's Changed**
