@@ -903,8 +903,6 @@ class Basemap(ipywidgets.HBox):
     def cleanup(self):
         if self.on_close:
             self.on_close()
-        if hasattr(self, 'toggle_off'):
-            self.toggle_off()
 
     def _on_close_click(self, _):
         self.cleanup()

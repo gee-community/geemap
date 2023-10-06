@@ -16,7 +16,6 @@ import ipyevents
 import ipyleaflet
 import ipywidgets as widgets
 
-from ipywidgets.widgets import Widget
 from ipyfilechooser import FileChooser
 from IPython.core.display import display
 from typing import Any, Callable, Optional
@@ -52,8 +51,8 @@ class Toolbar(widgets.VBox):
         tooltip: str
         callback: Callable[[Any, bool, Any], None]
         reset: bool = True
-        control: Optional[Widget] = None
-        toggle_button: Any = None
+        control: Optional[widgets.Widget] = None
+        toggle_button: Optional[widgets.ToggleButton] = None
 
         def toggle_off(self):
             if self.toggle_button:
@@ -123,9 +122,6 @@ class Toolbar(widgets.VBox):
             def returned_callback(change):
                 if change["type"] != "change":
                     return
-                if change["new"]:
-                    # Unselect all other tool widgets if one is enabled.
-                    self._reset_others(widget)
                 callback(self.host_map, change["new"], item)
                 if should_reset_after:
                     widget.value = False
@@ -179,8 +175,8 @@ class Toolbar(widgets.VBox):
             if other is not current:
                 other.value = False
 
-    def _toggle_callback(self, m, selected, _):
-        del m  # unused
+    def _toggle_callback(self, m, selected, item):
+        del m, item  # unused
         if not selected:
             return
         if self.toggle_widget.icon == self._TOGGLE_TOOL_EXPAND_ICON:
@@ -585,7 +581,7 @@ def inspector_gui(m=None):
         toolbar_control = ipyleaflet.WidgetControl(
             widget=toolbar_widget, position="topright"
         )
-        setattr(toolbar_control, "cleanup", cleanup)
+        toolbar_control.cleanup = cleanup
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
@@ -774,7 +770,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
         else:
             m.remove_draw_control()
 
-    setattr(m._plot_dropdown_control, "cleanup", cleanup)
+    m._plot_dropdown_control.cleanup = cleanup
 
     def cleanup():
         if not hasattr(m, "_plot_dropdown_widget"):
@@ -814,7 +810,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
         if hasattr(m, "_chart_labels"):
             m._chart_labels = None
 
-    setattr(m._plot_dropdown_control, "cleanup", cleanup)
+    m._plot_dropdown_control.cleanup = cleanup
 
     def close_click(_):
         m._plot_dropdown_control.cleanup()
@@ -1681,7 +1677,7 @@ def open_data_widget(m):
             m.remove_control(m._tool_output_ctrl)
             m._tool_output_ctrl = None
 
-    setattr(tool_output_ctrl, "cleanup", cleanup)
+    tool_output_ctrl.cleanup = cleanup
 
     def ok_cancel_clicked(change):
         if change["new"] == "Apply":
@@ -1830,7 +1826,7 @@ def convert_js2py(m):
 
     full_widget.children = [text_widget, buttons]
     widget_control = ipyleaflet.WidgetControl(widget=full_widget, position="topright")
-    setattr(widget_control, "cleanup", cleanup)
+    widget_control.cleanup = cleanup
     m.add_control(widget_control)
     m._convert_ctrl = widget_control
 
@@ -1944,7 +1940,7 @@ def collect_samples(m):
     ]
 
     widget_control = ipyleaflet.WidgetControl(widget=full_widget, position="topright")
-    setattr(widget_control, "cleanup", cleanup)
+    widget_control.cleanup = cleanup
     m.add_control(widget_control)
     m.training_ctrl = widget_control
 
@@ -2183,7 +2179,7 @@ def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
     def cleanup():
         full_widget.close()
 
-    setattr(full_widget, "cleanup", cleanup)
+    full_widget.cleanup = cleanup
 
     def close_btn_clicked(b):
         full_widget.cleanup()
@@ -2624,7 +2620,7 @@ def timelapse_gui(m=None):
         toolbar_control = ipyleaflet.WidgetControl(
             widget=toolbar_widget, position="topright"
         )
-        setattr(toolbar_control, "cleanup", cleanup)
+        toolbar_control.cleanup = cleanup
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
             m.tool_control = toolbar_control
@@ -3505,7 +3501,7 @@ def time_slider(m=None):
         toolbar_control = ipyleaflet.WidgetControl(
             widget=toolbar_widget, position="topright"
         )
-        setattr(toolbar_control, "cleanup", cleanup)
+        toolbar_control.cleanup = cleanup
 
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
@@ -3747,7 +3743,7 @@ def plot_transect(m=None):
         toolbar_control = ipyleaflet.WidgetControl(
             widget=toolbar_widget, position="topright"
         )
-        setattr(toolbar_control, "cleanup", cleanup)
+        toolbar_control.cleanup = cleanup
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
             m.tool_control = toolbar_control
@@ -4206,7 +4202,7 @@ def sankee_gui(m=None):
         toolbar_control = ipyleaflet.WidgetControl(
             widget=toolbar_widget, position="topright"
         )
-        setattr(toolbar_control, "cleanup", cleanup)
+        toolbar_control.cleanup = cleanup
         if toolbar_control not in m.controls:
             m.add_control(toolbar_control)
             m.tool_control = toolbar_control
@@ -4353,42 +4349,49 @@ def _cleanup_toolbar_item(func):
 
 @_cleanup_toolbar_item
 def _inspector_tool_callback(map, selected, item):
+    del selected, item # Unused.
     map.add_inspector()
     return map._inspector
 
 
 @_cleanup_toolbar_item
 def _plotting_tool_callback(map, selected, item):
+    del selected, item # Unused.
     ee_plot_gui(map)
     return map._plot_dropdown_control
 
 
 @_cleanup_toolbar_item
 def _timelapse_tool_callback(map, selected, item):
+    del selected, item # Unused.
     timelapse_gui(map)
     return map.tool_control
 
 
 @_cleanup_toolbar_item
 def _convert_js_tool_callback(map, selected, item):
+    del selected, item # Unused.
     convert_js2py(map)
     return map._convert_ctrl
 
 
 @_cleanup_toolbar_item
 def _basemap_tool_callback(map, selected, item):
+    del selected, item # Unused.
     map.add_basemap_widget()
     return map._basemap_selector
 
 
 @_cleanup_toolbar_item
 def _open_data_tool_callback(map, selected, item):
+    del selected, item # Unused.
     open_data_widget(map)
     return map._tool_output_ctrl
 
 
 @_cleanup_toolbar_item
 def _whitebox_tool_callback(map, selected, item):
+    del selected, item # Unused.
     import whiteboxgui.whiteboxgui as wbt
 
     tools_dict = wbt.get_wbt_dict()
@@ -4407,6 +4410,7 @@ def _whitebox_tool_callback(map, selected, item):
 
 @_cleanup_toolbar_item
 def _gee_toolbox_tool_callback(map, selected, item):
+    del selected, item # Unused.
     tools_dict = get_tools_dict()
     gee_toolbox = build_toolbox(tools_dict, max_width="800px", max_height="500px")
     geetoolbox_control = ipyleaflet.WidgetControl(
@@ -4419,30 +4423,35 @@ def _gee_toolbox_tool_callback(map, selected, item):
 
 @_cleanup_toolbar_item
 def _time_slider_tool_callback(map, selected, item):
+    del selected, item # Unused.
     time_slider(map)
     return map.tool_control
 
 
 @_cleanup_toolbar_item
 def _collect_samples_tool_callback(map, selected, item):
+    del selected, item # Unused.
     collect_samples(map)
     return map.training_ctrl
 
 
 @_cleanup_toolbar_item
 def _plot_transect_tool_callback(map, selected, item):
+    del selected, item # Unused.
     plot_transect(map)
     return map.tool_control
 
 
 @_cleanup_toolbar_item
 def _sankee_tool_callback(map, selected, item):
+    del selected, item # Unused.
     sankee_gui(map)
     return map.tool_control
 
 
 @_cleanup_toolbar_item
 def _cog_stac_inspector_callback(map, selected, item):
+    del selected, item # Unused.
     inspector_gui(map)
     return map.tool_control
 
