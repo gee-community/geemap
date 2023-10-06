@@ -4323,6 +4323,12 @@ def _open_help_page_callback(map, selected, _):
 
 
 def _cleanup_toolbar_item(func):
+    """Wraps a toolbar item callback to clean up the widget when unselected."""
+
+    # The callback should construct the widget and return an object that
+    # contains a "cleanup" property, a function that removes the widget from the
+    # map. The decorator will handle construction and cleanup, and will also
+    # un-toggle the associated toolbar item.
     def wrapper(map, selected, item):
         if selected:
             item.control = func(map, selected, item)
@@ -4335,6 +4341,9 @@ def _cleanup_toolbar_item(func):
                         cleanup()
                         item.toggle_off()
 
+                    # Ensures that when cleanup() is invoked on the widget, for
+                    # example by a close button on the widget, the toggle is
+                    # also turned off.
                     item.control.cleanup = cleanup_and_toggle_off
         elif item.control and hasattr(item.control, "cleanup"):
             item.control.cleanup()
@@ -4343,17 +4352,19 @@ def _cleanup_toolbar_item(func):
 
 
 @_cleanup_toolbar_item
-def _inspector_tool_callback(map, _, __):
+def _inspector_tool_callback(map, selected, item):
     map.add_inspector()
     return map._inspector
 
+
 @_cleanup_toolbar_item
-def _plotting_tool_callback(map, _, __):
+def _plotting_tool_callback(map, selected, item):
     ee_plot_gui(map)
     return map._plot_dropdown_control
 
+
 @_cleanup_toolbar_item
-def _timelapse_tool_callback(map, _, item):
+def _timelapse_tool_callback(map, selected, item):
     timelapse_gui(map)
     return map.tool_control
 
@@ -4365,19 +4376,19 @@ def _convert_js_tool_callback(map, selected, item):
 
 
 @_cleanup_toolbar_item
-def _basemap_tool_callback(map, _, item):
+def _basemap_tool_callback(map, selected, item):
     map.add_basemap_widget()
     return map._basemap_selector
 
 
 @_cleanup_toolbar_item
-def _open_data_tool_callback(map, _, item):
+def _open_data_tool_callback(map, selected, item):
     open_data_widget(map)
     return map._tool_output_ctrl
 
 
 @_cleanup_toolbar_item
-def _whitebox_tool_callback(map, _, item):
+def _whitebox_tool_callback(map, selected, item):
     import whiteboxgui.whiteboxgui as wbt
 
     tools_dict = wbt.get_wbt_dict()
@@ -4395,7 +4406,7 @@ def _whitebox_tool_callback(map, _, item):
 
 
 @_cleanup_toolbar_item
-def _gee_toolbox_tool_callback(map, _, item):
+def _gee_toolbox_tool_callback(map, selected, item):
     tools_dict = get_tools_dict()
     gee_toolbox = build_toolbox(tools_dict, max_width="800px", max_height="500px")
     geetoolbox_control = ipyleaflet.WidgetControl(
@@ -4407,31 +4418,31 @@ def _gee_toolbox_tool_callback(map, _, item):
 
 
 @_cleanup_toolbar_item
-def _time_slider_tool_callback(map, _, item):
+def _time_slider_tool_callback(map, selected, item):
     time_slider(map)
     return map.tool_control
 
 
 @_cleanup_toolbar_item
-def _collect_samples_tool_callback(map, _, item):
+def _collect_samples_tool_callback(map, selected, item):
     collect_samples(map)
     return map.training_ctrl
 
 
 @_cleanup_toolbar_item
-def _plot_transect_tool_callback(map, _, item):
+def _plot_transect_tool_callback(map, selected, item):
     plot_transect(map)
     return map.tool_control
 
 
 @_cleanup_toolbar_item
-def _sankee_tool_callback(map, _, item):
+def _sankee_tool_callback(map, selected, item):
     sankee_gui(map)
     return map.tool_control
 
 
 @_cleanup_toolbar_item
-def _cog_stac_inspector_callback(map, _, item):
+def _cog_stac_inspector_callback(map, selected, item):
     inspector_gui(map)
     return map.tool_control
 
