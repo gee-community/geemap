@@ -5461,7 +5461,7 @@ or unselected the tool.</p></td>
                 <span class="k">del</span> <span class="n">plot_options</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
             <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="s2">&quot;_plot_widget&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_widget&quot;</span><span class="p">):</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">with</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span><span class="p">:</span>
@@ -5488,15 +5488,24 @@ or unselected the tool.</p></td>
                 <span class="n">plot_options</span><span class="p">[</span><span class="s2">&quot;sample_scale&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="p">):</span>
                 <span class="n">sample_scale</span> <span class="o">=</span> <span class="n">plot_options</span><span class="p">[</span><span class="s2">&quot;sample_scale&quot;</span><span class="p">]</span>
-            <span class="n">dict_values_tmp</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">ee_object</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sample_scale</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">first</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">toDictionary</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
-            <span class="p">)</span>
-            <span class="n">b_names</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
-            <span class="n">dict_values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">b_names</span><span class="p">,</span> <span class="p">[</span><span class="n">dict_values_tmp</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">b_names</span><span class="p">]))</span>
-            <span class="n">generate_chart</span><span class="p">(</span><span class="n">dict_values</span><span class="p">,</span> <span class="n">latlon</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">dict_values_tmp</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">ee_object</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sample_scale</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">first</span><span class="p">()</span>
+                    <span class="o">.</span><span class="n">toDictionary</span><span class="p">()</span>
+                    <span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+                <span class="p">)</span>
+                <span class="n">b_names</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+                <span class="n">dict_values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">b_names</span><span class="p">,</span> <span class="p">[</span><span class="n">dict_values_tmp</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">b_names</span><span class="p">]))</span>
+                <span class="n">generate_chart</span><span class="p">(</span><span class="n">dict_values</span><span class="p">,</span> <span class="n">latlon</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_widget&quot;</span><span class="p">):</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span><span class="o">.</span><span class="n">clear_output</span><span class="p">()</span>
+                    <span class="k">with</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No data for the clicked location.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
 
     <span class="n">m</span><span class="o">.</span><span class="n">on_interaction</span><span class="p">(</span><span class="n">handle_interaction</span><span class="p">)</span>
 
