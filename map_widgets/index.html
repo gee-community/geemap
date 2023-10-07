@@ -1022,6 +1022,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.Inspector.cleanup" class="md-nav__link">
+    cleanup()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4431,6 +4438,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.Inspector.cleanup" class="md-nav__link">
+    cleanup()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4605,9 +4619,12 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="ow">and</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 </code></pre></div>
         </details>
 
@@ -4698,6 +4715,7 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
     </div>
 
   </div>
+
 
 
 
@@ -5279,6 +5297,14 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
             <span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inspector_checks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span><span class="p">]</span>
         <span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes the widget from the map and performs cleanup.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">on_interaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_map_interaction</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">_create_checkbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">checked</span><span class="p">):</span>
         <span class="n">layout</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 6px 0px 0px&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
@@ -5335,11 +5361,7 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
 
     <span class="k">def</span> <span class="nf">_on_close_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">on_interaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_map_interaction</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_get_visible_map_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="p">{}</span>
@@ -5623,6 +5645,37 @@ button. Defaults to True.</p></td>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
         <span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inspector_checks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span><span class="p">]</span>
     <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.map_widgets.Inspector.cleanup" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#geemap.map_widgets.Inspector.cleanup" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Removes the widget from the map and performs cleanup.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes the widget from the map and performs cleanup.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">on_interaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_map_interaction</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
 </code></pre></div>
         </details>
     </div>

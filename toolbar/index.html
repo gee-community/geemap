@@ -4581,16 +4581,25 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
 <span class="sd">            icon: The icon to use for the item, from https://fontawesome.com/icons.</span>
 <span class="sd">            tooltip: The tooltip text to show a user on hover.</span>
 <span class="sd">            callback: A callback function to execute when the item icon is clicked.</span>
-<span class="sd">                Its signature should be `callback(map, selected)`, where `map` is the</span>
-<span class="sd">                host map and `selected` is a boolean indicating if the user selected</span>
-<span class="sd">                or unselected the tool.</span>
+<span class="sd">                Its signature should be `callback(map, selected, item)`, where</span>
+<span class="sd">                `map` is the host map, `selected` is a boolean indicating if the</span>
+<span class="sd">                user selected or unselected the tool, and `item` is this object.</span>
 <span class="sd">            reset: Whether to reset the selection after the callback has finished.</span>
+<span class="sd">            control: The control widget associated with this item. Used to</span>
+<span class="sd">                cleanup state when toggled off.</span>
+<span class="sd">            toggle_button: The toggle button controlling the item.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span>
         <span class="n">tooltip</span><span class="p">:</span> <span class="nb">str</span>
-        <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
         <span class="n">reset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">control</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">widgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">toggle_button</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">def</span> <span class="nf">toggle_off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_button</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">toggle_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="n">ICON_WIDTH</span> <span class="o">=</span> <span class="s2">&quot;32px&quot;</span>
     <span class="n">ICON_HEIGHT</span> <span class="o">=</span> <span class="s2">&quot;32px&quot;</span>
@@ -4652,20 +4661,22 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
             <span class="p">),</span>
         <span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">curry_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">should_reset_after</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">curry_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">should_reset_after</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
             <span class="k">def</span> <span class="nf">returned_callback</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;change&quot;</span><span class="p">:</span>
                     <span class="k">return</span>
-                <span class="c1"># Unselect all other tool widgets.</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_reset_others</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
-                <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">,</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">])</span>
+                <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">,</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">should_reset_after</span><span class="p">:</span>
                     <span class="n">widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="k">return</span> <span class="n">returned_callback</span>
 
         <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">widget</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">):</span>
-            <span class="n">widget</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">curry_callback</span><span class="p">(</span><span class="n">callbacks</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">resets</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">widget</span><span class="p">),</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+            <span class="n">all_tools</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">toggle_button</span> <span class="o">=</span> <span class="n">widget</span>
+            <span class="n">widget</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span>
+                <span class="n">curry_callback</span><span class="p">(</span><span class="n">callbacks</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">resets</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">widget</span><span class="p">,</span> <span class="n">all_tools</span><span class="p">[</span><span class="nb">id</span><span class="p">]),</span>
+                <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
             <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -4707,8 +4718,8 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
             <span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">current</span><span class="p">:</span>
                 <span class="n">other</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">_toggle_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">selected</span><span class="p">):</span>
-        <span class="k">del</span> <span class="n">m</span>  <span class="c1"># unused</span>
+    <span class="k">def</span> <span class="nf">_toggle_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">selected</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">del</span> <span class="n">m</span><span class="p">,</span> <span class="n">item</span>  <span class="c1"># unused</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">selected</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span><span class="o">.</span><span class="n">icon</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_EXPAND_ICON</span><span class="p">:</span>
@@ -4840,16 +4851,27 @@ Item        </code>
       </tr>
       <tr>
         <td><code>callback</code></td>
-        <td><code>Callable[[&lt;built-in function any&gt;, bool], NoneType]</code></td>
+        <td><code>Callable[[Any, bool, Any], NoneType]</code></td>
         <td><p>A callback function to execute when the item icon is clicked.
-Its signature should be <code>callback(map, selected)</code>, where <code>map</code> is the
-host map and <code>selected</code> is a boolean indicating if the user selected
-or unselected the tool.</p></td>
+Its signature should be <code>callback(map, selected, item)</code>, where
+<code>map</code> is the host map, <code>selected</code> is a boolean indicating if the
+user selected or unselected the tool, and <code>item</code> is this object.</p></td>
       </tr>
       <tr>
         <td><code>reset</code></td>
         <td><code>bool</code></td>
         <td><p>Whether to reset the selection after the callback has finished.</p></td>
+      </tr>
+      <tr>
+        <td><code>control</code></td>
+        <td><code>Optional[ipywidgets.widgets.widget.Widget]</code></td>
+        <td><p>The control widget associated with this item. Used to
+cleanup state when toggled off.</p></td>
+      </tr>
+      <tr>
+        <td><code>toggle_button</code></td>
+        <td><code>Optional[ipywidgets.widgets.widget_bool.ToggleButton]</code></td>
+        <td><p>The toggle button controlling the item.</p></td>
       </tr>
   </tbody>
 </table>
@@ -4863,22 +4885,34 @@ or unselected the tool.</p></td>
 <span class="sd">        icon: The icon to use for the item, from https://fontawesome.com/icons.</span>
 <span class="sd">        tooltip: The tooltip text to show a user on hover.</span>
 <span class="sd">        callback: A callback function to execute when the item icon is clicked.</span>
-<span class="sd">            Its signature should be `callback(map, selected)`, where `map` is the</span>
-<span class="sd">            host map and `selected` is a boolean indicating if the user selected</span>
-<span class="sd">            or unselected the tool.</span>
+<span class="sd">            Its signature should be `callback(map, selected, item)`, where</span>
+<span class="sd">            `map` is the host map, `selected` is a boolean indicating if the</span>
+<span class="sd">            user selected or unselected the tool, and `item` is this object.</span>
 <span class="sd">        reset: Whether to reset the selection after the callback has finished.</span>
+<span class="sd">        control: The control widget associated with this item. Used to</span>
+<span class="sd">            cleanup state when toggled off.</span>
+<span class="sd">        toggle_button: The toggle button controlling the item.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">icon</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">tooltip</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
     <span class="n">reset</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">control</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">widgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">toggle_button</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">toggle_off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">toggle_button</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toggle_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre></div>
         </details>
 
 
 
   <div class="doc doc-children">
+
+
+
 
 
 
@@ -4977,20 +5011,22 @@ or unselected the tool.</p></td>
         <span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">curry_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">should_reset_after</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">curry_callback</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">should_reset_after</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">returned_callback</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;change&quot;</span><span class="p">:</span>
                 <span class="k">return</span>
-            <span class="c1"># Unselect all other tool widgets.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_reset_others</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
-            <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">,</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">])</span>
+            <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">,</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">should_reset_after</span><span class="p">:</span>
                 <span class="n">widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">return</span> <span class="n">returned_callback</span>
 
     <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">widget</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">):</span>
-        <span class="n">widget</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">curry_callback</span><span class="p">(</span><span class="n">callbacks</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">resets</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">widget</span><span class="p">),</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+        <span class="n">all_tools</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">toggle_button</span> <span class="o">=</span> <span class="n">widget</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span>
+            <span class="n">curry_callback</span><span class="p">(</span><span class="n">callbacks</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">resets</span><span class="p">[</span><span class="nb">id</span><span class="p">],</span> <span class="n">widget</span><span class="p">,</span> <span class="n">all_tools</span><span class="p">[</span><span class="nb">id</span><span class="p">]),</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
         <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -5218,8 +5254,13 @@ or unselected the tool.</p></td>
 
     <span class="n">search_widget</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">search_changed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">close_btn_clicked</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
         <span class="n">full_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">full_widget</span><span class="o">.</span><span class="n">cleanup</span> <span class="o">=</span> <span class="n">cleanup</span>
+
+    <span class="k">def</span> <span class="nf">close_btn_clicked</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+        <span class="n">full_widget</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
     <span class="n">close_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">close_btn_clicked</span><span class="p">)</span>
 
@@ -5295,6 +5336,11 @@ or unselected the tool.</p></td>
     <span class="p">)</span>
     <span class="n">buttons</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">button_width</span> <span class="o">=</span> <span class="s2">&quot;128px&quot;</span>
 
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span><span class="p">)</span>
+        <span class="n">full_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">button_clicked</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Convert&quot;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.conversion</span> <span class="kn">import</span> <span class="n">create_new_cell</span><span class="p">,</span> <span class="n">js_snippet_to_py</span>
@@ -5317,16 +5363,14 @@ or unselected the tool.</p></td>
         <span class="k">elif</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Clear&quot;</span><span class="p">:</span>
             <span class="n">text_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">elif</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Close&quot;</span><span class="p">:</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span><span class="p">)</span>
-            <span class="n">full_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
         <span class="n">buttons</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">buttons</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">button_clicked</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
     <span class="n">full_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">text_widget</span><span class="p">,</span> <span class="n">buttons</span><span class="p">]</span>
     <span class="n">widget_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">full_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span><span class="p">)</span>
+    <span class="n">widget_control</span><span class="o">.</span><span class="n">cleanup</span> <span class="o">=</span> <span class="n">cleanup</span>
     <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">widget_control</span><span class="p">)</span>
     <span class="n">m</span><span class="o">.</span><span class="n">_convert_ctrl</span> <span class="o">=</span> <span class="n">widget_control</span>
 </code></pre></div>
@@ -5532,8 +5576,7 @@ or unselected the tool.</p></td>
 
     <span class="n">draw_control</span><span class="o">.</span><span class="n">on_geometry_create</span><span class="p">(</span><span class="n">handle_draw</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">close_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-        <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
         <span class="n">m</span><span class="o">.</span><span class="n">_plot_checked</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="p">(</span>
@@ -5560,6 +5603,51 @@ or unselected the tool.</p></td>
             <span class="n">m</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get_draw_control</span><span class="p">(),</span> <span class="n">old_draw_control</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">m</span><span class="o">.</span><span class="n">remove_draw_control</span><span class="p">()</span>
+
+    <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span><span class="o">.</span><span class="n">cleanup</span> <span class="o">=</span> <span class="n">cleanup</span>
+
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_dropdown_widget&quot;</span><span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_widget</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_dropdown_control&quot;</span><span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">plot_dropdown_widget</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_widget</span>
+        <span class="n">plot_dropdown_control</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span>
+        <span class="k">if</span> <span class="n">plot_dropdown_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">plot_dropdown_control</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">plot_dropdown_widget</span>
+        <span class="k">del</span> <span class="n">plot_dropdown_control</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_widget&quot;</span><span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_control&quot;</span><span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+            <span class="n">plot_control</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span>
+            <span class="n">plot_widget</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">plot_control</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_plot_control</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_plot_widget</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">del</span> <span class="n">plot_control</span>
+            <span class="k">del</span> <span class="n">plot_widget</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_marker_cluster&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_marker_cluster</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_marker_cluster</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">layers</span>
+        <span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_plot_marker_cluster</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_chart_points&quot;</span><span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_chart_points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_chart_values&quot;</span><span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_chart_values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_chart_labels&quot;</span><span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_chart_labels</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span><span class="o">.</span><span class="n">cleanup</span> <span class="o">=</span> <span class="n">cleanup</span>
+
+    <span class="k">def</span> <span class="nf">close_click</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">_plot_dropdown_control</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
     <span class="n">close_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">close_click</span><span class="p">)</span>
 </code></pre></div>
@@ -5782,31 +5870,33 @@ or unselected the tool.</p></td>
 
     <span class="n">toolbar_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">toolbar_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+        <span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;inspector_mode&quot;</span><span class="p">):</span>
+                <span class="nb">delattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;inspector_mode&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
+
+            <span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">marker_cluster_layer</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s2">&quot;Inspector Markers&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">marker_cluster_layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="n">marker_cluster_layer</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;pixel_values&quot;</span><span class="p">):</span>
+                <span class="nb">delattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;pixel_values&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;marker_cluster&quot;</span><span class="p">):</span>
+                <span class="nb">delattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;marker_cluster&quot;</span><span class="p">)</span>
+
+        <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">close_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;inspector_mode&quot;</span><span class="p">):</span>
-                    <span class="nb">delattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;inspector_mode&quot;</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="p">)</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
-
-                <span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">marker_cluster_layer</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s2">&quot;Inspector Markers&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">marker_cluster_layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="n">marker_cluster_layer</span><span class="p">)</span>
-
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;pixel_values&quot;</span><span class="p">):</span>
-                    <span class="nb">delattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;pixel_values&quot;</span><span class="p">)</span>
-
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;marker_cluster&quot;</span><span class="p">):</span>
-                    <span class="nb">delattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;marker_cluster&quot;</span><span class="p">)</span>
-
-            <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
     <span class="n">close_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">close_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
@@ -5835,27 +5925,7 @@ or unselected the tool.</p></td>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;marker_cluster&quot;</span><span class="p">):</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">elif</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Close&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;inspector_mode&quot;</span><span class="p">):</span>
-                    <span class="nb">delattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;inspector_mode&quot;</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="p">)</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">marker_cluster_layer</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s2">&quot;Inspector Markers&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">marker_cluster_layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="n">marker_cluster_layer</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span> <span class="o">=</span> <span class="p">[]</span>
-
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;pixel_values&quot;</span><span class="p">):</span>
-                    <span class="nb">delattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;pixel_values&quot;</span><span class="p">)</span>
-
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;marker_cluster&quot;</span><span class="p">):</span>
-                    <span class="nb">delattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;marker_cluster&quot;</span><span class="p">)</span>
-
-            <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
         <span class="n">buttons</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -5990,6 +6060,7 @@ or unselected the tool.</p></td>
         <span class="n">toolbar_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
             <span class="n">widget</span><span class="o">=</span><span class="n">toolbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span>
         <span class="p">)</span>
+        <span class="n">toolbar_control</span><span class="o">.</span><span class="n">cleanup</span> <span class="o">=</span> <span class="n">cleanup</span>
 
         <span class="k">if</span> <span class="n">toolbar_control</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
             <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">toolbar_control</span><span class="p">)</span>
@@ -6277,6 +6348,17 @@ or unselected the tool.</p></td>
             <span class="n">convert_hbox</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">http_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">filepath</span><span class="p">]</span>
 
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_tool_output_ctrl&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span>
+        <span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">tool_output_ctrl</span><span class="o">.</span><span class="n">cleanup</span> <span class="o">=</span> <span class="n">cleanup</span>
+
     <span class="k">def</span> <span class="nf">ok_cancel_clicked</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Apply&quot;</span><span class="p">:</span>
             <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;wait&quot;</span><span class="p">}</span>
@@ -6349,7 +6431,6 @@ or unselected the tool.</p></td>
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Please select a file to open.&quot;</span><span class="p">)</span>
 
-            <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
             <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
 
         <span class="k">elif</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Reset&quot;</span><span class="p">:</span>
@@ -6357,17 +6438,8 @@ or unselected the tool.</p></td>
             <span class="n">tool_output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
             <span class="k">with</span> <span class="n">tool_output</span><span class="p">:</span>
                 <span class="n">display</span><span class="p">(</span><span class="n">main_widget</span><span class="p">)</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Close&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_tool_output_ctrl&quot;</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span>
-            <span class="p">):</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">_tool_output_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-
+            <span class="n">tool_output_ctrl</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
         <span class="n">ok_cancel</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">file_type</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">file_type_changed</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
@@ -7188,7 +7260,7 @@ or unselected the tool.</p></td>
     <span class="p">)</span>
 
     <span class="n">region</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-        <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;User-drawn ROI&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_vector_layers</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+        <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;User-drawn ROI&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_vector_layers</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
         <span class="n">value</span><span class="o">=</span><span class="s2">&quot;User-drawn ROI&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Region:&quot;</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">widget_width</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
@@ -7731,19 +7803,23 @@ or unselected the tool.</p></td>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">button_width</span><span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">close_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+        <span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="p">)</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="o">=</span> <span class="kc">None</span>
-
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-    <span class="n">close_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">close_click</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">close_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+    <span class="n">close_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">close_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">collection_changed</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
@@ -7943,27 +8019,12 @@ or unselected the tool.</p></td>
 
     <span class="n">toolbar_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">toolbar_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">close_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="p">)</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-            <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="n">close_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">close_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-
     <span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">toolbar_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
             <span class="n">widget</span><span class="o">=</span><span class="n">toolbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span>
         <span class="p">)</span>
+        <span class="n">toolbar_control</span><span class="o">.</span><span class="n">cleanup</span> <span class="o">=</span> <span class="n">cleanup</span>
 
         <span class="k">if</span> <span class="n">toolbar_control</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
             <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">toolbar_control</span><span class="p">)</span>
@@ -8388,16 +8449,6 @@ or unselected the tool.</p></td>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">button_width</span><span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">close_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-    <span class="n">close_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">close_click</span><span class="p">)</span>
-
     <span class="n">output</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">widget_width</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">))</span>
 
     <span class="n">toolbar_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
@@ -8445,16 +8496,18 @@ or unselected the tool.</p></td>
 
     <span class="n">toolbar_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">toolbar_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">close_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="p">)</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">toolbar_reset</span><span class="p">()</span>
-            <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
+    <span class="n">close_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="o">.</span><span class="n">cleanup</span><span class="p">())</span>
     <span class="n">close_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">close_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
     <span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">True</span>
@@ -8462,7 +8515,7 @@ or unselected the tool.</p></td>
         <span class="n">toolbar_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
             <span class="n">widget</span><span class="o">=</span><span class="n">toolbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span>
         <span class="p">)</span>
-
+        <span class="n">toolbar_control</span><span class="o">.</span><span class="n">cleanup</span> <span class="o">=</span> <span class="n">cleanup</span>
         <span class="k">if</span> <span class="n">toolbar_control</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
             <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">toolbar_control</span><span class="p">)</span>
             <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span> <span class="o">=</span> <span class="n">toolbar_control</span>

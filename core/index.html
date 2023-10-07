@@ -5863,25 +5863,40 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
     <span class="n">addLayer</span> <span class="o">=</span> <span class="n">add_layer</span>
 
-    <span class="k">def</span> <span class="nf">_open_help_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="n">MapInterface</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">del</span> <span class="n">host_map</span>  <span class="c1"># Unused.</span>
+    <span class="k">def</span> <span class="nf">_open_help_page</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="n">MapInterface</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">item</span>  <span class="c1"># Unused.</span>
         <span class="k">if</span> <span class="n">selected</span><span class="p">:</span>
             <span class="n">common</span><span class="o">.</span><span class="n">open_url</span><span class="p">(</span><span class="s2">&quot;https://geemap.org&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_toolbar_main_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">]:</span>
+        <span class="nd">@toolbar</span><span class="o">.</span><span class="n">_cleanup_toolbar_item</span>
+        <span class="k">def</span> <span class="nf">inspector_tool_callback</span><span class="p">(</span>
+            <span class="nb">map</span><span class="p">:</span> <span class="n">Map</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span>
+        <span class="p">):</span>
+            <span class="k">del</span> <span class="n">selected</span><span class="p">,</span> <span class="n">item</span>  <span class="c1"># Unused.</span>
+            <span class="nb">map</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;inspector&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">map</span><span class="o">.</span><span class="n">_inspector</span>
+
+        <span class="nd">@toolbar</span><span class="o">.</span><span class="n">_cleanup_toolbar_item</span>
+        <span class="k">def</span> <span class="nf">basemap_tool_callback</span><span class="p">(</span><span class="nb">map</span><span class="p">:</span> <span class="n">Map</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">):</span>
+            <span class="k">del</span> <span class="n">selected</span><span class="p">,</span> <span class="n">item</span>  <span class="c1"># Unused.</span>
+            <span class="nb">map</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;basemap_selector&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">map</span><span class="o">.</span><span class="n">_basemap_selector</span>
+
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">(</span>
                 <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;map&quot;</span><span class="p">,</span>
                 <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Basemap selector&quot;</span><span class="p">,</span>
-                <span class="n">callback</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;basemap_selector&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">selected</span>
-                <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">callback</span><span class="o">=</span><span class="n">basemap_tool_callback</span><span class="p">,</span>
                 <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="p">),</span>
             <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">(</span>
                 <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span>
                 <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Inspector&quot;</span><span class="p">,</span>
-                <span class="n">callback</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;inspector&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">selected</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">callback</span><span class="o">=</span><span class="n">inspector_tool_callback</span><span class="p">,</span>
+                <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="p">),</span>
             <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">(</span>
                 <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;question&quot;</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Get help&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_open_help_page</span>
