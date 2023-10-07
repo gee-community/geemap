@@ -522,6 +522,14 @@ class Inspector(ipywidgets.VBox):
             children=[self.toolbar_header, self.inspector_checks, self.tree_output]
         )
 
+    def cleanup(self):
+        """Removes the widget from the map and performs cleanup."""
+        if self._host_map:
+            self._host_map.default_style = {"cursor": "default"}
+            self._host_map.on_interaction(self._on_map_interaction, remove=True)
+        if self.on_close is not None:
+            self.on_close()
+
     def _create_checkbox(self, title, checked):
         layout = ipywidgets.Layout(width="auto", padding="0px 6px 0px 0px")
         return ipywidgets.Checkbox(
@@ -578,11 +586,7 @@ class Inspector(ipywidgets.VBox):
 
     def _on_close_btn_click(self, change):
         if change["new"]:
-            if self._host_map:
-                self._host_map.default_style = {"cursor": "default"}
-                self._host_map.on_interaction(self._on_map_interaction, remove=True)
-            if self.on_close is not None:
-                self.on_close()
+            self.cleanup()
 
     def _get_visible_map_layers(self):
         layers = {}
@@ -906,9 +910,12 @@ class Basemap(ipywidgets.HBox):
         if self.on_basemap_changed and change["new"]:
             self.on_basemap_changed(self._dropdown.value)
 
-    def _on_close_click(self, _):
+    def cleanup(self):
         if self.on_close:
             self.on_close()
+
+    def _on_close_click(self, _):
+        self.cleanup()
 
 
 @Theme.apply
