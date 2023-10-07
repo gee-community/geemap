@@ -860,7 +860,17 @@ class LayerManager(ipywidgets.VBox):
             attachment = layer_dict.get(attachment_name, None)
             attachment_on_map = attachment in self._host_map.controls
             if change["new"] and not attachment_on_map:
-                self._host_map.add(attachment)
+                try:
+                    self._host_map.add(attachment)
+                except:
+                    from ipyleaflet import WidgetControl
+                    widget = attachment.widget
+                    position = attachment.position
+                    control = WidgetControl(widget=widget, position=position)
+                    self._host_map.add(control)
+                    layer_dict["colorbar"] = control
+
+                    
             elif not change["new"] and attachment_on_map:
                 self._host_map.remove_control(attachment)
 
