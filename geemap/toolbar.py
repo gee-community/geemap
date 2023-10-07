@@ -728,7 +728,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
                 del plot_options["title"]
             m.default_style = {"cursor": "crosshair"}
         except Exception as e:
-            if not hasattr(map, "_plot_widget"):
+            if not hasattr(m, "_plot_widget"):
                 m._plot_widget = None
             if m._plot_widget is not None:
                 with m._plot_widget:
@@ -755,15 +755,24 @@ def ee_plot_gui(m, position="topright", **kwargs):
                 plot_options["sample_scale"] is not None
             ):
                 sample_scale = plot_options["sample_scale"]
-            dict_values_tmp = (
-                ee_object.sample(xy, scale=sample_scale)
-                .first()
-                .toDictionary()
-                .getInfo()
-            )
-            b_names = ee_object.bandNames().getInfo()
-            dict_values = dict(zip(b_names, [dict_values_tmp[b] for b in b_names]))
-            generate_chart(dict_values, latlon)
+            try:
+                dict_values_tmp = (
+                    ee_object.sample(xy, scale=sample_scale)
+                    .first()
+                    .toDictionary()
+                    .getInfo()
+                )
+                b_names = ee_object.bandNames().getInfo()
+                dict_values = dict(zip(b_names, [dict_values_tmp[b] for b in b_names]))
+                generate_chart(dict_values, latlon)
+            except Exception as e:
+                if hasattr(m, "_plot_widget"):
+                    m._plot_widget.clear_output()
+                    with m._plot_widget:
+                        print("No data for the clicked location.")
+                else:
+                    pass
+                m.default_style = {"cursor": "crosshair"}
 
     m.on_interaction(handle_interaction)
 
@@ -824,10 +833,8 @@ def ee_plot_gui(m, position="topright", **kwargs):
 
 @map_widgets.Theme.apply
 class SearchDataGUI(widgets.HBox):
-
     def __init__(self, m, **kwargs):
-
-    # Adds search button and search box
+        # Adds search button and search box
 
         from .conversion import js_snippet_to_py
 
@@ -840,7 +847,9 @@ class SearchDataGUI(widgets.HBox):
             value=False,
             tooltip="Search location/data",
             icon="globe",
-            layout=widgets.Layout(width="28px", height="28px", padding="0px 0px 0px 4px"),
+            layout=widgets.Layout(
+                width="28px", height="28px", padding="0px 0px 0px 4px"
+            ),
         )
 
         search_type = widgets.ToggleButtons(
@@ -888,7 +897,9 @@ class SearchDataGUI(widgets.HBox):
                 pkg_dir = os.path.dirname(
                     pkg_resources.resource_filename("geemap", "geemap.py")
                 )
-                with open(os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8") as f:
+                with open(
+                    os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8"
+                ) as f:
                     functions = json.load(f)
                 details = [
                     dataset["code"]
