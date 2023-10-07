@@ -4,7 +4,6 @@ import enum
 import logging
 import math
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Type
-import webbrowser
 
 import ee
 import ipyleaflet
