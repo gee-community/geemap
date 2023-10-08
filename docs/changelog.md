@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.29.0 - Oct 7, 2023
+
+**What's Changed**
+
+-   Update changelog for v0.28.2 by @giswqs in [#1760](https://github.com/gee-community/geemap/pull/1760)
+-   Fix raster editor bug by @giswqs in [#1762](https://github.com/gee-community/geemap/pull/1762)
+-   Update G4G Colab notebook by @giswqs in [#1764](https://github.com/gee-community/geemap/pull/1764)
+-   Ensure toolbar buttons toggle widgets, and turn off when widgets are closed. by @sufyanAbbasi in [#1763](https://github.com/gee-community/geemap/pull/1763)
+
+**Full Changelog**: [v0.28.2...v0.29.0](https://github.com/gee-community/geemap/compare/v0.28.2...v0.29.0)
+
 ## v0.28.2 - Oct 4, 2023
 
 **What's Changed**
