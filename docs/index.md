@@ -12,6 +12,7 @@
 [![image](https://img.shields.io/badge/YouTube-Channel-red)](https://youtube.com/@giswqs)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![image](https://joss.theoj.org/papers/10.21105/joss.02305/status.svg)](https://joss.theoj.org/papers/10.21105/joss.02305)
+[![chat](https://badges.gitter.im/Join%20Chat.svg)](https://matrix.to/#/#geemap:gitter.im)
 
 [![logo](https://i.imgur.com/9OOSpDm.png)](https://github.com/gee-community/geemap/blob/master/docs/assets/logo.png)
 
