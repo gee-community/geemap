@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2*.0* - Oct 7, 2023
+## v0.29.0 - Oct 7, 2023
 
 **What's Changed**
 
