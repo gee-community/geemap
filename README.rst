@@ -41,6 +41,9 @@ geemap
 .. image:: https://joss.theoj.org/papers/10.21105/joss.02305/status.svg
         :target: https://joss.theoj.org/papers/10.21105/joss.02305
 
+.. image:: https://badges.gitter.im/Join%20Chat.svg
+        :target: https://matrix.to/#/#geemap:gitter.im       
+
 **A Python package for interactive geospatial analysis and visualization with Google Earth Engine.**
 
 * GitHub repo: https://github.com/gee-community/geemap
