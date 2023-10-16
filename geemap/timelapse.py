@@ -799,8 +799,8 @@ def create_timeseries(
             sub_col = collection.filterDate(start, end).filterBounds(region)
             image = ee.Image(ee.Algorithms.If(
                 ee.Algorithms.ObjectType(region).equals("FeatureCollection"),
-                sub_col.reduce(reducer).clipToCollection(region),
-                sub_col.reduce(reducer).clip(region)
+                sub_col.reduce(reducer, parallel_scale).clipToCollection(region),
+                sub_col.reduce(reducer, parallel_scale).clip(region)
             ))
         return image.set(
             {
