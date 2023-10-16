@@ -762,8 +762,6 @@ class Map(ipyleaflet.Map, MapInterface):
         }
         super().add(tile_layer)
 
-    addLayer = add_layer
-
     def _open_help_page(
         self, host_map: MapInterface, selected: bool, item: toolbar.Toolbar.Item
     ) -> None:
@@ -862,3 +860,8 @@ class Map(ipyleaflet.Map, MapInterface):
         del change  # Unused.
         if self._layer_manager:
             self._layer_manager.refresh_layers()
+
+    # Keep the following three camelCase methods for backwards compatibility.
+    addLayer = add_layer
+    centerObject = center_object
+    setCenter = set_center
