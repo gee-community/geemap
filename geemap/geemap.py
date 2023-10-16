@@ -127,6 +127,9 @@ class Map(core.Map):
         self._USER_AGENT_PREFIX = "geemap"
         self.kwargs = kwargs
         super().__init__(**kwargs)
+        
+        if kwargs.get("height"):
+            self.layout.height = kwargs.get("height")
 
         # sandbox path for Voila app to restrict access to system directories.
         if "sandbox_path" not in kwargs:

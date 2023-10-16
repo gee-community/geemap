@@ -8940,6 +8940,9 @@ def ee_to_df(ee_object, col_names=None, sort_columns=False, **kwargs):
         if col_names is None:
             col_names = property_names
             col_names.remove("system:index")
+            for col in col_names:  # add missing columns
+                if col not in df.columns.tolist():
+                    df[col] = None
         elif not isinstance(col_names, list):
             raise TypeError("col_names must be a list")
 
