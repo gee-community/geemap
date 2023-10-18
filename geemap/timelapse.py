@@ -730,6 +730,7 @@ def create_timeseries(
     reducer="median",
     drop_empty=True,
     date_format=None,
+    parallel_scale=1
 ):
     """Creates a timeseries from a collection of images by a specified frequency and reducer.
 
@@ -743,6 +744,7 @@ def create_timeseries(
         reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
         drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
         date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
+        parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
 
     Returns:
         ee.ImageCollection: The timeseries.
@@ -791,16 +793,20 @@ def create_timeseries(
 
         if region is None:
             sub_col = collection.filterDate(start, end)
-            image = sub_col.reduce(reducer)
+            image = sub_col.reduce(reducer, parallel_scale)
 
         else:
             sub_col = collection.filterDate(start, end).filterBounds(region)
-            image = sub_col.reduce(reducer).clip(region)
+            image = ee.Image(ee.Algorithms.If(
+                ee.Algorithms.ObjectType(region).equals("FeatureCollection"),
+                sub_col.reduce(reducer, parallel_scale).clipToCollection(region),
+                sub_col.reduce(reducer, parallel_scale).clip(region)
+            ))
         return image.set(
             {
                 "system:time_start": ee.Date(date).millis(),
                 "system:date": ee.Date(date).format(date_format),
-                "empty": sub_col.size().eq(0),
+                "empty": sub_col.limit(1).size().eq(0),
             }
         ).rename(bands)
 
@@ -859,6 +865,7 @@ def create_timelapse(
     loop=0,
     mp4=False,
     fading=False,
+    parallel_scale=1
 ):
     """Create a timelapse from any ee.ImageCollection.
 
@@ -908,6 +915,7 @@ def create_timelapse(
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
         fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+        parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
 
     Returns:
         str: File path to the timelapse gif.
@@ -932,6 +940,7 @@ def create_timelapse(
         reducer=reducer,
         drop_empty=True,
         date_format=date_format,
+        parallel_scale=parallel_scale
     )
 
     # rename the bands to remove the '_reducer' characters from the band names.
@@ -1492,6 +1501,7 @@ def sentinel2_timeseries(
     reducer="median",
     drop_empty=True,
     date_format=None,
+    parallel_scale=1
 ):
     """Generates an annual Sentinel 2 ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
        Images include both level 1C and level 2A imagery.
@@ -1509,6 +1519,7 @@ def sentinel2_timeseries(
         reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
         drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
         date_format (str, optional): Format of the date. Defaults to None.
+        parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
 
     Returns:
         object: Returns an ImageCollection containing annual Sentinel 2 images.
@@ -1573,7 +1584,7 @@ def sentinel2_timeseries(
         collection = collection.select(bands)
 
     ts = create_timeseries(
-        collection, start, end, roi, bands, frequency, reducer, drop_empty, date_format
+        collection, start, end, roi, bands, frequency, reducer, drop_empty, date_format, parallel_scale
     )
     return ts
 
@@ -3499,6 +3510,8 @@ def sentinel2_timelapse(
             kwargs["reducer"] = "median"
         if "drop_empty" not in kwargs:
             kwargs["drop_empty"] = True
+        if "parallel_scale" not in kwargs:
+            kwargs["parallel_scale"] = 1
         kwargs["date_format"] = date_format
         col = sentinel2_timeseries(
             roi,
@@ -4471,6 +4484,7 @@ def modis_ocean_color_timeseries(
     reducer="median",
     drop_empty=True,
     date_format=None,
+    parallel_scale=1
 ):
     """Creates a ocean color timeseries from MODIS. https://developers.google.com/earth-engine/datasets/catalog/NASA_OCEANDATA_MODIS-Aqua_L3SMI
 
@@ -4484,6 +4498,7 @@ def modis_ocean_color_timeseries(
         reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
         drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
         date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
+        parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
 
     Returns:
         ee.ImageCollection: The timeseries.
@@ -4518,6 +4533,7 @@ def modis_ocean_color_timeseries(
         reducer,
         drop_empty,
         date_format,
+        parallel_scale
     )
 
     return ts
@@ -4694,6 +4710,7 @@ def dynamic_world_timeseries(
     drop_empty=True,
     date_format=None,
     return_type="hillshade",
+    parallel_scale=1
 ):
     """Create Dynamic World timeseries.
 
@@ -4707,6 +4724,7 @@ def dynamic_world_timeseries(
         drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
         date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
         return_type (str, optional): The type of image to be returned. Can be one of 'hillshade', 'visualize', 'class', or 'probability'. Default to "hillshade".
+        parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
 
     Returns:
         ee.ImageCollection: An ImageCollection of the Dynamic World land cover timeseries.
@@ -4771,6 +4789,7 @@ def dynamic_world_timeseries(
         reducer,
         drop_empty,
         date_format,
+        parallel_scale
     )
 
     if return_type == "class":
@@ -4805,6 +4824,7 @@ def dynamic_world_timeseries(
             "mean",
             drop_empty,
             date_format,
+            parallel_scale
         )
 
         prob_images = ee.ImageCollection(
