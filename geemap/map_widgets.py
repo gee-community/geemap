@@ -142,23 +142,20 @@ class Colorbar(ipywidgets.Output):
         vmin = vis_params.get("min", kwargs.pop("vmin", 0))
         try:
             vmin = float(vmin) 
-        except TypeError as err:
-            msg = f'The provided data type of min has to be convertible to float. Instead it is {type(vmin)}.\n'
-            raise TypeError(msg + format_tb(err.__traceback__)[0] + err.args[0] + "\n") from None
+        except ValueError as err:
+            raise ValueError("The provided min value must be scalar type.")
 
         vmax = vis_params.get("max", kwargs.pop("mvax", 1))
         try:
             vmax = float(vmax) 
-        except TypeError as err:
-            msg = f'The provided data type of max has to be convertible to float. Instead it is {type(vmax)}.\n'
-            raise TypeError(msg + format_tb(err.__traceback__)[0] + err.args[0] + "\n") from None
+        except ValueError as err:
+            raise ValueError("The provided max value must be scalar type.")
 
         alpha = vis_params.get("opacity", kwargs.pop("alpha", 1))
         try:
             alpha = float(alpha)
-        except TypeError as err:
-            msg = f'The provided data type of opacity has to be convertible to float. Instead it is {type(alpha)}.\n'
-            raise TypeError(msg + format_tb(err.__traceback__)[0] + err.args[0] + "\n") from None
+        except ValueError as err:
+            raise ValueError("opacity or alpha value must be scalar type.")
 
         if "palette" in vis_params.keys():
             hexcodes = common.to_hex_colors(common.check_cmap(vis_params["palette"]))

@@ -197,11 +197,11 @@ class TestColorbar(unittest.TestCase):
         self.normalize_class_mock.assert_called_with(vmin=-1.5, vmax=1)
 
     def test_colorbar_invalid_min(self):
-        with self.assertRaisesRegex(TypeError, "min value must be scalar type"):
+        with self.assertRaisesRegex(ValueError, "min value must be scalar type"):
             map_widgets.Colorbar(vis_params={"min": "invalid_min"})
 
     def test_colorbar_invalid_max(self):
-        with self.assertRaisesRegex(TypeError, "max value must be scalar type"):
+        with self.assertRaisesRegex(ValueError, "max value must be scalar type"):
             map_widgets.Colorbar(vis_params={"max": "invalid_max"})
 
     def test_colorbar_opacity(self):
@@ -218,7 +218,7 @@ class TestColorbar(unittest.TestCase):
 
     def test_colorbar_invalid_alpha(self):
         with self.assertRaisesRegex(
-            TypeError, "opacity or alpha value must be type scalar"
+            ValueError, "opacity or alpha value must be scalar type"
         ):
             map_widgets.Colorbar(alpha="invalid_alpha", colors=self.TEST_COLORS)
 
