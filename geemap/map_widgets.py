@@ -11,6 +11,8 @@ import ipywidgets
 
 from . import common
 
+from traceback import format_tb
+
 
 def _set_css_in_cell_output():
     display(
@@ -109,9 +111,9 @@ class Colorbar(ipywidgets.Output):
         Raises:
             TypeError: If the vis_params is not a dictionary.
             ValueError: If the orientation is not either horizontal or vertical.
-            ValueError: If the provided min value is not scalar type.
-            ValueError: If the provided max value is not scalar type.
-            ValueError: If the provided opacity value is not scalar type.
+            ValueError: If the provided min value is not convertible to float.
+            ValueError: If the provided max value is not convertible to float.
+            ValueError: If the provided opacity value is not convertible to float.
             ValueError: If cmap or palette is not provided.
         """
 
@@ -138,16 +140,22 @@ class Colorbar(ipywidgets.Output):
         width, height = self._get_dimensions(orientation, kwargs)
 
         vmin = vis_params.get("min", kwargs.pop("vmin", 0))
-        if type(vmin) not in (int, float):
-            raise TypeError("The provided min value must be scalar type.")
+        try:
+            vmin = float(vmin) 
+        except ValueError as err:
+            raise ValueError("The provided min value must be scalar type.")
 
         vmax = vis_params.get("max", kwargs.pop("mvax", 1))
-        if type(vmax) not in (int, float):
-            raise TypeError("The provided max value must be scalar type.")
+        try:
+            vmax = float(vmax) 
+        except ValueError as err:
+            raise ValueError("The provided max value must be scalar type.")
 
         alpha = vis_params.get("opacity", kwargs.pop("alpha", 1))
-        if type(alpha) not in (int, float):
-            raise TypeError("The provided opacity or alpha value must be type scalar.")
+        try:
+            alpha = float(alpha)
+        except ValueError as err:
+            raise ValueError("opacity or alpha value must be scalar type.")
 
         if "palette" in vis_params.keys():
             hexcodes = common.to_hex_colors(common.check_cmap(vis_params["palette"]))
