@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.29.1 - Oct 17, 2023
+
+**What's Changed**
+
+-   Update changelog for v0.29.0 by @giswqs in [#1765](https://github.com/gee-community/geemap/pull/1765)
+-   Minor updates to G4G notebook by @giswqs in [#1766](https://github.com/gee-community/geemap/pull/1766)
+-   Fix ee_to_df missing column bug by @giswqs in [#1776](https://github.com/gee-community/geemap/pull/1776)
+-   Optimize create_timeseries for memory by @jdbcode in [#1781](https://github.com/gee-community/geemap/pull/1781)
+-   Keep three camelCase methods by @giswqs in [#1777](https://github.com/gee-community/geemap/pull/1777)
+-   Improve Colorbar for supporting numpy dtypes by @rodrigo-j-goncalves in [#1782](https://github.com/gee-community/geemap/pull/1782)
+
+**New Contributors**
+
+-   @rodrigo-j-goncalves made their first contribution in [#1782](https://github.com/gee-community/geemap/pull/1782)
+
+**Full Changelog**: [v0.29.0...v0.29.1](https://github.com/gee-community/geemap/compare/v0.29.0...v0.29.1)
+
 ## v0.29.0 - Oct 7, 2023
 
 **What's Changed**
