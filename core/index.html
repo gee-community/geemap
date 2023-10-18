@@ -899,6 +899,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#geemap.core.Map.centerObject" class="md-nav__link">
+    centerObject()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geemap.core.Map.center_object" class="md-nav__link">
     center_object()
   </a>
@@ -936,6 +943,13 @@
           <li class="md-nav__item">
   <a href="#geemap.core.Map.remove" class="md-nav__link">
     remove()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.core.Map.setCenter" class="md-nav__link">
+    setCenter()
   </a>
   
 </li>
@@ -4643,6 +4657,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#geemap.core.Map.centerObject" class="md-nav__link">
+    centerObject()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geemap.core.Map.center_object" class="md-nav__link">
     center_object()
   </a>
@@ -4680,6 +4701,13 @@
           <li class="md-nav__item">
   <a href="#geemap.core.Map.remove" class="md-nav__link">
     remove()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.core.Map.setCenter" class="md-nav__link">
+    setCenter()
   </a>
   
 </li>
@@ -5861,8 +5889,6 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="p">}</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tile_layer</span><span class="p">)</span>
 
-    <span class="n">addLayer</span> <span class="o">=</span> <span class="n">add_layer</span>
-
     <span class="k">def</span> <span class="nf">_open_help_page</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="n">MapInterface</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -5961,6 +5987,11 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="k">del</span> <span class="n">change</span>  <span class="c1"># Unused.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_manager</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_layer_manager</span><span class="o">.</span><span class="n">refresh_layers</span><span class="p">()</span>
+
+    <span class="c1"># Keep the following three camelCase methods for backwards compatibility.</span>
+    <span class="n">addLayer</span> <span class="o">=</span> <span class="n">add_layer</span>
+    <span class="n">centerObject</span> <span class="o">=</span> <span class="n">center_object</span>
+    <span class="n">setCenter</span> <span class="o">=</span> <span class="n">set_center</span>
 </code></pre></div>
         </details>
 
@@ -6207,6 +6238,47 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
 
 
+<h3 id="geemap.core.Map.centerObject" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">centerObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#geemap.core.Map.centerObject" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Centers the map view on a given object.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/core.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">center_object</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">max_error</span> <span class="o">=</span> <span class="mf">0.001</span>
+    <span class="n">geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_geometry</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+        <span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">zoom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">x_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
+        <span class="n">y_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_bounds</span><span class="p">([[</span><span class="nb">min</span><span class="p">(</span><span class="n">y_vals</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">x_vals</span><span class="p">)],</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">y_vals</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_vals</span><span class="p">)]])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">zoom</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Zoom must be an integer.&quot;</span><span class="p">)</span>
+        <span class="n">centroid</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="n">centroid</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">zoom</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
 <h3 id="geemap.core.Map.center_object" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
@@ -6420,6 +6492,34 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">):</span>
         <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.core.Map.setCenter" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">setCenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#geemap.core.Map.setCenter" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Centers the map view at a given coordinates with the given zoom level.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/core.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">set_center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">lat</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">zoom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span> <span class="o">=</span> <span class="n">zoom</span>
 </code></pre></div>
         </details>
     </div>
