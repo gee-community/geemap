@@ -4791,9 +4791,9 @@ Colorbar            (<span title="ipywidgets.widgets.widget_output.Output">Outpu
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError: If the vis_params is not a dictionary.</span>
 <span class="sd">            ValueError: If the orientation is not either horizontal or vertical.</span>
-<span class="sd">            ValueError: If the provided min value is not scalar type.</span>
-<span class="sd">            ValueError: If the provided max value is not scalar type.</span>
-<span class="sd">            ValueError: If the provided opacity value is not scalar type.</span>
+<span class="sd">            ValueError: If the provided min value is not convertible to float.</span>
+<span class="sd">            ValueError: If the provided max value is not convertible to float.</span>
+<span class="sd">            ValueError: If the provided opacity value is not convertible to float.</span>
 <span class="sd">            ValueError: If cmap or palette is not provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -4820,16 +4820,22 @@ Colorbar            (<span title="ipywidgets.widgets.widget_output.Output">Outpu
         <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dimensions</span><span class="p">(</span><span class="n">orientation</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">vmin</span> <span class="o">=</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;vmin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The provided min value must be scalar type.&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">vmin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span> 
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided min value must be scalar type.&quot;</span><span class="p">)</span>
 
         <span class="n">vmax</span> <span class="o">=</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;mvax&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">vmax</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The provided max value must be scalar type.&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmax</span><span class="p">)</span> 
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided max value must be scalar type.&quot;</span><span class="p">)</span>
 
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;opacity&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The provided opacity or alpha value must be type scalar.&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;opacity or alpha value must be scalar type.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="s2">&quot;palette&quot;</span> <span class="ow">in</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">hexcodes</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">to_hex_colors</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">check_cmap</span><span class="p">(</span><span class="n">vis_params</span><span class="p">[</span><span class="s2">&quot;palette&quot;</span><span class="p">]))</span>
@@ -5016,15 +5022,15 @@ Defaults to None.</p></td>
       </tr>
       <tr>
         <td><code>ValueError</code></td>
-        <td><p>If the provided min value is not scalar type.</p></td>
+        <td><p>If the provided min value is not convertible to float.</p></td>
       </tr>
       <tr>
         <td><code>ValueError</code></td>
-        <td><p>If the provided max value is not scalar type.</p></td>
+        <td><p>If the provided max value is not convertible to float.</p></td>
       </tr>
       <tr>
         <td><code>ValueError</code></td>
-        <td><p>If the provided opacity value is not scalar type.</p></td>
+        <td><p>If the provided opacity value is not convertible to float.</p></td>
       </tr>
       <tr>
         <td><code>ValueError</code></td>
@@ -5073,9 +5079,9 @@ Defaults to None.</p></td>
 <span class="sd">    Raises:</span>
 <span class="sd">        TypeError: If the vis_params is not a dictionary.</span>
 <span class="sd">        ValueError: If the orientation is not either horizontal or vertical.</span>
-<span class="sd">        ValueError: If the provided min value is not scalar type.</span>
-<span class="sd">        ValueError: If the provided max value is not scalar type.</span>
-<span class="sd">        ValueError: If the provided opacity value is not scalar type.</span>
+<span class="sd">        ValueError: If the provided min value is not convertible to float.</span>
+<span class="sd">        ValueError: If the provided max value is not convertible to float.</span>
+<span class="sd">        ValueError: If the provided opacity value is not convertible to float.</span>
 <span class="sd">        ValueError: If cmap or palette is not provided.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -5102,16 +5108,22 @@ Defaults to None.</p></td>
     <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dimensions</span><span class="p">(</span><span class="n">orientation</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
 
     <span class="n">vmin</span> <span class="o">=</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;vmin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The provided min value must be scalar type.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span> 
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided min value must be scalar type.&quot;</span><span class="p">)</span>
 
     <span class="n">vmax</span> <span class="o">=</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;mvax&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">vmax</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The provided max value must be scalar type.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmax</span><span class="p">)</span> 
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided max value must be scalar type.&quot;</span><span class="p">)</span>
 
     <span class="n">alpha</span> <span class="o">=</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;opacity&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The provided opacity or alpha value must be type scalar.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;opacity or alpha value must be scalar type.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="s2">&quot;palette&quot;</span> <span class="ow">in</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">hexcodes</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">to_hex_colors</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">check_cmap</span><span class="p">(</span><span class="n">vis_params</span><span class="p">[</span><span class="s2">&quot;palette&quot;</span><span class="p">]))</span>
