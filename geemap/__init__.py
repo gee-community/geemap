@@ -52,7 +52,7 @@ else:
             print(
                 "Please restart Jupyter kernel after installation if you encounter any errors when importing geemap."
             )
-        raise Exception(e)
+        raise e
 
 if _use_eerepr():
     import eerepr
