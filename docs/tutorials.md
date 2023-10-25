@@ -149,3 +149,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 135. Earth Engine Image Segmentation with the Segment Anything Model ([notebook](https://geemap.org/notebooks/135_segmentation))
 136. Downloading Earth Engine images in parallel ([notebook](https://geemap.org/notebooks/136_download_parallel))
 137. Creating a rectangular grid covering a region of interest for computing zonal statistics ([notebook](https://geemap.org/notebooks/137_create_grid))
+138. Clipping Earth Engine images interactively with the Draw Control ([notebook](https://geemap.org/notebooks/138_draw_control))
