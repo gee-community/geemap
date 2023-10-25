@@ -441,6 +441,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://geemap.org/notebooks/138_draw_control/</loc>
+         <lastmod>2023-10-25</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://geemap.org/notebooks/13_zonal_statistics_by_group/</loc>
          <lastmod>2023-10-25</lastmod>
          <changefreq>daily</changefreq>
