@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.29.2 - Oct 25, 2023
+
+**What's Changed**
+
+-   Update changelog for v0.29.1 by @giswqs in [#1783](https://github.com/gee-community/geemap/pull/1783)
+-   **init**.py: Do not wrap an exception when reraising. by @schwehr in [#1785](https://github.com/gee-community/geemap/pull/1785)
+-   Fix draw control geodesic bug by @giswqs in [#1797](https://github.com/gee-community/geemap/pull/1797)
+-   Add notebook 138 for using draw control by @giswqs in [#1798](https://github.com/gee-community/geemap/pull/1798)
+
+**Full Changelog**: [v0.29.1...v0.29.2](https://github.com/gee-community/geemap/compare/v0.29.1...v0.29.2)
+
 ## v0.29.1 - Oct 17, 2023
 
 **What's Changed**
