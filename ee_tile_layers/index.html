@@ -882,6 +882,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#geemap.ee_tile_layers.EELeafletTileLayer.calculate_vis_minmax" class="md-nav__link">
+    calculate_vis_minmax()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4337,6 +4344,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#geemap.ee_tile_layers.EELeafletTileLayer.calculate_vis_minmax" class="md-nav__link">
+    calculate_vis_minmax()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4612,6 +4626,7 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
 <span class="sd">            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.</span>
 <span class="sd">            opacity (float, optional): The layer&#39;s opacity represented as a number between 0 and 1. Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span> <span class="o">=</span> <span class="n">ee_object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
             <span class="n">ee_object</span><span class="p">,</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span>
         <span class="p">)</span>
@@ -4624,6 +4639,82 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
             <span class="n">max_zoom</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
+
+    <span class="nd">@lru_cache</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_calculate_vis_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate stats used for visualization parameters.</span>
+
+<span class="sd">        Stats are calculated consistently with the Code Editor visualization parameters,</span>
+<span class="sd">        and are cached to avoid recomputing for the same bounds and bands.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            bounds (ee.Geometry|ee.Feature|ee.FeatureCollection): The bounds to sample.</span>
+<span class="sd">            bands (tuple): The bands to sample.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: The minimum, maximum, standard deviation, and mean values across the</span>
+<span class="sd">                specified bands.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stat_reducer</span> <span class="o">=</span> <span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">minMax</span><span class="p">()</span>
+                        <span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">unweighted</span><span class="p">(),</span> <span class="n">sharedInputs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">stdDev</span><span class="p">(),</span> <span class="n">sharedInputs</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+        <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span><span class="o">.</span><span class="n">reduceRegion</span><span class="p">(</span>
+            <span class="n">reducer</span><span class="o">=</span><span class="n">stat_reducer</span><span class="p">,</span>
+            <span class="n">geometry</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+            <span class="n">bestEffort</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">maxPixels</span><span class="o">=</span><span class="mi">10_000</span><span class="p">,</span>
+            <span class="n">crs</span><span class="o">=</span><span class="s2">&quot;SR-ORG:6627&quot;</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+
+        <span class="n">mins</span><span class="p">,</span> <span class="n">maxs</span><span class="p">,</span> <span class="n">stds</span><span class="p">,</span> <span class="n">means</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">stat</span><span class="p">)</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+            <span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;_min&#39;</span><span class="p">,</span> <span class="s1">&#39;_max&#39;</span><span class="p">,</span> <span class="s1">&#39;_stdDev&#39;</span><span class="p">,</span> <span class="s1">&#39;_mean&#39;</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">vals</span> <span class="ow">in</span> <span class="p">(</span><span class="n">mins</span><span class="p">,</span> <span class="n">maxs</span><span class="p">,</span> <span class="n">stds</span><span class="p">,</span> <span class="n">means</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No unmasked pixels were sampled.&#39;</span><span class="p">)</span>
+
+        <span class="n">min_val</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">mins</span><span class="p">)</span>
+        <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">maxs</span><span class="p">)</span>
+        <span class="n">std_dev</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">stds</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">stds</span><span class="p">)</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">means</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">std_dev</span><span class="p">,</span> <span class="n">mean</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">calculate_vis_minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">percent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the min and max clip values for visualization.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            bounds (ee.Geometry|ee.Feature|ee.FeatureCollection): The bounds to sample.</span>
+<span class="sd">            bands (list, optional): The bands to sample. If None, all bands are used.</span>
+<span class="sd">            percent (float, optional): The percent to use when stretching.</span>
+<span class="sd">            sigma (float, optional): The number of standard deviations to use when</span>
+<span class="sd">                stretching.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: The minimum and maximum values to clip to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span> <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_vis_stats</span><span class="p">(</span>
+                <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">bands</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">stretch_min</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">-</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">std</span>
+            <span class="n">stretch_max</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">std</span>
+        <span class="k">elif</span> <span class="n">percent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_val</span> <span class="o">-</span> <span class="n">min_val</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">percent</span><span class="p">)</span>
+            <span class="n">stretch_min</span> <span class="o">=</span> <span class="n">min_val</span> <span class="o">+</span> <span class="n">x</span>
+            <span class="n">stretch_max</span> <span class="o">=</span> <span class="n">max_val</span> <span class="o">-</span> <span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stretch_min</span> <span class="o">=</span> <span class="n">min_val</span>
+            <span class="n">stretch_max</span> <span class="o">=</span> <span class="n">max_val</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">stretch_min</span><span class="p">,</span> <span class="n">stretch_max</span><span class="p">)</span>
 </code></pre></div>
         </details>
 
@@ -4720,6 +4811,7 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
 <span class="sd">        shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.</span>
 <span class="sd">        opacity (float, optional): The layer&#39;s opacity represented as a number between 0 and 1. Defaults to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span> <span class="o">=</span> <span class="n">ee_object</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
         <span class="n">ee_object</span><span class="p">,</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span>
     <span class="p">)</span>
@@ -4732,6 +4824,116 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
         <span class="n">max_zoom</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.ee_tile_layers.EELeafletTileLayer.calculate_vis_minmax" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">calculate_vis_minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">percent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#geemap.ee_tile_layers.EELeafletTileLayer.calculate_vis_minmax" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Calculate the min and max clip values for visualization.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>bounds</code></td>
+        <td><code>ee.Geometry|ee.Feature|ee.FeatureCollection</code></td>
+        <td><p>The bounds to sample.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>bands</code></td>
+        <td><code>list</code></td>
+        <td><p>The bands to sample. If None, all bands are used.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>percent</code></td>
+        <td><code>float</code></td>
+        <td><p>The percent to use when stretching.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>sigma</code></td>
+        <td><code>float</code></td>
+        <td><p>The number of standard deviations to use when
+stretching.</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>tuple</code></td>
+      <td><p>The minimum and maximum values to clip to.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/ee_tile_layers.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate_vis_minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">percent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the min and max clip values for visualization.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        bounds (ee.Geometry|ee.Feature|ee.FeatureCollection): The bounds to sample.</span>
+<span class="sd">        bands (list, optional): The bands to sample. If None, all bands are used.</span>
+<span class="sd">        percent (float, optional): The percent to use when stretching.</span>
+<span class="sd">        sigma (float, optional): The number of standard deviations to use when</span>
+<span class="sd">            stretching.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: The minimum and maximum values to clip to.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span> <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_vis_stats</span><span class="p">(</span>
+            <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">bands</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">stretch_min</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">-</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">std</span>
+        <span class="n">stretch_max</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">+</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">std</span>
+    <span class="k">elif</span> <span class="n">percent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_val</span> <span class="o">-</span> <span class="n">min_val</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">percent</span><span class="p">)</span>
+        <span class="n">stretch_min</span> <span class="o">=</span> <span class="n">min_val</span> <span class="o">+</span> <span class="n">x</span>
+        <span class="n">stretch_max</span> <span class="o">=</span> <span class="n">max_val</span> <span class="o">-</span> <span class="n">x</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stretch_min</span> <span class="o">=</span> <span class="n">min_val</span>
+        <span class="n">stretch_max</span> <span class="o">=</span> <span class="n">max_val</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">stretch_min</span><span class="p">,</span> <span class="n">stretch_max</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
