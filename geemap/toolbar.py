@@ -4928,7 +4928,7 @@ def plotly_basemap_gui(canvas, map_min_width="78%", map_max_width="98%"):
 
     map_widget.layout.width = map_min_width
 
-    value = "Stamen.Terrain"
+    value = "Esri.WorldTopoMap"
     m.add_basemap(value)
 
     dropdown = widgets.Dropdown(
