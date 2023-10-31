@@ -9,6 +9,7 @@ import box
 import ee
 import folium
 import ipyleaflet
+from functools import lru_cache
 
 from . import common
 
@@ -139,6 +140,7 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
+        self._ee_object = ee_object
         self.url_format = _get_tile_url_format(
             ee_object, _validate_vis_params(vis_params)
         )
@@ -151,3 +153,79 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             max_zoom=24,
             **kwargs,
         )
+
+    @lru_cache()
+    def _calculate_vis_stats(self, *, bounds, bands):
+        """Calculate stats used for visualization parameters.
+
+        Stats are calculated consistently with the Code Editor visualization parameters,
+        and are cached to avoid recomputing for the same bounds and bands.
+
+        Args:
+            bounds (ee.Geometry|ee.Feature|ee.FeatureCollection): The bounds to sample.
+            bands (tuple): The bands to sample.
+
+        Returns:
+            tuple: The minimum, maximum, standard deviation, and mean values across the
+                specified bands.
+        """
+        stat_reducer = (ee.Reducer.minMax()
+                        .combine(ee.Reducer.mean().unweighted(), sharedInputs=True)
+                        .combine(ee.Reducer.stdDev(), sharedInputs=True))
+
+        stats = self._ee_object.select(bands).reduceRegion(
+            reducer=stat_reducer,
+            geometry=bounds,
+            bestEffort=True,
+            maxPixels=10_000,
+            crs="SR-ORG:6627",
+            scale=1,
+        ).getInfo()
+
+        mins, maxs, stds, means = [
+            {v for k, v in stats.items() if k.endswith(stat) and v is not None}
+            for stat in ('_min', '_max', '_stdDev', '_mean')
+        ]
+        if any(len(vals) == 0 for vals in (mins, maxs, stds, means)):
+            raise ValueError('No unmasked pixels were sampled.')
+
+        min_val = min(mins)
+        max_val = max(maxs)
+        std_dev = sum(stds) / len(stds)
+        mean = sum(means) / len(means)
+
+        return (min_val, max_val, std_dev, mean)
+
+    def calculate_vis_minmax(self, *, bounds, bands=None, percent=None, sigma=None):
+        """Calculate the min and max clip values for visualization.
+
+        Args:
+            bounds (ee.Geometry|ee.Feature|ee.FeatureCollection): The bounds to sample.
+            bands (list, optional): The bands to sample. If None, all bands are used.
+            percent (float, optional): The percent to use when stretching.
+            sigma (float, optional): The number of standard deviations to use when
+                stretching.
+
+        Returns:
+            tuple: The minimum and maximum values to clip to.
+        """
+        bands = self._ee_object.bandNames() if bands is None else tuple(bands)
+        try:
+            min_val, max_val, std, mean = self._calculate_vis_stats(
+                bounds=bounds, bands=bands
+            )
+        except ValueError:
+            return (0, 0)
+
+        if sigma is not None:
+            stretch_min = mean - sigma * std
+            stretch_max = mean + sigma * std
+        elif percent is not None:
+            x = (max_val - min_val) * (1 - percent)
+            stretch_min = min_val + x
+            stretch_max = max_val - x
+        else:
+            stretch_min = min_val
+            stretch_max = max_val
+
+        return (stretch_min, stretch_max)
