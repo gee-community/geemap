@@ -51,7 +51,8 @@ plugins:
           allow_errors: false
           ignore: ["conf.py"]
           execute: False
-          execute_ignore: ["notebooks/*.ipynb", "workshops/*.ipynb"]
+          execute_ignore:
+              ["notebooks/*.ipynb", "workshops/*.ipynb", "changelog_update.py"]
 
 markdown_extensions:
     - admonition
