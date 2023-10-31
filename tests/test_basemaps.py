@@ -51,7 +51,7 @@ class TestXyzToLeaflet(unittest.TestCase):
         expected_keys = {
             "custom_xyz": "OpenStreetMap",
             "custom_wms": "USGS NAIP Imagery",
-            "xyzservices_xyz": "Stamen.Terrain",
+            "xyzservices_xyz": "Esri.WorldTopoMap",
         }
         for _, expected_name in expected_keys.items():
             self.assertIn(expected_name, self.tiles)
