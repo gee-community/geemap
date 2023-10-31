@@ -1152,6 +1152,30 @@ class _RasterLayerEditor(ipywidgets.VBox):
             style={"description_width": "initial"},
         )
 
+        self._stretch_dropdown = ipywidgets.Dropdown(
+            options={
+                "Custom": {},
+                "1 σ": {"sigma": 1},
+                "2 σ": {"sigma": 2},
+                "3 σ": {"sigma": 3},
+                "90%": {"percent": 0.90},
+                "98%": {"percent": 0.98},
+                "100%": {"percent": 1.0},
+            },
+            description="Stretch:",
+            layout=ipywidgets.Layout(width="264px"),
+            style={"description_width": "initial"},
+        )
+
+        self._stretch_button = ipywidgets.Button(
+            disabled=True,
+            tooltip="Re-calculate stretch",
+            layout=ipywidgets.Layout(width="36px"),
+            icon="refresh",
+        )
+        self._stretch_dropdown.observe(self._value_stretch_changed, names="value")
+        self._stretch_button.on_click(self._update_stretch)
+
         self._value_range_slider = ipywidgets.FloatRangeSlider(
             value=[self._min_value, self._max_value],
             min=self._left_value,
@@ -1230,6 +1254,9 @@ class _RasterLayerEditor(ipywidgets.VBox):
             style={"description_width": "initial"},
         )
 
+        self._stretch_hbox = ipywidgets.HBox(
+            [self._stretch_dropdown, self._stretch_button]
+        )
         self._colormap_hbox = ipywidgets.HBox(
             [self._linear_checkbox, self._step_checkbox]
         )
@@ -1283,10 +1310,77 @@ class _RasterLayerEditor(ipywidgets.VBox):
             children=children,
         )
 
+    def _value_stretch_changed(self, value):
+        """Apply the selected stretch option and update widget states."""
+        stretch_option = value["new"]
+
+        if stretch_option:
+            self._stretch_button.disabled = False
+            self._value_range_slider.disabled = True
+            self._update_stretch()
+        else:
+            self._stretch_button.disabled = True
+            self._value_range_slider.disabled = False
+
+    def _update_stretch(self, *args):
+        """Calculate and set the range slider by applying stretch parameters."""
+        stretch_params = self._stretch_dropdown.value
+
+        min_val, max_val = self._calculate_stretch(**stretch_params)
+        self._value_range_slider.min = min_val
+        self._value_range_slider.max = max_val
+        self._value_range_slider.value = [min_val, max_val]
+    
+    def _calculate_stretch(self, percent=None, sigma=None):
+        """Calculate min and max stretch values for the raster image."""
+        (s, w), (n, e) = self._host_map.bounds
+        map_bbox = ee.Geometry.BBox(west=w, south=s, east=e, north=n)
+        vis_bands = list(set((b.value for b in self._bands_hbox.children)))
+        
+        stat_reducer = (ee.Reducer.minMax()
+                        .combine(ee.Reducer.mean().unweighted(), sharedInputs=True)
+                        .combine(ee.Reducer.stdDev(), sharedInputs=True))
+
+        stats = self._ee_object.select(vis_bands).reduceRegion(
+            reducer=stat_reducer,
+            geometry=map_bbox,
+            bestEffort=True,
+            maxPixels=10_000,
+            crs="SR-ORG:6627",
+            scale=1,
+        ).getInfo()
+
+        mins, maxs, stds, means = [
+            {v for k, v in stats.items() if k.endswith(stat) and v is not None}
+            for stat in ('_min', '_max', '_stdDev', '_mean')
+        ]
+        if any(len(vals) == 0 for vals in (mins, maxs, stds, means)):
+            # No unmasked pixels were sampled
+            return (0, 0)
+
+        min_val = min(mins)
+        max_val = max(maxs)
+        std_dev = sum(stds) / len(stds)
+        mean = sum(means) / len(means)
+
+        if sigma is not None:
+            stretch_min = mean - sigma * std_dev
+            stretch_max = mean + sigma * std_dev
+        elif percent is not None:
+            x = (max_val - min_val) * (1 - percent)
+            stretch_min = min_val + x
+            stretch_max = max_val - x
+        else:
+            stretch_min = min_val
+            stretch_max = max_val
+
+        return (stretch_min, stretch_max)
+
     def _get_tool_layout(self, grayscale):
         return [
             ipywidgets.HBox([self._greyscale_radio_button, self._rgb_radio_button]),
             self._bands_hbox,
+            self._stretch_hbox,
             self._value_range_slider,
             self._opacity_slider,
             self._gamma_slider,
