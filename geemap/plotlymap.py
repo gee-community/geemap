@@ -717,7 +717,7 @@ class Map(go.FigureWidget):
             **kwargs,
         )
 
-        self.add_basemap("Stamen.Terrain")
+        self.add_basemap("Esri.WorldTopoMap")
         self.add_trace(heatmap)
 
     def add_gdf(
