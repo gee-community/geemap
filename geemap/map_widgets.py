@@ -1335,8 +1335,14 @@ class _RasterLayerEditor(ipywidgets.VBox):
             **stretch_params
         )
 
-        self._value_range_slider.min = min_val
-        self._value_range_slider.max = max_val
+        # Update in the correct order to avoid setting an invalid range
+        if min_val > self._value_range_slider.max:
+            self._value_range_slider.max = max_val
+            self._value_range_slider.min = min_val
+        else:
+            self._value_range_slider.min = min_val
+            self._value_range_slider.max = max_val
+
         self._value_range_slider.value = [min_val, max_val]
 
     def _get_tool_layout(self, grayscale):
