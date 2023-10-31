@@ -1163,7 +1163,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
                 "100%": {"percent": 1.0},
             },
             description="Stretch:",
-            layout=ipywidgets.Layout(width="264px"),
+            layout=ipywidgets.Layout(width="260px"),
             style={"description_width": "initial"},
         )
 
@@ -1303,7 +1303,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
             layout=ipywidgets.Layout(
                 padding="5px 0px 5px 8px",  # top, right, bottom, left
                 # width="330px",
-                max_height="280px",
+                max_height="305px",
                 overflow="auto",
                 display="block",
             ),
