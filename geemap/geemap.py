@@ -2479,6 +2479,8 @@ class Map(core.Map):
         """Removes user-drawn geometries from the map"""
         if self._draw_control is not None:
             self._draw_control.reset()
+        if "Drawn Features" in self.ee_layers:
+            self.ee_layers.pop("Drawn Features")
 
     def remove_last_drawn(self):
         """Removes last user-drawn geometry from the map"""
