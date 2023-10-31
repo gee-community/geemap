@@ -1322,59 +1322,22 @@ class _RasterLayerEditor(ipywidgets.VBox):
             self._stretch_button.disabled = True
             self._value_range_slider.disabled = False
 
-    def _update_stretch(self, *args):
+    def _update_stretch(self, *_):
         """Calculate and set the range slider by applying stretch parameters."""
         stretch_params = self._stretch_dropdown.value
 
-        min_val, max_val = self._calculate_stretch(**stretch_params)
+        (s, w), (n, e) = self._host_map.bounds
+        map_bbox = ee.Geometry.BBox(west=w, south=s, east=e, north=n)
+        vis_bands = set((b.value for b in self._bands_hbox.children))
+        min_val, max_val = self._ee_layer.calculate_vis_minmax(
+            bounds=map_bbox,
+            bands=vis_bands,
+            **stretch_params
+        )
+
         self._value_range_slider.min = min_val
         self._value_range_slider.max = max_val
         self._value_range_slider.value = [min_val, max_val]
-    
-    def _calculate_stretch(self, percent=None, sigma=None):
-        """Calculate min and max stretch values for the raster image."""
-        (s, w), (n, e) = self._host_map.bounds
-        map_bbox = ee.Geometry.BBox(west=w, south=s, east=e, north=n)
-        vis_bands = list(set((b.value for b in self._bands_hbox.children)))
-        
-        stat_reducer = (ee.Reducer.minMax()
-                        .combine(ee.Reducer.mean().unweighted(), sharedInputs=True)
-                        .combine(ee.Reducer.stdDev(), sharedInputs=True))
-
-        stats = self._ee_object.select(vis_bands).reduceRegion(
-            reducer=stat_reducer,
-            geometry=map_bbox,
-            bestEffort=True,
-            maxPixels=10_000,
-            crs="SR-ORG:6627",
-            scale=1,
-        ).getInfo()
-
-        mins, maxs, stds, means = [
-            {v for k, v in stats.items() if k.endswith(stat) and v is not None}
-            for stat in ('_min', '_max', '_stdDev', '_mean')
-        ]
-        if any(len(vals) == 0 for vals in (mins, maxs, stds, means)):
-            # No unmasked pixels were sampled
-            return (0, 0)
-
-        min_val = min(mins)
-        max_val = max(maxs)
-        std_dev = sum(stds) / len(stds)
-        mean = sum(means) / len(means)
-
-        if sigma is not None:
-            stretch_min = mean - sigma * std_dev
-            stretch_max = mean + sigma * std_dev
-        elif percent is not None:
-            x = (max_val - min_val) * (1 - percent)
-            stretch_min = min_val + x
-            stretch_max = max_val - x
-        else:
-            stretch_min = min_val
-            stretch_max = max_val
-
-        return (stretch_min, stretch_max)
 
     def _get_tool_layout(self, grayscale):
         return [
