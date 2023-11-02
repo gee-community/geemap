@@ -5882,6 +5882,9 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
                 <span class="n">control</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">return</span>
 
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">widget</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">widget</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">ee_layer</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="n">tile_layer</span> <span class="o">=</span> <span class="n">ee_layer</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ee_layer&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">tile_layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -6518,6 +6521,9 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
             <span class="n">control</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">return</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">widget</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">widget</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">ee_layer</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">tile_layer</span> <span class="o">=</span> <span class="n">ee_layer</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ee_layer&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
