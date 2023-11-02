@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.29.3 - Nov 1, 2023
+
+**What's Changed**
+
+-   Update changelog for v0.29.2 by @giswqs in [#1799](https://github.com/gee-community/geemap/pull/1799)
+-   Fix removing drawn feature bug by @giswqs in [#1805](https://github.com/gee-community/geemap/pull/1805)
+-   Add stretch options for visualizing images by @aazuspan in [#1803](https://github.com/gee-community/geemap/pull/1803)
+-   Improve ee authentication on Colab by @giswqs in [#1806](https://github.com/gee-community/geemap/pull/1806)
+
+**Full Changelog**: [v0.29.2...v0.29.3](https://github.com/gee-community/geemap/compare/v0.29.2...v0.29.3)
+
 ## v0.29.2 - Oct 25, 2023
 
 **What's Changed**
