@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.29.4 - Nov 2, 2023
+
+**What's Changed**
+
+-   Update changelog for v0.29.3 by @giswqs in [#1807](https://github.com/gee-community/geemap/pull/1807)
+-   Fix draw control marker bug by @giswqs in [#1809](https://github.com/gee-community/geemap/pull/1809)
+
+**Full Changelog**: [v0.29.3...v0.29.4](https://github.com/gee-community/geemap/compare/v0.29.3...v0.29.4)
+
 ## v0.29.3 - Nov 1, 2023
 
 **What's Changed**
