@@ -715,6 +715,9 @@ class Map(ipyleaflet.Map, MapInterface):
                 control.close()
             return
 
+        if hasattr(widget, "name") and widget.name in self.ee_layers:
+            self.ee_layers.pop(widget.name)
+
         if ee_layer := self.ee_layers.pop(widget, None):
             tile_layer = ee_layer.get("ee_layer", None)
             if tile_layer is not None:
