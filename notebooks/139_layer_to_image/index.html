@@ -12,13 +12,11 @@
         <meta name="author" content="Qiusheng Wu">
       
       
-        <link rel="canonical" href="https://geemap.org/notebooks/118_download_image/">
+        <link rel="canonical" href="https://geemap.org/notebooks/139_layer_to_image/">
       
       
-        <link rel="prev" href="../117_fishnet/">
+        <link rel="prev" href="../138_draw_control/">
       
-      
-        <link rel="next" href="../119_plot_raster/">
       
       
       <link rel="icon" href="../../assets/favicon.png">
@@ -26,7 +24,7 @@
     
     
       
-        <title>118 download image - geemap</title>
+        <title>139 layer to image - geemap</title>
       
     
     
@@ -94,11 +92,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#download-a-single-image" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -130,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              118 download image
+              139 layer to image
             
           </span>
         </div>
@@ -3779,27 +3772,9 @@
                 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    118 download image
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../118_download_image/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3808,45 +3783,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#download-a-single-image" class="md-nav__link">
-    Download a single image
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#download-an-image-collection" class="md-nav__link">
-    Download an image collection
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#download-image-by-tile" class="md-nav__link">
-    Download image by tile
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -4256,9 +4192,16 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../139_layer_to_image/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -4267,6 +4210,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -4297,35 +4241,6 @@
   
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#download-a-single-image" class="md-nav__link">
-    Download a single image
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#download-an-image-collection" class="md-nav__link">
-    Download an image collection
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#download-image-by-tile" class="md-nav__link">
-    Download image by tile
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -4337,7 +4252,7 @@
               <article class="md-content__inner md-typeset">
                 
 
-    <a href="/notebooks/118_download_image/118_download_image.ipynb" title="Download Notebook" class="md-content__button md-icon">
+    <a href="/notebooks/139_layer_to_image/139_layer_to_image.ipynb" title="Download Notebook" class="md-content__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7 7-7Z"/></svg>
     </a>
 
@@ -4349,7 +4264,7 @@
   
 
 
-  <h1>118 download image</h1>
+  <h1>139 layer to image</h1>
 
 <script>
 (function (global, factory) {
@@ -4752,20 +4667,20 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2cdb604f">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=664308be">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/118_download_image.ipynb" target="_parent"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
-<p><strong>Download images directly to a local computer</strong></p>
-<p>Uncomment the following line to install <a href="https://geemap.org">geemap</a> if needed.</p>
+<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/139_layer_to_image.ipynb" target="_parent"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
+<p><strong>Converting an Earth Engine layer to an image</strong></p>
+<p>This notebook demonstrates how to convert an Earth Engine layer to an image. It can very useful when you want to export an Earth Engine layer with custom visualization parameters. It should be much better than taking a screenshot of the layer. You can specify the scale of the image and the region to export.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d48832c0">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5f52964b">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4783,16 +4698,16 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># !pip install -U geemap</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># !pip install -U geemap geedim</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-1"># !pip install -U geemap</div>
+<div class="clipboard-copy-txt" id="cell-1"># !pip install -U geemap geedim</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=24594a99">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=48047f61">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4810,12 +4725,10 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">ee</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">ee</span>
 <span class="kn">import</span> <span class="nn">geemap</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-2">import os
-import ee
+<div class="clipboard-copy-txt" id="cell-2">import ee
 import geemap</div>
 </div>
 </div>
@@ -4823,7 +4736,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5749d0f7">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2c1b1b53">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4841,29 +4754,54 @@ import geemap</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-<span class="n">Map</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">41.0462</span><span class="p">,</span> <span class="o">-</span><span class="mf">109.7424</span><span class="p">),</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+
+<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
+<span class="n">landsat7</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'LANDSAT/LE7_TOA_5YEAR/1999_2003'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">'B1'</span><span class="p">,</span> <span class="s1">'B2'</span><span class="p">,</span> <span class="s1">'B3'</span><span class="p">,</span> <span class="s1">'B4'</span><span class="p">,</span> <span class="s1">'B5'</span><span class="p">,</span> <span class="s1">'B7'</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">'max'</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'006633'</span><span class="p">,</span> <span class="s1">'E5FFCC'</span><span class="p">,</span> <span class="s1">'662A00'</span><span class="p">,</span> <span class="s1">'D8D8D8'</span><span class="p">,</span> <span class="s1">'F5F5F5'</span><span class="p">],</span>
+<span class="p">}</span>
+
+<span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
+    <span class="n">landsat7</span><span class="p">,</span>
+    <span class="p">{</span><span class="s1">'bands'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'B4'</span><span class="p">,</span> <span class="s1">'B3'</span><span class="p">,</span> <span class="s1">'B2'</span><span class="p">],</span> <span class="s1">'min'</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s1">'gamma'</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+    <span class="s1">'landsat'</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'dem'</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">m</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3">Map = geemap.Map()
-Map</div>
+<div class="clipboard-copy-txt" id="cell-3">m = geemap.Map(center=(41.0462, -109.7424), zoom=6)
+
+dem = ee.Image('USGS/SRTMGL1_003')
+landsat7 = ee.Image('LANDSAT/LE7_TOA_5YEAR/1999_2003').select(
+    ['B1', 'B2', 'B3', 'B4', 'B5', 'B7']
+)
+
+vis_params = {
+    'min': 0,
+    'max': 4000,
+    'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5'],
+}
+
+m.add_layer(
+    landsat7,
+    {'bands': ['B4', 'B3', 'B2'], 'min': 20, 'max': 200, 'gamma': 2},
+    'landsat',
+)
+m.add_layer(dem, vis_params, 'dem', True, 1)
+m</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ecc98a79">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="download-a-single-image">Download a single image<a class="anchor-link" href="#download-a-single-image">¶</a></h2>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d30d878b">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=95df5d16">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4881,20 +4819,16 @@ Map</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"LANDSAT/LC08/C02/T1_TOA"</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'Landsat'</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">layer_to_image</span><span class="p">(</span><span class="s1">'dem'</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">'dem.tif'</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s1">'EPSG:3857'</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">image = ee.ImageCollection("LANDSAT/LC08/C02/T1_TOA").first()
-Map.addLayer(image, {}, 'Landsat')
-Map.centerObject(image)</div>
+<div class="clipboard-copy-txt" id="cell-4">m.layer_to_image('dem', output='dem.tif', crs='EPSG:3857', region=None, scale=None)</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1e18bba9">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=28baa657">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4912,27 +4846,16 @@ Map.centerObject(image)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">download_ee_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s2">"landsat.tif"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">layer_to_image</span><span class="p">(</span><span class="s1">'dem'</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">'dem.jpg'</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">geemap.download_ee_image(image, "landsat.tif", scale=100)</div>
+<div class="clipboard-copy-txt" id="cell-5">m.layer_to_image('dem', output='dem.jpg', scale=500)</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=54390aea">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="download-an-image-collection">Download an image collection<a class="anchor-link" href="#download-an-image-collection">¶</a></h2>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9c28e4f0">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=10cf1175">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4950,16 +4873,27 @@ Map.centerObject(image)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">'~/Downloads'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">show_image</span><span class="p">(</span><span class="s1">'dem.jpg'</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">out_dir = os.path.expanduser('~/Downloads')</div>
+<div class="clipboard-copy-txt" id="cell-6">geemap.show_image('dem.jpg')</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=57aca04a">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="" src="https://i.imgur.com/Wwomndu.jpg"/></p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1200449d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c29403e5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4977,28 +4911,16 @@ Map.centerObject(image)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">loc</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="o">-</span><span class="mf">99.2222</span><span class="p">,</span> <span class="mf">46.7816</span><span class="p">)</span>
-<span class="n">collection</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">'USDA/NAIP/DOQQ'</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="s1">'2008-01-01'</span><span class="p">,</span> <span class="s1">'2020-01-01'</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">listContains</span><span class="p">(</span><span class="s2">"system:band_names"</span><span class="p">,</span> <span class="s2">"N"</span><span class="p">))</span>
-<span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">layer_to_image</span><span class="p">(</span><span class="s1">'landsat'</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">'landsat.tif'</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7">loc = ee.Geometry.Point(-99.2222, 46.7816)
-collection = (
-    ee.ImageCollection('USDA/NAIP/DOQQ')
-    .filterBounds(loc)
-    .filterDate('2008-01-01', '2020-01-01')
-    .filter(ee.Filter.listContains("system:band_names", "N"))
-)</div>
+<div class="clipboard-copy-txt" id="cell-7">m.layer_to_image('landsat', output='landsat.tif')</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b10292ed">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=eb9f6b88">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5016,27 +4938,16 @@ collection = (
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">download_ee_image_collection</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">geotiff_to_image</span><span class="p">(</span><span class="s1">'landsat.tif'</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">'landsat.jpg'</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8">geemap.download_ee_image_collection(collection, out_dir, scale=10)</div>
+<div class="clipboard-copy-txt" id="cell-8">geemap.geotiff_to_image('landsat.tif', output='landsat.jpg')</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8c135ba6">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="download-image-by-tile">Download image by tile<a class="anchor-link" href="#download-image-by-tile">¶</a></h2>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6e8abd40">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fd7fb4ab">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5054,112 +4965,22 @@ collection = (
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-
-<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'LANDSAT/LE7_TOA_5YEAR/1999_2003'</span><span class="p">)</span>
-
-<span class="n">landsat_vis</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'bands'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'B4'</span><span class="p">,</span> <span class="s1">'B3'</span><span class="p">,</span> <span class="s1">'B2'</span><span class="p">],</span> <span class="s1">'gamma'</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">landsat_vis</span><span class="p">,</span> <span class="s2">"LE7_TOA_5YEAR/1999_2003"</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">Map</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">show_image</span><span class="p">(</span><span class="s1">'landsat.jpg'</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-9">Map = geemap.Map()
-
-image = ee.Image('LANDSAT/LE7_TOA_5YEAR/1999_2003')
-
-landsat_vis = {'bands': ['B4', 'B3', 'B2'], 'gamma': 2}
-Map.addLayer(image, landsat_vis, "LE7_TOA_5YEAR/1999_2003", True, 1)
-Map</div>
+<div class="clipboard-copy-txt" id="cell-9">geemap.show_image('landsat.jpg')</div>
 </div>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fd18d0aa">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e3682298">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy for="cell-10">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">region</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="o">-</span><span class="mf">115.6339</span><span class="p">,</span> <span class="mf">35.7529</span><span class="p">,</span> <span class="o">-</span><span class="mf">113.9338</span><span class="p">,</span> <span class="mf">36.7012</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-10">region = ee.Geometry.BBox(-115.6339, 35.7529, -113.9338, 36.7012)
-Map.centerObject(region)</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=dec4d9c2">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy for="cell-11">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">features</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">fishnet</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'Grids'</span><span class="p">)</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-11">features = geemap.fishnet(region, rows=2, cols=2)
-Map.addLayer(features, {}, 'Grids')</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=42263b72">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy for="cell-12">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">download_ee_image_tiles</span><span class="p">(</span>
-    <span class="n">image</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"landsat_"</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s2">"EPSG:3857"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">30</span>
-<span class="p">)</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-12">geemap.download_ee_image_tiles(
-    image, features, out_dir, prefix="landsat_", crs="EPSG:3857", scale=30
-)</div>
-</div>
-</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="" src="https://i.imgur.com/Oju5in1.jpg"/></p>
 </div>
 </div>
 </div>
@@ -5177,7 +4998,7 @@ Map.addLayer(features, {}, 'Grids')</div>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-09-13T17:07:40+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-09-13</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-11-03T04:19:18+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-11-03</span>
       
         <br>
         Created:
