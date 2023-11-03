@@ -4762,6 +4762,7 @@ class Map(core.Map):
         crs: str = "EPSG:3857",
         scale: Optional[int] = None,
         region: Optional[ee.Geometry] = None,
+        vis_params: Optional[Dict] = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -4773,6 +4774,7 @@ class Map(core.Map):
             crs (str, optional): The coordinate reference system (CRS) of the output image. Defaults to "EPSG:3857".
             scale (int, optional): The scale of the output image. Defaults to None.
             region (ee.Geometry, optional): The region of interest for the conversion. Defaults to None.
+            vis_params (dict, optional): The visualization parameters. Defaults to None.
             **kwargs: Additional keyword arguments to pass to the `download_ee_image` function.
 
         Returns:
@@ -4795,7 +4797,9 @@ class Map(core.Map):
 
         layer = self.ee_layers[layer_name]
         ee_object = layer["ee_object"]
-        vis_params = layer["vis_params"]
+
+        if vis_params is None:
+            vis_params = layer["vis_params"]
 
         image = ee_object.visualize(**vis_params)
         if not output.endswith(".tif"):
