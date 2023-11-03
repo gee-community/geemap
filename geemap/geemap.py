@@ -13,6 +13,7 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 
 import os
 import warnings
+from typing import Optional, Any, Dict
 
 import ee
 import ipyleaflet
@@ -127,7 +128,7 @@ class Map(core.Map):
         self._USER_AGENT_PREFIX = "geemap"
         self.kwargs = kwargs
         super().__init__(**kwargs)
-        
+
         if kwargs.get("height"):
             self.layout.height = kwargs.get("height")
 
@@ -264,7 +265,9 @@ class Map(core.Map):
 
         if obj == "data_ctrl":
             data_widget = toolbar.SearchDataGUI(self)
-            data_control = ipyleaflet.WidgetControl(widget=data_widget, position=position)
+            data_control = ipyleaflet.WidgetControl(
+                widget=data_widget, position=position
+            )
             self.add(data_control)
         elif obj == "search_ctrl":
             self.add_search_control(position=position)
@@ -4751,6 +4754,59 @@ class Map(core.Map):
             marker=marker,
         )
         self.add(search)
+
+    def layer_to_image(
+        self,
+        layer_name: str,
+        output: Optional[str] = None,
+        crs: str = "EPSG:3857",
+        scale: Optional[int] = None,
+        region: Optional[ee.Geometry] = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Converts a specific layer from Earth Engine to an image file.
+
+        Args:
+            layer_name (str): The name of the layer to convert.
+            output (str): The output file path for the image. Defaults to None.
+            crs (str, optional): The coordinate reference system (CRS) of the output image. Defaults to "EPSG:3857".
+            scale (int, optional): The scale of the output image. Defaults to None.
+            region (ee.Geometry, optional): The region of interest for the conversion. Defaults to None.
+            **kwargs: Additional keyword arguments to pass to the `download_ee_image` function.
+
+        Returns:
+            None
+        """
+
+        if region is None:
+            b = self.bounds
+            west, south, east, north = b[0][1], b[0][0], b[1][1], b[1][0]
+            region = ee.Geometry.BBox(west, south, east, north)
+
+        if scale is None:
+            scale = int(self.get_scale())
+
+        if layer_name not in self.ee_layers.keys():
+            raise ValueError(f"Layer {layer_name} does not exist.")
+
+        if output is None:
+            output = layer_name + ".tif"
+
+        layer = self.ee_layers[layer_name]
+        ee_object = layer["ee_object"]
+        vis_params = layer["vis_params"]
+
+        image = ee_object.visualize(**vis_params)
+        if not output.endswith(".tif"):
+            geotiff = output + ".tif"
+        else:
+            geotiff = output
+        download_ee_image(image, geotiff, region, crs=crs, scale=scale, **kwargs)
+
+        if not output.endswith(".tif"):
+            geotiff_to_image(geotiff, output)
+            os.remove(geotiff)
 
 
 # The functions below are outside the Map class.
