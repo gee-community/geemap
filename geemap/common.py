@@ -15458,3 +15458,40 @@ def widget_template(
 
     else:
         return toolbar_widget
+
+
+def geotiff_to_image(image: str, output: str) -> None:
+    """
+    Converts a GeoTIFF file to a JPEG/PNG image.
+
+    Args:
+        image (str): The path to the input GeoTIFF file.
+        output (str): The path to save the output JPEG/PNG file.
+
+    Returns:
+        None
+    """
+
+    import rasterio
+    from PIL import Image
+
+    # Open the GeoTIFF file
+    with rasterio.open(image) as dataset:
+        # Read the image data
+        data = dataset.read()
+
+        # Convert the image data to 8-bit format (assuming it's not already)
+        if dataset.dtypes[0] != 'uint8':
+            data = (data / data.max() * 255).astype('uint8')
+
+        # Convert the image data to RGB format if it's a single band image
+        if dataset.count == 1:
+            data = data.squeeze()
+            data = data.reshape((1, data.shape[0], data.shape[1]))
+            data = data.repeat(3, axis=0)
+
+        # Create a PIL Image object from the image data
+        image = Image.fromarray(data.transpose(1, 2, 0))
+
+        # Save the image as a JPEG file
+        image.save(output)

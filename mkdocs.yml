@@ -280,6 +280,7 @@ nav:
           - notebooks/136_download_parallel.ipynb
           - notebooks/137_create_grid.ipynb
           - notebooks/138_draw_control.ipynb
+          - notebooks/139_layer_to_image.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
