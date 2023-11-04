@@ -4881,13 +4881,13 @@ Colorbar            (<span title="ipywidgets.widgets.widget_output.Output">Outpu
 
         <span class="n">vmin</span> <span class="o">=</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;vmin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">vmin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span> 
+            <span class="n">vmin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided min value must be scalar type.&quot;</span><span class="p">)</span>
 
         <span class="n">vmax</span> <span class="o">=</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;mvax&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmax</span><span class="p">)</span> 
+            <span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmax</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided max value must be scalar type.&quot;</span><span class="p">)</span>
 
@@ -5169,13 +5169,13 @@ Defaults to None.</p></td>
 
     <span class="n">vmin</span> <span class="o">=</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;vmin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">vmin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span> 
+        <span class="n">vmin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided min value must be scalar type.&quot;</span><span class="p">)</span>
 
     <span class="n">vmax</span> <span class="o">=</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;mvax&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmax</span><span class="p">)</span> 
+        <span class="n">vmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">vmax</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided max value must be scalar type.&quot;</span><span class="p">)</span>
 
@@ -6223,12 +6223,12 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
                     <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">attachment</span><span class="p">)</span>
                 <span class="k">except</span><span class="p">:</span>
                     <span class="kn">from</span> <span class="nn">ipyleaflet</span> <span class="kn">import</span> <span class="n">WidgetControl</span>
+
                     <span class="n">widget</span> <span class="o">=</span> <span class="n">attachment</span><span class="o">.</span><span class="n">widget</span>
                     <span class="n">position</span> <span class="o">=</span> <span class="n">attachment</span><span class="o">.</span><span class="n">position</span>
                     <span class="n">control</span> <span class="o">=</span> <span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
                     <span class="n">layer_dict</span><span class="p">[</span><span class="s2">&quot;colorbar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control</span>
-
 
             <span class="k">elif</span> <span class="ow">not</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">attachment_on_map</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">attachment</span><span class="p">)</span>
