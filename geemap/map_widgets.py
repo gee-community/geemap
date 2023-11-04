@@ -14,7 +14,7 @@ from . import common
 from traceback import format_tb
 
 
-def _set_css_in_cell_output():
+def _set_css_in_cell_output(info):
     display(
         HTML(
             """
@@ -141,13 +141,13 @@ class Colorbar(ipywidgets.Output):
 
         vmin = vis_params.get("min", kwargs.pop("vmin", 0))
         try:
-            vmin = float(vmin) 
+            vmin = float(vmin)
         except ValueError as err:
             raise ValueError("The provided min value must be scalar type.")
 
         vmax = vis_params.get("max", kwargs.pop("mvax", 1))
         try:
-            vmax = float(vmax) 
+            vmax = float(vmax)
         except ValueError as err:
             raise ValueError("The provided max value must be scalar type.")
 
@@ -872,13 +872,13 @@ class LayerManager(ipywidgets.VBox):
                     self._host_map.add(attachment)
                 except:
                     from ipyleaflet import WidgetControl
+
                     widget = attachment.widget
                     position = attachment.position
                     control = WidgetControl(widget=widget, position=position)
                     self._host_map.add(control)
                     layer_dict["colorbar"] = control
 
-                    
             elif not change["new"] and attachment_on_map:
                 self._host_map.remove_control(attachment)
 
@@ -1330,9 +1330,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
         map_bbox = ee.Geometry.BBox(west=w, south=s, east=e, north=n)
         vis_bands = set((b.value for b in self._bands_hbox.children))
         min_val, max_val = self._ee_layer.calculate_vis_minmax(
-            bounds=map_bbox,
-            bands=vis_bands,
-            **stretch_params
+            bounds=map_bbox, bands=vis_bands, **stretch_params
         )
 
         # Update in the correct order to avoid setting an invalid range
