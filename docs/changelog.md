@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.29.5 - Nov 3, 2023
+
+**What's Changed**
+
+-   Update changelog for v0.29.4 by @giswqs in [#1810](https://github.com/gee-community/geemap/pull/1810)
+-   Fix removing layer bug by @giswqs in [#1813](https://github.com/gee-community/geemap/pull/1813)
+-   Add Map.layer_to_image method by @giswqs in [#1815](https://github.com/gee-community/geemap/pull/1815)
+-   Add vis_params option for layer_to_image by @giswqs in [#1818](https://github.com/gee-community/geemap/pull/1818)
+-   Fix set css cell output error by @giswqs in [#1819](https://github.com/gee-community/geemap/pull/1819)
+
+**Full Changelog**: [v0.29.4...v0.29.5](https://github.com/gee-community/geemap/compare/v0.29.4...v0.29.5)
+
 ## v0.29.4 - Nov 2, 2023
 
 **What's Changed**
