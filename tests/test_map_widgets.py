@@ -194,7 +194,7 @@ class TestColorbar(unittest.TestCase):
         map_widgets.Colorbar(
             vis_params={"palette": self.TEST_COLORS, "min": -1.5}, vmin=-1, vmax=2
         )
-        self.normalize_class_mock.assert_called_with(vmin=-1.5, vmax=1)
+        self.normalize_class_mock.assert_called_with(vmin=-1.5, vmax=2)
 
     def test_colorbar_invalid_min(self):
         with self.assertRaisesRegex(ValueError, "min value must be scalar type"):
@@ -518,7 +518,7 @@ class TestLayerManager(unittest.TestCase):
     def setUp(self):
         self.fake_map = fake_map.FakeMap()
         self.fake_map.layers = [
-            fake_map.FakeTileLayer(name='OpenStreetMap'),  # Basemap
+            fake_map.FakeTileLayer(name="OpenStreetMap"),  # Basemap
             fake_map.FakeTileLayer(
                 name="GMaps", visible=False, opacity=0.5
             ),  # Extra basemap
