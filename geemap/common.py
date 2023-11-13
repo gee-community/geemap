@@ -7675,7 +7675,7 @@ def latitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
         north (int, optional): The north boundary in degrees. Defaults to 85.
 
     Returns:
-        ee.FeatureColleciton: A feature collection of latitude grids.
+        ee.FeatureCollection: A feature collection of latitude grids.
     """
     values = ee.List.sequence(south, north - step, step)
 
@@ -7706,7 +7706,7 @@ def longitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
         north (int, optional): The north boundary in degrees. Defaults to 85.
 
     Returns:
-        ee.FeatureColleciton: A feature collection of longitude grids.
+        ee.FeatureCollection: A feature collection of longitude grids.
     """
 
     values = ee.List.sequence(west, east - step, step)
@@ -7950,7 +7950,7 @@ def rename_bands(img, in_band_names, out_band_names):
 
     Args:
         img (object): The image to be renamed.
-        in_band_names (list): The list of of input band names.
+        in_band_names (list): The list of input band names.
         out_band_names (list): The list of output band names.
 
     Returns:
@@ -8844,7 +8844,7 @@ def kml_to_geojson(in_kml, out_geojson=None, **kwargs):
 
 
 def kml_to_ee(in_kml, **kwargs):
-    """Converts a KML to ee.FeatureColleciton.
+    """Converts a KML to ee.FeatureCollection.
 
     Args:
         in_kml (str): The file path to the input KML.
@@ -8873,7 +8873,7 @@ def kml_to_ee(in_kml, **kwargs):
 
 
 def kmz_to_ee(in_kmz, **kwargs):
-    """Converts a KMZ to ee.FeatureColleciton.
+    """Converts a KMZ to ee.FeatureCollection.
 
     Args:
         in_kmz (str): The file path to the input KMZ.
