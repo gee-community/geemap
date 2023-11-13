@@ -145,7 +145,7 @@ class Colorbar(ipywidgets.Output):
         except ValueError as err:
             raise ValueError("The provided min value must be scalar type.")
 
-        vmax = vis_params.get("max", kwargs.pop("mvax", 1))
+        vmax = vis_params.get("max", kwargs.pop("vmax", 1))
         try:
             vmax = float(vmax)
         except ValueError as err:
