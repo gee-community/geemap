@@ -5679,7 +5679,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 <h2 id="geemap.conversion.js_snippet_to_py" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">js_snippet_to_py</span><span class="p">(</span><span class="n">in_js_snippet</span><span class="p">,</span> <span class="n">add_new_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_ee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">js_snippet_to_py</span><span class="p">(</span><span class="n">in_js_snippet</span><span class="p">,</span> <span class="n">add_new_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_ee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.js_snippet_to_py" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -5729,6 +5729,12 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <td><p>Whether to show the map. Defaults to True.</p></td>
         <td><code>True</code></td>
       </tr>
+      <tr>
+        <td><code>Map</code></td>
+        <td><code>str</code></td>
+        <td><p>The name of the map variable. Defaults to "m".</p></td>
+        <td><code>&#39;m&#39;</code></td>
+      </tr>
   </tbody>
 </table>
 <p><strong>Returns:</strong></p>
@@ -5754,6 +5760,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="n">import_ee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an Earth Engine JavaScript snippet wrapped in triple quotes to Python directly on a Jupyter notebook.</span>
 
@@ -5763,6 +5770,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 <span class="sd">        import_ee (bool, optional): Whether to import ee. Defaults to True.</span>
 <span class="sd">        import_geemap (bool, optional): Whether to import geemap. Defaults to False.</span>
 <span class="sd">        show_map (bool, optional): Whether to show the map. Defaults to True.</span>
+<span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        list: A list of Python script.</span>
@@ -5780,6 +5788,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
             <span class="n">use_qgis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">show_map</span><span class="o">=</span><span class="n">show_map</span><span class="p">,</span>
             <span class="n">import_geemap</span><span class="o">=</span><span class="n">import_geemap</span><span class="p">,</span>
+            <span class="n">Map</span><span class="o">=</span><span class="n">Map</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">out_lines</span> <span class="o">=</span> <span class="p">[]</span>
@@ -5787,7 +5796,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
             <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;import ee</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">import_geemap</span><span class="p">:</span>
             <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;import geemap</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Map = geemap.Map()</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Map</span><span class="si">}</span><span class="s2"> = geemap.Map()</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_py</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
@@ -5831,7 +5840,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 <h2 id="geemap.conversion.js_to_python" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">js_to_python</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">js_to_python</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.js_to_python" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -5850,7 +5859,8 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 <p>" to the output script. Defaults to True.
         github_repo (str, optional): GitHub repo url. Defaults to None.
         show_map (bool, optional): Whether to add "Map" to the output script. Defaults to True.
-        import_geemap (bool, optional): Whether to add "import geemap" to the output script. Defaults to False.</p>
+        import_geemap (bool, optional): Whether to add "import geemap" to the output script. Defaults to False.
+        Map (str, optional): The name of the map variable. Defaults to "m".</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>!!! returns
     list: Python script
@@ -5865,6 +5875,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an Earth Engine JavaScript to Python script.</span>
 
@@ -5875,6 +5886,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 <span class="sd">        github_repo (str, optional): GitHub repo url. Defaults to None.</span>
 <span class="sd">        show_map (bool, optional): Whether to add &quot;Map&quot; to the output script. Defaults to True.</span>
 <span class="sd">        import_geemap (bool, optional): Whether to add &quot;import geemap&quot; to the output script. Defaults to False.</span>
+<span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        list: Python script</span>
@@ -5901,7 +5913,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="k">if</span> <span class="n">use_qgis</span><span class="p">:</span>
         <span class="n">import_str</span> <span class="o">=</span> <span class="s2">&quot;from ee_plugin import Map</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="k">if</span> <span class="n">import_geemap</span><span class="p">:</span>
-        <span class="n">import_str</span> <span class="o">=</span> <span class="s2">&quot;import geemap</span><span class="se">\n\n</span><span class="s2">Map = geemap.Map()</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">import_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;import geemap</span><span class="se">\n\n</span><span class="si">{</span><span class="n">Map</span><span class="si">}</span><span class="s2"> = geemap.Map()</span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="n">github_url</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="n">github_repo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -6035,6 +6047,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Math.PI&quot;</span><span class="p">,</span> <span class="s2">&quot;math.pi&quot;</span><span class="p">)</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Math.&quot;</span><span class="p">,</span> <span class="s2">&quot;math.&quot;</span><span class="p">)</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;= new&quot;</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Map.&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Map</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
 
                 <span class="k">if</span> <span class="s2">&quot;.style(&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;.style(**&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
@@ -6094,7 +6107,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 <h2 id="geemap.conversion.js_to_python_dir" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">js_to_python_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">js_to_python_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.js_to_python_dir" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6112,12 +6125,13 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 </code></pre></div></td></tr></table></div>
 <p>" to the output script. Defaults to True.
         github_repo (str, optional): GitHub repo url. Defaults to None.
-        import_geemap (bool, optional): Whether to add "import geemap" to the output script. Defaults to False.</p>
+        import_geemap (bool, optional): Whether to add "import geemap" to the output script. Defaults to False.
+        Map (str, optional): The name of the map variable. Defaults to "m".</p>
 
         <details class="quote">
           <summary>Source code in <code>geemap/conversion.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">js_to_python_dir</span><span class="p">(</span>
-    <span class="n">in_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">in_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts all Earth Engine JavaScripts in a folder recursively to Python scripts.</span>
 
@@ -6127,6 +6141,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 <span class="sd">        use_qgis (bool, optional): Whether to add &quot;from ee_plugin import Map \n&quot; to the output script. Defaults to True.</span>
 <span class="sd">        github_repo (str, optional): GitHub repo url. Defaults to None.</span>
 <span class="sd">        import_geemap (bool, optional): Whether to add &quot;import geemap&quot; to the output script. Defaults to False.</span>
+<span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Converting Earth Engine JavaScripts to Python scripts...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">in_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span>
@@ -6148,7 +6163,12 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">in_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_geemap.py&quot;</span>
         <span class="n">out_file</span> <span class="o">=</span> <span class="n">out_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span>
         <span class="n">js_to_python</span><span class="p">(</span>
-            <span class="n">in_file</span><span class="p">,</span> <span class="n">out_file</span><span class="p">,</span> <span class="n">use_qgis</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="n">import_geemap</span>
+            <span class="n">in_file</span><span class="p">,</span>
+            <span class="n">out_file</span><span class="p">,</span>
+            <span class="n">use_qgis</span><span class="p">,</span>
+            <span class="n">github_repo</span><span class="p">,</span>
+            <span class="n">import_geemap</span><span class="o">=</span><span class="n">import_geemap</span><span class="p">,</span>
+            <span class="n">Map</span><span class="o">=</span><span class="n">Map</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="c1"># print(&quot;Output Python script folder: {}&quot;.format(out_dir))</span>
 </code></pre></div>
@@ -6164,7 +6184,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 <h2 id="geemap.conversion.py_to_ipynb" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">py_to_ipynb</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">template_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">py_to_ipynb</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">template_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.py_to_ipynb" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6214,6 +6234,12 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <td><p>GitHub repo name. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>Map</code></td>
+        <td><code>str</code></td>
+        <td><p>The name of the map variable. Defaults to "m".</p></td>
+        <td><code>&#39;m&#39;</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
@@ -6224,6 +6250,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts Earth Engine Python script to Jupyter notebook.</span>
 
@@ -6233,6 +6260,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 <span class="sd">        out_file (str, optional)): Output Jupyter notebook.</span>
 <span class="sd">        github_username (str, optional): GitHub username. Defaults to None.</span>
 <span class="sd">        github_repo (str, optional): GitHub repo name. Defaults to None.</span>
+<span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">in_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
 
@@ -6250,7 +6278,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="k">if</span> <span class="n">out_dir</span> <span class="o">==</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">in_file</span><span class="p">):</span>
         <span class="n">out_py_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">out_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_tmp.py&quot;</span>
 
-    <span class="n">content</span> <span class="o">=</span> <span class="n">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="n">Map</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">content</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Map&quot;</span><span class="p">:</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">header</span> <span class="o">=</span> <span class="n">template_header</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span>
@@ -6313,7 +6341,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 <h2 id="geemap.conversion.py_to_ipynb_dir" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">py_to_ipynb_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">template_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">py_to_ipynb_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">template_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.py_to_ipynb_dir" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6363,12 +6391,23 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <td><p>GitHub repo name. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>Map</code></td>
+        <td><code>str</code></td>
+        <td><p>The name of the map variable. Defaults to "m".</p></td>
+        <td><code>&#39;m&#39;</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/conversion.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">py_to_ipynb_dir</span><span class="p">(</span>
-    <span class="n">in_dir</span><span class="p">,</span> <span class="n">template_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">in_dir</span><span class="p">,</span>
+    <span class="n">template_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts Earth Engine Python scripts in a folder recursively to Jupyter notebooks.</span>
 
@@ -6378,6 +6417,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 <span class="sd">        template_file (str): Input jupyter notebook template file.</span>
 <span class="sd">        github_username (str, optional): GitHub username. Defaults to None.</span>
 <span class="sd">        github_repo (str, optional): GitHub repo name. Defaults to None.</span>
+<span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Converting Earth Engine Python scripts to Jupyter notebooks ...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -6407,7 +6447,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
             <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">,</span> <span class="s2">&quot;.ipynb&quot;</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing </span><span class="si">{</span><span class="n">index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">in_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">py_to_ipynb</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">template_file</span><span class="p">,</span> <span class="n">out_file</span><span class="p">,</span> <span class="n">github_username</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">)</span>
+        <span class="n">py_to_ipynb</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">template_file</span><span class="p">,</span> <span class="n">out_file</span><span class="p">,</span> <span class="n">github_username</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">,</span> <span class="n">Map</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -6421,7 +6461,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 <h2 id="geemap.conversion.remove_qgis_import" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.remove_qgis_import" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6447,6 +6487,12 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <td><p>Input file path of the Python script.</p></td>
         <td><em>required</em></td>
       </tr>
+      <tr>
+        <td><code>Map</code></td>
+        <td><code>str</code></td>
+        <td><p>The name of the map variable. Defaults to "m".</p></td>
+        <td><code>&#39;m&#39;</code></td>
+      </tr>
   </tbody>
 </table>
 <p><strong>Returns:</strong></p>
@@ -6466,11 +6512,12 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/conversion.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes &#39;from ee_plugin import Map&#39; from an Earth Engine Python script.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        in_file (str): Input file path of the Python script.</span>
+<span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        list: List of lines  &#39;from ee_plugin import Map&#39; removed.</span>
@@ -6490,7 +6537,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
                         <span class="k">return</span> <span class="n">lines</span><span class="p">[</span><span class="n">start_index</span> <span class="o">+</span> <span class="n">i</span> <span class="p">:]</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="s2">&quot;Map = geemap.Map()&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Map</span><span class="si">}</span><span class="s2"> = geemap.Map()&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
 </code></pre></div>
         </details>
