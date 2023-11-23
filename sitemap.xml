@@ -891,6 +891,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://geemap.org/workshops/AGU_2023/</loc>
+         <lastmod>2023-11-23</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://geemap.org/workshops/AmericaView_2023/</loc>
          <lastmod>2023-11-23</lastmod>
          <changefreq>daily</changefreq>
