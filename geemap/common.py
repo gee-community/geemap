@@ -63,6 +63,7 @@ def ee_initialize(
         ee_token = os.environ.get(token_name)
         if in_colab_shell():
             from google.colab import userdata
+
             try:
                 ee_token = userdata.get(token_name)
             except Exception:
@@ -10651,6 +10652,9 @@ def get_local_tile_layer(
     if "cmap" not in kwargs:
         kwargs["cmap"] = palette
 
+    if "alpha" in kwargs:
+        kwargs["opacity"] = float(kwargs["alpha"])
+
     with output:
         tile_client = TileClient(source, port=port, debug=debug)
 
@@ -15481,8 +15485,8 @@ def geotiff_to_image(image: str, output: str) -> None:
         data = dataset.read()
 
         # Convert the image data to 8-bit format (assuming it's not already)
-        if dataset.dtypes[0] != 'uint8':
-            data = (data / data.max() * 255).astype('uint8')
+        if dataset.dtypes[0] != "uint8":
+            data = (data / data.max() * 255).astype("uint8")
 
         # Convert the image data to RGB format if it's a single band image
         if dataset.count == 1:
