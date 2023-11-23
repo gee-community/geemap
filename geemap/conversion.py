@@ -279,6 +279,7 @@ def js_to_python(
     github_repo=None,
     show_map=True,
     import_geemap=False,
+    Map="m",
 ):
     """Converts an Earth Engine JavaScript to Python script.
 
@@ -289,6 +290,7 @@ def js_to_python(
         github_repo (str, optional): GitHub repo url. Defaults to None.
         show_map (bool, optional): Whether to add "Map" to the output script. Defaults to True.
         import_geemap (bool, optional): Whether to add "import geemap" to the output script. Defaults to False.
+        Map (str, optional): The name of the map variable. Defaults to "m".
 
     Returns:
         list: Python script
@@ -315,7 +317,7 @@ def js_to_python(
     if use_qgis:
         import_str = "from ee_plugin import Map\n"
     if import_geemap:
-        import_str = "import geemap\n\nMap = geemap.Map()\n"
+        import_str = f"import geemap\n\n{Map} = geemap.Map()\n"
 
     github_url = ""
     if github_repo is not None:
@@ -449,6 +451,7 @@ def js_to_python(
                 line = line.replace("Math.PI", "math.pi")
                 line = line.replace("Math.", "math.")
                 line = line.replace("= new", "=")
+                line = line.replace("Map.", f"{Map}.")
                 line = line.rstrip()
 
                 if ".style(" in line and ".style(**" not in line:
@@ -515,6 +518,7 @@ def js_snippet_to_py(
     import_ee=True,
     import_geemap=False,
     show_map=True,
+    Map="m",
 ):
     """Converts an Earth Engine JavaScript snippet wrapped in triple quotes to Python directly on a Jupyter notebook.
 
@@ -524,6 +528,7 @@ def js_snippet_to_py(
         import_ee (bool, optional): Whether to import ee. Defaults to True.
         import_geemap (bool, optional): Whether to import geemap. Defaults to False.
         show_map (bool, optional): Whether to show the map. Defaults to True.
+        Map (str, optional): The name of the map variable. Defaults to "m".
 
     Returns:
         list: A list of Python script.
@@ -541,6 +546,7 @@ def js_snippet_to_py(
             use_qgis=False,
             show_map=show_map,
             import_geemap=import_geemap,
+            Map=Map,
         )
 
         out_lines = []
@@ -548,7 +554,7 @@ def js_snippet_to_py(
             out_lines.append("import ee\n")
         if import_geemap:
             out_lines.append("import geemap\n\n")
-            out_lines.append("Map = geemap.Map()\n")
+            out_lines.append(f"{Map} = geemap.Map()\n")
 
         with open(out_py, encoding="utf-8") as f:
             lines = f.readlines()
@@ -582,7 +588,7 @@ def js_snippet_to_py(
 
 
 def js_to_python_dir(
-    in_dir, out_dir=None, use_qgis=True, github_repo=None, import_geemap=False
+    in_dir, out_dir=None, use_qgis=True, github_repo=None, import_geemap=False, Map="m"
 ):
     """Converts all Earth Engine JavaScripts in a folder recursively to Python scripts.
 
@@ -592,6 +598,7 @@ def js_to_python_dir(
         use_qgis (bool, optional): Whether to add "from ee_plugin import Map \n" to the output script. Defaults to True.
         github_repo (str, optional): GitHub repo url. Defaults to None.
         import_geemap (bool, optional): Whether to add "import geemap" to the output script. Defaults to False.
+        Map (str, optional): The name of the map variable. Defaults to "m".
     """
     print("Converting Earth Engine JavaScripts to Python scripts...\n")
     in_dir = os.path.abspath(in_dir)
@@ -613,7 +620,12 @@ def js_to_python_dir(
         out_file = os.path.splitext(in_file)[0] + "_geemap.py"
         out_file = out_file.replace(in_dir, out_dir)
         js_to_python(
-            in_file, out_file, use_qgis, github_repo, import_geemap=import_geemap
+            in_file,
+            out_file,
+            use_qgis,
+            github_repo,
+            import_geemap=import_geemap,
+            Map=Map,
         )
     # print("Output Python script folder: {}".format(out_dir))
 
@@ -631,11 +643,12 @@ def js_to_python_dir(
 #     return line
 
 
-def remove_qgis_import(in_file):
+def remove_qgis_import(in_file, Map="m"):
     """Removes 'from ee_plugin import Map' from an Earth Engine Python script.
 
     Args:
         in_file (str): Input file path of the Python script.
+        Map (str, optional): The name of the map variable. Defaults to "m".
 
     Returns:
         list: List of lines  'from ee_plugin import Map' removed.
@@ -655,7 +668,7 @@ def remove_qgis_import(in_file):
                         return lines[start_index + i :]
                     else:
                         i = i + 1
-            elif "Map = geemap.Map()" in line:
+            elif f"{Map} = geemap.Map()" in line:
                 return lines[index + 1 :]
 
 
@@ -776,6 +789,7 @@ def py_to_ipynb(
     out_file=None,
     github_username=None,
     github_repo=None,
+    Map="m",
 ):
     """Converts Earth Engine Python script to Jupyter notebook.
 
@@ -785,6 +799,7 @@ def py_to_ipynb(
         out_file (str, optional)): Output Jupyter notebook.
         github_username (str, optional): GitHub username. Defaults to None.
         github_repo (str, optional): GitHub repo name. Defaults to None.
+        Map (str, optional): The name of the map variable. Defaults to "m".
     """
     in_file = os.path.abspath(in_file)
 
@@ -802,7 +817,7 @@ def py_to_ipynb(
     if out_dir == os.path.dirname(in_file):
         out_py_file = os.path.splitext(out_file)[0] + "_tmp.py"
 
-    content = remove_qgis_import(in_file)
+    content = remove_qgis_import(in_file, Map=Map)
     if content[-1].strip() == "Map":
         content = content[:-1]
     header = template_header(template_file)
@@ -855,7 +870,12 @@ def py_to_ipynb(
 
 
 def py_to_ipynb_dir(
-    in_dir, template_file=None, out_dir=None, github_username=None, github_repo=None
+    in_dir,
+    template_file=None,
+    out_dir=None,
+    github_username=None,
+    github_repo=None,
+    Map="m",
 ):
     """Converts Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
 
@@ -865,6 +885,7 @@ def py_to_ipynb_dir(
         template_file (str): Input jupyter notebook template file.
         github_username (str, optional): GitHub username. Defaults to None.
         github_repo (str, optional): GitHub repo name. Defaults to None.
+        Map (str, optional): The name of the map variable. Defaults to "m".
     """
     print("Converting Earth Engine Python scripts to Jupyter notebooks ...\n")
 
@@ -894,7 +915,7 @@ def py_to_ipynb_dir(
             .replace(".py", ".ipynb")
         )
         print(f"Processing {index + 1}/{len(files)}: {in_file}")
-        py_to_ipynb(in_file, template_file, out_file, github_username, github_repo)
+        py_to_ipynb(in_file, template_file, out_file, github_username, github_repo, Map)
 
 
 def execute_notebook(in_file):
