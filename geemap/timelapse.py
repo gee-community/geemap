@@ -730,7 +730,8 @@ def create_timeseries(
     reducer="median",
     drop_empty=True,
     date_format=None,
-    parallel_scale=1
+    parallel_scale=1,
+    step=1,
 ):
     """Creates a timeseries from a collection of images by a specified frequency and reducer.
 
@@ -745,6 +746,7 @@ def create_timeseries(
         drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
         date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
         parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
+        step (int, optional): The step size to use when creating the date sequence. Defaults to 1.
 
     Returns:
         ee.ImageCollection: The timeseries.
@@ -776,7 +778,7 @@ def create_timeseries(
     if date_format is None:
         date_format = feq_dict[frequency]
 
-    dates = date_sequence(start_date, end_date, frequency, date_format)
+    dates = date_sequence(start_date, end_date, frequency, date_format, step)
 
     try:
         reducer = eval(f"ee.Reducer.{reducer}()")
@@ -797,11 +799,13 @@ def create_timeseries(
 
         else:
             sub_col = collection.filterDate(start, end).filterBounds(region)
-            image = ee.Image(ee.Algorithms.If(
-                ee.Algorithms.ObjectType(region).equals("FeatureCollection"),
-                sub_col.reduce(reducer, parallel_scale).clipToCollection(region),
-                sub_col.reduce(reducer, parallel_scale).clip(region)
-            ))
+            image = ee.Image(
+                ee.Algorithms.If(
+                    ee.Algorithms.ObjectType(region).equals("FeatureCollection"),
+                    sub_col.reduce(reducer, parallel_scale).clipToCollection(region),
+                    sub_col.reduce(reducer, parallel_scale).clip(region),
+                )
+            )
         return image.set(
             {
                 "system:time_start": ee.Date(date).millis(),
@@ -865,7 +869,8 @@ def create_timelapse(
     loop=0,
     mp4=False,
     fading=False,
-    parallel_scale=1
+    parallel_scale=1,
+    step=1,
 ):
     """Create a timelapse from any ee.ImageCollection.
 
@@ -916,6 +921,7 @@ def create_timelapse(
         mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
         fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
         parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
+        step (int, optional): The step size to use when creating the date sequence. Defaults to 1.
 
     Returns:
         str: File path to the timelapse gif.
@@ -940,7 +946,8 @@ def create_timelapse(
         reducer=reducer,
         drop_empty=True,
         date_format=date_format,
-        parallel_scale=parallel_scale
+        parallel_scale=parallel_scale,
+        step=step,
     )
 
     # rename the bands to remove the '_reducer' characters from the band names.
@@ -1151,7 +1158,7 @@ def create_timelapse(
     return out_gif
 
 
-def naip_timeseries(roi=None, start_year=2003, end_year=None, RGBN=False):
+def naip_timeseries(roi=None, start_year=2003, end_year=None, RGBN=False, step=1):
     """Creates NAIP annual timeseries
 
     Args:
@@ -1159,6 +1166,7 @@ def naip_timeseries(roi=None, start_year=2003, end_year=None, RGBN=False):
         start_year (int, optional): Starting year for the timeseries. Defaults to 2003.
         end_year (int, optional): Ending year for the timeseries. Defaults to None, which will use the current year.
         RGBN (bool, optional): Whether to retrieve 4-band NAIP imagery only.
+        step (int, optional): The step size to use when creating the date sequence. Defaults to 1.
     Returns:
         object: An ee.ImageCollection representing annual NAIP imagery.
     """
@@ -1195,7 +1203,7 @@ def naip_timeseries(roi=None, start_year=2003, end_year=None, RGBN=False):
             except Exception as e:
                 raise Exception(e)
 
-        years = ee.List.sequence(start_year, end_year)
+        years = ee.List.sequence(start_year, end_year, step)
         collection = ee.ImageCollection(years.map(get_annual_NAIP))
         return collection.filterMetadata("empty", "equals", 0)
 
@@ -1232,6 +1240,7 @@ def naip_timelapse(
     loop=0,
     mp4=False,
     fading=False,
+    step=1,
 ):
     """Create a timelapse from NAIP imagery.
 
@@ -1264,7 +1273,7 @@ def naip_timelapse(
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
         fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
-
+        step (int, optional): The step size to use when creating the date sequence. Defaults to 1.
 
     Returns:
         str: File path to the timelapse gif.
@@ -1319,6 +1328,7 @@ def naip_timelapse(
             loop=loop,
             mp4=mp4,
             fading=fading,
+            step=step,
         )
 
     except Exception as e:
@@ -1501,7 +1511,8 @@ def sentinel2_timeseries(
     reducer="median",
     drop_empty=True,
     date_format=None,
-    parallel_scale=1
+    parallel_scale=1,
+    step=1,
 ):
     """Generates an annual Sentinel 2 ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
        Images include both level 1C and level 2A imagery.
@@ -1520,6 +1531,7 @@ def sentinel2_timeseries(
         drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
         date_format (str, optional): Format of the date. Defaults to None.
         parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
+        step (int, optional): The step size to use when creating the date sequence. Defaults to 1.
 
     Returns:
         object: Returns an ImageCollection containing annual Sentinel 2 images.
@@ -1584,7 +1596,17 @@ def sentinel2_timeseries(
         collection = collection.select(bands)
 
     ts = create_timeseries(
-        collection, start, end, roi, bands, frequency, reducer, drop_empty, date_format, parallel_scale
+        collection,
+        start,
+        end,
+        roi,
+        bands,
+        frequency,
+        reducer,
+        drop_empty,
+        date_format,
+        parallel_scale,
+        step,
     )
     return ts
 
@@ -1931,6 +1953,7 @@ def landsat_timeseries(
     apply_fmask=True,
     frequency="year",
     date_format=None,
+    step=1,
 ):
     """Generates an annual Landsat ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
 
@@ -1943,6 +1966,7 @@ def landsat_timeseries(
         apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
         frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.
         date_format (str, optional): Format of the date. Defaults to None.
+        step (int, optional): The step size to use when creating the date sequence. Defaults to 1.
     Returns:
         object: Returns an ImageCollection containing annual Landsat images.
     """
@@ -2190,16 +2214,24 @@ def landsat_timeseries(
     # Make list of /quarterly/monthly image composites.
 
     if frequency == "year":
-        years = ee.List.sequence(start_year, end_year)
+        years = ee.List.sequence(start_year, end_year, step)
         imgList = years.map(getAnnualComp)
     elif frequency == "quarter":
         quarters = date_sequence(
-            str(start_year) + "-01-01", str(end_year) + "-12-31", "quarter", date_format
+            str(start_year) + "-01-01",
+            str(end_year) + "-12-31",
+            "quarter",
+            date_format,
+            step,
         )
         imgList = quarters.map(getQuarterlyComp)
     elif frequency == "month":
         months = date_sequence(
-            str(start_year) + "-01-01", str(end_year) + "-12-31", "month", date_format
+            str(start_year) + "-01-01",
+            str(end_year) + "-12-31",
+            "month",
+            date_format,
+            step,
         )
         imgList = months.map(getMonthlyComp)
 
@@ -2640,6 +2672,7 @@ def landsat_timelapse(
     loop=0,
     mp4=False,
     fading=False,
+    step=1,
 ):
     """Generates a Landsat timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
 
@@ -2679,6 +2712,7 @@ def landsat_timelapse(
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
         fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+        step (int, optional): Step size for the timelapse. Defaults to 1.
 
     Returns:
         str: File path to the output GIF image.
@@ -2756,6 +2790,7 @@ def landsat_timelapse(
             apply_fmask,
             frequency,
             date_format,
+            step,
         )
 
         col = raw_col.select(bands).map(
@@ -3385,6 +3420,7 @@ def sentinel2_timelapse(
     loop=0,
     mp4=False,
     fading=False,
+    step=1,
     **kwargs,
 ):
     """Generates a Sentinel-2 timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
@@ -3423,6 +3459,7 @@ def sentinel2_timelapse(
         loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
         mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
         fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+        step (int, optional): Step size for selecting images. Defaults to 1.
         kwargs (optional): Additional arguments to pass the geemap.create_timeseries() function.
 
     Returns:
@@ -3523,6 +3560,7 @@ def sentinel2_timelapse(
             apply_fmask,
             cloud_pct,
             frequency,
+            step=step,
             **kwargs,
         )
         col = col.select(bands).map(
@@ -4484,7 +4522,7 @@ def modis_ocean_color_timeseries(
     reducer="median",
     drop_empty=True,
     date_format=None,
-    parallel_scale=1
+    parallel_scale=1,
 ):
     """Creates a ocean color timeseries from MODIS. https://developers.google.com/earth-engine/datasets/catalog/NASA_OCEANDATA_MODIS-Aqua_L3SMI
 
@@ -4533,7 +4571,7 @@ def modis_ocean_color_timeseries(
         reducer,
         drop_empty,
         date_format,
-        parallel_scale
+        parallel_scale,
     )
 
     return ts
@@ -4710,7 +4748,7 @@ def dynamic_world_timeseries(
     drop_empty=True,
     date_format=None,
     return_type="hillshade",
-    parallel_scale=1
+    parallel_scale=1,
 ):
     """Create Dynamic World timeseries.
 
@@ -4789,7 +4827,7 @@ def dynamic_world_timeseries(
         reducer,
         drop_empty,
         date_format,
-        parallel_scale
+        parallel_scale,
     )
 
     if return_type == "class":
@@ -4824,7 +4862,7 @@ def dynamic_world_timeseries(
             "mean",
             drop_empty,
             date_format,
-            parallel_scale
+            parallel_scale,
         )
 
         prob_images = ee.ImageCollection(

@@ -5189,7 +5189,7 @@ def file_browser(
 ########################################
 
 
-def date_sequence(start, end, unit, date_format="YYYY-MM-dd"):
+def date_sequence(start, end, unit, date_format="YYYY-MM-dd", step=1):
     """Creates a date sequence.
 
     Args:
@@ -5197,6 +5197,7 @@ def date_sequence(start, end, unit, date_format="YYYY-MM-dd"):
         end (str): The end date, e.g., '2000-12-31'.
         unit (str): One of 'year', 'quarter', 'month' 'week', 'day', 'hour', 'minute', or 'second'.
         date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
+        step (int, optional): The step size. Defaults to 1.
 
     Returns:
         ee.List: A list of date sequence.
@@ -5225,6 +5226,8 @@ def date_sequence(start, end, unit, date_format="YYYY-MM-dd"):
     if unit != "quarter":
         count = ee.Number(end_date.difference(start_date, unit)).toInt()
         num_seq = ee.List.sequence(0, count)
+        if step > 1:
+            num_seq = num_seq.slice(0, num_seq.size(), step)
         date_seq = num_seq.map(
             lambda d: start_date.advance(d, unit).format(date_format)
         )
