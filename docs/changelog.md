@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.29.6 - Nov 26, 2023
+
+**What's Changed**
+
+-   Update changelog for v0.29.5 by @giswqs in [#1820](https://github.com/gee-community/geemap/pull/1820)
+-   Add NCSU workshop notebook by @giswqs in [#1827](https://github.com/gee-community/geemap/pull/1827)
+-   Fix typo and deprecate plt.get_cmap function by @giswqs in [#1829](https://github.com/gee-community/geemap/pull/1829)
+-   common.py: typo fixes by @schwehr in [#1828](https://github.com/gee-community/geemap/pull/1828)
+-   Fix samgeo notebook bug by @giswqs in [#1835](https://github.com/gee-community/geemap/pull/1835)
+-   Improve js-py auto conversion by @giswqs in [#1836](https://github.com/gee-community/geemap/pull/1836)
+-   Add AGU workshop notebook by @giswqs in [#1837](https://github.com/gee-community/geemap/pull/1837)
+-   Add a step param to timelapse functions by @giswqs in [#1839](https://github.com/gee-community/geemap/pull/1839)
+
+**Full Changelog**: [v0.29.5...v0.29.6](https://github.com/gee-community/geemap/compare/v0.29.5...v0.29.6)
+
 ## v0.29.5 - Nov 3, 2023
 
 **What's Changed**
