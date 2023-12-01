@@ -806,7 +806,7 @@ def ee_export_image_collection_to_cloud_storage(
     formatOptions=None,
     **kwargs,
 ):
-    """Creates a batch task to export an ImageCollection as raster images to a google cloud bucket.
+    """Creates a batch task to export an ImageCollection as raster images to a Google Cloud bucket.
 
     Args:
         ee_object: The image collection to export.
