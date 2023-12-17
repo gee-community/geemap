@@ -8921,13 +8921,21 @@ def csv_to_df(in_csv, **kwargs):
         raise Exception(e)
 
 
-def ee_to_df(ee_object, col_names=None, sort_columns=False, **kwargs):
+def ee_to_df(
+    ee_object,
+    col_names=None,
+    remove_geom=True,
+    sort_columns=False,
+    **kwargs,
+):
     """Converts an ee.FeatureCollection to pandas dataframe.
 
     Args:
         ee_object (ee.FeatureCollection): ee.FeatureCollection.
         col_names (list): List of column names. Defaults to None.
+        remove_geom (bool): Whether to remove the geometry column. Defaults to True.
         sort_columns (bool): Whether to sort the column names. Defaults to False.
+        kwargs: Additional arguments passed to ee.data.computeFeature.
 
     Raises:
         TypeError: ee_object must be an ee.FeatureCollection
@@ -8935,8 +8943,6 @@ def ee_to_df(ee_object, col_names=None, sort_columns=False, **kwargs):
     Returns:
         pd.DataFrame: pandas DataFrame
     """
-    import pandas as pd
-
     if isinstance(ee_object, ee.Feature):
         ee_object = ee.FeatureCollection([ee_object])
 
@@ -8945,20 +8951,23 @@ def ee_to_df(ee_object, col_names=None, sort_columns=False, **kwargs):
 
     try:
         property_names = ee_object.first().propertyNames().sort().getInfo()
-        data = ee_object.map(lambda f: ee.Feature(None, f.toDictionary(property_names)))
-        data = [x["properties"] for x in data.getInfo()["features"]]
-        df = pd.DataFrame(data)
+        if remove_geom:
+            data = ee_object.map(
+                lambda f: ee.Feature(None, f.toDictionary(property_names))
+            )
+        else:
+            data = ee_object
 
-        if col_names is None:
-            col_names = property_names
-            col_names.remove("system:index")
-            for col in col_names:  # add missing columns
-                if col not in df.columns.tolist():
-                    df[col] = None
-        elif not isinstance(col_names, list):
-            raise TypeError("col_names must be a list")
+        kwargs["expression"] = data
+        kwargs["fileFormat"] = "PANDAS_DATAFRAME"
 
-        df = df[col_names]
+        df = ee.data.computeFeatures(kwargs)
+
+        if isinstance(col_names, list):
+            df = df[col_names]
+
+        if remove_geom and ("geo" in df.columns):
+            df = df.drop(columns=["geo"], axis=1)
 
         if sort_columns:
             df = df.reindex(sorted(df.columns), axis=1)
