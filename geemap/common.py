@@ -2771,25 +2771,20 @@ def ee_to_geojson(ee_object, filename=None, indent=2, **kwargs):
     Returns:
         object: GeoJSON object.
     """
-    # from json import dumps
-
-    # ee_initialize()
 
     try:
         if (
-            isinstance(ee_object, ee.geometry.Geometry)
-            or isinstance(ee_object, ee.feature.Feature)
-            or isinstance(ee_object, ee.featurecollection.FeatureCollection)
+            isinstance(ee_object, ee.Geometry)
+            or isinstance(ee_object, ee.Feature)
+            or isinstance(ee_object, ee.FeatureCollection)
         ):
             json_object = ee_object.getInfo()
             if filename is not None:
                 filename = os.path.abspath(filename)
                 if not os.path.exists(os.path.dirname(filename)):
                     os.makedirs(os.path.dirname(filename))
-                with open(filename, "w") as geojson:
-                    geojson.write(
-                        json.dumps(json_object, indent=indent, **kwargs) + "\n"
-                    )
+                with open(filename, "w") as f:
+                    f.write(json.dumps(json_object, indent=indent, **kwargs) + "\n")
             else:
                 return json_object
         else:
@@ -3003,30 +2998,28 @@ def ee_to_shp(
 
 
 def ee_to_csv(
-    ee_object, filename, selectors=None, verbose=True, timeout=300, proxies=None
+    ee_object,
+    filename,
+    columns=None,
+    remove_geom=True,
+    sort_columns=False,
+    **kwargs,
 ):
     """Downloads an ee.FeatureCollection as a CSV file.
 
     Args:
         ee_object (object): ee.FeatureCollection
         filename (str): The output filepath of the CSV file.
-        selectors (list, optional): A list of attributes to export. Defaults to None.
-        verbose (bool, optional): Whether to print out descriptive text.
-        timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
-        proxies (dict, optional): Proxy settings. Defaults to None.
+        columns (list, optional): A list of attributes to export. Defaults to None.
+        remove_geom (bool, optional): Whether to remove the geometry column. Defaults to True.
+        sort_columns (bool, optional): Whether to sort the columns alphabetically. Defaults to False.
+        kwargs: Additional arguments passed to ee_to_df().
 
     """
-    # ee_initialize()
     try:
         if filename.lower().endswith(".csv"):
-            ee_export_vector(
-                ee_object=ee_object,
-                filename=filename,
-                selectors=selectors,
-                verbose=verbose,
-                timeout=timeout,
-                proxies=proxies,
-            )
+            df = ee_to_df(ee_object, columns, remove_geom, sort_columns, **kwargs)
+            df.to_csv(filename, index=False)
         else:
             print("The filename must end with .csv")
 
