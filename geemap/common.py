@@ -8923,7 +8923,7 @@ def csv_to_df(in_csv, **kwargs):
 
 def ee_to_df(
     ee_object,
-    col_names=None,
+    columns=None,
     remove_geom=True,
     sort_columns=False,
     **kwargs,
@@ -8932,7 +8932,7 @@ def ee_to_df(
 
     Args:
         ee_object (ee.FeatureCollection): ee.FeatureCollection.
-        col_names (list): List of column names. Defaults to None.
+        columns (list): List of column names. Defaults to None.
         remove_geom (bool): Whether to remove the geometry column. Defaults to True.
         sort_columns (bool): Whether to sort the column names. Defaults to False.
         kwargs: Additional arguments passed to ee.data.computeFeature.
@@ -8963,8 +8963,8 @@ def ee_to_df(
 
         df = ee.data.computeFeatures(kwargs)
 
-        if isinstance(col_names, list):
-            df = df[col_names]
+        if isinstance(columns, list):
+            df = df[columns]
 
         if remove_geom and ("geo" in df.columns):
             df = df.drop(columns=["geo"], axis=1)
@@ -8975,9 +8975,6 @@ def ee_to_df(
         return df
     except Exception as e:
         raise Exception(e)
-
-
-ee_to_pandas = ee_to_df
 
 
 def shp_to_gdf(in_shp, **kwargs):
@@ -9012,35 +9009,49 @@ def shp_to_gdf(in_shp, **kwargs):
 shp_to_geopandas = shp_to_gdf
 
 
-def ee_to_gdf(ee_object, selectors=None, verbose=False):
-    """Converts an ee.FeatureCollection to Geopandas dataframe.
+def ee_to_gdf(
+    ee_object,
+    columns=None,
+    sort_columns=False,
+    **kwargs,
+):
+    """Converts an ee.FeatureCollection to GeoPandas GeoDataFrame.
 
     Args:
         ee_object (ee.FeatureCollection): ee.FeatureCollection.
-        selectors (list, optional): A list of attributes to export. Defaults to None.
-        verbose (bool, optional): Whether to print out descriptive text. Defaults to False.
+        columns (list): List of column names. Defaults to None.
+        sort_columns (bool): Whether to sort the column names. Defaults to False.
+        kwargs: Additional arguments passed to ee.data.computeFeature.
 
     Raises:
-        TypeError: ee_object must be an ee.FeatureCollection.
+        TypeError: ee_object must be an ee.FeatureCollection
 
     Returns:
-        gpd.GeoDataFrame: geopandas.GeoDataFrame
+        gpd.GeoDataFrame: GeoPandas GeoDataFrame
     """
-
-    check_package(name="geopandas", URL="https://geopandas.org")
-
-    import geopandas as gpd
+    if isinstance(ee_object, ee.Feature):
+        ee_object = ee.FeatureCollection([ee_object])
 
     if not isinstance(ee_object, ee.FeatureCollection):
         raise TypeError("ee_object must be an ee.FeatureCollection")
 
-    collection = ee_to_geojson(ee_object)
-    gdf = gpd.GeoDataFrame.from_features(collection["features"])
+    try:
+        kwargs["expression"] = ee_object
+        kwargs["fileFormat"] = "GEOPANDAS_GEODATAFRAME"
 
-    return gdf
+        crs = ee_object.first().geometry().projection().crs().getInfo()
+        gdf = ee.data.computeFeatures(kwargs)
 
+        if isinstance(columns, list):
+            gdf = gdf[columns]
 
-ee_to_geopandas = ee_to_gdf
+        if sort_columns:
+            gdf = gdf.reindex(sorted(gdf.columns), axis=1)
+
+        gdf.crs = crs
+        return gdf
+    except Exception as e:
+        raise Exception(e)
 
 
 def delete_shp(in_shp, verbose=False):
