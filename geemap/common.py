@@ -2961,35 +2961,24 @@ def filter_polygons(ftr):
 def ee_to_shp(
     ee_object,
     filename,
-    selectors=None,
-    verbose=True,
-    keep_zip=False,
-    timeout=300,
-    proxies=None,
+    columns=None,
+    sort_columns=False,
+    **kwargs,
 ):
     """Downloads an ee.FeatureCollection as a shapefile.
 
     Args:
         ee_object (object): ee.FeatureCollection
         filename (str): The output filepath of the shapefile.
-        selectors (list, optional): A list of attributes to export. Defaults to None.
-        verbose (bool, optional): Whether to print out descriptive text.
-        keep_zip (bool, optional): Whether to keep the downloaded shapefile as a zip file.
-        timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
-        proxies (dict, optional): Proxy settings. Defaults to None.
+        columns (list, optional): A list of attributes to export. Defaults to None.
+        sort_columns (bool, optional): Whether to sort the columns alphabetically. Defaults to False.
+        kwargs: Additional arguments passed to ee_to_gdf().
+
     """
-    # ee_initialize()
     try:
         if filename.lower().endswith(".shp"):
-            ee_export_vector(
-                ee_object=ee_object,
-                filename=filename,
-                selectors=selectors,
-                verbose=verbose,
-                keep_zip=keep_zip,
-                timeout=timeout,
-                proxies=proxies,
-            )
+            gdf = ee_to_gdf(ee_object, columns, sort_columns, **kwargs)
+            gdf.to_file(filename)
         else:
             print("The filename must end with .shp")
 
