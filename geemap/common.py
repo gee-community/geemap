@@ -3337,9 +3337,7 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
         print(e)
 
 
-def ee_to_numpy(
-    ee_object, region=None, scale=None, bands=None, **kwargs
-):
+def ee_to_numpy(ee_object, region=None, scale=None, bands=None, **kwargs):
     """Extracts a rectangular region of pixels from an image into a numpy array.
 
     Args:
@@ -3356,10 +3354,10 @@ def ee_to_numpy(
     if (region is not None) or (scale is not None):
         ee_object = ee_object.clipToBoundsAndScale(geometry=region, scale=scale)
 
-    kwargs['expression'] = ee_object
-    kwargs['fileFormat'] = 'NUMPY_NDARRAY'
+    kwargs["expression"] = ee_object
+    kwargs["fileFormat"] = "NUMPY_NDARRAY"
     if bands is not None:
-        kwargs['bandIds'] = bands
+        kwargs["bandIds"] = bands
 
     try:
         struct_array = ee.data.computePixels(kwargs)
@@ -6714,7 +6712,7 @@ def zonal_stats(
     in_value_raster,
     in_zone_vector,
     out_file_path=None,
-    statistics_type="MEAN",
+    stat_type="MEAN",
     scale=None,
     crs=None,
     tile_scale=1.0,
@@ -6730,7 +6728,7 @@ def zonal_stats(
         in_value_raster (object): An ee.Image or ee.ImageCollection that contains the values on which to calculate a statistic.
         in_zone_vector (object): An ee.FeatureCollection that defines the zones.
         out_file_path (str): Output file path that will contain the summary of the values in each zone. The file type can be: csv, shp, json, kml, kmz
-        statistics_type (str, optional): Statistic type to be calculated. Defaults to 'MEAN'. For 'HIST', you can provide three parameters: max_buckets, min_bucket_width, and max_raw. For 'FIXED_HIST', you must provide three parameters: hist_min, hist_max, and hist_steps.
+        stat_type (str, optional): Statistical type to be calculated. Defaults to 'MEAN'. For 'HIST', you can provide three parameters: max_buckets, min_bucket_width, and max_raw. For 'FIXED_HIST', you must provide three parameters: hist_min, hist_max, and hist_steps.
         scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
         crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
         tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
@@ -6753,6 +6751,10 @@ def zonal_stats(
 
     if out_file_path is None:
         out_file_path = os.path.join(os.getcwd(), "zonal_stats.csv")
+
+    if "statistics_type" in kwargs:
+        stat_type = kwargs["statistics_type"]
+        kwargs.pop("statistics_type")
 
     allowed_formats = ["csv", "geojson", "kml", "kmz", "shp"]
     filename = os.path.abspath(out_file_path)
@@ -6786,20 +6788,21 @@ def zonal_stats(
     if "max_raw" in kwargs.keys():
         max_raw = kwargs["max_raw"]
 
-    if (
-        statistics_type.upper() == "FIXED_HIST"
-        and ("hist_min" in kwargs.keys())
-        and ("hist_max" in kwargs.keys())
-        and ("hist_steps" in kwargs.keys())
-    ):
-        hist_min = kwargs["hist_min"]
-        hist_max = kwargs["hist_max"]
-        hist_steps = kwargs["hist_steps"]
-    elif statistics_type.upper() == "FIXED_HIST":
-        print(
-            "To use fixedHistogram, please provide these three parameters: hist_min, hist_max, and hist_steps."
-        )
-        return
+    if isinstance(stat_type, str):
+        if (
+            stat_type.upper() == "FIXED_HIST"
+            and ("hist_min" in kwargs.keys())
+            and ("hist_max" in kwargs.keys())
+            and ("hist_steps" in kwargs.keys())
+        ):
+            hist_min = kwargs["hist_min"]
+            hist_max = kwargs["hist_max"]
+            hist_steps = kwargs["hist_steps"]
+        elif stat_type.upper() == "FIXED_HIST":
+            print(
+                "To use fixedHistogram, please provide these three parameters: hist_min, hist_max, and hist_steps."
+            )
+            return
 
     allowed_statistics = {
         "COUNT": ee.Reducer.count(),
@@ -6825,13 +6828,19 @@ def zonal_stats(
         ),
     }
 
-    if not (statistics_type.upper() in allowed_statistics.keys()):
-        print(
-            "The statistics type must be one of the following: {}".format(
-                ", ".join(list(allowed_statistics.keys()))
+    if isinstance(stat_type, str):
+        if not (stat_type.upper() in allowed_statistics.keys()):
+            print(
+                "The statistics type must be one of the following: {}".format(
+                    ", ".join(list(allowed_statistics.keys()))
+                )
             )
-        )
-        return
+            return
+        reducer = allowed_statistics[stat_type.upper()]
+    elif isinstance(stat_type, ee.Reducer):
+        reducer = stat_type
+    else:
+        raise ValueError("statistics_type must be either a string or ee.Reducer.")
 
     if scale is None:
         scale = in_value_raster.projection().nominalScale().multiply(10)
@@ -6841,7 +6850,7 @@ def zonal_stats(
             print("Computing statistics ...")
         result = in_value_raster.reduceRegions(
             collection=in_zone_vector,
-            reducer=allowed_statistics[statistics_type],
+            reducer=reducer,
             scale=scale,
             crs=crs,
             tileScale=tile_scale,
@@ -6856,12 +6865,11 @@ def zonal_stats(
 
 zonal_statistics = zonal_stats
 
-
 def zonal_stats_by_group(
     in_value_raster,
     in_zone_vector,
     out_file_path=None,
-    statistics_type="SUM",
+    stat_type="SUM",
     decimal_places=0,
     denominator=1.0,
     scale=None,
@@ -6882,7 +6890,7 @@ def zonal_stats_by_group(
         in_value_raster (object): An integer Image that contains the values on which to calculate area/percentage.
         in_zone_vector (object): An ee.FeatureCollection that defines the zones.
         out_file_path (str): Output file path that will contain the summary of the values in each zone. The file type can be: csv, shp, json, kml, kmz
-        statistics_type (str, optional): Can be either 'SUM' or 'PERCENTAGE' . Defaults to 'SUM'.
+        stat_type (str, optional): Can be either 'SUM' or 'PERCENTAGE' . Defaults to 'SUM'.
         decimal_places (int, optional): The number of decimal places to use. Defaults to 0.
         denominator (float, optional): To convert area units (e.g., from square meters to square kilometers). Defaults to 1.0.
         scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
@@ -6907,6 +6915,10 @@ def zonal_stats_by_group(
 
     if out_file_path is None:
         out_file_path = os.path.join(os.getcwd(), "zonal_stats_by_group.csv")
+
+    if "statistics_type" in kwargs:
+        stat_type = kwargs["statistics_type"]
+        kwargs.pop("statistics_type")
 
     band_count = in_value_raster.bandNames().size().getInfo()
 
@@ -6946,7 +6958,7 @@ def zonal_stats_by_group(
         os.makedirs(out_dir)
 
     allowed_statistics = ["SUM", "PERCENTAGE"]
-    if not (statistics_type.upper() in allowed_statistics):
+    if not (stat_type.upper() in allowed_statistics):
         print(
             "The statistics type can only be one of {}".format(
                 ", ".join(allowed_statistics)
@@ -7032,7 +7044,7 @@ def zonal_stats_by_group(
                     keys.contains(x), values.get(keys.indexOf(x)), 0
                 )
                 cls_value = ee.Algorithms.If(
-                    ee.String(statistics_type).compareTo(ee.String("SUM")),
+                    ee.String(stat_type).compareTo(ee.String("SUM")),
                     ee.Number(cls_value).divide(ee.Number(total_area)),
                     cls_value,
                 )
