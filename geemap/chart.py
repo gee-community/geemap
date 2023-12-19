@@ -442,8 +442,7 @@ def image_byClass(
 
 def image_byRegion(image, regions, reducer, scale, xProperty, **kwargs):
     # TODO
-    
-    
+    pass
 
 
 def image_doySeries(
