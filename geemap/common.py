@@ -2771,25 +2771,20 @@ def ee_to_geojson(ee_object, filename=None, indent=2, **kwargs):
     Returns:
         object: GeoJSON object.
     """
-    # from json import dumps
-
-    # ee_initialize()
 
     try:
         if (
-            isinstance(ee_object, ee.geometry.Geometry)
-            or isinstance(ee_object, ee.feature.Feature)
-            or isinstance(ee_object, ee.featurecollection.FeatureCollection)
+            isinstance(ee_object, ee.Geometry)
+            or isinstance(ee_object, ee.Feature)
+            or isinstance(ee_object, ee.FeatureCollection)
         ):
             json_object = ee_object.getInfo()
             if filename is not None:
                 filename = os.path.abspath(filename)
                 if not os.path.exists(os.path.dirname(filename)):
                     os.makedirs(os.path.dirname(filename))
-                with open(filename, "w") as geojson:
-                    geojson.write(
-                        json.dumps(json_object, indent=indent, **kwargs) + "\n"
-                    )
+                with open(filename, "w") as f:
+                    f.write(json.dumps(json_object, indent=indent, **kwargs) + "\n")
             else:
                 return json_object
         else:
@@ -2966,35 +2961,24 @@ def filter_polygons(ftr):
 def ee_to_shp(
     ee_object,
     filename,
-    selectors=None,
-    verbose=True,
-    keep_zip=False,
-    timeout=300,
-    proxies=None,
+    columns=None,
+    sort_columns=False,
+    **kwargs,
 ):
     """Downloads an ee.FeatureCollection as a shapefile.
 
     Args:
         ee_object (object): ee.FeatureCollection
         filename (str): The output filepath of the shapefile.
-        selectors (list, optional): A list of attributes to export. Defaults to None.
-        verbose (bool, optional): Whether to print out descriptive text.
-        keep_zip (bool, optional): Whether to keep the downloaded shapefile as a zip file.
-        timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
-        proxies (dict, optional): Proxy settings. Defaults to None.
+        columns (list, optional): A list of attributes to export. Defaults to None.
+        sort_columns (bool, optional): Whether to sort the columns alphabetically. Defaults to False.
+        kwargs: Additional arguments passed to ee_to_gdf().
+
     """
-    # ee_initialize()
     try:
         if filename.lower().endswith(".shp"):
-            ee_export_vector(
-                ee_object=ee_object,
-                filename=filename,
-                selectors=selectors,
-                verbose=verbose,
-                keep_zip=keep_zip,
-                timeout=timeout,
-                proxies=proxies,
-            )
+            gdf = ee_to_gdf(ee_object, columns, sort_columns, **kwargs)
+            gdf.to_file(filename)
         else:
             print("The filename must end with .shp")
 
@@ -3003,30 +2987,28 @@ def ee_to_shp(
 
 
 def ee_to_csv(
-    ee_object, filename, selectors=None, verbose=True, timeout=300, proxies=None
+    ee_object,
+    filename,
+    columns=None,
+    remove_geom=True,
+    sort_columns=False,
+    **kwargs,
 ):
     """Downloads an ee.FeatureCollection as a CSV file.
 
     Args:
         ee_object (object): ee.FeatureCollection
         filename (str): The output filepath of the CSV file.
-        selectors (list, optional): A list of attributes to export. Defaults to None.
-        verbose (bool, optional): Whether to print out descriptive text.
-        timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
-        proxies (dict, optional): Proxy settings. Defaults to None.
+        columns (list, optional): A list of attributes to export. Defaults to None.
+        remove_geom (bool, optional): Whether to remove the geometry column. Defaults to True.
+        sort_columns (bool, optional): Whether to sort the columns alphabetically. Defaults to False.
+        kwargs: Additional arguments passed to ee_to_df().
 
     """
-    # ee_initialize()
     try:
         if filename.lower().endswith(".csv"):
-            ee_export_vector(
-                ee_object=ee_object,
-                filename=filename,
-                selectors=selectors,
-                verbose=verbose,
-                timeout=timeout,
-                proxies=proxies,
-            )
+            df = ee_to_df(ee_object, columns, remove_geom, sort_columns, **kwargs)
+            df.to_csv(filename, index=False)
         else:
             print("The filename must end with .csv")
 
@@ -3356,50 +3338,35 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
 
 
 def ee_to_numpy(
-    ee_object, bands=None, region=None, properties=None, default_value=None
+    ee_object, region=None, scale=None, bands=None, **kwargs
 ):
-    """Extracts a rectangular region of pixels from an image into a 2D numpy array per band.
+    """Extracts a rectangular region of pixels from an image into a numpy array.
 
     Args:
-        ee_object (object): The image to sample.
-        bands (list, optional): The list of band names to extract. Please make sure that all bands have the same spatial resolution. Defaults to None.
-        region (object, optional): The region whose projected bounding box is used to sample the image. The maximum number of pixels you can export is 262,144. Resampling and reprojecting all bands to a fixed scale can be useful. Defaults to the footprint in each band.
-        properties (list, optional): The properties to copy over from the sampled image. Defaults to all non-system properties.
-        default_value (float, optional): A default value used when a sampled pixel is masked or outside a band's footprint. Defaults to None.
+        ee_object (ee.Image): The image to sample.
+        region (ee.Geometry, optional): The region to sample. Defaults to None.
+        bands (list, optional): The list of band names to extract. Defaults to None.
+        scale (int, optional): A nominal scale in meters of the projection to sample in. Defaults to None.
 
     Returns:
-        array: A 3D numpy array.
+        np.ndarray: A 3D numpy array in the format of [row, column, band].
     """
     import numpy as np
 
-    if not isinstance(ee_object, ee.Image):
-        print("The input must be an ee.Image.")
-        return
+    if (region is not None) or (scale is not None):
+        ee_object = ee_object.clipToBoundsAndScale(geometry=region, scale=scale)
 
-    if region is None:
-        region = ee_object.geometry()
+    kwargs['expression'] = ee_object
+    kwargs['fileFormat'] = 'NUMPY_NDARRAY'
+    if bands is not None:
+        kwargs['bandIds'] = bands
 
     try:
-        if bands is not None:
-            ee_object = ee_object.select(bands)
-        else:
-            bands = ee_object.bandNames().getInfo()
-
-        band_arrs = ee_object.sampleRectangle(
-            region=region, properties=properties, defaultValue=default_value
-        )
-        band_values = []
-
-        for band in bands:
-            band_arr = band_arrs.get(band).getInfo()
-            band_value = np.array(band_arr)
-            band_values.append(band_value)
-
-        image = np.dstack(band_values)
-        return image
-
+        image_arr1 = ee.data.computePixels(kwargs)
+        array = np.dstack(([image_arr1[band] for band in image_arr1.dtype.names]))
+        return array
     except Exception as e:
-        print(e)
+        raise Exception(e)
 
 
 def download_ee_video(collection, video_args, out_gif, timeout=300, proxies=None):
@@ -8921,13 +8888,21 @@ def csv_to_df(in_csv, **kwargs):
         raise Exception(e)
 
 
-def ee_to_df(ee_object, col_names=None, sort_columns=False, **kwargs):
+def ee_to_df(
+    ee_object,
+    columns=None,
+    remove_geom=True,
+    sort_columns=False,
+    **kwargs,
+):
     """Converts an ee.FeatureCollection to pandas dataframe.
 
     Args:
         ee_object (ee.FeatureCollection): ee.FeatureCollection.
-        col_names (list): List of column names. Defaults to None.
+        columns (list): List of column names. Defaults to None.
+        remove_geom (bool): Whether to remove the geometry column. Defaults to True.
         sort_columns (bool): Whether to sort the column names. Defaults to False.
+        kwargs: Additional arguments passed to ee.data.computeFeature.
 
     Raises:
         TypeError: ee_object must be an ee.FeatureCollection
@@ -8935,8 +8910,6 @@ def ee_to_df(ee_object, col_names=None, sort_columns=False, **kwargs):
     Returns:
         pd.DataFrame: pandas DataFrame
     """
-    import pandas as pd
-
     if isinstance(ee_object, ee.Feature):
         ee_object = ee.FeatureCollection([ee_object])
 
@@ -8945,20 +8918,23 @@ def ee_to_df(ee_object, col_names=None, sort_columns=False, **kwargs):
 
     try:
         property_names = ee_object.first().propertyNames().sort().getInfo()
-        data = ee_object.map(lambda f: ee.Feature(None, f.toDictionary(property_names)))
-        data = [x["properties"] for x in data.getInfo()["features"]]
-        df = pd.DataFrame(data)
+        if remove_geom:
+            data = ee_object.map(
+                lambda f: ee.Feature(None, f.toDictionary(property_names))
+            )
+        else:
+            data = ee_object
 
-        if col_names is None:
-            col_names = property_names
-            col_names.remove("system:index")
-            for col in col_names:  # add missing columns
-                if col not in df.columns.tolist():
-                    df[col] = None
-        elif not isinstance(col_names, list):
-            raise TypeError("col_names must be a list")
+        kwargs["expression"] = data
+        kwargs["fileFormat"] = "PANDAS_DATAFRAME"
 
-        df = df[col_names]
+        df = ee.data.computeFeatures(kwargs)
+
+        if isinstance(columns, list):
+            df = df[columns]
+
+        if remove_geom and ("geo" in df.columns):
+            df = df.drop(columns=["geo"], axis=1)
 
         if sort_columns:
             df = df.reindex(sorted(df.columns), axis=1)
@@ -8966,9 +8942,6 @@ def ee_to_df(ee_object, col_names=None, sort_columns=False, **kwargs):
         return df
     except Exception as e:
         raise Exception(e)
-
-
-ee_to_pandas = ee_to_df
 
 
 def shp_to_gdf(in_shp, **kwargs):
@@ -9003,35 +8976,49 @@ def shp_to_gdf(in_shp, **kwargs):
 shp_to_geopandas = shp_to_gdf
 
 
-def ee_to_gdf(ee_object, selectors=None, verbose=False):
-    """Converts an ee.FeatureCollection to Geopandas dataframe.
+def ee_to_gdf(
+    ee_object,
+    columns=None,
+    sort_columns=False,
+    **kwargs,
+):
+    """Converts an ee.FeatureCollection to GeoPandas GeoDataFrame.
 
     Args:
         ee_object (ee.FeatureCollection): ee.FeatureCollection.
-        selectors (list, optional): A list of attributes to export. Defaults to None.
-        verbose (bool, optional): Whether to print out descriptive text. Defaults to False.
+        columns (list): List of column names. Defaults to None.
+        sort_columns (bool): Whether to sort the column names. Defaults to False.
+        kwargs: Additional arguments passed to ee.data.computeFeature.
 
     Raises:
-        TypeError: ee_object must be an ee.FeatureCollection.
+        TypeError: ee_object must be an ee.FeatureCollection
 
     Returns:
-        gpd.GeoDataFrame: geopandas.GeoDataFrame
+        gpd.GeoDataFrame: GeoPandas GeoDataFrame
     """
-
-    check_package(name="geopandas", URL="https://geopandas.org")
-
-    import geopandas as gpd
+    if isinstance(ee_object, ee.Feature):
+        ee_object = ee.FeatureCollection([ee_object])
 
     if not isinstance(ee_object, ee.FeatureCollection):
         raise TypeError("ee_object must be an ee.FeatureCollection")
 
-    collection = ee_to_geojson(ee_object)
-    gdf = gpd.GeoDataFrame.from_features(collection["features"])
+    try:
+        kwargs["expression"] = ee_object
+        kwargs["fileFormat"] = "GEOPANDAS_GEODATAFRAME"
 
-    return gdf
+        crs = ee_object.first().geometry().projection().crs().getInfo()
+        gdf = ee.data.computeFeatures(kwargs)
 
+        if isinstance(columns, list):
+            gdf = gdf[columns]
 
-ee_to_geopandas = ee_to_gdf
+        if sort_columns:
+            gdf = gdf.reindex(sorted(gdf.columns), axis=1)
+
+        gdf.crs = crs
+        return gdf
+    except Exception as e:
+        raise Exception(e)
 
 
 def delete_shp(in_shp, verbose=False):
