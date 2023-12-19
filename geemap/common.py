@@ -3338,50 +3338,35 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
 
 
 def ee_to_numpy(
-    ee_object, bands=None, region=None, properties=None, default_value=None
+    ee_object, region=None, scale=None, bands=None, **kwargs
 ):
-    """Extracts a rectangular region of pixels from an image into a 2D numpy array per band.
+    """Extracts a rectangular region of pixels from an image into a numpy array.
 
     Args:
-        ee_object (object): The image to sample.
-        bands (list, optional): The list of band names to extract. Please make sure that all bands have the same spatial resolution. Defaults to None.
-        region (object, optional): The region whose projected bounding box is used to sample the image. The maximum number of pixels you can export is 262,144. Resampling and reprojecting all bands to a fixed scale can be useful. Defaults to the footprint in each band.
-        properties (list, optional): The properties to copy over from the sampled image. Defaults to all non-system properties.
-        default_value (float, optional): A default value used when a sampled pixel is masked or outside a band's footprint. Defaults to None.
+        ee_object (ee.Image): The image to sample.
+        region (ee.Geometry, optional): The region to sample. Defaults to None.
+        bands (list, optional): The list of band names to extract. Defaults to None.
+        scale (int, optional): A nominal scale in meters of the projection to sample in. Defaults to None.
 
     Returns:
-        array: A 3D numpy array.
+        np.ndarray: A 3D numpy array in the format of [row, column, band].
     """
     import numpy as np
 
-    if not isinstance(ee_object, ee.Image):
-        print("The input must be an ee.Image.")
-        return
+    if (region is not None) or (scale is not None):
+        ee_object = ee_object.clipToBoundsAndScale(geometry=region, scale=scale)
 
-    if region is None:
-        region = ee_object.geometry()
+    kwargs['expression'] = ee_object
+    kwargs['fileFormat'] = 'NUMPY_NDARRAY'
+    if bands is not None:
+        kwargs['bandIds'] = bands
 
     try:
-        if bands is not None:
-            ee_object = ee_object.select(bands)
-        else:
-            bands = ee_object.bandNames().getInfo()
-
-        band_arrs = ee_object.sampleRectangle(
-            region=region, properties=properties, defaultValue=default_value
-        )
-        band_values = []
-
-        for band in bands:
-            band_arr = band_arrs.get(band).getInfo()
-            band_value = np.array(band_arr)
-            band_values.append(band_value)
-
-        image = np.dstack(band_values)
-        return image
-
+        image_arr1 = ee.data.computePixels(kwargs)
+        array = np.dstack(([image_arr1[band] for band in image_arr1.dtype.names]))
+        return array
     except Exception as e:
-        print(e)
+        raise Exception(e)
 
 
 def download_ee_video(collection, video_args, out_gif, timeout=300, proxies=None):
