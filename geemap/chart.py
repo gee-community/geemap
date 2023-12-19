@@ -12,7 +12,7 @@ import numpy as np
 from bqplot import Tooltip
 from bqplot import pyplot as plt
 
-from .common import ee_to_df
+from .common import ee_to_df, zonal_stats
 
 from typing import Union
 
@@ -34,8 +34,12 @@ class BaseChartClass:
         self.width = None
         self.height = None
         self.colors = "black"
-        self.df = ee_to_df(features)
         self.name = name
+
+        if isinstance(features, ee.FeatureCollection):
+            self.df = ee_to_df(features)
+        elif isinstance(features, pd.DataFrame):
+            self.df = features
 
         for key, value in kwargs.items():
             setattr(self, key, value)

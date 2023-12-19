@@ -116,13 +116,13 @@ geemap.ee_to_numpy(ee_object, bands, region, properties, default_value)
 To calculate zonal statistics:
 
 ```python
-geemap.zonal_statistics(in_value_raster, in_zone_vector, out_file_path, statistics_type='MEAN')
+geemap.zonal_stats(in_value_raster, in_zone_vector, out_file_path, stat_type='MEAN')
 ```
 
 To calculate zonal statistics by group:
 
 ```python
-geemap.zonal_statistics_by_group(in_value_raster, in_zone_vector, out_file_path, statistics_type='SUM')
+geemap.zonal_stats_by_group(in_value_raster, in_zone_vector, out_file_path, stat_type='SUM')
 ```
 
 To create a split-panel Map:
