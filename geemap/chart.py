@@ -33,8 +33,25 @@ class BaseChartClass:
         self.labels = default_labels
         self.width = None
         self.height = None
-        self.colors = "black"
         self.name = name
+
+        if isinstance(self.labels, list) and (len(self.labels) > 1):
+            self.colors = [
+                "#604791",
+                "#1d6b99",
+                "#39a8a7",
+                "#0f8755",
+                "#76b349",
+                "#f0af07",
+                "#e37d05",
+                "#cf513e",
+                "#96356f",
+                "#724173",
+                "#9c4f97",
+                "#696969",
+            ]
+        else:
+            self.colors = "black"
 
         if isinstance(features, ee.FeatureCollection):
             self.df = ee_to_df(features)
@@ -101,8 +118,10 @@ class BarChart(BaseChartClass):
 
         self.generate_tooltip()
         plt.ylim(*self.get_ylim())
-        plt.xlabel(self.xlabel)
-        plt.ylabel(self.ylabel)
+        if self.xlabel:
+            plt.xlabel(self.xlabel)
+        if self.ylabel:
+            plt.ylabel(self.ylabel)
 
         if self.width:
             fig.layout.width = self.width
@@ -441,8 +460,27 @@ def image_byClass(
 
 
 def image_byRegion(image, regions, reducer, scale, xProperty, **kwargs):
-    # TODO
-    pass
+    """
+    Generates a Chart from an image. Extracts and plots band values in one or more regions in the image, with each band in a separate series.
+
+    Args:
+        image (ee.Image): Image to extract band values from.
+        regions (ee.FeatureCollection | ee.Geometry): Regions to reduce. Defaults to the image's footprint.
+        reducer (str | ee.Reducer): The reducer type for zonal statistics. Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
+        scale (int): The scale in meters at which to perform the analysis.
+        xProperty (str): The name of the property in the feature collection to use as the x-axis values.
+        **kwargs: Additional keyword arguments to be passed to the `feature_byFeature` function.
+
+    Returns:
+        None
+    """
+
+    fc = zonal_stats(
+        image, regions, stat_type=reducer, scale=scale, verbose=False, return_fc=True
+    )
+    bands = image.bandNames().getInfo()
+    df = ee_to_df(fc)[bands + [xProperty]]
+    feature_byFeature(df, xProperty, bands, **kwargs)
 
 
 def image_doySeries(
