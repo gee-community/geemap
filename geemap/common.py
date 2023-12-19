@@ -3362,8 +3362,8 @@ def ee_to_numpy(
         kwargs['bandIds'] = bands
 
     try:
-        image_arr1 = ee.data.computePixels(kwargs)
-        array = np.dstack(([image_arr1[band] for band in image_arr1.dtype.names]))
+        struct_array = ee.data.computePixels(kwargs)
+        array = np.dstack(([struct_array[band] for band in struct_array.dtype.names]))
         return array
     except Exception as e:
         raise Exception(e)
