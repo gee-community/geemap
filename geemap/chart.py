@@ -134,6 +134,39 @@ class BarChart(BaseChartClass):
         plt.show()
 
 
+class LineChart(BarChart):
+    """A class to define variables and get_data method for a line chart."""
+
+    def __init__(self, features, labels, name="line.chart", **kwargs):
+        super().__init__(features, labels, name, **kwargs)
+
+    def plot_chart(self):
+        fig = plt.figure(
+            title=self.title,
+            legend_location=self.legend_location,
+        )
+
+        self.line_chart = plt.plot(
+            self.x_data,
+            self.y_data,
+            label=self.labels,
+        )
+
+        self.generate_tooltip()
+        plt.ylim(*self.get_ylim())
+        if self.xlabel:
+            plt.xlabel(self.xlabel)
+        if self.ylabel:
+            plt.ylabel(self.ylabel)
+
+        if self.width:
+            fig.layout.width = self.width
+        if self.height:
+            fig.layout.height = self.height
+
+        plt.show()
+
+
 class Feature_ByFeature(BarChart):
     """A object to define variables and get_data method."""
 
@@ -213,6 +246,42 @@ class Feature_Groups(BarChart):
     def get_data(self, xProperty, new_column_names):
         x_data = list(self.df[xProperty])
         y_data = [self.df[x] for x in new_column_names]
+
+        return x_data, y_data
+
+
+class Image_byClass(LineChart):
+    """A object to define variables and get_data method."""
+
+    def __init__(
+        self,
+        image,
+        region,
+        reducer,
+        scale,
+        classLabels,
+        xLabels,
+        xProperty,
+        name="image.byClass",
+        **kwargs,
+    ):
+        self.classLabels = classLabels
+        self.xLabels = xLabels
+        super().__init__(image, classLabels, name, **kwargs)
+        self.x_data, self.y_data = self.get_data(
+            image, region, xProperty, reducer, scale
+        )
+
+    def get_data(self, image, region, xProperty, reducer, scale):
+        fc = zonal_stats(
+            image, region, stat_type=reducer, scale=scale, verbose=False, return_fc=True
+        )
+        bands = image.bandNames().getInfo()
+        df = ee_to_df(fc)[bands + [xProperty]]
+        columns = df.columns.tolist()
+        columns.remove(xProperty)
+        x_data = columns
+        y_data = df.drop([xProperty], axis=1).to_numpy()
 
         return x_data, y_data
 
