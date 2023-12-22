@@ -1837,6 +1837,37 @@ def check_package(name, URL=""):
         )
 
 
+def install_package(package):
+    """Install a Python package.
+
+    Args:
+        package (str | list): The package name or a GitHub URL or a list of package names or GitHub URLs.
+    """
+    import subprocess
+
+    if isinstance(package, str):
+        packages = [package]
+
+    for package in packages:
+        if package.startswith("https"):
+            package = f"git+{package}"
+
+        # Execute pip install command and show output in real-time
+        command = f"pip install {package}"
+        process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+
+        # Print output in real-time
+        while True:
+            output = process.stdout.readline()
+            if output == b"" and process.poll() is not None:
+                break
+            if output:
+                print(output.decode("utf-8").strip())
+
+        # Wait for process to complete
+        process.wait()
+
+
 def clone_repo(out_dir=".", unzip=True):
     """Clones the geemap GitHub repository.
 
@@ -3365,6 +3396,154 @@ def ee_to_numpy(ee_object, region=None, scale=None, bands=None, **kwargs):
         return array
     except Exception as e:
         raise Exception(e)
+
+
+def ee_to_xarray(
+    dataset,
+    drop_variables=None,
+    io_chunks=None,
+    n_images=-1,
+    mask_and_scale=True,
+    decode_times=True,
+    decode_timedelta=None,
+    use_cftime=None,
+    concat_characters=True,
+    decode_coords=True,
+    crs=None,
+    scale=None,
+    projection=None,
+    geometry=None,
+    primary_dim_name=None,
+    primary_dim_property=None,
+    ee_mask_value=None,
+    ee_initialize=True,
+    **kwargs,
+):
+    """Open an Earth Engine ImageCollection as an Xarray Dataset. This function is a wrapper for
+        xee. EarthEngineBackendEntrypoint.open_dataset().
+        See https://github.com/google/Xee/blob/main/xee/ext.py#L886
+
+    Args:
+        dataset: An asset ID for an ImageCollection, or an
+            ee.ImageCollection object.
+        drop_variables (optional): Variables or bands to drop before opening.
+        io_chunks (optional): Specifies the chunking strategy for loading data
+            from EE. By default, this automatically calculates optional chunks based
+            on the `request_byte_limit`.
+        n_images (optional): The max number of EE images in the collection to
+            open. Useful when there are a large number of images in the collection
+            since calculating collection size can be slow. -1 indicates that all
+            images should be included.
+        mask_and_scale (optional): Lazily scale (using scale_factor and
+            add_offset) and mask (using _FillValue).
+        decode_times (optional): Decode cf times (e.g., integers since "hours
+            since 2000-01-01") to np.datetime64.
+        decode_timedelta (optional): If True, decode variables and coordinates
+            with time units in {"days", "hours", "minutes", "seconds",
+            "milliseconds", "microseconds"} into timedelta objects. If False, leave
+            them encoded as numbers. If None (default), assume the same value of
+            decode_time.
+        use_cftime (optional): Only relevant if encoded dates come from a standard
+            calendar (e.g. "gregorian", "proleptic_gregorian", "standard", or not
+            specified).  If None (default), attempt to decode times to
+            ``np.datetime64[ns]`` objects; if this is not possible, decode times to
+            ``cftime.datetime`` objects. If True, always decode times to
+            ``cftime.datetime`` objects, regardless of whether or not they can be
+            represented using ``np.datetime64[ns]`` objects.  If False, always
+            decode times to ``np.datetime64[ns]`` objects; if this is not possible
+            raise an error.
+        concat_characters (optional): Should character arrays be concatenated to
+            strings, for example: ["h", "e", "l", "l", "o"] -> "hello"
+        decode_coords (optional): bool or {"coordinates", "all"}, Controls which
+            variables are set as coordinate variables: - "coordinates" or True: Set
+            variables referred to in the ``'coordinates'`` attribute of the datasets
+            or individual variables as coordinate variables. - "all": Set variables
+            referred to in  ``'grid_mapping'``, ``'bounds'`` and other attributes as
+            coordinate variables.
+        crs (optional): The coordinate reference system (a CRS code or WKT
+            string). This defines the frame of reference to coalesce all variables
+            upon opening. By default, data is opened with `EPSG:4326'.
+        scale (optional): The scale in the `crs` or `projection`'s units of
+            measure -- either meters or degrees. This defines the scale that all
+            data is represented in upon opening. By default, the scale is 1° when
+            the CRS is in degrees or 10,000 when in meters.
+        projection (optional): Specify an `ee.Projection` object to define the
+            `scale` and `crs` (or other coordinate reference system) with which to
+            coalesce all variables upon opening. By default, the scale and reference
+            system is set by the the `crs` and `scale` arguments.
+        geometry (optional): Specify an `ee.Geometry` to define the regional
+            bounds when opening the data. When not set, the bounds are defined by
+            the CRS's 'area_of_use` boundaries. If those aren't present, the bounds
+            are derived from the geometry of the first image of the collection.
+        primary_dim_name (optional): Override the name of the primary dimension of
+            the output Dataset. By default, the name is 'time'.
+        primary_dim_property (optional): Override the `ee.Image` property for
+            which to derive the values of the primary dimension. By default, this is
+            'system:time_start'.
+        ee_mask_value (optional): Value to mask to EE nodata values. By default,
+            this is 'np.iinfo(np.int32).max' i.e. 2147483647.
+        request_byte_limit: the max allowed bytes to request at a time from Earth
+            Engine. By default, it is 48MBs.
+        ee_initialize (optional): Whether to initialize ee with the high-volume endpoint. Defaults to True.
+
+    Returns:
+      An xarray.Dataset that streams in remote data from Earth Engine.
+    """
+    try:
+        import xee
+    except ImportError:
+        install_package("xee")
+        import xee
+
+    import xarray as xr
+
+    kwargs["drop_variables"] = drop_variables
+    kwargs["io_chunks"] = io_chunks
+    kwargs["n_images"] = n_images
+    kwargs["mask_and_scale"] = mask_and_scale
+    kwargs["decode_times"] = decode_times
+    kwargs["decode_timedelta"] = decode_timedelta
+    kwargs["use_cftime"] = use_cftime
+    kwargs["concat_characters"] = concat_characters
+    kwargs["decode_coords"] = decode_coords
+    kwargs["crs"] = crs
+    kwargs["scale"] = scale
+    kwargs["projection"] = projection
+    kwargs["geometry"] = geometry
+    kwargs["primary_dim_name"] = primary_dim_name
+    kwargs["primary_dim_property"] = primary_dim_property
+    kwargs["ee_mask_value"] = ee_mask_value
+    kwargs["engine"] = "ee"
+
+    if ee_initialize:
+        opt_url = "https://earthengine-highvolume.googleapis.com"
+        ee.Initialize(opt_url=opt_url)
+
+    if isinstance(dataset, str):
+        if not dataset.startswith("ee://"):
+            dataset = "ee://" + dataset
+    elif isinstance(dataset, ee.Image):
+        dataset = ee.ImageCollection(dataset)
+    elif isinstance(dataset, ee.ImageCollection):
+        pass
+    elif isinstance(dataset, list):
+        items = []
+        for item in dataset:
+            if isinstance(item, str) and not item.startswith("ee://"):
+                item = "ee://" + item
+            items.append(item)
+        dataset = items
+    else:
+        raise ValueError(
+            "The dataset must be an ee.Image, ee.ImageCollection, or a list of ee.Image."
+        )
+
+    if isinstance(dataset, list):
+        ds = xr.open_mfdataset(dataset, **kwargs)
+    else:
+        ds = xr.open_dataset(dataset, **kwargs)
+
+    return ds
 
 
 def download_ee_video(collection, video_args, out_gif, timeout=300, proxies=None):
@@ -6864,6 +7043,7 @@ def zonal_stats(
 
 
 zonal_statistics = zonal_stats
+
 
 def zonal_stats_by_group(
     in_value_raster,
