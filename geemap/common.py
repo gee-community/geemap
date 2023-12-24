@@ -10759,14 +10759,15 @@ def get_local_tile_layer(
     tile_format="ipyleaflet",
     layer_name="Local COG",
     return_client=False,
+    quiet=False,
     **kwargs,
 ):
     """Generate an ipyleaflet/folium TileLayer from a local raster dataset or remote Cloud Optimized GeoTIFF (COG).
-        If you are using this function in JupyterHub on a remote server (e.g., Binder, Microsoft Planetary Computer),
-        try adding to following two lines to the beginning of the notebook if the raster does not render properly.
+        If you are using this function in JupyterHub on a remote server and the raster does not render properly, try
+        running the following two lines before calling this function:
 
         import os
-        os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = f'{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}'
+        os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = 'proxy/{port}'
 
     Args:
         source (str): The path to the GeoTIFF file or the URL of the Cloud Optimized GeoTIFF.
@@ -10782,18 +10783,26 @@ def get_local_tile_layer(
         tile_format (str, optional): The tile layer format. Can be either ipyleaflet or folium. Defaults to "ipyleaflet".
         layer_name (str, optional): The layer name to use. Defaults to None.
         return_client (bool, optional): If True, the tile client will be returned. Defaults to False.
+        quiet (bool, optional): If True, the error messages will be suppressed. Defaults to False.
 
     Returns:
         ipyleaflet.TileLayer | folium.TileLayer: An ipyleaflet.TileLayer or folium.TileLayer.
     """
 
-    warnings.filterwarnings("ignore")
+    from osgeo import gdal
+    import rasterio
 
-    output = widgets.Output()
+    # ... and suppress errors
+    gdal.PushErrorHandler("CPLQuietErrorHandler")
 
     check_package(
         "localtileserver", URL="https://github.com/banesullivan/localtileserver"
     )
+
+    if "max_zoom" not in kwargs:
+        kwargs["max_zoom"] = 100
+    if "max_native_zoom" not in kwargs:
+        kwargs["max_native_zoom"] = 100
 
     # Make it compatible with binder and JupyterHub
     if os.environ.get("JUPYTERHUB_SERVICE_PREFIX") is not None:
@@ -10801,11 +10810,24 @@ def get_local_tile_layer(
             "LOCALTILESERVER_CLIENT_PREFIX"
         ] = f"{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}"
 
+    if is_studio_lab():
+        os.environ[
+            "LOCALTILESERVER_CLIENT_PREFIX"
+        ] = f"studiolab/default/jupyter/proxy/{{port}}"
+    elif is_on_aws():
+        os.environ["LOCALTILESERVER_CLIENT_PREFIX"] = "proxy/{port}"
+    elif "prefix" in kwargs:
+        os.environ["LOCALTILESERVER_CLIENT_PREFIX"] = kwargs["prefix"]
+        kwargs.pop("prefix")
+
     from localtileserver import (
         get_leaflet_tile_layer,
         get_folium_tile_layer,
         TileClient,
     )
+
+    if "show_loading" not in kwargs:
+        kwargs["show_loading"] = False
 
     if isinstance(source, str):
         if not source.startswith("http"):
@@ -10817,6 +10839,11 @@ def get_local_tile_layer(
                 raise ValueError("The source path does not exist.")
         else:
             source = github_raw_url(source)
+    elif isinstance(source, TileClient) or isinstance(
+        source, rasterio.io.DatasetReader
+    ):
+        pass
+
     else:
         raise ValueError("The source must either be a string or TileClient")
 
@@ -10832,15 +10859,48 @@ def get_local_tile_layer(
         else:
             layer_name = "LocalTile_" + random_string(3)
 
+    if isinstance(source, str) or isinstance(source, rasterio.io.DatasetReader):
+        tile_client = TileClient(source, port=port, debug=debug)
+
+    else:
+        tile_client = source
+
     if "cmap" not in kwargs:
         kwargs["cmap"] = palette
 
-    if "alpha" in kwargs:
-        kwargs["opacity"] = float(kwargs["alpha"])
-
-    with output:
-        tile_client = TileClient(source, port=port, debug=debug)
-
+    if quiet:
+        output = widgets.Output()
+        with output:
+            if tile_format == "ipyleaflet":
+                tile_layer = get_leaflet_tile_layer(
+                    tile_client,
+                    port=port,
+                    debug=debug,
+                    projection=projection,
+                    band=band,
+                    vmin=vmin,
+                    vmax=vmax,
+                    nodata=nodata,
+                    attribution=attribution,
+                    name=layer_name,
+                    **kwargs,
+                )
+            else:
+                tile_layer = get_folium_tile_layer(
+                    tile_client,
+                    port=port,
+                    debug=debug,
+                    projection=projection,
+                    band=band,
+                    vmin=vmin,
+                    vmax=vmax,
+                    nodata=nodata,
+                    attr=attribution,
+                    overlay=True,
+                    name=layer_name,
+                    **kwargs,
+                )
+    else:
         if tile_format == "ipyleaflet":
             tile_layer = get_leaflet_tile_layer(
                 tile_client,
@@ -10853,8 +10913,6 @@ def get_local_tile_layer(
                 nodata=nodata,
                 attribution=attribution,
                 name=layer_name,
-                max_zoom=30,
-                max_native_zoom=30,
                 **kwargs,
             )
         else:
@@ -10870,8 +10928,6 @@ def get_local_tile_layer(
                 attr=attribution,
                 overlay=True,
                 name=layer_name,
-                max_zoom=30,
-                max_native_zoom=30,
                 **kwargs,
             )
 
@@ -15767,3 +15823,288 @@ def xarray_to_image(
 
         output_path = os.path.join(out_dir, filename)
         image.rio.to_raster(output_path, driver=driver, **kwargs)
+
+
+def array_to_memory_file(
+    array,
+    source: str = None,
+    dtype: str = None,
+    compress: str = "deflate",
+    transpose: bool = True,
+    cellsize: float = None,
+    crs: str = None,
+    transform: tuple = None,
+    driver="COG",
+    **kwargs,
+):
+    """Convert a NumPy array to a memory file.
+
+    Args:
+        array (numpy.ndarray): The input NumPy array.
+        source (str, optional): Path to the source file to extract metadata from. Defaults to None.
+        dtype (str, optional): The desired data type of the array. Defaults to None.
+        compress (str, optional): The compression method for the output file. Defaults to "deflate".
+        transpose (bool, optional): Whether to transpose the array from (bands, rows, columns) to (rows, columns, bands). Defaults to True.
+        cellsize (float, optional): The cell size of the array if source is not provided. Defaults to None.
+        crs (str, optional): The coordinate reference system of the array if source is not provided. Defaults to None.
+        transform (tuple, optional): The affine transformation matrix if source is not provided. Defaults to None.
+        driver (str, optional): The driver to use for creating the output file, such as 'GTiff'. Defaults to "COG".
+        **kwargs: Additional keyword arguments to be passed to the rasterio.open() function.
+
+    Returns:
+        rasterio.DatasetReader: The rasterio dataset reader object for the converted array.
+    """
+    import rasterio
+    import numpy as np
+    import xarray as xr
+
+    if isinstance(array, xr.DataArray):
+        array = array.values
+
+    if array.ndim == 3 and transpose:
+        array = np.transpose(array, (1, 2, 0))
+
+    if source is not None:
+        with rasterio.open(source) as src:
+            crs = src.crs
+            transform = src.transform
+            if compress is None:
+                compress = src.compression
+    else:
+        if cellsize is None:
+            raise ValueError("cellsize must be provided if source is not provided")
+        if crs is None:
+            raise ValueError(
+                "crs must be provided if source is not provided, such as EPSG:3857"
+            )
+
+        if "transform" not in kwargs:
+            # Define the geotransformation parameters
+            xmin, ymin, xmax, ymax = (
+                0,
+                0,
+                cellsize * array.shape[1],
+                cellsize * array.shape[0],
+            )
+            transform = rasterio.transform.from_bounds(
+                xmin, ymin, xmax, ymax, array.shape[1], array.shape[0]
+            )
+        else:
+            transform = kwargs["transform"]
+
+    if dtype is None:
+        # Determine the minimum and maximum values in the array
+        min_value = np.min(array)
+        max_value = np.max(array)
+        # Determine the best dtype for the array
+        if min_value >= 0 and max_value <= 1:
+            dtype = np.float32
+        elif min_value >= 0 and max_value <= 255:
+            dtype = np.uint8
+        elif min_value >= -128 and max_value <= 127:
+            dtype = np.int8
+        elif min_value >= 0 and max_value <= 65535:
+            dtype = np.uint16
+        elif min_value >= -32768 and max_value <= 32767:
+            dtype = np.int16
+        else:
+            dtype = np.float64
+
+    # Convert the array to the best dtype
+    array = array.astype(dtype)
+
+    # Define the GeoTIFF metadata
+    metadata = {
+        "driver": driver,
+        "height": array.shape[0],
+        "width": array.shape[1],
+        "dtype": array.dtype,
+        "crs": crs,
+        "transform": transform,
+    }
+
+    if array.ndim == 2:
+        metadata["count"] = 1
+    elif array.ndim == 3:
+        metadata["count"] = array.shape[2]
+    if compress is not None:
+        metadata["compress"] = compress
+
+    metadata.update(**kwargs)
+
+    # Create a new memory file and write the array to it
+    memory_file = rasterio.MemoryFile()
+    dst = memory_file.open(**metadata)
+
+    if array.ndim == 2:
+        dst.write(array, 1)
+    elif array.ndim == 3:
+        for i in range(array.shape[2]):
+            dst.write(array[:, :, i], i + 1)
+
+    dst.close()
+
+    # Read the dataset from memory
+    dataset_reader = rasterio.open(dst.name, mode="r")
+
+    return dataset_reader
+
+
+def array_to_image(
+    array,
+    output: str = None,
+    source: str = None,
+    dtype: str = None,
+    compress: str = "deflate",
+    transpose: bool = True,
+    cellsize: float = None,
+    crs: str = None,
+    driver: str = "COG",
+    **kwargs,
+) -> str:
+    """Save a NumPy array as a GeoTIFF using the projection information from an existing GeoTIFF file.
+
+    Args:
+        array (np.ndarray): The NumPy array to be saved as a GeoTIFF.
+        output (str): The path to the output image. If None, a temporary file will be created. Defaults to None.
+        source (str, optional): The path to an existing GeoTIFF file with map projection information. Defaults to None.
+        dtype (np.dtype, optional): The data type of the output array. Defaults to None.
+        compress (str, optional): The compression method. Can be one of the following: "deflate", "lzw", "packbits", "jpeg". Defaults to "deflate".
+        transpose (bool, optional): Whether to transpose the array from (bands, rows, columns) to (rows, columns, bands). Defaults to True.
+        cellsize (float, optional): The resolution of the output image in meters. Defaults to None.
+        crs (str, optional): The CRS of the output image. Defaults to None.
+        driver (str, optional): The driver to use for creating the output file, such as 'GTiff'. Defaults to "COG".
+        **kwargs: Additional keyword arguments to be passed to the rasterio.open() function.
+    """
+
+    import numpy as np
+    import rasterio
+
+    if output is None:
+        return array_to_memory_file(
+            array, source, dtype, compress, transpose, cellsize, crs, driver, **kwargs
+        )
+
+    if array.ndim == 3 and transpose:
+        array = np.transpose(array, (1, 2, 0))
+
+    out_dir = os.path.dirname(os.path.abspath(output))
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    if not output.endswith(".tif"):
+        output += ".tif"
+
+    if source is not None:
+        with rasterio.open(source) as src:
+            crs = src.crs
+            transform = src.transform
+            if compress is None:
+                compress = src.compression
+    else:
+        if cellsize is None:
+            raise ValueError("resolution must be provided if source is not provided")
+        if crs is None:
+            raise ValueError(
+                "crs must be provided if source is not provided, such as EPSG:3857"
+            )
+
+        if "transform" not in kwargs:
+            # Define the geotransformation parameters
+            xmin, ymin, xmax, ymax = (
+                0,
+                0,
+                cellsize * array.shape[1],
+                cellsize * array.shape[0],
+            )
+            transform = rasterio.transform.from_bounds(
+                xmin, ymin, xmax, ymax, array.shape[1], array.shape[0]
+            )
+        else:
+            transform = kwargs["transform"]
+
+    if dtype is None:
+        # Determine the minimum and maximum values in the array
+        min_value = np.min(array)
+        max_value = np.max(array)
+        # Determine the best dtype for the array
+        if min_value >= 0 and max_value <= 1:
+            dtype = np.float32
+        elif min_value >= 0 and max_value <= 255:
+            dtype = np.uint8
+        elif min_value >= -128 and max_value <= 127:
+            dtype = np.int8
+        elif min_value >= 0 and max_value <= 65535:
+            dtype = np.uint16
+        elif min_value >= -32768 and max_value <= 32767:
+            dtype = np.int16
+        else:
+            dtype = np.float64
+
+    # Convert the array to the best dtype
+    array = array.astype(dtype)
+
+    # Define the GeoTIFF metadata
+    metadata = {
+        "driver": driver,
+        "height": array.shape[0],
+        "width": array.shape[1],
+        "dtype": array.dtype,
+        "crs": crs,
+        "transform": transform,
+    }
+
+    if array.ndim == 2:
+        metadata["count"] = 1
+    elif array.ndim == 3:
+        metadata["count"] = array.shape[2]
+    if compress is not None:
+        metadata["compress"] = compress
+
+    metadata.update(**kwargs)
+
+    # Create a new GeoTIFF file and write the array to it
+    with rasterio.open(output, "w", **metadata) as dst:
+        if array.ndim == 2:
+            dst.write(array, 1)
+        elif array.ndim == 3:
+            for i in range(array.shape[2]):
+                dst.write(array[:, :, i], i + 1)
+
+    return output
+
+
+def is_studio_lab():
+    """Check if the current notebook is running on Studio Lab.
+
+    Returns:
+        bool: True if the notebook is running on Studio Lab.
+    """
+
+    import psutil
+
+    output = psutil.Process().parent().cmdline()
+
+    on_studio_lab = False
+    for item in output:
+        if "studiolab/bin" in item:
+            on_studio_lab = True
+    return on_studio_lab
+
+
+def is_on_aws():
+    """Check if the current notebook is running on AWS.
+
+    Returns:
+        bool: True if the notebook is running on AWS.
+    """
+
+    import psutil
+
+    output = psutil.Process().parent().cmdline()
+
+    on_aws = False
+    for item in output:
+        if item.endswith(".aws") or "ec2-user" in item:
+            on_aws = True
+    return on_aws

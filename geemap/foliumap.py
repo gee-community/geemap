@@ -614,7 +614,6 @@ class Map(folium.Map):
         arc_add_layer(tile_layer.tiles, layer_name, True, 1.0)
         arc_zoom_to_extent(bounds[0], bounds[1], bounds[2], bounds[3])
 
-    add_local_tile = add_raster
 
     def add_remote_tile(
         self,
@@ -2409,7 +2408,7 @@ class Map(folium.Map):
             else:
                 band_idx = [vars.index(v) + 1 for v in variables]
 
-        self.add_local_tile(
+        self.add_raster(
             tif,
             band=band_idx,
             palette=palette,
