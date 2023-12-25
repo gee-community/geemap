@@ -1746,7 +1746,7 @@ def open_data_widget(m):
                         except Exception as _:
                             pass
 
-                        m.add_local_tile(
+                        m.add_raster(
                             file_path,
                             layer_name=layer_name.value,
                             band=band,
@@ -4358,49 +4358,49 @@ def _cleanup_toolbar_item(func):
 
 @_cleanup_toolbar_item
 def _inspector_tool_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     map.add_inspector()
     return map._inspector
 
 
 @_cleanup_toolbar_item
 def _plotting_tool_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     ee_plot_gui(map)
     return map._plot_dropdown_control
 
 
 @_cleanup_toolbar_item
 def _timelapse_tool_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     timelapse_gui(map)
     return map.tool_control
 
 
 @_cleanup_toolbar_item
 def _convert_js_tool_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     convert_js2py(map)
     return map._convert_ctrl
 
 
 @_cleanup_toolbar_item
 def _basemap_tool_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     map.add_basemap_widget()
     return map._basemap_selector
 
 
 @_cleanup_toolbar_item
 def _open_data_tool_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     open_data_widget(map)
     return map._tool_output_ctrl
 
 
 @_cleanup_toolbar_item
 def _whitebox_tool_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     import whiteboxgui.whiteboxgui as wbt
 
     tools_dict = wbt.get_wbt_dict()
@@ -4419,7 +4419,7 @@ def _whitebox_tool_callback(map, selected, item):
 
 @_cleanup_toolbar_item
 def _gee_toolbox_tool_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     tools_dict = get_tools_dict()
     gee_toolbox = build_toolbox(tools_dict, max_width="800px", max_height="500px")
     geetoolbox_control = ipyleaflet.WidgetControl(
@@ -4432,35 +4432,35 @@ def _gee_toolbox_tool_callback(map, selected, item):
 
 @_cleanup_toolbar_item
 def _time_slider_tool_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     time_slider(map)
     return map.tool_control
 
 
 @_cleanup_toolbar_item
 def _collect_samples_tool_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     collect_samples(map)
     return map.training_ctrl
 
 
 @_cleanup_toolbar_item
 def _plot_transect_tool_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     plot_transect(map)
     return map.tool_control
 
 
 @_cleanup_toolbar_item
 def _sankee_tool_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     sankee_gui(map)
     return map.tool_control
 
 
 @_cleanup_toolbar_item
 def _cog_stac_inspector_callback(map, selected, item):
-    del selected, item # Unused.
+    del selected, item  # Unused.
     inspector_gui(map)
     return map.tool_control
 

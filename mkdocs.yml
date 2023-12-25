@@ -284,6 +284,7 @@ nav:
           - notebooks/138_draw_control.ipynb
           - notebooks/139_layer_to_image.ipynb
           - notebooks/140_ee_to_xarray.ipynb
+          - notebooks/141_image_array_viz.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
