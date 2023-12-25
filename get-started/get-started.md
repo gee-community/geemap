@@ -38,6 +38,32 @@ Map = geemap.Map(center=(40, -100), zoom=4)
 Map
 ```
 
+## Use basemaps
+
+Basemaps can be added to the map using the `add_basemap()` function. The default basemap is `OpenStreetMap`.
+
+```python
+Map = geemap.Map()
+Map.add_basemap("Esri.WorldImagery")
+Map.add_basemap("OpenTopoMap")
+Map
+```
+
+All Google basemaps have been removed from the geemap since [v0.26.0](https://geemap.org/changelog/#v0270-sep-21-2023) to comply with Google Maps' terms of service. Users can choose to add Google basemaps at their own risks by setting environment variables as follows. If no env variables are detected, Esri basemaps will be used.
+
+```python
+import os
+
+os.environ["ROADMAP"] = 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
+os.environ["SATELLITE"] = 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
+os.environ["TERRAIN"] = 'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}'
+os.environ["HYBRID"] = 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}'
+
+Map = geemap.Map()
+Map.add_basemap("HYBRID")
+Map
+```
+
 ## Add Earth Engine data
 
 ```python
