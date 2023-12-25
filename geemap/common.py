@@ -15740,11 +15740,12 @@ def geotiff_to_image(image: str, output: str) -> None:
         image.save(output)
 
 
-def xarray_to_image(
+def xee_to_image(
     xds,
     filenames: Optional[Union[str, List[str]]] = None,
     out_dir: Optional[str] = None,
     crs: Optional[str] = None,
+    nodata: Optional[float] = None,
     driver: str = "COG",
     time_unit: str = "D",
     quiet: bool = False,
@@ -15761,6 +15762,7 @@ def xarray_to_image(
         out_dir (str, optional): Output directory for the images. Defaults to current working directory.
         crs (str, optional): Coordinate reference system (CRS) of the output images.
             If not provided, the CRS is inferred from the Dataset's attributes ('crs' attribute) or set to 'EPSG:4326'.
+        nodata (float, optional): The nodata value used for the output images. Defaults to None.
         driver (str, optional): Driver used for writing the output images, such as 'GTiff'. Defaults to "COG".
         time_unit (str, optional): Time unit used for generating default filenames. Defaults to 'D'.
         quiet (bool, optional): If True, suppresses progress messages. Defaults to False.
@@ -15805,6 +15807,12 @@ def xarray_to_image(
     y_dim = coords[2]
 
     for index, time in enumerate(xds.time.values):
+        if nodata is not None:
+            # Create a Boolean mask where all three variables are zero (nodata)
+            mask = (xds == nodata).all(dim="time")
+            # Set nodata values based on the mask for all variables
+            xds = xds.where(~mask, other=np.nan)
+
         if not quiet:
             print(f"Processing {index + 1}/{len(xds.time.values)}: {time}")
         image = xds.sel(time=time)
@@ -15859,6 +15867,13 @@ def array_to_memory_file(
     import xarray as xr
 
     if isinstance(array, xr.DataArray):
+        coords = [coord for coord in array.coords]
+        if coords[0] == "time":
+            x_dim = coords[1]
+            y_dim = coords[2]
+            array = (
+                array.isel(time=0).rename({y_dim: "y", x_dim: "x"}).transpose("y", "x")
+            )
         array = array.values
 
     if array.ndim == 3 and transpose:
@@ -15886,6 +15901,7 @@ def array_to_memory_file(
                 cellsize * array.shape[1],
                 cellsize * array.shape[0],
             )
+            # (west, south, east, north, width, height)
             transform = rasterio.transform.from_bounds(
                 xmin, ymin, xmax, ymax, array.shape[1], array.shape[0]
             )
@@ -15979,11 +15995,22 @@ def array_to_image(
 
     import numpy as np
     import rasterio
+    import xarray as xr
 
     if output is None:
         return array_to_memory_file(
             array, source, dtype, compress, transpose, cellsize, crs, driver, **kwargs
         )
+
+    if isinstance(array, xr.DataArray):
+        coords = [coord for coord in array.coords]
+        if coords[0] == "time":
+            x_dim = coords[1]
+            y_dim = coords[2]
+            array = (
+                array.isel(time=0).rename({y_dim: "y", x_dim: "x"}).transpose("y", "x")
+            )
+        array = array.values
 
     if array.ndim == 3 and transpose:
         array = np.transpose(array, (1, 2, 0))
@@ -16070,8 +16097,6 @@ def array_to_image(
         elif array.ndim == 3:
             for i in range(array.shape[2]):
                 dst.write(array[:, :, i], i + 1)
-
-    return output
 
 
 def is_studio_lab():
