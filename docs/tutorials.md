@@ -152,3 +152,4 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 138. Clipping Earth Engine images interactively with the Draw Control ([notebook](https://geemap.org/notebooks/138_draw_control))
 139. Converting an Earth Engine to an image ([notebook](https://geemap.org/notebooks/139_layer_to_image))
 140. Converting Earth Engine images to an Xarray Dataset ([notebook](https://geemap.org/notebooks/140_ee_to_xarray))
+141. Visualizing in-memory raster datasets and image arrays ([notebook](https://geemap.org/notebooks/141_image_array_viz))
