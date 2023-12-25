@@ -6933,8 +6933,7 @@ def zonal_stats(
         out_file_path = os.path.join(os.getcwd(), "zonal_stats.csv")
 
     if "statistics_type" in kwargs:
-        stat_type = kwargs["statistics_type"]
-        kwargs.pop("statistics_type")
+        stat_type = kwargs.pop("statistics_type")
 
     allowed_formats = ["csv", "geojson", "kml", "kmz", "shp"]
     filename = os.path.abspath(out_file_path)
@@ -7098,8 +7097,7 @@ def zonal_stats_by_group(
         out_file_path = os.path.join(os.getcwd(), "zonal_stats_by_group.csv")
 
     if "statistics_type" in kwargs:
-        stat_type = kwargs["statistics_type"]
-        kwargs.pop("statistics_type")
+        stat_type = kwargs.pop("statistics_type")
 
     band_count = in_value_raster.bandNames().size().getInfo()
 
