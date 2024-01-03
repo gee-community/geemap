@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.30.0 - Dec 24, 2023
+
+**What's Changed**
+
+-   Update changelog for v0.29.6 by @giswqs in [#1840](https://github.com/gee-community/geemap/pull/1840)
+-   Update common.py by @tjlogue4 in [#1843](https://github.com/gee-community/geemap/pull/1843)
+-   Update data conversion functions by @giswqs in [#1849](https://github.com/gee-community/geemap/pull/1849)
+-   Update GitHub Actions to use Python 3.12 by @giswqs in [#1850](https://github.com/gee-community/geemap/pull/1850)
+-   Rename structured array variable to be self-describing by @jdbcode in [#1852](https://github.com/gee-community/geemap/pull/1852)
+-   Update zonal stats function by @giswqs in [#1854](https://github.com/gee-community/geemap/pull/1854)
+-   Add support for xee by @giswqs in [#1859](https://github.com/gee-community/geemap/pull/1859)
+-   Improve support for xee by @giswqs in [#1861](https://github.com/gee-community/geemap/pull/1861)
+
+**New Contributors**
+
+-   @tjlogue4 made their first contribution in [#1843](https://github.com/gee-community/geemap/pull/1843)
+
+**Full Changelog**: [v0.29.6...v0.30.0](https://github.com/gee-community/geemap/compare/v0.29.6...v0.30.0)
+
 ## v0.29.6 - Nov 26, 2023
 
 **What's Changed**
