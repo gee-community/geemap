@@ -37,15 +37,24 @@ backends = [
     "plotly",
 ]
 extra = [
+    "datapane",
     "ee_extra>=0.0.15",
     "ffmpeg-python",
     "gdown",
     "geeadd>=0.5.1",
     "geojson",
     "geopandas",
+    "ipynb-py-convert",
+    "jupyterlab>=3",
+    "mapclassify>=2.4.0",
+    "mss",
+    "oeel",
+    "owslib",
+    "palettable",
     "pycrs",
     "sankee>=0.1.0",
     "whiteboxgui>=0.6.0",
+    "xee",
 ]
 lidar = [
     "ipygany",
