@@ -1,9 +1,0 @@
-ee_extra>=0.0.15
-ffmpeg-python
-gdown
-geeadd>=0.5.1
-geojson
-geopandas
-pycrs
-sankee>=0.1.0
-whiteboxgui>=0.6.0

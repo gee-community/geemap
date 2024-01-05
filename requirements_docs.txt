@@ -1,14 +1,14 @@
 black
 black[jupyter]
+bump-my-version
 codespell
 deadlink
-bump2version
 coverage
-flake8
 ipykernel
 livereload
 nbconvert
 nbformat
+pyproject-flake8
 pip
 sphinx
 tox
