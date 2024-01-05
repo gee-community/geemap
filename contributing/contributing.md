@@ -78,14 +78,14 @@ Ready to contribute? Here's how to set up _geemap_ for local development.
 5. When you're done making changes, check that your changes pass flake8 and the tests, including testing other Python versions with tox:
 
     ```
-    flake8 geemap tests
+    pflake8 geemap tests
     ```
 
     ```
     python setup.py test or pytest
     ```
 
-    To get flake8 and tox, just pip install them into your conda env.
+    To get pflake8 and tox, just pip install them into your conda env (`pip install pyproject-flake8` and `pip install tox`).
 
 6. Commit your changes and push your branch to GitHub:
 
