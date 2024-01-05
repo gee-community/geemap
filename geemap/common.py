@@ -10790,6 +10790,8 @@ def get_local_tile_layer(
     from osgeo import gdal
     import rasterio
 
+    gdal.UseExceptions()
+
     # ... and suppress errors
     gdal.PushErrorHandler("CPLQuietErrorHandler")
 
@@ -11583,7 +11585,14 @@ def image_to_numpy(image):
     import rasterio
     from osgeo import gdal
 
-    gdal.PushErrorHandler("CPLQuietErrorHandler")
+    gdal.UseExceptions()
+
+    handler = gdal.PushErrorHandler("CPLQuietErrorHandler")
+
+    try:
+        yield handler
+    finally:
+        gdal.PopErrorHandler()
 
     if not os.path.exists(image):
         raise FileNotFoundError("The provided input file could not be found.")
@@ -15125,10 +15134,9 @@ def tms_to_geotiff(
     import numpy
     from PIL import Image
 
-    try:
-        from osgeo import gdal, osr
-    except ImportError:
-        raise ImportError("GDAL is not installed. Install it with pip install GDAL")
+    from osgeo import gdal, osr
+
+    gdal.UseExceptions()
 
     try:
         import httpx
@@ -15207,7 +15215,6 @@ def tms_to_geotiff(
 
     Image.MAX_IMAGE_PIXELS = None
 
-    gdal.UseExceptions()
     web_mercator = osr.SpatialReference()
     web_mercator.ImportFromEPSG(3857)
 
@@ -15387,16 +15394,15 @@ def tif_to_jp2(filename, output, creationOptions=None):
 
     """
 
+    from osgeo import gdal
+
+    gdal.UseExceptions()
+
     if not os.path.exists(filename):
         raise Exception(f"File {filename} does not exist")
 
     if not output.endswith(".jp2"):
         output += ".jp2"
-
-    try:
-        from osgeo import gdal
-    except ImportError:
-        raise ImportError("GDAL is required to convert GeoTIFF to JPEG2000")
 
     in_ds = gdal.Open(filename)
     gdal.Translate(output, in_ds, format="JP2OpenJPEG", creationOptions=creationOptions)
@@ -15869,9 +15875,10 @@ def array_to_memory_file(
         if coords[0] == "time":
             x_dim = coords[1]
             y_dim = coords[2]
-            array = (
-                array.isel(time=0).rename({y_dim: "y", x_dim: "x"}).transpose("y", "x")
-            )
+            if array.dims[0] == "time":
+                array = array.isel(time=0)
+
+            array = array.rename({y_dim: "y", x_dim: "x"}).transpose("y", "x")
         array = array.values
 
     if array.ndim == 3 and transpose:
@@ -16005,9 +16012,10 @@ def array_to_image(
         if coords[0] == "time":
             x_dim = coords[1]
             y_dim = coords[2]
-            array = (
-                array.isel(time=0).rename({y_dim: "y", x_dim: "x"}).transpose("y", "x")
-            )
+            if array.dims[0] == "time":
+                array = array.isel(time=0)
+
+            array = array.rename({y_dim: "y", x_dim: "x"}).transpose("y", "x")
         array = array.values
 
     if array.ndim == 3 and transpose:
