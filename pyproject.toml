@@ -98,9 +98,8 @@ workshop = [
 
 [tool]
 [tool.setuptools.packages.find]
-where = ["geemap"]
-namespaces = false
-
+include = ["geemap*"]
+exclude = ["docs*"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
@@ -140,4 +139,3 @@ Homepage = "https://github.com/gee-community/geemap"
 [build-system]
 requires = ["setuptools>=64", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
-
