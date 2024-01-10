@@ -1,6 +1,6 @@
 [project]
 name = "geemap"
-version = "0.30.0"
+version = "0.30.1"
 dynamic = [
     "dependencies",
 ]
@@ -96,25 +96,22 @@ workshop = [
     "gdown",
 ]
 
+[tool]
 [tool.setuptools.packages.find]
 where = ["geemap"]
 namespaces = false
 
-[project.urls]
-Homepage = "https://github.com/gee-community/geemap"
-
-[build-system]
-requires = ["setuptools>=64", "setuptools_scm>=8"]
-build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 
+
 [tool.distutils.bdist_wheel]
 universal = true
 
+
 [tool.bumpversion]
-current_version = "0.30.0"
+current_version = "0.30.1"
 commit = true
 tag = true
 
@@ -128,6 +125,7 @@ filename = "geemap/__init__.py"
 search = '__version__ = "{current_version}"'
 replace = '__version__ = "{new_version}"'
 
+
 [tool.flake8]
 exclude = [
     "docs",
@@ -135,3 +133,11 @@ exclude = [
 max-line-length = 88
 
 [tool.setuptools_scm]
+
+[project.urls]
+Homepage = "https://github.com/gee-community/geemap"
+
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
