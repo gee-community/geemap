@@ -5,7 +5,6 @@ include requirements_docs.txt
 
 recursive-include geemap/data *
 recursive-include geemap/examples *
-recursive-include geemap/algorithms *
 recursive-include tests *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]

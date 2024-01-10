@@ -1717,8 +1717,8 @@ def sentinel2_timeseries_legacy(
         print(f"The end year must be an integer <= {get_current_year()}.")
         return
 
-    if re.match("[0-9]{2}\-[0-9]{2}", start_date) and re.match(
-        "[0-9]{2}\-[0-9]{2}", end_date
+    if re.match(r"[0-9]{2}-[0-9]{2}", start_date) and re.match(
+        r"[0-9]{2}-[0-9]{2}", end_date
     ):
         pass
     else:
@@ -2033,8 +2033,8 @@ def landsat_timeseries(
         print(f"The end year must be an integer <= {get_current_year()}.")
         return
 
-    if re.match("[0-9]{2}\-[0-9]{2}", start_date) and re.match(
-        "[0-9]{2}\-[0-9]{2}", end_date
+    if re.match(r"[0-9]{2}-[0-9]{2}", start_date) and re.match(
+        r"[0-9]{2}-[0-9]{2}", end_date
     ):
         pass
     else:
@@ -2325,8 +2325,8 @@ def landsat_timeseries_legacy(
         print("The end year must be an integer <= 2021.")
         return
 
-    if re.match("[0-9]{2}\-[0-9]{2}", start_date) and re.match(
-        "[0-9]{2}\-[0-9]{2}", end_date
+    if re.match(r"[0-9]{2}-[0-9]{2}", start_date) and re.match(
+        r"[0-9]{2}-[0-9]{2}", end_date
     ):
         pass
     else:
@@ -3232,7 +3232,7 @@ def sentinel1_timelapse_legacy(
 
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to LV & Lake Mead.
-        out_gif (str, optional): File path to the output animated GIF. Defaults to user\Downloads\s1_ts_*.gif.
+        out_gif (str, optional): File path to the output animated GIF. Defaults to Downloads\s1_ts_*.gif.
         start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
         end_year (int, optional): Ending year for the timelapse. Defaults to current year.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
