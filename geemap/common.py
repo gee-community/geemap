@@ -34,7 +34,7 @@ except ImportError:
 
 def ee_initialize(
     token_name="EARTHENGINE_TOKEN",
-    auth_mode="notebook",
+    auth_mode=None,
     service_account=False,
     auth_args={},
     user_agent_prefix="geemap",
@@ -44,7 +44,8 @@ def ee_initialize(
 
     Args:
         token_name (str, optional): The name of the Earth Engine token. Defaults to "EARTHENGINE_TOKEN".
-        auth_mode (str, optional): The authentication mode, can be one of paste,notebook,gcloud,appdefault. Defaults to "notebook".
+        auth_mode (str, optional): The authentication mode, can be one of colab, notebook, localhost, or gcloud.
+            See https://developers.google.com/earth-engine/guides/auth for more details. Defaults to None.
         service_account (bool, optional): If True, use a service account. Defaults to False.
         auth_args (dict, optional): Additional authentication parameters for aa.Authenticate(). Defaults to {}.
         user_agent_prefix (str, optional): If set, the prefix (version-less) value used for setting the user-agent string. Defaults to "geemap".
@@ -57,6 +58,12 @@ def ee_initialize(
     user_agent = f"{user_agent_prefix}/{__version__}"
     if "http_transport" not in kwargs:
         kwargs["http_transport"] = httplib2.Http()
+
+    if auth_mode is None:
+        if in_colab_shell():
+            auth_mode = "colab"
+        else:
+            auth_mode = "localhost"
 
     auth_args["auth_mode"] = auth_mode
 
