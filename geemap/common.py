@@ -61,7 +61,7 @@ def ee_initialize(
 
     if auth_mode is None:
         if in_colab_shell():
-            auth_mode = "colab"
+            auth_mode = "notebook"
         else:
             auth_mode = "localhost"
 
