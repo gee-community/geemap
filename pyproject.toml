@@ -1,6 +1,6 @@
 [project]
 name = "geemap"
-version = "0.30.2"
+version = "0.30.3"
 dynamic = [
     "dependencies",
 ]
@@ -110,7 +110,7 @@ universal = true
 
 
 [tool.bumpversion]
-current_version = "0.30.2"
+current_version = "0.30.3"
 commit = true
 tag = true
 
@@ -126,6 +126,7 @@ replace = '__version__ = "{new_version}"'
 
 
 
+
 [tool.flake8]
 exclude = [
     "docs",
@@ -133,6 +134,7 @@ exclude = [
 max-line-length = 88
 
 [tool.setuptools_scm]
+
 
 
 [project.urls]
