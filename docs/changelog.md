@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.30.4 - Jan 12, 2024
+
+**What's Changed**
+
+-   Improve Colab authentication by @giswqs in [#1879](https://github.com/gee-community/geemap/pull/1879)
+
+**Full Changelog**: [v0.30.3...v0.30.4](https://github.com/gee-community/geemap/compare/v0.30.3...v0.30.4)
+
+## v0.30.3 - Jan 11, 2024
+
+**What's Changed**
+
+-   Add the build package by @giswqs in [#1875](https://github.com/gee-community/geemap/pull/1875)
+-   Update changelog by @giswqs in [#1876](https://github.com/gee-community/geemap/pull/1876)
+-   Fix Colab authentication issue by @giswqs in [#1877](https://github.com/gee-community/geemap/pull/1877)
+
+**Full Changelog**: [v0.30.2...v0.30.3](https://github.com/gee-community/geemap/compare/v0.30.2...v0.30.3)
+
 ## v0.30.2 - Jan 10, 2024
 
 **What's Changed**
