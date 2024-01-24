@@ -488,7 +488,7 @@ def js_to_python(
                     output += line + "\n"
 
     if show_map:
-        output += "Map"
+        output += Map
 
     out_dir = os.path.dirname(out_file)
     if not os.path.exists(out_dir):
@@ -552,9 +552,9 @@ def js_snippet_to_py(
         out_lines = []
         if import_ee:
             out_lines.append("import ee\n")
-        if import_geemap:
-            out_lines.append("import geemap\n\n")
-            out_lines.append(f"{Map} = geemap.Map()\n")
+        # if import_geemap:
+        #     out_lines.append("import geemap\n\n")
+        #     out_lines.append(f"{Map} = geemap.Map()\n")
 
         with open(out_py, encoding="utf-8") as f:
             lines = f.readlines()
@@ -577,8 +577,8 @@ def js_snippet_to_py(
                 elif index == (len(lines) - 1) and lines[index].strip() != "":
                     out_lines.append(line)
 
-        os.remove(in_js)
-        os.remove(out_py)
+        # os.remove(in_js)
+        # os.remove(out_py)
 
         if add_new_cell:
             contents = "".join(out_lines).strip()
