@@ -569,6 +569,9 @@ def js_snippet_to_py(
                     elif ".style(" in line and (".style(**" not in line):
                         line = line.replace(".style(", ".style(**")
                         out_lines.append(line)
+                    elif "({" in line:
+                        line = line.replace("({", "(**{")
+                        out_lines.append(line)
                     else:
                         out_lines.append(line)
                 elif index == (len(lines) - 1) and lines[index].strip() != "":
