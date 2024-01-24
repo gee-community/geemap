@@ -577,8 +577,8 @@ def js_snippet_to_py(
                 elif index == (len(lines) - 1) and lines[index].strip() != "":
                     out_lines.append(line)
 
-        # os.remove(in_js)
-        # os.remove(out_py)
+        os.remove(in_js)
+        os.remove(out_py)
 
         if add_new_cell:
             contents = "".join(out_lines).strip()
