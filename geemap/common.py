@@ -11592,12 +11592,7 @@ def image_to_numpy(image):
 
     gdal.UseExceptions()
 
-    handler = gdal.PushErrorHandler("CPLQuietErrorHandler")
-
-    try:
-        yield handler
-    finally:
-        gdal.PopErrorHandler()
+    gdal.PushErrorHandler("CPLQuietErrorHandler")
 
     if not os.path.exists(image):
         raise FileNotFoundError("The provided input file could not be found.")
