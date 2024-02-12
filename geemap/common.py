@@ -44,7 +44,7 @@ def ee_initialize(
 
     Args:
         token_name (str, optional): The name of the Earth Engine token. Defaults to "EARTHENGINE_TOKEN".
-            In Colab, you can also set a secret named "EE_PROJECT_ID" to initialize Earth Engine. 
+            In Colab, you can also set a secret named "EE_PROJECT_ID" to initialize Earth Engine.
         auth_mode (str, optional): The authentication mode, can be one of colab, notebook, localhost, or gcloud.
             See https://developers.google.com/earth-engine/guides/auth for more details. Defaults to None.
         service_account (bool, optional): If True, use a service account. Defaults to False.
@@ -5892,7 +5892,7 @@ def cog_pixel_value(
     Args:
         lon (float): Longitude of the pixel.
         lat (float): Latitude of the pixel.
-        url (str): HTTP URL to a COG, e.g., 'https://opendata.digitalglobe.com/events/california-fire-2020/pre-event/2018-02-16/pine-gulch-fire20/1030010076004E00.tif'
+        url (str): HTTP URL to a COG, e.g., 'https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif'
         bidx (str, optional): Dataset band indexes (e.g bidx=1, bidx=1&bidx=2&bidx=3). Defaults to None.
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
@@ -6476,7 +6476,7 @@ def local_tile_pixel_value(
     Args:
         lon (float): Longitude of the pixel.
         lat (float): Latitude of the pixel.
-        url (str): HTTP URL to a COG, e.g., 'https://opendata.digitalglobe.com/events/california-fire-2020/pre-event/2018-02-16/pine-gulch-fire20/1030010076004E00.tif'
+        url (str): HTTP URL to a COG, e.g., 'https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif'
         bidx (str, optional): Dataset band indexes (e.g bidx=1, bidx=1&bidx=2&bidx=3). Defaults to None.
         titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
         verbose (bool, optional): Print status messages. Defaults to True.
@@ -10400,13 +10400,13 @@ def get_census_dict(reset=False):
         print("Retrieving data. Please wait ...")
         for name in names:
             if "Decennial" not in name:
-                links[
-                    name
-                ] = f"https://tigerweb.geo.census.gov/arcgis/services/TIGERweb/tigerWMS_{name.replace(' ', '')}/MapServer/WMSServer"
+                links[name] = (
+                    f"https://tigerweb.geo.census.gov/arcgis/services/TIGERweb/tigerWMS_{name.replace(' ', '')}/MapServer/WMSServer"
+                )
             else:
-                links[
-                    name
-                ] = f"https://tigerweb.geo.census.gov/arcgis/services/Census2020/tigerWMS_{name.replace('Decennial', '').replace(' ', '')}/MapServer/WMSServer"
+                links[name] = (
+                    f"https://tigerweb.geo.census.gov/arcgis/services/Census2020/tigerWMS_{name.replace('Decennial', '').replace(' ', '')}/MapServer/WMSServer"
+                )
 
             wms = WebMapService(links[name], timeout=300)
             layers = list(wms.contents)
@@ -10811,14 +10811,14 @@ def get_local_tile_layer(
 
     # Make it compatible with binder and JupyterHub
     if os.environ.get("JUPYTERHUB_SERVICE_PREFIX") is not None:
-        os.environ[
-            "LOCALTILESERVER_CLIENT_PREFIX"
-        ] = f"{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}"
+        os.environ["LOCALTILESERVER_CLIENT_PREFIX"] = (
+            f"{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}"
+        )
 
     if is_studio_lab():
-        os.environ[
-            "LOCALTILESERVER_CLIENT_PREFIX"
-        ] = f"studiolab/default/jupyter/proxy/{{port}}"
+        os.environ["LOCALTILESERVER_CLIENT_PREFIX"] = (
+            f"studiolab/default/jupyter/proxy/{{port}}"
+        )
     elif is_on_aws():
         os.environ["LOCALTILESERVER_CLIENT_PREFIX"] = "proxy/{port}"
     elif "prefix" in kwargs:
