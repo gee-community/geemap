@@ -69,7 +69,7 @@ lidar = [
 ]
 raster = [
     "geedim",
-    "localtileserver",
+    "localtileserver>=0.10.1",
     "rio-cogeo",
     "rioxarray",
     "netcdf4",
