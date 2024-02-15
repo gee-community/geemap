@@ -1,5 +1,56 @@
 # Changelog
 
+## v0.31.0 - Feb 15, 2024
+
+**What's Changed**
+
+-   Update changelog by @giswqs in [#1880](https://github.com/gee-community/geemap/pull/1880)
+-   Fix JS-PY conversion bugs by @giswqs in [#1890](https://github.com/gee-community/geemap/pull/1890)
+-   Fix image_to_numpy error by @giswqs in [#1895](https://github.com/gee-community/geemap/pull/1895)
+-   Update GitHub Action versions by @giswqs in [#1896](https://github.com/gee-community/geemap/pull/1896)
+-   Update sample raster datasets by @giswqs in [#1904](https://github.com/gee-community/geemap/pull/1904)
+-   Update the Map.add_raster method by @giswqs in [#1909](https://github.com/gee-community/geemap/pull/1909)
+
+**Full Changelog**: [v0.30.4...v0.31.0](https://github.com/gee-community/geemap/compare/v0.30.4...v0.31.0)
+
+## v0.30.4 - Jan 12, 2024
+
+**What's Changed**
+
+-   Improve Colab authentication by @giswqs in [#1879](https://github.com/gee-community/geemap/pull/1879)
+
+**Full Changelog**: [v0.30.3...v0.30.4](https://github.com/gee-community/geemap/compare/v0.30.3...v0.30.4)
+
+## v0.30.3 - Jan 11, 2024
+
+**What's Changed**
+
+-   Add the build package by @giswqs in [#1875](https://github.com/gee-community/geemap/pull/1875)
+-   Update changelog by @giswqs in [#1876](https://github.com/gee-community/geemap/pull/1876)
+-   Fix Colab authentication issue by @giswqs in [#1877](https://github.com/gee-community/geemap/pull/1877)
+
+**Full Changelog**: [v0.30.2...v0.30.3](https://github.com/gee-community/geemap/compare/v0.30.2...v0.30.3)
+
+## v0.30.2 - Jan 10, 2024
+
+**What's Changed**
+
+-   Fix PyPI upload issue by @giswqs in [#1872](https://github.com/gee-community/geemap/pull/1872)
+-   Add missing files in wheel by @giswqs in [#1874](https://github.com/gee-community/geemap/pull/1874)
+
+**Full Changelog**: [v0.30.1...v0.30.2](https://github.com/gee-community/geemap/compare/v0.30.1...v0.30.2)
+
+## v0.30.1 - Jan 10, 2024
+
+**What's Changed**
+
+-   Update changelog for v0.30.0 by @giswqs in [#1862](https://github.com/gee-community/geemap/pull/1862)
+-   Use pyproject file for project metadata. by @naschmitz in [#1865](https://github.com/gee-community/geemap/pull/1865)
+-   Make consistent use of gdal by @giswqs in [#1867](https://github.com/gee-community/geemap/pull/1867)
+-   Temporal fix for notebook authenticate by @giswqs in [#1871](https://github.com/gee-community/geemap/pull/1871)
+
+**Full Changelog**: [v0.30.0...v0.30.1](https://github.com/gee-community/geemap/compare/v0.30.0...v0.30.1)
+
 ## v0.30.0 - Dec 24, 2023
 
 **What's Changed**

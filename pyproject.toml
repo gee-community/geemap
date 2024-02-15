@@ -1,0 +1,147 @@
+[project]
+name = "geemap"
+version = "0.31.0"
+dynamic = [
+    "dependencies",
+]
+description = "A Python package for interactive mapping using Google Earth Engine and ipyleaflet"
+readme = "README.rst"
+requires-python = ">=3.8"
+keywords = [
+    "geemap",
+]
+license = {text = "MIT"}
+authors = [
+  {name = "Qiusheng Wu", email = "giswqs@gmail.com"},
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.entry-points."console_scripts"]
+geemap = "geemap.cli:main"
+
+[project.optional-dependencies]
+all = [
+    "geemap[backends,extra,lidar,raster,sql,apps,vector,workshop]",
+]
+backends = [
+    "keplergl",
+    "pydeck",
+    "plotly",
+]
+extra = [
+    "datapane",
+    "ee_extra>=0.0.15",
+    "ffmpeg-python",
+    "gdown",
+    "geeadd>=0.5.1",
+    "geojson",
+    "geopandas",
+    "ipynb-py-convert",
+    "jupyterlab>=3",
+    "mapclassify>=2.4.0",
+    "mss",
+    "oeel",
+    "owslib",
+    "palettable",
+    "pycrs",
+    "sankee>=0.1.0",
+    "whiteboxgui>=0.6.0",
+    "xee",
+]
+lidar = [
+    "ipygany",
+    "ipyvtklink",
+    "laspy[lazrs]",
+    "panel",
+    "pyntcloud[LAS]",
+    "pyvista",
+    "pyvista-xarray",
+    "rioxarray",
+]
+raster = [
+    "geedim",
+    "localtileserver>=0.10.1",
+    "rio-cogeo",
+    "rioxarray",
+    "netcdf4",
+    "pyvista-xarray",
+]
+sql = [
+    "psycopg2",
+    "sqlalchemy",
+]
+apps = [
+    "gradio",
+    "streamlit-folium",
+    "voila",
+    "solara",
+]
+vector = [
+    "geopandas",
+    "osmnx",
+]
+workshop = [
+    "geopandas",
+    "geedim",
+    "ffmpeg-python",
+    "gdown",
+]
+
+[tool]
+[tool.setuptools.packages.find]
+include = ["geemap*"]
+exclude = ["docs*"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+
+[tool.distutils.bdist_wheel]
+universal = true
+
+
+[tool.bumpversion]
+current_version = "0.31.0"
+commit = true
+tag = true
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "geemap/__init__.py"
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'
+
+
+
+
+
+[tool.flake8]
+exclude = [
+    "docs",
+]
+max-line-length = 88
+
+[tool.setuptools_scm]
+
+
+
+
+[project.urls]
+Homepage = "https://github.com/gee-community/geemap"
+
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"

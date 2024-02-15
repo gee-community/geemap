@@ -1193,6 +1193,7 @@ class Map(core.Map):
             titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
             **kwargs: Arbitrary keyword arguments, including bidx, expression, nodata, unscale, resampling, rescale, color_formula, colormap, colormap_name, return_mask. See https://developmentseed.org/titiler/endpoints/cog/ and https://cogeotiff.github.io/rio-tiler/colormap/. To select a certain bands, use bidx=[1, 2, 3]
         """
+        
         tile_url = cog_tile(url, bands, titiler_endpoint, **kwargs)
         bounds = cog_bounds(url, titiler_endpoint)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
@@ -2361,15 +2362,16 @@ class Map(core.Map):
     def add_raster(
         self,
         source,
-        band=None,
-        palette=None,
+        indexes=None,
+        colormap=None,
         vmin=None,
         vmax=None,
         nodata=None,
         attribution=None,
-        layer_name="Local COG",
+        layer_name="Raster",
         zoom_to_layer=True,
         visible=True,
+        array_args={},
         **kwargs,
     ):
         """Add a local raster dataset to the map.
@@ -2382,21 +2384,27 @@ class Map(core.Map):
 
         Args:
             source (str): The path to the GeoTIFF file or the URL of the Cloud Optimized GeoTIFF.
-            band (int, optional): The band to use. Band indexing starts at 1. Defaults to None.
-            palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
+            indexes (int, optional): The band(s) to use. Band indexing starts at 1. Defaults to None.
+            colormap (str, optional): The name of the colormap from `matplotlib` to use when plotting a single band. See https://matplotlib.org/stable/gallery/color/colormap_reference.html. Default is greyscale.
             vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
             vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
             nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
             attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
-            layer_name (str, optional): The layer name to use. Defaults to 'Local COG'.
+            layer_name (str, optional): The layer name to use. Defaults to 'Raster'.
             zoom_to_layer (bool, optional): Whether to zoom to the extent of the layer. Defaults to True.
             visible (bool, optional): Whether the layer is visible. Defaults to True.
+            array_args (dict, optional): Additional arguments to pass to `array_to_memory_file` when reading the raster. Defaults to {}.
         """
+        import numpy as np
+        import xarray as xr
+
+        if isinstance(source, np.ndarray) or isinstance(source, xr.DataArray):
+            source = array_to_image(source, **array_args)
 
         tile_layer, tile_client = get_local_tile_layer(
             source,
-            band=band,
-            palette=palette,
+            indexes=indexes,
+            colormap=colormap,
             vmin=vmin,
             vmax=vmax,
             nodata=nodata,
@@ -2408,7 +2416,6 @@ class Map(core.Map):
         tile_layer.visible = visible
 
         self.add(tile_layer)
-
         bounds = tile_client.bounds()  # [ymin, ymax, xmin, xmax]
         bounds = (
             bounds[2],
@@ -2425,12 +2432,11 @@ class Map(core.Map):
 
         if not hasattr(self, "cog_layer_dict"):
             self.cog_layer_dict = {}
-        band_names = list(tile_client.metadata()["bands"].keys())
         params = {
             "tile_layer": tile_layer,
             "tile_client": tile_client,
-            "band": band,
-            "band_names": band_names,
+            "indexes": indexes,
+            "band_names": tile_client.band_names,
             "bounds": bounds,
             "type": "LOCAL",
         }

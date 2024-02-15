@@ -1,13 +1,10 @@
 include LICENSE
 include README.rst
 include requirements.txt
-include requirements_extra.txt
-include requirements_all.txt
 include requirements_docs.txt
 
 recursive-include geemap/data *
 recursive-include geemap/examples *
-recursive-include geemap/algorithms *
 recursive-include tests *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]

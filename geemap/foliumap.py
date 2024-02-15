@@ -558,14 +558,15 @@ class Map(folium.Map):
 
     def add_raster(
         self,
-        source,
-        band=None,
-        palette=None,
-        vmin=None,
-        vmax=None,
-        nodata=None,
-        attribution=None,
-        layer_name="Local COG",
+        source: str,
+        indexes: Optional[int] = None,
+        colormap: Optional[str] = None,
+        vmin: Optional[float] = None,
+        vmax: Optional[float] = None,
+        nodata: Optional[float] = None,
+        attribution: Optional[str] = None,
+        layer_name: Optional[str] = "Raster",
+        array_args: Optional[Dict] = {},
         **kwargs,
     ):
         """Add a local raster dataset to the map.
@@ -578,19 +579,26 @@ class Map(folium.Map):
 
         Args:
             source (str): The path to the GeoTIFF file or the URL of the Cloud Optimized GeoTIFF.
-            band (int, optional): The band to use. Band indexing starts at 1. Defaults to None.
-            palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
-            vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
-            vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
+            indexes (int, optional): The band(s) to use. Band indexing starts at 1. Defaults to None.
+            colormap (str, optional): The name of the colormap from `matplotlib` to use when plotting a single band. See https://matplotlib.org/stable/gallery/color/colormap_reference.html. Default is greyscale.
+            vmin (float, optional): The minimum value to use when colormapping the colormap when plotting a single band. Defaults to None.
+            vmax (float, optional): The maximum value to use when colormapping the colormap when plotting a single band. Defaults to None.
             nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
             attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
-            layer_name (str, optional): The layer name to use. Defaults to 'Local COG'.
+            layer_name (str, optional): The layer name to use. Defaults to 'Raster'.
+            array_args (dict, optional): Additional arguments to pass to `array_to_image`. Defaults to {}.
         """
+
+        import numpy as np
+        import xarray as xr
+
+        if isinstance(source, np.ndarray) or isinstance(source, xr.DataArray):
+            source = array_to_image(source, **array_args)
 
         tile_layer, tile_client = get_local_tile_layer(
             source,
-            band=band,
-            palette=palette,
+            indexes=indexes,
+            colormap=colormap,
             vmin=vmin,
             vmax=vmax,
             nodata=nodata,
@@ -613,7 +621,6 @@ class Map(folium.Map):
 
         arc_add_layer(tile_layer.tiles, layer_name, True, 1.0)
         arc_zoom_to_extent(bounds[0], bounds[1], bounds[2], bounds[3])
-
 
     def add_remote_tile(
         self,

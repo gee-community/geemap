@@ -509,7 +509,7 @@ class Map(go.FigureWidget):
         """Adds a COG TileLayer to the map.
 
         Args:
-            url (str): The URL of the COG tile layer, e.g., 'https://opendata.digitalglobe.com/events/california-fire-2020/pre-event/2018-02-16/pine-gulch-fire20/1030010076004E00.tif'
+            url (str): The URL of the COG tile layer, e.g., 'https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif'
             name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
