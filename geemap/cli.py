@@ -1,4 +1,5 @@
 """Console script for geemap."""
+
 import sys
 import click
 

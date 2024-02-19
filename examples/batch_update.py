@@ -1,7 +1,6 @@
 """This script can do a batch update of notebook examples.
 """
 
-
 import glob
 import os
 import shutil
