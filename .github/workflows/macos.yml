@@ -29,5 +29,5 @@ jobs:
               run: |
                   python -m pip install --upgrade pip
                   pip install --no-cache-dir Cython
-                  pip install codespell -r requirements.txt
+                  pip install -r requirements.txt
                   pip install .
