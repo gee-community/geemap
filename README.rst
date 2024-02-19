@@ -29,7 +29,7 @@ geemap
 .. image:: https://github.com/gee-community/geemap/workflows/docs/badge.svg
         :target: https://geemap.org
 
-.. image:: https://img.shields.io/badge/YouTube-Channel-red   
+.. image:: https://img.shields.io/badge/YouTube-Channel-red
         :target: https://youtube.com/@giswqs
 
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
@@ -42,7 +42,12 @@ geemap
         :target: https://joss.theoj.org/papers/10.21105/joss.02305
 
 .. image:: https://badges.gitter.im/Join%20Chat.svg
-        :target: https://matrix.to/#/#geemap:gitter.im       
+        :target: https://matrix.to/#/#geemap:gitter.im
+
+.. image:: https://results.pre-commit.ci/badge/github/gee-community/geemap/master.svg
+        :target: https://results.pre-commit.ci/latest/github/gee-community/geemap/master
+        :alt: pre-commit.ci status
+
 
 **A Python package for interactive geospatial analysis and visualization with Google Earth Engine.**
 
@@ -78,10 +83,10 @@ purchasing the book, please visit this URL: https://locatepress.com/book/gee.
 Introduction
 ------------
 
-**Geemap** is a Python package for geospatial analysis and visualization with `Google Earth Engine <https://earthengine.google.com/>`__ (GEE), which is a cloud computing platform with a `multi-petabyte catalog <https://developers.google.com/earth-engine/datasets/>`__ of satellite imagery and geospatial datasets. During the past few years, 
-GEE has become very popular in the geospatial community and it has empowered numerous environmental applications at local, regional, and global scales. GEE provides both JavaScript and Python APIs for 
-making computational requests to the Earth Engine servers. Compared with the comprehensive `documentation <https://developers.google.com/earth-engine>`__ and interactive IDE (i.e., `GEE JavaScript Code Editor <https://code.earthengine.google.com/>`__) of the GEE JavaScript API, 
-the GEE Python API has relatively little documentation and limited functionality for visualizing results interactively. The **geemap** Python package was created to fill this gap. It is built upon `ipyleaflet <https://github.com/jupyter-widgets/ipyleaflet>`__ and `ipywidgets <https://github.com/jupyter-widgets/ipywidgets>`__, and enables users to 
+**Geemap** is a Python package for geospatial analysis and visualization with `Google Earth Engine <https://earthengine.google.com/>`__ (GEE), which is a cloud computing platform with a `multi-petabyte catalog <https://developers.google.com/earth-engine/datasets/>`__ of satellite imagery and geospatial datasets. During the past few years,
+GEE has become very popular in the geospatial community and it has empowered numerous environmental applications at local, regional, and global scales. GEE provides both JavaScript and Python APIs for
+making computational requests to the Earth Engine servers. Compared with the comprehensive `documentation <https://developers.google.com/earth-engine>`__ and interactive IDE (i.e., `GEE JavaScript Code Editor <https://code.earthengine.google.com/>`__) of the GEE JavaScript API,
+the GEE Python API has relatively little documentation and limited functionality for visualizing results interactively. The **geemap** Python package was created to fill this gap. It is built upon `ipyleaflet <https://github.com/jupyter-widgets/ipyleaflet>`__ and `ipywidgets <https://github.com/jupyter-widgets/ipywidgets>`__, and enables users to
 analyze and visualize Earth Engine datasets interactively within a Jupyter-based environment.
 
 **Geemap** is intended for students and researchers, who would like to utilize the Python ecosystem of diverse libraries and tools to explore Google Earth Engine. It is also designed for existing GEE users who would like to transition from the GEE JavaScript API to Python API. The automated JavaScript-to-Python `conversion module <https://github.com/gee-community/geemap/blob/master/geemap/conversion.py>`__ of the **geemap** package
@@ -91,10 +96,10 @@ For video tutorials and notebook examples, please visit `<https://geemap.org/tut
 
 If you find geemap useful in your research, please consider citing the following papers to support my work. Thank you for your support.
 
-- Wu, Q., (2020). geemap: A Python package for interactive mapping with Google Earth Engine. *The Journal of Open Source Software*, 5(51), 2305. `<https://doi.org/10.21105/joss.02305>`__ 
+- Wu, Q., (2020). geemap: A Python package for interactive mapping with Google Earth Engine. *The Journal of Open Source Software*, 5(51), 2305. `<https://doi.org/10.21105/joss.02305>`__
 - Wu, Q., Lane, C. R., Li, X., Zhao, K., Zhou, Y., Clinton, N., DeVries, B., Golden, H. E., & Lang, M. W. (2019). Integrating LiDAR data and multi-temporal aerial imagery to map wetland inundation dynamics using Google Earth Engine. *Remote Sensing of Environment*, 228, 1-13. https://doi.org/10.1016/j.rse.2019.04.015 (`pdf <https://gishub.org/2019_rse>`_ | `source code <https://doi.org/10.6084/m9.figshare.8864921>`_)
 
-Check out the geemap workshop presented at the GeoPython Conference 2021. This workshop gives a comprehensive introduction to the key features of geemap. 
+Check out the geemap workshop presented at the GeoPython Conference 2021. This workshop gives a comprehensive introduction to the key features of geemap.
 
 .. image:: https://img.youtube.com/vi/wGjpjh9IQ5I/0.jpg
         :target: https://www.youtube.com/watch?v=wGjpjh9IQ5I
@@ -155,7 +160,7 @@ To use **geemap**, you must first `sign up <https://earthengine.google.com/signu
   conda create -n gee python=3.10
   conda activate gee
   conda install -n base mamba -c conda-forge
-  mamba install geemap -c conda-forge 
+  mamba install geemap -c conda-forge
 
 If you have installed **geemap** before and want to upgrade to the latest version, you can run the following command in your terminal:
 
@@ -165,7 +170,7 @@ If you have installed **geemap** before and want to upgrade to the latest versio
 
 
 If you use conda, you can update geemap to the latest version by running the following command in your terminal:
-  
+
 .. code:: python
 
   conda update -c conda-forge geemap
@@ -184,11 +189,11 @@ To install the development version from GitHub directly within Jupyter notebook 
 
   import geemap
   geemap.update_package()
-  
+
 Citations
 ---------
 
 To support my work, please consider citing the following articles:
 
-- **Wu, Q.**, (2020). geemap: A Python package for interactive mapping with Google Earth Engine. *The Journal of Open Source Software*, 5(51), 2305. https://doi.org/10.21105/joss.02305 
+- **Wu, Q.**, (2020). geemap: A Python package for interactive mapping with Google Earth Engine. *The Journal of Open Source Software*, 5(51), 2305. https://doi.org/10.21105/joss.02305
 - **Wu, Q.**, Lane, C. R., Li, X., Zhao, K., Zhou, Y., Clinton, N., DeVries, B., Golden, H. E., & Lang, M. W. (2019). Integrating LiDAR data and multi-temporal aerial imagery to map wetland inundation dynamics using Google Earth Engine. *Remote Sensing of Environment*, 228, 1-13. https://doi.org/10.1016/j.rse.2019.04.015 (`pdf <https://gishub.org/2019_rse>`_ | `source code <https://doi.org/10.6084/m9.figshare.8864921>`_)
