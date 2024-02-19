@@ -4992,25 +4992,31 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
 <span class="sd">            tuple: The minimum, maximum, standard deviation, and mean values across the</span>
 <span class="sd">                specified bands.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">stat_reducer</span> <span class="o">=</span> <span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">minMax</span><span class="p">()</span>
-                        <span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">unweighted</span><span class="p">(),</span> <span class="n">sharedInputs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                        <span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">stdDev</span><span class="p">(),</span> <span class="n">sharedInputs</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">stat_reducer</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">minMax</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">unweighted</span><span class="p">(),</span> <span class="n">sharedInputs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">stdDev</span><span class="p">(),</span> <span class="n">sharedInputs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="p">)</span>
 
-        <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span><span class="o">.</span><span class="n">reduceRegion</span><span class="p">(</span>
-            <span class="n">reducer</span><span class="o">=</span><span class="n">stat_reducer</span><span class="p">,</span>
-            <span class="n">geometry</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
-            <span class="n">bestEffort</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">maxPixels</span><span class="o">=</span><span class="mi">10_000</span><span class="p">,</span>
-            <span class="n">crs</span><span class="o">=</span><span class="s2">&quot;SR-ORG:6627&quot;</span><span class="p">,</span>
-            <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">reduceRegion</span><span class="p">(</span>
+                <span class="n">reducer</span><span class="o">=</span><span class="n">stat_reducer</span><span class="p">,</span>
+                <span class="n">geometry</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+                <span class="n">bestEffort</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">maxPixels</span><span class="o">=</span><span class="mi">10_000</span><span class="p">,</span>
+                <span class="n">crs</span><span class="o">=</span><span class="s2">&quot;SR-ORG:6627&quot;</span><span class="p">,</span>
+                <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+        <span class="p">)</span>
 
         <span class="n">mins</span><span class="p">,</span> <span class="n">maxs</span><span class="p">,</span> <span class="n">stds</span><span class="p">,</span> <span class="n">means</span> <span class="o">=</span> <span class="p">[</span>
             <span class="p">{</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">stat</span><span class="p">)</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
-            <span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;_min&#39;</span><span class="p">,</span> <span class="s1">&#39;_max&#39;</span><span class="p">,</span> <span class="s1">&#39;_stdDev&#39;</span><span class="p">,</span> <span class="s1">&#39;_mean&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;_min&quot;</span><span class="p">,</span> <span class="s2">&quot;_max&quot;</span><span class="p">,</span> <span class="s2">&quot;_stdDev&quot;</span><span class="p">,</span> <span class="s2">&quot;_mean&quot;</span><span class="p">)</span>
         <span class="p">]</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">vals</span> <span class="ow">in</span> <span class="p">(</span><span class="n">mins</span><span class="p">,</span> <span class="n">maxs</span><span class="p">,</span> <span class="n">stds</span><span class="p">,</span> <span class="n">means</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No unmasked pixels were sampled.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No unmasked pixels were sampled.&quot;</span><span class="p">)</span>
 
         <span class="n">min_val</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">mins</span><span class="p">)</span>
         <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">maxs</span><span class="p">)</span>
