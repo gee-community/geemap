@@ -4976,7 +4976,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=df68b59c">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4988,7 +4988,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8540bf8b">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5015,7 +5015,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=238c8d6a">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5044,7 +5044,7 @@ import geemap</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5e335bf0">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5055,7 +5055,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=08ae82be">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5076,20 +5076,20 @@ import geemap</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
 <span class="n">esa</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"ESA/WorldCover/v100"</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-<span class="n">esa_vis</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'bands'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'Map'</span><span class="p">]}</span>
+<span class="n">esa_vis</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Map"</span><span class="p">]}</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">esa</span><span class="p">,</span> <span class="n">esa_vis</span><span class="p">,</span> <span class="s2">"ESA Land Cover"</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"ESA Land Cover"</span><span class="p">,</span> <span class="n">builtin_legend</span><span class="o">=</span><span class="s1">'ESA_WorldCover'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"ESA Land Cover"</span><span class="p">,</span> <span class="n">builtin_legend</span><span class="o">=</span><span class="s2">"ESA_WorldCover"</span><span class="p">)</span>
 
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3">Map = geemap.Map()
 
 esa = ee.ImageCollection("ESA/WorldCover/v100").first()
-esa_vis = {'bands': ['Map']}
+esa_vis = {"bands": ["Map"]}
 
 Map.addLayer(esa, esa_vis, "ESA Land Cover")
-Map.add_legend(title="ESA Land Cover", builtin_legend='ESA_WorldCover')
+Map.add_legend(title="ESA Land Cover", builtin_legend="ESA_WorldCover")
 
 Map</div>
 </div>
@@ -5098,7 +5098,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e95272d6">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5109,7 +5109,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=30cac633">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5133,9 +5133,9 @@ Map</div>
     <span class="s2">"projects/sat-io/open-datasets/landcover/ESRI_Global-LULC_10m"</span>
 <span class="p">)</span><span class="o">.</span><span class="n">mosaic</span><span class="p">()</span>
 <span class="n">esri_vis</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span>
         <span class="s2">"#1A5BAB"</span><span class="p">,</span>
         <span class="s2">"#358221"</span><span class="p">,</span>
         <span class="s2">"#A7D282"</span><span class="p">,</span>
@@ -5150,7 +5150,7 @@ Map</div>
 <span class="p">}</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">esri</span><span class="p">,</span> <span class="n">esri_vis</span><span class="p">,</span> <span class="s2">"ESRI Land Cover"</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"ESRI Land Cover"</span><span class="p">,</span> <span class="n">builtin_legend</span><span class="o">=</span><span class="s1">'ESRI_LandCover'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"ESRI Land Cover"</span><span class="p">,</span> <span class="n">builtin_legend</span><span class="o">=</span><span class="s2">"ESRI_LandCover"</span><span class="p">)</span>
 
 <span class="n">Map</span>
 </pre></div>
@@ -5160,9 +5160,9 @@ esri = ee.ImageCollection(
     "projects/sat-io/open-datasets/landcover/ESRI_Global-LULC_10m"
 ).mosaic()
 esri_vis = {
-    'min': 1,
-    'max': 10,
-    'palette': [
+    "min": 1,
+    "max": 10,
+    "palette": [
         "#1A5BAB",
         "#358221",
         "#A7D282",
@@ -5177,7 +5177,7 @@ esri_vis = {
 }
 
 Map.addLayer(esri, esri_vis, "ESRI Land Cover")
-Map.add_legend(title="ESRI Land Cover", builtin_legend='ESRI_LandCover')
+Map.add_legend(title="ESRI Land Cover", builtin_legend="ESRI_LandCover")
 
 Map</div>
 </div>
@@ -5186,7 +5186,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=65d18201">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5197,7 +5197,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ef39bdac">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5218,11 +5218,11 @@ Map</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
 <span class="n">region</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="o">-</span><span class="mi">179</span><span class="p">,</span> <span class="o">-</span><span class="mi">89</span><span class="p">,</span> <span class="mi">179</span><span class="p">,</span> <span class="mi">89</span><span class="p">)</span>
-<span class="n">start_date</span> <span class="o">=</span> <span class="s1">'2021-01-01'</span>
-<span class="n">end_date</span> <span class="o">=</span> <span class="s1">'2022-01-01'</span>
+<span class="n">start_date</span> <span class="o">=</span> <span class="s2">"2021-01-01"</span>
+<span class="n">end_date</span> <span class="o">=</span> <span class="s2">"2022-01-01"</span>
 
-<span class="n">dw_class</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">dynamic_world</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s1">'class'</span><span class="p">)</span>
-<span class="n">dw</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">dynamic_world</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s1">'hillshade'</span><span class="p">)</span>
+<span class="n">dw_class</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">dynamic_world</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"class"</span><span class="p">)</span>
+<span class="n">dw</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">dynamic_world</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">"hillshade"</span><span class="p">)</span>
 
 <span class="n">dw_vis</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
@@ -5240,21 +5240,21 @@ Map</div>
     <span class="p">],</span>
 <span class="p">}</span>
 
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dw_class</span><span class="p">,</span> <span class="n">dw_vis</span><span class="p">,</span> <span class="s1">'DW Land Cover'</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dw</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'DW Land Cover Hillshade'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dw_class</span><span class="p">,</span> <span class="n">dw_vis</span><span class="p">,</span> <span class="s2">"DW Land Cover"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dw</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"DW Land Cover Hillshade"</span><span class="p">)</span>
 
-<span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Dynamic World Land Cover"</span><span class="p">,</span> <span class="n">builtin_legend</span><span class="o">=</span><span class="s1">'Dynamic_World'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Dynamic World Land Cover"</span><span class="p">,</span> <span class="n">builtin_legend</span><span class="o">=</span><span class="s2">"Dynamic_World"</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">setCenter</span><span class="p">(</span><span class="o">-</span><span class="mf">88.9088</span><span class="p">,</span> <span class="mf">43.0006</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-5">Map = geemap.Map()
 
 region = ee.Geometry.BBox(-179, -89, 179, 89)
-start_date = '2021-01-01'
-end_date = '2022-01-01'
+start_date = "2021-01-01"
+end_date = "2022-01-01"
 
-dw_class = geemap.dynamic_world(region, start_date, end_date, return_type='class')
-dw = geemap.dynamic_world(region, start_date, end_date, return_type='hillshade')
+dw_class = geemap.dynamic_world(region, start_date, end_date, return_type="class")
+dw = geemap.dynamic_world(region, start_date, end_date, return_type="hillshade")
 
 dw_vis = {
     "min": 0,
@@ -5272,10 +5272,10 @@ dw_vis = {
     ],
 }
 
-Map.addLayer(dw_class, dw_vis, 'DW Land Cover', False)
-Map.addLayer(dw, {}, 'DW Land Cover Hillshade')
+Map.addLayer(dw_class, dw_vis, "DW Land Cover", False)
+Map.addLayer(dw, {}, "DW Land Cover Hillshade")
 
-Map.add_legend(title="Dynamic World Land Cover", builtin_legend='Dynamic_World')
+Map.add_legend(title="Dynamic World Land Cover", builtin_legend="Dynamic_World")
 Map.setCenter(-88.9088, 43.0006, 12)
 Map</div>
 </div>
@@ -5284,7 +5284,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=30afcffa">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5295,7 +5295,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c6fa5b7a">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5320,12 +5320,12 @@ Map</div>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">split_map</span><span class="p">(</span><span class="n">left_layer</span><span class="p">,</span> <span class="n">right_layer</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">"ESA Land Cover"</span><span class="p">,</span> <span class="n">builtin_legend</span><span class="o">=</span><span class="s1">'ESA_WorldCover'</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">'bottomleft'</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"ESA Land Cover"</span><span class="p">,</span> <span class="n">builtin_legend</span><span class="o">=</span><span class="s2">"ESA_WorldCover"</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">"bottomleft"</span>
 <span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">"Dynamic World Land Cover"</span><span class="p">,</span>
-    <span class="n">builtin_legend</span><span class="o">=</span><span class="s1">'Dynamic_World'</span><span class="p">,</span>
-    <span class="n">position</span><span class="o">=</span><span class="s1">'bottomright'</span><span class="p">,</span>
+    <span class="n">builtin_legend</span><span class="o">=</span><span class="s2">"Dynamic_World"</span><span class="p">,</span>
+    <span class="n">position</span><span class="o">=</span><span class="s2">"bottomright"</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">setCenter</span><span class="p">(</span><span class="o">-</span><span class="mf">88.9088</span><span class="p">,</span> <span class="mf">43.0006</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
 
@@ -5338,12 +5338,12 @@ right_layer = geemap.ee_tile_layer(dw, {}, "Dynamic World Land Cover")
 
 Map.split_map(left_layer, right_layer)
 Map.add_legend(
-    title="ESA Land Cover", builtin_legend='ESA_WorldCover', position='bottomleft'
+    title="ESA Land Cover", builtin_legend="ESA_WorldCover", position="bottomleft"
 )
 Map.add_legend(
     title="Dynamic World Land Cover",
-    builtin_legend='Dynamic_World',
-    position='bottomright',
+    builtin_legend="Dynamic_World",
+    position="bottomright",
 )
 Map.setCenter(-88.9088, 43.0006, 12)
 
@@ -5354,7 +5354,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=11b9be4c">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=11">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5365,7 +5365,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=047a9a61">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=12">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5390,12 +5390,12 @@ Map</div>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">split_map</span><span class="p">(</span><span class="n">left_layer</span><span class="p">,</span> <span class="n">right_layer</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">"ESRI Land Cover"</span><span class="p">,</span> <span class="n">builtin_legend</span><span class="o">=</span><span class="s1">'ESRI_LandCover'</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">'bottomleft'</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">"ESRI Land Cover"</span><span class="p">,</span> <span class="n">builtin_legend</span><span class="o">=</span><span class="s2">"ESRI_LandCover"</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">"bottomleft"</span>
 <span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">"Dynamic World Land Cover"</span><span class="p">,</span>
-    <span class="n">builtin_legend</span><span class="o">=</span><span class="s1">'Dynamic_World'</span><span class="p">,</span>
-    <span class="n">position</span><span class="o">=</span><span class="s1">'bottomright'</span><span class="p">,</span>
+    <span class="n">builtin_legend</span><span class="o">=</span><span class="s2">"Dynamic_World"</span><span class="p">,</span>
+    <span class="n">position</span><span class="o">=</span><span class="s2">"bottomright"</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">setCenter</span><span class="p">(</span><span class="o">-</span><span class="mf">88.9088</span><span class="p">,</span> <span class="mf">43.0006</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
 
@@ -5408,12 +5408,12 @@ right_layer = geemap.ee_tile_layer(dw, {}, "Dynamic World Land Cover")
 
 Map.split_map(left_layer, right_layer)
 Map.add_legend(
-    title="ESRI Land Cover", builtin_legend='ESRI_LandCover', position='bottomleft'
+    title="ESRI Land Cover", builtin_legend="ESRI_LandCover", position="bottomleft"
 )
 Map.add_legend(
     title="Dynamic World Land Cover",
-    builtin_legend='Dynamic_World',
-    position='bottomright',
+    builtin_legend="Dynamic_World",
+    position="bottomright",
 )
 Map.setCenter(-88.9088, 43.0006, 12)
 
@@ -5453,7 +5453,7 @@ Map</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

@@ -5089,7 +5089,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=82713f1e">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5101,7 +5101,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=558a2aaa">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5128,7 +5128,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=636f3575">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5147,7 +5147,7 @@ proswap<span class="w"> </span>gee
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7fdbd827">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5176,7 +5176,7 @@ import geemap</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f2da4bb2">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5187,7 +5187,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=088080b3">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5206,23 +5206,23 @@ import geemap</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
+<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/SRTMGL1_003"</span><span class="p">)</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="s1">'terrain'</span><span class="p">,</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="s2">"terrain"</span><span class="p">,</span>
 <span class="p">}</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'SRTM DEM'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"SRTM DEM"</span><span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3">Map = geemap.Map()
-dem = ee.Image('USGS/SRTMGL1_003')
+dem = ee.Image("USGS/SRTMGL1_003")
 vis_params = {
-    'min': 0,
-    'max': 4000,
-    'palette': 'terrain',
+    "min": 0,
+    "max": 4000,
+    "palette": "terrain",
 }
-Map.addLayer(dem, vis_params, 'SRTM DEM')
+Map.addLayer(dem, vis_params, "SRTM DEM")
 Map</div>
 </div>
 </div>
@@ -5230,7 +5230,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8a625947">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5241,7 +5241,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c06ee57f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5261,29 +5261,29 @@ Map</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 <span class="n">image</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'LANDSAT/LC09/C02/T1_L2/LC09_044034_20220503'</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'SR_B.'</span><span class="p">)</span>
+    <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"LANDSAT/LC09/C02/T1_L2/LC09_044034_20220503"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"SR_B."</span><span class="p">)</span>
     <span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mf">0.0000275</span><span class="p">)</span>
     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'bands'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'SR_B5'</span><span class="p">,</span> <span class="s1">'SR_B4'</span><span class="p">,</span> <span class="s1">'SR_B3'</span><span class="p">],</span> <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}</span>
+<span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"SR_B5"</span><span class="p">,</span> <span class="s2">"SR_B4"</span><span class="p">,</span> <span class="s2">"SR_B3"</span><span class="p">],</span> <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">}</span>
 
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'Landsat 9'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"Landsat 9"</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4">Map = geemap.Map()
 image = (
-    ee.Image('LANDSAT/LC09/C02/T1_L2/LC09_044034_20220503')
-    .select('SR_B.')
+    ee.Image("LANDSAT/LC09/C02/T1_L2/LC09_044034_20220503")
+    .select("SR_B.")
     .multiply(0.0000275)
     .add(-0.2)
 )
 
-vis_params = {'bands': ['SR_B5', 'SR_B4', 'SR_B3'], 'min': 0, 'max': 0.3}
+vis_params = {"bands": ["SR_B5", "SR_B4", "SR_B3"], "min": 0, "max": 0.3}
 
-Map.addLayer(image, vis_params, 'Landsat 9')
+Map.addLayer(image, vis_params, "Landsat 9")
 Map.centerObject(image)
 Map</div>
 </div>
@@ -5321,7 +5321,7 @@ Map</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-12-19T20:04:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-12-19</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

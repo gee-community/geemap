@@ -4976,7 +4976,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=83543462">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4991,7 +4991,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7c7bc9f6">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5018,7 +5018,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=85345be3">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5051,7 +5051,7 @@ import geemap.colormaps as cm</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=693d69e8">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5078,7 +5078,7 @@ import geemap.colormaps as cm</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b113b479">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5096,16 +5096,16 @@ import geemap.colormaps as cm</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">nc_file</span> <span class="o">=</span> <span class="s1">'../data/wind_global.nc'</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">nc_file</span> <span class="o">=</span> <span class="s2">"../data/wind_global.nc"</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">nc_file = '../data/wind_global.nc'</div>
+<div class="clipboard-copy-txt" id="cell-4">nc_file = "../data/wind_global.nc"</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=196de7f8">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5124,21 +5124,21 @@ import geemap.colormaps as cm</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">nc_file</span><span class="p">):</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="s1">'https://github.com/gee-community/geemap/blob/master/examples/data/wind_global.nc'</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s2">"https://github.com/gee-community/geemap/blob/master/examples/data/wind_global.nc"</span>
     <span class="kn">import</span> <span class="nn">requests</span>
 
     <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">wind_data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">content</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'wind_global.nc'</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"wind_global.nc"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">wind_data</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-5">if not os.path.exists(nc_file):
-    url = 'https://github.com/gee-community/geemap/blob/master/examples/data/wind_global.nc'
+    url = "https://github.com/gee-community/geemap/blob/master/examples/data/wind_global.nc"
     import requests
 
     r = requests.get(url)
     wind_data = r.content
-    with open('wind_global.nc', 'wb') as f:
+    with open("wind_global.nc", "wb") as f:
         f.write(wind_data)</div>
 </div>
 </div>
@@ -5146,7 +5146,7 @@ import geemap.colormaps as cm</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=52949136">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5165,19 +5165,19 @@ import geemap.colormaps as cm</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Test with only one variable</span>
-<span class="n">img</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">netcdf_to_ee</span><span class="p">(</span><span class="n">nc_file</span><span class="o">=</span><span class="n">nc_file</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="s1">'u_wind'</span><span class="p">)</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">netcdf_to_ee</span><span class="p">(</span><span class="n">nc_file</span><span class="o">=</span><span class="n">nc_file</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="s2">"u_wind"</span><span class="p">)</span>
 <span class="n">palette</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">palettes</span><span class="o">.</span><span class="n">YlOrRd</span>
 
 <span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">{</span><span class="s1">'min'</span><span class="p">:</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="s1">'palette'</span><span class="p">:</span> <span class="n">palette</span><span class="p">,</span> <span class="s1">'opacity'</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">},</span> <span class="s2">"u_wind"</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="p">{</span><span class="s2">"min"</span><span class="p">:</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="s2">"palette"</span><span class="p">:</span> <span class="n">palette</span><span class="p">,</span> <span class="s2">"opacity"</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">},</span> <span class="s2">"u_wind"</span><span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-6"># Test with only one variable
-img = geemap.netcdf_to_ee(nc_file=nc_file, var_names='u_wind')
+img = geemap.netcdf_to_ee(nc_file=nc_file, var_names="u_wind")
 palette = cm.palettes.YlOrRd
 
 Map = geemap.Map()
-Map.addLayer(img, {'min': -20, 'max': 25, 'palette': palette, 'opacity': 0.6}, "u_wind")
+Map.addLayer(img, {"min": -20, "max": 25, "palette": palette, "opacity": 0.6}, "u_wind")
 Map</div>
 </div>
 </div>
@@ -5185,7 +5185,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9c0b317a">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5204,21 +5204,21 @@ Map</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Test with two variables</span>
-<span class="n">img2</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">netcdf_to_ee</span><span class="p">(</span><span class="n">nc_file</span><span class="o">=</span><span class="n">nc_file</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s1">'u_wind'</span><span class="p">,</span> <span class="s1">'v_wind'</span><span class="p">])</span>
+<span class="n">img2</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">netcdf_to_ee</span><span class="p">(</span><span class="n">nc_file</span><span class="o">=</span><span class="n">nc_file</span><span class="p">,</span> <span class="n">var_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"u_wind"</span><span class="p">,</span> <span class="s2">"v_wind"</span><span class="p">])</span>
 <span class="n">Map2</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 <span class="n">Map2</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span>
     <span class="n">img2</span><span class="p">,</span>
-    <span class="p">{</span><span class="s1">'bands'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'u_wind'</span><span class="p">],</span> <span class="s1">'min'</span><span class="p">:</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="s1">'palette'</span><span class="p">:</span> <span class="n">palette</span><span class="p">,</span> <span class="s1">'opacity'</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"u_wind"</span><span class="p">],</span> <span class="s2">"min"</span><span class="p">:</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="s2">"palette"</span><span class="p">:</span> <span class="n">palette</span><span class="p">,</span> <span class="s2">"opacity"</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">},</span>
     <span class="s2">"uv_wind"</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">Map2</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-7"># Test with two variables
-img2 = geemap.netcdf_to_ee(nc_file=nc_file, var_names=['u_wind', 'v_wind'])
+img2 = geemap.netcdf_to_ee(nc_file=nc_file, var_names=["u_wind", "v_wind"])
 Map2 = geemap.Map()
 Map2.addLayer(
     img2,
-    {'bands': ['u_wind'], 'min': -20, 'max': 25, 'palette': palette, 'opacity': 0.6},
+    {"bands": ["u_wind"], "min": -20, "max": 25, "palette": palette, "opacity": 0.6},
     "uv_wind",
 )
 Map2</div>
@@ -5257,7 +5257,7 @@ Map2</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

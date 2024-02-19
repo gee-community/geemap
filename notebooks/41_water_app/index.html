@@ -4983,7 +4983,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a295e9d3">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4995,7 +4995,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=bc6f9c41">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5022,7 +5022,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5d2b7f57">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5039,7 +5039,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=59fc6144">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5063,8 +5063,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">geemap</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'geemap package is not installed. Installing ...'</span><span class="p">)</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s2">"python"</span><span class="p">,</span> <span class="s1">'-m'</span><span class="p">,</span> <span class="s1">'pip'</span><span class="p">,</span> <span class="s1">'install'</span><span class="p">,</span> <span class="s1">'geemap'</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"geemap package is not installed. Installing ..."</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s2">"python"</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"geemap"</span><span class="p">])</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-2"># Check geemap installation
 import subprocess
@@ -5072,15 +5072,15 @@ import subprocess
 try:
     import geemap
 except ImportError:
-    print('geemap package is not installed. Installing ...')
-    subprocess.check_call(["python", '-m', 'pip', 'install', 'geemap'])</div>
+    print("geemap package is not installed. Installing ...")
+    subprocess.check_call(["python", "-m", "pip", "install", "geemap"])</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f7497ad6">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5119,7 +5119,7 @@ from ipyleaflet import WidgetControl</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0e0597fe">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5139,28 +5139,28 @@ from ipyleaflet import WidgetControl</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Create an interactive map</span>
 <span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">add_google_map</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="s1">'HYBRID'</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="s1">'ROADMAP'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="s2">"HYBRID"</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="s2">"ROADMAP"</span><span class="p">)</span>
 
 <span class="c1"># Add Earth Engine data</span>
-<span class="n">fc</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s1">'TIGER/2018/Counties'</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">fc</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'US Counties'</span><span class="p">)</span>
+<span class="n">fc</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s2">"TIGER/2018/Counties"</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">fc</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"US Counties"</span><span class="p">)</span>
 
-<span class="n">states</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s1">'TIGER/2018/States'</span><span class="p">)</span>
+<span class="n">states</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s2">"TIGER/2018/States"</span><span class="p">)</span>
 <span class="c1"># Map.addLayer(states, {}, 'US States')</span>
 
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4"># Create an interactive map
 Map = geemap.Map(center=[40, -100], zoom=4, add_google_map=False)
-Map.add_basemap('HYBRID')
-Map.add_basemap('ROADMAP')
+Map.add_basemap("HYBRID")
+Map.add_basemap("ROADMAP")
 
 # Add Earth Engine data
-fc = ee.FeatureCollection('TIGER/2018/Counties')
-Map.addLayer(fc, {}, 'US Counties')
+fc = ee.FeatureCollection("TIGER/2018/Counties")
+Map.addLayer(fc, {}, "US Counties")
 
-states = ee.FeatureCollection('TIGER/2018/States')
+states = ee.FeatureCollection("TIGER/2018/States")
 # Map.addLayer(states, {}, 'US States')
 
 Map</div>
@@ -5170,7 +5170,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3cb2e480">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5190,26 +5190,26 @@ Map</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Designe interactive widgets</span>
 
-<span class="n">style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'description_width'</span><span class="p">:</span> <span class="s1">'initial'</span><span class="p">}</span>
+<span class="n">style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"description_width"</span><span class="p">:</span> <span class="s2">"initial"</span><span class="p">}</span>
 
-<span class="n">output_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="p">{</span><span class="s1">'border'</span><span class="p">:</span> <span class="s1">'1px solid black'</span><span class="p">})</span>
-<span class="n">output_control</span> <span class="o">=</span> <span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">output_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">'bottomright'</span><span class="p">)</span>
+<span class="n">output_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="p">{</span><span class="s2">"border"</span><span class="p">:</span> <span class="s2">"1px solid black"</span><span class="p">})</span>
+<span class="n">output_control</span> <span class="o">=</span> <span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">output_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">"bottomright"</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">output_control</span><span class="p">)</span>
 
 <span class="n">admin1_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">'State:'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">'Tennessee'</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"State:"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">"Tennessee"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
 <span class="p">)</span>
 
 <span class="n">admin2_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">'County:'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">'Knox'</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"County:"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">"Knox"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
 <span class="p">)</span>
 
 <span class="n">aoi_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
-    <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Use user-drawn AOI'</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
+    <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Use user-drawn AOI"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
 <span class="p">)</span>
 
 <span class="n">download_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
-    <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Download chart data'</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
+    <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Download chart data"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
 <span class="p">)</span>
 
 
@@ -5218,69 +5218,69 @@ Map</div>
     <span class="n">Map</span><span class="o">.</span><span class="n">user_roi</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">Map</span><span class="o">.</span><span class="n">user_rois</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">Map</span><span class="o">.</span><span class="n">draw_count</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">admin1_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">''</span>
-    <span class="n">admin2_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">''</span>
+    <span class="n">admin1_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">admin2_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="n">output_widget</span><span class="o">.</span><span class="n">clear_output</span><span class="p">()</span>
 
 
-<span class="n">aoi_widget</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">aoi_change</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s1">'value'</span><span class="p">)</span>
+<span class="n">aoi_widget</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">aoi_change</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s2">"value"</span><span class="p">)</span>
 
 <span class="n">band_combo</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">'Band combo:'</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Band combo:"</span><span class="p">,</span>
     <span class="n">options</span><span class="o">=</span><span class="p">[</span>
-        <span class="s1">'Red/Green/Blue'</span><span class="p">,</span>
-        <span class="s1">'NIR/Red/Green'</span><span class="p">,</span>
-        <span class="s1">'SWIR2/SWIR1/NIR'</span><span class="p">,</span>
-        <span class="s1">'NIR/SWIR1/Red'</span><span class="p">,</span>
-        <span class="s1">'SWIR2/NIR/Red'</span><span class="p">,</span>
-        <span class="s1">'SWIR2/SWIR1/Red'</span><span class="p">,</span>
-        <span class="s1">'SWIR1/NIR/Blue'</span><span class="p">,</span>
-        <span class="s1">'NIR/SWIR1/Blue'</span><span class="p">,</span>
-        <span class="s1">'SWIR2/NIR/Green'</span><span class="p">,</span>
-        <span class="s1">'SWIR1/NIR/Red'</span><span class="p">,</span>
+        <span class="s2">"Red/Green/Blue"</span><span class="p">,</span>
+        <span class="s2">"NIR/Red/Green"</span><span class="p">,</span>
+        <span class="s2">"SWIR2/SWIR1/NIR"</span><span class="p">,</span>
+        <span class="s2">"NIR/SWIR1/Red"</span><span class="p">,</span>
+        <span class="s2">"SWIR2/NIR/Red"</span><span class="p">,</span>
+        <span class="s2">"SWIR2/SWIR1/Red"</span><span class="p">,</span>
+        <span class="s2">"SWIR1/NIR/Blue"</span><span class="p">,</span>
+        <span class="s2">"NIR/SWIR1/Blue"</span><span class="p">,</span>
+        <span class="s2">"SWIR2/NIR/Green"</span><span class="p">,</span>
+        <span class="s2">"SWIR1/NIR/Red"</span><span class="p">,</span>
     <span class="p">],</span>
-    <span class="n">value</span><span class="o">=</span><span class="s1">'NIR/Red/Green'</span><span class="p">,</span>
+    <span class="n">value</span><span class="o">=</span><span class="s2">"NIR/Red/Green"</span><span class="p">,</span>
     <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">year_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span>
-    <span class="nb">min</span><span class="o">=</span><span class="mi">1984</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">2010</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Selected year:'</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
+    <span class="nb">min</span><span class="o">=</span><span class="mi">1984</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">2010</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Selected year:"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
 <span class="p">)</span>
 
 <span class="n">fmask_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
-    <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Apply fmask(remove cloud, shadow, snow)'</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
+    <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Apply fmask(remove cloud, shadow, snow)"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
 <span class="p">)</span>
 
 
 <span class="c1"># Normalized Satellite Indices: https://www.usna.edu/Users/oceano/pguth/md_help/html/norm_sat.htm</span>
 
 <span class="n">nd_options</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">'Vegetation Index (NDVI)'</span><span class="p">,</span>
-    <span class="s1">'Water Index (NDWI)'</span><span class="p">,</span>
-    <span class="s1">'Modified Water Index (MNDWI)'</span><span class="p">,</span>
-    <span class="s1">'Snow Index (NDSI)'</span><span class="p">,</span>
-    <span class="s1">'Soil Index (NDSI)'</span><span class="p">,</span>
-    <span class="s1">'Burn Ratio (NBR)'</span><span class="p">,</span>
-    <span class="s1">'Customized'</span><span class="p">,</span>
+    <span class="s2">"Vegetation Index (NDVI)"</span><span class="p">,</span>
+    <span class="s2">"Water Index (NDWI)"</span><span class="p">,</span>
+    <span class="s2">"Modified Water Index (MNDWI)"</span><span class="p">,</span>
+    <span class="s2">"Snow Index (NDSI)"</span><span class="p">,</span>
+    <span class="s2">"Soil Index (NDSI)"</span><span class="p">,</span>
+    <span class="s2">"Burn Ratio (NBR)"</span><span class="p">,</span>
+    <span class="s2">"Customized"</span><span class="p">,</span>
 <span class="p">]</span>
 <span class="n">nd_indices</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
     <span class="n">options</span><span class="o">=</span><span class="n">nd_options</span><span class="p">,</span>
-    <span class="n">value</span><span class="o">=</span><span class="s1">'Modified Water Index (MNDWI)'</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">'Normalized Difference Index:'</span><span class="p">,</span>
+    <span class="n">value</span><span class="o">=</span><span class="s2">"Modified Water Index (MNDWI)"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Normalized Difference Index:"</span><span class="p">,</span>
     <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">first_band</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">'1st band:'</span><span class="p">,</span>
-    <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">'Blue'</span><span class="p">,</span> <span class="s1">'Green'</span><span class="p">,</span> <span class="s1">'Red'</span><span class="p">,</span> <span class="s1">'NIR'</span><span class="p">,</span> <span class="s1">'SWIR1'</span><span class="p">,</span> <span class="s1">'SWIR2'</span><span class="p">],</span>
-    <span class="n">value</span><span class="o">=</span><span class="s1">'Green'</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"1st band:"</span><span class="p">,</span>
+    <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"Blue"</span><span class="p">,</span> <span class="s2">"Green"</span><span class="p">,</span> <span class="s2">"Red"</span><span class="p">,</span> <span class="s2">"NIR"</span><span class="p">,</span> <span class="s2">"SWIR1"</span><span class="p">,</span> <span class="s2">"SWIR2"</span><span class="p">],</span>
+    <span class="n">value</span><span class="o">=</span><span class="s2">"Green"</span><span class="p">,</span>
     <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">second_band</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">'2nd band:'</span><span class="p">,</span>
-    <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">'Blue'</span><span class="p">,</span> <span class="s1">'Green'</span><span class="p">,</span> <span class="s1">'Red'</span><span class="p">,</span> <span class="s1">'NIR'</span><span class="p">,</span> <span class="s1">'SWIR1'</span><span class="p">,</span> <span class="s1">'SWIR2'</span><span class="p">],</span>
-    <span class="n">value</span><span class="o">=</span><span class="s1">'SWIR1'</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"2nd band:"</span><span class="p">,</span>
+    <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">"Blue"</span><span class="p">,</span> <span class="s2">"Green"</span><span class="p">,</span> <span class="s2">"Red"</span><span class="p">,</span> <span class="s2">"NIR"</span><span class="p">,</span> <span class="s2">"SWIR1"</span><span class="p">,</span> <span class="s2">"SWIR2"</span><span class="p">],</span>
+    <span class="n">value</span><span class="o">=</span><span class="s2">"SWIR1"</span><span class="p">,</span>
     <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -5289,44 +5289,44 @@ Map</div>
     <span class="nb">min</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
     <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">step</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">'Threshold:'</span><span class="p">,</span>
-    <span class="n">orientation</span><span class="o">=</span><span class="s1">'horizontal'</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Threshold:"</span><span class="p">,</span>
+    <span class="n">orientation</span><span class="o">=</span><span class="s2">"horizontal"</span><span class="p">,</span>
     <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">nd_color</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ColorPicker</span><span class="p">(</span>
-    <span class="n">concise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Color:'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">'blue'</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
+    <span class="n">concise</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Color:"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
 <span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">nd_index_change</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">'Vegetation Index (NDVI)'</span><span class="p">:</span>
-        <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">'NIR'</span>
-        <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">'Red'</span>
-    <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">'Water Index (NDWI)'</span><span class="p">:</span>
-        <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">'NIR'</span>
-        <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">'SWIR1'</span>
-    <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">'Modified Water Index (MNDWI)'</span><span class="p">:</span>
-        <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">'Green'</span>
-        <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">'SWIR1'</span>
-    <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">'Snow Index (NDSI)'</span><span class="p">:</span>
-        <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">'Green'</span>
-        <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">'SWIR1'</span>
-    <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">'Soil Index (NDSI)'</span><span class="p">:</span>
-        <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">'SWIR1'</span>
-        <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">'NIR'</span>
-    <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">'Burn Ratio (NBR)'</span><span class="p">:</span>
-        <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">'NIR'</span>
-        <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s1">'SWIR2'</span>
-    <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">'Customized'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">"Vegetation Index (NDVI)"</span><span class="p">:</span>
+        <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"NIR"</span>
+        <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"Red"</span>
+    <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">"Water Index (NDWI)"</span><span class="p">:</span>
+        <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"NIR"</span>
+        <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"SWIR1"</span>
+    <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">"Modified Water Index (MNDWI)"</span><span class="p">:</span>
+        <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"Green"</span>
+        <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"SWIR1"</span>
+    <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">"Snow Index (NDSI)"</span><span class="p">:</span>
+        <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"Green"</span>
+        <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"SWIR1"</span>
+    <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">"Soil Index (NDSI)"</span><span class="p">:</span>
+        <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"SWIR1"</span>
+        <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"NIR"</span>
+    <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">"Burn Ratio (NBR)"</span><span class="p">:</span>
+        <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"NIR"</span>
+        <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">"SWIR2"</span>
+    <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">"Customized"</span><span class="p">:</span>
         <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="n">nd_indices</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">nd_index_change</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s1">'value'</span><span class="p">)</span>
+<span class="n">nd_indices</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">nd_index_change</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="s2">"value"</span><span class="p">)</span>
 
 <span class="n">submit</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">'Submit'</span><span class="p">,</span> <span class="n">button_style</span><span class="o">=</span><span class="s1">'primary'</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s1">'Click me'</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Submit"</span><span class="p">,</span> <span class="n">button_style</span><span class="o">=</span><span class="s2">"primary"</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Click me"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
 <span class="p">)</span>
 
 <span class="n">full_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span>
@@ -5342,26 +5342,26 @@ Map</div>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-5"># Designe interactive widgets
 
-style = {'description_width': 'initial'}
+style = {"description_width": "initial"}
 
-output_widget = widgets.Output(layout={'border': '1px solid black'})
-output_control = WidgetControl(widget=output_widget, position='bottomright')
+output_widget = widgets.Output(layout={"border": "1px solid black"})
+output_control = WidgetControl(widget=output_widget, position="bottomright")
 Map.add_control(output_control)
 
 admin1_widget = widgets.Text(
-    description='State:', value='Tennessee', width=200, style=style
+    description="State:", value="Tennessee", width=200, style=style
 )
 
 admin2_widget = widgets.Text(
-    description='County:', value='Knox', width=300, style=style
+    description="County:", value="Knox", width=300, style=style
 )
 
 aoi_widget = widgets.Checkbox(
-    value=False, description='Use user-drawn AOI', style=style
+    value=False, description="Use user-drawn AOI", style=style
 )
 
 download_widget = widgets.Checkbox(
-    value=False, description='Download chart data', style=style
+    value=False, description="Download chart data", style=style
 )
 
 
@@ -5370,69 +5370,69 @@ def aoi_change(change):
     Map.user_roi = None
     Map.user_rois = None
     Map.draw_count = 0
-    admin1_widget.value = ''
-    admin2_widget.value = ''
+    admin1_widget.value = ""
+    admin2_widget.value = ""
     output_widget.clear_output()
 
 
-aoi_widget.observe(aoi_change, names='value')
+aoi_widget.observe(aoi_change, names="value")
 
 band_combo = widgets.Dropdown(
-    description='Band combo:',
+    description="Band combo:",
     options=[
-        'Red/Green/Blue',
-        'NIR/Red/Green',
-        'SWIR2/SWIR1/NIR',
-        'NIR/SWIR1/Red',
-        'SWIR2/NIR/Red',
-        'SWIR2/SWIR1/Red',
-        'SWIR1/NIR/Blue',
-        'NIR/SWIR1/Blue',
-        'SWIR2/NIR/Green',
-        'SWIR1/NIR/Red',
+        "Red/Green/Blue",
+        "NIR/Red/Green",
+        "SWIR2/SWIR1/NIR",
+        "NIR/SWIR1/Red",
+        "SWIR2/NIR/Red",
+        "SWIR2/SWIR1/Red",
+        "SWIR1/NIR/Blue",
+        "NIR/SWIR1/Blue",
+        "SWIR2/NIR/Green",
+        "SWIR1/NIR/Red",
     ],
-    value='NIR/Red/Green',
+    value="NIR/Red/Green",
     style=style,
 )
 
 year_widget = widgets.IntSlider(
-    min=1984, max=2020, value=2010, description='Selected year:', width=400, style=style
+    min=1984, max=2020, value=2010, description="Selected year:", width=400, style=style
 )
 
 fmask_widget = widgets.Checkbox(
-    value=True, description='Apply fmask(remove cloud, shadow, snow)', style=style
+    value=True, description="Apply fmask(remove cloud, shadow, snow)", style=style
 )
 
 
 # Normalized Satellite Indices: https://www.usna.edu/Users/oceano/pguth/md_help/html/norm_sat.htm
 
 nd_options = [
-    'Vegetation Index (NDVI)',
-    'Water Index (NDWI)',
-    'Modified Water Index (MNDWI)',
-    'Snow Index (NDSI)',
-    'Soil Index (NDSI)',
-    'Burn Ratio (NBR)',
-    'Customized',
+    "Vegetation Index (NDVI)",
+    "Water Index (NDWI)",
+    "Modified Water Index (MNDWI)",
+    "Snow Index (NDSI)",
+    "Soil Index (NDSI)",
+    "Burn Ratio (NBR)",
+    "Customized",
 ]
 nd_indices = widgets.Dropdown(
     options=nd_options,
-    value='Modified Water Index (MNDWI)',
-    description='Normalized Difference Index:',
+    value="Modified Water Index (MNDWI)",
+    description="Normalized Difference Index:",
     style=style,
 )
 
 first_band = widgets.Dropdown(
-    description='1st band:',
-    options=['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2'],
-    value='Green',
+    description="1st band:",
+    options=["Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2"],
+    value="Green",
     style=style,
 )
 
 second_band = widgets.Dropdown(
-    description='2nd band:',
-    options=['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2'],
-    value='SWIR1',
+    description="2nd band:",
+    options=["Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2"],
+    value="SWIR1",
     style=style,
 )
 
@@ -5441,44 +5441,44 @@ nd_threshold = widgets.FloatSlider(
     min=-1,
     max=1,
     step=0.01,
-    description='Threshold:',
-    orientation='horizontal',
+    description="Threshold:",
+    orientation="horizontal",
     style=style,
 )
 
 nd_color = widgets.ColorPicker(
-    concise=False, description='Color:', value='blue', style=style
+    concise=False, description="Color:", value="blue", style=style
 )
 
 
 def nd_index_change(change):
-    if nd_indices.value == 'Vegetation Index (NDVI)':
-        first_band.value = 'NIR'
-        second_band.value = 'Red'
-    elif nd_indices.value == 'Water Index (NDWI)':
-        first_band.value = 'NIR'
-        second_band.value = 'SWIR1'
-    elif nd_indices.value == 'Modified Water Index (MNDWI)':
-        first_band.value = 'Green'
-        second_band.value = 'SWIR1'
-    elif nd_indices.value == 'Snow Index (NDSI)':
-        first_band.value = 'Green'
-        second_band.value = 'SWIR1'
-    elif nd_indices.value == 'Soil Index (NDSI)':
-        first_band.value = 'SWIR1'
-        second_band.value = 'NIR'
-    elif nd_indices.value == 'Burn Ratio (NBR)':
-        first_band.value = 'NIR'
-        second_band.value = 'SWIR2'
-    elif nd_indices.value == 'Customized':
+    if nd_indices.value == "Vegetation Index (NDVI)":
+        first_band.value = "NIR"
+        second_band.value = "Red"
+    elif nd_indices.value == "Water Index (NDWI)":
+        first_band.value = "NIR"
+        second_band.value = "SWIR1"
+    elif nd_indices.value == "Modified Water Index (MNDWI)":
+        first_band.value = "Green"
+        second_band.value = "SWIR1"
+    elif nd_indices.value == "Snow Index (NDSI)":
+        first_band.value = "Green"
+        second_band.value = "SWIR1"
+    elif nd_indices.value == "Soil Index (NDSI)":
+        first_band.value = "SWIR1"
+        second_band.value = "NIR"
+    elif nd_indices.value == "Burn Ratio (NBR)":
+        first_band.value = "NIR"
+        second_band.value = "SWIR2"
+    elif nd_indices.value == "Customized":
         first_band.value = None
         second_band.value = None
 
 
-nd_indices.observe(nd_index_change, names='value')
+nd_indices.observe(nd_index_change, names="value")
 
 submit = widgets.Button(
-    description='Submit', button_style='primary', tooltip='Click me', style=style
+    description="Submit", button_style="primary", tooltip="Click me", style=style
 )
 
 full_widget = widgets.VBox(
@@ -5497,7 +5497,7 @@ full_widget</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4ddbe847">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5519,9 +5519,9 @@ full_widget</div>
 
 
 <span class="k">def</span> <span class="nf">handle_interaction</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">latlon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'coordinates'</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'type'</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'click'</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">aoi_widget</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-        <span class="n">Map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'cursor'</span><span class="p">:</span> <span class="s1">'wait'</span><span class="p">}</span>
+    <span class="n">latlon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"coordinates"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"click"</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">aoi_widget</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="n">Map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"cursor"</span><span class="p">:</span> <span class="s2">"wait"</span><span class="p">}</span>
         <span class="n">xy</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">latlon</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">selected_fc</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span>
 
@@ -5530,26 +5530,26 @@ full_widget</div>
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">feature</span> <span class="o">=</span> <span class="n">selected_fc</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-                <span class="n">admin2_id</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'NAME'</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
-                <span class="n">statefp</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'STATEFP'</span><span class="p">)</span>
+                <span class="n">admin2_id</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"NAME"</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+                <span class="n">statefp</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"STATEFP"</span><span class="p">)</span>
                 <span class="n">admin1_fc</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span>
-                    <span class="n">states</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s1">'STATEFP'</span><span class="p">,</span> <span class="n">statefp</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+                    <span class="n">states</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s2">"STATEFP"</span><span class="p">,</span> <span class="n">statefp</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
                 <span class="p">)</span>
-                <span class="n">admin1_id</span> <span class="o">=</span> <span class="n">admin1_fc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'NAME'</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+                <span class="n">admin1_id</span> <span class="o">=</span> <span class="n">admin1_fc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"NAME"</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
                 <span class="n">admin1_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">admin1_id</span>
                 <span class="n">admin2_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">admin2_id</span>
                 <span class="n">Map</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">Map</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
                 <span class="n">geom</span> <span class="o">=</span> <span class="n">selected_fc</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
-                <span class="n">layer_name</span> <span class="o">=</span> <span class="n">admin1_id</span> <span class="o">+</span> <span class="s1">'-'</span> <span class="o">+</span> <span class="n">admin2_id</span>
+                <span class="n">layer_name</span> <span class="o">=</span> <span class="n">admin1_id</span> <span class="o">+</span> <span class="s2">"-"</span> <span class="o">+</span> <span class="n">admin2_id</span>
                 <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span>
-                    <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span><span class="o">.</span><span class="n">paint</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">{</span><span class="s1">'palette'</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">},</span> <span class="n">layer_name</span>
+                    <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span><span class="o">.</span><span class="n">paint</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">{</span><span class="s2">"palette"</span><span class="p">:</span> <span class="s2">"red"</span><span class="p">},</span> <span class="n">layer_name</span>
                 <span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">layer_name</span><span class="p">)</span>
             <span class="k">except</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">'No feature could be found'</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">"No feature could be found"</span><span class="p">)</span>
                 <span class="n">Map</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">Map</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
 
-        <span class="n">Map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'cursor'</span><span class="p">:</span> <span class="s1">'pointer'</span><span class="p">}</span>
+        <span class="n">Map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"cursor"</span><span class="p">:</span> <span class="s2">"pointer"</span><span class="p">}</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">Map</span><span class="o">.</span><span class="n">draw_count</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -5560,9 +5560,9 @@ full_widget</div>
 
 
 def handle_interaction(**kwargs):
-    latlon = kwargs.get('coordinates')
-    if kwargs.get('type') == 'click' and not aoi_widget.value:
-        Map.default_style = {'cursor': 'wait'}
+    latlon = kwargs.get("coordinates")
+    if kwargs.get("type") == "click" and not aoi_widget.value:
+        Map.default_style = {"cursor": "wait"}
         xy = ee.Geometry.Point(latlon[::-1])
         selected_fc = fc.filterBounds(xy)
 
@@ -5571,26 +5571,26 @@ def handle_interaction(**kwargs):
 
             try:
                 feature = selected_fc.first()
-                admin2_id = feature.get('NAME').getInfo()
-                statefp = feature.get('STATEFP')
+                admin2_id = feature.get("NAME").getInfo()
+                statefp = feature.get("STATEFP")
                 admin1_fc = ee.Feature(
-                    states.filter(ee.Filter.eq('STATEFP', statefp)).first()
+                    states.filter(ee.Filter.eq("STATEFP", statefp)).first()
                 )
-                admin1_id = admin1_fc.get('NAME').getInfo()
+                admin1_id = admin1_fc.get("NAME").getInfo()
                 admin1_widget.value = admin1_id
                 admin2_widget.value = admin2_id
                 Map.layers = Map.layers[:4]
                 geom = selected_fc.geometry()
-                layer_name = admin1_id + '-' + admin2_id
+                layer_name = admin1_id + "-" + admin2_id
                 Map.addLayer(
-                    ee.Image().paint(geom, 0, 2), {'palette': 'red'}, layer_name
+                    ee.Image().paint(geom, 0, 2), {"palette": "red"}, layer_name
                 )
                 print(layer_name)
             except:
-                print('No feature could be found')
+                print("No feature could be found")
                 Map.layers = Map.layers[:4]
 
-        Map.default_style = {'cursor': 'pointer'}
+        Map.default_style = {"cursor": "pointer"}
     else:
         Map.draw_count = 0
 
@@ -5602,7 +5602,7 @@ Map.on_interaction(handle_interaction)</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=65128f8f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5626,8 +5626,8 @@ Map.on_interaction(handle_interaction)</div>
 <span class="k">def</span> <span class="nf">submit_clicked</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">output_widget</span><span class="p">:</span>
         <span class="n">output_widget</span><span class="o">.</span><span class="n">clear_output</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">'Computing...'</span><span class="p">)</span>
-        <span class="n">Map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'cursor'</span><span class="p">:</span> <span class="s1">'wait'</span><span class="p">}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Computing..."</span><span class="p">)</span>
+        <span class="n">Map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"cursor"</span><span class="p">:</span> <span class="s2">"wait"</span><span class="p">}</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">admin1_id</span> <span class="o">=</span> <span class="n">admin1_widget</span><span class="o">.</span><span class="n">value</span>
@@ -5636,7 +5636,7 @@ Map.on_interaction(handle_interaction)</div>
             <span class="n">band2</span> <span class="o">=</span> <span class="n">second_band</span><span class="o">.</span><span class="n">value</span>
             <span class="n">selected_year</span> <span class="o">=</span> <span class="n">year_widget</span><span class="o">.</span><span class="n">value</span>
             <span class="n">threshold</span> <span class="o">=</span> <span class="n">nd_threshold</span><span class="o">.</span><span class="n">value</span>
-            <span class="n">bands</span> <span class="o">=</span> <span class="n">band_combo</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
+            <span class="n">bands</span> <span class="o">=</span> <span class="n">band_combo</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
             <span class="n">apply_fmask</span> <span class="o">=</span> <span class="n">fmask_widget</span><span class="o">.</span><span class="n">value</span>
             <span class="n">palette</span> <span class="o">=</span> <span class="n">nd_color</span><span class="o">.</span><span class="n">value</span>
             <span class="n">use_aoi</span> <span class="o">=</span> <span class="n">aoi_widget</span><span class="o">.</span><span class="n">value</span>
@@ -5645,34 +5645,34 @@ Map.on_interaction(handle_interaction)</div>
             <span class="k">if</span> <span class="n">use_aoi</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">Map</span><span class="o">.</span><span class="n">user_roi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">roi</span> <span class="o">=</span> <span class="n">Map</span><span class="o">.</span><span class="n">user_roi</span>
-                    <span class="n">layer_name</span> <span class="o">=</span> <span class="s1">'User drawn AOI'</span>
+                    <span class="n">layer_name</span> <span class="o">=</span> <span class="s2">"User drawn AOI"</span>
                     <span class="n">geom</span> <span class="o">=</span> <span class="n">roi</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">output_widget</span><span class="o">.</span><span class="n">clear_output</span><span class="p">()</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">'No user AOI could be found.'</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">"No user AOI could be found."</span><span class="p">)</span>
                     <span class="k">return</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">statefp</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span>
-                    <span class="n">states</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s1">'NAME'</span><span class="p">,</span> <span class="n">admin1_id</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-                <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'STATEFP'</span><span class="p">)</span>
+                    <span class="n">states</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s2">"NAME"</span><span class="p">,</span> <span class="n">admin1_id</span><span class="p">))</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"STATEFP"</span><span class="p">)</span>
                 <span class="n">roi</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
                     <span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">And</span><span class="p">(</span>
-                        <span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s1">'NAME'</span><span class="p">,</span> <span class="n">admin2_id</span><span class="p">),</span>
-                        <span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s1">'STATEFP'</span><span class="p">,</span> <span class="n">statefp</span><span class="p">),</span>
+                        <span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s2">"NAME"</span><span class="p">,</span> <span class="n">admin2_id</span><span class="p">),</span>
+                        <span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s2">"STATEFP"</span><span class="p">,</span> <span class="n">statefp</span><span class="p">),</span>
                     <span class="p">)</span>
                 <span class="p">)</span>
-                <span class="n">layer_name</span> <span class="o">=</span> <span class="n">admin1_id</span> <span class="o">+</span> <span class="s1">'-'</span> <span class="o">+</span> <span class="n">admin2_id</span>
+                <span class="n">layer_name</span> <span class="o">=</span> <span class="n">admin1_id</span> <span class="o">+</span> <span class="s2">"-"</span> <span class="o">+</span> <span class="n">admin2_id</span>
                 <span class="n">geom</span> <span class="o">=</span> <span class="n">roi</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
 
             <span class="n">Map</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">Map</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
-            <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span><span class="o">.</span><span class="n">paint</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">{</span><span class="s1">'palette'</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">},</span> <span class="n">layer_name</span><span class="p">)</span>
+            <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span><span class="o">.</span><span class="n">paint</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">{</span><span class="s2">"palette"</span><span class="p">:</span> <span class="s2">"red"</span><span class="p">},</span> <span class="n">layer_name</span><span class="p">)</span>
 
             <span class="n">images</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">landsat_timeseries</span><span class="p">(</span>
                 <span class="n">roi</span><span class="o">=</span><span class="n">roi</span><span class="p">,</span>
                 <span class="n">start_year</span><span class="o">=</span><span class="mi">1984</span><span class="p">,</span>
                 <span class="n">end_year</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span>
-                <span class="n">start_date</span><span class="o">=</span><span class="s1">'01-01'</span><span class="p">,</span>
-                <span class="n">end_date</span><span class="o">=</span><span class="s1">'12-31'</span><span class="p">,</span>
+                <span class="n">start_date</span><span class="o">=</span><span class="s2">"01-01"</span><span class="p">,</span>
+                <span class="n">end_date</span><span class="o">=</span><span class="s2">"12-31"</span><span class="p">,</span>
                 <span class="n">apply_fmask</span><span class="o">=</span><span class="n">apply_fmask</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">nd_images</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">img</span><span class="p">:</span> <span class="n">img</span><span class="o">.</span><span class="n">normalizedDifference</span><span class="p">([</span><span class="n">band1</span><span class="p">,</span> <span class="n">band2</span><span class="p">]))</span>
@@ -5685,55 +5685,55 @@ Map.on_interaction(handle_interaction)</div>
                 <span class="n">result_images</span><span class="o">.</span><span class="n">toList</span><span class="p">(</span><span class="n">result_images</span><span class="o">.</span><span class="n">size</span><span class="p">())</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">selected_year</span> <span class="o">-</span> <span class="mi">1984</span><span class="p">)</span>
             <span class="p">)</span><span class="o">.</span><span class="n">selfMask</span><span class="p">()</span>
 
-            <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'bands'</span><span class="p">:</span> <span class="n">bands</span><span class="p">,</span> <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">:</span> <span class="mi">3000</span><span class="p">}</span>
+            <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"bands"</span><span class="p">:</span> <span class="n">bands</span><span class="p">,</span> <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">3000</span><span class="p">}</span>
 
-            <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">selected_image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'Landsat '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">selected_year</span><span class="p">))</span>
+            <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">selected_image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"Landsat "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">selected_year</span><span class="p">))</span>
             <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span>
                 <span class="n">selected_result_image</span><span class="p">,</span>
-                <span class="p">{</span><span class="s1">'palette'</span><span class="p">:</span> <span class="n">palette</span><span class="p">},</span>
-                <span class="s1">'Result '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">selected_year</span><span class="p">),</span>
+                <span class="p">{</span><span class="s2">"palette"</span><span class="p">:</span> <span class="n">palette</span><span class="p">},</span>
+                <span class="s2">"Result "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">selected_year</span><span class="p">),</span>
             <span class="p">)</span>
 
             <span class="k">def</span> <span class="nf">cal_area</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
                 <span class="n">pixel_area</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">pixelArea</span><span class="p">())</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mf">1e4</span><span class="p">)</span>
                 <span class="n">img_area</span> <span class="o">=</span> <span class="n">pixel_area</span><span class="o">.</span><span class="n">reduceRegion</span><span class="p">(</span>
                     <span class="o">**</span><span class="p">{</span>
-                        <span class="s1">'geometry'</span><span class="p">:</span> <span class="n">geom</span><span class="p">,</span>
-                        <span class="s1">'reducer'</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
-                        <span class="s1">'scale'</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
-                        <span class="s1">'maxPixels'</span><span class="p">:</span> <span class="mf">1e12</span><span class="p">,</span>
-                        <span class="s1">'bestEffort'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="s2">"geometry"</span><span class="p">:</span> <span class="n">geom</span><span class="p">,</span>
+                        <span class="s2">"reducer"</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+                        <span class="s2">"scale"</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+                        <span class="s2">"maxPixels"</span><span class="p">:</span> <span class="mf">1e12</span><span class="p">,</span>
+                        <span class="s2">"bestEffort"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
-                <span class="k">return</span> <span class="n">img</span><span class="o">.</span><span class="n">set</span><span class="p">({</span><span class="s1">'area'</span><span class="p">:</span> <span class="n">img_area</span><span class="p">})</span>
+                <span class="k">return</span> <span class="n">img</span><span class="o">.</span><span class="n">set</span><span class="p">({</span><span class="s2">"area"</span><span class="p">:</span> <span class="n">img_area</span><span class="p">})</span>
 
             <span class="n">areas</span> <span class="o">=</span> <span class="n">result_images</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">cal_area</span><span class="p">)</span>
-            <span class="n">stats</span> <span class="o">=</span> <span class="n">areas</span><span class="o">.</span><span class="n">aggregate_array</span><span class="p">(</span><span class="s1">'area'</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+            <span class="n">stats</span> <span class="o">=</span> <span class="n">areas</span><span class="o">.</span><span class="n">aggregate_array</span><span class="p">(</span><span class="s2">"area"</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
             <span class="n">x</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1984</span><span class="p">,</span> <span class="mi">2021</span><span class="p">))</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'nd'</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"nd"</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">]</span>
 
             <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">fig</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="s1">'270px'</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="s2">"270px"</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Temporal trend (1984-2020)'</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'Year'</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'Area (ha)'</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Temporal trend (1984-2020)"</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Year"</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Area (ha)"</span><span class="p">)</span>
 
             <span class="n">output_widget</span><span class="o">.</span><span class="n">clear_output</span><span class="p">()</span>
 
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">download</span><span class="p">:</span>
-                <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">'~'</span><span class="p">),</span> <span class="s1">'Downloads'</span><span class="p">)</span>
-                <span class="n">out_name</span> <span class="o">=</span> <span class="s1">'chart_'</span> <span class="o">+</span> <span class="n">geemap</span><span class="o">.</span><span class="n">random_string</span><span class="p">()</span> <span class="o">+</span> <span class="s1">'.csv'</span>
+                <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">"~"</span><span class="p">),</span> <span class="s2">"Downloads"</span><span class="p">)</span>
+                <span class="n">out_name</span> <span class="o">=</span> <span class="s2">"chart_"</span> <span class="o">+</span> <span class="n">geemap</span><span class="o">.</span><span class="n">random_string</span><span class="p">()</span> <span class="o">+</span> <span class="s2">".csv"</span>
                 <span class="n">out_csv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">out_name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_dir</span><span class="p">):</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_csv</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'year, area (ha)</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_csv</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"year, area (ha)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">,</span><span class="si">{:.2f}</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="s2">"</span><span class="si">{}</span><span class="s2">,</span><span class="si">{:.2f}</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
                         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                 <span class="n">link</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">create_download_link</span><span class="p">(</span>
                     <span class="n">out_csv</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">"Click here to download the chart data: "</span>
@@ -5742,9 +5742,9 @@ Map.on_interaction(handle_interaction)</div>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">'An error occurred during computation.'</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"An error occurred during computation."</span><span class="p">)</span>
 
-        <span class="n">Map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'cursor'</span><span class="p">:</span> <span class="s1">'default'</span><span class="p">}</span>
+        <span class="n">Map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"cursor"</span><span class="p">:</span> <span class="s2">"default"</span><span class="p">}</span>
 
 
 <span class="n">submit</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">submit_clicked</span><span class="p">)</span>
@@ -5755,8 +5755,8 @@ Map.on_interaction(handle_interaction)</div>
 def submit_clicked(b):
     with output_widget:
         output_widget.clear_output()
-        print('Computing...')
-        Map.default_style = {'cursor': 'wait'}
+        print("Computing...")
+        Map.default_style = {"cursor": "wait"}
 
         try:
             admin1_id = admin1_widget.value
@@ -5765,7 +5765,7 @@ def submit_clicked(b):
             band2 = second_band.value
             selected_year = year_widget.value
             threshold = nd_threshold.value
-            bands = band_combo.value.split('/')
+            bands = band_combo.value.split("/")
             apply_fmask = fmask_widget.value
             palette = nd_color.value
             use_aoi = aoi_widget.value
@@ -5774,34 +5774,34 @@ def submit_clicked(b):
             if use_aoi:
                 if Map.user_roi is not None:
                     roi = Map.user_roi
-                    layer_name = 'User drawn AOI'
+                    layer_name = "User drawn AOI"
                     geom = roi
                 else:
                     output_widget.clear_output()
-                    print('No user AOI could be found.')
+                    print("No user AOI could be found.")
                     return
             else:
                 statefp = ee.Feature(
-                    states.filter(ee.Filter.eq('NAME', admin1_id)).first()
-                ).get('STATEFP')
+                    states.filter(ee.Filter.eq("NAME", admin1_id)).first()
+                ).get("STATEFP")
                 roi = fc.filter(
                     ee.Filter.And(
-                        ee.Filter.eq('NAME', admin2_id),
-                        ee.Filter.eq('STATEFP', statefp),
+                        ee.Filter.eq("NAME", admin2_id),
+                        ee.Filter.eq("STATEFP", statefp),
                     )
                 )
-                layer_name = admin1_id + '-' + admin2_id
+                layer_name = admin1_id + "-" + admin2_id
                 geom = roi.geometry()
 
             Map.layers = Map.layers[:4]
-            Map.addLayer(ee.Image().paint(geom, 0, 2), {'palette': 'red'}, layer_name)
+            Map.addLayer(ee.Image().paint(geom, 0, 2), {"palette": "red"}, layer_name)
 
             images = geemap.landsat_timeseries(
                 roi=roi,
                 start_year=1984,
                 end_year=2020,
-                start_date='01-01',
-                end_date='12-31',
+                start_date="01-01",
+                end_date="12-31",
                 apply_fmask=apply_fmask,
             )
             nd_images = images.map(lambda img: img.normalizedDifference([band1, band2]))
@@ -5814,55 +5814,55 @@ def submit_clicked(b):
                 result_images.toList(result_images.size()).get(selected_year - 1984)
             ).selfMask()
 
-            vis_params = {'bands': bands, 'min': 0, 'max': 3000}
+            vis_params = {"bands": bands, "min": 0, "max": 3000}
 
-            Map.addLayer(selected_image, vis_params, 'Landsat ' + str(selected_year))
+            Map.addLayer(selected_image, vis_params, "Landsat " + str(selected_year))
             Map.addLayer(
                 selected_result_image,
-                {'palette': palette},
-                'Result ' + str(selected_year),
+                {"palette": palette},
+                "Result " + str(selected_year),
             )
 
             def cal_area(img):
                 pixel_area = img.multiply(ee.Image.pixelArea()).divide(1e4)
                 img_area = pixel_area.reduceRegion(
                     **{
-                        'geometry': geom,
-                        'reducer': ee.Reducer.sum(),
-                        'scale': 1000,
-                        'maxPixels': 1e12,
-                        'bestEffort': True,
+                        "geometry": geom,
+                        "reducer": ee.Reducer.sum(),
+                        "scale": 1000,
+                        "maxPixels": 1e12,
+                        "bestEffort": True,
                     }
                 )
-                return img.set({'area': img_area})
+                return img.set({"area": img_area})
 
             areas = result_images.map(cal_area)
-            stats = areas.aggregate_array('area').getInfo()
+            stats = areas.aggregate_array("area").getInfo()
             x = list(range(1984, 2021))
-            y = [item.get('nd') for item in stats]
+            y = [item.get("nd") for item in stats]
 
             fig = plt.figure(1)
-            fig.layout.height = '270px'
+            fig.layout.height = "270px"
             plt.clear()
             plt.plot(x, y)
-            plt.title('Temporal trend (1984-2020)')
-            plt.xlabel('Year')
-            plt.ylabel('Area (ha)')
+            plt.title("Temporal trend (1984-2020)")
+            plt.xlabel("Year")
+            plt.ylabel("Area (ha)")
 
             output_widget.clear_output()
 
             plt.show()
 
             if download:
-                out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
-                out_name = 'chart_' + geemap.random_string() + '.csv'
+                out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+                out_name = "chart_" + geemap.random_string() + ".csv"
                 out_csv = os.path.join(out_dir, out_name)
                 if not os.path.exists(out_dir):
                     os.makedirs(out_dir)
-                with open(out_csv, 'w') as f:
-                    f.write('year, area (ha)\n')
+                with open(out_csv, "w") as f:
+                    f.write("year, area (ha)\n")
                     for index, item in enumerate(x):
-                        line = '{},{:.2f}\n'.format(item, y[index])
+                        line = "{},{:.2f}\n".format(item, y[index])
                         f.write(line)
                 link = geemap.create_download_link(
                     out_csv, title="Click here to download the chart data: "
@@ -5871,9 +5871,9 @@ def submit_clicked(b):
 
         except Exception as e:
             print(e)
-            print('An error occurred during computation.')
+            print("An error occurred during computation.")
 
-        Map.default_style = {'cursor': 'default'}
+        Map.default_style = {"cursor": "default"}
 
 
 submit.on_click(submit_clicked)</div>
@@ -5912,7 +5912,7 @@ submit.on_click(submit_clicked)</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

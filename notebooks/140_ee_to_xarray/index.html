@@ -4976,7 +4976,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=848e5050">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4989,7 +4989,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=de9878bc">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5016,7 +5016,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a268bd8f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5045,7 +5045,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=abad4bbb">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5072,7 +5072,7 @@ import geemap</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c2ee8619">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5083,7 +5083,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b03ece2c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5101,10 +5101,10 @@ import geemap</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_xarray</span><span class="p">(</span><span class="s1">'ECMWF/ERA5_LAND/HOURLY'</span><span class="p">,</span> <span class="n">n_images</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_xarray</span><span class="p">(</span><span class="s2">"ECMWF/ERA5_LAND/HOURLY"</span><span class="p">,</span> <span class="n">n_images</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="n">ds</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">ds = geemap.ee_to_xarray('ECMWF/ERA5_LAND/HOURLY', n_images=100)
+<div class="clipboard-copy-txt" id="cell-4">ds = geemap.ee_to_xarray("ECMWF/ERA5_LAND/HOURLY", n_images=100)
 ds</div>
 </div>
 </div>
@@ -5112,7 +5112,7 @@ ds</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8783d85e">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5123,7 +5123,7 @@ ds</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=43114cff">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5141,10 +5141,14 @@ ds</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_xarray</span><span class="p">(</span><span class="s1">'ECMWF/ERA5_LAND/HOURLY'</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s1">'EPSG:4326'</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">n_images</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_xarray</span><span class="p">(</span>
+    <span class="s2">"ECMWF/ERA5_LAND/HOURLY"</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s2">"EPSG:4326"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">n_images</span><span class="o">=</span><span class="mi">100</span>
+<span class="p">)</span>
 <span class="n">ds</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">ds = geemap.ee_to_xarray('ECMWF/ERA5_LAND/HOURLY', crs='EPSG:4326', scale=0.25, n_images=100)
+<div class="clipboard-copy-txt" id="cell-5">ds = geemap.ee_to_xarray(
+    "ECMWF/ERA5_LAND/HOURLY", crs="EPSG:4326", scale=0.25, n_images=100
+)
 ds</div>
 </div>
 </div>
@@ -5152,7 +5156,7 @@ ds</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d041a6c9">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5163,7 +5167,7 @@ ds</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d9ce1fcb">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5181,12 +5185,16 @@ ds</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">'ECMWF/ERA5_LAND/HOURLY'</span><span class="p">)</span><span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="s1">'1992-10-05'</span><span class="p">,</span> <span class="s1">'1993-03-31'</span><span class="p">)</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_xarray</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s1">'EPSG:4326'</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"ECMWF/ERA5_LAND/HOURLY"</span><span class="p">)</span><span class="o">.</span><span class="n">filterDate</span><span class="p">(</span>
+    <span class="s2">"1992-10-05"</span><span class="p">,</span> <span class="s2">"1993-03-31"</span>
+<span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_xarray</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s2">"EPSG:4326"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
 <span class="n">ds</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">dataset = ee.ImageCollection('ECMWF/ERA5_LAND/HOURLY').filterDate('1992-10-05', '1993-03-31')
-ds = geemap.ee_to_xarray(dataset, crs='EPSG:4326', scale=0.25)
+<div class="clipboard-copy-txt" id="cell-6">dataset = ee.ImageCollection("ECMWF/ERA5_LAND/HOURLY").filterDate(
+    "1992-10-05", "1993-03-31"
+)
+ds = geemap.ee_to_xarray(dataset, crs="EPSG:4326", scale=0.25)
 ds</div>
 </div>
 </div>
@@ -5194,7 +5202,7 @@ ds</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b31b6723">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5205,7 +5213,7 @@ ds</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=bfc42490">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=11">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5223,21 +5231,21 @@ ds</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">'ECMWF/ERA5_LAND/HOURLY'</span><span class="p">)</span><span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="s1">'1992-10-05'</span><span class="p">,</span> <span class="s1">'1993-03-31'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"ECMWF/ERA5_LAND/HOURLY"</span><span class="p">)</span><span class="o">.</span><span class="n">filterDate</span><span class="p">(</span>
+    <span class="s2">"1992-10-05"</span><span class="p">,</span> <span class="s2">"1993-03-31"</span>
+<span class="p">)</span>
 <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">(</span><span class="mf">113.33</span><span class="p">,</span> <span class="o">-</span><span class="mf">43.63</span><span class="p">,</span> <span class="mf">153.56</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.66</span><span class="p">)</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_xarray</span><span class="p">(</span>
-    <span class="n">dataset</span><span class="p">,</span>
-    <span class="n">projection</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">first</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">projection</span><span class="p">(),</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span>
+    <span class="n">dataset</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">first</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">projection</span><span class="p">(),</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span>
 <span class="p">)</span>
 <span class="n">ds</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7">dataset = ee.ImageCollection('ECMWF/ERA5_LAND/HOURLY').filterDate('1992-10-05', '1993-03-31')
+<div class="clipboard-copy-txt" id="cell-7">dataset = ee.ImageCollection("ECMWF/ERA5_LAND/HOURLY").filterDate(
+    "1992-10-05", "1993-03-31"
+)
 geometry = ee.Geometry.Rectangle(113.33, -43.63, 153.56, -10.66)
 ds = geemap.ee_to_xarray(
-    dataset,
-    projection=dataset.first().select(0).projection(),
-    geometry=geometry
+    dataset, projection=dataset.first().select(0).projection(), geometry=geometry
 )
 ds</div>
 </div>
@@ -5246,7 +5254,7 @@ ds</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d6750536">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=12">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5257,7 +5265,7 @@ ds</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9123770d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=13">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5288,7 +5296,7 @@ ds</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=778cba04">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=14">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5299,7 +5307,7 @@ ds</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9ace9888">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=15">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5318,19 +5326,19 @@ ds</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_xarray</span><span class="p">(</span>
-    <span class="n">dataset</span><span class="o">=</span><span class="p">[</span><span class="s1">'ECMWF/ERA5_LAND/HOURLY'</span><span class="p">,</span> <span class="s1">'NASA/GDDP-CMIP6'</span><span class="p">],</span>
+    <span class="n">dataset</span><span class="o">=</span><span class="p">[</span><span class="s2">"ECMWF/ERA5_LAND/HOURLY"</span><span class="p">,</span> <span class="s2">"NASA/GDDP-CMIP6"</span><span class="p">],</span>
     <span class="n">n_images</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">crs</span><span class="o">=</span><span class="s1">'EPSG:4326'</span><span class="p">,</span>
-    <span class="n">scale</span><span class="o">=</span><span class="mf">0.25</span>
-    <span class="p">)</span>
+    <span class="n">crs</span><span class="o">=</span><span class="s2">"EPSG:4326"</span><span class="p">,</span>
+    <span class="n">scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="n">ds</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-9">ds = geemap.ee_to_xarray(
-    dataset=['ECMWF/ERA5_LAND/HOURLY', 'NASA/GDDP-CMIP6'],
+    dataset=["ECMWF/ERA5_LAND/HOURLY", "NASA/GDDP-CMIP6"],
     n_images=100,
-    crs='EPSG:4326',
-    scale=0.25
-    )
+    crs="EPSG:4326",
+    scale=0.25,
+)
 ds</div>
 </div>
 </div>
@@ -5367,7 +5375,7 @@ ds</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-12-22T21:16:39+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-12-22</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

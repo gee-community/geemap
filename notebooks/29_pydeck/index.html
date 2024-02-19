@@ -5155,7 +5155,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d660e5b5">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5167,7 +5167,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8cf9c62d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5194,7 +5194,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9be4e68a">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5218,7 +5218,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=adab3bfb">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5229,7 +5229,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=092733c9">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5259,13 +5259,13 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
 
 <span class="c1"># Create an Earth Engine object</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'CGIAR/SRTM90_V4'</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"CGIAR/SRTM90_V4"</span><span class="p">)</span>
 
 <span class="c1"># Define Earth Engine visualization parameters</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
     <span class="s2">"max"</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'006633'</span><span class="p">,</span> <span class="s1">'E5FFCC'</span><span class="p">,</span> <span class="s1">'662A00'</span><span class="p">,</span> <span class="s1">'D8D8D8'</span><span class="p">,</span> <span class="s1">'F5F5F5'</span><span class="p">],</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"006633"</span><span class="p">,</span> <span class="s2">"E5FFCC"</span><span class="p">,</span> <span class="s2">"662A00"</span><span class="p">,</span> <span class="s2">"D8D8D8"</span><span class="p">,</span> <span class="s2">"F5F5F5"</span><span class="p">],</span>
 <span class="p">}</span>
 
 <span class="c1"># Create a pydeck EarthEngineLayer object, using the Earth Engine object and</span>
@@ -5293,13 +5293,13 @@ except Exception as e:
     ee.Initialize()
 
 # Create an Earth Engine object
-image = ee.Image('CGIAR/SRTM90_V4')
+image = ee.Image("CGIAR/SRTM90_V4")
 
 # Define Earth Engine visualization parameters
 vis_params = {
     "min": 0,
     "max": 4000,
-    'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5'],
+    "palette": ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"],
 }
 
 # Create a pydeck EarthEngineLayer object, using the Earth Engine object and
@@ -5320,7 +5320,7 @@ r.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=62d95e99">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5331,7 +5331,7 @@ r.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b704340d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5361,21 +5361,21 @@ r.show()</div>
     <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
 
 <span class="c1"># Add Earth Engine dataset</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/SRTMGL1_003"</span><span class="p">)</span>
 
 <span class="n">hillshade</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Terrain</span><span class="o">.</span><span class="n">hillshade</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 
 <span class="n">demRGB</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span>
     <span class="o">**</span><span class="p">{</span>
-        <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s1">'max'</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
-        <span class="s1">'bands'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'elevation'</span><span class="p">],</span>
-        <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'006633'</span><span class="p">,</span> <span class="s1">'E5FFCC'</span><span class="p">,</span> <span class="s1">'662A00'</span><span class="p">,</span> <span class="s1">'D8D8D8'</span><span class="p">,</span> <span class="s1">'F5F5F5'</span><span class="p">],</span>
-        <span class="s1">'opacity'</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">"max"</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+        <span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"elevation"</span><span class="p">],</span>
+        <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"006633"</span><span class="p">,</span> <span class="s2">"E5FFCC"</span><span class="p">,</span> <span class="s2">"662A00"</span><span class="p">,</span> <span class="s2">"D8D8D8"</span><span class="p">,</span> <span class="s2">"F5F5F5"</span><span class="p">],</span>
+        <span class="s2">"opacity"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">)</span>
 
-<span class="n">hillshadeRGB</span> <span class="o">=</span> <span class="n">hillshade</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">'bands'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'hillshade'</span><span class="p">]})</span>
+<span class="n">hillshadeRGB</span> <span class="o">=</span> <span class="n">hillshade</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"hillshade"</span><span class="p">]})</span>
 
 <span class="n">blend</span> <span class="o">=</span> <span class="n">hillshadeRGB</span><span class="o">.</span><span class="n">blend</span><span class="p">(</span><span class="n">demRGB</span><span class="p">)</span>
 
@@ -5402,21 +5402,21 @@ except Exception as e:
     ee.Initialize()
 
 # Add Earth Engine dataset
-image = ee.Image('USGS/SRTMGL1_003')
+image = ee.Image("USGS/SRTMGL1_003")
 
 hillshade = ee.Terrain.hillshade(image)
 
 demRGB = image.visualize(
     **{
-        'min': 0,
-        'max': 4000,
-        'bands': ['elevation'],
-        'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5'],
-        'opacity': 0.5,
+        "min": 0,
+        "max": 4000,
+        "bands": ["elevation"],
+        "palette": ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"],
+        "opacity": 0.5,
     }
 )
 
-hillshadeRGB = hillshade.visualize(**{'bands': ['hillshade']})
+hillshadeRGB = hillshade.visualize(**{"bands": ["hillshade"]})
 
 blend = hillshadeRGB.blend(demRGB)
 
@@ -5436,7 +5436,7 @@ r.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=33c33221">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5447,7 +5447,7 @@ r.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=abab6c5c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5477,24 +5477,24 @@ r.show()</div>
     <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
 
 <span class="c1"># Initialize an ee.ImageColllection object referencing the Global Forecast System dataset</span>
-<span class="n">image_collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">'NOAA/GFS0P25'</span><span class="p">)</span>
+<span class="n">image_collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"NOAA/GFS0P25"</span><span class="p">)</span>
 
 <span class="c1"># Select images from December 22, 2018</span>
-<span class="n">image_collection</span> <span class="o">=</span> <span class="n">image_collection</span><span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="s1">'2018-12-22'</span><span class="p">,</span> <span class="s1">'2018-12-23'</span><span class="p">)</span>
+<span class="n">image_collection</span> <span class="o">=</span> <span class="n">image_collection</span><span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="s2">"2018-12-22"</span><span class="p">,</span> <span class="s2">"2018-12-23"</span><span class="p">)</span>
 
 <span class="c1"># Choose the first 24 images in the ImageCollection</span>
 <span class="n">image_collection</span> <span class="o">=</span> <span class="n">image_collection</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span>
 
 <span class="c1"># Select a single band to visualize</span>
-<span class="n">image_collection</span> <span class="o">=</span> <span class="n">image_collection</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'temperature_2m_above_ground'</span><span class="p">)</span>
+<span class="n">image_collection</span> <span class="o">=</span> <span class="n">image_collection</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"temperature_2m_above_ground"</span><span class="p">)</span>
 
 <span class="c1"># Style temperature values between -40C and 35C,</span>
 <span class="c1"># with lower values shades of blue, purple, and cyan,</span>
 <span class="c1"># and higher values shades of green, yellow, and red</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="o">-</span><span class="mf">40.0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mf">35.0</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'blue'</span><span class="p">,</span> <span class="s1">'purple'</span><span class="p">,</span> <span class="s1">'cyan'</span><span class="p">,</span> <span class="s1">'green'</span><span class="p">,</span> <span class="s1">'yellow'</span><span class="p">,</span> <span class="s1">'red'</span><span class="p">],</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="o">-</span><span class="mf">40.0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mf">35.0</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"blue"</span><span class="p">,</span> <span class="s2">"purple"</span><span class="p">,</span> <span class="s2">"cyan"</span><span class="p">,</span> <span class="s2">"green"</span><span class="p">,</span> <span class="s2">"yellow"</span><span class="p">,</span> <span class="s2">"red"</span><span class="p">],</span>
 <span class="p">}</span>
 
 <span class="n">layer</span> <span class="o">=</span> <span class="n">EarthEngineLayer</span><span class="p">(</span>
@@ -5521,24 +5521,24 @@ except Exception as e:
     ee.Initialize()
 
 # Initialize an ee.ImageColllection object referencing the Global Forecast System dataset
-image_collection = ee.ImageCollection('NOAA/GFS0P25')
+image_collection = ee.ImageCollection("NOAA/GFS0P25")
 
 # Select images from December 22, 2018
-image_collection = image_collection.filterDate('2018-12-22', '2018-12-23')
+image_collection = image_collection.filterDate("2018-12-22", "2018-12-23")
 
 # Choose the first 24 images in the ImageCollection
 image_collection = image_collection.limit(24)
 
 # Select a single band to visualize
-image_collection = image_collection.select('temperature_2m_above_ground')
+image_collection = image_collection.select("temperature_2m_above_ground")
 
 # Style temperature values between -40C and 35C,
 # with lower values shades of blue, purple, and cyan,
 # and higher values shades of green, yellow, and red
 vis_params = {
-    'min': -40.0,
-    'max': 35.0,
-    'palette': ['blue', 'purple', 'cyan', 'green', 'yellow', 'red'],
+    "min": -40.0,
+    "max": 35.0,
+    "palette": ["blue", "purple", "cyan", "green", "yellow", "red"],
 }
 
 layer = EarthEngineLayer(
@@ -5558,7 +5558,7 @@ r.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=45ed18f9">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5569,7 +5569,7 @@ r.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=383b87c7">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5603,31 +5603,31 @@ r.show()</div>
 <span class="c1"># Create color palette</span>
 <span class="n">fuel_color</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Dictionary</span><span class="p">(</span>
     <span class="p">{</span>
-        <span class="s1">'Coal'</span><span class="p">:</span> <span class="s1">'000000'</span><span class="p">,</span>
-        <span class="s1">'Oil'</span><span class="p">:</span> <span class="s1">'593704'</span><span class="p">,</span>
-        <span class="s1">'Gas'</span><span class="p">:</span> <span class="s1">'BC80BD'</span><span class="p">,</span>
-        <span class="s1">'Hydro'</span><span class="p">:</span> <span class="s1">'0565A6'</span><span class="p">,</span>
-        <span class="s1">'Nuclear'</span><span class="p">:</span> <span class="s1">'E31A1C'</span><span class="p">,</span>
-        <span class="s1">'Solar'</span><span class="p">:</span> <span class="s1">'FF7F00'</span><span class="p">,</span>
-        <span class="s1">'Waste'</span><span class="p">:</span> <span class="s1">'6A3D9A'</span><span class="p">,</span>
-        <span class="s1">'Wind'</span><span class="p">:</span> <span class="s1">'5CA2D1'</span><span class="p">,</span>
-        <span class="s1">'Geothermal'</span><span class="p">:</span> <span class="s1">'FDBF6F'</span><span class="p">,</span>
-        <span class="s1">'Biomass'</span><span class="p">:</span> <span class="s1">'229A00'</span><span class="p">,</span>
+        <span class="s2">"Coal"</span><span class="p">:</span> <span class="s2">"000000"</span><span class="p">,</span>
+        <span class="s2">"Oil"</span><span class="p">:</span> <span class="s2">"593704"</span><span class="p">,</span>
+        <span class="s2">"Gas"</span><span class="p">:</span> <span class="s2">"BC80BD"</span><span class="p">,</span>
+        <span class="s2">"Hydro"</span><span class="p">:</span> <span class="s2">"0565A6"</span><span class="p">,</span>
+        <span class="s2">"Nuclear"</span><span class="p">:</span> <span class="s2">"E31A1C"</span><span class="p">,</span>
+        <span class="s2">"Solar"</span><span class="p">:</span> <span class="s2">"FF7F00"</span><span class="p">,</span>
+        <span class="s2">"Waste"</span><span class="p">:</span> <span class="s2">"6A3D9A"</span><span class="p">,</span>
+        <span class="s2">"Wind"</span><span class="p">:</span> <span class="s2">"5CA2D1"</span><span class="p">,</span>
+        <span class="s2">"Geothermal"</span><span class="p">:</span> <span class="s2">"FDBF6F"</span><span class="p">,</span>
+        <span class="s2">"Biomass"</span><span class="p">:</span> <span class="s2">"229A00"</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">)</span>
 
 <span class="c1"># List of fuels to add to the map</span>
 <span class="n">fuels</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">'Coal'</span><span class="p">,</span>
-    <span class="s1">'Oil'</span><span class="p">,</span>
-    <span class="s1">'Gas'</span><span class="p">,</span>
-    <span class="s1">'Hydro'</span><span class="p">,</span>
-    <span class="s1">'Nuclear'</span><span class="p">,</span>
-    <span class="s1">'Solar'</span><span class="p">,</span>
-    <span class="s1">'Waste'</span><span class="p">,</span>
-    <span class="s1">'Wind'</span><span class="p">,</span>
-    <span class="s1">'Geothermal'</span><span class="p">,</span>
-    <span class="s1">'Biomass'</span><span class="p">,</span>
+    <span class="s2">"Coal"</span><span class="p">,</span>
+    <span class="s2">"Oil"</span><span class="p">,</span>
+    <span class="s2">"Gas"</span><span class="p">,</span>
+    <span class="s2">"Hydro"</span><span class="p">,</span>
+    <span class="s2">"Nuclear"</span><span class="p">,</span>
+    <span class="s2">"Solar"</span><span class="p">,</span>
+    <span class="s2">"Waste"</span><span class="p">,</span>
+    <span class="s2">"Wind"</span><span class="p">,</span>
+    <span class="s2">"Geothermal"</span><span class="p">,</span>
+    <span class="s2">"Biomass"</span><span class="p">,</span>
 <span class="p">]</span>
 
 
@@ -5640,10 +5640,10 @@ r.show()</div>
 <span class="sd">    Returns:</span>
 <span class="sd">        (ee.Geometry.Point): Input point with added style dictionary</span>
 <span class="sd">    """</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'capacitymw'</span><span class="p">))</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">color</span> <span class="o">=</span> <span class="n">fuel_color</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'fuel1'</span><span class="p">))</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"capacitymw"</span><span class="p">))</span><span class="o">.</span><span class="n">sqrt</span><span class="p">()</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">fuel_color</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"fuel1"</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">point</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
-        <span class="s1">'styleProperty'</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Dictionary</span><span class="p">({</span><span class="s1">'pointSize'</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s1">'color'</span><span class="p">:</span> <span class="n">color</span><span class="p">})</span>
+        <span class="s2">"styleProperty"</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Dictionary</span><span class="p">({</span><span class="s2">"pointSize"</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s2">"color"</span><span class="p">:</span> <span class="n">color</span><span class="p">})</span>
     <span class="p">)</span>
 
 
@@ -5654,8 +5654,8 @@ r.show()</div>
 <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">fuel</span> <span class="ow">in</span> <span class="n">fuels</span><span class="p">:</span>
     <span class="n">layer</span> <span class="o">=</span> <span class="n">EarthEngineLayer</span><span class="p">(</span>
-        <span class="n">pp</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s1">'fuel1'</span><span class="p">,</span> <span class="n">fuel</span><span class="p">))</span><span class="o">.</span><span class="n">style</span><span class="p">(</span>
-            <span class="n">styleProperty</span><span class="o">=</span><span class="s1">'styleProperty'</span><span class="p">,</span> <span class="n">neighborhood</span><span class="o">=</span><span class="mi">50</span>
+        <span class="n">pp</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s2">"fuel1"</span><span class="p">,</span> <span class="n">fuel</span><span class="p">))</span><span class="o">.</span><span class="n">style</span><span class="p">(</span>
+            <span class="n">styleProperty</span><span class="o">=</span><span class="s2">"styleProperty"</span><span class="p">,</span> <span class="n">neighborhood</span><span class="o">=</span><span class="mi">50</span>
         <span class="p">),</span>
         <span class="nb">id</span><span class="o">=</span><span class="n">fuel</span><span class="p">,</span>
         <span class="n">opacity</span><span class="o">=</span><span class="mf">0.65</span><span class="p">,</span>
@@ -5683,31 +5683,31 @@ table = ee.FeatureCollection("WRI/GPPD/power_plants")
 # Create color palette
 fuel_color = ee.Dictionary(
     {
-        'Coal': '000000',
-        'Oil': '593704',
-        'Gas': 'BC80BD',
-        'Hydro': '0565A6',
-        'Nuclear': 'E31A1C',
-        'Solar': 'FF7F00',
-        'Waste': '6A3D9A',
-        'Wind': '5CA2D1',
-        'Geothermal': 'FDBF6F',
-        'Biomass': '229A00',
+        "Coal": "000000",
+        "Oil": "593704",
+        "Gas": "BC80BD",
+        "Hydro": "0565A6",
+        "Nuclear": "E31A1C",
+        "Solar": "FF7F00",
+        "Waste": "6A3D9A",
+        "Wind": "5CA2D1",
+        "Geothermal": "FDBF6F",
+        "Biomass": "229A00",
     }
 )
 
 # List of fuels to add to the map
 fuels = [
-    'Coal',
-    'Oil',
-    'Gas',
-    'Hydro',
-    'Nuclear',
-    'Solar',
-    'Waste',
-    'Wind',
-    'Geothermal',
-    'Biomass',
+    "Coal",
+    "Oil",
+    "Gas",
+    "Hydro",
+    "Nuclear",
+    "Solar",
+    "Waste",
+    "Wind",
+    "Geothermal",
+    "Biomass",
 ]
 
 
@@ -5720,10 +5720,10 @@ def add_style(point):
     Returns:
         (ee.Geometry.Point): Input point with added style dictionary
     """
-    size = ee.Number(point.get('capacitymw')).sqrt().divide(10).add(2)
-    color = fuel_color.get(point.get('fuel1'))
+    size = ee.Number(point.get("capacitymw")).sqrt().divide(10).add(2)
+    color = fuel_color.get(point.get("fuel1"))
     return point.set(
-        'styleProperty', ee.Dictionary({'pointSize': size, 'color': color})
+        "styleProperty", ee.Dictionary({"pointSize": size, "color": color})
     )
 
 
@@ -5734,8 +5734,8 @@ pp = ee.FeatureCollection(table).map(add_style)
 layers = []
 for fuel in fuels:
     layer = EarthEngineLayer(
-        pp.filter(ee.Filter.eq('fuel1', fuel)).style(
-            styleProperty='styleProperty', neighborhood=50
+        pp.filter(ee.Filter.eq("fuel1", fuel)).style(
+            styleProperty="styleProperty", neighborhood=50
         ),
         id=fuel,
         opacity=0.65,
@@ -5752,7 +5752,7 @@ r.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c6b25c53">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=11">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5763,7 +5763,7 @@ r.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=62aa5b4c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=12">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5792,15 +5792,15 @@ r.show()</div>
     <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
 
 <span class="c1"># Hurricane tracks and points for 2017.</span>
-<span class="n">hurricanes</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s1">'NOAA/NHC/HURDAT2/atlantic'</span><span class="p">)</span>
+<span class="n">hurricanes</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s2">"NOAA/NHC/HURDAT2/atlantic"</span><span class="p">)</span>
 
-<span class="n">year</span> <span class="o">=</span> <span class="s1">'2017'</span>
-<span class="n">points</span> <span class="o">=</span> <span class="n">hurricanes</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="n">year</span><span class="p">)</span><span class="o">.</span><span class="n">getRange</span><span class="p">(</span><span class="s1">'year'</span><span class="p">)))</span>
+<span class="n">year</span> <span class="o">=</span> <span class="s2">"2017"</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">hurricanes</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="n">year</span><span class="p">)</span><span class="o">.</span><span class="n">getRange</span><span class="p">(</span><span class="s2">"year"</span><span class="p">)))</span>
 
 
 <span class="c1"># Find all of the hurricane ids.</span>
 <span class="k">def</span> <span class="nf">get_id</span><span class="p">(</span><span class="n">point</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="n">point</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'id'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="n">point</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span>
 
 
 <span class="n">storm_ids</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">toList</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">get_id</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span>
@@ -5808,11 +5808,11 @@ r.show()</div>
 
 <span class="c1"># Create a line for each hurricane.</span>
 <span class="k">def</span> <span class="nf">create_line</span><span class="p">(</span><span class="n">storm_id</span><span class="p">):</span>
-    <span class="n">pts</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">storm_id</span><span class="p">)))</span>
-    <span class="n">pts</span> <span class="o">=</span> <span class="n">pts</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">'system:time_start'</span><span class="p">)</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">storm_id</span><span class="p">)))</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="n">pts</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">"system:time_start"</span><span class="p">)</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">LineString</span><span class="p">(</span><span class="n">pts</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span><span class="o">.</span><span class="n">coordinates</span><span class="p">())</span>
     <span class="n">feature</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">feature</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="n">storm_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">feature</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="n">storm_id</span><span class="p">)</span>
 
 
 <span class="n">lines</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="n">storm_ids</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">create_line</span><span class="p">))</span>
@@ -5820,13 +5820,13 @@ r.show()</div>
 
 <span class="n">lines_layer</span> <span class="o">=</span> <span class="n">EarthEngineLayer</span><span class="p">(</span>
     <span class="n">lines</span><span class="p">,</span>
-    <span class="p">{</span><span class="s1">'color'</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"color"</span><span class="p">:</span> <span class="s2">"red"</span><span class="p">},</span>
     <span class="nb">id</span><span class="o">=</span><span class="s2">"tracks"</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">points_layer</span> <span class="o">=</span> <span class="n">EarthEngineLayer</span><span class="p">(</span>
     <span class="n">points</span><span class="p">,</span>
-    <span class="p">{</span><span class="s1">'color'</span><span class="p">:</span> <span class="s1">'green'</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"color"</span><span class="p">:</span> <span class="s2">"green"</span><span class="p">},</span>
     <span class="nb">id</span><span class="o">=</span><span class="s2">"points"</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -5846,15 +5846,15 @@ except Exception as e:
     ee.Initialize()
 
 # Hurricane tracks and points for 2017.
-hurricanes = ee.FeatureCollection('NOAA/NHC/HURDAT2/atlantic')
+hurricanes = ee.FeatureCollection("NOAA/NHC/HURDAT2/atlantic")
 
-year = '2017'
-points = hurricanes.filter(ee.Filter.date(ee.Date(year).getRange('year')))
+year = "2017"
+points = hurricanes.filter(ee.Filter.date(ee.Date(year).getRange("year")))
 
 
 # Find all of the hurricane ids.
 def get_id(point):
-    return ee.Feature(point).get('id')
+    return ee.Feature(point).get("id")
 
 
 storm_ids = points.toList(1000).map(get_id).distinct()
@@ -5862,11 +5862,11 @@ storm_ids = points.toList(1000).map(get_id).distinct()
 
 # Create a line for each hurricane.
 def create_line(storm_id):
-    pts = points.filter(ee.Filter.eq('id', ee.String(storm_id)))
-    pts = pts.sort('system:time_start')
+    pts = points.filter(ee.Filter.eq("id", ee.String(storm_id)))
+    pts = pts.sort("system:time_start")
     line = ee.Geometry.LineString(pts.geometry().coordinates())
     feature = ee.Feature(line)
-    return feature.set('id', storm_id)
+    return feature.set("id", storm_id)
 
 
 lines = ee.FeatureCollection(storm_ids.map(create_line))
@@ -5874,13 +5874,13 @@ lines = ee.FeatureCollection(storm_ids.map(create_line))
 
 lines_layer = EarthEngineLayer(
     lines,
-    {'color': 'red'},
+    {"color": "red"},
     id="tracks",
 )
 
 points_layer = EarthEngineLayer(
     points,
-    {'color': 'green'},
+    {"color": "green"},
     id="points",
 )
 
@@ -5894,7 +5894,7 @@ r.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ebe8e74a">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=13">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5922,9 +5922,9 @@ r.show()</div>
     <span class="n">ee</span><span class="o">.</span><span class="n">Authenticate</span><span class="p">()</span>
     <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">()</span>
 
-<span class="n">dataset</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s1">'FAO/GAUL/2015/level0'</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s2">"FAO/GAUL/2015/level0"</span><span class="p">)</span>
 
-<span class="n">countries</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="n">fillColor</span><span class="o">=</span><span class="s1">'b5ffb4'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'00909F'</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">countries</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="n">fillColor</span><span class="o">=</span><span class="s2">"b5ffb4"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"00909F"</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="n">layer</span> <span class="o">=</span> <span class="n">EarthEngineLayer</span><span class="p">(</span><span class="n">countries</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"international_boundaries"</span><span class="p">)</span>
 <span class="n">view_state</span> <span class="o">=</span> <span class="n">pdk</span><span class="o">.</span><span class="n">ViewState</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="mi">36</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
@@ -5941,9 +5941,9 @@ except Exception as e:
     ee.Authenticate()
     ee.Initialize()
 
-dataset = ee.FeatureCollection('FAO/GAUL/2015/level0')
+dataset = ee.FeatureCollection("FAO/GAUL/2015/level0")
 
-countries = dataset.style(fillColor='b5ffb4', color='00909F', width=3)
+countries = dataset.style(fillColor="b5ffb4", color="00909F", width=3)
 
 layer = EarthEngineLayer(countries, id="international_boundaries")
 view_state = pdk.ViewState(latitude=36, longitude=10, zoom=3)
@@ -5984,7 +5984,7 @@ r.show()</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

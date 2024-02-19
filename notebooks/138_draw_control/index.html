@@ -4976,7 +4976,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e474d3ad">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4989,7 +4989,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3fad2b11">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5016,7 +5016,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ef19e5be">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5047,7 +5047,7 @@ import ipywidgets as widgets</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=632adabc">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5059,7 +5059,7 @@ import ipywidgets as widgets</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cc00ead4">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5078,71 +5078,79 @@ import ipywidgets as widgets</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="bp">self</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">9.31</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/SRTMGL1_003"</span><span class="p">)</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mi">6000</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="s1">'terrain'</span><span class="p">,</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mi">6000</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="s2">"terrain"</span><span class="p">,</span>
 <span class="p">}</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'SRTM'</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"SRTM"</span><span class="p">)</span>
 
-<span class="n">clip_btn</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Clip Image'</span><span class="p">)</span>
-<span class="n">reset_btn</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Reset'</span><span class="p">)</span>
+<span class="n">clip_btn</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Clip Image"</span><span class="p">)</span>
+<span class="n">reset_btn</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Reset"</span><span class="p">)</span>
+
 
 <span class="k">def</span> <span class="nf">on_clip_btn_clicked</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_roi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">clipped_image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_roi</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">clipped_image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'Clipped Image'</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s1">'SRTM'</span><span class="p">)</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">clipped_image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"Clipped Image"</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s2">"SRTM"</span><span class="p">)</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">pass</span>
 
+
 <span class="n">clip_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">on_clip_btn_clicked</span><span class="p">)</span>
+
 
 <span class="k">def</span> <span class="nf">on_reset_btn_clicked</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_draw_control</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s1">'SRTM'</span><span class="p">)</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s2">"SRTM"</span><span class="p">)</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+
 
 <span class="n">reset_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">on_reset_btn_clicked</span><span class="p">)</span>
 
 <span class="n">widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">([</span><span class="n">clip_btn</span><span class="p">,</span> <span class="n">reset_btn</span><span class="p">])</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">'bottomright'</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">"bottomright"</span><span class="p">)</span>
 <span class="bp">self</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3">self = geemap.Map(center=[0, 9.31], zoom=3)
-image = ee.Image('USGS/SRTMGL1_003')
+image = ee.Image("USGS/SRTMGL1_003")
 vis_params = {
-    'min': 0,
-    'max': 6000,
-    'palette': 'terrain',
+    "min": 0,
+    "max": 6000,
+    "palette": "terrain",
 }
-self.add_layer(image, vis_params, 'SRTM')
+self.add_layer(image, vis_params, "SRTM")
 
-clip_btn = widgets.Button(description='Clip Image')
-reset_btn = widgets.Button(description='Reset')
+clip_btn = widgets.Button(description="Clip Image")
+reset_btn = widgets.Button(description="Reset")
+
 
 def on_clip_btn_clicked(b):
     if self.user_roi is not None:
         try:
             clipped_image = image.clip(self.user_roi)
-            self.add_layer(clipped_image, vis_params, 'Clipped Image')
-            self.find_layer('SRTM').visible = False
+            self.add_layer(clipped_image, vis_params, "Clipped Image")
+            self.find_layer("SRTM").visible = False
         except:
             pass
 
+
 clip_btn.on_click(on_clip_btn_clicked)
+
 
 def on_reset_btn_clicked(b):
     self._draw_control.clear()
-    self.find_layer('SRTM').visible = True
+    self.find_layer("SRTM").visible = True
     self.layers = self.layers[:3]
+
 
 reset_btn.on_click(on_reset_btn_clicked)
 
 widget = widgets.VBox([clip_btn, reset_btn])
-self.add_widget(widget, position='bottomright')
+self.add_widget(widget, position="bottomright")
 self</div>
 </div>
 </div>
@@ -5150,7 +5158,7 @@ self</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1b032349">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5161,7 +5169,7 @@ self</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8b599dc4">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5189,23 +5197,23 @@ self</div>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/SRTMGL1_003"</span><span class="p">)</span>
         <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="s1">'max'</span><span class="p">:</span> <span class="mi">6000</span><span class="p">,</span>
-            <span class="s1">'palette'</span><span class="p">:</span> <span class="s1">'terrain'</span><span class="p">,</span>
+            <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">"max"</span><span class="p">:</span> <span class="mi">6000</span><span class="p">,</span>
+            <span class="s2">"palette"</span><span class="p">:</span> <span class="s2">"terrain"</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'SRTM'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"SRTM"</span><span class="p">)</span>
 
-        <span class="n">clip_btn</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Clip Image'</span><span class="p">)</span>
-        <span class="n">reset_btn</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Reset'</span><span class="p">)</span>
+        <span class="n">clip_btn</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Clip Image"</span><span class="p">)</span>
+        <span class="n">reset_btn</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Reset"</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">on_clip_btn_clicked</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_roi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">clipped_image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_roi</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">clipped_image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'Clipped Image'</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s1">'SRTM'</span><span class="p">)</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">clipped_image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"Clipped Image"</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s2">"SRTM"</span><span class="p">)</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">except</span><span class="p">:</span>
                     <span class="k">pass</span>
 
@@ -5213,13 +5221,13 @@ self</div>
 
         <span class="k">def</span> <span class="nf">on_reset_btn_clicked</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_draw_control</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s1">'SRTM'</span><span class="p">)</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s2">"SRTM"</span><span class="p">)</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
 
         <span class="n">reset_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">on_reset_btn_clicked</span><span class="p">)</span>
 
         <span class="n">widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">([</span><span class="n">clip_btn</span><span class="p">,</span> <span class="n">reset_btn</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">'bottomright'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">"bottomright"</span><span class="p">)</span>
 
 
 <span class="nd">@solara</span><span class="o">.</span><span class="n">component</span>
@@ -5230,6 +5238,8 @@ self</div>
             <span class="n">zoom</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
             <span class="n">height</span><span class="o">=</span><span class="s2">"600px"</span><span class="p">,</span>
         <span class="p">)</span>
+
+
 <span class="n">Page</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4">import ee
@@ -5242,23 +5252,23 @@ class Map(geemap.Map):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        image = ee.Image('USGS/SRTMGL1_003')
+        image = ee.Image("USGS/SRTMGL1_003")
         vis_params = {
-            'min': 0,
-            'max': 6000,
-            'palette': 'terrain',
+            "min": 0,
+            "max": 6000,
+            "palette": "terrain",
         }
-        self.add_layer(image, vis_params, 'SRTM')
+        self.add_layer(image, vis_params, "SRTM")
 
-        clip_btn = widgets.Button(description='Clip Image')
-        reset_btn = widgets.Button(description='Reset')
+        clip_btn = widgets.Button(description="Clip Image")
+        reset_btn = widgets.Button(description="Reset")
 
         def on_clip_btn_clicked(b):
             if self.user_roi is not None:
                 try:
                     clipped_image = image.clip(self.user_roi)
-                    self.add_layer(clipped_image, vis_params, 'Clipped Image')
-                    self.find_layer('SRTM').visible = False
+                    self.add_layer(clipped_image, vis_params, "Clipped Image")
+                    self.find_layer("SRTM").visible = False
                 except:
                     pass
 
@@ -5266,13 +5276,13 @@ class Map(geemap.Map):
 
         def on_reset_btn_clicked(b):
             self._draw_control.clear()
-            self.find_layer('SRTM').visible = True
+            self.find_layer("SRTM").visible = True
             self.layers = self.layers[:3]
 
         reset_btn.on_click(on_reset_btn_clicked)
 
         widget = widgets.VBox([clip_btn, reset_btn])
-        self.add_widget(widget, position='bottomright')
+        self.add_widget(widget, position="bottomright")
 
 
 @solara.component
@@ -5283,6 +5293,8 @@ def Page():
             zoom=3,
             height="600px",
         )
+
+
 Page()</div>
 </div>
 </div>
@@ -5319,7 +5331,7 @@ Page()</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-10-25T17:18:48+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-10-25</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

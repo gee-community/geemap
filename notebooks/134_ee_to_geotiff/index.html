@@ -4976,7 +4976,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9a597b4b">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4989,7 +4989,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=391c0d1d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5016,7 +5016,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=67e2402d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5045,7 +5045,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=31eba80f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5066,26 +5066,26 @@ import geemap</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 <span class="n">point</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="o">-</span><span class="mf">99.2222</span><span class="p">,</span> <span class="mf">46.7816</span><span class="p">)</span>
 <span class="n">collection</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">'USDA/NAIP/DOQQ'</span><span class="p">)</span>
+    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"USDA/NAIP/DOQQ"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="s1">'2008-01-01'</span><span class="p">,</span> <span class="s1">'2018-01-01'</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="s2">"2008-01-01"</span><span class="p">,</span> <span class="s2">"2018-01-01"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">listContains</span><span class="p">(</span><span class="s2">"system:band_names"</span><span class="p">,</span> <span class="s2">"N"</span><span class="p">))</span>
 <span class="p">)</span>
 <span class="n">image</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'NAIP'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"NAIP"</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3">Map = geemap.Map()
 point = ee.Geometry.Point(-99.2222, 46.7816)
 collection = (
-    ee.ImageCollection('USDA/NAIP/DOQQ')
+    ee.ImageCollection("USDA/NAIP/DOQQ")
     .filterBounds(point)
-    .filterDate('2008-01-01', '2018-01-01')
+    .filterDate("2008-01-01", "2018-01-01")
     .filter(ee.Filter.listContains("system:band_names", "N"))
 )
 image = collection.first()
-Map.addLayer(image, {}, 'NAIP')
+Map.addLayer(image, {}, "NAIP")
 Map.centerObject(image)
 Map</div>
 </div>
@@ -5094,7 +5094,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d4b0a6e2">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5113,11 +5113,11 @@ Map</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_geotiff</span><span class="p">(</span>
-    <span class="n">image</span><span class="p">,</span> <span class="s1">'naip.tif'</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="p">{</span><span class="s1">'bands'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'N'</span><span class="p">,</span> <span class="s1">'R'</span><span class="p">,</span> <span class="s1">'G'</span><span class="p">]}</span>
+    <span class="n">image</span><span class="p">,</span> <span class="s2">"naip.tif"</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"N"</span><span class="p">,</span> <span class="s2">"R"</span><span class="p">,</span> <span class="s2">"G"</span><span class="p">]}</span>
 <span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4">geemap.ee_to_geotiff(
-    image, 'naip.tif', resolution=5, vis_params={'bands': ['N', 'R', 'G']}
+    image, "naip.tif", resolution=5, vis_params={"bands": ["N", "R", "G"]}
 )</div>
 </div>
 </div>
@@ -5125,7 +5125,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0f69d4ab">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5145,26 +5145,26 @@ Map</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
-<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'LANDSAT/LC08/C02/T1_TOA/LC08_044034_20140318'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
-    <span class="p">[</span><span class="s1">'B5'</span><span class="p">,</span> <span class="s1">'B4'</span><span class="p">,</span> <span class="s1">'B3'</span><span class="p">]</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"LANDSAT/LC08/C02/T1_TOA/LC08_044034_20140318"</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="p">[</span><span class="s2">"B5"</span><span class="p">,</span> <span class="s2">"B4"</span><span class="p">,</span> <span class="s2">"B3"</span><span class="p">]</span>
 <span class="p">)</span>
 
-<span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">'gamma'</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}</span>
+<span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'Landsat'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"Landsat"</span><span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-5">Map = geemap.Map()
 
-image = ee.Image('LANDSAT/LC08/C02/T1_TOA/LC08_044034_20140318').select(
-    ['B5', 'B4', 'B3']
+image = ee.Image("LANDSAT/LC08/C02/T1_TOA/LC08_044034_20140318").select(
+    ["B5", "B4", "B3"]
 )
 
-vis_params = {'min': 0, 'max': 0.5, 'gamma': [0.95, 1.1, 1]}
+vis_params = {"min": 0, "max": 0.5, "gamma": [0.95, 1.1, 1]}
 
 Map.centerObject(image)
-Map.addLayer(image, vis_params, 'Landsat')
+Map.addLayer(image, vis_params, "Landsat")
 Map</div>
 </div>
 </div>
@@ -5172,7 +5172,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=86c482f3">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5203,7 +5203,7 @@ if bbox is None:
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=39a096b2">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5221,9 +5221,9 @@ if bbox is None:
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_geotiff</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s1">'landsat.tif'</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_geotiff</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s2">"landsat.tif"</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7">geemap.ee_to_geotiff(image, 'landsat.tif', bbox, vis_params, resolution=30)</div>
+<div class="clipboard-copy-txt" id="cell-7">geemap.ee_to_geotiff(image, "landsat.tif", bbox, vis_params, resolution=30)</div>
 </div>
 </div>
 </div>
@@ -5259,7 +5259,7 @@ if bbox is None:
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-25T02:33:41+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-25</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

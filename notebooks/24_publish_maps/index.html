@@ -4976,7 +4976,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8d5d5349">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4988,7 +4988,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d653d513">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5015,7 +5015,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f49f458d">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5031,7 +5031,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f2a397fd">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5060,7 +5060,7 @@ import geemap.foliumap as geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=82066ed6">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5085,26 +5085,26 @@ import geemap.foliumap as geemap</div>
 <span class="c1"># a custom visualization of topography.</span>
 
 <span class="c1"># Load a global elevation image.</span>
-<span class="n">elev</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/GMTED2010'</span><span class="p">)</span>
+<span class="n">elev</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/GMTED2010"</span><span class="p">)</span>
 
 <span class="c1"># Zoom to an area of interest.</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">setCenter</span><span class="p">(</span><span class="o">-</span><span class="mf">121.069</span><span class="p">,</span> <span class="mf">50.709</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 
 <span class="c1"># Add the elevation to the map.</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">elev</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'elev'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">elev</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"elev"</span><span class="p">)</span>
 
 <span class="c1"># Use the terrain algorithms to compute a hillshade with 8-bit values.</span>
 <span class="n">shade</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Terrain</span><span class="o">.</span><span class="n">hillshade</span><span class="p">(</span><span class="n">elev</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">shade</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'hillshade'</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">shade</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"hillshade"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Create a "sea" variable to be used for cartographic purposes</span>
 <span class="n">sea</span> <span class="o">=</span> <span class="n">elev</span><span class="o">.</span><span class="n">lte</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">sea</span><span class="o">.</span><span class="n">mask</span><span class="p">(</span><span class="n">sea</span><span class="p">),</span> <span class="p">{</span><span class="s1">'palette'</span><span class="p">:</span> <span class="s1">'000022'</span><span class="p">},</span> <span class="s1">'sea'</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">sea</span><span class="o">.</span><span class="n">mask</span><span class="p">(</span><span class="n">sea</span><span class="p">),</span> <span class="p">{</span><span class="s2">"palette"</span><span class="p">:</span> <span class="s2">"000022"</span><span class="p">},</span> <span class="s2">"sea"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Create a custom elevation palette from hex strings.</span>
-<span class="n">elevationPalette</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'006600'</span><span class="p">,</span> <span class="s1">'002200'</span><span class="p">,</span> <span class="s1">'fff700'</span><span class="p">,</span> <span class="s1">'ab7634'</span><span class="p">,</span> <span class="s1">'c4d0ff'</span><span class="p">,</span> <span class="s1">'ffffff'</span><span class="p">]</span>
+<span class="n">elevationPalette</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"006600"</span><span class="p">,</span> <span class="s2">"002200"</span><span class="p">,</span> <span class="s2">"fff700"</span><span class="p">,</span> <span class="s2">"ab7634"</span><span class="p">,</span> <span class="s2">"c4d0ff"</span><span class="p">,</span> <span class="s2">"ffffff"</span><span class="p">]</span>
 <span class="c1"># Use these visualization parameters, customized by location.</span>
-<span class="n">visParams</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'min'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">:</span> <span class="mi">3000</span><span class="p">,</span> <span class="s1">'palette'</span><span class="p">:</span> <span class="n">elevationPalette</span><span class="p">}</span>
+<span class="n">visParams</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"min"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">3000</span><span class="p">,</span> <span class="s2">"palette"</span><span class="p">:</span> <span class="n">elevationPalette</span><span class="p">}</span>
 
 <span class="c1"># Create a mosaic of the sea and the elevation data</span>
 <span class="n">visualized</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span>
@@ -5112,12 +5112,12 @@ import geemap.foliumap as geemap</div>
         <span class="c1"># Mask the elevation to get only land</span>
         <span class="n">elev</span><span class="o">.</span><span class="n">mask</span><span class="p">(</span><span class="n">sea</span><span class="o">.</span><span class="n">Not</span><span class="p">())</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="o">**</span><span class="n">visParams</span><span class="p">),</span>
         <span class="c1"># Use the sea mask directly to display sea.</span>
-        <span class="n">sea</span><span class="o">.</span><span class="n">mask</span><span class="p">(</span><span class="n">sea</span><span class="p">)</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">'palette'</span><span class="p">:</span> <span class="s1">'000022'</span><span class="p">}),</span>
+        <span class="n">sea</span><span class="o">.</span><span class="n">mask</span><span class="p">(</span><span class="n">sea</span><span class="p">)</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">"palette"</span><span class="p">:</span> <span class="s2">"000022"</span><span class="p">}),</span>
     <span class="p">]</span>
 <span class="p">)</span><span class="o">.</span><span class="n">mosaic</span><span class="p">()</span>
 
 <span class="c1"># Note that the visualization image doesn't require visualization parameters.</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">visualized</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'elev palette'</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">visualized</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"elev palette"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Convert the visualized elevation to HSV, first converting to [0, 1] data.</span>
 <span class="n">hsv</span> <span class="o">=</span> <span class="n">visualized</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">rgbToHsv</span><span class="p">()</span>
@@ -5128,9 +5128,9 @@ import geemap.foliumap as geemap</div>
 <span class="c1"># Create a visualization image by converting back to RGB from HSV.</span>
 <span class="c1"># Note the cast to byte in order to export the image correctly.</span>
 <span class="n">rgb</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">addBands</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">hsvToRgb</span><span class="p">()</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">byte</span><span class="p">()</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">rgb</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'styled'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">rgb</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"styled"</span><span class="p">)</span>
 
-<span class="n">states</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s1">'TIGER/2018/States'</span><span class="p">)</span>
+<span class="n">states</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s2">"TIGER/2018/States"</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span><span class="o">.</span><span class="n">paint</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">{},</span> <span class="s2">"US States"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3"># Create a map centered at (lat, lon).
@@ -5140,26 +5140,26 @@ Map = geemap.Map(center=[40, -100], zoom=4)
 # a custom visualization of topography.
 
 # Load a global elevation image.
-elev = ee.Image('USGS/GMTED2010')
+elev = ee.Image("USGS/GMTED2010")
 
 # Zoom to an area of interest.
 Map.setCenter(-121.069, 50.709, 6)
 
 # Add the elevation to the map.
-Map.addLayer(elev, {}, 'elev')
+Map.addLayer(elev, {}, "elev")
 
 # Use the terrain algorithms to compute a hillshade with 8-bit values.
 shade = ee.Terrain.hillshade(elev)
-Map.addLayer(shade, {}, 'hillshade', False)
+Map.addLayer(shade, {}, "hillshade", False)
 
 # Create a "sea" variable to be used for cartographic purposes
 sea = elev.lte(0)
-Map.addLayer(sea.mask(sea), {'palette': '000022'}, 'sea', False)
+Map.addLayer(sea.mask(sea), {"palette": "000022"}, "sea", False)
 
 # Create a custom elevation palette from hex strings.
-elevationPalette = ['006600', '002200', 'fff700', 'ab7634', 'c4d0ff', 'ffffff']
+elevationPalette = ["006600", "002200", "fff700", "ab7634", "c4d0ff", "ffffff"]
 # Use these visualization parameters, customized by location.
-visParams = {'min': 1, 'max': 3000, 'palette': elevationPalette}
+visParams = {"min": 1, "max": 3000, "palette": elevationPalette}
 
 # Create a mosaic of the sea and the elevation data
 visualized = ee.ImageCollection(
@@ -5167,12 +5167,12 @@ visualized = ee.ImageCollection(
         # Mask the elevation to get only land
         elev.mask(sea.Not()).visualize(**visParams),
         # Use the sea mask directly to display sea.
-        sea.mask(sea).visualize(**{'palette': '000022'}),
+        sea.mask(sea).visualize(**{"palette": "000022"}),
     ]
 ).mosaic()
 
 # Note that the visualization image doesn't require visualization parameters.
-Map.addLayer(visualized, {}, 'elev palette', False)
+Map.addLayer(visualized, {}, "elev palette", False)
 
 # Convert the visualized elevation to HSV, first converting to [0, 1] data.
 hsv = visualized.divide(255).rgbToHsv()
@@ -5183,9 +5183,9 @@ v = shade.divide(255)
 # Create a visualization image by converting back to RGB from HSV.
 # Note the cast to byte in order to export the image correctly.
 rgb = hs.addBands(v).hsvToRgb().multiply(255).byte()
-Map.addLayer(rgb, {}, 'styled')
+Map.addLayer(rgb, {}, "styled")
 
-states = ee.FeatureCollection('TIGER/2018/States')
+states = ee.FeatureCollection("TIGER/2018/States")
 Map.addLayer(ee.Image().paint(states, 0, 2), {}, "US States")</div>
 </div>
 </div>
@@ -5193,7 +5193,7 @@ Map.addLayer(ee.Image().paint(states, 0, 2), {}, "US States")</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b71155c7">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5222,7 +5222,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4ac85bbc">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5241,13 +5241,13 @@ Map</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s1">'Terrain Visualization'</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">'A folium map with Earth Engine data layers'</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Terrain Visualization"</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"A folium map with Earth Engine data layers"</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-5">Map.publish(
-    name='Terrain Visualization',
-    description='A folium map with Earth Engine data layers',
+    name="Terrain Visualization",
+    description="A folium map with Earth Engine data layers",
 )</div>
 </div>
 </div>
@@ -5284,7 +5284,7 @@ Map</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

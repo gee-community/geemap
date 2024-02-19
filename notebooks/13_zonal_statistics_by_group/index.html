@@ -5131,7 +5131,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9165f268">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5143,7 +5143,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d1f1339d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5170,7 +5170,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d8213121">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5201,7 +5201,7 @@ import os</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5fb7434e">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5212,7 +5212,7 @@ import os</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f0c58667">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5241,7 +5241,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4a17a70d">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5252,7 +5252,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=dfdd86c6">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5270,26 +5270,26 @@ Map</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/NLCD_RELEASES/2019_REL/NLCD/2019'</span><span class="p">)</span>
-<span class="n">landcover</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'landcover'</span><span class="p">))</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">landcover</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'NLCD 2016'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/NLCD_RELEASES/2019_REL/NLCD/2019"</span><span class="p">)</span>
+<span class="n">landcover</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"landcover"</span><span class="p">))</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">landcover</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"NLCD 2016"</span><span class="p">)</span>
 
 <span class="n">states</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s2">"TIGER/2018/States"</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'US States'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"US States"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">dataset = ee.Image('USGS/NLCD_RELEASES/2019_REL/NLCD/2019')
-landcover = ee.Image(dataset.select('landcover'))
-Map.addLayer(landcover, {}, 'NLCD 2016')
+<div class="clipboard-copy-txt" id="cell-4">dataset = ee.Image("USGS/NLCD_RELEASES/2019_REL/NLCD/2019")
+landcover = ee.Image(dataset.select("landcover"))
+Map.addLayer(landcover, {}, "NLCD 2016")
 
 states = ee.FeatureCollection("TIGER/2018/States")
-Map.addLayer(states, {}, 'US States')</div>
+Map.addLayer(states, {}, "US States")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=886c01d2">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5307,16 +5307,16 @@ Map.addLayer(states, {}, 'US States')</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">builtin_legend</span><span class="o">=</span><span class="s1">'NLCD'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">builtin_legend</span><span class="o">=</span><span class="s2">"NLCD"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">Map.add_legend(builtin_legend='NLCD')</div>
+<div class="clipboard-copy-txt" id="cell-5">Map.add_legend(builtin_legend="NLCD")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9f6b5b5d">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5327,7 +5327,7 @@ Map.addLayer(states, {}, 'US States')</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5edf4ae9">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5345,8 +5345,8 @@ Map.addLayer(states, {}, 'US States')</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">'~'</span><span class="p">),</span> <span class="s1">'Downloads'</span><span class="p">)</span>
-<span class="n">nlcd_stats</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s1">'nlcd_stats.csv'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">"~"</span><span class="p">),</span> <span class="s2">"Downloads"</span><span class="p">)</span>
+<span class="n">nlcd_stats</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">"nlcd_stats.csv"</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_dir</span><span class="p">):</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
@@ -5357,13 +5357,13 @@ Map.addLayer(states, {}, 'US States')</div>
     <span class="n">landcover</span><span class="p">,</span>
     <span class="n">states</span><span class="p">,</span>
     <span class="n">nlcd_stats</span><span class="p">,</span>
-    <span class="n">stat_type</span><span class="o">=</span><span class="s1">'SUM'</span><span class="p">,</span>
+    <span class="n">stat_type</span><span class="o">=</span><span class="s2">"SUM"</span><span class="p">,</span>
     <span class="n">denominator</span><span class="o">=</span><span class="mi">1000000</span><span class="p">,</span>
     <span class="n">decimal_places</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
-nlcd_stats = os.path.join(out_dir, 'nlcd_stats.csv')
+<div class="clipboard-copy-txt" id="cell-6">out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+nlcd_stats = os.path.join(out_dir, "nlcd_stats.csv")
 
 if not os.path.exists(out_dir):
     os.makedirs(out_dir)
@@ -5374,7 +5374,7 @@ geemap.zonal_stats_by_group(
     landcover,
     states,
     nlcd_stats,
-    stat_type='SUM',
+    stat_type="SUM",
     denominator=1000000,
     decimal_places=2,
 )</div>
@@ -5384,7 +5384,7 @@ geemap.zonal_stats_by_group(
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=687eb4b7">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5411,7 +5411,7 @@ geemap.zonal_stats_by_group(
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3e579664">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=11">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5422,7 +5422,7 @@ geemap.zonal_stats_by_group(
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d5837161">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=12">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5451,7 +5451,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5a5608c6">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=13">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5463,7 +5463,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6bd0269d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=14">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5481,70 +5481,70 @@ Map</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">landcover</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'MODIS/006/MCD12Q1/2013_01_01'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'LC_Type1'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">landcover</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"MODIS/006/MCD12Q1/2013_01_01"</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"LC_Type1"</span><span class="p">)</span>
 
 <span class="n">vis</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mf">17.0</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s1">'05450a'</span><span class="p">,</span>
-        <span class="s1">'086a10'</span><span class="p">,</span>
-        <span class="s1">'54a708'</span><span class="p">,</span>
-        <span class="s1">'78d203'</span><span class="p">,</span>
-        <span class="s1">'009900'</span><span class="p">,</span>
-        <span class="s1">'c6b044'</span><span class="p">,</span>
-        <span class="s1">'dcd159'</span><span class="p">,</span>
-        <span class="s1">'dade48'</span><span class="p">,</span>
-        <span class="s1">'fbff13'</span><span class="p">,</span>
-        <span class="s1">'b6ff05'</span><span class="p">,</span>
-        <span class="s1">'27ff87'</span><span class="p">,</span>
-        <span class="s1">'c24f44'</span><span class="p">,</span>
-        <span class="s1">'a5a5a5'</span><span class="p">,</span>
-        <span class="s1">'ff6d4c'</span><span class="p">,</span>
-        <span class="s1">'69fff8'</span><span class="p">,</span>
-        <span class="s1">'f9ffa4'</span><span class="p">,</span>
-        <span class="s1">'1c0dff'</span><span class="p">,</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mf">17.0</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">"05450a"</span><span class="p">,</span>
+        <span class="s2">"086a10"</span><span class="p">,</span>
+        <span class="s2">"54a708"</span><span class="p">,</span>
+        <span class="s2">"78d203"</span><span class="p">,</span>
+        <span class="s2">"009900"</span><span class="p">,</span>
+        <span class="s2">"c6b044"</span><span class="p">,</span>
+        <span class="s2">"dcd159"</span><span class="p">,</span>
+        <span class="s2">"dade48"</span><span class="p">,</span>
+        <span class="s2">"fbff13"</span><span class="p">,</span>
+        <span class="s2">"b6ff05"</span><span class="p">,</span>
+        <span class="s2">"27ff87"</span><span class="p">,</span>
+        <span class="s2">"c24f44"</span><span class="p">,</span>
+        <span class="s2">"a5a5a5"</span><span class="p">,</span>
+        <span class="s2">"ff6d4c"</span><span class="p">,</span>
+        <span class="s2">"69fff8"</span><span class="p">,</span>
+        <span class="s2">"f9ffa4"</span><span class="p">,</span>
+        <span class="s2">"1c0dff"</span><span class="p">,</span>
     <span class="p">],</span>
 <span class="p">}</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">setCenter</span><span class="p">(</span><span class="mf">6.746</span><span class="p">,</span> <span class="mf">46.529</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">landcover</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="s1">'MODIS Land Cover'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">landcover</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="s2">"MODIS Land Cover"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-9">landcover = ee.Image('MODIS/006/MCD12Q1/2013_01_01').select('LC_Type1')
+<div class="clipboard-copy-txt" id="cell-9">landcover = ee.Image("MODIS/006/MCD12Q1/2013_01_01").select("LC_Type1")
 
 vis = {
-    'min': 1.0,
-    'max': 17.0,
-    'palette': [
-        '05450a',
-        '086a10',
-        '54a708',
-        '78d203',
-        '009900',
-        'c6b044',
-        'dcd159',
-        'dade48',
-        'fbff13',
-        'b6ff05',
-        '27ff87',
-        'c24f44',
-        'a5a5a5',
-        'ff6d4c',
-        '69fff8',
-        'f9ffa4',
-        '1c0dff',
+    "min": 1.0,
+    "max": 17.0,
+    "palette": [
+        "05450a",
+        "086a10",
+        "54a708",
+        "78d203",
+        "009900",
+        "c6b044",
+        "dcd159",
+        "dade48",
+        "fbff13",
+        "b6ff05",
+        "27ff87",
+        "c24f44",
+        "a5a5a5",
+        "ff6d4c",
+        "69fff8",
+        "f9ffa4",
+        "1c0dff",
     ],
 }
 
 Map.setCenter(6.746, 46.529, 2)
-Map.addLayer(landcover, vis, 'MODIS Land Cover')</div>
+Map.addLayer(landcover, vis, "MODIS Land Cover")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5975b531">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=15">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5562,16 +5562,16 @@ Map.addLayer(landcover, vis, 'MODIS Land Cover')</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">builtin_legend</span><span class="o">=</span><span class="s1">'MODIS/006/MCD12Q1'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">builtin_legend</span><span class="o">=</span><span class="s2">"MODIS/006/MCD12Q1"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-10">Map.add_legend(builtin_legend='MODIS/006/MCD12Q1')</div>
+<div class="clipboard-copy-txt" id="cell-10">Map.add_legend(builtin_legend="MODIS/006/MCD12Q1")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d8a6d337">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=16">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5589,20 +5589,20 @@ Map.addLayer(landcover, vis, 'MODIS Land Cover')</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">countries_shp</span> <span class="o">=</span> <span class="s1">'../data/countries.shp'</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">countries_shp</span> <span class="o">=</span> <span class="s2">"../data/countries.shp"</span>
 <span class="n">countries</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">shp_to_ee</span><span class="p">(</span><span class="n">countries_shp</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">countries</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'Countries'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">countries</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"Countries"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-11">countries_shp = '../data/countries.shp'
+<div class="clipboard-copy-txt" id="cell-11">countries_shp = "../data/countries.shp"
 countries = geemap.shp_to_ee(countries_shp)
-Map.addLayer(countries, {}, 'Countries')</div>
+Map.addLayer(countries, {}, "Countries")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b9656af4">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=17">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5620,8 +5620,8 @@ Map.addLayer(countries, {}, 'Countries')</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">'~'</span><span class="p">),</span> <span class="s1">'Downloads'</span><span class="p">)</span>
-<span class="n">global_stats</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s1">'global_stats.csv'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">"~"</span><span class="p">),</span> <span class="s2">"Downloads"</span><span class="p">)</span>
+<span class="n">global_stats</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">"global_stats.csv"</span><span class="p">)</span>
 
 <span class="c1"># statistics_type can be either 'SUM' or 'PERCENTAGE'</span>
 <span class="c1"># denominator can be used to convert square meters to other areal units, such as square kilimeters</span>
@@ -5629,13 +5629,13 @@ Map.addLayer(countries, {}, 'Countries')</div>
     <span class="n">landcover</span><span class="p">,</span>
     <span class="n">countries</span><span class="p">,</span>
     <span class="n">global_stats</span><span class="p">,</span>
-    <span class="n">stat_type</span><span class="o">=</span><span class="s1">'PERCENTAGE'</span><span class="p">,</span>
+    <span class="n">stat_type</span><span class="o">=</span><span class="s2">"PERCENTAGE"</span><span class="p">,</span>
     <span class="n">denominator</span><span class="o">=</span><span class="mi">1000000</span><span class="p">,</span>
     <span class="n">decimal_places</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-12">out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
-global_stats = os.path.join(out_dir, 'global_stats.csv')
+<div class="clipboard-copy-txt" id="cell-12">out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+global_stats = os.path.join(out_dir, "global_stats.csv")
 
 # statistics_type can be either 'SUM' or 'PERCENTAGE'
 # denominator can be used to convert square meters to other areal units, such as square kilimeters
@@ -5643,7 +5643,7 @@ geemap.zonal_stats_by_group(
     landcover,
     countries,
     global_stats,
-    stat_type='PERCENTAGE',
+    stat_type="PERCENTAGE",
     denominator=1000000,
     decimal_places=2,
 )</div>
@@ -5653,7 +5653,7 @@ geemap.zonal_stats_by_group(
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f12c8371">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=18">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5709,7 +5709,7 @@ geemap.zonal_stats_by_group(
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-12-19T20:04:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-12-19</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

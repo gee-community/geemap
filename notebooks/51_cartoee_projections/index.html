@@ -5087,7 +5087,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b4b09fb7">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5107,7 +5107,7 @@ jupyter notebook
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=78514cd1">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5136,7 +5136,7 @@ jupyter notebook
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f5044c56">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5147,7 +5147,7 @@ jupyter notebook
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=08018ffa">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5184,7 +5184,7 @@ import cartopy.crs as ccrs
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=eb8dfa7f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5211,7 +5211,7 @@ import cartopy.crs as ccrs
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=63932623">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5222,7 +5222,7 @@ import cartopy.crs as ccrs
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4393af38">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5242,16 +5242,16 @@ import cartopy.crs as ccrs
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># get an earth engine image of ocean data for Jan-Mar 2018</span>
 <span class="n">ocean</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">'NASA/OCEANDATA/MODIS-Terra/L3SMI'</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="s1">'2018-01-01'</span><span class="p">,</span> <span class="s1">'2018-03-01'</span><span class="p">))</span>
+    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"NASA/OCEANDATA/MODIS-Terra/L3SMI"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="s2">"2018-01-01"</span><span class="p">,</span> <span class="s2">"2018-03-01"</span><span class="p">))</span>
     <span class="o">.</span><span class="n">median</span><span class="p">()</span>
     <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s2">"sst"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"SST"</span><span class="p">])</span>
 <span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4"># get an earth engine image of ocean data for Jan-Mar 2018
 ocean = (
-    ee.ImageCollection('NASA/OCEANDATA/MODIS-Terra/L3SMI')
-    .filter(ee.Filter.date('2018-01-01', '2018-03-01'))
+    ee.ImageCollection("NASA/OCEANDATA/MODIS-Terra/L3SMI")
+    .filter(ee.Filter.date("2018-01-01", "2018-03-01"))
     .median()
     .select(["sst"], ["SST"])
 )</div>
@@ -5261,7 +5261,7 @@ ocean = (
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a36e217f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5281,13 +5281,13 @@ ocean = (
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># set parameters for plotting</span>
 <span class="c1"># will plot the Sea Surface Temp with specific range and colormap</span>
-<span class="n">visualization</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'bands'</span><span class="p">:</span> <span class="s2">"SST"</span><span class="p">,</span> <span class="s1">'min'</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">:</span> <span class="mi">30</span><span class="p">}</span>
+<span class="n">visualization</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"bands"</span><span class="p">:</span> <span class="s2">"SST"</span><span class="p">,</span> <span class="s2">"min"</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">30</span><span class="p">}</span>
 <span class="c1"># specify region to focus on</span>
 <span class="n">bbox</span> <span class="o">=</span> <span class="p">[</span><span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">88</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">88</span><span class="p">]</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-5"># set parameters for plotting
 # will plot the Sea Surface Temp with specific range and colormap
-visualization = {'bands': "SST", 'min': -2, 'max': 30}
+visualization = {"bands": "SST", "min": -2, "max": 30}
 # specify region to focus on
 bbox = [180, -88, -180, 88]</div>
 </div>
@@ -5296,7 +5296,7 @@ bbox = [180, -88, -180, 88]</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ce2c7c9c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5317,10 +5317,10 @@ bbox = [180, -88, -180, 88]</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 
 <span class="c1"># plot the result with cartoee using a PlateCarre projection (default)</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">ocean</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">)</span>
-<span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'right'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">ocean</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">)</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'Sea Surface Temperature'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Sea Surface Temperature"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -5328,10 +5328,10 @@ bbox = [180, -88, -180, 88]</div>
 <div class="clipboard-copy-txt" id="cell-6">fig = plt.figure(figsize=(15, 10))
 
 # plot the result with cartoee using a PlateCarre projection (default)
-ax = cartoee.get_map(ocean, cmap='plasma', vis_params=visualization, region=bbox)
-cb = cartoee.add_colorbar(ax, vis_params=visualization, loc='right', cmap='plasma')
+ax = cartoee.get_map(ocean, cmap="plasma", vis_params=visualization, region=bbox)
+cb = cartoee.add_colorbar(ax, vis_params=visualization, loc="right", cmap="plasma")
 
-ax.set_title(label='Sea Surface Temperature', fontsize=15)
+ax.set_title(label="Sea Surface Temperature", fontsize=15)
 
 ax.coastlines()
 plt.show()</div>
@@ -5341,7 +5341,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9666230d">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5352,7 +5352,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5f94695c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5377,10 +5377,10 @@ plt.show()</div>
 
 <span class="c1"># plot the result with cartoee using the Mollweide projection</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span>
-    <span class="n">ocean</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
+    <span class="n">ocean</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
 <span class="p">)</span>
 <span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span>
-    <span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'bottom'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">'horizontal'</span>
+    <span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">"horizontal"</span>
 <span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Mollweide projection"</span><span class="p">)</span>
@@ -5395,10 +5395,10 @@ projection = ccrs.Mollweide(central_longitude=-180)
 
 # plot the result with cartoee using the Mollweide projection
 ax = cartoee.get_map(
-    ocean, vis_params=visualization, region=bbox, cmap='plasma', proj=projection
+    ocean, vis_params=visualization, region=bbox, cmap="plasma", proj=projection
 )
 cb = cartoee.add_colorbar(
-    ax, vis_params=visualization, loc='bottom', cmap='plasma', orientation='horizontal'
+    ax, vis_params=visualization, loc="bottom", cmap="plasma", orientation="horizontal"
 )
 
 ax.set_title("Mollweide projection")
@@ -5411,7 +5411,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b6cad783">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=11">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5436,10 +5436,10 @@ plt.show()</div>
 
 <span class="c1"># plot the result with cartoee using the Goode homolosine projection</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span>
-    <span class="n">ocean</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
+    <span class="n">ocean</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
 <span class="p">)</span>
 <span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span>
-    <span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'bottom'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">'horizontal'</span>
+    <span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">"horizontal"</span>
 <span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Robinson projection"</span><span class="p">)</span>
@@ -5454,10 +5454,10 @@ projection = ccrs.Robinson(central_longitude=-180)
 
 # plot the result with cartoee using the Goode homolosine projection
 ax = cartoee.get_map(
-    ocean, vis_params=visualization, region=bbox, cmap='plasma', proj=projection
+    ocean, vis_params=visualization, region=bbox, cmap="plasma", proj=projection
 )
 cb = cartoee.add_colorbar(
-    ax, vis_params=visualization, loc='bottom', cmap='plasma', orientation='horizontal'
+    ax, vis_params=visualization, loc="bottom", cmap="plasma", orientation="horizontal"
 )
 
 ax.set_title("Robinson projection")
@@ -5470,7 +5470,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e2ea89c3">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=12">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5495,10 +5495,10 @@ plt.show()</div>
 
 <span class="c1"># plot the result with cartoee using the Goode homolosine projection</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span>
-    <span class="n">ocean</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
+    <span class="n">ocean</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
 <span class="p">)</span>
 <span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span>
-    <span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'bottom'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">'horizontal'</span>
+    <span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"bottom"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">"horizontal"</span>
 <span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Goode homolosine projection"</span><span class="p">)</span>
@@ -5513,10 +5513,10 @@ projection = ccrs.InterruptedGoodeHomolosine(central_longitude=-180)
 
 # plot the result with cartoee using the Goode homolosine projection
 ax = cartoee.get_map(
-    ocean, vis_params=visualization, region=bbox, cmap='plasma', proj=projection
+    ocean, vis_params=visualization, region=bbox, cmap="plasma", proj=projection
 )
 cb = cartoee.add_colorbar(
-    ax, vis_params=visualization, loc='bottom', cmap='plasma', orientation='horizontal'
+    ax, vis_params=visualization, loc="bottom", cmap="plasma", orientation="horizontal"
 )
 
 ax.set_title("Goode homolosine projection")
@@ -5529,7 +5529,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1e37a191">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=13">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5554,10 +5554,10 @@ plt.show()</div>
 
 <span class="c1"># plot the result with cartoee using the orographic projection</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span>
-    <span class="n">ocean</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
+    <span class="n">ocean</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
 <span class="p">)</span>
 <span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span>
-    <span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'right'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">'vertical'</span>
+    <span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">"vertical"</span>
 <span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Equal Earth projection"</span><span class="p">)</span>
@@ -5572,10 +5572,10 @@ projection = ccrs.EqualEarth(central_longitude=-180)
 
 # plot the result with cartoee using the orographic projection
 ax = cartoee.get_map(
-    ocean, vis_params=visualization, region=bbox, cmap='plasma', proj=projection
+    ocean, vis_params=visualization, region=bbox, cmap="plasma", proj=projection
 )
 cb = cartoee.add_colorbar(
-    ax, vis_params=visualization, loc='right', cmap='plasma', orientation='vertical'
+    ax, vis_params=visualization, loc="right", cmap="plasma", orientation="vertical"
 )
 
 ax.set_title("Equal Earth projection")
@@ -5588,7 +5588,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=91658e51">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=14">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5613,10 +5613,10 @@ plt.show()</div>
 
 <span class="c1"># plot the result with cartoee using the orographic projection</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span>
-    <span class="n">ocean</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
+    <span class="n">ocean</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
 <span class="p">)</span>
 <span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span>
-    <span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'right'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">'vertical'</span>
+    <span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">"vertical"</span>
 <span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Orographic projection"</span><span class="p">)</span>
@@ -5631,10 +5631,10 @@ projection = ccrs.Orthographic(-130, -10)
 
 # plot the result with cartoee using the orographic projection
 ax = cartoee.get_map(
-    ocean, vis_params=visualization, region=bbox, cmap='plasma', proj=projection
+    ocean, vis_params=visualization, region=bbox, cmap="plasma", proj=projection
 )
 cb = cartoee.add_colorbar(
-    ax, vis_params=visualization, loc='right', cmap='plasma', orientation='vertical'
+    ax, vis_params=visualization, loc="right", cmap="plasma", orientation="vertical"
 )
 
 ax.set_title("Orographic projection")
@@ -5647,7 +5647,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=66e43a17">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=15">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5658,7 +5658,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4600c769">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=16">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5685,12 +5685,12 @@ plt.show()</div>
 
 <span class="c1"># plot the result with cartoee focusing on the south pole</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span>
-    <span class="n">ocean</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">spole</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
+    <span class="n">ocean</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">spole</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
 <span class="p">)</span>
-<span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'right'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">)</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'The South Pole'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"The South Pole"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-12">fig = plt.figure(figsize=(15, 10))
@@ -5702,12 +5702,12 @@ projection = ccrs.SouthPolarStereo()
 
 # plot the result with cartoee focusing on the south pole
 ax = cartoee.get_map(
-    ocean, cmap='plasma', vis_params=visualization, region=spole, proj=projection
+    ocean, cmap="plasma", vis_params=visualization, region=spole, proj=projection
 )
-cb = cartoee.add_colorbar(ax, vis_params=visualization, loc='right', cmap='plasma')
+cb = cartoee.add_colorbar(ax, vis_params=visualization, loc="right", cmap="plasma")
 
 ax.coastlines()
-ax.set_title('The South Pole')
+ax.set_title("The South Pole")
 plt.show()</div>
 </div>
 </div>
@@ -5715,7 +5715,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a64607cf">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=17">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5727,7 +5727,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2d4e6767">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=18">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5749,12 +5749,12 @@ plt.show()</div>
 
 <span class="c1"># plot the result with cartoee focusing on the south pole</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span>
-    <span class="n">ocean</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">spole</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
+    <span class="n">ocean</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">spole</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">projection</span>
 <span class="p">)</span>
-<span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'right'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">)</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'The South Pole'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"The South Pole"</span><span class="p">)</span>
 
 <span class="c1"># get bounding box coordinates of a zoom area</span>
 <span class="n">zoom</span> <span class="o">=</span> <span class="n">spole</span>
@@ -5772,12 +5772,12 @@ plt.show()</div>
 
 # plot the result with cartoee focusing on the south pole
 ax = cartoee.get_map(
-    ocean, cmap='plasma', vis_params=visualization, region=spole, proj=projection
+    ocean, cmap="plasma", vis_params=visualization, region=spole, proj=projection
 )
-cb = cartoee.add_colorbar(ax, vis_params=visualization, loc='right', cmap='plasma')
+cb = cartoee.add_colorbar(ax, vis_params=visualization, loc="right", cmap="plasma")
 
 ax.coastlines()
-ax.set_title('The South Pole')
+ax.set_title("The South Pole")
 
 # get bounding box coordinates of a zoom area
 zoom = spole
@@ -5796,7 +5796,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=e6af04c3">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=19">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5852,7 +5852,7 @@ plt.show()</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

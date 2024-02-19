@@ -4976,7 +4976,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0ac6f6ea">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4988,7 +4988,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=04cacaeb">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5015,7 +5015,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c0ad3fce">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5046,7 +5046,7 @@ import geemap</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cc54ae93">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5057,7 +5057,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0af8355c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5084,7 +5084,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9695d48f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5113,7 +5113,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cd365b79">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5132,45 +5132,45 @@ Map</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Add Earth Engine dataset</span>
-<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
-<span class="n">landsat7</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'LANDSAT/LE7_TOA_5YEAR/1999_2003'</span><span class="p">)</span>
+<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/SRTMGL1_003"</span><span class="p">)</span>
+<span class="n">landsat7</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"LANDSAT/LE7_TOA_5YEAR/1999_2003"</span><span class="p">)</span>
 
 <span class="c1"># Set visualization parameters.</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'006633'</span><span class="p">,</span> <span class="s1">'E5FFCC'</span><span class="p">,</span> <span class="s1">'662A00'</span><span class="p">,</span> <span class="s1">'D8D8D8'</span><span class="p">,</span> <span class="s1">'F5F5F5'</span><span class="p">],</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"006633"</span><span class="p">,</span> <span class="s2">"E5FFCC"</span><span class="p">,</span> <span class="s2">"662A00"</span><span class="p">,</span> <span class="s2">"D8D8D8"</span><span class="p">,</span> <span class="s2">"F5F5F5"</span><span class="p">],</span>
 <span class="p">}</span>
 
 <span class="c1"># Add Earth Engine layers to Map</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span>
-    <span class="n">landsat7</span><span class="p">,</span> <span class="p">{</span><span class="s1">'bands'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'B4'</span><span class="p">,</span> <span class="s1">'B3'</span><span class="p">,</span> <span class="s1">'B2'</span><span class="p">],</span> <span class="s1">'min'</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">:</span> <span class="mi">200</span><span class="p">},</span> <span class="s1">'Landsat 7'</span>
+    <span class="n">landsat7</span><span class="p">,</span> <span class="p">{</span><span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"B4"</span><span class="p">,</span> <span class="s2">"B3"</span><span class="p">,</span> <span class="s2">"B2"</span><span class="p">],</span> <span class="s2">"min"</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">200</span><span class="p">},</span> <span class="s2">"Landsat 7"</span>
 <span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'SRTM DEM'</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"SRTM DEM"</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-5"># Add Earth Engine dataset
-dem = ee.Image('USGS/SRTMGL1_003')
-landsat7 = ee.Image('LANDSAT/LE7_TOA_5YEAR/1999_2003')
+dem = ee.Image("USGS/SRTMGL1_003")
+landsat7 = ee.Image("LANDSAT/LE7_TOA_5YEAR/1999_2003")
 
 # Set visualization parameters.
 vis_params = {
-    'min': 0,
-    'max': 4000,
-    'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5'],
+    "min": 0,
+    "max": 4000,
+    "palette": ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"],
 }
 
 # Add Earth Engine layers to Map
 Map.addLayer(
-    landsat7, {'bands': ['B4', 'B3', 'B2'], 'min': 20, 'max': 200}, 'Landsat 7'
+    landsat7, {"bands": ["B4", "B3", "B2"], "min": 20, "max": 200}, "Landsat 7"
 )
-Map.addLayer(dem, vis_params, 'SRTM DEM', True, 1)</div>
+Map.addLayer(dem, vis_params, "SRTM DEM", True, 1)</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7c7f797b">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5181,7 +5181,7 @@ Map.addLayer(dem, vis_params, 'SRTM DEM', True, 1)</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f85b8afe">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5199,16 +5199,16 @@ Map.addLayer(dem, vis_params, 'SRTM DEM', True, 1)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">work_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">'~/Downloads'</span><span class="p">)</span>
-<span class="n">in_shp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="s1">'us_cities.shp'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">work_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">"~/Downloads"</span><span class="p">)</span>
+<span class="n">in_shp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="s2">"us_cities.shp"</span><span class="p">)</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">in_shp</span><span class="p">):</span>
-    <span class="n">data_url</span> <span class="o">=</span> <span class="s1">'https://github.com/giswqs/data/raw/main/us/us_cities.zip'</span>
+    <span class="n">data_url</span> <span class="o">=</span> <span class="s2">"https://github.com/giswqs/data/raw/main/us/us_cities.zip"</span>
     <span class="n">geemap</span><span class="o">.</span><span class="n">download_from_url</span><span class="p">(</span><span class="n">data_url</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="n">work_dir</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">work_dir = os.path.expanduser('~/Downloads')
-in_shp = os.path.join(work_dir, 'us_cities.shp')
+<div class="clipboard-copy-txt" id="cell-6">work_dir = os.path.expanduser("~/Downloads")
+in_shp = os.path.join(work_dir, "us_cities.shp")
 if not os.path.exists(in_shp):
-    data_url = 'https://github.com/giswqs/data/raw/main/us/us_cities.zip'
+    data_url = "https://github.com/giswqs/data/raw/main/us/us_cities.zip"
     geemap.download_from_url(data_url, out_dir=work_dir)</div>
 </div>
 </div>
@@ -5216,7 +5216,7 @@ if not os.path.exists(in_shp):
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ee2e61ec">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5235,17 +5235,17 @@ if not os.path.exists(in_shp):
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">in_fc</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">shp_to_ee</span><span class="p">(</span><span class="n">in_shp</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">in_fc</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'Cities'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">in_fc</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"Cities"</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-7">in_fc = geemap.shp_to_ee(in_shp)
-Map.addLayer(in_fc, {}, 'Cities')</div>
+Map.addLayer(in_fc, {}, "Cities")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c0b957ff">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5256,7 +5256,7 @@ Map.addLayer(in_fc, {}, 'Cities')</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=62d01b9e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=11">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5274,10 +5274,10 @@ Map.addLayer(in_fc, {}, 'Cities')</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">out_shp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="s1">'dem.shp'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">out_shp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="s2">"dem.shp"</span><span class="p">)</span>
 <span class="n">geemap</span><span class="o">.</span><span class="n">extract_values_to_points</span><span class="p">(</span><span class="n">in_fc</span><span class="p">,</span> <span class="n">dem</span><span class="p">,</span> <span class="n">out_shp</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8">out_shp = os.path.join(work_dir, 'dem.shp')
+<div class="clipboard-copy-txt" id="cell-8">out_shp = os.path.join(work_dir, "dem.shp")
 geemap.extract_values_to_points(in_fc, dem, out_shp)</div>
 </div>
 </div>
@@ -5285,7 +5285,7 @@ geemap.extract_values_to_points(in_fc, dem, out_shp)</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bbec7a4c">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=12">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5296,7 +5296,7 @@ geemap.extract_values_to_points(in_fc, dem, out_shp)</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c4231ca0">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=13">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5314,10 +5314,10 @@ geemap.extract_values_to_points(in_fc, dem, out_shp)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">out_csv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="s1">'landsat.csv'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">out_csv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="s2">"landsat.csv"</span><span class="p">)</span>
 <span class="n">geemap</span><span class="o">.</span><span class="n">extract_values_to_points</span><span class="p">(</span><span class="n">in_fc</span><span class="p">,</span> <span class="n">landsat7</span><span class="p">,</span> <span class="n">out_csv</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-9">out_csv = os.path.join(work_dir, 'landsat.csv')
+<div class="clipboard-copy-txt" id="cell-9">out_csv = os.path.join(work_dir, "landsat.csv")
 geemap.extract_values_to_points(in_fc, landsat7, out_csv)</div>
 </div>
 </div>
@@ -5354,7 +5354,7 @@ geemap.extract_values_to_points(in_fc, landsat7, out_csv)</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

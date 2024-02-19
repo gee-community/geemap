@@ -5071,7 +5071,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=afaf33a8">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5082,7 +5082,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1d07aa8b">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5094,7 +5094,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=96e5ba79">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5129,7 +5129,7 @@ import geemap.chart as chart
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=85113b21">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5156,7 +5156,7 @@ import geemap.chart as chart
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1c6b368c">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5167,7 +5167,7 @@ import geemap.chart as chart
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b315a76a">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5187,8 +5187,8 @@ import geemap.chart as chart
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
-<span class="n">features</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s1">'projects/google/charts_feature_example'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
-    <span class="s1">'[0-9][0-9]_tmean|label'</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s2">"projects/google/charts_feature_example"</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="s2">"[0-9][0-9]_tmean|label"</span>
 <span class="p">)</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"Ecoregions"</span><span class="p">)</span>
@@ -5196,8 +5196,8 @@ import geemap.chart as chart
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3">Map = geemap.Map()
 
-features = ee.FeatureCollection('projects/google/charts_feature_example').select(
-    '[0-9][0-9]_tmean|label'
+features = ee.FeatureCollection("projects/google/charts_feature_example").select(
+    "[0-9][0-9]_tmean|label"
 )
 
 Map.addLayer(features, {}, "Ecoregions")
@@ -5208,7 +5208,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=10a6e97e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5237,7 +5237,7 @@ df</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=826d50f9">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5259,32 +5259,32 @@ df</div>
 <span class="n">yProperties</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"_tmean"</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">)]</span>
 
 <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">'Jan'</span><span class="p">,</span>
-    <span class="s1">'Feb'</span><span class="p">,</span>
-    <span class="s1">'Mar'</span><span class="p">,</span>
-    <span class="s1">'Apr'</span><span class="p">,</span>
-    <span class="s1">'May'</span><span class="p">,</span>
-    <span class="s1">'Jun'</span><span class="p">,</span>
-    <span class="s1">'Jul'</span><span class="p">,</span>
-    <span class="s1">'Aug'</span><span class="p">,</span>
-    <span class="s1">'Sep'</span><span class="p">,</span>
-    <span class="s1">'Oct'</span><span class="p">,</span>
-    <span class="s1">'Nov'</span><span class="p">,</span>
-    <span class="s1">'Dec'</span><span class="p">,</span>
+    <span class="s2">"Jan"</span><span class="p">,</span>
+    <span class="s2">"Feb"</span><span class="p">,</span>
+    <span class="s2">"Mar"</span><span class="p">,</span>
+    <span class="s2">"Apr"</span><span class="p">,</span>
+    <span class="s2">"May"</span><span class="p">,</span>
+    <span class="s2">"Jun"</span><span class="p">,</span>
+    <span class="s2">"Jul"</span><span class="p">,</span>
+    <span class="s2">"Aug"</span><span class="p">,</span>
+    <span class="s2">"Sep"</span><span class="p">,</span>
+    <span class="s2">"Oct"</span><span class="p">,</span>
+    <span class="s2">"Nov"</span><span class="p">,</span>
+    <span class="s2">"Dec"</span><span class="p">,</span>
 <span class="p">]</span>
 <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">'#604791'</span><span class="p">,</span>
-    <span class="s1">'#1d6b99'</span><span class="p">,</span>
-    <span class="s1">'#39a8a7'</span><span class="p">,</span>
-    <span class="s1">'#0f8755'</span><span class="p">,</span>
-    <span class="s1">'#76b349'</span><span class="p">,</span>
-    <span class="s1">'#f0af07'</span><span class="p">,</span>
-    <span class="s1">'#e37d05'</span><span class="p">,</span>
-    <span class="s1">'#cf513e'</span><span class="p">,</span>
-    <span class="s1">'#96356f'</span><span class="p">,</span>
-    <span class="s1">'#724173'</span><span class="p">,</span>
-    <span class="s1">'#9c4f97'</span><span class="p">,</span>
-    <span class="s1">'#696969'</span><span class="p">,</span>
+    <span class="s2">"#604791"</span><span class="p">,</span>
+    <span class="s2">"#1d6b99"</span><span class="p">,</span>
+    <span class="s2">"#39a8a7"</span><span class="p">,</span>
+    <span class="s2">"#0f8755"</span><span class="p">,</span>
+    <span class="s2">"#76b349"</span><span class="p">,</span>
+    <span class="s2">"#f0af07"</span><span class="p">,</span>
+    <span class="s2">"#e37d05"</span><span class="p">,</span>
+    <span class="s2">"#cf513e"</span><span class="p">,</span>
+    <span class="s2">"#96356f"</span><span class="p">,</span>
+    <span class="s2">"#724173"</span><span class="p">,</span>
+    <span class="s2">"#9c4f97"</span><span class="p">,</span>
+    <span class="s2">"#696969"</span><span class="p">,</span>
 <span class="p">]</span>
 <span class="n">title</span> <span class="o">=</span> <span class="s2">"Average Monthly Temperature by Ecoregion"</span>
 <span class="n">xlabel</span> <span class="o">=</span> <span class="s2">"Ecoregion"</span>
@@ -5294,32 +5294,32 @@ df</div>
 yProperties = [str(x).zfill(2) + "_tmean" for x in range(1, 13)]
 
 labels = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
 ]
 colors = [
-    '#604791',
-    '#1d6b99',
-    '#39a8a7',
-    '#0f8755',
-    '#76b349',
-    '#f0af07',
-    '#e37d05',
-    '#cf513e',
-    '#96356f',
-    '#724173',
-    '#9c4f97',
-    '#696969',
+    "#604791",
+    "#1d6b99",
+    "#39a8a7",
+    "#0f8755",
+    "#76b349",
+    "#f0af07",
+    "#e37d05",
+    "#cf513e",
+    "#96356f",
+    "#724173",
+    "#9c4f97",
+    "#696969",
 ]
 title = "Average Monthly Temperature by Ecoregion"
 xlabel = "Ecoregion"
@@ -5330,7 +5330,7 @@ ylabel = "Temperature"</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cc62dba5">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5373,7 +5373,7 @@ ylabel = "Temperature"</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1d034e67">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5400,7 +5400,7 @@ ylabel = "Temperature"</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2d5f201b">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5411,7 +5411,7 @@ ylabel = "Temperature"</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bcda5cc9">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=11">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5422,7 +5422,7 @@ ylabel = "Temperature"</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cfd50f3c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=12">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5442,20 +5442,20 @@ ylabel = "Temperature"</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
-<span class="n">features</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s1">'projects/google/charts_feature_example'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
-    <span class="s1">'[0-9][0-9]_ppt|label'</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s2">"projects/google/charts_feature_example"</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="s2">"[0-9][0-9]_ppt|label"</span>
 <span class="p">)</span>
 
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'Features'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"Features"</span><span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-8">Map = geemap.Map()
 
-features = ee.FeatureCollection('projects/google/charts_feature_example').select(
-    '[0-9][0-9]_ppt|label'
+features = ee.FeatureCollection("projects/google/charts_feature_example").select(
+    "[0-9][0-9]_ppt|label"
 )
 
-Map.addLayer(features, {}, 'Features')
+Map.addLayer(features, {}, "Features")
 Map</div>
 </div>
 </div>
@@ -5463,7 +5463,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f4a917df">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=13">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5492,7 +5492,7 @@ df</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2df97e8e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=14">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5512,34 +5512,34 @@ df</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"_ppt"</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">)]</span>
 <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">'Jan'</span><span class="p">,</span>
-    <span class="s1">'Feb'</span><span class="p">,</span>
-    <span class="s1">'Mar'</span><span class="p">,</span>
-    <span class="s1">'Apr'</span><span class="p">,</span>
-    <span class="s1">'May'</span><span class="p">,</span>
-    <span class="s1">'Jun'</span><span class="p">,</span>
-    <span class="s1">'Jul'</span><span class="p">,</span>
-    <span class="s1">'Aug'</span><span class="p">,</span>
-    <span class="s1">'Sep'</span><span class="p">,</span>
-    <span class="s1">'Oct'</span><span class="p">,</span>
-    <span class="s1">'Nov'</span><span class="p">,</span>
-    <span class="s1">'Dec'</span><span class="p">,</span>
+    <span class="s2">"Jan"</span><span class="p">,</span>
+    <span class="s2">"Feb"</span><span class="p">,</span>
+    <span class="s2">"Mar"</span><span class="p">,</span>
+    <span class="s2">"Apr"</span><span class="p">,</span>
+    <span class="s2">"May"</span><span class="p">,</span>
+    <span class="s2">"Jun"</span><span class="p">,</span>
+    <span class="s2">"Jul"</span><span class="p">,</span>
+    <span class="s2">"Aug"</span><span class="p">,</span>
+    <span class="s2">"Sep"</span><span class="p">,</span>
+    <span class="s2">"Oct"</span><span class="p">,</span>
+    <span class="s2">"Nov"</span><span class="p">,</span>
+    <span class="s2">"Dec"</span><span class="p">,</span>
 <span class="p">]</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-10">keys = [str(x).zfill(2) + "_ppt" for x in range(1, 13)]
 values = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
 ]</div>
 </div>
 </div>
@@ -5547,7 +5547,7 @@ values = [
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6157af25">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=15">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5576,7 +5576,7 @@ seriesProperty = "label"</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9c082046">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=16">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5595,20 +5595,20 @@ seriesProperty = "label"</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'title'</span><span class="p">:</span> <span class="s2">"Average Ecoregion Precipitation by Month"</span><span class="p">,</span>
-    <span class="s1">'colors'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'#f0af07'</span><span class="p">,</span> <span class="s1">'#0f8755'</span><span class="p">,</span> <span class="s1">'#76b349'</span><span class="p">],</span>
-    <span class="s1">'xlabel'</span><span class="p">:</span> <span class="s2">"Month"</span><span class="p">,</span>
-    <span class="s1">'ylabel'</span><span class="p">:</span> <span class="s2">"Precipitation (mm)"</span><span class="p">,</span>
-    <span class="s1">'legend_location'</span><span class="p">:</span> <span class="s2">"top-left"</span><span class="p">,</span>
+    <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Average Ecoregion Precipitation by Month"</span><span class="p">,</span>
+    <span class="s2">"colors"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"#f0af07"</span><span class="p">,</span> <span class="s2">"#0f8755"</span><span class="p">,</span> <span class="s2">"#76b349"</span><span class="p">],</span>
+    <span class="s2">"xlabel"</span><span class="p">:</span> <span class="s2">"Month"</span><span class="p">,</span>
+    <span class="s2">"ylabel"</span><span class="p">:</span> <span class="s2">"Precipitation (mm)"</span><span class="p">,</span>
+    <span class="s2">"legend_location"</span><span class="p">:</span> <span class="s2">"top-left"</span><span class="p">,</span>
     <span class="s2">"height"</span><span class="p">:</span> <span class="s2">"500px"</span><span class="p">,</span>
 <span class="p">}</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-12">options = {
-    'title': "Average Ecoregion Precipitation by Month",
-    'colors': ['#f0af07', '#0f8755', '#76b349'],
-    'xlabel': "Month",
-    'ylabel': "Precipitation (mm)",
-    'legend_location': "top-left",
+    "title": "Average Ecoregion Precipitation by Month",
+    "colors": ["#f0af07", "#0f8755", "#76b349"],
+    "xlabel": "Month",
+    "ylabel": "Precipitation (mm)",
+    "legend_location": "top-left",
     "height": "500px",
 }</div>
 </div>
@@ -5617,7 +5617,7 @@ seriesProperty = "label"</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=74de363d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=17">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5644,7 +5644,7 @@ seriesProperty = "label"</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=03056eb6">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=18">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5655,7 +5655,7 @@ seriesProperty = "label"</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6f1db552">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=19">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5666,7 +5666,7 @@ seriesProperty = "label"</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6577820b">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=20">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5686,24 +5686,24 @@ seriesProperty = "label"</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
-<span class="n">features</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s1">'projects/google/charts_feature_example'</span><span class="p">)</span>
-<span class="n">xProperty</span> <span class="o">=</span> <span class="s1">'label'</span>
-<span class="n">yProperty</span> <span class="o">=</span> <span class="s1">'01_tmean'</span>
-<span class="n">seriesProperty</span> <span class="o">=</span> <span class="s1">'warm'</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s2">"projects/google/charts_feature_example"</span><span class="p">)</span>
+<span class="n">xProperty</span> <span class="o">=</span> <span class="s2">"label"</span>
+<span class="n">yProperty</span> <span class="o">=</span> <span class="s2">"01_tmean"</span>
+<span class="n">seriesProperty</span> <span class="o">=</span> <span class="s2">"warm"</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-14">Map = geemap.Map()
 
-features = ee.FeatureCollection('projects/google/charts_feature_example')
-xProperty = 'label'
-yProperty = '01_tmean'
-seriesProperty = 'warm'</div>
+features = ee.FeatureCollection("projects/google/charts_feature_example")
+xProperty = "label"
+yProperty = "01_tmean"
+seriesProperty = "warm"</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4b7e01bf">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=21">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5722,23 +5722,23 @@ seriesProperty = 'warm'</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'title'</span><span class="p">:</span> <span class="s2">"Average January Temperature by Ecoregion"</span><span class="p">,</span>
-    <span class="s1">'colors'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'#cf513e'</span><span class="p">,</span> <span class="s1">'#1d6b99'</span><span class="p">],</span>
-    <span class="s1">'xlabel'</span><span class="p">:</span> <span class="s2">"Ecoregion"</span><span class="p">,</span>
-    <span class="s1">'ylabel'</span><span class="p">:</span> <span class="s2">"Jan temp (C)"</span><span class="p">,</span>
-    <span class="s1">'legend_location'</span><span class="p">:</span> <span class="s2">"top-right"</span><span class="p">,</span>
-    <span class="s1">'height'</span><span class="p">:</span> <span class="s2">"500px"</span><span class="p">,</span>
-    <span class="s1">'labels'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Warm"</span><span class="p">,</span> <span class="s2">"Cold"</span><span class="p">],</span>
+    <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Average January Temperature by Ecoregion"</span><span class="p">,</span>
+    <span class="s2">"colors"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"#cf513e"</span><span class="p">,</span> <span class="s2">"#1d6b99"</span><span class="p">],</span>
+    <span class="s2">"xlabel"</span><span class="p">:</span> <span class="s2">"Ecoregion"</span><span class="p">,</span>
+    <span class="s2">"ylabel"</span><span class="p">:</span> <span class="s2">"Jan temp (C)"</span><span class="p">,</span>
+    <span class="s2">"legend_location"</span><span class="p">:</span> <span class="s2">"top-right"</span><span class="p">,</span>
+    <span class="s2">"height"</span><span class="p">:</span> <span class="s2">"500px"</span><span class="p">,</span>
+    <span class="s2">"labels"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Warm"</span><span class="p">,</span> <span class="s2">"Cold"</span><span class="p">],</span>
 <span class="p">}</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-15">options = {
-    'title': "Average January Temperature by Ecoregion",
-    'colors': ['#cf513e', '#1d6b99'],
-    'xlabel': "Ecoregion",
-    'ylabel': "Jan temp (C)",
-    'legend_location': "top-right",
-    'height': "500px",
-    'labels': ["Warm", "Cold"],
+    "title": "Average January Temperature by Ecoregion",
+    "colors": ["#cf513e", "#1d6b99"],
+    "xlabel": "Ecoregion",
+    "ylabel": "Jan temp (C)",
+    "legend_location": "top-right",
+    "height": "500px",
+    "labels": ["Warm", "Cold"],
 }</div>
 </div>
 </div>
@@ -5746,7 +5746,7 @@ seriesProperty = 'warm'</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=68a2f735">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=22">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5802,7 +5802,7 @@ seriesProperty = 'warm'</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-12-19T02:21:17+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-12-19</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

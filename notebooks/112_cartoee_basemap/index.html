@@ -5179,7 +5179,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1b6b26ba">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5198,7 +5198,7 @@ mamba install geemap -c conda-forge
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5aac0ae6">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5209,7 +5209,7 @@ mamba install geemap -c conda-forge
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f74bb258">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5250,7 +5250,7 @@ import cartopy.io.img_tiles as cimgt</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3098d4b1">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5261,7 +5261,7 @@ import cartopy.io.img_tiles as cimgt</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=56508cf7">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5288,7 +5288,7 @@ import cartopy.io.img_tiles as cimgt</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9eeb8f74">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5299,7 +5299,7 @@ import cartopy.io.img_tiles as cimgt</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7c272f7a">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5318,23 +5318,23 @@ import cartopy.io.img_tiles as cimgt</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># get a landsat image to visualize</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'LANDSAT/LC08/C01/T1_SR/LC08_044034_20140318'</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"LANDSAT/LC08/C01/T1_SR/LC08_044034_20140318"</span><span class="p">)</span>
 
 <span class="c1"># define the visualization parameters to view</span>
-<span class="n">vis</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s1">'B5'</span><span class="p">,</span> <span class="s1">'B4'</span><span class="p">,</span> <span class="s1">'B3'</span><span class="p">],</span> <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">5000</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mf">1.3</span><span class="p">}</span>
+<span class="n">vis</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"B5"</span><span class="p">,</span> <span class="s2">"B4"</span><span class="p">,</span> <span class="s2">"B3"</span><span class="p">],</span> <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">5000</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mf">1.3</span><span class="p">}</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3"># get a landsat image to visualize
-image = ee.Image('LANDSAT/LC08/C01/T1_SR/LC08_044034_20140318')
+image = ee.Image("LANDSAT/LC08/C01/T1_SR/LC08_044034_20140318")
 
 # define the visualization parameters to view
-vis = {"bands": ['B5', 'B4', 'B3'], "min": 0, "max": 5000, "gamma": 1.3}</div>
+vis = {"bands": ["B5", "B4", "B3"], "min": 0, "max": 5000, "gamma": 1.3}</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d19e5ebf">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5345,7 +5345,7 @@ vis = {"bands": ['B5', 'B4', 'B3'], "min": 0, "max": 5000, "gamma": 1.3}</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=31c4628f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5366,7 +5366,7 @@ vis = {"bands": ['B5', 'B4', 'B3'], "min": 0, "max": 5000, "gamma": 1.3}</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 
 <span class="c1"># use cartoee to get a map</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">basemap</span><span class="o">=</span><span class="s1">'ROADMAP'</span><span class="p">,</span> <span class="n">zoom_level</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">basemap</span><span class="o">=</span><span class="s2">"ROADMAP"</span><span class="p">,</span> <span class="n">zoom_level</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 
 <span class="c1"># pad the view for some visual appeal</span>
 <span class="n">cartoee</span><span class="o">.</span><span class="n">pad_view</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
@@ -5382,7 +5382,7 @@ vis = {"bands": ['B5', 'B4', 'B3'], "min": 0, "max": 5000, "gamma": 1.3}</div>
 <div class="clipboard-copy-txt" id="cell-4">fig = plt.figure(figsize=(15, 10))
 
 # use cartoee to get a map
-ax = cartoee.get_map(image, vis_params=vis, basemap='ROADMAP', zoom_level=8)
+ax = cartoee.get_map(image, vis_params=vis, basemap="ROADMAP", zoom_level=8)
 
 # pad the view for some visual appeal
 cartoee.pad_view(ax)
@@ -5400,7 +5400,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7775effb">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5411,7 +5411,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fe4d7569">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5429,16 +5429,16 @@ plt.show()</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">basemap</span> <span class="o">=</span> <span class="n">cimgt</span><span class="o">.</span><span class="n">Stamen</span><span class="p">(</span><span class="s1">'terrain-background'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">basemap</span> <span class="o">=</span> <span class="n">cimgt</span><span class="o">.</span><span class="n">Stamen</span><span class="p">(</span><span class="s2">"terrain-background"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">basemap = cimgt.Stamen('terrain-background')</div>
+<div class="clipboard-copy-txt" id="cell-5">basemap = cimgt.Stamen("terrain-background")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=254530ed">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=11">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5493,7 +5493,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e58a4eee">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=12">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5504,7 +5504,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9f8c0f31">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=13">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5531,7 +5531,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=635d9d0f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=14">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5586,7 +5586,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a8820d43">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=15">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5597,7 +5597,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=678c0d9a">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=16">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5608,7 +5608,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=61f5cd0c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=17">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5637,7 +5637,7 @@ import cartopy.crs as ccrs</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=482992e6">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=18">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5658,7 +5658,7 @@ import cartopy.crs as ccrs</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 
 <span class="c1"># use cartoee to get a map</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">basemap</span><span class="o">=</span><span class="s1">'SATELLITE'</span><span class="p">,</span> <span class="n">zoom_level</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">basemap</span><span class="o">=</span><span class="s2">"SATELLITE"</span><span class="p">,</span> <span class="n">zoom_level</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 
 <span class="c1"># pad the view for some visual appeal</span>
 <span class="n">cartoee</span><span class="o">.</span><span class="n">pad_view</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
@@ -5672,8 +5672,8 @@ import cartopy.crs as ccrs</div>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="o">-</span><span class="mf">122.4457</span><span class="p">,</span>
     <span class="mf">37.7574</span><span class="p">,</span>
-    <span class="n">marker</span><span class="o">=</span><span class="s1">'o'</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s1">'blue'</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">"o"</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span>
     <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
     <span class="n">transform</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">Geodetic</span><span class="p">(),</span>
@@ -5684,31 +5684,31 @@ import cartopy.crs as ccrs</div>
 <span class="c1"># matplotlib's offset_copy function to define a coordinate system which</span>
 <span class="c1"># translates the text by 25 pixels to the left.</span>
 <span class="n">geodetic_transform</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">Geodetic</span><span class="p">()</span><span class="o">.</span><span class="n">_as_mpl_transform</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">text_transform</span> <span class="o">=</span> <span class="n">offset_copy</span><span class="p">(</span><span class="n">geodetic_transform</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">'dots'</span><span class="p">,</span> <span class="n">x</span><span class="o">=-</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">text_transform</span> <span class="o">=</span> <span class="n">offset_copy</span><span class="p">(</span><span class="n">geodetic_transform</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">"dots"</span><span class="p">,</span> <span class="n">x</span><span class="o">=-</span><span class="mi">25</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
     <span class="o">-</span><span class="mf">122.4457</span><span class="p">,</span>
     <span class="mf">37.7574</span><span class="p">,</span>
-    <span class="sa">u</span><span class="s1">'San Francisco'</span><span class="p">,</span>
-    <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span>
-    <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">'right'</span><span class="p">,</span>
+    <span class="s2">"San Francisco"</span><span class="p">,</span>
+    <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">"center"</span><span class="p">,</span>
+    <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span>
     <span class="n">transform</span><span class="o">=</span><span class="n">text_transform</span><span class="p">,</span>
-    <span class="n">fontsize</span><span class="o">=</span><span class="s1">'large'</span><span class="p">,</span>
-    <span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s1">'white'</span><span class="p">,</span>
-    <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">'sandybrown'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">boxstyle</span><span class="o">=</span><span class="s1">'round'</span><span class="p">),</span>
+    <span class="n">fontsize</span><span class="o">=</span><span class="s2">"large"</span><span class="p">,</span>
+    <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span>
+    <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s2">"sandybrown"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">boxstyle</span><span class="o">=</span><span class="s2">"round"</span><span class="p">),</span>
 <span class="p">)</span>
 
 <span class="c1"># Save the plot by calling plt.savefig() BEFORE plt.show()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">'sfo.pdf'</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">'sfo.jpg'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"sfo.pdf"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"sfo.jpg"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-10">fig = plt.figure(figsize=(15, 10))
 
 # use cartoee to get a map
-ax = cartoee.get_map(image, vis_params=vis, basemap='SATELLITE', zoom_level=8)
+ax = cartoee.get_map(image, vis_params=vis, basemap="SATELLITE", zoom_level=8)
 
 # pad the view for some visual appeal
 cartoee.pad_view(ax)
@@ -5722,8 +5722,8 @@ ax.coastlines(color="yellow")
 plt.plot(
     -122.4457,
     37.7574,
-    marker='o',
-    color='blue',
+    marker="o",
+    color="blue",
     markersize=10,
     alpha=0.7,
     transform=ccrs.Geodetic(),
@@ -5734,24 +5734,24 @@ plt.plot(
 # matplotlib's offset_copy function to define a coordinate system which
 # translates the text by 25 pixels to the left.
 geodetic_transform = ccrs.Geodetic()._as_mpl_transform(ax)
-text_transform = offset_copy(geodetic_transform, units='dots', x=-25)
+text_transform = offset_copy(geodetic_transform, units="dots", x=-25)
 
 plt.text(
     -122.4457,
     37.7574,
-    u'San Francisco',
-    verticalalignment='center',
-    horizontalalignment='right',
+    "San Francisco",
+    verticalalignment="center",
+    horizontalalignment="right",
     transform=text_transform,
-    fontsize='large',
-    fontweight='bold',
-    color='white',
-    bbox=dict(facecolor='sandybrown', alpha=0.5, boxstyle='round'),
+    fontsize="large",
+    fontweight="bold",
+    color="white",
+    bbox=dict(facecolor="sandybrown", alpha=0.5, boxstyle="round"),
 )
 
 # Save the plot by calling plt.savefig() BEFORE plt.show()
-plt.savefig('sfo.pdf')
-plt.savefig('sfo.jpg', dpi=300)
+plt.savefig("sfo.pdf")
+plt.savefig("sfo.jpg", dpi=300)
 
 plt.show()</div>
 </div>
@@ -5760,7 +5760,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8794dd0d">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=19">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5771,7 +5771,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7c39d5c7">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=20">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5782,7 +5782,7 @@ plt.show()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3ae4e42c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=21">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5802,16 +5802,16 @@ plt.show()</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># get an earth engine image of ocean data for Jan-Mar 2018</span>
 <span class="n">ocean</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">'NASA/OCEANDATA/MODIS-Terra/L3SMI'</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="s1">'2018-01-01'</span><span class="p">,</span> <span class="s1">'2018-03-01'</span><span class="p">))</span>
+    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"NASA/OCEANDATA/MODIS-Terra/L3SMI"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="s2">"2018-01-01"</span><span class="p">,</span> <span class="s2">"2018-03-01"</span><span class="p">))</span>
     <span class="o">.</span><span class="n">median</span><span class="p">()</span>
     <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s2">"sst"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"SST"</span><span class="p">])</span>
 <span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-11"># get an earth engine image of ocean data for Jan-Mar 2018
 ocean = (
-    ee.ImageCollection('NASA/OCEANDATA/MODIS-Terra/L3SMI')
-    .filter(ee.Filter.date('2018-01-01', '2018-03-01'))
+    ee.ImageCollection("NASA/OCEANDATA/MODIS-Terra/L3SMI")
+    .filter(ee.Filter.date("2018-01-01", "2018-03-01"))
     .median()
     .select(["sst"], ["SST"])
 )</div>
@@ -5821,7 +5821,7 @@ ocean = (
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ab203cbd">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=22">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5841,13 +5841,13 @@ ocean = (
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># set parameters for plotting</span>
 <span class="c1"># will plot the Sea Surface Temp with specific range and colormap</span>
-<span class="n">visualization</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'bands'</span><span class="p">:</span> <span class="s2">"SST"</span><span class="p">,</span> <span class="s1">'min'</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">:</span> <span class="mi">30</span><span class="p">}</span>
+<span class="n">visualization</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"bands"</span><span class="p">:</span> <span class="s2">"SST"</span><span class="p">,</span> <span class="s2">"min"</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">30</span><span class="p">}</span>
 <span class="c1"># specify region to focus on</span>
 <span class="n">bbox</span> <span class="o">=</span> <span class="p">[</span><span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">88</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">88</span><span class="p">]</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-12"># set parameters for plotting
 # will plot the Sea Surface Temp with specific range and colormap
-visualization = {'bands': "SST", 'min': -2, 'max': 30}
+visualization = {"bands": "SST", "min": -2, "max": 30}
 # specify region to focus on
 bbox = [180, -88, -180, 88]</div>
 </div>
@@ -5856,7 +5856,7 @@ bbox = [180, -88, -180, 88]</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3594061c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=23">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5879,21 +5879,21 @@ bbox = [180, -88, -180, 88]</div>
 <span class="c1"># plot the result with cartoee using a PlateCarre projection (default)</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span>
     <span class="n">ocean</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">,</span>
     <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span>
     <span class="n">region</span><span class="o">=</span><span class="n">bbox</span><span class="p">,</span>
-    <span class="n">basemap</span><span class="o">=</span><span class="n">cimgt</span><span class="o">.</span><span class="n">Stamen</span><span class="p">(</span><span class="s1">'terrain'</span><span class="p">),</span>
+    <span class="n">basemap</span><span class="o">=</span><span class="n">cimgt</span><span class="o">.</span><span class="n">Stamen</span><span class="p">(</span><span class="s2">"terrain"</span><span class="p">),</span>
     <span class="n">zoom_level</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'right'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'plasma'</span><span class="p">)</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">visualization</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">"plasma"</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'Sea Surface Temperature'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Sea Surface Temperature"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">()</span>
 
 <span class="c1"># Save the plot by calling plt.savefig() BEFORE plt.show()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">'sst.pdf'</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">'sst.jpg'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"sst.pdf"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"sst.jpg"</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -5902,21 +5902,21 @@ bbox = [180, -88, -180, 88]</div>
 # plot the result with cartoee using a PlateCarre projection (default)
 ax = cartoee.get_map(
     ocean,
-    cmap='plasma',
+    cmap="plasma",
     vis_params=visualization,
     region=bbox,
-    basemap=cimgt.Stamen('terrain'),
+    basemap=cimgt.Stamen("terrain"),
     zoom_level=2,
 )
-cb = cartoee.add_colorbar(ax, vis_params=visualization, loc='right', cmap='plasma')
+cb = cartoee.add_colorbar(ax, vis_params=visualization, loc="right", cmap="plasma")
 
-ax.set_title(label='Sea Surface Temperature', fontsize=15)
+ax.set_title(label="Sea Surface Temperature", fontsize=15)
 
 ax.coastlines()
 
 # Save the plot by calling plt.savefig() BEFORE plt.show()
-plt.savefig('sst.pdf')
-plt.savefig('sst.jpg', dpi=300)
+plt.savefig("sst.pdf")
+plt.savefig("sst.jpg", dpi=300)
 
 plt.show()</div>
 </div>
@@ -5925,7 +5925,7 @@ plt.show()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=189dca28">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=24">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5965,7 +5965,7 @@ plt.show()</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

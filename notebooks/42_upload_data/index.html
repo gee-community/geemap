@@ -4976,7 +4976,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6a314cd7">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4988,7 +4988,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=13eaa024">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5015,7 +5015,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5ca3f8eb">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5050,7 +5050,7 @@ from ipyleaflet import WidgetControl</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=f4e4d617">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5068,16 +5068,16 @@ from ipyleaflet import WidgetControl</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">),</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s1">'750px'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">),</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">"750px"</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3">Map = geemap.Map(center=(40, -100), zoom=4, height='750px')</div>
+<div class="clipboard-copy-txt" id="cell-3">Map = geemap.Map(center=(40, -100), zoom=4, height="750px")</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=60a3e94c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5096,32 +5096,32 @@ from ipyleaflet import WidgetControl</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Add Earth Engine dataset</span>
-<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
+<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/SRTMGL1_003"</span><span class="p">)</span>
 
 <span class="c1"># Set visualization parameters.</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'006633'</span><span class="p">,</span> <span class="s1">'E5FFCC'</span><span class="p">,</span> <span class="s1">'662A00'</span><span class="p">,</span> <span class="s1">'D8D8D8'</span><span class="p">,</span> <span class="s1">'F5F5F5'</span><span class="p">],</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"006633"</span><span class="p">,</span> <span class="s2">"E5FFCC"</span><span class="p">,</span> <span class="s2">"662A00"</span><span class="p">,</span> <span class="s2">"D8D8D8"</span><span class="p">,</span> <span class="s2">"F5F5F5"</span><span class="p">],</span>
 <span class="p">}</span>
 
 <span class="c1"># Add Earth Engine layers to Map</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'SRTM DEM'</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"SRTM DEM"</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
 
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4"># Add Earth Engine dataset
-dem = ee.Image('USGS/SRTMGL1_003')
+dem = ee.Image("USGS/SRTMGL1_003")
 
 # Set visualization parameters.
 vis_params = {
-    'min': 0,
-    'max': 4000,
-    'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5'],
+    "min": 0,
+    "max": 4000,
+    "palette": ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"],
 }
 
 # Add Earth Engine layers to Map
-Map.addLayer(dem, vis_params, 'SRTM DEM', True, 0.7)
+Map.addLayer(dem, vis_params, "SRTM DEM", True, 0.7)
 
 Map</div>
 </div>
@@ -5130,7 +5130,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d662aea1">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5148,12 +5148,12 @@ Map</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">output_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="p">{</span><span class="s1">'border'</span><span class="p">:</span> <span class="s1">'1px solid black'</span><span class="p">})</span>
-<span class="n">output_control</span> <span class="o">=</span> <span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">output_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">'bottomright'</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">output_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="p">{</span><span class="s2">"border"</span><span class="p">:</span> <span class="s2">"1px solid black"</span><span class="p">})</span>
+<span class="n">output_control</span> <span class="o">=</span> <span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">output_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">"bottomright"</span><span class="p">)</span>
 <span class="n">Map</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">output_control</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">output_widget = widgets.Output(layout={'border': '1px solid black'})
-output_control = WidgetControl(widget=output_widget, position='bottomright')
+<div class="clipboard-copy-txt" id="cell-5">output_widget = widgets.Output(layout={"border": "1px solid black"})
+output_control = WidgetControl(widget=output_widget, position="bottomright")
 Map.add_control(output_control)</div>
 </div>
 </div>
@@ -5161,7 +5161,7 @@ Map.add_control(output_control)</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=35b68da6">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5179,38 +5179,38 @@ Map.add_control(output_control)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'description_width'</span><span class="p">:</span> <span class="s1">'initial'</span><span class="p">}</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"description_width"</span><span class="p">:</span> <span class="s2">"initial"</span><span class="p">}</span>
 <span class="n">uploader</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">FileUpload</span><span class="p">(</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">'Upload data'</span><span class="p">,</span>
-    <span class="n">accept</span><span class="o">=</span><span class="s1">'.zip, .json, .geojson'</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Upload data"</span><span class="p">,</span>
+    <span class="n">accept</span><span class="o">=</span><span class="s2">".zip, .json, .geojson"</span><span class="p">,</span>
     <span class="n">multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">button_style</span><span class="o">=</span><span class="s1">'primary'</span><span class="p">,</span>
+    <span class="n">button_style</span><span class="o">=</span><span class="s2">"primary"</span><span class="p">,</span>
     <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">submit</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">'Display data'</span><span class="p">,</span> <span class="n">button_style</span><span class="o">=</span><span class="s1">'success'</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s1">'Click me'</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Display data"</span><span class="p">,</span> <span class="n">button_style</span><span class="o">=</span><span class="s2">"success"</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Click me"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
 <span class="p">)</span>
 
 <span class="n">reset</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-    <span class="n">description</span><span class="o">=</span><span class="s1">'Reset'</span><span class="p">,</span> <span class="n">button_style</span><span class="o">=</span><span class="s1">'warning'</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s1">'Click me'</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"Reset"</span><span class="p">,</span> <span class="n">button_style</span><span class="o">=</span><span class="s2">"warning"</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s2">"Click me"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
 <span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">style = {'description_width': 'initial'}
+<div class="clipboard-copy-txt" id="cell-6">style = {"description_width": "initial"}
 uploader = widgets.FileUpload(
-    description='Upload data',
-    accept='.zip, .json, .geojson',
+    description="Upload data",
+    accept=".zip, .json, .geojson",
     multiple=False,
-    button_style='primary',
+    button_style="primary",
     style=style,
 )
 
 submit = widgets.Button(
-    description='Display data', button_style='success', tooltip='Click me', style=style
+    description="Display data", button_style="success", tooltip="Click me", style=style
 )
 
 reset = widgets.Button(
-    description='Reset', button_style='warning', tooltip='Click me', style=style
+    description="Reset", button_style="warning", tooltip="Click me", style=style
 )</div>
 </div>
 </div>
@@ -5218,7 +5218,7 @@ reset = widgets.Button(
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1b3c8110">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5237,13 +5237,13 @@ reset = widgets.Button(
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">with</span> <span class="n">output_widget</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'Upload shapefile or </span><span class="se">\n</span><span class="s1">geojson as a zip file'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Upload shapefile or </span><span class="se">\n</span><span class="s2">geojson as a zip file"</span><span class="p">)</span>
     <span class="n">display</span><span class="p">(</span><span class="n">uploader</span><span class="p">)</span>
     <span class="n">display</span><span class="p">(</span><span class="n">submit</span><span class="p">)</span>
     <span class="n">display</span><span class="p">(</span><span class="n">reset</span><span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-7">with output_widget:
-    print('Upload shapefile or \ngeojson as a zip file')
+    print("Upload shapefile or \ngeojson as a zip file")
     display(uploader)
     display(submit)
     display(reset)</div>
@@ -5253,7 +5253,7 @@ reset = widgets.Button(
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=664e4b2e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5276,7 +5276,7 @@ reset = widgets.Button(
     <span class="kn">import</span> <span class="nn">glob</span>
 
     <span class="k">if</span> <span class="n">out_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">'~'</span><span class="p">),</span> <span class="s1">'Downloads'</span><span class="p">)</span>
+        <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">"~"</span><span class="p">),</span> <span class="s2">"Downloads"</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_dir</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
 
@@ -5285,24 +5285,24 @@ reset = widgets.Button(
     <span class="k">try</span><span class="p">:</span>
         <span class="p">[</span><span class="n">uploaded_file</span><span class="p">]</span> <span class="o">=</span> <span class="n">upload_widget</span><span class="o">.</span><span class="n">value</span>
         <span class="n">file</span> <span class="o">=</span> <span class="n">upload_widget</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="s1">'content'</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="s2">"content"</span><span class="p">]</span>
         <span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'.zip'</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".zip"</span><span class="p">):</span>
             <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_ref</span><span class="p">:</span>
                 <span class="n">extract_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="n">out_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"_"</span> <span class="o">+</span> <span class="n">geemap</span><span class="o">.</span><span class="n">random_string</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
                 <span class="p">)</span>
                 <span class="n">zip_ref</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">extract_dir</span><span class="p">)</span>
-                <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">extract_dir</span> <span class="o">+</span> <span class="s1">'/*.shp'</span><span class="p">)</span>
+                <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">extract_dir</span> <span class="o">+</span> <span class="s2">"/*.shp"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">shp</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="n">vector</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">shp_to_ee</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">extract_dir</span> <span class="o">+</span> <span class="s1">'/*.geojson'</span><span class="p">)</span>
+                    <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">extract_dir</span> <span class="o">+</span> <span class="s2">"/*.geojson"</span><span class="p">)</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">geojson</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                         <span class="n">vector</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geojson</span><span class="p">)</span>
@@ -5319,7 +5319,7 @@ reset = widgets.Button(
     import glob
 
     if out_dir is None:
-        out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
+        out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
@@ -5328,24 +5328,24 @@ reset = widgets.Button(
     try:
         [uploaded_file] = upload_widget.value
         file = upload_widget.value[0]
-        name = file['name']
-        content = file['content']
+        name = file["name"]
+        content = file["content"]
         out_file = os.path.join(out_dir, name)
         with open(out_file, "wb") as fp:
             fp.write(content)
 
-        if name.endswith('.zip'):
+        if name.endswith(".zip"):
             with zipfile.ZipFile(out_file, "r") as zip_ref:
                 extract_dir = os.path.join(
                     out_dir, name[:-4] + "_" + geemap.random_string(3)
                 )
                 zip_ref.extractall(extract_dir)
-                files = glob.glob(extract_dir + '/*.shp')
+                files = glob.glob(extract_dir + "/*.shp")
                 if len(files) &gt; 0:
                     shp = files[0]
                     vector = geemap.shp_to_ee(shp)
                 else:
-                    files = glob.glob(extract_dir + '/*.geojson')
+                    files = glob.glob(extract_dir + "/*.geojson")
                     if len(files) &gt; 0:
                         geojson = files[0]
                         vector = geemap.geojson_to_ee(geojson)
@@ -5362,7 +5362,7 @@ reset = widgets.Button(
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cb5c7fe2">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5382,16 +5382,16 @@ reset = widgets.Button(
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span> <span class="nf">submit_clicked</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uploader</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">Map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'cursor'</span><span class="p">:</span> <span class="s1">'wait'</span><span class="p">}</span>
+        <span class="n">Map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"cursor"</span><span class="p">:</span> <span class="s2">"wait"</span><span class="p">}</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">fc</span> <span class="o">=</span> <span class="n">get_vector</span><span class="p">(</span><span class="n">uploader</span><span class="p">)</span>
-            <span class="n">layer_name</span> <span class="o">=</span> <span class="s1">'Layer '</span> <span class="o">+</span> <span class="n">geemap</span><span class="o">.</span><span class="n">random_string</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">layer_name</span> <span class="o">=</span> <span class="s2">"Layer "</span> <span class="o">+</span> <span class="n">geemap</span><span class="o">.</span><span class="n">random_string</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
             <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">fc</span><span class="p">,</span> <span class="p">{},</span> <span class="n">layer_name</span><span class="p">)</span>
             <span class="n">Map</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">fc</span><span class="p">)</span>
             <span class="n">uploader</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="n">Map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'cursor'</span><span class="p">:</span> <span class="s1">'pointer'</span><span class="p">}</span>
+        <span class="n">Map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"cursor"</span><span class="p">:</span> <span class="s2">"pointer"</span><span class="p">}</span>
 
 
 <span class="n">submit</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">submit_clicked</span><span class="p">)</span>
@@ -5401,7 +5401,7 @@ reset = widgets.Button(
     <span class="n">Map</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">Map</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
     <span class="n">output_widget</span><span class="o">.</span><span class="n">clear_output</span><span class="p">()</span>
     <span class="k">with</span> <span class="n">output_widget</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">'Upload shapefile or </span><span class="se">\n</span><span class="s1">geojson as a zip file'</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Upload shapefile or </span><span class="se">\n</span><span class="s2">geojson as a zip file"</span><span class="p">)</span>
         <span class="n">display</span><span class="p">(</span><span class="n">uploader</span><span class="p">)</span>
         <span class="n">display</span><span class="p">(</span><span class="n">submit</span><span class="p">)</span>
         <span class="n">display</span><span class="p">(</span><span class="n">reset</span><span class="p">)</span>
@@ -5412,16 +5412,16 @@ reset = widgets.Button(
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-9">def submit_clicked(b):
     if len(uploader.value) &gt; 0:
-        Map.default_style = {'cursor': 'wait'}
+        Map.default_style = {"cursor": "wait"}
         try:
             fc = get_vector(uploader)
-            layer_name = 'Layer ' + geemap.random_string(3)
+            layer_name = "Layer " + geemap.random_string(3)
             Map.addLayer(fc, {}, layer_name)
             Map.centerObject(fc)
             uploader.value = ()
         except Exception as e:
             print(e)
-        Map.default_style = {'cursor': 'pointer'}
+        Map.default_style = {"cursor": "pointer"}
 
 
 submit.on_click(submit_clicked)
@@ -5431,7 +5431,7 @@ def reset_clicked(b):
     Map.layers = Map.layers[:3]
     output_widget.clear_output()
     with output_widget:
-        print('Upload shapefile or \ngeojson as a zip file')
+        print("Upload shapefile or \ngeojson as a zip file")
         display(uploader)
         display(submit)
         display(reset)
@@ -5474,7 +5474,7 @@ reset.on_click(reset_clicked)</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

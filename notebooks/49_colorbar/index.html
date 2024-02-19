@@ -5171,7 +5171,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ff7aaf32">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5183,7 +5183,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=62198b9e">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5210,7 +5210,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1b37e9db">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5221,7 +5221,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8a8ea94f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5250,7 +5250,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6474a829">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5277,7 +5277,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9e4fa792">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5297,18 +5297,18 @@ import geemap</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
-<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
+<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/SRTMGL1_003"</span><span class="p">)</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'006633'</span><span class="p">,</span> <span class="s1">'E5FFCC'</span><span class="p">,</span> <span class="s1">'662A00'</span><span class="p">,</span> <span class="s1">'D8D8D8'</span><span class="p">,</span> <span class="s1">'F5F5F5'</span><span class="p">],</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"006633"</span><span class="p">,</span> <span class="s2">"E5FFCC"</span><span class="p">,</span> <span class="s2">"662A00"</span><span class="p">,</span> <span class="s2">"D8D8D8"</span><span class="p">,</span> <span class="s2">"F5F5F5"</span><span class="p">],</span>
 <span class="p">}</span>
 
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'SRTM DEM'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"SRTM DEM"</span><span class="p">)</span>
 
-<span class="n">colors</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s1">'palette'</span><span class="p">]</span>
-<span class="n">vmin</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s1">'min'</span><span class="p">]</span>
-<span class="n">vmax</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s1">'max'</span><span class="p">]</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s2">"palette"</span><span class="p">]</span>
+<span class="n">vmin</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]</span>
+<span class="n">vmax</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s2">"max"</span><span class="p">]</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">add_colorbar_branca</span><span class="p">(</span><span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"SRTM DEM"</span><span class="p">)</span>
 
@@ -5320,18 +5320,18 @@ import geemap</div>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4">Map = geemap.Map()
 
-dem = ee.Image('USGS/SRTMGL1_003')
+dem = ee.Image("USGS/SRTMGL1_003")
 vis_params = {
-    'min': 0,
-    'max': 4000,
-    'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5'],
+    "min": 0,
+    "max": 4000,
+    "palette": ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"],
 }
 
-Map.addLayer(dem, vis_params, 'SRTM DEM')
+Map.addLayer(dem, vis_params, "SRTM DEM")
 
-colors = vis_params['palette']
-vmin = vis_params['min']
-vmax = vis_params['max']
+colors = vis_params["palette"]
+vmin = vis_params["min"]
+vmax = vis_params["max"]
 
 Map.add_colorbar_branca(colors=colors, vmin=vmin, vmax=vmax, layer_name="SRTM DEM")
 
@@ -5346,7 +5346,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a3a42e31">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5357,7 +5357,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=de4ca6c7">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5377,18 +5377,18 @@ Map</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
-<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
+<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/SRTMGL1_003"</span><span class="p">)</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'006633'</span><span class="p">,</span> <span class="s1">'E5FFCC'</span><span class="p">,</span> <span class="s1">'662A00'</span><span class="p">,</span> <span class="s1">'D8D8D8'</span><span class="p">,</span> <span class="s1">'F5F5F5'</span><span class="p">],</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"006633"</span><span class="p">,</span> <span class="s2">"E5FFCC"</span><span class="p">,</span> <span class="s2">"662A00"</span><span class="p">,</span> <span class="s2">"D8D8D8"</span><span class="p">,</span> <span class="s2">"F5F5F5"</span><span class="p">],</span>
 <span class="p">}</span>
 
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'SRTM DEM'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"SRTM DEM"</span><span class="p">)</span>
 
-<span class="n">colors</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s1">'palette'</span><span class="p">]</span>
-<span class="n">vmin</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s1">'min'</span><span class="p">]</span>
-<span class="n">vmax</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s1">'max'</span><span class="p">]</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s2">"palette"</span><span class="p">]</span>
+<span class="n">vmin</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]</span>
+<span class="n">vmax</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s2">"max"</span><span class="p">]</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">add_colorbar_branca</span><span class="p">(</span>
     <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"SRTM DEM"</span>
@@ -5398,18 +5398,18 @@ Map</div>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-5">Map = geemap.Map()
 
-dem = ee.Image('USGS/SRTMGL1_003')
+dem = ee.Image("USGS/SRTMGL1_003")
 vis_params = {
-    'min': 0,
-    'max': 4000,
-    'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5'],
+    "min": 0,
+    "max": 4000,
+    "palette": ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"],
 }
 
-Map.addLayer(dem, vis_params, 'SRTM DEM')
+Map.addLayer(dem, vis_params, "SRTM DEM")
 
-colors = vis_params['palette']
-vmin = vis_params['min']
-vmax = vis_params['max']
+colors = vis_params["palette"]
+vmin = vis_params["min"]
+vmax = vis_params["max"]
 
 Map.add_colorbar_branca(
     colors=colors, vmin=vmin, vmax=vmax, categorical=True, step=4, layer_name="SRTM DEM"
@@ -5422,7 +5422,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6ac53ad3">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5433,7 +5433,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=191beced">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5462,7 +5462,7 @@ import geemap.foliumap as geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8e420215">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5482,40 +5482,40 @@ import geemap.foliumap as geemap</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
-<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
+<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/SRTMGL1_003"</span><span class="p">)</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'006633'</span><span class="p">,</span> <span class="s1">'E5FFCC'</span><span class="p">,</span> <span class="s1">'662A00'</span><span class="p">,</span> <span class="s1">'D8D8D8'</span><span class="p">,</span> <span class="s1">'F5F5F5'</span><span class="p">],</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"006633"</span><span class="p">,</span> <span class="s2">"E5FFCC"</span><span class="p">,</span> <span class="s2">"662A00"</span><span class="p">,</span> <span class="s2">"D8D8D8"</span><span class="p">,</span> <span class="s2">"F5F5F5"</span><span class="p">],</span>
 <span class="p">}</span>
 
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'SRTM DEM'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"SRTM DEM"</span><span class="p">)</span>
 
-<span class="n">colors</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s1">'palette'</span><span class="p">]</span>
-<span class="n">vmin</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s1">'min'</span><span class="p">]</span>
-<span class="n">vmax</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s1">'max'</span><span class="p">]</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s2">"palette"</span><span class="p">]</span>
+<span class="n">vmin</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]</span>
+<span class="n">vmax</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s2">"max"</span><span class="p">]</span>
 
-<span class="n">Map</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">vis_params</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'Elevation (m)'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">vis_params</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Elevation (m)"</span><span class="p">)</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">addLayerControl</span><span class="p">()</span>
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-7">Map = geemap.Map()
 
-dem = ee.Image('USGS/SRTMGL1_003')
+dem = ee.Image("USGS/SRTMGL1_003")
 vis_params = {
-    'min': 0,
-    'max': 4000,
-    'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5'],
+    "min": 0,
+    "max": 4000,
+    "palette": ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"],
 }
 
-Map.addLayer(dem, vis_params, 'SRTM DEM')
+Map.addLayer(dem, vis_params, "SRTM DEM")
 
-colors = vis_params['palette']
-vmin = vis_params['min']
-vmax = vis_params['max']
+colors = vis_params["palette"]
+vmin = vis_params["min"]
+vmax = vis_params["max"]
 
-Map.add_colorbar(vis_params, label='Elevation (m)')
+Map.add_colorbar(vis_params, label="Elevation (m)")
 
 Map.addLayerControl()
 Map</div>
@@ -5525,7 +5525,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d80e8a90">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=11">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5536,7 +5536,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=28e3a65d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=12">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5556,18 +5556,18 @@ Map</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
-<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
+<span class="n">dem</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/SRTMGL1_003"</span><span class="p">)</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'006633'</span><span class="p">,</span> <span class="s1">'E5FFCC'</span><span class="p">,</span> <span class="s1">'662A00'</span><span class="p">,</span> <span class="s1">'D8D8D8'</span><span class="p">,</span> <span class="s1">'F5F5F5'</span><span class="p">],</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"006633"</span><span class="p">,</span> <span class="s2">"E5FFCC"</span><span class="p">,</span> <span class="s2">"662A00"</span><span class="p">,</span> <span class="s2">"D8D8D8"</span><span class="p">,</span> <span class="s2">"F5F5F5"</span><span class="p">],</span>
 <span class="p">}</span>
 
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'SRTM DEM'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"SRTM DEM"</span><span class="p">)</span>
 
-<span class="n">colors</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s1">'palette'</span><span class="p">]</span>
-<span class="n">vmin</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s1">'min'</span><span class="p">]</span>
-<span class="n">vmax</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s1">'max'</span><span class="p">]</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s2">"palette"</span><span class="p">]</span>
+<span class="n">vmin</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s2">"min"</span><span class="p">]</span>
+<span class="n">vmax</span> <span class="o">=</span> <span class="n">vis_params</span><span class="p">[</span><span class="s2">"max"</span><span class="p">]</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">vis_params</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
@@ -5576,18 +5576,18 @@ Map</div>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-8">Map = geemap.Map()
 
-dem = ee.Image('USGS/SRTMGL1_003')
+dem = ee.Image("USGS/SRTMGL1_003")
 vis_params = {
-    'min': 0,
-    'max': 4000,
-    'palette': ['006633', 'E5FFCC', '662A00', 'D8D8D8', 'F5F5F5'],
+    "min": 0,
+    "max": 4000,
+    "palette": ["006633", "E5FFCC", "662A00", "D8D8D8", "F5F5F5"],
 }
 
-Map.addLayer(dem, vis_params, 'SRTM DEM')
+Map.addLayer(dem, vis_params, "SRTM DEM")
 
-colors = vis_params['palette']
-vmin = vis_params['min']
-vmax = vis_params['max']
+colors = vis_params["palette"]
+vmin = vis_params["min"]
+vmax = vis_params["max"]
 
 Map.add_colorbar(vis_params, categorical=True, step=4)
 
@@ -5599,7 +5599,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=104a6e03">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=13">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5610,7 +5610,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=56e7294d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=14">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5631,30 +5631,30 @@ Map</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
 <span class="n">legend_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'11 Open Water'</span><span class="p">:</span> <span class="s1">'466b9f'</span><span class="p">,</span>
-    <span class="s1">'12 Perennial Ice/Snow'</span><span class="p">:</span> <span class="s1">'d1def8'</span><span class="p">,</span>
-    <span class="s1">'21 Developed, Open Space'</span><span class="p">:</span> <span class="s1">'dec5c5'</span><span class="p">,</span>
-    <span class="s1">'22 Developed, Low Intensity'</span><span class="p">:</span> <span class="s1">'d99282'</span><span class="p">,</span>
-    <span class="s1">'23 Developed, Medium Intensity'</span><span class="p">:</span> <span class="s1">'eb0000'</span><span class="p">,</span>
-    <span class="s1">'24 Developed High Intensity'</span><span class="p">:</span> <span class="s1">'ab0000'</span><span class="p">,</span>
-    <span class="s1">'31 Barren Land (Rock/Sand/Clay)'</span><span class="p">:</span> <span class="s1">'b3ac9f'</span><span class="p">,</span>
-    <span class="s1">'41 Deciduous Forest'</span><span class="p">:</span> <span class="s1">'68ab5f'</span><span class="p">,</span>
-    <span class="s1">'42 Evergreen Forest'</span><span class="p">:</span> <span class="s1">'1c5f2c'</span><span class="p">,</span>
-    <span class="s1">'43 Mixed Forest'</span><span class="p">:</span> <span class="s1">'b5c58f'</span><span class="p">,</span>
-    <span class="s1">'51 Dwarf Scrub'</span><span class="p">:</span> <span class="s1">'af963c'</span><span class="p">,</span>
-    <span class="s1">'52 Shrub/Scrub'</span><span class="p">:</span> <span class="s1">'ccb879'</span><span class="p">,</span>
-    <span class="s1">'71 Grassland/Herbaceous'</span><span class="p">:</span> <span class="s1">'dfdfc2'</span><span class="p">,</span>
-    <span class="s1">'72 Sedge/Herbaceous'</span><span class="p">:</span> <span class="s1">'d1d182'</span><span class="p">,</span>
-    <span class="s1">'73 Lichens'</span><span class="p">:</span> <span class="s1">'a3cc51'</span><span class="p">,</span>
-    <span class="s1">'74 Moss'</span><span class="p">:</span> <span class="s1">'82ba9e'</span><span class="p">,</span>
-    <span class="s1">'81 Pasture/Hay'</span><span class="p">:</span> <span class="s1">'dcd939'</span><span class="p">,</span>
-    <span class="s1">'82 Cultivated Crops'</span><span class="p">:</span> <span class="s1">'ab6c28'</span><span class="p">,</span>
-    <span class="s1">'90 Woody Wetlands'</span><span class="p">:</span> <span class="s1">'b8d9eb'</span><span class="p">,</span>
-    <span class="s1">'95 Emergent Herbaceous Wetlands'</span><span class="p">:</span> <span class="s1">'6c9fb8'</span><span class="p">,</span>
+    <span class="s2">"11 Open Water"</span><span class="p">:</span> <span class="s2">"466b9f"</span><span class="p">,</span>
+    <span class="s2">"12 Perennial Ice/Snow"</span><span class="p">:</span> <span class="s2">"d1def8"</span><span class="p">,</span>
+    <span class="s2">"21 Developed, Open Space"</span><span class="p">:</span> <span class="s2">"dec5c5"</span><span class="p">,</span>
+    <span class="s2">"22 Developed, Low Intensity"</span><span class="p">:</span> <span class="s2">"d99282"</span><span class="p">,</span>
+    <span class="s2">"23 Developed, Medium Intensity"</span><span class="p">:</span> <span class="s2">"eb0000"</span><span class="p">,</span>
+    <span class="s2">"24 Developed High Intensity"</span><span class="p">:</span> <span class="s2">"ab0000"</span><span class="p">,</span>
+    <span class="s2">"31 Barren Land (Rock/Sand/Clay)"</span><span class="p">:</span> <span class="s2">"b3ac9f"</span><span class="p">,</span>
+    <span class="s2">"41 Deciduous Forest"</span><span class="p">:</span> <span class="s2">"68ab5f"</span><span class="p">,</span>
+    <span class="s2">"42 Evergreen Forest"</span><span class="p">:</span> <span class="s2">"1c5f2c"</span><span class="p">,</span>
+    <span class="s2">"43 Mixed Forest"</span><span class="p">:</span> <span class="s2">"b5c58f"</span><span class="p">,</span>
+    <span class="s2">"51 Dwarf Scrub"</span><span class="p">:</span> <span class="s2">"af963c"</span><span class="p">,</span>
+    <span class="s2">"52 Shrub/Scrub"</span><span class="p">:</span> <span class="s2">"ccb879"</span><span class="p">,</span>
+    <span class="s2">"71 Grassland/Herbaceous"</span><span class="p">:</span> <span class="s2">"dfdfc2"</span><span class="p">,</span>
+    <span class="s2">"72 Sedge/Herbaceous"</span><span class="p">:</span> <span class="s2">"d1d182"</span><span class="p">,</span>
+    <span class="s2">"73 Lichens"</span><span class="p">:</span> <span class="s2">"a3cc51"</span><span class="p">,</span>
+    <span class="s2">"74 Moss"</span><span class="p">:</span> <span class="s2">"82ba9e"</span><span class="p">,</span>
+    <span class="s2">"81 Pasture/Hay"</span><span class="p">:</span> <span class="s2">"dcd939"</span><span class="p">,</span>
+    <span class="s2">"82 Cultivated Crops"</span><span class="p">:</span> <span class="s2">"ab6c28"</span><span class="p">,</span>
+    <span class="s2">"90 Woody Wetlands"</span><span class="p">:</span> <span class="s2">"b8d9eb"</span><span class="p">,</span>
+    <span class="s2">"95 Emergent Herbaceous Wetlands"</span><span class="p">:</span> <span class="s2">"6c9fb8"</span><span class="p">,</span>
 <span class="p">}</span>
 
-<span class="n">landcover</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/NLCD/NLCD2016'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'landcover'</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">landcover</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">'NLCD Land Cover'</span><span class="p">)</span>
+<span class="n">landcover</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/NLCD/NLCD2016"</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"landcover"</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">landcover</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"NLCD Land Cover"</span><span class="p">)</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">add_legend</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"NLCD Land Cover Classification"</span><span class="p">,</span> <span class="n">legend_dict</span><span class="o">=</span><span class="n">legend_dict</span><span class="p">)</span>
 
@@ -5665,30 +5665,30 @@ Map</div>
 <div class="clipboard-copy-txt" id="cell-9">Map = geemap.Map()
 
 legend_dict = {
-    '11 Open Water': '466b9f',
-    '12 Perennial Ice/Snow': 'd1def8',
-    '21 Developed, Open Space': 'dec5c5',
-    '22 Developed, Low Intensity': 'd99282',
-    '23 Developed, Medium Intensity': 'eb0000',
-    '24 Developed High Intensity': 'ab0000',
-    '31 Barren Land (Rock/Sand/Clay)': 'b3ac9f',
-    '41 Deciduous Forest': '68ab5f',
-    '42 Evergreen Forest': '1c5f2c',
-    '43 Mixed Forest': 'b5c58f',
-    '51 Dwarf Scrub': 'af963c',
-    '52 Shrub/Scrub': 'ccb879',
-    '71 Grassland/Herbaceous': 'dfdfc2',
-    '72 Sedge/Herbaceous': 'd1d182',
-    '73 Lichens': 'a3cc51',
-    '74 Moss': '82ba9e',
-    '81 Pasture/Hay': 'dcd939',
-    '82 Cultivated Crops': 'ab6c28',
-    '90 Woody Wetlands': 'b8d9eb',
-    '95 Emergent Herbaceous Wetlands': '6c9fb8',
+    "11 Open Water": "466b9f",
+    "12 Perennial Ice/Snow": "d1def8",
+    "21 Developed, Open Space": "dec5c5",
+    "22 Developed, Low Intensity": "d99282",
+    "23 Developed, Medium Intensity": "eb0000",
+    "24 Developed High Intensity": "ab0000",
+    "31 Barren Land (Rock/Sand/Clay)": "b3ac9f",
+    "41 Deciduous Forest": "68ab5f",
+    "42 Evergreen Forest": "1c5f2c",
+    "43 Mixed Forest": "b5c58f",
+    "51 Dwarf Scrub": "af963c",
+    "52 Shrub/Scrub": "ccb879",
+    "71 Grassland/Herbaceous": "dfdfc2",
+    "72 Sedge/Herbaceous": "d1d182",
+    "73 Lichens": "a3cc51",
+    "74 Moss": "82ba9e",
+    "81 Pasture/Hay": "dcd939",
+    "82 Cultivated Crops": "ab6c28",
+    "90 Woody Wetlands": "b8d9eb",
+    "95 Emergent Herbaceous Wetlands": "6c9fb8",
 }
 
-landcover = ee.Image('USGS/NLCD/NLCD2016').select('landcover')
-Map.addLayer(landcover, {}, 'NLCD Land Cover')
+landcover = ee.Image("USGS/NLCD/NLCD2016").select("landcover")
+Map.addLayer(landcover, {}, "NLCD Land Cover")
 
 Map.add_legend(title="NLCD Land Cover Classification", legend_dict=legend_dict)
 
@@ -5730,7 +5730,7 @@ Map</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-04-06T13:53:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-04-06</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

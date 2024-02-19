@@ -5090,7 +5090,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d49bfb8a">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5119,7 +5119,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=94e0abd5">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5146,7 +5146,7 @@ import geemap</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ee598ff3">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5157,7 +5157,7 @@ import geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2bd2db5c">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5178,16 +5178,16 @@ import geemap</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
 <span class="n">collection</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">'NOAA/GFS0P25'</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="s1">'2018-12-22'</span><span class="p">,</span> <span class="s1">'2018-12-23'</span><span class="p">)</span>
+    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"NOAA/GFS0P25"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filterDate</span><span class="p">(</span><span class="s2">"2018-12-22"</span><span class="p">,</span> <span class="s2">"2018-12-23"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'temperature_2m_above_ground'</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"temperature_2m_above_ground"</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="o">-</span><span class="mf">40.0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mf">35.0</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'blue'</span><span class="p">,</span> <span class="s1">'purple'</span><span class="p">,</span> <span class="s1">'cyan'</span><span class="p">,</span> <span class="s1">'green'</span><span class="p">,</span> <span class="s1">'yellow'</span><span class="p">,</span> <span class="s1">'red'</span><span class="p">],</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="o">-</span><span class="mf">40.0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mf">35.0</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"blue"</span><span class="p">,</span> <span class="s2">"purple"</span><span class="p">,</span> <span class="s2">"cyan"</span><span class="p">,</span> <span class="s2">"green"</span><span class="p">,</span> <span class="s2">"yellow"</span><span class="p">,</span> <span class="s2">"red"</span><span class="p">],</span>
 <span class="p">}</span>
 
 <span class="n">first_image</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
@@ -5199,16 +5199,16 @@ import geemap</div>
 <div class="clipboard-copy-txt" id="cell-3">Map = geemap.Map()
 
 collection = (
-    ee.ImageCollection('NOAA/GFS0P25')
-    .filterDate('2018-12-22', '2018-12-23')
+    ee.ImageCollection("NOAA/GFS0P25")
+    .filterDate("2018-12-22", "2018-12-23")
     .limit(24)
-    .select('temperature_2m_above_ground')
+    .select("temperature_2m_above_ground")
 )
 
 vis_params = {
-    'min': -40.0,
-    'max': 35.0,
-    'palette': ['blue', 'purple', 'cyan', 'green', 'yellow', 'red'],
+    "min": -40.0,
+    "max": 35.0,
+    "palette": ["blue", "purple", "cyan", "green", "yellow", "red"],
 }
 
 first_image = collection.first()
@@ -5222,7 +5222,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=525df62f">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5251,7 +5251,7 @@ print(labels)</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2e066985">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5278,7 +5278,7 @@ print(labels)</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7fe3b240">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5289,7 +5289,7 @@ print(labels)</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d6c80ed6">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5310,31 +5310,31 @@ print(labels)</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
 <span class="n">collection</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">'MODIS/MCD43A4_006_NDVI'</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="s1">'2018-04-01'</span><span class="p">,</span> <span class="s1">'2018-05-01'</span><span class="p">))</span>
+    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"MODIS/MCD43A4_006_NDVI"</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="s2">"2018-04-01"</span><span class="p">,</span> <span class="s2">"2018-05-01"</span><span class="p">))</span>
     <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"NDVI"</span><span class="p">)</span>
 <span class="p">)</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="p">[</span>
-        <span class="s1">'FFFFFF'</span><span class="p">,</span>
-        <span class="s1">'CE7E45'</span><span class="p">,</span>
-        <span class="s1">'DF923D'</span><span class="p">,</span>
-        <span class="s1">'F1B555'</span><span class="p">,</span>
-        <span class="s1">'FCD163'</span><span class="p">,</span>
-        <span class="s1">'99B718'</span><span class="p">,</span>
-        <span class="s1">'74A901'</span><span class="p">,</span>
-        <span class="s1">'66A000'</span><span class="p">,</span>
-        <span class="s1">'529400'</span><span class="p">,</span>
-        <span class="s1">'3E8601'</span><span class="p">,</span>
-        <span class="s1">'207401'</span><span class="p">,</span>
-        <span class="s1">'056201'</span><span class="p">,</span>
-        <span class="s1">'004C00'</span><span class="p">,</span>
-        <span class="s1">'023B01'</span><span class="p">,</span>
-        <span class="s1">'012E01'</span><span class="p">,</span>
-        <span class="s1">'011D01'</span><span class="p">,</span>
-        <span class="s1">'011301'</span><span class="p">,</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">"FFFFFF"</span><span class="p">,</span>
+        <span class="s2">"CE7E45"</span><span class="p">,</span>
+        <span class="s2">"DF923D"</span><span class="p">,</span>
+        <span class="s2">"F1B555"</span><span class="p">,</span>
+        <span class="s2">"FCD163"</span><span class="p">,</span>
+        <span class="s2">"99B718"</span><span class="p">,</span>
+        <span class="s2">"74A901"</span><span class="p">,</span>
+        <span class="s2">"66A000"</span><span class="p">,</span>
+        <span class="s2">"529400"</span><span class="p">,</span>
+        <span class="s2">"3E8601"</span><span class="p">,</span>
+        <span class="s2">"207401"</span><span class="p">,</span>
+        <span class="s2">"056201"</span><span class="p">,</span>
+        <span class="s2">"004C00"</span><span class="p">,</span>
+        <span class="s2">"023B01"</span><span class="p">,</span>
+        <span class="s2">"012E01"</span><span class="p">,</span>
+        <span class="s2">"011D01"</span><span class="p">,</span>
+        <span class="s2">"011301"</span><span class="p">,</span>
     <span class="p">],</span>
 <span class="p">}</span>
 
@@ -5347,31 +5347,31 @@ print(labels)</div>
 <div class="clipboard-copy-txt" id="cell-6">Map = geemap.Map()
 
 collection = (
-    ee.ImageCollection('MODIS/MCD43A4_006_NDVI')
-    .filter(ee.Filter.date('2018-04-01', '2018-05-01'))
+    ee.ImageCollection("MODIS/MCD43A4_006_NDVI")
+    .filter(ee.Filter.date("2018-04-01", "2018-05-01"))
     .select("NDVI")
 )
 vis_params = {
-    'min': 0.0,
-    'max': 1.0,
-    'palette': [
-        'FFFFFF',
-        'CE7E45',
-        'DF923D',
-        'F1B555',
-        'FCD163',
-        '99B718',
-        '74A901',
-        '66A000',
-        '529400',
-        '3E8601',
-        '207401',
-        '056201',
-        '004C00',
-        '023B01',
-        '012E01',
-        '011D01',
-        '011301',
+    "min": 0.0,
+    "max": 1.0,
+    "palette": [
+        "FFFFFF",
+        "CE7E45",
+        "DF923D",
+        "F1B555",
+        "FCD163",
+        "99B718",
+        "74A901",
+        "66A000",
+        "529400",
+        "3E8601",
+        "207401",
+        "056201",
+        "004C00",
+        "023B01",
+        "012E01",
+        "011D01",
+        "011301",
     ],
 }
 
@@ -5386,7 +5386,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=91aa5629">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5413,7 +5413,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ca96c021">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5424,7 +5424,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0abb5724">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5444,18 +5444,18 @@ Map</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
 
-<span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'B1'</span><span class="p">,</span> <span class="s1">'B2'</span><span class="p">,</span> <span class="s1">'B3'</span><span class="p">,</span> <span class="s1">'B4'</span><span class="p">,</span> <span class="s1">'B5'</span><span class="p">,</span> <span class="s1">'B7'</span><span class="p">]</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'LANDSAT/LE7_TOA_5YEAR/1999_2003'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
-<span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'min'</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s1">'gamma'</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">}</span>
+<span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"B1"</span><span class="p">,</span> <span class="s2">"B2"</span><span class="p">,</span> <span class="s2">"B3"</span><span class="p">,</span> <span class="s2">"B4"</span><span class="p">,</span> <span class="s2">"B5"</span><span class="p">,</span> <span class="s2">"B7"</span><span class="p">]</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"LANDSAT/LE7_TOA_5YEAR/1999_2003"</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
+<span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"min"</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">}</span>
 
 <span class="n">Map</span><span class="o">.</span><span class="n">add_time_slider</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">time_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-8">Map = geemap.Map()
 
-bands = ['B1', 'B2', 'B3', 'B4', 'B5', 'B7']
-image = ee.Image('LANDSAT/LE7_TOA_5YEAR/1999_2003').select(bands)
-vis_params = {'min': 20, 'max': 200, 'gamma': 2.0}
+bands = ["B1", "B2", "B3", "B4", "B5", "B7"]
+image = ee.Image("LANDSAT/LE7_TOA_5YEAR/1999_2003").select(bands)
+vis_params = {"min": 20, "max": 200, "gamma": 2.0}
 
 Map.add_time_slider(image, vis_params, time_interval=1)
 Map</div>
@@ -5465,7 +5465,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=45ab4652">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=11">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5476,7 +5476,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=32d4c22d">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=12">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5497,9 +5497,9 @@ Map</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mf">37.75</span><span class="p">,</span> <span class="o">-</span><span class="mf">122.45</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 
 <span class="n">S2</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s1">'COPERNICUS/S2_SR'</span><span class="p">)</span>
+    <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"COPERNICUS/S2_SR"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">([</span><span class="o">-</span><span class="mf">122.45</span><span class="p">,</span> <span class="mf">37.75</span><span class="p">]))</span>
-    <span class="o">.</span><span class="n">filterMetadata</span><span class="p">(</span><span class="s1">'CLOUDY_PIXEL_PERCENTAGE'</span><span class="p">,</span> <span class="s1">'less_than'</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">filterMetadata</span><span class="p">(</span><span class="s2">"CLOUDY_PIXEL_PERCENTAGE"</span><span class="p">,</span> <span class="s2">"less_than"</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="p">)</span>
 
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span> <span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"B8"</span><span class="p">,</span> <span class="s2">"B4"</span><span class="p">,</span> <span class="s2">"B3"</span><span class="p">]}</span>
@@ -5511,9 +5511,9 @@ Map</div>
 <div class="clipboard-copy-txt" id="cell-9">Map = geemap.Map(center=[37.75, -122.45], zoom=12)
 
 S2 = (
-    ee.ImageCollection('COPERNICUS/S2_SR')
+    ee.ImageCollection("COPERNICUS/S2_SR")
     .filterBounds(ee.Geometry.Point([-122.45, 37.75]))
-    .filterMetadata('CLOUDY_PIXEL_PERCENTAGE', 'less_than', 10)
+    .filterMetadata("CLOUDY_PIXEL_PERCENTAGE", "less_than", 10)
 )
 
 vis_params = {"min": 0, "max": 4000, "bands": ["B8", "B4", "B3"]}
@@ -5556,7 +5556,7 @@ Map</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-03-19T20:45:47+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-03-19</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     

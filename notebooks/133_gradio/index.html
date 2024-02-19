@@ -4976,7 +4976,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=da893bce">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -4989,7 +4989,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a908a082">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5016,7 +5016,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fc4a8344">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5047,7 +5047,7 @@ import geemap.foliumap as geemap</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7aaf9023">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5066,23 +5066,23 @@ import geemap.foliumap as geemap</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mf">21.79</span><span class="p">,</span> <span class="mf">70.87</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/SRTMGL1_003"</span><span class="p">)</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'min'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s1">'max'</span><span class="p">:</span> <span class="mi">6000</span><span class="p">,</span>
-    <span class="s1">'palette'</span><span class="p">:</span> <span class="s1">'terrain'</span><span class="p">,</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mi">6000</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="s2">"terrain"</span><span class="p">,</span>
 <span class="p">}</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'SRTM'</span><span class="p">)</span>
+<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"SRTM"</span><span class="p">)</span>
 <span class="n">Map</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-3">Map = geemap.Map(center=[21.79, 70.87], zoom=3)
-image = ee.Image('USGS/SRTMGL1_003')
+image = ee.Image("USGS/SRTMGL1_003")
 vis_params = {
-    'min': 0,
-    'max': 6000,
-    'palette': 'terrain',
+    "min": 0,
+    "max": 6000,
+    "palette": "terrain",
 }
-Map.addLayer(image, vis_params, 'SRTM')
+Map.addLayer(image, vis_params, "SRTM")
 Map</div>
 </div>
 </div>
@@ -5090,7 +5090,7 @@ Map</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6fa4b7ac">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5101,7 +5101,7 @@ Map</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c407549a">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5121,39 +5121,39 @@ Map</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span> <span class="nf">viz_dem</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">palette</span><span class="p">):</span>
     <span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-    <span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s1">'USGS/SRTMGL1_003'</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"USGS/SRTMGL1_003"</span><span class="p">)</span>
     <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">'min'</span><span class="p">:</span> <span class="n">vmin</span><span class="p">,</span>
-        <span class="s1">'max'</span><span class="p">:</span> <span class="n">vmax</span><span class="p">,</span>
-        <span class="s1">'palette'</span><span class="p">:</span> <span class="n">palette</span><span class="p">,</span>
+        <span class="s2">"min"</span><span class="p">:</span> <span class="n">vmin</span><span class="p">,</span>
+        <span class="s2">"max"</span><span class="p">:</span> <span class="n">vmax</span><span class="p">,</span>
+        <span class="s2">"palette"</span><span class="p">:</span> <span class="n">palette</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s1">'SRTM'</span><span class="p">)</span>
+    <span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"SRTM"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Map</span><span class="o">.</span><span class="n">to_gradio</span><span class="p">()</span>
 
 
 <span class="n">vmin</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Min value"</span><span class="p">)</span>
 <span class="n">vmax</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">6000</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Max value"</span><span class="p">)</span>
 <span class="n">palette</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Textbox</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">"terrain"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Palette"</span><span class="p">)</span>
-<span class="n">title</span> <span class="o">=</span> <span class="s1">'Visualize Earth Engine Data'</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s2">"Visualize Earth Engine Data"</span>
 <span class="n">demo</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Interface</span><span class="p">(</span><span class="n">viz_dem</span><span class="p">,</span> <span class="p">[</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">palette</span><span class="p">],</span> <span class="s2">"html"</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
 <span class="n">demo</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-4">def viz_dem(vmin, vmax, palette):
     Map = geemap.Map()
-    image = ee.Image('USGS/SRTMGL1_003')
+    image = ee.Image("USGS/SRTMGL1_003")
     vis_params = {
-        'min': vmin,
-        'max': vmax,
-        'palette': palette,
+        "min": vmin,
+        "max": vmax,
+        "palette": palette,
     }
-    Map.addLayer(image, vis_params, 'SRTM')
+    Map.addLayer(image, vis_params, "SRTM")
     return Map.to_gradio()
 
 
 vmin = gr.Number(value=0, label="Min value")
 vmax = gr.Number(value=6000, label="Max value")
 palette = gr.Textbox(value="terrain", label="Palette")
-title = 'Visualize Earth Engine Data'
+title = "Visualize Earth Engine Data"
 demo = gr.Interface(viz_dem, [vmin, vmax, palette], "html", title=title)
 demo.launch()</div>
 </div>
@@ -5162,7 +5162,7 @@ demo.launch()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1790710a">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5173,7 +5173,7 @@ demo.launch()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a972eabf">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5194,13 +5194,13 @@ demo.launch()</div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
     <span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">),</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
 
-    <span class="n">nlcd_left</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="sa">f</span><span class="s1">'USGS/NLCD_RELEASES/2019_REL/NLCD/</span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">'landcover'</span><span class="p">)</span>
-    <span class="n">nlcd_right</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="sa">f</span><span class="s1">'USGS/NLCD_RELEASES/2019_REL/NLCD/</span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
-        <span class="s1">'landcover'</span>
+    <span class="n">nlcd_left</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="sa">f</span><span class="s2">"USGS/NLCD_RELEASES/2019_REL/NLCD/</span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"landcover"</span><span class="p">)</span>
+    <span class="n">nlcd_right</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="sa">f</span><span class="s2">"USGS/NLCD_RELEASES/2019_REL/NLCD/</span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+        <span class="s2">"landcover"</span>
     <span class="p">)</span>
 
-    <span class="n">left_layer</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_tile_layer</span><span class="p">(</span><span class="n">nlcd_left</span><span class="p">,</span> <span class="p">{},</span> <span class="sa">f</span><span class="s1">'NLCD </span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-    <span class="n">right_layer</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_tile_layer</span><span class="p">(</span><span class="n">nlcd_right</span><span class="p">,</span> <span class="p">{},</span> <span class="sa">f</span><span class="s1">'NLCD </span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="n">left_layer</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_tile_layer</span><span class="p">(</span><span class="n">nlcd_left</span><span class="p">,</span> <span class="p">{},</span> <span class="sa">f</span><span class="s2">"NLCD </span><span class="si">{</span><span class="n">left</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">right_layer</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_tile_layer</span><span class="p">(</span><span class="n">nlcd_right</span><span class="p">,</span> <span class="p">{},</span> <span class="sa">f</span><span class="s2">"NLCD </span><span class="si">{</span><span class="n">right</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="n">Map</span><span class="o">.</span><span class="n">split_map</span><span class="p">(</span>
         <span class="n">left_layer</span><span class="p">,</span>
@@ -5209,23 +5209,23 @@ demo.launch()</div>
     <span class="k">return</span> <span class="n">Map</span><span class="o">.</span><span class="n">to_gradio</span><span class="p">()</span>
 
 
-<span class="n">left_input</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Textbox</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s1">'2001'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Left Layer URL"</span><span class="p">)</span>
-<span class="n">right_input</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Textbox</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s1">'2019'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Right Layer URL"</span><span class="p">)</span>
+<span class="n">left_input</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Textbox</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">"2001"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Left Layer URL"</span><span class="p">)</span>
+<span class="n">right_input</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Textbox</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">"2019"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Right Layer URL"</span><span class="p">)</span>
 
-<span class="n">title</span> <span class="o">=</span> <span class="s1">'Visualizing National Land Cover Database (NLCD)'</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s2">"Visualizing National Land Cover Database (NLCD)"</span>
 <span class="n">demo</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Interface</span><span class="p">(</span><span class="n">split</span><span class="p">,</span> <span class="p">[</span><span class="n">left_input</span><span class="p">,</span> <span class="n">right_input</span><span class="p">],</span> <span class="s2">"html"</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
 <span class="n">demo</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-5">def split(left, right):
     Map = geemap.Map(center=(40, -100), zoom=4, height=600)
 
-    nlcd_left = ee.Image(f'USGS/NLCD_RELEASES/2019_REL/NLCD/{left}').select('landcover')
-    nlcd_right = ee.Image(f'USGS/NLCD_RELEASES/2019_REL/NLCD/{right}').select(
-        'landcover'
+    nlcd_left = ee.Image(f"USGS/NLCD_RELEASES/2019_REL/NLCD/{left}").select("landcover")
+    nlcd_right = ee.Image(f"USGS/NLCD_RELEASES/2019_REL/NLCD/{right}").select(
+        "landcover"
     )
 
-    left_layer = geemap.ee_tile_layer(nlcd_left, {}, f'NLCD {left}')
-    right_layer = geemap.ee_tile_layer(nlcd_right, {}, f'NLCD {right}')
+    left_layer = geemap.ee_tile_layer(nlcd_left, {}, f"NLCD {left}")
+    right_layer = geemap.ee_tile_layer(nlcd_right, {}, f"NLCD {right}")
 
     Map.split_map(
         left_layer,
@@ -5234,10 +5234,10 @@ demo.launch()</div>
     return Map.to_gradio()
 
 
-left_input = gr.Textbox(value='2001', label="Left Layer URL")
-right_input = gr.Textbox(value='2019', label="Right Layer URL")
+left_input = gr.Textbox(value="2001", label="Left Layer URL")
+right_input = gr.Textbox(value="2019", label="Right Layer URL")
 
-title = 'Visualizing National Land Cover Database (NLCD)'
+title = "Visualizing National Land Cover Database (NLCD)"
 demo = gr.Interface(split, [left_input, right_input], "html", title=title)
 demo.launch()</div>
 </div>
@@ -5246,7 +5246,7 @@ demo.launch()</div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6424e825">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5257,7 +5257,7 @@ demo.launch()</div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=34b47162">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5282,11 +5282,15 @@ demo.launch()</div>
     <span class="k">return</span> <span class="n">Map</span><span class="o">.</span><span class="n">to_gradio</span><span class="p">()</span>
 
 
-<span class="n">left_url</span> <span class="o">=</span> <span class="s1">'https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif'</span>
-<span class="n">right_url</span> <span class="o">=</span> <span class="s1">'https://github.com/opengeos/data/releases/download/raster/Libya-2023-09-13.tif'</span>
+<span class="n">left_url</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif"</span>
+<span class="p">)</span>
+<span class="n">right_url</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"https://github.com/opengeos/data/releases/download/raster/Libya-2023-09-13.tif"</span>
+<span class="p">)</span>
 <span class="n">left_input</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Textbox</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">left_url</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Left Layer URL"</span><span class="p">)</span>
 <span class="n">right_input</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Textbox</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">right_url</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Right Layer URL"</span><span class="p">)</span>
-<span class="n">title</span> <span class="o">=</span> <span class="s1">'Visualze Cloud Optimized GeoTIFF (COG)'</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s2">"Visualze Cloud Optimized GeoTIFF (COG)"</span>
 <span class="n">demo</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">Interface</span><span class="p">(</span><span class="n">split</span><span class="p">,</span> <span class="p">[</span><span class="n">left_input</span><span class="p">,</span> <span class="n">right_input</span><span class="p">],</span> <span class="s2">"html"</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
 <span class="n">demo</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
 </pre></div>
@@ -5297,11 +5301,15 @@ demo.launch()</div>
     return Map.to_gradio()
 
 
-left_url = 'https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif'
-right_url = 'https://github.com/opengeos/data/releases/download/raster/Libya-2023-09-13.tif'
+left_url = (
+    "https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif"
+)
+right_url = (
+    "https://github.com/opengeos/data/releases/download/raster/Libya-2023-09-13.tif"
+)
 left_input = gr.Textbox(value=left_url, label="Left Layer URL")
 right_input = gr.Textbox(value=right_url, label="Right Layer URL")
-title = 'Visualze Cloud Optimized GeoTIFF (COG)'
+title = "Visualze Cloud Optimized GeoTIFF (COG)"
 demo = gr.Interface(split, [left_input, right_input], "html", title=title)
 demo.launch()</div>
 </div>
@@ -5339,7 +5347,7 @@ demo.launch()</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-12T14:48:28+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-12</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
   </span>
 
     
