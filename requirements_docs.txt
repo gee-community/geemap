@@ -18,6 +18,7 @@ mkdocstrings-python-legacy
 nbconvert
 nbformat
 pip
+pre-commit
 pygments
 pymdown-extensions
 pyproject-flake8

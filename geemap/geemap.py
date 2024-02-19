@@ -1,5 +1,5 @@
 """Main module for interactive mapping using Google Earth Engine Python API and ipyleaflet.
-Keep in mind that Earth Engine functions use both camel case and snake case, 
+Keep in mind that Earth Engine functions use both camel case and snake case,
 such as setOptions(), setCenter(), centerObject(), addLayer().
 ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), add_minimap().
 """
@@ -1193,7 +1193,7 @@ class Map(core.Map):
             titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
             **kwargs: Arbitrary keyword arguments, including bidx, expression, nodata, unscale, resampling, rescale, color_formula, colormap, colormap_name, return_mask. See https://developmentseed.org/titiler/endpoints/cog/ and https://cogeotiff.github.io/rio-tiler/colormap/. To select a certain bands, use bidx=[1, 2, 3]
         """
-        
+
         tile_url = cog_tile(url, bands, titiler_endpoint, **kwargs)
         bounds = cog_bounds(url, titiler_endpoint)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
@@ -4702,11 +4702,11 @@ class Map(core.Map):
         """
 
         if background:
-            text = f"""<div style="font-size: {fontsize}px; color: {fontcolor}; font-weight: {'bold' if bold else 'normal'}; 
-            padding: {padding}; background-color: {bg_color}; 
+            text = f"""<div style="font-size: {fontsize}px; color: {fontcolor}; font-weight: {'bold' if bold else 'normal'};
+            padding: {padding}; background-color: {bg_color};
             border-radius: {border_radius};">{text}</div>"""
         else:
-            text = f"""<div style="font-size: {fontsize}px; color: {fontcolor}; font-weight: {'bold' if bold else 'normal'}; 
+            text = f"""<div style="font-size: {fontsize}px; color: {fontcolor}; font-weight: {'bold' if bold else 'normal'};
             padding: {padding};">{text}</div>"""
 
         self.add_html(text, position=position, **kwargs)

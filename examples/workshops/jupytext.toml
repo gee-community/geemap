@@ -1,5 +1,5 @@
 # Install jupytext using: conda install jupytext -c conda-forge
-# Always pair ipynb notebooks to md files. 
+# Always pair ipynb notebooks to md files.
 # formats = "ipynb,md"
 formats = "ipynb,myst"
 
