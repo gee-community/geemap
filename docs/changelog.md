@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.32.0 - Feb 28, 2024
+
+**What's Changed**
+
+* Update changelog for v0.31.0 by @giswqs in [#1910](https://github.com/gee-community/geemap/pull/1910)
+* chore: adding pre-commit configuration by @slowy07 in [#1912](https://github.com/gee-community/geemap/pull/1912)
+* Add pre-commit cli by @giswqs in [#1914](https://github.com/gee-community/geemap/pull/1914)
+* Add black-jupyter and nbstripout to pre-commit by @giswqs in [#1915](https://github.com/gee-community/geemap/pull/1915)
+* Clean up notebook examples by @giswqs in [#1918](https://github.com/gee-community/geemap/pull/1918)
+
+**Full Changelog**: [v0.31.0...v0.32.0](https://github.com/gee-community/geemap/compare/v0.31.0...v0.32.0)
+
 ## v0.31.0 - Feb 15, 2024
 
 **What's Changed**
