@@ -153,11 +153,11 @@ To use **geemap**, you must first `sign up <https://earthengine.google.com/signu
   pip install geemap
 
 
-**Geemap** is also available on `conda-forge <https://anaconda.org/conda-forge/geemap>`__. If you have `Anaconda <https://www.anaconda.com/distribution/#download-section>`__ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`__ installed on your computer, you can create a conda Python environment to install geemap:
+**Geemap** is also available on `conda-forge <https://anaconda.org/conda-forge/geemap>`__. If you have `Anaconda <https://www.anaconda.com/download>`__ or `Miniconda <https://docs.anaconda.com/free/miniconda>`__ installed on your computer, you can create a conda Python environment to install geemap:
 
 .. code:: python
 
-  conda create -n gee python=3.10
+  conda create -n gee python=3.11
   conda activate gee
   conda install -n base mamba -c conda-forge
   mamba install geemap -c conda-forge
