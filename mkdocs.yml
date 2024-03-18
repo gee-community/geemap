@@ -140,6 +140,9 @@ nav:
           - workshops/G4G_2023.ipynb
           - workshops/NCSU_2023.ipynb
           - workshops/AGU_2023.ipynb
+          - workshops/Alaska_2024_Part1.ipynb
+          - workshops/Alaska_2024_Part2.ipynb
+          - workshops/Alaska_2024_Part3.ipynb
     - Notebooks:
           - notebooks/00_ee_auth_colab.ipynb
           - notebooks/00_geemap_colab.ipynb
