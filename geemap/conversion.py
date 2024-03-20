@@ -90,10 +90,8 @@ def format_params(line, sep=":"):
     Returns:
         [str]: A string with keys quoted
     """
-    # print(line)
     new_line = line
     prefix = ""
-    # suffix = ""
 
     if line.strip().startswith("for"):  # skip for loop
         return line
@@ -149,7 +147,7 @@ def format_params(line, sep=":"):
 
 
 def use_math(lines):
-    """Checks if an Earth Engine uses Math library
+    """Checks if an Earth Engine uses Math library.
 
     Args:
         lines (list): An Earth Engine JavaScript.
@@ -157,12 +155,11 @@ def use_math(lines):
     Returns:
         [bool]: Returns True if the script contains 'Math.'. For example 'Math.PI', 'Math.pow'
     """
-    math_import = False
     for line in lines:
         if "Math." in line:
-            math_import = True
+            return True
 
-    return math_import
+    return False
 
 
 def convert_for_loop(line):
@@ -174,7 +171,6 @@ def convert_for_loop(line):
     Returns:
         str: Converted Python for loop.
     """
-    new_line = ""
     if "var " in line:
         line = line.replace("var ", "")
     start_index = line.index("(")
@@ -186,8 +182,7 @@ def convert_for_loop(line):
     params = line[(start_index + 1) : end_index]
 
     if " in " in params and params.count(";") == 0:
-        new_line = prefix + "{}:".format(params) + suffix
-        return new_line
+        return prefix + "{}:".format(params) + suffix
 
     items = params.split("=")
     param_name = items[0].strip()
@@ -209,13 +204,12 @@ def convert_for_loop(line):
 
     prefix = line[:(start_index)]
     suffix = line[(end_index + 1) :]
-    new_line = (
+
+    return (
         prefix
         + "{} in range({}, {}, {}):".format(param_name, start, end, step)
         + suffix
     )
-
-    return new_line
 
 
 def check_map_functions(input_lines):
@@ -306,7 +300,6 @@ def js_to_python(
         out_file = os.path.join(root_dir, out_file)
 
     is_python = False
-    # add_github_url = False
 
     if use_qgis and import_geemap:
         raise Exception(
@@ -323,21 +316,18 @@ def js_to_python(
     if github_repo is not None:
         github_url = "# GitHub URL: " + github_repo + in_file + "\n\n"
 
-    math_import = False
-    math_import_str = ""
 
     lines = []
     with open(in_file, encoding="utf-8") as f:
         lines = f.readlines()
 
-        math_import = use_math(lines)
+    for line in lines:
+        line = line.strip()
+        if line == "import ee":
+            is_python = True
 
-        for line in lines:
-            line = line.strip()
-            if line == "import ee":
-                is_python = True
-
-    if math_import:
+    math_import_str = ""
+    if use_math(lines):
         math_import_str = "import math\n"
 
     output = ""
@@ -352,140 +342,140 @@ def js_to_python(
         with open(in_file, encoding="utf-8") as f:
             lines = f.readlines()
 
-            # print('Processing {}'.format(in_file))
-            lines = check_map_functions(lines)
+        # print('Processing {}'.format(in_file))
+        lines = check_map_functions(lines)
 
-            for index, line in enumerate(lines):
-                if ("/* color" in line) and ("*/" in line):
+        for index, line in enumerate(lines):
+            if ("/* color" in line) and ("*/" in line):
+                line = (
+                    line[: line.index("/*")].lstrip()
+                    + line[(line.index("*/") + 2) :]
+                )
+
+            if (
+                ("= function" in line)
+                or ("=function" in line)
+                or line.strip().startswith("function")
+            ):
+                try:
+                    bracket_index = line.index("{")
+                except Exception as e:
+                    print(
+                        f"An error occurred when processing {in_file}. The closing curly bracket could not be found in Line {index+1}: {line}. Please reformat the function definition and make sure that both the opening and closing curly brackets appear on the same line as the function keyword. "
+                    )
+                    return
+
+                (
+                    matching_line_index,
+                    matching_char_index,
+                ) = find_matching_bracket(lines, index, bracket_index)
+
+                line = line[:bracket_index] + line[bracket_index + 1 :]
+                if matching_line_index == index:
                     line = (
-                        line[: line.index("/*")].lstrip()
-                        + line[(line.index("*/") + 2) :]
+                        line[:matching_char_index] + line[matching_char_index + 1 :]
+                    )
+                else:
+                    tmp_line = lines[matching_line_index]
+                    lines[matching_line_index] = (
+                        tmp_line[:matching_char_index]
+                        + tmp_line[matching_char_index + 1 :]
                     )
 
-                if (
-                    ("= function" in line)
-                    or ("=function" in line)
-                    or line.strip().startswith("function")
-                ):
-                    try:
-                        bracket_index = line.index("{")
-                    except Exception as e:
-                        print(
-                            f"An error occurred when processing {in_file}. The closing curly bracket could not be found in Line {index+1}: {line}. Please reformat the function definition and make sure that both the opening and closing curly brackets appear on the same line as the function keyword. "
-                        )
-                        return
-
-                    (
-                        matching_line_index,
-                        matching_char_index,
-                    ) = find_matching_bracket(lines, index, bracket_index)
-
-                    line = line[:bracket_index] + line[bracket_index + 1 :]
-                    if matching_line_index == index:
-                        line = (
-                            line[:matching_char_index] + line[matching_char_index + 1 :]
-                        )
-                    else:
-                        tmp_line = lines[matching_line_index]
-                        lines[matching_line_index] = (
-                            tmp_line[:matching_char_index]
-                            + tmp_line[matching_char_index + 1 :]
-                        )
-
+                line = (
+                    line.replace(" = function", "")
+                    .replace("=function", "")
+                    .replace("function ", "")
+                )
+                if line.lstrip().startswith("//"):
+                    line = line.replace("//", "").lstrip()
                     line = (
-                        line.replace(" = function", "")
-                        .replace("=function", "")
-                        .replace("function ", "")
+                        " " * (len(line) - len(line.lstrip()))
+                        + "# def "
+                        + line.strip()
+                        + ":"
                     )
-                    if line.lstrip().startswith("//"):
-                        line = line.replace("//", "").lstrip()
-                        line = (
-                            " " * (len(line) - len(line.lstrip()))
-                            + "# def "
-                            + line.strip()
-                            + ":"
-                        )
-                    else:
-                        line = (
-                            " " * (len(line) - len(line.lstrip()))
-                            + "def "
-                            + line.strip()
-                            + ":"
-                        )
-                elif "{" in line:
+                else:
+                    line = (
+                        " " * (len(line) - len(line.lstrip()))
+                        + "def "
+                        + line.strip()
+                        + ":"
+                    )
+            elif "{" in line:
+                bracket_index = line.index("{")
+                (
+                    matching_line_index,
+                    matching_char_index,
+                ) = find_matching_bracket(lines, index, bracket_index)
+                if (matching_line_index == index) and (":" in line):
+                    pass
+                elif ("for (" in line) or ("for(" in line):
+                    line = convert_for_loop(line)
+                    lines[index] = line
                     bracket_index = line.index("{")
                     (
                         matching_line_index,
                         matching_char_index,
                     ) = find_matching_bracket(lines, index, bracket_index)
-                    if (matching_line_index == index) and (":" in line):
-                        pass
-                    elif ("for (" in line) or ("for(" in line):
-                        line = convert_for_loop(line)
-                        lines[index] = line
-                        bracket_index = line.index("{")
-                        (
-                            matching_line_index,
-                            matching_char_index,
-                        ) = find_matching_bracket(lines, index, bracket_index)
-                        tmp_line = lines[matching_line_index]
-                        lines[matching_line_index] = (
-                            tmp_line[:matching_char_index]
-                            + tmp_line[matching_char_index + 1 :]
-                        )
-                        line = line.replace("{", "")
+                    tmp_line = lines[matching_line_index]
+                    lines[matching_line_index] = (
+                        tmp_line[:matching_char_index]
+                        + tmp_line[matching_char_index + 1 :]
+                    )
+                    line = line.replace("{", "")
 
-                if line is None:
-                    line = ""
+            if line is None:
+                line = ""
 
-                line = line.replace("//", "#")
-                line = line.replace("var ", "", 1)
-                line = line.replace("/*", "#")
-                line = line.replace("*/", "#")
-                line = line.replace("true", "True").replace("false", "False")
-                line = line.replace("null", "None")
-                line = line.replace(".or", ".Or")
-                line = line.replace(".and", ".And")
-                line = line.replace(".not", ".Not")
-                line = line.replace("visualize({", "visualize(**{")
-                line = line.replace("Math.PI", "math.pi")
-                line = line.replace("Math.", "math.")
-                line = line.replace("= new", "=")
-                line = line.replace("Map.", f"{Map}.")
-                line = line.rstrip()
+            line = line.replace("//", "#")
+            line = line.replace("var ", "", 1)
+            line = line.replace("/*", "#")
+            line = line.replace("*/", "#")
+            line = line.replace("true", "True").replace("false", "False")
+            line = line.replace("null", "None")
+            line = line.replace(".or", ".Or")
+            line = line.replace(".and", ".And")
+            line = line.replace(".not", ".Not")
+            line = line.replace("visualize({", "visualize(**{")
+            line = line.replace("Math.PI", "math.pi")
+            line = line.replace("Math.", "math.")
+            line = line.replace("= new", "=")
+            line = line.replace("Map.", f"{Map}.")
+            line = line.rstrip()
 
-                if ".style(" in line and ".style(**" not in line:
-                    line = line.replace(".style(", ".style(**")
+            if ".style(" in line and ".style(**" not in line:
+                line = line.replace(".style(", ".style(**")
 
-                if line.endswith("+"):
-                    line = line + " \\"
-                elif line.endswith(";"):
-                    line = line[:-1]
+            if line.endswith("+"):
+                line += " \\"
+            elif line.endswith(";"):
+                line = line[:-1]
 
-                if line.lstrip().startswith("*"):
-                    line = line.replace("*", "#")
+            if line.lstrip().startswith("*"):
+                line = line.replace("*", "#")
 
-                if (
-                    (":" in line)
-                    and (not line.strip().startswith("#"))
-                    and (not line.strip().startswith("def"))
-                    and (not line.strip().startswith("."))
-                ):
-                    line = format_params(line)
+            if (
+                (":" in line)
+                and (not line.strip().startswith("#"))
+                and (not line.strip().startswith("def"))
+                and (not line.strip().startswith("."))
+            ):
+                line = format_params(line)
 
-                if (
-                    index < (len(lines) - 1)
-                    and line.lstrip().startswith("#")
-                    and lines[index + 1].lstrip().startswith(".")
-                ):
-                    line = ""
+            if (
+                index < (len(lines) - 1)
+                and line.lstrip().startswith("#")
+                and lines[index + 1].lstrip().startswith(".")
+            ):
+                line = ""
 
-                if line.lstrip().startswith("."):
-                    if "#" in line:
-                        line = line[: line.index("#")]
-                    output = output.rstrip() + " " + "\\" + "\n" + line + "\n"
-                else:
-                    output += line + "\n"
+            if line.lstrip().startswith("."):
+                if "#" in line:
+                    line = line[: line.index("#")]
+                output = output.rstrip() + " " + "\\" + "\n" + line + "\n"
+            else:
+                output += line + "\n"
 
     if show_map:
         output += Map
@@ -558,24 +548,25 @@ def js_snippet_to_py(
 
         with open(out_py, encoding="utf-8") as f:
             lines = f.readlines()
-            for index, line in enumerate(lines):
-                if index < (len(lines) - 1):
-                    if line.strip() == "import ee":
-                        continue
 
-                    next_line = lines[index + 1]
-                    if line.strip() == "" and next_line.strip() == "":
-                        continue
-                    elif ".style(" in line and (".style(**" not in line):
-                        line = line.replace(".style(", ".style(**")
-                        out_lines.append(line)
-                    elif "({" in line:
-                        line = line.replace("({", "(**{")
-                        out_lines.append(line)
-                    else:
-                        out_lines.append(line)
-                elif index == (len(lines) - 1) and lines[index].strip() != "":
+        for index, line in enumerate(lines):
+            if index < (len(lines) - 1):
+                if line.strip() == "import ee":
+                    continue
+
+                next_line = lines[index + 1]
+                if line.strip() == "" and next_line.strip() == "":
+                    continue
+                elif ".style(" in line and (".style(**" not in line):
+                    line = line.replace(".style(", ".style(**")
                     out_lines.append(line)
+                elif "({" in line:
+                    line = line.replace("({", "(**{")
+                    out_lines.append(line)
+                else:
+                    out_lines.append(line)
+            elif index == (len(lines) - 1) and lines[index].strip() != "":
+                out_lines.append(line)
 
         os.remove(in_js)
         os.remove(out_py)
@@ -660,19 +651,20 @@ def remove_qgis_import(in_file, Map="m"):
     start_index = 0
     with open(in_file, encoding="utf-8") as f:
         lines = f.readlines()
-        for index, line in enumerate(lines):
-            if "from ee_plugin import Map" in line:
-                start_index = index
 
-                i = 1
-                while True:
-                    line_tmp = lines[start_index + i].strip()
-                    if line_tmp != "":
-                        return lines[start_index + i :]
-                    else:
-                        i = i + 1
-            elif f"{Map} = geemap.Map()" in line:
-                return lines[index + 1 :]
+    for index, line in enumerate(lines):
+        if "from ee_plugin import Map" in line:
+            start_index = index
+
+            i = 1
+            while True:
+                line_tmp = lines[start_index + i].strip()
+                if line_tmp != "":
+                    return lines[start_index + i :]
+                else:
+                    i += 1
+        elif f"{Map} = geemap.Map()" in line:
+            return lines[index + 1 :]
 
 
 def get_js_examples(out_dir=None):
@@ -719,11 +711,10 @@ def get_nb_template(download_latest=False, out_file=None):
     template_file = os.path.join(template_dir, "template.py")
 
     if out_file is None:
-        out_file = template_file
-        return out_file
+        return template_file
 
     if not out_file.endswith(".py"):
-        out_file = out_file + ".py"
+        out_file += ".py"
 
     if not os.path.exists(os.path.dirname(out_file)):
         os.makedirs(os.path.dirname(out_file))
@@ -753,9 +744,10 @@ def template_header(in_template):
 
     with open(in_template, encoding="utf-8") as f:
         template_lines = f.readlines()
-        for index, line in enumerate(template_lines):
-            if "## Add Earth Engine Python script" in line:
-                header_end_index = index + 6
+
+    for index, line in enumerate(template_lines):
+        if "## Add Earth Engine Python script" in line:
+            header_end_index = index + 6
 
     header = template_lines[:header_end_index]
 
@@ -893,10 +885,10 @@ def py_to_ipynb_dir(
     print("Converting Earth Engine Python scripts to Jupyter notebooks ...\n")
 
     in_dir = os.path.abspath(in_dir)
-    files = []
     qgis_files = list(Path(in_dir).rglob("*_geemap.py"))
     py_files = list(Path(in_dir).rglob("*.py"))
 
+    files = []
     if len(qgis_files) == len(py_files) / 2:
         files = qgis_files
     else:
@@ -927,10 +919,9 @@ def execute_notebook(in_file):
     Args:
         in_file (str): Input Jupyter notebook.
     """
-    # command = 'jupyter nbconvert --to notebook --execute ' + in_file + ' --inplace'
     command = 'jupyter nbconvert --to notebook --execute "{}" --inplace'.format(in_file)
     print(os.popen(command).read().rstrip())
-    # os.popen(command)
+    # Use subprocess.check_call(command)
 
 
 def execute_notebook_dir(in_dir):
@@ -944,11 +935,10 @@ def execute_notebook_dir(in_dir):
     in_dir = os.path.abspath(in_dir)
     files = list(Path(in_dir).rglob("*.ipynb"))
     count = len(files)
-    if files is not None:
-        for index, file in enumerate(files):
-            in_file = str(file)
-            print(f"Processing {index + 1}/{count}: {file} ...")
-            execute_notebook(in_file)
+    for index, file in enumerate(files):
+        in_file = str(file)
+        print(f"Processing {index + 1}/{count}: {file} ...")
+        execute_notebook(in_file)
 
 
 def update_nb_header(in_file, github_username=None, github_repo=None):
@@ -967,42 +957,41 @@ def update_nb_header(in_file, github_username=None, github_repo=None):
     index = in_file.index(github_repo)
     file_relative_path = in_file[index + len(github_repo) + 1 :]
 
-    output_lines = []
-
     with open(in_file, encoding="utf-8") as f:
         lines = f.readlines()
-        start_line_index = 2
-        start_char_index = lines[start_line_index].index("{")
-        matching_line_index, _ = find_matching_bracket(
-            lines, start_line_index, start_char_index
-        )
 
-        header = lines[:matching_line_index]
-        content = lines[matching_line_index:]
+    start_line_index = 2
+    start_char_index = lines[start_line_index].index("{")
+    matching_line_index, _ = find_matching_bracket(
+        lines, start_line_index, start_char_index
+    )
 
-        new_header = []
-        search_string = ""
-        for line in header:
-            line = line.replace("giswqs", github_username)
-            line = line.replace("geemap", github_repo)
-            if "master?filepath=" in line:
-                search_string = "master?filepath="
-                start_index = line.index(search_string) + len(search_string)
-                end_index = line.index(".ipynb") + 6
-                relative_path = line[start_index:end_index]
-                line = line.replace(relative_path, file_relative_path)
-            elif "/master/" in line:
-                search_string = "/master/"
-                start_index = line.index(search_string) + len(search_string)
-                end_index = line.index(".ipynb") + 6
-                relative_path = line[start_index:end_index]
-                line = line.replace(relative_path, file_relative_path)
-            new_header.append(line)
+    header = lines[:matching_line_index]
+    content = lines[matching_line_index:]
 
-        output_lines = new_header + content
+    new_header = []
+    search_string = ""
+    for line in header:
+        line = line.replace("giswqs", github_username)
+        line = line.replace("geemap", github_repo)
+        if "master?filepath=" in line:
+            search_string = "master?filepath="
+            start_index = line.index(search_string) + len(search_string)
+            end_index = line.index(".ipynb") + 6
+            relative_path = line[start_index:end_index]
+            line = line.replace(relative_path, file_relative_path)
+        elif "/master/" in line:
+            search_string = "/master/"
+            start_index = line.index(search_string) + len(search_string)
+            end_index = line.index(".ipynb") + 6
+            relative_path = line[start_index:end_index]
+            line = line.replace(relative_path, file_relative_path)
+        new_header.append(line)
 
-        with open(in_file, "w") as f:
-            f.writelines(output_lines)
+    output_lines = new_header + content
+
+    with open(in_file, "w") as f:
+        f.writelines(output_lines)
 
 
 def update_nb_header_dir(in_dir, github_username=None, github_repo=None):
@@ -1013,17 +1002,21 @@ def update_nb_header_dir(in_dir, github_username=None, github_repo=None):
         github_username (str, optional): GitHub username. Defaults to None.
         github_repo (str, optional): GitHub repo name. Defaults to None.
     """
+    # TODO(schwehr): Do not modify a list while iterating over it.
+    # files = (
+    #     x for x in Path(in_dir).rglob("*.ipynb")
+    #     if '.ipynb_checkpoints not' in f
+    # )
     files = list(Path(in_dir).rglob("*.ipynb"))
     for index, file in enumerate(files):
         file = str(file)
         if ".ipynb_checkpoints" in file:
             del files[index]
     count = len(files)
-    if files is not None:
-        for index, file in enumerate(files):
-            in_file = str(file)
-            print(f"Processing {index + 1}/{count}: {file} ...")
-            update_nb_header(in_file, github_username, github_repo)
+    for index, file in enumerate(files):
+        in_file = str(file)
+        print(f"Processing {index + 1}/{count}: {file} ...")
+        update_nb_header(in_file, github_username, github_repo)
 
 
 # def download_from_url(url, out_file_name=None, out_dir='.', unzip=True):
