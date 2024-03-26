@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.14">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.15">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.10ba22f1.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e359304.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -6434,6 +6434,9 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">):</span>
+            <span class="n">ee_object</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">mosaic</span><span class="p">()</span>
         <span class="n">tile_layer</span> <span class="o">=</span> <span class="n">ee_tile_layers</span><span class="o">.</span><span class="n">EELeafletTileLayer</span><span class="p">(</span>
             <span class="n">ee_object</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">shown</span><span class="p">,</span> <span class="n">opacity</span>
         <span class="p">)</span>
@@ -6720,6 +6723,9 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">):</span>
+        <span class="n">ee_object</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">mosaic</span><span class="p">()</span>
     <span class="n">tile_layer</span> <span class="o">=</span> <span class="n">ee_tile_layers</span><span class="o">.</span><span class="n">EELeafletTileLayer</span><span class="p">(</span>
         <span class="n">ee_object</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">shown</span><span class="p">,</span> <span class="n">opacity</span>
     <span class="p">)</span>
@@ -6776,6 +6782,9 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Layer </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">):</span>
+        <span class="n">ee_object</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">mosaic</span><span class="p">()</span>
     <span class="n">tile_layer</span> <span class="o">=</span> <span class="n">ee_tile_layers</span><span class="o">.</span><span class="n">EELeafletTileLayer</span><span class="p">(</span>
         <span class="n">ee_object</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">shown</span><span class="p">,</span> <span class="n">opacity</span>
     <span class="p">)</span>
