@@ -751,6 +751,9 @@ class Map(ipyleaflet.Map, MapInterface):
             vis_params = {}
         if name is None:
             name = f"Layer {len(self.ee_layers) + 1}"
+
+        if isinstance(ee_object, ee.ImageCollection):
+            ee_object = ee_object.mosaic()
         tile_layer = ee_tile_layers.EELeafletTileLayer(
             ee_object, vis_params, name, shown, opacity
         )
