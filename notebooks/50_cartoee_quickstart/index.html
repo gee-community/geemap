@@ -1483,6 +1483,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../workshops/GEE_Workshop_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GEE Workshop 2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -5220,6 +5241,7 @@ jupyter notebook
 
 <span class="kn">import</span> <span class="nn">ee</span>
 <span class="kn">import</span> <span class="nn">geemap</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="c1"># import the cartoee functionality from geemap</span>
 <span class="kn">from</span> <span class="nn">geemap</span> <span class="kn">import</span> <span class="n">cartoee</span>
@@ -5228,6 +5250,7 @@ jupyter notebook
 
 import ee
 import geemap
+import matplotlib.pyplot as plt
 
 # import the cartoee functionality from geemap
 from geemap import cartoee</div>
@@ -5367,7 +5390,7 @@ vis = {"min": 0, "max": 3000}  # define visualization parameters for image</div>
 <span class="c1"># add coastlines using the cartopy api</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
 
-<span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-6">fig = plt.figure(figsize=(15, 10))
 
@@ -5383,7 +5406,7 @@ cartoee.add_gridlines(ax, interval=[60, 30], linestyle=":")
 # add coastlines using the cartopy api
 ax.coastlines(color="red")
 
-show()</div>
+plt.show()</div>
 </div>
 </div>
 </div>
@@ -5440,7 +5463,7 @@ show()</div>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Global Elevation Map"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 
-<span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-7">fig = plt.figure(figsize=(15, 10))
 
@@ -5463,7 +5486,7 @@ ax.coastlines(color="red")
 
 ax.set_title(label="Global Elevation Map", fontsize=15)
 
-show()</div>
+plt.show()</div>
 </div>
 </div>
 </div>
@@ -5548,7 +5571,7 @@ vis = {"bands": ["B5", "B4", "B3"], "min": 0, "max": 5000, "gamma": 1.3}</div>
 <span class="c1"># add the coastline</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"yellow"</span><span class="p">)</span>
 
-<span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-9">fig = plt.figure(figsize=(15, 10))
 
@@ -5564,7 +5587,7 @@ cartoee.add_gridlines(ax, interval=0.5, xtick_rotation=45, linestyle=":")
 # add the coastline
 ax.coastlines(color="yellow")
 
-show()</div>
+plt.show()</div>
 </div>
 </div>
 </div>
@@ -5615,7 +5638,7 @@ show()</div>
 <span class="c1"># add coastline</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">"yellow"</span><span class="p">)</span>
 
-<span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-10">fig = plt.figure(figsize=(15, 10))
 
@@ -5632,7 +5655,7 @@ cartoee.add_gridlines(ax, interval=0.15, xtick_rotation=45, linestyle=":")
 # add coastline
 ax.coastlines(color="yellow")
 
-show()</div>
+plt.show()</div>
 </div>
 </div>
 </div>
@@ -5695,7 +5718,7 @@ show()</div>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Landsat False Color Composite (Band 5/4/3)"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
 
-<span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-11">fig = plt.figure(figsize=(15, 10))
 
@@ -5724,7 +5747,7 @@ cartoee.add_scale_bar_lite(
 
 ax.set_title(label="Landsat False Color Composite (Band 5/4/3)", fontsize=15)
 
-show()</div>
+plt.show()</div>
 </div>
 </div>
 </div>
@@ -5787,7 +5810,7 @@ show()</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-19T15:54:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-19</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-03-29T03:48:53+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-03-29</span>
   </span>
 
     
