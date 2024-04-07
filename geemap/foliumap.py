@@ -608,7 +608,7 @@ class Map(folium.Map):
             return_client=True,
             **kwargs,
         )
-        self.add_layer(tile_layer)
+        tile_layer.add_to(self)
 
         bounds = tile_client.bounds()  # [ymin, ymax, xmin, xmax]
         bounds = (
