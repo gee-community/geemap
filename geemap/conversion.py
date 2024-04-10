@@ -23,6 +23,7 @@ import pkg_resources
 
 from .common import *
 
+
 def find_matching_bracket(lines, start_line_index, start_char_index, matching_char="{"):
     """Finds the position of the matching closing bracket from a list of lines.
 
@@ -216,6 +217,7 @@ def convert_for_loop(line):
 
     return new_line
 
+
 # Removes all indentation from file to reformat indentation for python later
 def remove_all_indentation(input_lines):
     """Removes all indentation for reformatting according to python's indentation rules
@@ -228,7 +230,7 @@ def remove_all_indentation(input_lines):
     """
     output_lines = []
     for index, line in enumerate(input_lines):
-         output_lines.append(line.lstrip())
+        output_lines.append(line.lstrip())
     return output_lines
 
 
@@ -244,14 +246,21 @@ def check_map_functions(input_lines):
     output_lines = []
     currentNumOfNestedFuncs = 0
     for index, line in enumerate(input_lines):
-        if (line.strip().endswith(".map(") and input_lines[index+1].strip().replace(" ", "").startswith("function(")) or \
-            (line.strip().endswith(".map(function(") and input_lines[index+1].strip().replace(" ", "").endswith("{")):
-            input_lines[index+1] = line + input_lines[index+1]
+        if (
+            line.strip().endswith(".map(")
+            and input_lines[index + 1].strip().replace(" ", "").startswith("function(")
+        ) or (
+            line.strip().endswith(".map(function(")
+            and input_lines[index + 1].strip().replace(" ", "").endswith("{")
+        ):
+            input_lines[index + 1] = line + input_lines[index + 1]
             continue
 
-        if ".map(function" in line.replace(" ", "") or \
-            "returnfunction" in line.replace(" ", "") or \
-            "function(" in line.replace(" ", ""):
+        if (
+            ".map(function" in line.replace(" ", "")
+            or "returnfunction" in line.replace(" ", "")
+            or "function(" in line.replace(" ", "")
+        ):
             try:
                 bracket_index = line.index("{")
                 matching_line_index, matching_char_index = find_matching_bracket(
@@ -272,13 +281,11 @@ def check_map_functions(input_lines):
 
                 new_lines = check_map_functions(new_lines)
 
-                for sub_index, tmp_line in enumerate(
-                    new_lines
-                ):
-                    output_lines.append(('    ' * currentNumOfNestedFuncs) + tmp_line)
-                    if '{' in tmp_line:
+                for sub_index, tmp_line in enumerate(new_lines):
+                    output_lines.append(("    " * currentNumOfNestedFuncs) + tmp_line)
+                    if "{" in tmp_line:
                         currentNumOfNestedFuncs += 1
-                    if '}' in tmp_line:
+                    if "}" in tmp_line:
                         currentNumOfNestedFuncs -= 1
                     input_lines[index + 1 + sub_index] = ""
 
@@ -287,7 +294,9 @@ def check_map_functions(input_lines):
                 header_line = line[:func_start_index] + func_name
                 header_line = header_line.rstrip()
 
-                func_footer = input_lines[matching_line_index][: matching_char_index + 1]
+                func_footer = input_lines[matching_line_index][
+                    : matching_char_index + 1
+                ]
                 output_lines.append(func_footer)
 
                 footer_line = input_lines[matching_line_index][
@@ -300,7 +309,7 @@ def check_map_functions(input_lines):
                 input_lines[matching_line_index] = footer_line
 
                 output_lines.append(header_line)
-                #output_lines.append(footer_line)
+                # output_lines.append(footer_line)
             except Exception as e:
                 print(
                     f"An error occurred: {e}. The closing curly bracket could not be found in Line {index+1}: {line}. Please reformat the function definition and make sure that both the opening and closing curly brackets appear on the same line as the function keyword. "
@@ -423,25 +432,28 @@ def js_to_python(
                             matching_char_index,
                         ) = find_matching_bracket(lines, index, bracket_index)
 
-                        if 'func_' not in line:
+                        if "func_" not in line:
                             currentNumOfNestedFuncs += 1
-                            
+
                             for sub_index, tmp_line in enumerate(
                                 lines[index + 1 : matching_line_index]
                             ):
-                                #lines[sub_index] = ('    ' * currentNumOfNestedFuncs) + tmp_line
-                                if '{' in tmp_line and 'function' not in line:
+                                # lines[sub_index] = ('    ' * currentNumOfNestedFuncs) + tmp_line
+                                if "{" in tmp_line and "function" not in line:
                                     currentNumOfNestedFuncs += 1
-                                if '}' in tmp_line and 'function' not in line:
+                                if "}" in tmp_line and "function" not in line:
                                     currentNumOfNestedFuncs -= 1
-                                lines[index + 1 + sub_index] = ('    ' * currentNumOfNestedFuncs) + lines[index + 1 + sub_index]
+                                lines[index + 1 + sub_index] = (
+                                    "    " * currentNumOfNestedFuncs
+                                ) + lines[index + 1 + sub_index]
 
                             currentNumOfNestedFuncs -= 1
 
                         line = line[:bracket_index] + line[bracket_index + 1 :]
                         if matching_line_index == index:
                             line = (
-                                line[:matching_char_index] + line[matching_char_index + 1 :]
+                                line[:matching_char_index]
+                                + line[matching_char_index + 1 :]
                             )
                         else:
                             tmp_line = lines[matching_line_index]
@@ -476,7 +488,7 @@ def js_to_python(
                             + line.strip()
                             + ":"
                         )
-                elif "{" in line and '({' not in line:
+                elif "{" in line and "({" not in line:
                     bracket_index = line.index("{")
                     (
                         matching_line_index,
@@ -488,24 +500,30 @@ def js_to_python(
                     for sub_index, tmp_line in enumerate(
                         lines[index + 1 : matching_line_index]
                     ):
-                        lines[index + 1 + sub_index] = ('    ' * currentNumOfNestedFuncs) + lines[index + 1 + sub_index]
-                        if '{' in tmp_line and 'if' not in line and 'for' not in line:
+                        lines[index + 1 + sub_index] = (
+                            "    " * currentNumOfNestedFuncs
+                        ) + lines[index + 1 + sub_index]
+                        if "{" in tmp_line and "if" not in line and "for" not in line:
                             currentNumOfNestedFuncs += 1
-                        if '}' in tmp_line and 'if' not in line and 'for' not in line:
+                        if "}" in tmp_line and "if" not in line and "for" not in line:
                             currentNumOfNestedFuncs -= 1
 
                     currentNumOfNestedFuncs -= 1
 
                     if (matching_line_index == index) and (":" in line):
                         pass
-                    elif ("for (" in line) or ("for(" in line) or \
-                        ('if (' in line) or ('if(' in line):
-                        if 'if' not in line:
+                    elif (
+                        ("for (" in line)
+                        or ("for(" in line)
+                        or ("if (" in line)
+                        or ("if(" in line)
+                    ):
+                        if "if" not in line:
                             line = convert_for_loop(line)
                         else:
                             start_index = line.index("(")
                             end_index = line.index(")")
-                            line = 'if '+line[start_index:end_index]+'):{'
+                            line = "if " + line[start_index:end_index] + "):{"
                         lines[index] = line
                         bracket_index = line.index("{")
                         (
@@ -539,22 +557,30 @@ def js_to_python(
                 line = line.replace("= new", "=")
                 line = line.replace("exports.", "")
                 line = line.replace("Map.", f"{Map}.")
-                line = line.replace("Export.table.toDrive", "geemap.ee_export_vector_to_drive")
-                line = line.replace("Export.table.toAsset", "geemap.ee_export_vector_to_asset")
-                line = line.replace("Export.image.toAsset", "geemap.ee_export_image_to_asset")
-                line = line.replace("Export.video.toDrive", "geemap.ee_export_video_to_drive")
+                line = line.replace(
+                    "Export.table.toDrive", "geemap.ee_export_vector_to_drive"
+                )
+                line = line.replace(
+                    "Export.table.toAsset", "geemap.ee_export_vector_to_asset"
+                )
+                line = line.replace(
+                    "Export.image.toAsset", "geemap.ee_export_image_to_asset"
+                )
+                line = line.replace(
+                    "Export.video.toDrive", "geemap.ee_export_video_to_drive"
+                )
                 line = line.replace("||", "or")
-                line = line.replace('\****', '#')
-                line = line.replace('def =', '_def =')
-                line = line.replace(', def, ', ', _def, ')
-                line = line.replace('(def, ', '(_def, ')
-                line = line.replace(', def)', ', _def)')
-                line = line.replace('===', '==')
-                
+                line = line.replace("\****", "#")
+                line = line.replace("def =", "_def =")
+                line = line.replace(", def, ", ", _def, ")
+                line = line.replace("(def, ", "(_def, ")
+                line = line.replace(", def)", ", _def)")
+                line = line.replace("===", "==")
+
                 # Replaces all javascript operators with python operators
-                if '!' in line:
+                if "!" in line:
                     try:
-                        if (line.replace(" ", ""))[line.find('!') + 1] != '=':
+                        if (line.replace(" ", ""))[line.find("!") + 1] != "=":
                             line = line.replace("!", "not ")
                     except:
                         print("continue...")
@@ -562,33 +588,33 @@ def js_to_python(
                 line = line.rstrip()
 
                 # If the function concat is used, replace it with python's concatenation
-                if 'concat' in line:
-                    line = line.replace('.concat(', '+')
-                    line = line.replace(',', '+')
-                    line = line.replace(')', '')
+                if "concat" in line:
+                    line = line.replace(".concat(", "+")
+                    line = line.replace(",", "+")
+                    line = line.replace(")", "")
 
                 # Checks if an equal sign is at the end of a line. If so, add backslashes
                 if shouldCheckForEmptyLines:
-                    if line.strip() == '' or '#' in line:
-                        if line.strip().endswith('['):
-                            line = '['
+                    if line.strip() == "" or "#" in line:
+                        if line.strip().endswith("["):
+                            line = "["
                             shouldCheckForEmptyLines = False
                         else:
-                            line = '\\'
+                            line = "\\"
                     else:
                         shouldCheckForEmptyLines = False
-                
-                if line.strip().endswith('='):
-                    line = line + ' \\'
+
+                if line.strip().endswith("="):
+                    line = line + " \\"
                     shouldCheckForEmptyLines = True
 
                 # Adds getInfo at the end of print statements involving maps
                 endOfPrintReplaced = False
-                
-                if ('print(' in line and '=' not in line) or checkNextLineForPrint:
+
+                if ("print(" in line and "=" not in line) or checkNextLineForPrint:
                     for i in range(len(line) - 1):
-                        if line[len(line) - i - 1] == ')':
-                            line = line[:len(line) - i - 1] + '.getInfo())'
+                        if line[len(line) - i - 1] == ")":
+                            line = line[: len(line) - i - 1] + ".getInfo())"
                             print(line)
                             endOfPrintReplaced = True
                             break
@@ -596,29 +622,37 @@ def js_to_python(
                         checkNextLineForPrint = False
                     else:
                         checkNextLineForPrint = True
-                    
+
                 # Removes potential commas after imports. Causes tuple type errors
                 if line.endswith(","):
-                    if '=' in lines[index + 1] and not lines[index + 1].strip().startswith("'"):
+                    if "=" in lines[index + 1] and not lines[
+                        index + 1
+                    ].strip().startswith("'"):
                         line = line[:-1]
 
                 # Changes object argument to individual parameters
-                if line.strip().endswith("({") and not 'ee.Dictionary' in line and not '.set(' in line and '.addLayer' not in line and 'cast' not in line:
+                if (
+                    line.strip().endswith("({")
+                    and not "ee.Dictionary" in line
+                    and not ".set(" in line
+                    and ".addLayer" not in line
+                    and "cast" not in line
+                ):
                     line = line.rstrip()[:-1]
                     numIncorrectParameters = numIncorrectParameters + 1
 
                 if numIncorrectParameters > 0:
                     if line.strip().startswith("})"):
-                        line = line.replace('})', ')')
+                        line = line.replace("})", ")")
                         numIncorrectParameters = numIncorrectParameters - 1
                     else:
                         if currentDictionaryScopeDepth < 1:
                             line = line.replace(":", " =")
 
-                if '= {' in line and '({' not in line:
+                if "= {" in line and "({" not in line:
                     currentDictionaryScopeDepth += 1
 
-                if '}' in line and currentDictionaryScopeDepth > 0:
+                if "}" in line and currentDictionaryScopeDepth > 0:
                     currentDictionaryScopeDepth -= 1
 
                 # if ".style(" in line and ".style(**" not in line:
@@ -648,18 +682,23 @@ def js_to_python(
                 ):
                     line = ""
 
-                if "#" in line and not line.strip().startswith("#") and not line[line.index("#") - 1] == "'":
+                if (
+                    "#" in line
+                    and not line.strip().startswith("#")
+                    and not line[line.index("#") - 1] == "'"
+                ):
                     line = line[: line.index("#")]
 
                 if line.lstrip().startswith("."):
-                    if lines[index - 1].strip().endswith('\\') and lines[index - 1].strip().startswith('#'):
-                        lines[index - 1] = '\\'
+                    if lines[index - 1].strip().endswith("\\") and lines[
+                        index - 1
+                    ].strip().startswith("#"):
+                        lines[index - 1] = "\\"
                     if "#" in line:
                         line = line[: line.index("#")]
                     output = output.rstrip() + " " + "\\" + "\n" + line + "\n"
                 else:
                     output += line + "\n"
-
 
     if show_map:
         output += "Map"
@@ -762,7 +801,12 @@ def js_snippet_to_py(
 
 
 def js_to_python_dir(
-    in_dir, out_dir=None, use_qgis=True, github_repo=None, import_geemap=False, Map="Map"
+    in_dir,
+    out_dir=None,
+    use_qgis=True,
+    github_repo=None,
+    import_geemap=False,
+    Map="Map",
 ):
     """Converts all Earth Engine JavaScripts in a folder recursively to Python scripts.
 
