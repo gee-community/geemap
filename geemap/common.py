@@ -16190,11 +16190,6 @@ def google_map_tiles(
     Returns:
         TileProvider: A TileProvider object with the generated map, or None if the map could not be generated.
     """
-    try:
-        import googlemaps
-    except ImportError:
-        install_package("googlemaps")
-        import googlemaps
 
     from xyzservices import TileProvider
 
@@ -16211,8 +16206,6 @@ def google_map_tiles(
         raise ValueError(
             "API key is required to access Google Maps API. To get an API key and enable Map Tiles API, visit https://developers.google.com/maps/get-started#create-project"
         )
-
-    gmaps = googlemaps.Client(key=api_key)
 
     map_type = map_type.lower()
     if map_type not in [
