@@ -16254,9 +16254,9 @@ def google_map_tiles(
         gmap_provider = TileProvider(
             {
                 "url": f"https://tile.googleapis.com/v1/2dtiles/{{z}}/{{x}}/{{y}}?session={res['session']}&key={{accessToken}}",
-                "attribution": "© Google Maps",
+                "attribution": f"© Google {map_type.capitalize()}",
                 "accessToken": api_key,
-                "name": "Google Maps",
+                "name": f"Google {map_type.capitalize()}",
                 "ext": res["imageFormat"],
                 "tileSize": res["tileWidth"],
             }
