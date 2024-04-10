@@ -16182,10 +16182,10 @@ def google_map_tiles(
         ValueError: If the map_type is not one of the allowed types.
 
     Example:
-        >>> import geemap
-        >>> m = geemap.Map()
-        >>> basemap = google_map_tiles(map_type='roadmap', language="en-Us", region="US", scale="scaleFactor2x", highDpi=True)
-        >>> m.add_basemap(basemap)
+        import geemap
+        m = geemap.Map()
+        basemap = geemap.google_map_tiles(map_type='roadmap', language="en-Us", region="US", scale="scaleFactor2x", highDpi=True)
+        m.add_basemap(basemap)
 
     Returns:
         TileProvider: A TileProvider object with the generated map, or None if the map could not be generated.
@@ -16207,7 +16207,8 @@ def google_map_tiles(
             "API key is required to access Google Maps API. To get an API key and enable Map Tiles API, visit https://developers.google.com/maps/get-started#create-project"
         )
 
-    map_type = map_type.lower()
+    map_type = map_type.lower().replace("google.", "").replace("google", "").strip()
+
     if map_type not in [
         "roadmap",
         "satellite",
