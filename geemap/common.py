@@ -16221,8 +16221,10 @@ def google_map_tiles(
             "mapType must be one of 'roadmap', 'satellite', 'terrain', 'hybrid', 'traffic', 'streetview'"
         )
 
+    mapType = map_type
+
     if map_type == "hybrid":
-        map_type = "satellite"
+        mapType = "satellite"
         if "layerTypes" not in kwargs:
             kwargs["layerTypes"] = ["layerRoadmap"]
 
@@ -16231,16 +16233,16 @@ def google_map_tiles(
             kwargs["layerTypes"] = ["layerRoadmap"]
 
     if map_type == "traffic":
-        map_type = "roadmap"
+        mapType = "roadmap"
         if "layerTypes" not in kwargs:
             kwargs["layerTypes"] = ["layerTraffic"]
 
     if map_type == "streetview":
-        map_type = "roadmap"
+        mapType = "roadmap"
         if "layerTypes" not in kwargs:
             kwargs["layerTypes"] = ["layerStreetview"]
 
-    kwargs["mapType"] = map_type
+    kwargs["mapType"] = mapType
     kwargs["language"] = language
     kwargs["region"] = region
 
@@ -16257,7 +16259,7 @@ def google_map_tiles(
                 "url": f"https://tile.googleapis.com/v1/2dtiles/{{z}}/{{x}}/{{y}}?session={res['session']}&key={{accessToken}}",
                 "attribution": f"© Google {map_type.capitalize()}",
                 "accessToken": api_key,
-                "name": f"Google {map_type.capitalize()}",
+                "name": f"Google.{map_type.capitalize()}",
                 "ext": res["imageFormat"],
                 "tileSize": res["tileWidth"],
             }

@@ -23,36 +23,67 @@ import requests
 import folium
 import ipyleaflet
 import xyzservices
-from .common import check_package, planet_tiles
+from .common import check_package, planet_tiles, in_colab_shell, google_map_tiles
 
-XYZ_TILES = {
-    "OpenStreetMap": {
-        "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "attribution": "OpenStreetMap",
-        "name": "OpenStreetMap",
-    },
-    "ROADMAP": {
-        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
-        "attribution": "Esri",
-        "name": "Esri.WorldStreetMap",
-    },
-    "SATELLITE": {
-        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        "attribution": "Esri",
-        "name": "Esri.WorldImagery",
-    },
-    "TERRAIN": {
-        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-        "attribution": "Esri",
-        "name": "Esri.WorldTopoMap",
-    },
-    "HYBRID": {
-        "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        "attribution": "Esri",
-        "name": "Esri.WorldImagery",
-    },
-}
+if in_colab_shell():
+    from google.colab import userdata
 
+    MAPS_API_KEY = userdata.get("MAPS_API_KEY")
+else:
+    MAPS_API_KEY = os.environ.get("MAPS_API_KEY")
+
+if MAPS_API_KEY is None:
+
+    XYZ_TILES = {
+        "OpenStreetMap": {
+            "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "attribution": "OpenStreetMap",
+            "name": "OpenStreetMap",
+        },
+        "ROADMAP": {
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+            "attribution": "Esri",
+            "name": "Esri.WorldStreetMap",
+        },
+        "SATELLITE": {
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            "attribution": "Esri",
+            "name": "Esri.WorldImagery",
+        },
+        "TERRAIN": {
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+            "attribution": "Esri",
+            "name": "Esri.WorldTopoMap",
+        },
+        "HYBRID": {
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            "attribution": "Esri",
+            "name": "Esri.WorldImagery",
+        },
+    }
+
+else:
+    XYZ_TILES = {
+        "OpenStreetMap": {
+            "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "attribution": "OpenStreetMap",
+            "name": "OpenStreetMap",
+        },
+    }
+    for gmap in [
+        "roadmap",
+        "satellite",
+        "terrain",
+        "hybrid",
+        "traffic",
+        "streetview",
+    ]:
+        provider = google_map_tiles(gmap, api_key=MAPS_API_KEY)
+        XYZ_TILES[provider.name] = {
+            "url": provider.build_url(),
+            "attribution": provider.attribution,
+            "name": provider.name,
+        }
 
 # Custom WMS tile services.
 WMS_TILES = {
