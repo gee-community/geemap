@@ -926,6 +926,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.conversion.remove_all_indentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      remove_all_indentation()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.conversion.remove_qgis_import" class="md-nav__link">
     <span class="md-ellipsis">
       remove_qgis_import()
@@ -5009,6 +5018,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.conversion.remove_all_indentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      remove_all_indentation()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.conversion.remove_qgis_import" class="md-nav__link">
     <span class="md-ellipsis">
       remove_qgis_import()
@@ -5170,44 +5188,76 @@
 <span class="sd">        list: Output JavaScript with map function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">output_lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">currentNumOfNestedFuncs</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">input_lines</span><span class="p">):</span>
-        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;.map(function&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;.map (function&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-            <span class="n">bracket_index</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span>
-            <span class="n">matching_line_index</span><span class="p">,</span> <span class="n">matching_char_index</span> <span class="o">=</span> <span class="n">find_matching_bracket</span><span class="p">(</span>
-                <span class="n">input_lines</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">bracket_index</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.map(&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;function(&quot;</span><span class="p">)</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.map(function(&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">continue</span>
 
-            <span class="n">func_start_index</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;function&quot;</span><span class="p">)</span>
-            <span class="n">func_name</span> <span class="o">=</span> <span class="s2">&quot;func_&quot;</span> <span class="o">+</span> <span class="n">random_string</span><span class="p">()</span>
-            <span class="n">func_header</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">func_start_index</span><span class="p">:]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-                <span class="s2">&quot;function&quot;</span><span class="p">,</span> <span class="s2">&quot;function &quot;</span> <span class="o">+</span> <span class="n">func_name</span>
-            <span class="p">)</span>
-            <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func_header</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="s2">&quot;.map(function&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="s2">&quot;returnfunction&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="s2">&quot;function(&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">bracket_index</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span>
+                <span class="n">matching_line_index</span><span class="p">,</span> <span class="n">matching_char_index</span> <span class="o">=</span> <span class="n">find_matching_bracket</span><span class="p">(</span>
+                    <span class="n">input_lines</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">bracket_index</span>
+                <span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">sub_index</span><span class="p">,</span> <span class="n">tmp_line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-                <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">matching_line_index</span><span class="p">]</span>
-            <span class="p">):</span>
-                <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_line</span><span class="p">)</span>
-                <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">func_start_index</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;function&quot;</span><span class="p">)</span>
+                <span class="n">func_name</span> <span class="o">=</span> <span class="s2">&quot;func_&quot;</span> <span class="o">+</span> <span class="n">random_string</span><span class="p">()</span>
+                <span class="n">func_header</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">func_start_index</span><span class="p">:]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="s2">&quot;function&quot;</span><span class="p">,</span> <span class="s2">&quot;function &quot;</span> <span class="o">+</span> <span class="n">func_name</span>
+                <span class="p">)</span>
+                <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func_header</span><span class="p">)</span>
 
-            <span class="n">header_line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="n">func_start_index</span><span class="p">]</span> <span class="o">+</span> <span class="n">func_name</span>
-            <span class="n">header_line</span> <span class="o">=</span> <span class="n">header_line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+                <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
 
-            <span class="n">func_footer</span> <span class="o">=</span> <span class="n">input_lines</span><span class="p">[</span><span class="n">matching_line_index</span><span class="p">][:</span> <span class="n">matching_char_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func_footer</span><span class="p">)</span>
+                <span class="n">new_lines</span> <span class="o">=</span> <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">matching_line_index</span><span class="p">]</span>
 
-            <span class="n">footer_line</span> <span class="o">=</span> <span class="n">input_lines</span><span class="p">[</span><span class="n">matching_line_index</span><span class="p">][</span>
-                <span class="n">matching_char_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span>
-            <span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">footer_line</span> <span class="o">==</span> <span class="s2">&quot;)&quot;</span> <span class="ow">or</span> <span class="n">footer_line</span> <span class="o">==</span> <span class="s2">&quot;);&quot;</span><span class="p">:</span>
-                <span class="n">header_line</span> <span class="o">=</span> <span class="n">header_line</span> <span class="o">+</span> <span class="n">footer_line</span>
-                <span class="n">footer_line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">new_lines</span> <span class="o">=</span> <span class="n">check_map_functions</span><span class="p">(</span><span class="n">new_lines</span><span class="p">)</span>
 
-            <span class="n">input_lines</span><span class="p">[</span><span class="n">matching_line_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">footer_line</span>
+                <span class="k">for</span> <span class="n">sub_index</span><span class="p">,</span> <span class="n">tmp_line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_lines</span><span class="p">):</span>
+                    <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;    &quot;</span> <span class="o">*</span> <span class="n">currentNumOfNestedFuncs</span><span class="p">)</span> <span class="o">+</span> <span class="n">tmp_line</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="s2">&quot;{&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span><span class="p">:</span>
+                        <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span><span class="p">:</span>
+                        <span class="n">currentNumOfNestedFuncs</span> <span class="o">-=</span> <span class="mi">1</span>
+                    <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-            <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">header_line</span><span class="p">)</span>
-            <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">footer_line</span><span class="p">)</span>
+                <span class="n">currentNumOfNestedFuncs</span> <span class="o">-=</span> <span class="mi">1</span>
+
+                <span class="n">header_line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="n">func_start_index</span><span class="p">]</span> <span class="o">+</span> <span class="n">func_name</span>
+                <span class="n">header_line</span> <span class="o">=</span> <span class="n">header_line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+
+                <span class="n">func_footer</span> <span class="o">=</span> <span class="n">input_lines</span><span class="p">[</span><span class="n">matching_line_index</span><span class="p">][</span>
+                    <span class="p">:</span> <span class="n">matching_char_index</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="p">]</span>
+                <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func_footer</span><span class="p">)</span>
+
+                <span class="n">footer_line</span> <span class="o">=</span> <span class="n">input_lines</span><span class="p">[</span><span class="n">matching_line_index</span><span class="p">][</span>
+                    <span class="n">matching_char_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span>
+                <span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">footer_line</span> <span class="o">==</span> <span class="s2">&quot;)&quot;</span> <span class="ow">or</span> <span class="n">footer_line</span> <span class="o">==</span> <span class="s2">&quot;);&quot;</span><span class="p">:</span>
+                    <span class="n">header_line</span> <span class="o">=</span> <span class="n">header_line</span> <span class="o">+</span> <span class="n">footer_line</span>
+                    <span class="n">footer_line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+                <span class="n">input_lines</span><span class="p">[</span><span class="n">matching_line_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">footer_line</span>
+
+                <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">header_line</span><span class="p">)</span>
+                <span class="c1"># output_lines.append(footer_line)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;An error occurred: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. The closing curly bracket could not be found in Line </span><span class="si">{</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">. Please reformat the function definition and make sure that both the opening and closing curly brackets appear on the same line as the function keyword. &quot;</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 
@@ -6037,7 +6087,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 <h2 id="geemap.conversion.js_snippet_to_py" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">js_snippet_to_py</span><span class="p">(</span><span class="n">in_js_snippet</span><span class="p">,</span> <span class="n">add_new_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_ee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">js_snippet_to_py</span><span class="p">(</span><span class="n">in_js_snippet</span><span class="p">,</span> <span class="n">add_new_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_ee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;Map&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.js_snippet_to_py" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6091,7 +6141,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <td><code>Map</code></td>
         <td><code>str</code></td>
         <td><p>The name of the map variable. Defaults to "m".</p></td>
-        <td><code>&#39;m&#39;</code></td>
+        <td><code>&#39;Map&#39;</code></td>
       </tr>
   </tbody>
 </table>
@@ -6118,7 +6168,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="n">import_ee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
+    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;Map&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an Earth Engine JavaScript snippet wrapped in triple quotes to Python directly on a Jupyter notebook.</span>
 
@@ -6152,9 +6202,9 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <span class="n">out_lines</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">import_ee</span><span class="p">:</span>
             <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;import ee</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="c1"># if import_geemap:</span>
-        <span class="c1">#     out_lines.append(&quot;import geemap\n\n&quot;)</span>
-        <span class="c1">#     out_lines.append(f&quot;{Map} = geemap.Map()\n&quot;)</span>
+        <span class="k">if</span> <span class="n">import_geemap</span><span class="p">:</span>
+            <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;import geemap</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Map</span><span class="si">}</span><span class="s2"> = geemap.Map()</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_py</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
@@ -6168,9 +6218,6 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
                         <span class="k">continue</span>
                     <span class="k">elif</span> <span class="s2">&quot;.style(&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;.style(**&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
                         <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.style(&quot;</span><span class="p">,</span> <span class="s2">&quot;.style(**&quot;</span><span class="p">)</span>
-                        <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="s2">&quot;({&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;({&quot;</span><span class="p">,</span> <span class="s2">&quot;(**{&quot;</span><span class="p">)</span>
                         <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
@@ -6201,7 +6248,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 <h2 id="geemap.conversion.js_to_python" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">js_to_python</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">js_to_python</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;Map&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.js_to_python" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6236,7 +6283,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
+    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;Map&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an Earth Engine JavaScript to Python script.</span>
 
@@ -6309,6 +6356,15 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
 
+            <span class="n">numIncorrectParameters</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">checkNextLineForPrint</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">shouldCheckForEmptyLines</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">currentDictionaryScopeDepth</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">currentNumOfNestedFuncs</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># We need to remove all spaces from the beginning of each line to accurately format the indentation</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">remove_all_indentation</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
             <span class="c1"># print(&#39;Processing {}&#39;.format(in_file))</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">check_map_functions</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
 
@@ -6326,28 +6382,47 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
                 <span class="p">):</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">bracket_index</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span>
+
+                        <span class="p">(</span>
+                            <span class="n">matching_line_index</span><span class="p">,</span>
+                            <span class="n">matching_char_index</span><span class="p">,</span>
+                        <span class="p">)</span> <span class="o">=</span> <span class="n">find_matching_bracket</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">bracket_index</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="s2">&quot;func_&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                            <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                            <span class="k">for</span> <span class="n">sub_index</span><span class="p">,</span> <span class="n">tmp_line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                                <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">matching_line_index</span><span class="p">]</span>
+                            <span class="p">):</span>
+                                <span class="c1"># lines[sub_index] = (&#39;    &#39; * currentNumOfNestedFuncs) + tmp_line</span>
+                                <span class="k">if</span> <span class="s2">&quot;{&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span> <span class="ow">and</span> <span class="s2">&quot;function&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                                    <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span> <span class="ow">and</span> <span class="s2">&quot;function&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                                    <span class="n">currentNumOfNestedFuncs</span> <span class="o">-=</span> <span class="mi">1</span>
+                                <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                                    <span class="s2">&quot;    &quot;</span> <span class="o">*</span> <span class="n">currentNumOfNestedFuncs</span>
+                                <span class="p">)</span> <span class="o">+</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span>
+
+                            <span class="n">currentNumOfNestedFuncs</span> <span class="o">-=</span> <span class="mi">1</span>
+
+                        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="n">bracket_index</span><span class="p">]</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="n">bracket_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+                        <span class="k">if</span> <span class="n">matching_line_index</span> <span class="o">==</span> <span class="n">index</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="n">line</span><span class="p">[:</span><span class="n">matching_char_index</span><span class="p">]</span>
+                                <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="n">matching_char_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">tmp_line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">matching_line_index</span><span class="p">]</span>
+                            <span class="n">lines</span><span class="p">[</span><span class="n">matching_line_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="n">tmp_line</span><span class="p">[:</span><span class="n">matching_char_index</span><span class="p">]</span>
+                                <span class="o">+</span> <span class="n">tmp_line</span><span class="p">[</span><span class="n">matching_char_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+                            <span class="p">)</span>
+
                     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                         <span class="nb">print</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;An error occurred when processing </span><span class="si">{</span><span class="n">in_file</span><span class="si">}</span><span class="s2">. The closing curly bracket could not be found in Line </span><span class="si">{</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">. Please reformat the function definition and make sure that both the opening and closing curly brackets appear on the same line as the function keyword. &quot;</span>
                         <span class="p">)</span>
                         <span class="k">return</span>
-
-                    <span class="p">(</span>
-                        <span class="n">matching_line_index</span><span class="p">,</span>
-                        <span class="n">matching_char_index</span><span class="p">,</span>
-                    <span class="p">)</span> <span class="o">=</span> <span class="n">find_matching_bracket</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">bracket_index</span><span class="p">)</span>
-
-                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="n">bracket_index</span><span class="p">]</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="n">bracket_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
-                    <span class="k">if</span> <span class="n">matching_line_index</span> <span class="o">==</span> <span class="n">index</span><span class="p">:</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="p">(</span>
-                            <span class="n">line</span><span class="p">[:</span><span class="n">matching_char_index</span><span class="p">]</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="n">matching_char_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
-                        <span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">tmp_line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">matching_line_index</span><span class="p">]</span>
-                        <span class="n">lines</span><span class="p">[</span><span class="n">matching_line_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                            <span class="n">tmp_line</span><span class="p">[:</span><span class="n">matching_char_index</span><span class="p">]</span>
-                            <span class="o">+</span> <span class="n">tmp_line</span><span class="p">[</span><span class="n">matching_char_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
-                        <span class="p">)</span>
 
                     <span class="n">line</span> <span class="o">=</span> <span class="p">(</span>
                         <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; = function&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -6369,16 +6444,42 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
                             <span class="o">+</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                             <span class="o">+</span> <span class="s2">&quot;:&quot;</span>
                         <span class="p">)</span>
-                <span class="k">elif</span> <span class="s2">&quot;{&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="s2">&quot;{&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;({&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                     <span class="n">bracket_index</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span>
                     <span class="p">(</span>
                         <span class="n">matching_line_index</span><span class="p">,</span>
                         <span class="n">matching_char_index</span><span class="p">,</span>
                     <span class="p">)</span> <span class="o">=</span> <span class="n">find_matching_bracket</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">bracket_index</span><span class="p">)</span>
+
+                    <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                    <span class="k">for</span> <span class="n">sub_index</span><span class="p">,</span> <span class="n">tmp_line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                        <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">matching_line_index</span><span class="p">]</span>
+                    <span class="p">):</span>
+                        <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="s2">&quot;    &quot;</span> <span class="o">*</span> <span class="n">currentNumOfNestedFuncs</span>
+                        <span class="p">)</span> <span class="o">+</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="s2">&quot;{&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span> <span class="ow">and</span> <span class="s2">&quot;if&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;for&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                            <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span> <span class="ow">and</span> <span class="s2">&quot;if&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;for&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                            <span class="n">currentNumOfNestedFuncs</span> <span class="o">-=</span> <span class="mi">1</span>
+
+                    <span class="n">currentNumOfNestedFuncs</span> <span class="o">-=</span> <span class="mi">1</span>
+
                     <span class="k">if</span> <span class="p">(</span><span class="n">matching_line_index</span> <span class="o">==</span> <span class="n">index</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
                         <span class="k">pass</span>
-                    <span class="k">elif</span> <span class="p">(</span><span class="s2">&quot;for (&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;for(&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="n">convert_for_loop</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="p">(</span>
+                        <span class="p">(</span><span class="s2">&quot;for (&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span>
+                        <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;for(&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span>
+                        <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;if (&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span>
+                        <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;if(&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span>
+                    <span class="p">):</span>
+                        <span class="k">if</span> <span class="s2">&quot;if&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="n">convert_for_loop</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">start_index</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)</span>
+                            <span class="n">end_index</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot;if &quot;</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">end_index</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;):{&quot;</span>
                         <span class="n">lines</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span>
                         <span class="n">bracket_index</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span>
                         <span class="p">(</span>
@@ -6407,12 +6508,111 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;visualize({&quot;</span><span class="p">,</span> <span class="s2">&quot;visualize(**{&quot;</span><span class="p">)</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Math.PI&quot;</span><span class="p">,</span> <span class="s2">&quot;math.pi&quot;</span><span class="p">)</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Math.&quot;</span><span class="p">,</span> <span class="s2">&quot;math.&quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;parseInt&quot;</span><span class="p">,</span> <span class="s2">&quot;int&quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;NotNull&quot;</span><span class="p">,</span> <span class="s2">&quot;notNull&quot;</span><span class="p">)</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;= new&quot;</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;exports.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Map.&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Map</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="s2">&quot;Export.table.toDrive&quot;</span><span class="p">,</span> <span class="s2">&quot;geemap.ee_export_vector_to_drive&quot;</span>
+                <span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="s2">&quot;Export.table.toAsset&quot;</span><span class="p">,</span> <span class="s2">&quot;geemap.ee_export_vector_to_asset&quot;</span>
+                <span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="s2">&quot;Export.image.toAsset&quot;</span><span class="p">,</span> <span class="s2">&quot;geemap.ee_export_image_to_asset&quot;</span>
+                <span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                    <span class="s2">&quot;Export.video.toDrive&quot;</span><span class="p">,</span> <span class="s2">&quot;geemap.ee_export_video_to_drive&quot;</span>
+                <span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;||&quot;</span><span class="p">,</span> <span class="s2">&quot;or&quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;\****&quot;</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;def =&quot;</span><span class="p">,</span> <span class="s2">&quot;_def =&quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;, def, &quot;</span><span class="p">,</span> <span class="s2">&quot;, _def, &quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;(def, &quot;</span><span class="p">,</span> <span class="s2">&quot;(_def, &quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;, def)&quot;</span><span class="p">,</span> <span class="s2">&quot;, _def)&quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;===&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Replaces all javascript operators with python operators</span>
+                <span class="k">if</span> <span class="s2">&quot;!&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))[</span><span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;!&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;=&quot;</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;!&quot;</span><span class="p">,</span> <span class="s2">&quot;not &quot;</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;continue...&quot;</span><span class="p">)</span>
+
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
 
-                <span class="k">if</span> <span class="s2">&quot;.style(&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;.style(**&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.style(&quot;</span><span class="p">,</span> <span class="s2">&quot;.style(**&quot;</span><span class="p">)</span>
+                <span class="c1"># If the function concat is used, replace it with python&#39;s concatenation</span>
+                <span class="k">if</span> <span class="s2">&quot;concat&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.concat(&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Checks if an equal sign is at the end of a line. If so, add backslashes</span>
+                <span class="k">if</span> <span class="n">shouldCheckForEmptyLines</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">):</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot;[&quot;</span>
+                            <span class="n">shouldCheckForEmptyLines</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">shouldCheckForEmptyLines</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\\</span><span class="s2">&quot;</span>
+                    <span class="n">shouldCheckForEmptyLines</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="c1"># Adds getInfo at the end of print statements involving maps</span>
+                <span class="n">endOfPrintReplaced</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;print(&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;=&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span> <span class="ow">or</span> <span class="n">checkNextLineForPrint</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;)&quot;</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.getInfo())&quot;</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                            <span class="n">endOfPrintReplaced</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">break</span>
+                    <span class="k">if</span> <span class="n">endOfPrintReplaced</span><span class="p">:</span>
+                        <span class="n">checkNextLineForPrint</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">checkNextLineForPrint</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="c1"># Removes potential commas after imports. Causes tuple type errors</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="s2">&quot;=&quot;</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span>
+                        <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">):</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="c1"># Changes object argument to individual parameters</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;({&quot;</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="ow">not</span> <span class="s2">&quot;ee.Dictionary&quot;</span> <span class="ow">in</span> <span class="n">line</span>
+                    <span class="ow">and</span> <span class="ow">not</span> <span class="s2">&quot;.set(&quot;</span> <span class="ow">in</span> <span class="n">line</span>
+                    <span class="ow">and</span> <span class="s2">&quot;.addLayer&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span>
+                    <span class="ow">and</span> <span class="s2">&quot;cast&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span>
+                <span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">numIncorrectParameters</span> <span class="o">=</span> <span class="n">numIncorrectParameters</span> <span class="o">+</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">numIncorrectParameters</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;})&quot;</span><span class="p">):</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;})&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span>
+                        <span class="n">numIncorrectParameters</span> <span class="o">=</span> <span class="n">numIncorrectParameters</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">currentDictionaryScopeDepth</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot; =&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="s2">&quot;= {&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;({&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">currentDictionaryScopeDepth</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">currentDictionaryScopeDepth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">currentDictionaryScopeDepth</span> <span class="o">-=</span> <span class="mi">1</span>
+
+                <span class="c1"># if &quot;.style(&quot; in line and &quot;.style(**&quot; not in line:</span>
+                <span class="c1">#     line = line.replace(&quot;.style(&quot;, &quot;.style(**&quot;)</span>
 
                 <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">):</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\\</span><span class="s2">&quot;</span>
@@ -6427,6 +6627,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
                     <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">))</span>
                     <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;def&quot;</span><span class="p">))</span>
                     <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))</span>
+                    <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;if&quot;</span><span class="p">))</span>
                 <span class="p">):</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="n">format_params</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 
@@ -6437,7 +6638,18 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
                 <span class="p">):</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">line</span>
+                    <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&#39;&quot;</span>
+                <span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)]</span>
+
                 <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span>
+                        <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                        <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span>
                     <span class="k">if</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                         <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)]</span>
                     <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">line</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -6445,13 +6657,13 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
                     <span class="n">output</span> <span class="o">+=</span> <span class="n">line</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="k">if</span> <span class="n">show_map</span><span class="p">:</span>
-        <span class="n">output</span> <span class="o">+=</span> <span class="n">Map</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;Map&quot;</span>
 
     <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_dir</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">output</span>
@@ -6468,7 +6680,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 <h2 id="geemap.conversion.js_to_python_dir" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">js_to_python_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">js_to_python_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;Map&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.js_to_python_dir" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6492,7 +6704,12 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <details class="quote">
           <summary>Source code in <code>geemap/conversion.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">js_to_python_dir</span><span class="p">(</span>
-    <span class="n">in_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span>
+    <span class="n">in_dir</span><span class="p">,</span>
+    <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;Map&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts all Earth Engine JavaScripts in a folder recursively to Python scripts.</span>
 
@@ -6545,7 +6762,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 <h2 id="geemap.conversion.py_to_ipynb" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">py_to_ipynb</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">template_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">py_to_ipynb</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">template_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;Map&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.py_to_ipynb" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6599,7 +6816,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <td><code>Map</code></td>
         <td><code>str</code></td>
         <td><p>The name of the map variable. Defaults to "m".</p></td>
-        <td><code>&#39;m&#39;</code></td>
+        <td><code>&#39;Map&#39;</code></td>
       </tr>
   </tbody>
 </table>
@@ -6611,7 +6828,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
+    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;Map&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts Earth Engine Python script to Jupyter notebook.</span>
 
@@ -6672,7 +6889,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">out_py_file</span><span class="p">)):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">out_py_file</span><span class="p">))</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_py_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_py_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">out_text</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -6702,7 +6919,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 <h2 id="geemap.conversion.py_to_ipynb_dir" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">py_to_ipynb_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">template_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">py_to_ipynb_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">template_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;Map&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.py_to_ipynb_dir" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6756,7 +6973,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <td><code>Map</code></td>
         <td><code>str</code></td>
         <td><p>The name of the map variable. Defaults to "m".</p></td>
-        <td><code>&#39;m&#39;</code></td>
+        <td><code>&#39;Map&#39;</code></td>
       </tr>
   </tbody>
 </table>
@@ -6768,7 +6985,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
+    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;Map&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts Earth Engine Python scripts in a folder recursively to Jupyter notebooks.</span>
 
@@ -6787,10 +7004,12 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
     <span class="n">qgis_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*_geemap.py&quot;</span><span class="p">))</span>
     <span class="n">py_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.py&quot;</span><span class="p">))</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">qgis_files</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">py_files</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">files</span> <span class="o">=</span> <span class="n">qgis_files</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">files</span> <span class="o">=</span> <span class="n">py_files</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">qgis_files</span>
+
+    <span class="c1"># if len(qgis_files) == len(py_files) / 2:</span>
+    <span class="c1">#     files = qgis_files</span>
+    <span class="c1"># else:</span>
+    <span class="c1">#     files = py_files</span>
 
     <span class="k">if</span> <span class="n">out_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">out_dir</span> <span class="o">=</span> <span class="n">in_dir</span>
@@ -6821,8 +7040,79 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 
 
 
+<h2 id="geemap.conversion.remove_all_indentation" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">remove_all_indentation</span><span class="p">(</span><span class="n">input_lines</span><span class="p">)</span></code>
+
+
+<a href="#geemap.conversion.remove_all_indentation" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Removes all indentation for reformatting according to python's indentation rules</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>input_lines</code></td>
+        <td><code>list</code></td>
+        <td><p>List of Earth Engine JavaScrips</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>list</code></td>
+      <td><p>Output JavaScript with indentation removed</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/conversion.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">remove_all_indentation</span><span class="p">(</span><span class="n">input_lines</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes all indentation for reformatting according to python&#39;s indentation rules</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_lines (list): List of Earth Engine JavaScrips</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: Output JavaScript with indentation removed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">output_lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">input_lines</span><span class="p">):</span>
+        <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">output_lines</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
 <h2 id="geemap.conversion.remove_qgis_import" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s1">&#39;Map&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.conversion.remove_qgis_import" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6852,7 +7142,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
         <td><code>Map</code></td>
         <td><code>str</code></td>
         <td><p>The name of the map variable. Defaults to "m".</p></td>
-        <td><code>&#39;m&#39;</code></td>
+        <td><code>&#39;Map&#39;</code></td>
       </tr>
   </tbody>
 </table>
@@ -6873,7 +7163,7 @@ For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)</p>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/conversion.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;Map&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes &#39;from ee_plugin import Map&#39; from an Earth Engine Python script.</span>
 
 <span class="sd">    Args:</span>
