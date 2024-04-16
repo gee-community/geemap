@@ -911,6 +911,7 @@ class SearchDataGUI(widgets.HBox):
                     import_ee=False,
                     import_geemap=False,
                     show_map=False,
+                    Map=m._var_name,
                 )
 
             except Exception as e:
@@ -936,10 +937,10 @@ class SearchDataGUI(widgets.HBox):
                     id_ = dataset["id"]
                     line1 = "{} = ee.{}('{}')".format(dataset_uid, datatype, id_)
                     action = {
-                        "image_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                        "image": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                        "table": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
-                        "table_collection": f"\nMap.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "image_collection": f"\n{m._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "image": f"\n{m._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "table": f"\n{m._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
+                        "table_collection": f"\n{m._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
                     }
                     line2 = action[dataset["type"]]
                     code = [line1, line2]
@@ -1817,6 +1818,7 @@ def convert_js2py(m):
                     import_ee=False,
                     import_geemap=False,
                     show_map=False,
+                    Map=m._var_name,
                 )
                 if len(out_lines) > 0 and len(out_lines[0].strip()) == 0:
                     out_lines = out_lines[1:]
