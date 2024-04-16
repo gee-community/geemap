@@ -229,7 +229,7 @@ def remove_all_indentation(input_lines):
         list: Output JavaScript with indentation removed
     """
     output_lines = []
-    for index, line in enumerate(input_lines):
+    for _, line in enumerate(input_lines):
         output_lines.append(line.lstrip())
     return output_lines
 
