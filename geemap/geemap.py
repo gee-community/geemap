@@ -128,6 +128,7 @@ class Map(core.Map):
         self._USER_AGENT_PREFIX = "geemap"
         self.kwargs = kwargs
         super().__init__(**kwargs)
+        self._var_name = "Map"  # The Map variable name for converting JS to Python
 
         if kwargs.get("height"):
             self.layout.height = kwargs.get("height")
