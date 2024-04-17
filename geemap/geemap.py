@@ -121,7 +121,8 @@ class Map(core.Map):
                 kwargs["add_google_map"] = False
             else:
                 kwargs.pop("basemap")
-
+        elif "Google.Roadmap" in basemaps.keys():
+            kwargs["basemap"] = get_basemap("Google.Roadmap")
         self._xyz_dict = get_xyz_dict()
 
         self.baseclass = "ipyleaflet"
