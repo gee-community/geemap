@@ -402,13 +402,21 @@ class Map(ipyleaflet.Map, MapInterface):
         "scroll_wheel_zoom": True,
     }
 
-    _BASEMAP_ALIASES: Dict[str, str] = {
-        "DEFAULT": "OpenStreetMap.Mapnik",
-        "ROADMAP": "Esri.WorldStreetMap",
-        "SATELLITE": "Esri.WorldImagery",
-        "TERRAIN": "Esri.WorldTopoMap",
-        "HYBRID": "Esri.WorldImagery",
-    }
+    if basemaps.MAPS_API_KEY is not None:
+        _BASEMAP_ALIASES: Dict[str, str] = {
+            "OpenStreetMap": "OpenStreetMap.Mapnik",
+        }
+        for key in basemaps.XYZ_TILES:
+            if key.startswith("Google"):
+                _BASEMAP_ALIASES[key] = key
+    else:
+        _BASEMAP_ALIASES: Dict[str, str] = {
+            "OpenStreetMap": "OpenStreetMap.Mapnik",
+            "ROADMAP": "Esri.WorldStreetMap",
+            "SATELLITE": "Esri.WorldImagery",
+            "TERRAIN": "Esri.WorldTopoMap",
+            "HYBRID": "Esri.WorldImagery",
+        }
 
     _USER_AGENT_PREFIX = "geemap-core"
 
@@ -457,6 +465,15 @@ class Map(ipyleaflet.Map, MapInterface):
 
     def __init__(self, **kwargs):
         self._available_basemaps = self._get_available_basemaps()
+
+        if "basemap" not in kwargs and "Google.Roadmap" in self._available_basemaps:
+            kwargs["basemap"] = self._available_basemaps["Google.Roadmap"]
+        elif (
+            "basemap" in kwargs
+            and isinstance(kwargs["basemap"], str)
+            and kwargs["basemap"] in self._available_basemaps
+        ):
+            kwargs["basemap"] = self._available_basemaps.get(kwargs["basemap"])
 
         if "width" in kwargs:
             self.width: str = kwargs.pop("width", "100%")
@@ -850,6 +867,11 @@ class Map(ipyleaflet.Map, MapInterface):
         for tile_info in basemaps.get_xyz_dict().values():
             tile_info["url"] = tile_info.build_url()
             ret_dict[tile_info["name"]] = tile_info
+
+        if "Google.Roadmap" in basemaps.XYZ_TILES:
+            for key in basemaps.XYZ_TILES:
+                if key.startswith("Google"):
+                    ret_dict[key] = basemaps.XYZ_TILES[key]
         extra_dict = {k: ret_dict[v] for k, v in self._BASEMAP_ALIASES.items()}
         return {**extra_dict, **ret_dict}
 
