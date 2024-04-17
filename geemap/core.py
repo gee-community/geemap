@@ -402,20 +402,24 @@ class Map(ipyleaflet.Map, MapInterface):
         "scroll_wheel_zoom": True,
     }
 
-    if basemaps.MAPS_API_KEY is not None:
+    if common.google_maps_api_key() is not None:
         _BASEMAP_ALIASES: Dict[str, str] = {
             "OpenStreetMap": "OpenStreetMap.Mapnik",
+            "Google.Roadmap": "Google.Roadmap",
+            "Google.Satellite": "Google.Satellite",
+            "Google.Terrain": "Google.Terrain",
+            "Google.Hybrid": "Google.Hybrid",
+            "Google.Traffic": "Google.Traffic",
+            "Google.Streetview": "Google.Streetview",
         }
-        for key in basemaps.XYZ_TILES:
-            if key.startswith("Google"):
-                _BASEMAP_ALIASES[key] = key
+
     else:
         _BASEMAP_ALIASES: Dict[str, str] = {
             "OpenStreetMap": "OpenStreetMap.Mapnik",
-            "ROADMAP": "Esri.WorldStreetMap",
-            "SATELLITE": "Esri.WorldImagery",
-            "TERRAIN": "Esri.WorldTopoMap",
-            "HYBRID": "Esri.WorldImagery",
+            "Esri.WorldStreetMap": "Esri.WorldStreetMap",
+            "Esri.WorldImagery": "Esri.WorldImagery",
+            "Esri.WorldTopoMap": "Esri.WorldTopoMap",
+            "Esri.WorldImagery": "Esri.WorldImagery",
         }
 
     _USER_AGENT_PREFIX = "geemap-core"

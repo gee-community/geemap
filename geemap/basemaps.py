@@ -23,14 +23,14 @@ import requests
 import folium
 import ipyleaflet
 import xyzservices
-from .common import check_package, planet_tiles, in_colab_shell, google_map_tiles
+from .common import (
+    check_package,
+    planet_tiles,
+    google_map_tiles,
+    google_maps_api_key,
+)
 
-if in_colab_shell():
-    from google.colab import userdata
-
-    MAPS_API_KEY = userdata.get("MAPS_API_KEY")
-else:
-    MAPS_API_KEY = os.environ.get("MAPS_API_KEY")
+MAPS_API_KEY = google_maps_api_key()
 
 if MAPS_API_KEY is None:
 

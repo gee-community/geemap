@@ -16304,3 +16304,23 @@ def google_map_tiles(
         return gmap_providers
     else:  # Return the specified map type
         return gmap_providers.get(map_type)
+
+
+def google_maps_api_key(token_name="MAPS_API_KEY"):
+    """
+    Retrieves the Google Maps API key from the environment or Colab user data.
+
+    Args:
+        token_name (str, optional): The name of the environment variable or Colab user data key where the API key is stored. Defaults to 'MAPS_API_KEY'.
+
+    Returns:
+        str: The API key, or None if it could not be found.
+    """
+    if in_colab_shell():
+        from google.colab import userdata
+
+        MAPS_API_KEY = userdata.get(token_name)
+    else:
+        MAPS_API_KEY = os.environ.get(token_name, None)
+
+    return MAPS_API_KEY
