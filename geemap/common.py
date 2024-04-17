@@ -16170,17 +16170,19 @@ def is_on_aws():
 
 
 def google_map_tiles(
-    map_type: str = "roadmap",
+    map_type: str = None,
     language: str = "en-Us",
     region: str = "US",
     api_key: Optional[str] = None,
     **kwargs: Any,
 ):
     """
-    Generates Google Map tiles using the provided parameters. To get an API key and enable Map Tiles API, visit https://developers.google.com/maps/get-started#create-project
+    Generates Google Map tiles using the provided parameters. To get an API key and enable Map Tiles API, visit https://developers.google.com/maps/get-started#create-project.
+        You can set the API key using the environment variable `MAPS_API_KEY` or by passing it as an argument.
 
     Args:
-        map_type (str, optional): The type of map to generate. Options are 'roadmap', 'satellite', 'terrain', 'hybrid', 'traffic', 'streetview'. Defaults to 'roadmap'.
+        map_type (str, optional): The type of map to generate. Options are 'roadmap', 'satellite', 'terrain', 'hybrid', 'traffic', 'streetview'.
+            Defaults to None, which generates all map types, and returns a dictionary of TileProvider objects.
         language (str, optional): An IETF language tag that specifies the language used to display information on the tiles, such as 'zh-Cn'. Defaults to 'en-Us'.
         region (str, optional): A Common Locale Data Repository region identifier (two uppercase letters) that represents the physical location of the user. Defaults to 'US'.
         api_key (str, optional): The API key to use for the Google Maps API. If not provided, it will try to get it from the environment or Colab user data. Defaults to None.
@@ -16191,13 +16193,14 @@ def google_map_tiles(
         ValueError: If the map_type is not one of the allowed types.
 
     Example:
-        import geemap
-        m = geemap.Map()
-        basemap = geemap.google_map_tiles(map_type='roadmap', language="en-Us", region="US", scale="scaleFactor2x", highDpi=True)
-        m.add_basemap(basemap)
+        >>> import geemap
+        >>> m = geemap.Map()
+        >>> basemap = geemap.google_map_tiles(map_type='roadmap', language="en-Us", region="US", scale="scaleFactor2x", highDpi=True)
+        >>> m.add_basemap(basemap)
 
     Returns:
-        TileProvider: A TileProvider object with the generated map, or None if the map could not be generated.
+        TileProvider | dict: A TileProvider object with the generated map, or a dictionary of TileProvider objects for all map types,
+            or None if the map could not be generated.
     """
 
     from xyzservices import TileProvider
@@ -16216,65 +16219,88 @@ def google_map_tiles(
             "API key is required to access Google Maps API. To get an API key and enable Map Tiles API, visit https://developers.google.com/maps/get-started#create-project"
         )
 
-    map_type = map_type.lower().replace("google.", "").replace("google", "").strip()
-
-    if map_type not in [
+    allowed_map_types = [
         "roadmap",
         "satellite",
         "terrain",
         "hybrid",
         "traffic",
         "streetview",
-    ]:
-        raise ValueError(
-            "mapType must be one of 'roadmap', 'satellite', 'terrain', 'hybrid', 'traffic', 'streetview'"
+    ]
+
+    # Support map type as a string with or without 'google.', such as 'Google Roadmap', 'Google.Roadmap', or 'Roadmap'
+    if isinstance(map_type, str):
+        map_type = map_type.lower().replace("google.", "").replace("google", "").strip()
+
+        if map_type not in allowed_map_types:
+            raise ValueError(
+                "mapType must be one of 'roadmap', 'satellite', 'terrain', 'hybrid', 'traffic', 'streetview'"
+            )
+
+    tile_args = {}
+
+    # Define the parameters for each map type
+    for m_type in allowed_map_types:
+
+        mapType = m_type
+        layerTypes = None
+
+        if m_type == "hybrid":
+            mapType = "satellite"
+            layerTypes = ["layerRoadmap"]
+        elif m_type == "terrain":
+            layerTypes = ["layerRoadmap"]
+        elif m_type == "traffic":
+            mapType = "roadmap"
+            layerTypes = ["layerTraffic"]
+        elif m_type == "streetview":
+            mapType = "roadmap"
+            layerTypes = ["layerStreetview"]
+
+        tile_args[m_type] = {
+            "mapType": mapType,
+            "language": language,
+            "region": region,
+            "layerTypes": layerTypes,
+            **kwargs,
+        }
+
+        if tile_args[m_type].get("layerTypes") is None:
+            del tile_args[m_type]["layerTypes"]
+
+    gmap_providers = {}
+
+    for m_type in allowed_map_types:
+
+        # If map_type is provided, only generate the specified map
+        if map_type is not None and m_type != map_type:
+            continue
+
+        args = tile_args[m_type]
+        response = requests.post(
+            f"https://tile.googleapis.com/v1/createSession?key={api_key}",
+            headers={"Content-Type": "application/json"},
+            json=args,
         )
 
-    mapType = map_type
+        if response.status_code == 200:
+            res = response.json()
+            gmap_provider = TileProvider(
+                {
+                    "url": f"https://tile.googleapis.com/v1/2dtiles/{{z}}/{{x}}/{{y}}?session={res['session']}&key={{accessToken}}",
+                    "attribution": f"© Google {m_type.capitalize()}",
+                    "accessToken": api_key,
+                    "name": f"Google.{m_type.capitalize()}",
+                    "ext": res["imageFormat"],
+                    "tileSize": res["tileWidth"],
+                }
+            )
+            gmap_providers[m_type] = gmap_provider
+        else:
+            display(response.text)
+            gmap_provider = None
 
-    if map_type == "hybrid":
-        mapType = "satellite"
-        if "layerTypes" not in kwargs:
-            kwargs["layerTypes"] = ["layerRoadmap"]
-
-    if map_type == "terrain":
-        if "layerTypes" not in kwargs:
-            kwargs["layerTypes"] = ["layerRoadmap"]
-
-    if map_type == "traffic":
-        mapType = "roadmap"
-        if "layerTypes" not in kwargs:
-            kwargs["layerTypes"] = ["layerTraffic"]
-
-    if map_type == "streetview":
-        mapType = "roadmap"
-        if "layerTypes" not in kwargs:
-            kwargs["layerTypes"] = ["layerStreetview"]
-
-    kwargs["mapType"] = mapType
-    kwargs["language"] = language
-    kwargs["region"] = region
-
-    response = requests.post(
-        f"https://tile.googleapis.com/v1/createSession?key={api_key}",
-        headers={"Content-Type": "application/json"},
-        json=kwargs,
-    )
-
-    if response.status_code == 200:
-        res = response.json()
-        gmap_provider = TileProvider(
-            {
-                "url": f"https://tile.googleapis.com/v1/2dtiles/{{z}}/{{x}}/{{y}}?session={res['session']}&key={{accessToken}}",
-                "attribution": f"© Google {map_type.capitalize()}",
-                "accessToken": api_key,
-                "name": f"Google.{map_type.capitalize()}",
-                "ext": res["imageFormat"],
-                "tileSize": res["tileWidth"],
-            }
-        )
-    else:
-        display(response.text)
-        gmap_provider = None
-
-    return gmap_provider
+    if map_type is None:  # Return all map types
+        return gmap_providers
+    else:  # Return the specified map type
+        return gmap_providers.get(map_type)

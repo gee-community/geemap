@@ -70,19 +70,13 @@ else:
             "name": "OpenStreetMap",
         },
     }
-    for gmap in [
-        "roadmap",
-        "satellite",
-        "terrain",
-        "hybrid",
-        "traffic",
-        "streetview",
-    ]:
-        provider = google_map_tiles(gmap, api_key=MAPS_API_KEY)
-        XYZ_TILES[provider.name] = {
+
+    gmap_providers = google_map_tiles(api_key=MAPS_API_KEY)
+    for key, provider in gmap_providers.items():
+        XYZ_TILES[provider["name"]] = {
             "url": provider.build_url(),
-            "attribution": provider.attribution,
-            "name": provider.name,
+            "attribution": provider["attribution"],
+            "name": provider["name"],
         }
 
 # Custom WMS tile services.
