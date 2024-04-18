@@ -12894,11 +12894,11 @@ def download_ee_image(
         raise ValueError("image must be an ee.Image.")
 
     if unmask_value is not None:
-        image = image.selfMask().unmask(unmask_value)
         if isinstance(region, ee.Geometry):
             image = image.clip(region)
         elif isinstance(region, ee.FeatureCollection):
             image = image.clipToCollection(region)
+        image = image.unmask(unmask_value, sameFootprint=False)
 
     if region is not None:
         kwargs["region"] = region
