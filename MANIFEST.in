@@ -1,5 +1,5 @@
 include LICENSE
-include README.rst
+include README.md
 include requirements.txt
 include requirements_docs.txt
 
