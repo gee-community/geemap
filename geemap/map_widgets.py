@@ -765,7 +765,7 @@ class LayerManager(ipywidgets.VBox):
     def refresh_layers(self):
         """Recreates all the layer widgets."""
         toggle_all_layout = ipywidgets.Layout(
-            height="18px", width="30ex", padding="0px 8px 25px 8px"
+            height="18px", width="30ex", padding="0px 4px 25px 4px"
         )
         toggle_all_checkbox = ipywidgets.Checkbox(
             value=False,
@@ -809,7 +809,7 @@ class LayerManager(ipywidgets.VBox):
             max=1,
             step=0.01,
             readout=False,
-            layout=ipywidgets.Layout(width="80px"),
+            layout=ipywidgets.Layout(width="70px", padding="0px 3px 0px 0px"),
         )
         opacity_slider.observe(
             lambda change: self._on_layer_opacity_changed(change, layer), "value"
@@ -822,9 +822,43 @@ class LayerManager(ipywidgets.VBox):
         )
         settings_button.on_click(self._on_layer_settings_click)
 
+        spinner = ipywidgets.Button(
+            icon="check",
+            layout=ipywidgets.Layout(width="25px", height="25px", padding="0px"),
+            tooltip="Loaded",
+        )
+
+        def loading_change(change):
+            if change["new"]:
+                spinner.tooltip = "Loading ..."
+                spinner.icon = "spinner spin lg"
+            else:
+                spinner.tooltip = "Loaded"
+                spinner.icon = "check"
+
+        layer.observe(loading_change, "loading")
+
+        remove_layer_btn = ipywidgets.Button(
+            icon="times",
+            layout=ipywidgets.Layout(width="25px", height="25px", padding="0px"),
+            tooltip="Remove layer",
+        )
+
+        def remove_layer_click(_):
+            self._host_map.remove_layer(layer)
+            self.refresh_layers()
+
+        remove_layer_btn.on_click(remove_layer_click)
+
         return ipywidgets.HBox(
-            [visibility_checkbox, settings_button, opacity_slider],
-            layout=ipywidgets.Layout(padding="0px 8px 0px 8px"),
+            [
+                visibility_checkbox,
+                opacity_slider,
+                settings_button,
+                spinner,
+                remove_layer_btn,
+            ],
+            layout=ipywidgets.Layout(padding="0px 4px 0px 4px"),
         )
 
     def _compute_layer_opacity(self, layer):
