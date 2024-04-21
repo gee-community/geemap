@@ -131,3 +131,6 @@ class FakeGeoJSONLayer:
         self.name = name
         self.visible = visible
         self.style = style or {}
+
+    def observe(self, func, names):
+        pass
