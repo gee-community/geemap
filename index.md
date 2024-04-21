@@ -5,7 +5,7 @@
 [![Open In Studio Lab](https://studiolab.sagemaker.aws/studiolab.svg)](https://studiolab.sagemaker.aws/import/github/gee-community/geemap/blob/master/docs/notebooks/00_geemap_colab.ipynb)
 [![image](https://img.shields.io/pypi/v/geemap.svg)](https://pypi.python.org/pypi/geemap)
 [![image](https://static.pepy.tech/badge/geemap)](https://pepy.tech/project/geemap)
-[![Conda Recipe](https://img.shields.io/badge/recipe-geemap-green.svg)](https://github.com/giswqs/geemap-feedstock)
+[![Conda Recipe](https://img.shields.io/badge/recipe-geemap-green.svg)](https://github.com/conda-forge/geemap-feedstock)
 [![image](https://img.shields.io/conda/vn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/geemap.svg)](https://anaconda.org/conda-forge/geemap)
 [![image](https://github.com/gee-community/geemap/workflows/docs/badge.svg)](https://geemap.org)
