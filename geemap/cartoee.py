@@ -1237,17 +1237,30 @@ def get_image_collection_gif(
                 or isinstance(ee_object, ee.feature.Feature)
                 or isinstance(ee_object, ee.featurecollection.FeatureCollection)
             ):
-                overlay_vis_params = None # for vector data, we can pass style parameters directly
+                overlay_vis_params = (
+                    None  # for vector data, we can pass style parameters directly
+                )
             elif (
-                isinstance(ee_object, ee.image.Image) or 
-                isinstance(ee_object, ee.imagecollection.ImageCollection) or 
-                isinstance(ee_object, ee.imagecollection.ImageCollection)):
-                overlay_vis_params = style # for raster, we need to pass vis_params
-                style=None
+                isinstance(ee_object, ee.image.Image)
+                or isinstance(ee_object, ee.imagecollection.ImageCollection)
+                or isinstance(ee_object, ee.imagecollection.ImageCollection)
+            ):
+                overlay_vis_params = style  # for raster, we need to pass vis_params
+                style = None
             else:
-                raise ValueError("The overlay object must be an ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, or ee.ImageCollection.")
-            
-            add_layer(ax, ee_object, region=region, cmap=cmap, vis_params=overlay_vis_params, style=style, **kwargs)
+                raise ValueError(
+                    "The overlay object must be an ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, or ee.ImageCollection."
+                )
+
+            add_layer(
+                ax,
+                ee_object,
+                region=region,
+                cmap=cmap,
+                vis_params=overlay_vis_params,
+                style=style,
+                **kwargs,
+            )
 
         # Add grid
         if grid_interval is not None:
