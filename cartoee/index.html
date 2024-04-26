@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.19">
     
     
       
@@ -6888,7 +6888,7 @@ Dependencies not included in main geemap are: cartopy, PIL, and scipys</p>
 
 
 <h2 id="geemap.cartoee.get_image_collection_gif" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_image_collection_gif</span><span class="p">(</span><span class="n">ee_ic</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">out_gif</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mp4</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">grid_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;YYYY-MM-dd&#39;</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dpi_plot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">north_arrow_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">scale_bar_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_image_collection_gif</span><span class="p">(</span><span class="n">ee_ic</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">out_gif</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mp4</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">grid_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;YYYY-MM-dd&#39;</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dpi_plot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">north_arrow_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">scale_bar_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">overlay_layers</span><span class="o">=</span><span class="p">[],</span> <span class="n">overlay_styles</span><span class="o">=</span><span class="p">[],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 
 <a href="#geemap.cartoee.get_image_collection_gif" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -6983,7 +6983,7 @@ Dependencies not included in main geemap are: cartopy, PIL, and scipys</p>
       <tr>
         <td><code>file_format</code></td>
         <td><code>str</code></td>
-        <td><p>Either 'png' or 'jpg'.</p></td>
+        <td><p>Either 'png' or 'jpg'. Defaults to 'png'.</p></td>
         <td><code>&#39;png&#39;</code></td>
       </tr>
       <tr>
@@ -6999,10 +6999,28 @@ Dependencies not included in main geemap are: cartopy, PIL, and scipys</p>
         <td><code>{}</code></td>
       </tr>
       <tr>
+        <td><code>overlay_layers</code></td>
+        <td><code>list</code></td>
+        <td><p>A list of Earth Engine objects to overlay on the map. Defaults to [].</p></td>
+        <td><code>[]</code></td>
+      </tr>
+      <tr>
+        <td><code>overlay_styles</code></td>
+        <td><code>list</code></td>
+        <td><p>A list of dictionaries of visualization parameters for overlay layers. Defaults to [].</p></td>
+        <td><code>[]</code></td>
+      </tr>
+      <tr>
         <td><code>verbose</code></td>
         <td><code>bool</code></td>
         <td><p>Whether or not to print text when the program is running. Defaults to True.</p></td>
         <td><code>True</code></td>
+      </tr>
+      <tr>
+        <td><code>**kwargs</code></td>
+        <td></td>
+        <td><p>Additional keyword arguments are passed to the add_layer() function.</p></td>
+        <td><code>{}</code></td>
       </tr>
   </tbody>
 </table>
@@ -7026,7 +7044,10 @@ Dependencies not included in main geemap are: cartopy, PIL, and scipys</p>
     <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;png&quot;</span><span class="p">,</span>
     <span class="n">north_arrow_dict</span><span class="o">=</span><span class="p">{},</span>
     <span class="n">scale_bar_dict</span><span class="o">=</span><span class="p">{},</span>
+    <span class="n">overlay_layers</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">overlay_styles</span><span class="o">=</span><span class="p">[],</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download all the images in an image collection and use them to generate a gif/video.</span>
 <span class="sd">    Args:</span>
@@ -7042,10 +7063,13 @@ Dependencies not included in main geemap are: cartopy, PIL, and scipys</p>
 <span class="sd">        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to &quot;YYYY-MM-dd&quot;.</span>
 <span class="sd">        fig_size (tuple, optional): Size of the figure.</span>
 <span class="sd">        dpi_plot (int, optional): The resolution in dots per inch of the plot.</span>
-<span class="sd">        file_format (str, optional): Either &#39;png&#39; or &#39;jpg&#39;.</span>
+<span class="sd">        file_format (str, optional): Either &#39;png&#39; or &#39;jpg&#39;. Defaults to &#39;png&#39;.</span>
 <span class="sd">        north_arrow_dict (dict, optional): Parameters for the north arrow. See https://geemap.org/cartoee/#geemap.cartoee.add_north_arrow. Defaults to {}.</span>
 <span class="sd">        scale_bar_dict (dict, optional): Parameters for the scale bar. See https://geemap.org/cartoee/#geemap.cartoee.add_scale_bar. Defaults. to {}.</span>
+<span class="sd">        overlay_layers (list, optional): A list of Earth Engine objects to overlay on the map. Defaults to [].</span>
+<span class="sd">        overlay_styles (list, optional): A list of dictionaries of visualization parameters for overlay layers. Defaults to [].</span>
 <span class="sd">        verbose (bool, optional): Whether or not to print text when the program is running. Defaults to True.</span>
+<span class="sd">        **kwargs: Additional keyword arguments are passed to the add_layer() function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="kn">from</span> <span class="nn">.geemap</span> <span class="kn">import</span> <span class="n">png_to_gif</span><span class="p">,</span> <span class="n">jpg_to_gif</span>
@@ -7085,6 +7109,43 @@ Dependencies not included in main geemap are: cartopy, PIL, and scipys</p>
 
         <span class="c1"># Plot image</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">get_map</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">vis_params</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="n">proj</span><span class="p">)</span>
+
+        <span class="c1"># check length of overlay layers and styles</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlay_layers</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlay_styles</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The length of overlay_layers and overlay_styles must be the same.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">style</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">overlay_layers</span><span class="p">,</span> <span class="n">overlay_styles</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Geometry</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">Feature</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">featurecollection</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">overlay_vis_params</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="kc">None</span>  <span class="c1"># for vector data, we can pass style parameters directly</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">Image</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">imagecollection</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">imagecollection</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">overlay_vis_params</span> <span class="o">=</span> <span class="n">style</span>  <span class="c1"># for raster, we need to pass vis_params</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;The overlay object must be an ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, or ee.ImageCollection.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">add_layer</span><span class="p">(</span>
+                <span class="n">ax</span><span class="p">,</span>
+                <span class="n">ee_object</span><span class="p">,</span>
+                <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span>
+                <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+                <span class="n">vis_params</span><span class="o">=</span><span class="n">overlay_vis_params</span><span class="p">,</span>
+                <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="c1"># Add grid</span>
         <span class="k">if</span> <span class="n">grid_interval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -7644,7 +7705,7 @@ If 'tight', try to figure out the tight bbox of the figure.</p></td>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.3220b9d7.min.js"></script>
+      <script src="../assets/javascripts/bundle.dd8806f2.min.js"></script>
       
         <script src="../js/timeago.min.js"></script>
       
