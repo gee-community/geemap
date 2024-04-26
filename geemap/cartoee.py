@@ -1159,7 +1159,10 @@ def get_image_collection_gif(
     file_format="png",
     north_arrow_dict={},
     scale_bar_dict={},
+    overlay_layers=[],
+    overlay_styles=[],
     verbose=True,
+    **kwargs,
 ):
     """Download all the images in an image collection and use them to generate a gif/video.
     Args:
@@ -1175,10 +1178,13 @@ def get_image_collection_gif(
         date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to "YYYY-MM-dd".
         fig_size (tuple, optional): Size of the figure.
         dpi_plot (int, optional): The resolution in dots per inch of the plot.
-        file_format (str, optional): Either 'png' or 'jpg'.
+        file_format (str, optional): Either 'png' or 'jpg'. Defaults to 'png'.
         north_arrow_dict (dict, optional): Parameters for the north arrow. See https://geemap.org/cartoee/#geemap.cartoee.add_north_arrow. Defaults to {}.
         scale_bar_dict (dict, optional): Parameters for the scale bar. See https://geemap.org/cartoee/#geemap.cartoee.add_scale_bar. Defaults. to {}.
+        overlay_layers (list, optional): A list of Earth Engine objects to overlay on the map. Defaults to [].
+        overlay_styles (list, optional): A list of dictionaries of visualization parameters for overlay layers. Defaults to [].
         verbose (bool, optional): Whether or not to print text when the program is running. Defaults to True.
+        **kwargs: Additional keyword arguments are passed to the add_layer() function.
     """
 
     from .geemap import png_to_gif, jpg_to_gif
@@ -1218,6 +1224,43 @@ def get_image_collection_gif(
 
         # Plot image
         ax = get_map(image, region=region, vis_params=vis_params, cmap=cmap, proj=proj)
+
+        # check length of overlay layers and styles
+        if len(overlay_layers) != len(overlay_styles):
+            raise ValueError(
+                "The length of overlay_layers and overlay_styles must be the same."
+            )
+
+        for ee_object, style in zip(overlay_layers, overlay_styles):
+            if (
+                isinstance(ee_object, ee.geometry.Geometry)
+                or isinstance(ee_object, ee.feature.Feature)
+                or isinstance(ee_object, ee.featurecollection.FeatureCollection)
+            ):
+                overlay_vis_params = (
+                    None  # for vector data, we can pass style parameters directly
+                )
+            elif (
+                isinstance(ee_object, ee.image.Image)
+                or isinstance(ee_object, ee.imagecollection.ImageCollection)
+                or isinstance(ee_object, ee.imagecollection.ImageCollection)
+            ):
+                overlay_vis_params = style  # for raster, we need to pass vis_params
+                style = None
+            else:
+                raise ValueError(
+                    "The overlay object must be an ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, or ee.ImageCollection."
+                )
+
+            add_layer(
+                ax,
+                ee_object,
+                region=region,
+                cmap=cmap,
+                vis_params=overlay_vis_params,
+                style=style,
+                **kwargs,
+            )
 
         # Add grid
         if grid_interval is not None:
