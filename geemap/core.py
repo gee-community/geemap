@@ -409,8 +409,6 @@ class Map(ipyleaflet.Map, MapInterface):
             "Google.Satellite": "Google.Satellite",
             "Google.Terrain": "Google.Terrain",
             "Google.Hybrid": "Google.Hybrid",
-            "Google.Traffic": "Google.Traffic",
-            "Google.Streetview": "Google.Streetview",
         }
 
     else:
