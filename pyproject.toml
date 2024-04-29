@@ -5,7 +5,7 @@ dynamic = [
     "dependencies",
 ]
 description = "A Python package for interactive mapping using Google Earth Engine and ipyleaflet"
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.8"
 keywords = [
     "geemap",
