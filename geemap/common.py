@@ -16177,29 +16177,44 @@ def google_map_tiles(
     **kwargs: Any,
 ):
     """
-    Generates Google Map tiles using the provided parameters. To get an API key and enable Map Tiles API, visit https://developers.google.com/maps/get-started#create-project.
-        You can set the API key using the environment variable `MAPS_API_KEY` or by passing it as an argument.
+    Generates Google Map tiles using the provided parameters. To get an API key
+        and enable Map Tiles API, visit
+        https://developers.google.com/maps/get-started#create-project.
+        You can set the API key using the environment variable `MAPS_API_KEY`
+        or by passing it as an argument.
 
     Args:
-        map_type (str, optional): The type of map to generate. Options are 'roadmap', 'satellite', 'terrain', 'hybrid', 'traffic', 'streetview'.
-            Defaults to None, which generates all map types, and returns a dictionary of TileProvider objects.
-        language (str, optional): An IETF language tag that specifies the language used to display information on the tiles, such as 'zh-Cn'. Defaults to 'en-Us'.
-        region (str, optional): A Common Locale Data Repository region identifier (two uppercase letters) that represents the physical location of the user. Defaults to 'US'.
-        api_key (str, optional): The API key to use for the Google Maps API. If not provided, it will try to get it from the environment or Colab user data. Defaults to None.
-        **kwargs: Additional parameters to pass to the map generation. For more info, visit https://developers.google.com/maps/documentation/tile/session_tokens#optional_fields
+        map_type (str, optional): The type of map to generate. Options are
+            'roadmap', 'satellite', 'terrain', 'hybrid', 'traffic', 'streetview'.
+            Defaults to None, which generates all map types, and returns a
+            dictionary of TileProvider objects.
+        language (str, optional): An IETF language tag that specifies the
+            language used to display information on the tiles, such as 'zh-Cn'.
+            Defaults to 'en-Us'.
+        region (str, optional): A Common Locale Data Repository region
+            identifier (two uppercase letters) that represents the physical
+            location of the user. Defaults to 'US'.
+        api_key (str, optional): The API key to use for the Google Maps API.
+            If not provided, it will try to get it from the environment or
+            Colab user data. Defaults to None.
+        **kwargs: Additional parameters to pass to the map generation. For more
+            info, visit https://bit.ly/3UhbZKU
 
     Raises:
-        ValueError: If the API key is not provided and cannot be found in the environment or Colab user data.
+        ValueError: If the API key is not provided and cannot be found in the
+            environment or Colab user data.
         ValueError: If the map_type is not one of the allowed types.
 
     Example:
         >>> import geemap
         >>> m = geemap.Map()
-        >>> basemap = geemap.google_map_tiles(map_type='roadmap', language="en-Us", region="US", scale="scaleFactor2x", highDpi=True)
+        >>> basemap = geemap.google_map_tiles(map_type='roadmap',
+            language="en-Us", region="US", scale="scaleFactor2x", highDpi=True)
         >>> m.add_basemap(basemap)
 
     Returns:
-        TileProvider | dict: A TileProvider object with the generated map, or a dictionary of TileProvider objects for all map types,
+        TileProvider | dict: A TileProvider object with the generated map, or a
+            dictionary of TileProvider objects for all map types,
             or None if the map could not be generated.
     """
 
@@ -16216,7 +16231,9 @@ def google_map_tiles(
 
     if api_key is None:
         raise ValueError(
-            "API key is required to access Google Maps API. To get an API key and enable Map Tiles API, visit https://developers.google.com/maps/get-started#create-project"
+            "API key is required to access Google Maps API. To get an API key "
+            "and enable Map Tiles API, visit "
+            "https://developers.google.com/maps/get-started#create-project"
         )
 
     allowed_map_types = [
@@ -16228,13 +16245,15 @@ def google_map_tiles(
         "streetview",
     ]
 
-    # Support map type as a string with or without 'google.', such as 'Google Roadmap', 'Google.Roadmap', or 'Roadmap'
+    # Support map type as a string with or without 'google.',
+    # such as 'Google Roadmap', 'Google.Roadmap', or 'Roadmap'
     if isinstance(map_type, str):
         map_type = map_type.lower().replace("google.", "").replace("google", "").strip()
 
         if map_type not in allowed_map_types:
             raise ValueError(
-                "mapType must be one of 'roadmap', 'satellite', 'terrain', 'hybrid', 'traffic', 'streetview'"
+                "mapType must be one of 'roadmap', 'satellite', 'terrain', "
+                "'hybrid', 'traffic', 'streetview'"
             )
 
     tile_args = {}
@@ -16311,7 +16330,9 @@ def google_maps_api_key(token_name="MAPS_API_KEY"):
     Retrieves the Google Maps API key from the environment or Colab user data.
 
     Args:
-        token_name (str, optional): The name of the environment variable or Colab user data key where the API key is stored. Defaults to 'MAPS_API_KEY'.
+        token_name (str, optional): The name of the environment variable or
+        Colab user data key where the API key is stored.
+        Defaults to 'MAPS_API_KEY'.
 
     Returns:
         str: The API key, or None if it could not be found.
