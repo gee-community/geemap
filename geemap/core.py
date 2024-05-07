@@ -870,10 +870,11 @@ class Map(ipyleaflet.Map, MapInterface):
             tile_info["url"] = tile_info.build_url()
             ret_dict[tile_info["name"]] = tile_info
 
-        if "Google.Roadmap" in basemaps.XYZ_TILES:
-            for key in basemaps.XYZ_TILES:
-                if key.startswith("Google"):
-                    ret_dict[key] = basemaps.XYZ_TILES[key]
+        if common.google_maps_api_key() is not None:
+            for tile_info in basemaps.google_map_tiles().values():
+                tile_info["url"] = tile_info.build_url()
+                ret_dict[tile_info["name"]] = tile_info
+
         extra_dict = {k: ret_dict[v] for k, v in self._BASEMAP_ALIASES.items()}
         return {**extra_dict, **ret_dict}
 
