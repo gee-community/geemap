@@ -24,11 +24,8 @@ import sys
 import folium
 import ipyleaflet
 import xyzservices
-from .common import (
-    check_package,
-    planet_tiles,
-)
-from typing import Optional, Any
+from .common import check_package, planet_tiles, google_maps_api_key
+from typing import Optional, Any, Dict, Union
 from xyzservices import TileProvider
 
 
@@ -410,7 +407,7 @@ def google_map_tiles(
 
     Returns:
         dict: A dictionary where the keys are the map types
-        ('roadmap', 'satellite', 'terrain', 'hybrid', 'traffic', 'streetview')
+        ('roadmap', 'satellite', 'terrain', 'hybrid')
         and the values are the corresponding GoogleMapsTileProvider objects.
     """
     allowed_map_types = [
@@ -418,8 +415,8 @@ def google_map_tiles(
         "satellite",
         "terrain",
         "hybrid",
-        "traffic",
-        "streetview",
+        # "traffic",
+        # "streetview",
     ]
 
     gmap_providers = {}
@@ -430,6 +427,51 @@ def google_map_tiles(
         )
 
     return gmap_providers
+
+
+def check_basemap_alias(
+    basemap: str,
+) -> str:
+    """
+    Checks if the provided basemap is an alias and returns the corresponding basemap name.
+
+    Args:
+        basemap (str): The basemap to check.
+
+    Returns:
+        str: The corresponding basemap name if the input is an alias, otherwise the input itself.
+    """
+
+    allowed_aliases = {
+        "DEFAULT": {
+            "Google": "Google.Roadmap",
+            "Esri": "OpenStreetMap.Mapnik",
+        },
+        "ROADMAP": {
+            "Google": "Google.Roadmap",
+            "Esri": "Esri.WorldStreetMap",
+        },
+        "SATELLITE": {
+            "Google": "Google.Satellite",
+            "Esri": "Esri.WorldImagery",
+        },
+        "TERRAIN": {
+            "Google": "Google.Terrain",
+            "Esri": "Esri.WorldTopoMap",
+        },
+        "HYBRID": {
+            "Google": "Google.Hybrid",
+            "Esri": "Esri.WorldImagery",
+        },
+    }
+
+    if isinstance(basemap, str) and basemap.upper() in allowed_aliases:
+        if google_maps_api_key() is not None:
+            return allowed_aliases[basemap.upper()]["Google"]
+        else:
+            return allowed_aliases[basemap.upper()]["Esri"]
+    else:
+        return basemap
 
 
 def get_xyz_dict(free_only=True, france=False):

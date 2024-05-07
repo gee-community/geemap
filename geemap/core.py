@@ -470,12 +470,12 @@ class Map(ipyleaflet.Map, MapInterface):
 
         if "basemap" not in kwargs and "Google.Roadmap" in self._available_basemaps:
             kwargs["basemap"] = self._available_basemaps["Google.Roadmap"]
-        elif (
-            "basemap" in kwargs
-            and isinstance(kwargs["basemap"], str)
-            and kwargs["basemap"] in self._available_basemaps
-        ):
-            kwargs["basemap"] = self._available_basemaps.get(kwargs["basemap"])
+        elif "basemap" in kwargs and isinstance(kwargs["basemap"], str):
+            kwargs["basemap"] = basemaps.check_basemap_alias(kwargs["basemap"])
+            if kwargs["basemap"] in self._available_basemaps:
+                kwargs["basemap"] = self._available_basemaps.get(kwargs["basemap"])
+            else:
+                raise ValueError(f"Basemap {kwargs['basemap']} not found.")
 
         if "width" in kwargs:
             self.width: str = kwargs.pop("width", "100%")
