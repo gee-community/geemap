@@ -145,6 +145,7 @@ nav:
           - workshops/Alaska_2024_Part3.ipynb
           - workshops/GEE_Workshop_2024.ipynb
           - workshops/TNGIC_2024.ipynb
+          - workshops/IGIC_2024.ipynb
     - Notebooks:
           - notebooks/00_ee_auth_colab.ipynb
           - notebooks/00_geemap_colab.ipynb
