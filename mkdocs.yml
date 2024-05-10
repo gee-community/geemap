@@ -5,7 +5,7 @@ site_url: https://geemap.org
 
 repo_url: https://github.com/gee-community/geemap
 
-copyright: "Copyright &copy; 2022 - 2023 Qiusheng Wu"
+copyright: "Copyright &copy; 2020 - 2024 Qiusheng Wu"
 
 theme:
     palette:
@@ -145,6 +145,7 @@ nav:
           - workshops/Alaska_2024_Part3.ipynb
           - workshops/GEE_Workshop_2024.ipynb
           - workshops/TNGIC_2024.ipynb
+          - workshops/IGIC_2024.ipynb
     - Notebooks:
           - notebooks/00_ee_auth_colab.ipynb
           - notebooks/00_geemap_colab.ipynb
