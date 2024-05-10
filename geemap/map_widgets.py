@@ -6,6 +6,7 @@ import IPython
 from IPython.core.display import HTML, display
 
 import ee
+import ipyleaflet
 import ipytree
 import ipywidgets
 
@@ -845,8 +846,7 @@ class LayerManager(ipywidgets.VBox):
         )
 
         def remove_layer_click(_):
-            self._host_map.remove_layer(layer)
-            self.refresh_layers()
+            self._on_layer_remove_click(layer)
 
         remove_layer_btn.on_click(remove_layer_click)
 
@@ -860,6 +860,57 @@ class LayerManager(ipywidgets.VBox):
             ],
             layout=ipywidgets.Layout(padding="0px 4px 0px 4px"),
         )
+
+    def _on_layer_remove_click(self, layer):
+
+        layer_dict = self._host_map.ee_layers[layer.name]
+        if "remove_control" not in layer_dict:
+            label = ipywidgets.Label(
+                f"Remove {layer.name} layer?",
+                layout=ipywidgets.Layout(padding="0px 4px 0px 4px"),
+            )
+            yes_button = ipywidgets.Button(
+                description="Yes",
+                button_style="primary",
+            )
+            no_button = ipywidgets.Button(
+                description="No",
+                button_style="primary",
+            )
+            confirm_widget = ipywidgets.VBox(
+                [label, ipywidgets.HBox([yes_button, no_button])]
+            )
+
+            confirm_control = ipyleaflet.WidgetControl(
+                widget=confirm_widget, position="topright"
+            )
+            self._host_map.add(confirm_control)
+
+            def on_yes_button_click(_):
+                self._host_map.remove_layer(layer)
+                self.refresh_layers()
+                self._host_map.remove_control(confirm_control)
+                if "confirm_widget" in layer_dict:
+                    layer_dict["confirm_widget"].close()
+                if "remove_control" in layer_dict:
+                    self._host_map.remove_control(layer_dict["remove_control"])
+                del layer_dict["remove_control"]
+                del layer_dict["confirm_widget"]
+
+            yes_button.on_click(on_yes_button_click)
+
+            def on_no_button_click(_):
+                if "confirm_widget" in layer_dict:
+                    layer_dict["confirm_widget"].close()
+                if "remove_control" in layer_dict:
+                    self._host_map.remove_control(layer_dict["remove_control"])
+                del layer_dict["remove_control"]
+                del layer_dict["confirm_widget"]
+
+            no_button.on_click(on_no_button_click)
+
+            layer_dict["remove_control"] = confirm_control
+            layer_dict["confirm_widget"] = confirm_widget
 
     def _compute_layer_opacity(self, layer):
         if layer in self._host_map.geojson_layers:
