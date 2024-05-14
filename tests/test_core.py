@@ -89,6 +89,24 @@ class TestMap(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Zoom must be an integer"):
             self.core_map.center_object(ee.Geometry.Point(), "2")
 
+    @unittest.mock.patch.object(core.Map, "bounds")
+    def test_get_bounds(self, mock_bounds):
+        """Tests that `get_bounds` returns the bounds of the map."""
+        mock_bounds.__get__ = Mock(return_value=[[1, 2], [3, 4]])
+        self.assertEqual(self.core_map.get_bounds(), [2, 1, 4, 3])
+        self.assertEqual(self.core_map.getBounds(), [2, 1, 4, 3])
+        expected_geo_json = {
+            "geodesic": False,
+            "type": "Polygon",
+            "coordinates": [[0, 1], [1, 2], [0, 1]],
+        }
+        self.assertEqual(self.core_map.get_bounds(
+            as_geo_json=True), expected_geo_json)
+
+        mock_bounds.__get__ = Mock(return_value=())
+        with self.assertRaisesRegex(RuntimeError, "Map bounds are undefined"):
+            self.core_map.get_bounds(as_geo_json=True)
+
     def test_add_basic_widget_by_name(self):
         """Tests that `add` adds widgets by name."""
         self._clear_default_widgets()

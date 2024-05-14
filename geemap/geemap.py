@@ -1159,17 +1159,7 @@ class Map(core.Map):
         Returns:
             list | dict: A list in the format [west, south, east, north] in degrees.
         """
-        bounds = self.bounds
-        coords = [bounds[0][1], bounds[0][0], bounds[1][1], bounds[1][0]]
-
-        if asGeoJSON:
-            return ee.Geometry.BBox(
-                bounds[0][1], bounds[0][0], bounds[1][1], bounds[1][0]
-            ).getInfo()
-        else:
-            return coords
-
-    getBounds = get_bounds
+        return super().get_bounds(as_geo_json=asGeoJSON)
 
     def add_cog_layer(
         self,
