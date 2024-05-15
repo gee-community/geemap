@@ -825,7 +825,7 @@ class LayerManager(ipywidgets.VBox):
         settings_button.on_click(self._on_layer_settings_click)
 
         spinner = ipywidgets.Button(
-            icon="check",
+            icon="times",
             layout=ipywidgets.Layout(width="25px", height="25px", padding="0px"),
             tooltip="Loaded",
         )
@@ -872,7 +872,10 @@ class LayerManager(ipywidgets.VBox):
 
     def _on_layer_remove_click(self, layer):
 
-        layer_dict = self._host_map.ee_layers[layer.name]
+        if layer.name in self._host_map.ee_layers:
+            layer_dict = self._host_map.ee_layers[layer.name]
+        else:
+            layer_dict = {layer.name: {"layer": layer}}
         if "remove_control" not in layer_dict:
             label = ipywidgets.Label(
                 f"Remove {layer.name} layer?",
@@ -902,10 +905,9 @@ class LayerManager(ipywidgets.VBox):
                 self._host_map.remove_control(confirm_control)
                 if "confirm_widget" in layer_dict:
                     layer_dict["confirm_widget"].close()
+                    del layer_dict["confirm_widget"]
                 if "remove_control" in layer_dict:
-                    self._host_map.remove_control(layer_dict["remove_control"])
-                del layer_dict["remove_control"]
-                del layer_dict["confirm_widget"]
+                    del layer_dict["remove_control"]
 
             yes_button.on_click(on_yes_button_click)
 
