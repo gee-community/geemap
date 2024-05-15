@@ -9,6 +9,7 @@ import ee
 import ipyleaflet
 import ipytree
 import ipywidgets
+import ipyevents
 
 from . import common
 
@@ -835,20 +836,29 @@ class LayerManager(ipywidgets.VBox):
                 spinner.icon = "spinner spin lg"
             else:
                 spinner.tooltip = "Loaded"
-                spinner.icon = "check"
+                spinner.icon = "times"
 
         layer.observe(loading_change, "loading")
 
-        remove_layer_btn = ipywidgets.Button(
-            icon="times",
-            layout=ipywidgets.Layout(width="25px", height="25px", padding="0px"),
-            tooltip="Remove layer",
+        spinner_event = ipyevents.Event(
+            source=spinner, watched_events=["mouseenter", "mouseleave"]
         )
+
+        def handle_spinner_event(event):
+            if event["type"] == "mouseenter":
+                spinner.icon = "times"
+            elif event["type"] == "mouseleave":
+                if layer.loading:
+                    spinner.icon = "spinner spin lg"
+                else:
+                    spinner.icon = "times"
+
+        spinner_event.on_dom_event(handle_spinner_event)
 
         def remove_layer_click(_):
             self._on_layer_remove_click(layer)
 
-        remove_layer_btn.on_click(remove_layer_click)
+        spinner.on_click(remove_layer_click)
 
         return ipywidgets.HBox(
             [
@@ -856,7 +866,6 @@ class LayerManager(ipywidgets.VBox):
                 opacity_slider,
                 settings_button,
                 spinner,
-                remove_layer_btn,
             ],
             layout=ipywidgets.Layout(padding="0px 4px 0px 4px"),
         )
@@ -878,7 +887,8 @@ class LayerManager(ipywidgets.VBox):
                 button_style="primary",
             )
             confirm_widget = ipywidgets.VBox(
-                [label, ipywidgets.HBox([yes_button, no_button])]
+                [label, ipywidgets.HBox([yes_button, no_button])],
+                layout=ipywidgets.Layout(width="284px"),
             )
 
             confirm_control = ipyleaflet.WidgetControl(
