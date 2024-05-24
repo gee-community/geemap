@@ -16169,14 +16169,14 @@ def is_on_aws():
     return on_aws
 
 
-def google_maps_api_key(lookup_key: str = "MAPS_API_KEY") -> Optional[str]:
+def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
     """
     Retrieves the Google Maps API key from the environment or Colab user data.
 
     Args:
-        lookup_key (str, optional): The name of the environment variable or
-        Colab user data key where the API key is stored.
-        Defaults to 'MAPS_API_KEY'.
+        key (str, optional): The name of the environment variable or Colab user
+            data key where the API key is stored. Defaults to
+            'GOOGLE_MAPS_API_KEY'.
 
     Returns:
         str: The API key, or None if it could not be found.
@@ -16184,8 +16184,7 @@ def google_maps_api_key(lookup_key: str = "MAPS_API_KEY") -> Optional[str]:
     if in_colab_shell():
         from google.colab import userdata
 
-        env_value = userdata.get(lookup_key)
-    else:
-        env_value = os.environ.get(lookup_key, None)
-
-    return env_value
+        if api_key := userdata.get(key):
+            return api_key
+    
+    return os.environ.get(key, None)

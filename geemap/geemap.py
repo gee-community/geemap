@@ -413,15 +413,15 @@ class Map(core.Map):
             **kwargs: Keyword arguments for the TileLayer.
         """
         import xyzservices
-        from .basemaps import check_basemap_alias, GoogleMapsTileProvider
 
         try:
             layer_names = self.get_layer_names()
 
-            basemap = check_basemap_alias(basemap)
-
-            if isinstance(basemap, str) and "Google" in basemap:
-                basemap = GoogleMapsTileProvider(basemap, **kwargs)
+            if isinstance(basemap, str):
+                for map_name, tile_provider in self._available_basemaps.items():
+                    if basemap.upper() == map_name.upper():
+                        basemap = tile_provider
+                        break
 
             if isinstance(basemap, xyzservices.TileProvider):
                 name = basemap.name

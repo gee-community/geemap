@@ -19,15 +19,14 @@ More WMS basemaps can be found at the following websites:
 
 import collections
 import os
-import requests
-import sys
+from typing import Any, Optional
+
 import folium
 import ipyleaflet
+import requests
 import xyzservices
-from .common import check_package, planet_tiles, google_maps_api_key
-from typing import Optional, Any, Dict, Union
-from xyzservices import TileProvider
 
+from .common import check_package, get_google_maps_api_key, planet_tiles
 
 XYZ_TILES = {
     "OpenStreetMap": {
@@ -241,12 +240,25 @@ WMS_TILES = {
 custom_tiles = {"xyz": XYZ_TILES, "wms": WMS_TILES}
 
 
-class GoogleMapsTileProvider(TileProvider):
+class GoogleMapsTileProvider(xyzservices.TileProvider):
     """Google Maps TileProvider."""
+
+    MAP_TYPE_CONFIG = {
+        "roadmap": {"mapType": "roadmap"},
+        "satellite": {"mapType": "satellite"},
+        "terrain": {
+            "mapType": "terrain",
+            "layerTypes": ["layerRoadmap"],
+        },
+        "hybrid": {
+            "mapType": "satellite",
+            "layerTypes": ["layerRoadmap"],
+        },
+    }
 
     def __init__(
         self,
-        map_type: str = "Roadmap",
+        map_type: str = "roadmap",
         language: str = "en-Us",
         region: str = "US",
         api_key: Optional[str] = None,
@@ -256,8 +268,8 @@ class GoogleMapsTileProvider(TileProvider):
         Generates Google Map tiles using the provided parameters. To get an API key
             and enable Map Tiles API, visit
             https://developers.google.com/maps/get-started#create-project.
-            You can set the API key using the environment variable `MAPS_API_KEY`
-            or by passing it as an argument.
+            You can set the API key using the environment variable
+            `GOOGLE_MAPS_API_KEY` or by passing it as an argument.
 
         Args:
             map_type (str, optional): The type of map to generate. Options are
@@ -291,99 +303,50 @@ class GoogleMapsTileProvider(TileProvider):
             TileProvider object: A TileProvider object with the Google Maps tile.
         """
 
-        if api_key is None:
-
-            if "google.colab" in sys.modules:
-                from google.colab import userdata
-
-                api_key = userdata.get("MAPS_API_KEY")
-            else:
-                api_key = os.environ.get("MAPS_API_KEY")
-
-        if api_key is None:
+        key = api_key or get_google_maps_api_key()
+        if key is None:
             raise ValueError(
-                "API key is required to access Google Maps API. To get an API key "
-                "and enable Map Tiles API, visit "
+                "API key is required to access Google Maps API. To get an API "
+                "key and enable Map Tiles API, visit "
                 "https://developers.google.com/maps/get-started#create-project"
             )
 
-        allowed_map_types = [
-            "roadmap",
-            "satellite",
-            "terrain",
-            "hybrid",
-            "traffic",
-            "streetview",
-        ]
+        if map_type not in self.MAP_TYPE_CONFIG:
+            raise ValueError(f"map_type must be one of: {self.MAP_TYPE_CONFIG.keys()}")
 
-        # Support map type as a string with or without 'google.',
-        # such as 'Google Roadmap', 'Google.Roadmap', or 'Roadmap'
-        if isinstance(map_type, str):
-            map_type = (
-                map_type.lower().replace("google.", "").replace("google", "").strip()
-            )
-
-            if map_type not in allowed_map_types:
-                raise ValueError(
-                    "map_type must be one of 'roadmap', 'satellite', 'terrain', "
-                    "'hybrid', 'traffic', 'streetview'"
-                )
-        else:
-            raise ValueError("map_type must be a string")
-
-        tile_args = {}
-
-        # Define the parameters for each map type
-        for m_type in allowed_map_types:
-
-            mapType = m_type
-            layerTypes = None
-
-            if m_type == "hybrid":
-                mapType = "satellite"
-                layerTypes = ["layerRoadmap"]
-            elif m_type == "terrain":
-                layerTypes = ["layerRoadmap"]
-            elif m_type == "traffic":
-                mapType = "roadmap"
-                layerTypes = ["layerTraffic"]
-            elif m_type == "streetview":
-                mapType = "roadmap"
-                layerTypes = ["layerStreetview"]
-
-            tile_args[m_type] = {
-                "mapType": mapType,
+        request_url = f"https://tile.googleapis.com/v1/createSession?key={key}"
+        response = requests.post(
+            url=request_url,
+            headers={"Content-Type": "application/json"},
+            json={
+                **self.MAP_TYPE_CONFIG[map_type],
                 "language": language,
                 "region": region,
-                "layerTypes": layerTypes,
                 **kwargs,
-            }
-
-            if tile_args[m_type].get("layerTypes") is None:
-                del tile_args[m_type]["layerTypes"]
-
-        args = tile_args[map_type]
-        response = requests.post(
-            f"https://tile.googleapis.com/v1/createSession?key={api_key}",
-            headers={"Content-Type": "application/json"},
-            json=args,
+            },
+            timeout=3,
         )
 
-        if response.status_code == 200:
-            res = response.json()
+        if response.status_code == requests.codes.ok:
+            json = response.json()
+            map_name = map_type.capitalize()
             super().__init__(
                 {
-                    "url": f"https://tile.googleapis.com/v1/2dtiles/{{z}}/{{x}}/{{y}}?session={res['session']}&key={{accessToken}}",
-                    "attribution": f"© Google {map_type.capitalize()}",
-                    "accessToken": api_key,
-                    "name": f"Google.{map_type.capitalize()}",
-                    "ext": res["imageFormat"],
-                    "tileSize": res["tileWidth"],
+                    "url": f"https://tile.googleapis.com/v1/2dtiles/{{z}}/{{x}}/{{y}}?session={json['session']}&key={{accessToken}}",
+                    "attribution": f"© Google {map_name}",
+                    "accessToken": key,
+                    "name": f"Google.{map_name}",
+                    "ext": json["imageFormat"],
+                    "tileSize": json["tileWidth"],
                 }
+            )
+        else:
+            raise RuntimeError(
+                f"Error creating a Maps API session:\n{response.json()}."
             )
 
 
-def google_map_tiles(
+def get_google_map_tile_providers(
     language: str = "en-Us",
     region: str = "US",
     api_key: Optional[str] = None,
@@ -410,68 +373,14 @@ def google_map_tiles(
         ('roadmap', 'satellite', 'terrain', 'hybrid')
         and the values are the corresponding GoogleMapsTileProvider objects.
     """
-    allowed_map_types = [
-        "roadmap",
-        "satellite",
-        "terrain",
-        "hybrid",
-        # "traffic",
-        # "streetview",
-    ]
-
     gmap_providers = {}
 
-    for m_type in allowed_map_types:
+    for m_type in GoogleMapsTileProvider.MAP_TYPE_CONFIG:
         gmap_providers[m_type] = GoogleMapsTileProvider(
             map_type=m_type, language=language, region=region, api_key=api_key, **kwargs
         )
 
     return gmap_providers
-
-
-def check_basemap_alias(
-    basemap: str,
-) -> str:
-    """
-    Checks if the provided basemap is an alias and returns the corresponding basemap name.
-
-    Args:
-        basemap (str): The basemap to check.
-
-    Returns:
-        str: The corresponding basemap name if the input is an alias, otherwise the input itself.
-    """
-
-    allowed_aliases = {
-        "DEFAULT": {
-            "Google": "Google.Roadmap",
-            "Esri": "OpenStreetMap.Mapnik",
-        },
-        "ROADMAP": {
-            "Google": "Google.Roadmap",
-            "Esri": "Esri.WorldStreetMap",
-        },
-        "SATELLITE": {
-            "Google": "Google.Satellite",
-            "Esri": "Esri.WorldImagery",
-        },
-        "TERRAIN": {
-            "Google": "Google.Terrain",
-            "Esri": "Esri.WorldTopoMap",
-        },
-        "HYBRID": {
-            "Google": "Google.Hybrid",
-            "Esri": "Esri.WorldImagery",
-        },
-    }
-
-    if isinstance(basemap, str) and basemap.upper() in allowed_aliases:
-        if google_maps_api_key() is not None:
-            return allowed_aliases[basemap.upper()]["Google"]
-        else:
-            return allowed_aliases[basemap.upper()]["Esri"]
-    else:
-        return basemap
 
 
 def get_xyz_dict(free_only=True, france=False):
