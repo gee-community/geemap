@@ -2884,7 +2884,10 @@ def time_slider(m=None):
                 if selected != "Any":
                     n_class = int(classes.value)
 
-                colors = plt.cm.get_cmap(colormap.value, n_class)
+                try:
+                    colors = plt.get_cmap(colormap.value, n_class)
+                except:
+                    colors = plt.cm.get_cmap(colormap.value, n_class)
                 cmap_colors = [
                     mpl.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
                 ]
@@ -2965,7 +2968,10 @@ def time_slider(m=None):
             if classes.value != "Any":
                 n_class = int(classes.value)
 
-            colors = plt.cm.get_cmap(colormap.value, n_class)
+            try:
+                colors = plt.get_cmap(colormap.value, n_class)
+            except:
+                colors = plt.cm.get_cmap(colormap.value, n_class)
             cmap_colors = [mpl.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)]
 
             _, ax = plt.subplots(figsize=(6, 0.4))
