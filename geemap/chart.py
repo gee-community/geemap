@@ -9,12 +9,190 @@
 import ee
 import pandas as pd
 import numpy as np
+import bqplot as bq
+import ipywidgets as widgets
 from bqplot import Tooltip
 from bqplot import pyplot as plt
-
+from IPython.display import display
 from .common import ee_to_df, zonal_stats
 
-from typing import Union
+from typing import List, Optional, Union, Dict
+
+
+class DataTable:
+    """
+    A class to create and display various types of charts from data.
+
+    Attributes:
+        df (pd.DataFrame): The data to be displayed in the charts.
+        chart: The bqplot Figure object for the chart.
+    """
+
+    def __init__(self, data: Union[Dict, pd.DataFrame], **kwargs):
+        """
+        Initializes the DataTable with data.
+
+        Args:
+            data (dict or pd.DataFrame): The input data. If it's a dictionary, it will be converted to a DataFrame.
+            **kwargs: Additional keyword arguments to pass to the pd.DataFrame constructor.
+        """
+        if isinstance(data, pd.DataFrame):
+            self.df = data
+        else:
+            self.df = pd.DataFrame(data, **kwargs)
+        self.chart = None
+
+    def setChartType(
+        self,
+        chart_type: str,
+        x_cols: Optional[List[str]] = None,
+        y_cols: Optional[List[str]] = None,
+        colors: Optional[List[str]] = None,
+        x_label: Optional[str] = None,
+        y_label: Optional[str] = None,
+        title: Optional[str] = None,
+        **kwargs,
+    ) -> "DataTable":
+        """
+        Sets the chart type and other chart properties.
+
+        Args:
+            chart_type (str): The type of chart to create. Supported types are 'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart', 'PieChart', 'AreaChart', and 'Table'.
+            x_cols (list of str, optional): The columns to use for the x-axis. Defaults to the first column.
+            y_cols (list of str, optional): The columns to use for the y-axis. Defaults to the second column.
+            colors (list of str, optional): The colors to use for the chart. Defaults to a predefined list of colors.
+            x_label (str, optional): The label for the x-axis. Defaults to None.
+            y_label (str, optional): The label for the y-axis. Defaults to None.
+            title (str, optional): The title of the chart. Defaults to the chart type.
+            **kwargs: Additional keyword arguments to pass to the bqplot Figure or mark objects.
+
+        Returns:
+            DataTable: The DataTable instance with the chart set.
+        """
+        if x_cols is None:
+            x_cols = [self.df.columns[0]]
+        if y_cols is None:
+            y_cols = [self.df.columns[1]]
+        if title is None:
+            title = chart_type
+
+        if chart_type == "PieChart":
+            if colors is None:
+                colors = [
+                    "#1f77b4",
+                    "#ff7f0e",
+                    "#2ca02c",
+                    "#d62728",
+                    "#9467bd",
+                    "#8c564b",
+                    "#e377c2",
+                    "#7f7f7f",
+                    "#bcbd22",
+                    "#17becf",
+                ]  # Default pie chart colors
+        else:
+            if colors is None:
+                colors = [
+                    "blue",
+                    "orange",
+                    "green",
+                    "red",
+                    "purple",
+                    "brown",
+                ]  # Default colors
+
+        x_sc = bq.OrdinalScale()
+        y_sc = bq.LinearScale()
+
+        marks = []
+        for i, (x_col, y_col) in enumerate(zip(x_cols, y_cols)):
+            color = colors[
+                i % len(colors)
+            ]  # Cycle through colors if not enough are provided
+            if chart_type == "ScatterChart":
+                marks.append(
+                    bq.Scatter(
+                        x=self.df[x_col],
+                        y=self.df[y_col],
+                        scales={"x": x_sc, "y": y_sc},
+                        colors=[color],
+                        **kwargs,
+                    )
+                )
+            elif chart_type == "LineChart":
+                marks.append(
+                    bq.Lines(
+                        x=self.df[x_col],
+                        y=self.df[y_col],
+                        scales={"x": x_sc, "y": y_sc},
+                        colors=[color],
+                        **kwargs,
+                    )
+                )
+            elif chart_type == "ColumnChart":
+                marks.append(
+                    bq.Bars(
+                        x=self.df[x_col],
+                        y=self.df[y_col],
+                        scales={"x": x_sc, "y": y_sc},
+                        colors=[color],
+                        **kwargs,
+                    )
+                )
+            elif chart_type == "BarChart":
+                marks.append(
+                    bq.Bars(
+                        x=self.df[x_col],
+                        y=self.df[y_col],
+                        scales={"x": x_sc, "y": y_sc},
+                        orientation="horizontal",
+                        colors=[color],
+                        **kwargs,
+                    )
+                )
+            elif chart_type == "AreaChart":
+                marks.append(
+                    bq.Lines(
+                        x=self.df[x_col],
+                        y=self.df[y_col],
+                        scales={"x": x_sc, "y": y_sc},
+                        fill="bottom",
+                        colors=[color],
+                        **kwargs,
+                    )
+                )
+            elif chart_type == "PieChart":
+                # Pie chart does not support multiple series in the same way; use only the first pair of x_col and y_col
+                self.chart = bq.Figure(title=title, **kwargs)
+                pie = bq.Pie(
+                    sizes=self.df[y_cols[0]].tolist(),
+                    labels=self.df[x_cols[0]].tolist(),
+                    colors=colors[: len(self.df[x_cols[0]])],
+                    **kwargs,
+                )
+                self.chart.marks = [pie]
+                return self
+            elif chart_type == "Table":
+                self.chart = widgets.Output(**kwargs)
+                with self.chart:
+                    display(self.df)
+                self.chart.layout = widgets.Layout(width="50%")
+                return self
+            else:
+                raise ValueError("Unsupported chart type")
+
+        self.chart = bq.Figure(marks=marks, title=title, **kwargs)
+        x_axis = bq.Axis(scale=x_sc, label=x_label)
+        y_axis = bq.Axis(scale=y_sc, orientation="vertical", label=y_label)
+        self.chart.axes = [x_axis, y_axis]
+
+        return self
+
+    def display(self) -> None:
+        """
+        Displays the chart.
+        """
+        display(self.chart)
 
 
 class BaseChartClass:
