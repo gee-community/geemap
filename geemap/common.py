@@ -24,7 +24,7 @@ import zipfile
 import ee
 import ipywidgets as widgets
 from ipytree import Node, Tree
-from typing import Union, List, Dict, Optional, Tuple
+from typing import Union, List, Dict, Optional, Tuple, Any
 
 try:
     from IPython.display import display, IFrame, Javascript
@@ -16167,3 +16167,24 @@ def is_on_aws():
         if item.endswith(".aws") or "ec2-user" in item:
             on_aws = True
     return on_aws
+
+
+def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
+    """
+    Retrieves the Google Maps API key from the environment or Colab user data.
+
+    Args:
+        key (str, optional): The name of the environment variable or Colab user
+            data key where the API key is stored. Defaults to
+            'GOOGLE_MAPS_API_KEY'.
+
+    Returns:
+        str: The API key, or None if it could not be found.
+    """
+    if in_colab_shell():
+        from google.colab import userdata
+
+        if api_key := userdata.get(key):
+            return api_key
+
+    return os.environ.get(key, None)
