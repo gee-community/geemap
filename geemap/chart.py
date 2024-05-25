@@ -16,10 +16,32 @@ from bqplot import pyplot as plt
 from IPython.display import display
 from .common import ee_to_df, zonal_stats
 
-from typing import List, Optional, Union, Dict
+from typing import List, Optional, Union, Dict, Any
 
 
-class DataTable:
+class DataTable(pd.DataFrame):
+    # To ensure compatibility with pandas methods that return DataFrames
+    _metadata = ["_name"]
+
+    def __init__(
+        self,
+        data: Union[Dict[str, List[Any]], pd.DataFrame, None] = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Initializes the DataTable with data.
+
+        Args:
+            data (Union[Dict[str, List[Any]], pd.DataFrame, None]): The input
+                data. If it's a dictionary, it will be converted to a DataFrame.
+            **kwargs: Additional keyword arguments to pass to the pd.DataFrame
+                constructor.
+        """
+        self._name = kwargs.pop("name", "DataTable")
+        super().__init__(data, **kwargs)
+
+
+class BaseChart:
     """
     A class to create and display various types of charts from data.
 
@@ -28,19 +50,19 @@ class DataTable:
         chart: The bqplot Figure object for the chart.
     """
 
-    def __init__(self, data: Union[Dict, pd.DataFrame], **kwargs):
+    def __init__(self, data: Union[Dict, pd.DataFrame], **kwargs: Any) -> None:
         """
-        Initializes the DataTable with data.
+        Initializes the BaseChart with data.
 
         Args:
-            data (dict or pd.DataFrame): The input data. If it's a dictionary, it will be converted to a DataFrame.
-            **kwargs: Additional keyword arguments to pass to the pd.DataFrame constructor.
+            data (dict or pd.DataFrame): The input data. If it's a dictionary,
+                it will be converted to a DataFrame.
+            **kwargs: Additional keyword arguments to pass to the pd.DataFrame
+                constructor.
         """
-        if isinstance(data, pd.DataFrame):
-            self.df = data
-        else:
-            self.df = pd.DataFrame(data, **kwargs)
+        self.df = DataTable(data)
         self.chart = None
+        self.chart_type = None
 
     def setChartType(
         self,
@@ -48,27 +70,38 @@ class DataTable:
         x_cols: Optional[List[str]] = None,
         y_cols: Optional[List[str]] = None,
         colors: Optional[List[str]] = None,
-        x_label: Optional[str] = None,
-        y_label: Optional[str] = None,
+        x_label: Optional[str] = "",
+        y_label: Optional[str] = "",
         title: Optional[str] = None,
-        **kwargs,
-    ) -> "DataTable":
+        **kwargs: Any,
+    ) -> "BaseChart":
         """
         Sets the chart type and other chart properties.
 
         Args:
-            chart_type (str): The type of chart to create. Supported types are 'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart', 'PieChart', 'AreaChart', and 'Table'.
-            x_cols (list of str, optional): The columns to use for the x-axis. Defaults to the first column.
-            y_cols (list of str, optional): The columns to use for the y-axis. Defaults to the second column.
-            colors (list of str, optional): The colors to use for the chart. Defaults to a predefined list of colors.
-            x_label (str, optional): The label for the x-axis. Defaults to None.
-            y_label (str, optional): The label for the y-axis. Defaults to None.
-            title (str, optional): The title of the chart. Defaults to the chart type.
-            **kwargs: Additional keyword arguments to pass to the bqplot Figure or mark objects.
+            chart_type (str): The type of chart to create. Supported types are
+                'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
+                'PieChart', 'AreaChart', and 'Table'.
+            x_cols (list of str, optional): The columns to use for the x-axis.
+                Defaults to the first column.
+            y_cols (list of str, optional): The columns to use for the y-axis.
+                Defaults to the second column.
+            colors (list of str, optional): The colors to use for the chart.
+                Defaults to a predefined list of colors.
+            x_label (str, optional): The label for the x-axis. Defaults to an
+                empty string.
+            y_label (str, optional): The label for the y-axis. Defaults to an
+                empty string.
+            title (str, optional): The title of the chart. Defaults to the
+                chart type.
+            **kwargs: Additional keyword arguments to pass to the bqplot Figure
+                or mark objects.
 
         Returns:
-            DataTable: The DataTable instance with the chart set.
+            BaseChart: The BaseChart instance with the chart set.
         """
+        self.chart_type = chart_type
+
         if x_cols is None:
             x_cols = [self.df.columns[0]]
         if y_cols is None:
@@ -140,23 +173,25 @@ class DataTable:
                     )
                 )
             elif chart_type == "BarChart":
+                if "orientation" not in kwargs:
+                    kwargs["orientation"] = "horizontal"
                 marks.append(
                     bq.Bars(
                         x=self.df[x_col],
                         y=self.df[y_col],
                         scales={"x": x_sc, "y": y_sc},
-                        orientation="horizontal",
                         colors=[color],
                         **kwargs,
                     )
                 )
             elif chart_type == "AreaChart":
+                if "fill" not in kwargs:
+                    kwargs["fill"] = "bottom"
                 marks.append(
                     bq.Lines(
                         x=self.df[x_col],
                         y=self.df[y_col],
                         scales={"x": x_sc, "y": y_sc},
-                        fill="bottom",
                         colors=[color],
                         **kwargs,
                     )
@@ -187,6 +222,43 @@ class DataTable:
         self.chart.axes = [x_axis, y_axis]
 
         return self
+
+    def getChartType(self) -> Optional[str]:
+        """
+        Get the current chart type.
+
+        Returns:
+            Optional[str]: The current chart type, or None if no chart type is set.
+        """
+        return self.chart_type
+
+    def getDataTable(self) -> DataTable:
+        """
+        Get the DataTable used by the chart.
+
+        Returns:
+            DataTable: The DataTable instance containing the chart data.
+        """
+        return self.df
+
+    def setDataTable(self, data: Union[Dict[str, List[Any]], pd.DataFrame]) -> None:
+        """
+        Set a new DataTable for the chart.
+
+        Args:
+            data (Union[Dict[str, List[Any]], pd.DataFrame]): The new data to be used for the chart.
+        """
+        self.df = DataTable(data)
+
+    def setOptions(self, **options: Any) -> None:
+        """
+        Set additional options for the chart.
+
+        Args:
+            **options: Additional options to set for the chart.
+        """
+        for key, value in options.items():
+            setattr(self.chart, key, value)
 
     def display(self) -> None:
         """
