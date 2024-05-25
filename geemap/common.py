@@ -24,7 +24,7 @@ import zipfile
 import ee
 import ipywidgets as widgets
 from ipytree import Node, Tree
-from typing import Union, List, Dict, Optional, Tuple
+from typing import Union, List, Dict, Optional, Tuple, Any
 
 try:
     from IPython.display import display, IFrame, Javascript
@@ -12481,7 +12481,10 @@ def classify(
 
     if cmap is None:
         cmap = "Blues"
-    cmap = plt.cm.get_cmap(cmap, k)
+    try:
+        cmap = plt.get_cmap(cmap, k)
+    except:
+        cmap = plt.cm.get_cmap(cmap, k)
     if colors is None:
         colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
         colors = ["#" + i for i in colors]
@@ -13278,7 +13281,10 @@ def get_palette_colors(cmap_name=None, n_class=None, hashtag=False):
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
-    cmap = plt.cm.get_cmap(cmap_name, n_class)
+    try:
+        cmap = plt.get_cmap(cmap_name, n_class)
+    except:
+        cmap = plt.cm.get_cmap(cmap_name, n_class)
     colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
     if hashtag:
         colors = ["#" + i for i in colors]
@@ -15673,9 +15679,23 @@ def widget_template(
         )
     close_button_args["icon"] = close_button_icon
 
-    toolbar_button = widgets.ToggleButton(**widget_args)
+    try:
+        toolbar_button = widgets.ToggleButton(**widget_args)
+    except:
+        widget_args.pop("layout")
+        toolbar_button = widgets.ToggleButton(**widget_args)
+        toolbar_button.layout.width = "28px"
+        toolbar_button.layout.height = "28px"
+        toolbar_button.layout.padding = "0px 0px 0px 4px"
 
-    close_button = widgets.ToggleButton(**close_button_args)
+    try:
+        close_button = widgets.ToggleButton(**close_button_args)
+    except:
+        close_button_args.pop("layout")
+        close_button = widgets.ToggleButton(**close_button_args)
+        close_button.layout.width = "28px"
+        close_button.layout.height = "28px"
+        close_button.layout.padding = "0px 0px 0px 4px"
 
     toolbar_widget = widgets.VBox()
     toolbar_widget.children = [toolbar_button]
@@ -16167,3 +16187,24 @@ def is_on_aws():
         if item.endswith(".aws") or "ec2-user" in item:
             on_aws = True
     return on_aws
+
+
+def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
+    """
+    Retrieves the Google Maps API key from the environment or Colab user data.
+
+    Args:
+        key (str, optional): The name of the environment variable or Colab user
+            data key where the API key is stored. Defaults to
+            'GOOGLE_MAPS_API_KEY'.
+
+    Returns:
+        str: The API key, or None if it could not be found.
+    """
+    if in_colab_shell():
+        from google.colab import userdata
+
+        if api_key := userdata.get(key):
+            return api_key
+
+    return os.environ.get(key, None)
