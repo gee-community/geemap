@@ -461,6 +461,9 @@ class Map(ipyleaflet.Map, MapInterface):
         # Use the first basemap in the list of available basemaps.
         if "basemap" not in kwargs:
             kwargs["basemap"] = next(iter(self._available_basemaps.values()))
+        elif "basemap" in kwargs and isinstance(kwargs["basemap"], str):
+            if kwargs["basemap"] in self._available_basemaps:
+                kwargs["basemap"] = self._available_basemaps.get(kwargs["basemap"])
 
         if "width" in kwargs:
             self.width: str = kwargs.pop("width", "100%")
