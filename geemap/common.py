@@ -12481,7 +12481,10 @@ def classify(
 
     if cmap is None:
         cmap = "Blues"
-    cmap = plt.cm.get_cmap(cmap, k)
+    try:
+        cmap = plt.get_cmap(cmap, k)
+    except:
+        cmap = plt.cm.get_cmap(cmap, k)
     if colors is None:
         colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
         colors = ["#" + i for i in colors]
@@ -13278,7 +13281,10 @@ def get_palette_colors(cmap_name=None, n_class=None, hashtag=False):
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
-    cmap = plt.cm.get_cmap(cmap_name, n_class)
+    try:
+        cmap = plt.get_cmap(cmap_name, n_class)
+    except:
+        cmap = plt.cm.get_cmap(cmap_name, n_class)
     colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
     if hashtag:
         colors = ["#" + i for i in colors]
@@ -15673,9 +15679,23 @@ def widget_template(
         )
     close_button_args["icon"] = close_button_icon
 
-    toolbar_button = widgets.ToggleButton(**widget_args)
+    try:
+        toolbar_button = widgets.ToggleButton(**widget_args)
+    except:
+        widget_args.pop("layout")
+        toolbar_button = widgets.ToggleButton(**widget_args)
+        toolbar_button.layout.width = "28px"
+        toolbar_button.layout.height = "28px"
+        toolbar_button.layout.padding = "0px 0px 0px 4px"
 
-    close_button = widgets.ToggleButton(**close_button_args)
+    try:
+        close_button = widgets.ToggleButton(**close_button_args)
+    except:
+        close_button_args.pop("layout")
+        close_button = widgets.ToggleButton(**close_button_args)
+        close_button.layout.width = "28px"
+        close_button.layout.height = "28px"
+        close_button.layout.padding = "0px 0px 0px 4px"
 
     toolbar_widget = widgets.VBox()
     toolbar_widget.children = [toolbar_button]
