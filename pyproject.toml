@@ -1,11 +1,11 @@
 [project]
 name = "geemap"
-version = "0.31.0"
+version = "0.32.0"
 dynamic = [
     "dependencies",
 ]
 description = "A Python package for interactive mapping using Google Earth Engine and ipyleaflet"
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.8"
 keywords = [
     "geemap",
@@ -110,7 +110,7 @@ universal = true
 
 
 [tool.bumpversion]
-current_version = "0.31.0"
+current_version = "0.32.0"
 commit = true
 tag = true
 

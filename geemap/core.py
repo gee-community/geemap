@@ -402,12 +402,12 @@ class Map(ipyleaflet.Map, MapInterface):
         "scroll_wheel_zoom": True,
     }
 
-    _BASEMAP_ALIASES: Dict[str, str] = {
-        "DEFAULT": "OpenStreetMap.Mapnik",
-        "ROADMAP": "Esri.WorldStreetMap",
-        "SATELLITE": "Esri.WorldImagery",
-        "TERRAIN": "Esri.WorldTopoMap",
-        "HYBRID": "Esri.WorldImagery",
+    _BASEMAP_ALIASES: Dict[str, List[str]] = {
+        "DEFAULT": ["Google.Roadmap", "OpenStreetMap.Mapnik"],
+        "ROADMAP": ["Google.Roadmap", "Esri.WorldStreetMap"],
+        "SATELLITE": ["Google.Satellite", "Esri.WorldImagery"],
+        "TERRAIN": ["Google.Terrain", "Esri.WorldTopoMap"],
+        "HYBRID": ["Google.Hybrid", "Esri.WorldImagery"],
     }
 
     _USER_AGENT_PREFIX = "geemap-core"
@@ -457,6 +457,13 @@ class Map(ipyleaflet.Map, MapInterface):
 
     def __init__(self, **kwargs):
         self._available_basemaps = self._get_available_basemaps()
+
+        # Use the first basemap in the list of available basemaps.
+        if "basemap" not in kwargs:
+            kwargs["basemap"] = next(iter(self._available_basemaps.values()))
+        elif "basemap" in kwargs and isinstance(kwargs["basemap"], str):
+            if kwargs["basemap"] in self._available_basemaps:
+                kwargs["basemap"] = self._available_basemaps.get(kwargs["basemap"])
 
         if "width" in kwargs:
             self.width: str = kwargs.pop("width", "100%")
@@ -751,6 +758,9 @@ class Map(ipyleaflet.Map, MapInterface):
             vis_params = {}
         if name is None:
             name = f"Layer {len(self.ee_layers) + 1}"
+
+        if isinstance(ee_object, ee.ImageCollection):
+            ee_object = ee_object.mosaic()
         tile_layer = ee_tile_layers.EELeafletTileLayer(
             ee_object, vis_params, name, shown, opacity
         )
@@ -843,21 +853,35 @@ class Map(ipyleaflet.Map, MapInterface):
 
     def _get_available_basemaps(self) -> Dict[str, Any]:
         """Convert xyz tile services to a dictionary of basemaps."""
+        tile_providers = list(basemaps.get_xyz_dict().values())
+        if common.get_google_maps_api_key():
+            tile_providers = tile_providers + list(
+                basemaps.get_google_map_tile_providers().values()
+            )
+
         ret_dict = {}
-        for tile_info in basemaps.get_xyz_dict().values():
+        for tile_info in tile_providers:
             tile_info["url"] = tile_info.build_url()
             ret_dict[tile_info["name"]] = tile_info
-        extra_dict = {k: ret_dict[v] for k, v in self._BASEMAP_ALIASES.items()}
-        return {**extra_dict, **ret_dict}
+
+        # Each alias needs to point to a single map. For each alias, pick the
+        # first aliased map in `self._BASEMAP_ALIASES`.
+        aliased_maps = {}
+        for alias, maps in self._BASEMAP_ALIASES.items():
+            for map_name in maps:
+                if provider := ret_dict.get(map_name):
+                    aliased_maps[alias] = provider
+                    break
+        return {**aliased_maps, **ret_dict}
 
     def _get_preferred_basemap_name(self, basemap_name: str) -> str:
         """Returns the aliased basemap name."""
-        try:
-            return list(self._BASEMAP_ALIASES.keys())[
-                list(self._BASEMAP_ALIASES.values()).index(basemap_name)
-            ]
-        except ValueError:
-            return basemap_name
+        reverse_aliases = {}
+        for alias, maps in self._BASEMAP_ALIASES.items():
+            for map_name in maps:
+                if map_name not in reverse_aliases:
+                    reverse_aliases[map_name] = alias
+        return reverse_aliases.get(basemap_name, basemap_name)
 
     def _on_layers_change(self, change) -> None:
         del change  # Unused.

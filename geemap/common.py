@@ -24,7 +24,7 @@ import zipfile
 import ee
 import ipywidgets as widgets
 from ipytree import Node, Tree
-from typing import Union, List, Dict, Optional, Tuple
+from typing import Union, List, Dict, Optional, Tuple, Any
 
 try:
     from IPython.display import display, IFrame, Javascript
@@ -3217,7 +3217,7 @@ def get_image_collection_thumbnails(
         print(e)
 
 
-def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat"):
+def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat", decimal=2):
     """
     Creates an ee.Image from netCDF variables band_names that are read from nc_file. Currently only supports variables in a regular longitude/latitude grid (EPSG:4326).
 
@@ -3227,6 +3227,7 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat"):
         band_names (list, optional): if given, the bands are renamed to band_names. Defaults to the original var_names
         lon (str, optional): the name of the longitude variable in the netCDF file. Defaults to "lon"
         lat (str, optional): the name of the latitude variable in the netCDF file. Defaults to "lat"
+        decimal (int, optional): the number of decimal places to round the longitude and latitude values to. Defaults to 2.
 
     Returns:
         image: An ee.Image
@@ -3241,6 +3242,12 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat"):
         )
 
     import numpy as np
+    from collections import Counter
+
+    def most_common_value(lst):
+        counter = Counter(lst)
+        most_common = counter.most_common(1)
+        return float(format(most_common[0][0], f".{decimal}f"))
 
     try:
         if not isinstance(nc_file, str):
@@ -3261,10 +3268,12 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat"):
 
         dim_lon = np.unique(np.ediff1d(lon_data))
         dim_lat = np.unique(np.ediff1d(lat_data))
+        dim_lon = [most_common_value(dim_lon)]
+        dim_lat = [most_common_value(dim_lat)]
 
-        if (len(dim_lon) != 1) or (len(dim_lat) != 1):
-            print("The netCDF file is not a regular longitude/latitude grid")
-            return
+        # if (len(dim_lon) != 1) or (len(dim_lat) != 1):
+        #     print("The netCDF file is not a regular longitude/latitude grid")
+        #     return
 
         try:
             data = data.to_array()
@@ -12472,7 +12481,10 @@ def classify(
 
     if cmap is None:
         cmap = "Blues"
-    cmap = plt.cm.get_cmap(cmap, k)
+    try:
+        cmap = plt.get_cmap(cmap, k)
+    except:
+        cmap = plt.cm.get_cmap(cmap, k)
     if colors is None:
         colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
         colors = ["#" + i for i in colors]
@@ -12885,11 +12897,11 @@ def download_ee_image(
         raise ValueError("image must be an ee.Image.")
 
     if unmask_value is not None:
-        image = image.selfMask().unmask(unmask_value)
         if isinstance(region, ee.Geometry):
             image = image.clip(region)
         elif isinstance(region, ee.FeatureCollection):
             image = image.clipToCollection(region)
+        image = image.unmask(unmask_value, sameFootprint=False)
 
     if region is not None:
         kwargs["region"] = region
@@ -13269,7 +13281,10 @@ def get_palette_colors(cmap_name=None, n_class=None, hashtag=False):
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
-    cmap = plt.cm.get_cmap(cmap_name, n_class)
+    try:
+        cmap = plt.get_cmap(cmap_name, n_class)
+    except:
+        cmap = plt.cm.get_cmap(cmap_name, n_class)
     colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
     if hashtag:
         colors = ["#" + i for i in colors]
@@ -15664,9 +15679,23 @@ def widget_template(
         )
     close_button_args["icon"] = close_button_icon
 
-    toolbar_button = widgets.ToggleButton(**widget_args)
+    try:
+        toolbar_button = widgets.ToggleButton(**widget_args)
+    except:
+        widget_args.pop("layout")
+        toolbar_button = widgets.ToggleButton(**widget_args)
+        toolbar_button.layout.width = "28px"
+        toolbar_button.layout.height = "28px"
+        toolbar_button.layout.padding = "0px 0px 0px 4px"
 
-    close_button = widgets.ToggleButton(**close_button_args)
+    try:
+        close_button = widgets.ToggleButton(**close_button_args)
+    except:
+        close_button_args.pop("layout")
+        close_button = widgets.ToggleButton(**close_button_args)
+        close_button.layout.width = "28px"
+        close_button.layout.height = "28px"
+        close_button.layout.padding = "0px 0px 0px 4px"
 
     toolbar_widget = widgets.VBox()
     toolbar_widget.children = [toolbar_button]
@@ -16158,3 +16187,24 @@ def is_on_aws():
         if item.endswith(".aws") or "ec2-user" in item:
             on_aws = True
     return on_aws
+
+
+def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
+    """
+    Retrieves the Google Maps API key from the environment or Colab user data.
+
+    Args:
+        key (str, optional): The name of the environment variable or Colab user
+            data key where the API key is stored. Defaults to
+            'GOOGLE_MAPS_API_KEY'.
+
+    Returns:
+        str: The API key, or None if it could not be found.
+    """
+    if in_colab_shell():
+        from google.colab import userdata
+
+        if api_key := userdata.get(key):
+            return api_key
+
+    return os.environ.get(key, None)

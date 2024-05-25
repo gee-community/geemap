@@ -1,12 +1,12 @@
 """This script can do a batch update of notebook examples.
 """
 
-
 import glob
 import os
 import shutil
 
 in_dir = os.path.dirname(os.path.abspath(__file__))
+pkg_dir = os.path.dirname(in_dir)
 print(in_dir)
 notebook_dir = os.path.abspath(os.path.join(in_dir, "notebooks"))
 workshop_dir = os.path.abspath(os.path.join(in_dir, "workshops"))
@@ -141,3 +141,8 @@ files = glob.glob(notebook_dir.replace("examples", "docs") + "/*.ipynb")
 for file in files:
     if not os.path.basename(file)[0].isdigit():
         os.remove(file)
+
+os.chdir(pkg_dir)
+cmd = "pre-commit run --all-files"
+os.system(cmd)
+os.system(cmd)

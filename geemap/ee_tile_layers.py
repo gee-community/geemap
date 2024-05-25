@@ -169,25 +169,31 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             tuple: The minimum, maximum, standard deviation, and mean values across the
                 specified bands.
         """
-        stat_reducer = (ee.Reducer.minMax()
-                        .combine(ee.Reducer.mean().unweighted(), sharedInputs=True)
-                        .combine(ee.Reducer.stdDev(), sharedInputs=True))
+        stat_reducer = (
+            ee.Reducer.minMax()
+            .combine(ee.Reducer.mean().unweighted(), sharedInputs=True)
+            .combine(ee.Reducer.stdDev(), sharedInputs=True)
+        )
 
-        stats = self._ee_object.select(bands).reduceRegion(
-            reducer=stat_reducer,
-            geometry=bounds,
-            bestEffort=True,
-            maxPixels=10_000,
-            crs="SR-ORG:6627",
-            scale=1,
-        ).getInfo()
+        stats = (
+            self._ee_object.select(bands)
+            .reduceRegion(
+                reducer=stat_reducer,
+                geometry=bounds,
+                bestEffort=True,
+                maxPixels=10_000,
+                crs="SR-ORG:6627",
+                scale=1,
+            )
+            .getInfo()
+        )
 
         mins, maxs, stds, means = [
             {v for k, v in stats.items() if k.endswith(stat) and v is not None}
-            for stat in ('_min', '_max', '_stdDev', '_mean')
+            for stat in ("_min", "_max", "_stdDev", "_mean")
         ]
         if any(len(vals) == 0 for vals in (mins, maxs, stds, means)):
-            raise ValueError('No unmasked pixels were sampled.')
+            raise ValueError("No unmasked pixels were sampled.")
 
         min_val = min(mins)
         max_val = max(maxs)

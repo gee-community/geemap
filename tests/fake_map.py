@@ -119,6 +119,9 @@ class FakeTileLayer:
         self.visible = visible
         self.opacity = opacity
 
+    def observe(self, func, names):
+        pass
+
 
 class FakeGeoJSONLayer:
     def __init__(self, name="test-layer", visible=True, style=None):

@@ -72,10 +72,10 @@ class FakeXyz(xyzservices.Bunch):
         token = "https://fake-server.com/tiles/{z}/{x}/{y}?apikey={accessToken}"
         no_token = "https://fake-server.com/tiles/{z}/{x}/{y}"
 
-        self.fake_tile_a = FakeProvider('a', no_token)
-        self.fake_tile_b = FakeProvider('b', token)
-        self.fake_tile_c_1 = FakeProvider('c_1', no_token)
-        self.fake_tile_c_France = FakeProvider('c_France', no_token)
+        self.fake_tile_a = FakeProvider("a", no_token)
+        self.fake_tile_b = FakeProvider("b", token)
+        self.fake_tile_c_1 = FakeProvider("c_1", no_token)
+        self.fake_tile_c_France = FakeProvider("c_France", no_token)
 
         self.providers = xyzservices.Bunch(
             a=self.fake_tile_a,
@@ -84,7 +84,7 @@ class FakeXyz(xyzservices.Bunch):
         )
 
 
-@patch('xyzservices.providers', FakeXyz().providers)
+@patch("xyzservices.providers", FakeXyz().providers)
 class TestGetXyzDict(unittest.TestCase):
     def test_get_xyz_dict_structure(self):
         """Tests that get_xyz_dict returns correct object structure."""
