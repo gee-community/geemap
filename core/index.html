@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.21">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.24">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.6543a935.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -6148,12 +6148,12 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="s2">&quot;scroll_wheel_zoom&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="n">_BASEMAP_ALIASES</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;DEFAULT&quot;</span><span class="p">:</span> <span class="s2">&quot;OpenStreetMap.Mapnik&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ROADMAP&quot;</span><span class="p">:</span> <span class="s2">&quot;Esri.WorldStreetMap&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;SATELLITE&quot;</span><span class="p">:</span> <span class="s2">&quot;Esri.WorldImagery&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;TERRAIN&quot;</span><span class="p">:</span> <span class="s2">&quot;Esri.WorldTopoMap&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;HYBRID&quot;</span><span class="p">:</span> <span class="s2">&quot;Esri.WorldImagery&quot;</span><span class="p">,</span>
+    <span class="n">_BASEMAP_ALIASES</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;DEFAULT&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Google.Roadmap&quot;</span><span class="p">,</span> <span class="s2">&quot;OpenStreetMap.Mapnik&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;ROADMAP&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Google.Roadmap&quot;</span><span class="p">,</span> <span class="s2">&quot;Esri.WorldStreetMap&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;SATELLITE&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Google.Satellite&quot;</span><span class="p">,</span> <span class="s2">&quot;Esri.WorldImagery&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;TERRAIN&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Google.Terrain&quot;</span><span class="p">,</span> <span class="s2">&quot;Esri.WorldTopoMap&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;HYBRID&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Google.Hybrid&quot;</span><span class="p">,</span> <span class="s2">&quot;Esri.WorldImagery&quot;</span><span class="p">],</span>
     <span class="p">}</span>
 
     <span class="n">_USER_AGENT_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;geemap-core&quot;</span>
@@ -6203,6 +6203,13 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_available_basemaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_available_basemaps</span><span class="p">()</span>
+
+        <span class="c1"># Use the first basemap in the list of available basemaps.</span>
+        <span class="k">if</span> <span class="s2">&quot;basemap&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;basemap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_available_basemaps</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="k">elif</span> <span class="s2">&quot;basemap&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;basemap&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;basemap&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_available_basemaps</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;basemap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_available_basemaps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;basemap&quot;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="s2">&quot;width&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="s2">&quot;100%&quot;</span><span class="p">)</span>
@@ -6592,21 +6599,35 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
     <span class="k">def</span> <span class="nf">_get_available_basemaps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert xyz tile services to a dictionary of basemaps.&quot;&quot;&quot;</span>
+        <span class="n">tile_providers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">basemaps</span><span class="o">.</span><span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">common</span><span class="o">.</span><span class="n">get_google_maps_api_key</span><span class="p">():</span>
+            <span class="n">tile_providers</span> <span class="o">=</span> <span class="n">tile_providers</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="n">basemaps</span><span class="o">.</span><span class="n">get_google_map_tile_providers</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="p">)</span>
+
         <span class="n">ret_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">tile_info</span> <span class="ow">in</span> <span class="n">basemaps</span><span class="o">.</span><span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">tile_info</span> <span class="ow">in</span> <span class="n">tile_providers</span><span class="p">:</span>
             <span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">build_url</span><span class="p">()</span>
             <span class="n">ret_dict</span><span class="p">[</span><span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tile_info</span>
-        <span class="n">extra_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">ret_dict</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_BASEMAP_ALIASES</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">extra_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">ret_dict</span><span class="p">}</span>
+
+        <span class="c1"># Each alias needs to point to a single map. For each alias, pick the</span>
+        <span class="c1"># first aliased map in `self._BASEMAP_ALIASES`.</span>
+        <span class="n">aliased_maps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">alias</span><span class="p">,</span> <span class="n">maps</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_BASEMAP_ALIASES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">map_name</span> <span class="ow">in</span> <span class="n">maps</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">provider</span> <span class="o">:=</span> <span class="n">ret_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">map_name</span><span class="p">):</span>
+                    <span class="n">aliased_maps</span><span class="p">[</span><span class="n">alias</span><span class="p">]</span> <span class="o">=</span> <span class="n">provider</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">aliased_maps</span><span class="p">,</span> <span class="o">**</span><span class="n">ret_dict</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_get_preferred_basemap_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemap_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the aliased basemap name.&quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_BASEMAP_ALIASES</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span>
-                <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_BASEMAP_ALIASES</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">basemap_name</span><span class="p">)</span>
-            <span class="p">]</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">basemap_name</span>
+        <span class="n">reverse_aliases</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">alias</span><span class="p">,</span> <span class="n">maps</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_BASEMAP_ALIASES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">map_name</span> <span class="ow">in</span> <span class="n">maps</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">map_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reverse_aliases</span><span class="p">:</span>
+                    <span class="n">reverse_aliases</span><span class="p">[</span><span class="n">map_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">alias</span>
+        <span class="k">return</span> <span class="n">reverse_aliases</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">basemap_name</span><span class="p">,</span> <span class="n">basemap_name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_on_layers_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">del</span> <span class="n">change</span>  <span class="c1"># Unused.</span>
@@ -8026,7 +8047,7 @@ MapInterface        </code>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.a7c05c9e.min.js"></script>
+      <script src="../assets/javascripts/bundle.081f42fc.min.js"></script>
       
         <script src="../js/timeago.min.js"></script>
       

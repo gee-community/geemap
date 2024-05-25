@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.21">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.24">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.6543a935.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -680,6 +680,39 @@
   <a href="#geemap.basemaps" class="md-nav__link">
     <span class="md-ellipsis">
       geemap.basemaps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geemap.basemaps.GoogleMapsTileProvider" class="md-nav__link">
+    <span class="md-ellipsis">
+      GoogleMapsTileProvider
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GoogleMapsTileProvider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.basemaps.GoogleMapsTileProvider.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geemap.basemaps.get_google_map_tile_providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_google_map_tile_providers()
     </span>
   </a>
   
@@ -4769,6 +4802,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.basemaps.GoogleMapsTileProvider" class="md-nav__link">
+    <span class="md-ellipsis">
+      GoogleMapsTileProvider
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GoogleMapsTileProvider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.basemaps.GoogleMapsTileProvider.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geemap.basemaps.get_google_map_tile_providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_google_map_tile_providers()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.basemaps.get_xyz_dict" class="md-nav__link">
     <span class="md-ellipsis">
       get_xyz_dict()
@@ -4880,6 +4946,489 @@
 
 
 
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="geemap.basemaps.GoogleMapsTileProvider" class="doc doc-heading">
+        <code>
+GoogleMapsTileProvider            (<span title="xyzservices.lib.TileProvider">TileProvider</span>)
+        </code>
+
+
+
+<a href="#geemap.basemaps.GoogleMapsTileProvider" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Google Maps TileProvider.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/basemaps.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">GoogleMapsTileProvider</span><span class="p">(</span><span class="n">xyzservices</span><span class="o">.</span><span class="n">TileProvider</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Google Maps TileProvider.&quot;&quot;&quot;</span>
+
+    <span class="n">MAP_TYPE_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;roadmap&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mapType&quot;</span><span class="p">:</span> <span class="s2">&quot;roadmap&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;satellite&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mapType&quot;</span><span class="p">:</span> <span class="s2">&quot;satellite&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;terrain&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;mapType&quot;</span><span class="p">:</span> <span class="s2">&quot;terrain&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;layerTypes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;layerRoadmap&quot;</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;hybrid&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;mapType&quot;</span><span class="p">:</span> <span class="s2">&quot;satellite&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;layerTypes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;layerRoadmap&quot;</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">map_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;roadmap&quot;</span><span class="p">,</span>
+        <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en-Us&quot;</span><span class="p">,</span>
+        <span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;US&quot;</span><span class="p">,</span>
+        <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates Google Map tiles using the provided parameters. To get an API key</span>
+<span class="sd">            and enable Map Tiles API, visit</span>
+<span class="sd">            https://developers.google.com/maps/get-started#create-project.</span>
+<span class="sd">            You can set the API key using the environment variable</span>
+<span class="sd">            `GOOGLE_MAPS_API_KEY` or by passing it as an argument.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            map_type (str, optional): The type of map to generate. Options are</span>
+<span class="sd">                &#39;roadmap&#39;, &#39;satellite&#39;, &#39;terrain&#39;, &#39;hybrid&#39;, &#39;traffic&#39;, &#39;streetview&#39;.</span>
+<span class="sd">                Defaults to &#39;roadmap&#39;.</span>
+<span class="sd">            language (str, optional): An IETF language tag that specifies the</span>
+<span class="sd">                language used to display information on the tiles, such as &#39;zh-Cn&#39;.</span>
+<span class="sd">                Defaults to &#39;en-Us&#39;.</span>
+<span class="sd">            region (str, optional): A Common Locale Data Repository region</span>
+<span class="sd">                identifier (two uppercase letters) that represents the physical</span>
+<span class="sd">                location of the user. Defaults to &#39;US&#39;.</span>
+<span class="sd">            api_key (str, optional): The API key to use for the Google Maps API.</span>
+<span class="sd">                If not provided, it will try to get it from the environment or</span>
+<span class="sd">                Colab user data with the key &#39;MAPS_API_KEY&#39;. Defaults to None.</span>
+<span class="sd">            **kwargs: Additional parameters to pass to the map generation. For more</span>
+<span class="sd">                info, visit https://bit.ly/3UhbZKU</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If the API key is not provided and cannot be found in the</span>
+<span class="sd">                environment or Colab user data.</span>
+<span class="sd">            ValueError: If the map_type is not one of the allowed types.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; from geemap.basemaps import GoogleMapsTileProvider</span>
+<span class="sd">            &gt;&gt;&gt; m = geemap.Map()</span>
+<span class="sd">            &gt;&gt;&gt; basemap = GoogleMapsTileProvider(map_type=&#39;roadmap&#39;,</span>
+<span class="sd">                language=&quot;en-Us&quot;, region=&quot;US&quot;, scale=&quot;scaleFactor2x&quot;, highDpi=True)</span>
+<span class="sd">            &gt;&gt;&gt; m.add_basemap(basemap)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            TileProvider object: A TileProvider object with the Google Maps tile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="n">api_key</span> <span class="ow">or</span> <span class="n">get_google_maps_api_key</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;API key is required to access Google Maps API. To get an API &quot;</span>
+                <span class="s2">&quot;key and enable Map Tiles API, visit &quot;</span>
+                <span class="s2">&quot;https://developers.google.com/maps/get-started#create-project&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">map_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAP_TYPE_CONFIG</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;map_type must be one of: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">MAP_TYPE_CONFIG</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">request_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://tile.googleapis.com/v1/createSession?key=</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="n">request_url</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">},</span>
+            <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">MAP_TYPE_CONFIG</span><span class="p">[</span><span class="n">map_type</span><span class="p">],</span>
+                <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="n">language</span><span class="p">,</span>
+                <span class="s2">&quot;region&quot;</span><span class="p">:</span> <span class="n">region</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+            <span class="n">json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="n">map_name</span> <span class="o">=</span> <span class="n">map_type</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;https://tile.googleapis.com/v1/2dtiles/</span><span class="se">{{</span><span class="s2">z</span><span class="se">}}</span><span class="s2">/</span><span class="se">{{</span><span class="s2">x</span><span class="se">}}</span><span class="s2">/</span><span class="se">{{</span><span class="s2">y</span><span class="se">}}</span><span class="s2">?session=</span><span class="si">{</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&amp;key=</span><span class="se">{{</span><span class="s2">accessToken</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;attribution&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;© Google </span><span class="si">{</span><span class="n">map_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;accessToken&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Google.</span><span class="si">{</span><span class="n">map_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ext&quot;</span><span class="p">:</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;imageFormat&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;tileSize&quot;</span><span class="p">:</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;tileWidth&quot;</span><span class="p">],</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Error creating a Maps API session:</span><span class="se">\n</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.basemaps.GoogleMapsTileProvider.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_type</span><span class="o">=</span><span class="s1">&#39;roadmap&#39;</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s1">&#39;en-Us&#39;</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="s1">&#39;US&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+<a href="#geemap.basemaps.GoogleMapsTileProvider.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Generates Google Map tiles using the provided parameters. To get an API key
+    and enable Map Tiles API, visit
+    https://developers.google.com/maps/get-started#create-project.
+    You can set the API key using the environment variable
+    <code>GOOGLE_MAPS_API_KEY</code> or by passing it as an argument.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>map_type</code></td>
+        <td><code>str</code></td>
+        <td><p>The type of map to generate. Options are
+'roadmap', 'satellite', 'terrain', 'hybrid', 'traffic', 'streetview'.
+Defaults to 'roadmap'.</p></td>
+        <td><code>&#39;roadmap&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>language</code></td>
+        <td><code>str</code></td>
+        <td><p>An IETF language tag that specifies the
+language used to display information on the tiles, such as 'zh-Cn'.
+Defaults to 'en-Us'.</p></td>
+        <td><code>&#39;en-Us&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>region</code></td>
+        <td><code>str</code></td>
+        <td><p>A Common Locale Data Repository region
+identifier (two uppercase letters) that represents the physical
+location of the user. Defaults to 'US'.</p></td>
+        <td><code>&#39;US&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>api_key</code></td>
+        <td><code>str</code></td>
+        <td><p>The API key to use for the Google Maps API.
+If not provided, it will try to get it from the environment or
+Colab user data with the key 'MAPS_API_KEY'. Defaults to None.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>**kwargs</code></td>
+        <td><code>Any</code></td>
+        <td><p>Additional parameters to pass to the map generation. For more
+info, visit https://bit.ly/3UhbZKU</p></td>
+        <td><code>{}</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>ValueError</code></td>
+        <td><p>If the API key is not provided and cannot be found in the
+environment or Colab user data.</p></td>
+      </tr>
+      <tr>
+        <td><code>ValueError</code></td>
+        <td><p>If the map_type is not one of the allowed types.</p></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">geemap.basemaps</span> <span class="kn">import</span> <span class="n">GoogleMapsTileProvider</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">basemap</span> <span class="o">=</span> <span class="n">GoogleMapsTileProvider</span><span class="p">(</span><span class="n">map_type</span><span class="o">=</span><span class="s1">&#39;roadmap&#39;</span><span class="p">,</span>
+    <span class="n">language</span><span class="o">=</span><span class="s2">&quot;en-Us&quot;</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="s2">&quot;US&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;scaleFactor2x&quot;</span><span class="p">,</span> <span class="n">highDpi</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">m</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="n">basemap</span><span class="p">)</span>
+</code></pre></div>
+
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>TileProvider object</code></td>
+      <td><p>A TileProvider object with the Google Maps tile.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/basemaps.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">map_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;roadmap&quot;</span><span class="p">,</span>
+    <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en-Us&quot;</span><span class="p">,</span>
+    <span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;US&quot;</span><span class="p">,</span>
+    <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates Google Map tiles using the provided parameters. To get an API key</span>
+<span class="sd">        and enable Map Tiles API, visit</span>
+<span class="sd">        https://developers.google.com/maps/get-started#create-project.</span>
+<span class="sd">        You can set the API key using the environment variable</span>
+<span class="sd">        `GOOGLE_MAPS_API_KEY` or by passing it as an argument.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        map_type (str, optional): The type of map to generate. Options are</span>
+<span class="sd">            &#39;roadmap&#39;, &#39;satellite&#39;, &#39;terrain&#39;, &#39;hybrid&#39;, &#39;traffic&#39;, &#39;streetview&#39;.</span>
+<span class="sd">            Defaults to &#39;roadmap&#39;.</span>
+<span class="sd">        language (str, optional): An IETF language tag that specifies the</span>
+<span class="sd">            language used to display information on the tiles, such as &#39;zh-Cn&#39;.</span>
+<span class="sd">            Defaults to &#39;en-Us&#39;.</span>
+<span class="sd">        region (str, optional): A Common Locale Data Repository region</span>
+<span class="sd">            identifier (two uppercase letters) that represents the physical</span>
+<span class="sd">            location of the user. Defaults to &#39;US&#39;.</span>
+<span class="sd">        api_key (str, optional): The API key to use for the Google Maps API.</span>
+<span class="sd">            If not provided, it will try to get it from the environment or</span>
+<span class="sd">            Colab user data with the key &#39;MAPS_API_KEY&#39;. Defaults to None.</span>
+<span class="sd">        **kwargs: Additional parameters to pass to the map generation. For more</span>
+<span class="sd">            info, visit https://bit.ly/3UhbZKU</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the API key is not provided and cannot be found in the</span>
+<span class="sd">            environment or Colab user data.</span>
+<span class="sd">        ValueError: If the map_type is not one of the allowed types.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from geemap.basemaps import GoogleMapsTileProvider</span>
+<span class="sd">        &gt;&gt;&gt; m = geemap.Map()</span>
+<span class="sd">        &gt;&gt;&gt; basemap = GoogleMapsTileProvider(map_type=&#39;roadmap&#39;,</span>
+<span class="sd">            language=&quot;en-Us&quot;, region=&quot;US&quot;, scale=&quot;scaleFactor2x&quot;, highDpi=True)</span>
+<span class="sd">        &gt;&gt;&gt; m.add_basemap(basemap)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        TileProvider object: A TileProvider object with the Google Maps tile.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">key</span> <span class="o">=</span> <span class="n">api_key</span> <span class="ow">or</span> <span class="n">get_google_maps_api_key</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;API key is required to access Google Maps API. To get an API &quot;</span>
+            <span class="s2">&quot;key and enable Map Tiles API, visit &quot;</span>
+            <span class="s2">&quot;https://developers.google.com/maps/get-started#create-project&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">map_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAP_TYPE_CONFIG</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;map_type must be one of: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">MAP_TYPE_CONFIG</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">request_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://tile.googleapis.com/v1/createSession?key=</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">url</span><span class="o">=</span><span class="n">request_url</span><span class="p">,</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">},</span>
+        <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">MAP_TYPE_CONFIG</span><span class="p">[</span><span class="n">map_type</span><span class="p">],</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="n">language</span><span class="p">,</span>
+            <span class="s2">&quot;region&quot;</span><span class="p">:</span> <span class="n">region</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="n">timeout</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+        <span class="n">json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="n">map_name</span> <span class="o">=</span> <span class="n">map_type</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;https://tile.googleapis.com/v1/2dtiles/</span><span class="se">{{</span><span class="s2">z</span><span class="se">}}</span><span class="s2">/</span><span class="se">{{</span><span class="s2">x</span><span class="se">}}</span><span class="s2">/</span><span class="se">{{</span><span class="s2">y</span><span class="se">}}</span><span class="s2">?session=</span><span class="si">{</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;session&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&amp;key=</span><span class="se">{{</span><span class="s2">accessToken</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;attribution&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;© Google </span><span class="si">{</span><span class="n">map_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;accessToken&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Google.</span><span class="si">{</span><span class="n">map_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ext&quot;</span><span class="p">:</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;imageFormat&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;tileSize&quot;</span><span class="p">:</span> <span class="n">json</span><span class="p">[</span><span class="s2">&quot;tileWidth&quot;</span><span class="p">],</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Error creating a Maps API session:</span><span class="se">\n</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="geemap.basemaps.get_google_map_tile_providers" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_google_map_tile_providers</span><span class="p">(</span><span class="n">language</span><span class="o">=</span><span class="s1">&#39;en-Us&#39;</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="s1">&#39;US&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#geemap.basemaps.get_google_map_tile_providers" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Generates a dictionary of Google Map tile providers for different map types.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>language</code></td>
+        <td><code>str</code></td>
+        <td><p>An IETF language tag that specifies the
+language used to display information on the tiles, such as 'zh-Cn'.
+Defaults to 'en-Us'.</p></td>
+        <td><code>&#39;en-Us&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>region</code></td>
+        <td><code>str</code></td>
+        <td><p>A Common Locale Data Repository region
+identifier (two uppercase letters) that represents the physical
+location of the user. Defaults to 'US'.</p></td>
+        <td><code>&#39;US&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>api_key</code></td>
+        <td><code>str</code></td>
+        <td><p>The API key to use for the Google Maps API.
+If not provided, it will try to get it from the environment or
+Colab user data with the key 'MAPS_API_KEY'. Defaults to None.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>**kwargs</code></td>
+        <td><code>Any</code></td>
+        <td><p>Additional parameters to pass to the map generation. For more
+info, visit https://bit.ly/3UhbZKU</p></td>
+        <td><code>{}</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>dict</code></td>
+      <td><p>A dictionary where the keys are the map types
+('roadmap', 'satellite', 'terrain', 'hybrid')
+and the values are the corresponding GoogleMapsTileProvider objects.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/basemaps.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_google_map_tile_providers</span><span class="p">(</span>
+    <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en-Us&quot;</span><span class="p">,</span>
+    <span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;US&quot;</span><span class="p">,</span>
+    <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a dictionary of Google Map tile providers for different map types.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        language (str, optional): An IETF language tag that specifies the</span>
+<span class="sd">            language used to display information on the tiles, such as &#39;zh-Cn&#39;.</span>
+<span class="sd">            Defaults to &#39;en-Us&#39;.</span>
+<span class="sd">        region (str, optional): A Common Locale Data Repository region</span>
+<span class="sd">            identifier (two uppercase letters) that represents the physical</span>
+<span class="sd">            location of the user. Defaults to &#39;US&#39;.</span>
+<span class="sd">        api_key (str, optional): The API key to use for the Google Maps API.</span>
+<span class="sd">            If not provided, it will try to get it from the environment or</span>
+<span class="sd">            Colab user data with the key &#39;MAPS_API_KEY&#39;. Defaults to None.</span>
+<span class="sd">        **kwargs: Additional parameters to pass to the map generation. For more</span>
+<span class="sd">            info, visit https://bit.ly/3UhbZKU</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary where the keys are the map types</span>
+<span class="sd">        (&#39;roadmap&#39;, &#39;satellite&#39;, &#39;terrain&#39;, &#39;hybrid&#39;)</span>
+<span class="sd">        and the values are the corresponding GoogleMapsTileProvider objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gmap_providers</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">m_type</span> <span class="ow">in</span> <span class="n">GoogleMapsTileProvider</span><span class="o">.</span><span class="n">MAP_TYPE_CONFIG</span><span class="p">:</span>
+        <span class="n">gmap_providers</span><span class="p">[</span><span class="n">m_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">GoogleMapsTileProvider</span><span class="p">(</span>
+            <span class="n">map_type</span><span class="o">=</span><span class="n">m_type</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="n">language</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gmap_providers</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
@@ -5584,7 +6133,7 @@ Defaults to False.</p></td>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.a7c05c9e.min.js"></script>
+      <script src="../assets/javascripts/bundle.081f42fc.min.js"></script>
       
         <script src="../js/timeago.min.js"></script>
       
