@@ -1016,38 +1016,112 @@ def image_doySeriesByYear(
 
 
 def image_histogram(
-    image, region, scale, maxBuckets, minBucketWidth, maxRaw, maxPixels, **kwargs
-):
+    image: ee.Image,
+    region: ee.Geometry,
+    scale: int,
+    maxBuckets: int,
+    minBucketWidth: float,
+    maxRaw: int,
+    maxPixels: int,
+    reducer_args: Dict[str, Any] = {},
+    **kwargs: Dict[str, Any],
+) -> bq.Figure:
     """
-    Generates a histogram from an image.
+    Creates a histogram for each band of the specified image within the given
+        region using bqplot.
 
     Args:
-        image (ee.Image): The image to analyze.
-        region (ee.Geometry | ee.FeatureCollection): The region to analyze.
-        scale (int): The scale in meters at which to perform the analysis.
-        maxBuckets (int): The maximum number of buckets (bins) to use when building a histogram.
-        minBucketWidth (float): The minimum histogram bucket width, or null to allow any power of 2.
-        maxRaw (int): The maximum number of pixels to reduce at one time.
+        image (ee.Image): The Earth Engine image for which to create histograms.
+        region (ee.Geometry): The region over which to calculate the histograms.
+        scale (int): The scale in meters of the calculation.
+        maxBuckets (int): The maximum number of buckets in the histogram.
+        minBucketWidth (float): The minimum width of the buckets in the histogram.
+        maxRaw (int): The maximum number of pixels to include in the histogram.
         maxPixels (int): The maximum number of pixels to reduce.
-        **kwargs: Additional keyword arguments.
+        reducer_args (dict): Additional arguments to pass to the image.reduceRegion.
+
+    Keyword Args:
+        colors (list[str]): Colors for the histograms of each band.
+        labels (list[str]): Labels for the histograms of each band.
+        title (str): Title of the combined histogram plot.
+        legend_location (str): Location of the legend in the plot.
 
     Returns:
-        None
+        bq.Figure: The bqplot figure containing the histograms.
     """
-    fc = zonal_stats(
-        image,
-        region,
-        stat_type="count",
+    # Calculate the histogram data.
+    histogram = image.reduceRegion(
+        reducer=ee.Reducer.histogram(
+            maxBuckets=maxBuckets, minBucketWidth=minBucketWidth, maxRaw=maxRaw
+        ),
+        geometry=region,
         scale=scale,
-        max_pixels=maxPixels,
-        max_raw=maxRaw,
-        verbose=False,
-        return_fc=True,
+        maxPixels=maxPixels,
+        **reducer_args,
     )
-    df = ee_to_df(fc)
-    bands = image.bandNames().getInfo()
-    for band in bands:
-        feature_histogram(df, band, maxBuckets, minBucketWidth, **kwargs)
+
+    histograms = {
+        band: histogram.get(band).getInfo() for band in image.bandNames().getInfo()
+    }
+
+    # Create bqplot histograms for each band.
+    def create_histogram(
+        hist_data: Dict[str, Any], color: str, label: str
+    ) -> bq.Figure:
+        """
+        Creates a bqplot histogram for the given histogram data.
+
+        Args:
+            hist_data (dict): The histogram data.
+            color (str): The color of the histogram.
+            label (str): The label of the histogram.
+
+        Returns:
+            bq.Figure: The bqplot figure for the histogram.
+        """
+        x_data = np.array(hist_data["bucketMeans"])
+        y_data = np.array(hist_data["histogram"])
+
+        x_sc = bq.LinearScale()
+        y_sc = bq.LinearScale()
+
+        bar = bq.Bars(
+            x=x_data,
+            y=y_data,
+            scales={"x": x_sc, "y": y_sc},
+            colors=[color],
+            display_legend=True,
+            labels=[label],
+        )
+
+        ax_x = bq.Axis(scale=x_sc, label="Reflectance (x1e4)", tick_format="0.0f")
+        ax_y = bq.Axis(
+            scale=y_sc, orientation="vertical", label="Count", tick_format="0.0f"
+        )
+
+        return bq.Figure(marks=[bar], axes=[ax_x, ax_y])
+
+    # Define colors and labels for the bands.
+    band_colors = kwargs.get("colors", ["#cf513e", "#1d6b99", "#f0af07"])
+    band_labels = kwargs.get("labels", image.bandNames().getInfo())
+
+    # Create and combine histograms for each band.
+    histograms_fig = []
+    for band, color, label in zip(histograms.keys(), band_colors, band_labels):
+        histograms_fig.append(create_histogram(histograms[band], color, label))
+
+    combined_fig = bq.Figure(
+        marks=[fig.marks[0] for fig in histograms_fig],
+        axes=histograms_fig[0].axes,
+        **kwargs,
+    )
+
+    for fig, label in zip(histograms_fig, band_labels):
+        fig.marks[0].labels = [label]
+
+    combined_fig.legend_location = kwargs.get("legend_location", "top-right")
+
+    return combined_fig
 
 
 def image_regions(image, regions, reducer, scale, seriesProperty, xLabels, **kwargs):
