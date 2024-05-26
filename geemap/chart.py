@@ -106,8 +106,18 @@ class BaseChart:
             x_cols = [self.df.columns[0]]
         if y_cols is None:
             y_cols = [self.df.columns[1]]
-        if title is None:
-            title = chart_type
+
+        if isinstance(x_cols, str):
+            x_cols = [x_cols]
+
+        if isinstance(y_cols, str):
+            y_cols = [y_cols]
+
+        if len(x_cols) == 1 and len(y_cols) > 1:
+            x_cols = x_cols * len(y_cols)
+
+        if title is not None:
+            kwargs["title"] = title
 
         if chart_type == "PieChart":
             if colors is None:
@@ -142,6 +152,12 @@ class BaseChart:
             color = colors[
                 i % len(colors)
             ]  # Cycle through colors if not enough are provided
+            if "display_legend" not in kwargs and len(y_cols) > 1:
+                kwargs["display_legend"] = True
+                kwargs["labels"] = [y_col]
+            else:
+                kwargs["labels"] = [y_col]
+
             if chart_type == "ScatterChart":
                 marks.append(
                     bq.Scatter(
@@ -216,10 +232,9 @@ class BaseChart:
             else:
                 raise ValueError("Unsupported chart type")
 
-        self.chart = bq.Figure(marks=marks, title=title, **kwargs)
         x_axis = bq.Axis(scale=x_sc, label=x_label)
         y_axis = bq.Axis(scale=y_sc, orientation="vertical", label=y_label)
-        self.chart.axes = [x_axis, y_axis]
+        self.chart = bq.Figure(marks=marks, axes=[x_axis, y_axis], **kwargs)
 
         return self
 
@@ -772,10 +787,65 @@ def feature_histogram(
 
 
 def image_byClass(
-    image, classBand, region, reducer, scale, classLabels, xLabels, **kwargs
+    image,
+    classBand,
+    region,
+    reducer="MEAN",
+    scale=None,
+    classLabels=None,
+    xLabels=None,
+    chart_type="LineChart",
+    **kwargs,
 ):
-    # TODO
-    pass
+    """
+    Generates a Chart from an image by class. Extracts and plots band values by
+        class.
+
+    Args:
+        image (ee.Image): Image to extract band values from.
+        classBand (str): The band name to use as class labels.
+        region (ee.Geometry | ee.FeatureCollection): The region(s) to reduce.
+        reducer (str | ee.Reducer): The reducer type for zonal statistics. Can
+            be one of 'mean', 'median', 'sum', 'min', 'max', etc.
+        scale (int): The scale in meters at which to perform the analysis.
+        classLabels (list): List of class labels.
+        xLabels (list): List of x-axis labels.
+        chart_type (str): The type of chart to create. Supported types are
+            'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart', 'PieChart',
+                'AreaChart', and 'Table'.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        None
+    """
+    fc = zonal_stats(
+        image, region, stat_type=reducer, scale=scale, verbose=False, return_fc=True
+    )
+    bands = image.bandNames().getInfo()
+    df = ee_to_df(fc)[bands + [classBand]]
+
+    df_transposed = df.set_index(classBand).T
+
+    if xLabels is not None:
+        df_transposed["label"] = xLabels
+    else:
+        df_transposed["label"] = df_transposed.index
+
+    if classLabels is None:
+        y_cols = df_transposed.columns.tolist()
+        y_cols.remove("label")
+    else:
+        y_cols = classLabels
+
+    fig = BaseChart(df_transposed)
+    fig.setChartType(
+        chart_type,
+        x_cols="label",
+        y_cols=y_cols,
+        **kwargs,
+    )
+
+    return fig.chart
 
 
 def image_byRegion(image, regions, reducer, scale, xProperty, **kwargs):
@@ -812,8 +882,45 @@ def image_doySeries(
     endDay,
     **kwargs,
 ):
-    # TODO
-    pass
+    """
+    Generates a time series chart of an image collection for a specific region over a range of days of the year.
+
+    Args:
+        imageCollection (ee.ImageCollection): The image collection to analyze.
+        region (ee.Geometry | ee.FeatureCollection): The region to reduce.
+        regionReducer (str | ee.Reducer): The reducer type for zonal statistics. Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
+        scale (int): The scale in meters at which to perform the analysis.
+        yearReducer (str | ee.Reducer): The reducer type for yearly statistics.
+        startDay (int): The start day of the year.
+        endDay (int): The end day of the year.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        None
+    """
+    series = imageCollection.filter(
+        ee.Filter.calendarRange(startDay, endDay, "day_of_year")
+    )
+    fc = zonal_stats(
+        series,
+        region,
+        stat_type=regionReducer,
+        scale=scale,
+        verbose=False,
+        return_fc=True,
+    )
+    df = ee_to_df(fc)
+    years = df["year"].unique()
+    values = {
+        year: df[df["year"] == year].drop(columns=["year"]).mean() for year in years
+    }
+
+    # Creating a dataframe to hold the results
+    result_df = pd.DataFrame(values).T
+
+    # Plotting the results
+    line_chart = LineChart(result_df, years.tolist(), **kwargs)
+    line_chart.plot_chart()
 
 
 def image_doySeriesByRegion(
@@ -828,8 +935,39 @@ def image_doySeriesByRegion(
     endDay,
     **kwargs,
 ):
-    # TODO
-    pass
+    """
+    Generates a time series chart of an image collection for multiple regions over a range of days of the year.
+
+    Args:
+        imageCollection (ee.ImageCollection): The image collection to analyze.
+        bandName (str): The name of the band to analyze.
+        regions (ee.FeatureCollection): The regions to analyze.
+        regionReducer (str | ee.Reducer): The reducer type for zonal statistics.
+        scale (int): The scale in meters at which to perform the analysis.
+        yearReducer (str | ee.Reducer): The reducer type for yearly statistics.
+        seriesProperty (str): The property to use for labeling the series.
+        startDay (int): The start day of the year.
+        endDay (int): The end day of the year.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        None
+    """
+    series = imageCollection.filter(
+        ee.Filter.calendarRange(startDay, endDay, "day_of_year")
+    )
+    fc = zonal_stats(
+        series,
+        regions,
+        stat_type=regionReducer,
+        scale=scale,
+        verbose=False,
+        return_fc=True,
+    )
+    bands = [bandName] + [seriesProperty]
+    df = ee_to_df(fc)[bands]
+    line_chart = Feature_ByProperty(df, [bandName], seriesProperty, **kwargs)
+    line_chart.plot_chart()
 
 
 def image_doySeriesByYear(
@@ -843,29 +981,153 @@ def image_doySeriesByYear(
     endDay,
     **kwargs,
 ):
-    # TODO
-    pass
+    """
+    Generates a time series chart of an image collection for a specific region over multiple years.
+
+    Args:
+        imageCollection (ee.ImageCollection): The image collection to analyze.
+        bandName (str): The name of the band to analyze.
+        region (ee.Geometry | ee.FeatureCollection): The region to analyze.
+        regionReducer (str | ee.Reducer): The reducer type for zonal statistics.
+        scale (int): The scale in meters at which to perform the analysis.
+        sameDayReducer (str | ee.Reducer): The reducer type for daily statistics.
+        startDay (int): The start day of the year.
+        endDay (int): The end day of the year.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        None
+    """
+    series = imageCollection.filter(
+        ee.Filter.calendarRange(startDay, endDay, "day_of_year")
+    )
+    fc = zonal_stats(
+        series,
+        region,
+        stat_type=regionReducer,
+        scale=scale,
+        verbose=False,
+        return_fc=True,
+    )
+    bands = [bandName, "year"]
+    df = ee_to_df(fc)[bands]
+    line_chart = Feature_ByProperty(df, [bandName], "year", **kwargs)
+    line_chart.plot_chart()
 
 
 def image_histogram(
     image, region, scale, maxBuckets, minBucketWidth, maxRaw, maxPixels, **kwargs
 ):
-    # TODO
-    pass
+    """
+    Generates a histogram from an image.
+
+    Args:
+        image (ee.Image): The image to analyze.
+        region (ee.Geometry | ee.FeatureCollection): The region to analyze.
+        scale (int): The scale in meters at which to perform the analysis.
+        maxBuckets (int): The maximum number of buckets (bins) to use when building a histogram.
+        minBucketWidth (float): The minimum histogram bucket width, or null to allow any power of 2.
+        maxRaw (int): The maximum number of pixels to reduce at one time.
+        maxPixels (int): The maximum number of pixels to reduce.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        None
+    """
+    fc = zonal_stats(
+        image,
+        region,
+        stat_type="count",
+        scale=scale,
+        max_pixels=maxPixels,
+        max_raw=maxRaw,
+        verbose=False,
+        return_fc=True,
+    )
+    df = ee_to_df(fc)
+    bands = image.bandNames().getInfo()
+    for band in bands:
+        feature_histogram(df, band, maxBuckets, minBucketWidth, **kwargs)
 
 
 def image_regions(image, regions, reducer, scale, seriesProperty, xLabels, **kwargs):
-    # TODO
-    pass
+    """
+    Generates a Chart from an image by regions. Extracts and plots band values in multiple regions.
+
+    Args:
+        image (ee.Image): Image to extract band values from.
+        regions (ee.FeatureCollection | ee.Geometry): Regions to reduce. Defaults to the image's footprint.
+        reducer (str | ee.Reducer): The reducer type for zonal statistics. Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
+        scale (int): The scale in meters at which to perform the analysis.
+        seriesProperty (str): The property to use for labeling the series.
+        xLabels (list): List of x-axis labels.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        None
+    """
+    fc = zonal_stats(
+        image, regions, stat_type=reducer, scale=scale, verbose=False, return_fc=True
+    )
+    bands = image.bandNames().getInfo()
+    df = ee_to_df(fc)[bands + [seriesProperty]]
+    feature_groups(df, seriesProperty, bands, seriesProperty, **kwargs)
 
 
 def image_series(imageCollection, region, reducer, scale, xProperty, **kwargs):
-    # TODO
-    pass
+    """
+    Generates a time series chart of an image collection for a specific region.
+
+    Args:
+        imageCollection (ee.ImageCollection): The image collection to analyze.
+        region (ee.Geometry | ee.FeatureCollection): The region to reduce.
+        reducer (str | ee.Reducer): The reducer type for zonal statistics. Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
+        scale (int): The scale in meters at which to perform the analysis.
+        xProperty (str): The name of the property to use as the x-axis values.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        None
+    """
+    fc = zonal_stats(
+        imageCollection,
+        region,
+        stat_type=reducer,
+        scale=scale,
+        verbose=False,
+        return_fc=True,
+    )
+    bands = imageCollection.first().bandNames().getInfo()
+    df = ee_to_df(fc)[bands + [xProperty]]
+    feature_byFeature(df, xProperty, bands, **kwargs)
 
 
 def image_seriesByRegion(
     imageCollection, regions, reducer, band, scale, xProperty, seriesProperty, **kwargs
 ):
-    # TODO
-    pass
+    """
+    Generates a time series chart of an image collection for multiple regions.
+
+    Args:
+        imageCollection (ee.ImageCollection): The image collection to analyze.
+        regions (ee.FeatureCollection | ee.Geometry): The regions to reduce.
+        reducer (str | ee.Reducer): The reducer type for zonal statistics.
+        band (str): The name of the band to analyze.
+        scale (int): The scale in meters at which to perform the analysis.
+        xProperty (str): The name of the property to use as the x-axis values.
+        seriesProperty (str): The property to use for labeling the series.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        None
+    """
+    fc = zonal_stats(
+        imageCollection,
+        regions,
+        stat_type=reducer,
+        scale=scale,
+        verbose=False,
+        return_fc=True,
+    )
+    df = ee_to_df(fc)[[band, xProperty, seriesProperty]]
+    feature_groups(df, xProperty, band, seriesProperty, **kwargs)
