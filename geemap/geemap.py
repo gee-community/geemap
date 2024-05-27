@@ -2513,7 +2513,7 @@ class Map(core.Map):
         count = len(self._chart_points)
         out_list = []
         if count > 0:
-            header = ["id", "longitude", "latitude"] + self._chart_labels
+            header = ["id", "latitude", "longitude"] + self._chart_labels
             out_list.append(header)
 
             for i in range(0, count):
