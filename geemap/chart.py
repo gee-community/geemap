@@ -86,7 +86,8 @@ class Chart:
                 empty string.
             options (Optional[Dict[str, Any]]): Additional options for the chart.
             **kwargs: Additional keyword arguments to pass to the bqplot Figure
-                or mark objects.
+                or mark objects. For axes_options, see
+                https://bqplot.github.io/bqplot/api/axes
         """
         self.df = DataTable(data)
         self.chart_type = chart_type
@@ -208,22 +209,22 @@ class Chart:
 
             if chart_type == "ScatterChart":
                 self.chart = plt.scatter(
-                    self.df[x_col].tolist(),
-                    self.df[y_col].tolist(),
+                    self.df[x_col],
+                    self.df[y_col],
                     colors=[color],
                     **kwargs,
                 )
             elif chart_type == "LineChart":
                 self.chart = plt.plot(
-                    self.df[x_col].tolist(),
-                    self.df[y_col].tolist(),
+                    self.df[x_col],
+                    self.df[y_col],
                     colors=[color],
                     **kwargs,
                 )
             elif chart_type == "ColumnChart":
                 self.chart = plt.bar(
-                    self.df[x_col].tolist(),
-                    self.df[y_col].tolist(),
+                    self.df[x_col],
+                    self.df[y_col],
                     colors=[color],
                     **kwargs,
                 )
@@ -231,8 +232,8 @@ class Chart:
                 if "orientation" not in kwargs:
                     kwargs["orientation"] = "horizontal"
                 self.chart = plt.bar(
-                    self.df[x_col].tolist(),
-                    self.df[y_col].tolist(),
+                    self.df[x_col],
+                    self.df[y_col],
                     colors=[color],
                     **kwargs,
                 )
@@ -240,16 +241,16 @@ class Chart:
                 if "fill" not in kwargs:
                     kwargs["fill"] = "bottom"
                 self.chart = plt.plot(
-                    self.df[x_col].tolist(),
-                    self.df[y_col].tolist(),
+                    self.df[x_col],
+                    self.df[y_col],
                     colors=[color],
                     **kwargs,
                 )
             elif chart_type == "PieChart":
                 kwargs.pop("labels", None)
                 self.chart = plt.pie(
-                    sizes=self.df[y_col].tolist(),
-                    labels=self.df[x_col].tolist(),
+                    sizes=self.df[y_col],
+                    labels=self.df[x_col],
                     colors=colors[: len(self.df[x_col])],
                     **kwargs,
                 )
@@ -1409,32 +1410,88 @@ def image_regions(image, regions, reducer, scale, seriesProperty, xLabels, **kwa
     feature_groups(df, seriesProperty, bands, seriesProperty, **kwargs)
 
 
-def image_series(imageCollection, region, reducer, scale, xProperty, **kwargs):
+def image_series(
+    imageCollection,
+    region,
+    reducer=None,
+    scale=None,
+    xProperty="system:time_start",
+    chart_type: str = "LineChart",
+    x_cols: Optional[List[str]] = None,
+    y_cols: Optional[List[str]] = None,
+    colors: Optional[List[str]] = None,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    options: Optional[Dict[str, Any]] = None,
+    **kwargs: Any,
+) -> Chart:
     """
     Generates a time series chart of an image collection for a specific region.
 
     Args:
         imageCollection (ee.ImageCollection): The image collection to analyze.
         region (ee.Geometry | ee.FeatureCollection): The region to reduce.
-        reducer (str | ee.Reducer): The reducer type for zonal statistics. Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
+        reducer (str | ee.Reducer): The reducer to use.
         scale (int): The scale in meters at which to perform the analysis.
         xProperty (str): The name of the property to use as the x-axis values.
-        **kwargs: Additional keyword arguments.
+        chart_type (str): The type of chart to create. Supported types are
+            'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
+            'PieChart', 'AreaChart', and 'Table'.
+        x_cols (Optional[List[str]]): The columns to use for the x-axis.
+            Defaults to the first column.
+        y_cols (Optional[List[str]]): The columns to use for the y-axis.
+            Defaults to the second column.
+        colors (Optional[List[str]]): The colors to use for the chart.
+            Defaults to a predefined list of colors.
+        title (Optional[str]): The title of the chart. Defaults to the
+            chart type.
+        xlabel (Optional[str]): The label for the x-axis. Defaults to an
+            empty string.
+        ylabel (Optional[str]): The label for the y-axis. Defaults to an
+            empty string.
+        options (Optional[Dict[str, Any]]): Additional options for the chart.
+        **kwargs: Additional keyword arguments to pass to the bqplot Figure
+            or mark objects. For axes_options, see
+            https://bqplot.github.io/bqplot/api/axes
 
     Returns:
-        None
+        Chart: The chart object.
+
     """
-    fc = zonal_stats(
-        imageCollection,
-        region,
-        stat_type=reducer,
-        scale=scale,
-        verbose=False,
-        return_fc=True,
+
+    if reducer is None:
+        reducer = ee.Reducer.mean()
+
+    band_names = imageCollection.first().bandNames().getInfo()
+
+    # Function to reduce the region and get the mean for each image.
+    def get_stats(image):
+        stats = image.reduceRegion(reducer=reducer, geometry=region, scale=scale)
+
+        results = {}
+        for band in band_names:
+            results[band] = stats.get(band)
+
+        if xProperty == "system:time_start" or xProperty == "system:time_end":
+            results["date"] = image.date().format("YYYY-MM-dd")
+        else:
+            results[xProperty] = image.get(xProperty).getInfo()
+
+        return ee.Feature(None, results)
+
+    # Apply the function over the image collection.
+    fc = ee.FeatureCollection(
+        imageCollection.map(get_stats).filter(ee.Filter.notNull(band_names))
     )
-    bands = imageCollection.first().bandNames().getInfo()
-    df = ee_to_df(fc)[bands + [xProperty]]
-    feature_byFeature(df, xProperty, bands, **kwargs)
+    df = ee_to_df(fc)
+    if "date" in df.columns:
+        df["date"] = pd.to_datetime(df["date"])
+
+    fig = Chart(
+        df, chart_type, x_cols, y_cols, colors, title, xlabel, ylabel, options, **kwargs
+    )
+    return fig
 
 
 def image_seriesByRegion(
