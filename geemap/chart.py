@@ -14,7 +14,7 @@ import ipywidgets as widgets
 from bqplot import Tooltip
 from bqplot import pyplot as plt
 from IPython.display import display
-from .common import ee_to_df, zonal_stats
+from .common import ee_to_df, zonal_stats, image_dates
 
 from typing import List, Optional, Union, Dict, Any
 
@@ -1495,8 +1495,23 @@ def image_series(
 
 
 def image_seriesByRegion(
-    imageCollection, regions, reducer, band, scale, xProperty, seriesProperty, **kwargs
-):
+    imageCollection: ee.ImageCollection,
+    regions: Union[ee.FeatureCollection, ee.Geometry],
+    reducer: Optional[Union[str, ee.Reducer]] = None,
+    band: Optional[str] = None,
+    scale: Optional[int] = None,
+    xProperty: str = "system:time_start",
+    seriesProperty: str = "system:index",
+    chart_type: str = "LineChart",
+    x_cols: Optional[List[str]] = None,
+    y_cols: Optional[List[str]] = None,
+    colors: Optional[List[str]] = None,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    options: Optional[Dict[str, Any]] = None,
+    **kwargs: Any,
+) -> Chart:
     """
     Generates a time series chart of an image collection for multiple regions.
 
@@ -1508,18 +1523,56 @@ def image_seriesByRegion(
         scale (int): The scale in meters at which to perform the analysis.
         xProperty (str): The name of the property to use as the x-axis values.
         seriesProperty (str): The property to use for labeling the series.
-        **kwargs: Additional keyword arguments.
+        chart_type (str): The type of chart to create. Supported types are
+            'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
+            'PieChart', 'AreaChart', and 'Table'.
+        x_cols (Optional[List[str]]): The columns to use for the x-axis.
+            Defaults to the first column.
+        y_cols (Optional[List[str]]): The columns to use for the y-axis.
+            Defaults to the second column.
+        colors (Optional[List[str]]): The colors to use for the chart.
+            Defaults to a predefined list of colors.
+        title (Optional[str]): The title of the chart. Defaults to the
+            chart type.
+        xlabel (Optional[str]): The label for the x-axis. Defaults to an
+            empty string.
+        ylabel (Optional[str]): The label for the y-axis. Defaults to an
+            empty string.
+        options (Optional[Dict[str, Any]]): Additional options for the chart.
+        **kwargs: Additional keyword arguments to pass to the bqplot Figure
+            or mark objects. For axes_options, see
+            https://bqplot.github.io/bqplot/api/axes
 
     Returns:
-        None
+        Chart: The chart object.
     """
+    if reducer is None:
+        reducer = ee.Reducer.mean()
+
+    if band is None:
+        band = imageCollection.first().bandNames().get(0).getInfo()
+
+    image = imageCollection.select(band).toBands()
+
     fc = zonal_stats(
-        imageCollection,
-        regions,
-        stat_type=reducer,
-        scale=scale,
-        verbose=False,
-        return_fc=True,
+        image, regions, stat_type=reducer, scale=scale, verbose=False, return_fc=True
     )
-    df = ee_to_df(fc)[[band, xProperty, seriesProperty]]
-    feature_groups(df, xProperty, band, seriesProperty, **kwargs)
+    columns = image.bandNames().getInfo() + [seriesProperty]
+    df = ee_to_df(fc, columns=columns)
+
+    headers = df[seriesProperty].tolist()
+    df = df.drop(columns=[seriesProperty]).T
+    df.columns = headers
+
+    if xProperty == "system:time_start" or xProperty == "system:time_end":
+        indexes = image_dates(imageCollection).getInfo()
+        df["index"] = pd.to_datetime(indexes)
+
+    else:
+        indexes = imageCollection.aggregate_array(xProperty).getInfo()
+        df["index"] = indexes
+
+    fig = Chart(
+        df, chart_type, x_cols, y_cols, colors, title, xlabel, ylabel, options, **kwargs
+    )
+    return fig
