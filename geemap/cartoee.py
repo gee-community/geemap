@@ -848,7 +848,7 @@ def add_scale_bar(
         xcoords.append(dx)
         ycoords.append(ymean)
 
-    # Convertin to arrays:
+    # Converting to arrays:
     xcoords = np.asanyarray(xcoords)
     ycoords = np.asanyarray(ycoords)
 
