@@ -38,20 +38,30 @@ def ee_initialize(
     service_account=False,
     auth_args={},
     user_agent_prefix="geemap",
+    project=None,
     **kwargs,
 ):
     """Authenticates Earth Engine and initialize an Earth Engine session
 
     Args:
-        token_name (str, optional): The name of the Earth Engine token. Defaults to "EARTHENGINE_TOKEN".
-            In Colab, you can also set a secret named "EE_PROJECT_ID" to initialize Earth Engine.
-        auth_mode (str, optional): The authentication mode, can be one of colab, notebook, localhost, or gcloud.
-            See https://developers.google.com/earth-engine/guides/auth for more details. Defaults to None.
-        service_account (bool, optional): If True, use a service account. Defaults to False.
-        auth_args (dict, optional): Additional authentication parameters for aa.Authenticate(). Defaults to {}.
-        user_agent_prefix (str, optional): If set, the prefix (version-less) value used for setting the user-agent string. Defaults to "geemap".
-        kwargs (dict, optional): Additional parameters for ee.Initialize(). For example,
-            opt_url='https://earthengine-highvolume.googleapis.com' to use the Earth Engine High-Volume platform. Defaults to {}.
+        token_name (str, optional): The name of the Earth Engine token.
+            Defaults to "EARTHENGINE_TOKEN". In Colab, you can also set a secret
+            named "EE_PROJECT_ID" to initialize Earth Engine.
+        auth_mode (str, optional): The authentication mode, can be one of colab,
+            notebook, localhost, or gcloud.
+            See https://developers.google.com/earth-engine/guides/auth for more
+            details. Defaults to None.
+        service_account (bool, optional): If True, use a service account.
+            Defaults to False.
+        auth_args (dict, optional): Additional authentication parameters for
+            aa.Authenticate(). Defaults to {}.
+        user_agent_prefix (str, optional): If set, the prefix (version-less)
+            value used for setting the user-agent string. Defaults to "geemap".
+        project (str, optional): The Google cloud project ID for Earth Engine.
+            Defaults to None.
+        kwargs (dict, optional): Additional parameters for ee.Initialize().
+            For example, opt_url='https://earthengine-highvolume.googleapis.com'
+            to use the Earth Engine High-Volume platform. Defaults to {}.
     """
     import httplib2
     from .__init__ import __version__
@@ -64,12 +74,18 @@ def ee_initialize(
         if in_colab_shell():
             from google.colab import userdata
 
-            try:
-                project_id = userdata.get("EE_PROJECT_ID")
-                auth_mode = "colab"
-                kwargs["project"] = project_id
-            except Exception:
-                auth_mode = "notebook"
+            auth_args["auth_mode"] = "colab"
+            if project is None:
+                try:
+                    project = userdata.get("EE_PROJECT_ID")
+                    kwargs["project"] = project
+                except Exception:
+                    raise Exception(
+                        "Please set a secret named 'EE_PROJECT_ID' in Colab or provide a project ID."
+                    )
+            ee.Authenticate(**auth_args)
+            ee.Initialize(**kwargs)
+            return
         else:
             auth_mode = "notebook"
 
