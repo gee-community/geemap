@@ -12,13 +12,11 @@
         <meta name="author" content="Qiusheng Wu">
       
       
-        <link rel="canonical" href="https://geemap.org/notebooks/137_create_grid/">
+        <link rel="canonical" href="https://geemap.org/notebooks/142_google_maps/">
       
       
-        <link rel="prev" href="../136_download_parallel/">
+        <link rel="prev" href="../141_image_array_viz/">
       
-      
-        <link rel="next" href="../138_draw_control/">
       
       
       <link rel="icon" href="../../assets/favicon.png">
@@ -26,7 +24,7 @@
     
     
       
-        <title>137 create grid - geemap</title>
+        <title>142 google maps - geemap</title>
       
     
     
@@ -122,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              137 create grid
+              142 google maps
             
           </span>
         </div>
@@ -4508,17 +4506,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../137_create_grid/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4527,7 +4518,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -4621,10 +4611,17 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../142_google_maps/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -4633,6 +4630,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -4674,7 +4672,7 @@
               <article class="md-content__inner md-typeset">
                 
 
-    <a href="/notebooks/137_create_grid/137_create_grid.ipynb" title="Download Notebook" class="md-content__button md-icon">
+    <a href="/notebooks/142_google_maps/142_google_maps.ipynb" title="Download Notebook" class="md-content__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7 7-7Z"/></svg>
     </a>
 
@@ -4686,7 +4684,7 @@
   
 
 
-  <h1>137 create grid</h1>
+  <h1>142 google maps</h1>
 
 <script>
 (function (global, factory) {
@@ -5129,8 +5127,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/137_create_grid.ipynb" target="_parent"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
-<p><strong>Creating a rectangular grid covering a region of interest for computing zonal statistics</strong></p>
+<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/142_google_maps.ipynb" target="_parent"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
+<p><strong>Using Google Maps as basemaps</strong></p>
 <p>Uncomment the following line to install <a href="https://geemap.org">geemap</a> if needed.</p>
 </div>
 </div>
@@ -5154,9 +5152,9 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># %pip install git+https://github.com/gee-community/geemap.git</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># %pip install -U geemap</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-1"># %pip install git+https://github.com/gee-community/geemap.git</div>
+<div class="clipboard-copy-txt" id="cell-1"># %pip install -U geemap</div>
 </div>
 </div>
 </div>
@@ -5169,7 +5167,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Import libraries</p>
+<p>To use Google Maps as basemaps, you need to sign up for a Google Maps API key. Follow the instructions on the <a href="https://developers.google.com/maps/get-started">Google Maps Platform</a> website to get an API key. The following steps are required:</p>
+<ul>
+<li>Step 1: <a href="https://developers.google.com/maps/get-started#create-project">Set up a Google Cloud project</a></li>
+<li>Step 2: <a href="https://developers.google.com/maps/get-started#enable-api-sdk">Enable Google Maps Platform APIs and SDKs </a></li>
+<li>Step 3: <a href="https://developers.google.com/maps/get-started#api-key">Get an API key</a></li>
+</ul>
+<p>There is a cost for requesting Maps tiles, but there is a $200 monthly credit and we've been told that for the purposes of typical EE-type usage, it would be rare to exceed $200.</p>
+<p>Once you have your API key, you can set it as a Google Colab secret with the name <code>GOOGLE_MAPS_API_KEY</code>. Alternatively, you can set it as an environment variable on your local machine. Uncomment the following line to set the environment variable if you are running this notebook locally.</p>
 </div>
 </div>
 </div>
@@ -5192,11 +5197,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">ee</span>
-<span class="kn">import</span> <span class="nn">geemap</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># import os</span>
+<span class="c1"># os.environ["GOOGLE_MAPS_API_KEY"] = "&lt;YOUR-API-KEY&gt;"</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-2">import ee
-import geemap</div>
+<div class="clipboard-copy-txt" id="cell-2"># import os
+# os.environ["GOOGLE_MAPS_API_KEY"] = "<your-api-key>"</your-api-key></div>
 </div>
 </div>
 </div>
@@ -5209,7 +5214,7 @@ import geemap</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Update the package and restart the kernel if you run into errors.</p>
+<p>Import libraries</p>
 </div>
 </div>
 </div>
@@ -5232,9 +5237,11 @@ import geemap</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># geemap.update_package()</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">ee</span>
+<span class="kn">import</span> <span class="nn">geemap</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3"># geemap.update_package()</div>
+<div class="clipboard-copy-txt" id="cell-3">import ee
+import geemap</div>
 </div>
 </div>
 </div>
@@ -5247,7 +5254,7 @@ import geemap</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Add temperature data.</p>
+<p>If the <code>GOOGLE_MAPS_API_KEY</code> environment variable is set, geemap will automatically detect it and use it to request Google Maps tiles. By default, geemap will use Google Roadmap as the basemap.</p>
 </div>
 </div>
 </div>
@@ -5270,27 +5277,11 @@ import geemap</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"NOAA/GFS0P25"</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"temperature_2m_above_ground"</span><span class="p">)</span>
-<span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"min"</span><span class="p">:</span> <span class="o">-</span><span class="mf">40.0</span><span class="p">,</span>
-    <span class="s2">"max"</span><span class="p">:</span> <span class="mf">35.0</span><span class="p">,</span>
-    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"blue"</span><span class="p">,</span> <span class="s2">"purple"</span><span class="p">,</span> <span class="s2">"cyan"</span><span class="p">,</span> <span class="s2">"green"</span><span class="p">,</span> <span class="s2">"yellow"</span><span class="p">,</span> <span class="s2">"red"</span><span class="p">],</span>
-<span class="p">}</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"Temperature"</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span><span class="n">vis_params</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Temperature (°C)"</span><span class="p">)</span>
-<span class="n">Map</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
+<span class="n">m</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">Map = geemap.Map(center=[40, -100], zoom=4)
-image = ee.ImageCollection("NOAA/GFS0P25").first().select("temperature_2m_above_ground")
-vis_params = {
-    "min": -40.0,
-    "max": 35.0,
-    "palette": ["blue", "purple", "cyan", "green", "yellow", "red"],
-}
-Map.addLayer(image, vis_params, "Temperature")
-Map.add_colorbar(vis_params, label="Temperature (°C)")
-Map</div>
+<div class="clipboard-copy-txt" id="cell-4">m = geemap.Map()
+m</div>
 </div>
 </div>
 </div>
@@ -5303,12 +5294,23 @@ Map</div>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Create a grid covering the area of interest.</p>
+<p><img alt="" src="https://i.imgur.com/jm80iKK.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Use Google Hybrid basemap.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5326,31 +5328,40 @@ Map</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geometry</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="o">-</span><span class="mi">130</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="o">-</span><span class="mi">68</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
-<span class="n">grid</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">create_grid</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="mf">2e5</span><span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"Grid"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">basemap</span><span class="o">=</span><span class="s2">"Google.Hybrid"</span><span class="p">)</span>
+<span class="n">m</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">geometry = ee.Geometry.BBox(-130, 24, -68, 50)
-grid = geemap.create_grid(geometry, 2e5)
-Map.addLayer(grid, {}, "Grid")</div>
+<div class="clipboard-copy-txt" id="cell-5">m = geemap.Map(basemap="Google.Hybrid")
+m</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=10">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=11">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Compute zonal statistics based on the image and grid. In this case, we are computing the mean temperature for each grid cell.</p>
+<p><img alt="" src="https://i.imgur.com/4vLGh6X.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=12">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>To use multiple basemaps, you can use the <code>Map.add_basemap()</code> function.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=11">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=13">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5368,16 +5379,31 @@ Map.addLayer(grid, {}, "Grid")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">stats</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">zonal_stats</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">stat_type</span><span class="o">=</span><span class="s2">"MEAN"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">2e5</span><span class="p">,</span> <span class="n">return_fc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
+<span class="n">m</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="s2">"Google.Hybrid"</span><span class="p">)</span>
+<span class="n">m</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">stats = geemap.zonal_stats(image, grid, stat_type="MEAN", scale=2e5, return_fc=True)</div>
+<div class="clipboard-copy-txt" id="cell-6">m = geemap.Map()
+m.add_basemap("Google.Hybrid")
+m</div>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=14">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Use Google Satellite basemap.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=12">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=15">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5395,27 +5421,40 @@ Map.addLayer(grid, {}, "Grid")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">stats</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">basemap</span><span class="o">=</span><span class="s2">"Google.Satellite"</span><span class="p">)</span>
+<span class="n">m</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7">stats</div>
+<div class="clipboard-copy-txt" id="cell-7">m = geemap.Map(basemap="Google.Satellite")
+m</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=13">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=16">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Add the mean temperature grid to the map.</p>
+<p><img alt="" src="https://i.imgur.com/mJyE1jT.png"/></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=17">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Use Google Terrain basemap.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=14">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=18">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5433,30 +5472,127 @@ Map.addLayer(grid, {}, "Grid")</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">Map</span><span class="o">.</span><span class="n">add_styled_vector</span><span class="p">(</span>
-    <span class="n">stats</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s2">"mean"</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">"coolwarm"</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"Mean Temperature"</span>
-<span class="p">)</span>
-<span class="n">Map</span><span class="o">.</span><span class="n">add_layer_manager</span><span class="p">()</span>
-<span class="n">Map</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">basemap</span><span class="o">=</span><span class="s2">"Google.Terrain"</span><span class="p">)</span>
+<span class="n">m</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8">Map.add_styled_vector(
-    stats, column="mean", palette="coolwarm", layer_name="Mean Temperature"
-)
-Map.add_layer_manager()
-Map</div>
+<div class="clipboard-copy-txt" id="cell-8">m = geemap.Map(basemap="Google.Terrain")
+m</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=15">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=19">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><img alt="" src="https://i.imgur.com/Kwe5eom.png"/></p>
+<p>Google Maps can be customized with various parameters. To create a custom Google Maps basemap, you can use the <code>GoogleMapsTileProvider</code> class. See <a href="https://bit.ly/3UhbZKU">https://bit.ly/3UhbZKU</a> for more information on the available parameters.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=20">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy for="cell-9">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">from</span> <span class="nn">geemap.basemaps</span> <span class="kn">import</span> <span class="n">GoogleMapsTileProvider</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-9">from geemap.basemaps import GoogleMapsTileProvider</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=21">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="CodeMirror cm-s-jupyter">
+<div class="zeroclipboard-container">
+<clipboard-copy for="cell-10">
+<div>
+<span class="notice" hidden="">Copied!</span>
+<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
+<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+</clipboard-copy>
+</div>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">style</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">"stylers"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"hue"</span><span class="p">:</span> <span class="s2">"#00ffe6"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"saturation"</span><span class="p">:</span> <span class="o">-</span><span class="mi">20</span><span class="p">}]},</span>
+    <span class="p">{</span>
+        <span class="s2">"featureType"</span><span class="p">:</span> <span class="s2">"road"</span><span class="p">,</span>
+        <span class="s2">"elementType"</span><span class="p">:</span> <span class="s2">"geometry"</span><span class="p">,</span>
+        <span class="s2">"stylers"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"lightness"</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span> <span class="p">{</span><span class="s2">"visibility"</span><span class="p">:</span> <span class="s2">"simplified"</span><span class="p">}],</span>
+    <span class="p">},</span>
+<span class="p">]</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">basemap</span> <span class="o">=</span> <span class="n">GoogleMapsTileProvider</span><span class="p">(</span>
+    <span class="n">map_type</span><span class="o">=</span><span class="s2">"roadmap"</span><span class="p">,</span>
+    <span class="n">region</span><span class="o">=</span><span class="s2">"CN"</span><span class="p">,</span>
+    <span class="n">language</span><span class="o">=</span><span class="s2">"zh-Cn"</span><span class="p">,</span>
+    <span class="n">scale</span><span class="o">=</span><span class="s2">"scaleFactor2x"</span><span class="p">,</span>
+    <span class="n">highDpi</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="n">basemap</span><span class="p">)</span>
+<span class="n">m</span>
+</pre></div>
+<div class="clipboard-copy-txt" id="cell-10">style = [
+    {"stylers": [{"hue": "#00ffe6"}, {"saturation": -20}]},
+    {
+        "featureType": "road",
+        "elementType": "geometry",
+        "stylers": [{"lightness": 100}, {"visibility": "simplified"}],
+    },
+]
+
+m = geemap.Map(center=[40, -100], zoom=4)
+basemap = GoogleMapsTileProvider(
+    map_type="roadmap",
+    region="CN",
+    language="zh-Cn",
+    scale="scaleFactor2x",
+    highDpi=True,
+    style=style,
+)
+m.add_basemap(basemap)
+m</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=22">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><img alt="" src="https://i.imgur.com/GKWDi4U.png"/></p>
 </div>
 </div>
 </div>
@@ -5490,7 +5626,7 @@ Map</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-21T14:13:25+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-21</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-06-03T00:16:04+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-06-03</span>
   </span>
 
     
@@ -5500,7 +5636,7 @@ Map</div>
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-14T02:26:13+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-14</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-06-03T00:16:04+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-06-03</span>
   </span>
 
     
