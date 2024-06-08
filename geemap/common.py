@@ -73,6 +73,7 @@ def ee_initialize(
     if auth_mode is None:
         if in_colab_shell():
             from google.colab import userdata
+
             if project is None:
                 try:
                     project = userdata.get("EE_PROJECT_ID")
