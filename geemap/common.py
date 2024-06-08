@@ -74,7 +74,6 @@ def ee_initialize(
         if in_colab_shell():
             from google.colab import userdata
 
-            auth_args["auth_mode"] = "colab"
             if project is None:
                 try:
                     project = userdata.get("EE_PROJECT_ID")
@@ -83,7 +82,9 @@ def ee_initialize(
                     raise Exception(
                         "Please set a secret named 'EE_PROJECT_ID' in Colab or provide a project ID."
                     )
-            ee.Authenticate(**auth_args)
+            # Authentication will automatically detect the Colab environment,
+            # no additional params needed.
+            ee.Authenticate()
             ee.Initialize(**kwargs)
             return
         else:
