@@ -16209,6 +16209,7 @@ def _get_colab_secret(key: str) -> Optional[str]:
     """Returns a Colab secret (if available), otherwise None."""
     if in_colab_shell():
         from google.colab import userdata
+
         try:
             return userdata.get(key)
         except (userdata.SecretNotFoundError, userdata.NotebookAccessError):
