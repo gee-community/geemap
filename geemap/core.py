@@ -197,15 +197,11 @@ class AbstractDrawControl(object):
     def _redraw_layer(self):
         if self.host_map:
             self.host_map.add_layer(
-                self.collection,
-                {"color": "blue"},
-                DRAWN_FEATURES_LAYER,
-                False,
-                0.5
+                self.collection, {"color": "blue"}, DRAWN_FEATURES_LAYER, False, 0.5
             )
-            self.layer = self.host_map.ee_layers.get(
-                DRAWN_FEATURES_LAYER, {}
-            ).get("ee_layer", None)
+            self.layer = self.host_map.ee_layers.get(DRAWN_FEATURES_LAYER, {}).get(
+                "ee_layer", None
+            )
 
     def _handle_geometry_created(self, geo_json):
         geometry = common.geojson_to_ee(geo_json, geodesic=False)
