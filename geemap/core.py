@@ -15,6 +15,8 @@ from . import ee_tile_layers
 from . import map_widgets
 from . import toolbar
 
+DRAWN_FEATURES_LAYER = "Drawn Features"
+
 
 class DrawActions(enum.Enum):
     """Action types for the draw control.
@@ -46,7 +48,8 @@ class AbstractDrawControl(object):
         """Initialize the draw control.
 
         Args:
-            host_map (geemap.Map): The geemap.Map instance to be linked with the draw control.
+            host_map (geemap.Map): The geemap.Map instance to be linked with
+                the draw control.
         """
 
         self.host_map = host_map
@@ -194,11 +197,15 @@ class AbstractDrawControl(object):
     def _redraw_layer(self):
         if self.host_map:
             self.host_map.add_layer(
-                self.collection, {"color": "blue"}, "Drawn Features", False, 0.5
+                self.collection,
+                {"color": "blue"},
+                DRAWN_FEATURES_LAYER,
+                False,
+                0.5
             )
-            self.layer = self.host_map.ee_layers.get("Drawn Features", {}).get(
-                "ee_layer", None
-            )
+            self.layer = self.host_map.ee_layers.get(
+                DRAWN_FEATURES_LAYER, {}
+            ).get("ee_layer", None)
 
     def _handle_geometry_created(self, geo_json):
         geometry = common.geojson_to_ee(geo_json, geodesic=False)
@@ -263,6 +270,10 @@ class MapDrawControl(ipyleaflet.DrawControl, AbstractDrawControl):
                     self._handle_geometry_edited(geo_json)
                 elif action == "deleted":
                     self._handle_geometry_deleted(geo_json)
+                    # Remove drawn features layer if there are no geometries.
+                    if not self.count:
+                        if DRAWN_FEATURES_LAYER in self.host_map.ee_layers:
+                            self.host_map.remove_layer(DRAWN_FEATURES_LAYER)
             except Exception as e:
                 self.reset(clear_draw_control=False)
                 print("There was an error creating Earth Engine Feature.")
