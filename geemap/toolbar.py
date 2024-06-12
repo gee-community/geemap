@@ -153,9 +153,7 @@ class Toolbar(widgets.VBox):
 
         self.toolbar_header = widgets.HBox(
             layout=widgets.Layout(
-                display="flex",
-                justify_content="flex-end",
-                align_items="center"
+                display="flex", justify_content="flex-end", align_items="center"
             )
         )
         self.toolbar_header.children = [self.layers_button, self.toolbar_button]
