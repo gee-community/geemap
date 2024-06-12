@@ -15,7 +15,7 @@ from . import ee_tile_layers
 from . import map_widgets
 from . import toolbar
 
-DRAWN_FEATURES_LAYER = "Drawn Features"
+_DRAWN_FEATURES_LAYER = "Drawn Features"
 
 
 class DrawActions(enum.Enum):
@@ -197,9 +197,9 @@ class AbstractDrawControl(object):
     def _redraw_layer(self):
         if self.host_map:
             self.host_map.add_layer(
-                self.collection, {"color": "blue"}, DRAWN_FEATURES_LAYER, False, 0.5
+                self.collection, {"color": "blue"}, _DRAWN_FEATURES_LAYER, False, 0.5
             )
-            self.layer = self.host_map.ee_layers.get(DRAWN_FEATURES_LAYER, {}).get(
+            self.layer = self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {}).get(
                 "ee_layer", None
             )
 
@@ -268,8 +268,8 @@ class MapDrawControl(ipyleaflet.DrawControl, AbstractDrawControl):
                     self._handle_geometry_deleted(geo_json)
                     # Remove drawn features layer if there are no geometries.
                     if not self.count:
-                        if DRAWN_FEATURES_LAYER in self.host_map.ee_layers:
-                            self.host_map.remove_layer(DRAWN_FEATURES_LAYER)
+                        if _DRAWN_FEATURES_LAYER in self.host_map.ee_layers:
+                            self.host_map.remove_layer(_DRAWN_FEATURES_LAYER)
             except Exception as e:
                 self.reset(clear_draw_control=False)
                 print("There was an error creating Earth Engine Feature.")
