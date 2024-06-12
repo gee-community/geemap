@@ -8,7 +8,7 @@ import ee
 import ipyleaflet
 import ipywidgets
 
-from geemap import core, toolbar
+from geemap import core, map_widgets, toolbar
 from tests import fake_ee, fake_map, utils
 
 
@@ -133,15 +133,34 @@ class TestMap(unittest.TestCase):
 
         self.assertEqual(len(self.core_map.controls), 1)
         toolbar_control = self.core_map.controls[0].widget
-        utils.query_widget(
+        # Layer manager is selected and open by default.
+        layer_button = utils.query_widget(
+            toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Layers"
+        )
+        self.assertTrue(layer_button.value)
+        self.assertIsNotNone(utils.query_widget(toolbar_control, map_widgets.LayerManager))
+        
+        toolbar_button = utils.query_widget(
             toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Toolbar"
-        ).value = True  # Open the grid of tools.
+        )
+        toolbar_button.value = True  # Open the grid of tools.
+        self.assertFalse(layer_button.value)
+
         tool_grid = utils.query_widget(toolbar_control, ipywidgets.GridBox).children
 
         self.assertEqual(len(tool_grid), 3)
         self.assertEqual(tool_grid[0].tooltip, "Basemap selector")
         self.assertEqual(tool_grid[1].tooltip, "Inspector")
         self.assertEqual(tool_grid[2].tooltip, "Get help")
+
+        # Closing the toolbar button shows both buttons in the header.
+        toolbar_button.value = False
+        self.assertIsNotNone(utils.query_widget(
+            toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Toolbar"
+        ))
+        self.assertIsNotNone(utils.query_widget(
+            toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Layers"
+        ))
 
     def test_add_draw_control(self):
         """Tests adding and getting the draw widget."""
