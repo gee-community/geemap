@@ -6,9 +6,9 @@ import IPython
 from IPython.core.display import HTML, display
 
 import ee
+import ipyevents
 import ipytree
 import ipywidgets
-import ipyevents
 
 from . import common
 
@@ -885,11 +885,10 @@ class LayerManager(ipywidgets.VBox):
                 break
 
     def _on_layer_remove_click(self, layer):
-
         self._remove_confirm_widget()
 
         label = ipywidgets.Label(
-            f"Remove layer?",
+            "Remove layer?",
             layout=ipywidgets.Layout(padding="0px 4px 0px 4px"),
         )
         yes_button = ipywidgets.Button(
