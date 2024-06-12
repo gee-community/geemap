@@ -16206,6 +16206,18 @@ def is_on_aws():
     return on_aws
 
 
+def _get_colab_secret(key: str) -> Optional[str]:
+    """Returns a Colab secret (if available), otherwise None."""
+    if in_colab_shell():
+        from google.colab import userdata
+
+        try:
+            return userdata.get(key)
+        except (userdata.SecretNotFoundError, userdata.NotebookAccessError):
+            return None  # Secret doesn't exist or insufficient access.
+    return None
+
+
 def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
     """
     Retrieves the Google Maps API key from the environment or Colab user data.
@@ -16218,10 +16230,6 @@ def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
     Returns:
         str: The API key, or None if it could not be found.
     """
-    if in_colab_shell():
-        from google.colab import userdata
-
-        if api_key := userdata.get(key):
-            return api_key
-
+    if api_key := _get_colab_secret(key):
+        return api_key
     return os.environ.get(key, None)
