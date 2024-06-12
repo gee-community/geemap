@@ -6600,7 +6600,7 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
     <span class="k">def</span> <span class="nf">refresh_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Recreates all the layer widgets.&quot;&quot;&quot;</span>
         <span class="n">toggle_all_layout</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
-            <span class="n">height</span><span class="o">=</span><span class="s2">&quot;18px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;30ex&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 8px 25px 8px&quot;</span>
+            <span class="n">height</span><span class="o">=</span><span class="s2">&quot;18px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;30ex&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 4px 25px 4px&quot;</span>
         <span class="p">)</span>
         <span class="n">toggle_all_checkbox</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
             <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -6644,7 +6644,7 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
             <span class="nb">max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">step</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
             <span class="n">readout</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;80px&quot;</span><span class="p">),</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;70px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 3px 0px 0px&quot;</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="n">opacity_slider</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">change</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_layer_opacity_changed</span><span class="p">(</span><span class="n">change</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span> <span class="s2">&quot;value&quot;</span>
@@ -6657,10 +6657,107 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
         <span class="p">)</span>
         <span class="n">settings_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_layer_settings_click</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">visibility_checkbox</span><span class="p">,</span> <span class="n">settings_button</span><span class="p">,</span> <span class="n">opacity_slider</span><span class="p">],</span>
-            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 8px 0px 8px&quot;</span><span class="p">),</span>
+        <span class="n">spinner</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
+            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;times&quot;</span><span class="p">,</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;25px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;25px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px&quot;</span><span class="p">),</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Loaded&quot;</span><span class="p">,</span>
         <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">loading_change</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
+                <span class="n">spinner</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="s2">&quot;Loading ...&quot;</span>
+                <span class="n">spinner</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;spinner spin lg&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">spinner</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="s2">&quot;Loaded&quot;</span>
+                <span class="n">spinner</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;times&quot;</span>
+
+        <span class="n">layer</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">loading_change</span><span class="p">,</span> <span class="s2">&quot;loading&quot;</span><span class="p">)</span>
+
+        <span class="n">spinner_event</span> <span class="o">=</span> <span class="n">ipyevents</span><span class="o">.</span><span class="n">Event</span><span class="p">(</span>
+            <span class="n">source</span><span class="o">=</span><span class="n">spinner</span><span class="p">,</span> <span class="n">watched_events</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;mouseenter&quot;</span><span class="p">,</span> <span class="s2">&quot;mouseleave&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">handle_spinner_event</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;mouseenter&quot;</span><span class="p">:</span>
+                <span class="n">spinner</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;times&quot;</span>
+            <span class="k">elif</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;mouseleave&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">layer</span><span class="o">.</span><span class="n">loading</span><span class="p">:</span>
+                    <span class="n">spinner</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;spinner spin lg&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">spinner</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;times&quot;</span>
+
+        <span class="n">spinner_event</span><span class="o">.</span><span class="n">on_dom_event</span><span class="p">(</span><span class="n">handle_spinner_event</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">remove_layer_click</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_layer_remove_click</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+
+        <span class="n">spinner</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">remove_layer_click</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">visibility_checkbox</span><span class="p">,</span>
+                <span class="n">opacity_slider</span><span class="p">,</span>
+                <span class="n">settings_button</span><span class="p">,</span>
+                <span class="n">spinner</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 4px 0px 4px&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_find_layer_row_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">child</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">description</span> <span class="o">==</span> <span class="n">layer</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_remove_confirm_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">child</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;Remove layer?&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span><span class="p">[:</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">:]</span>
+                <span class="p">)</span>
+                <span class="k">break</span>
+
+    <span class="k">def</span> <span class="nf">_on_layer_remove_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_confirm_widget</span><span class="p">()</span>
+
+        <span class="n">label</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+            <span class="s2">&quot;Remove layer?&quot;</span><span class="p">,</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 4px 0px 4px&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">yes_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Yes&quot;</span><span class="p">,</span>
+            <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">yes_button</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="s2">&quot;86px&quot;</span>
+        <span class="n">no_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;No&quot;</span><span class="p">,</span>
+            <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">no_button</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="s2">&quot;86px&quot;</span>
+
+        <span class="n">confirm_widget</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">label</span><span class="p">,</span> <span class="n">yes_button</span><span class="p">,</span> <span class="n">no_button</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;284px&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">layer_row_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_layer_row_index</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span><span class="p">[:</span> <span class="n">layer_row_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="o">+</span> <span class="p">[</span><span class="n">confirm_widget</span><span class="p">]</span>
+            <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">layer_row_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:])</span>
+        <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">on_yes_button_click</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_remove_confirm_widget</span><span class="p">()</span>
+
+        <span class="n">yes_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">on_yes_button_click</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">on_no_button_click</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_remove_confirm_widget</span><span class="p">()</span>
+
+        <span class="n">no_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">on_no_button_click</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_compute_layer_opacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">geojson_layers</span><span class="p">:</span>
@@ -6839,7 +6936,7 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">refresh_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates all the layer widgets.&quot;&quot;&quot;</span>
     <span class="n">toggle_all_layout</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
-        <span class="n">height</span><span class="o">=</span><span class="s2">&quot;18px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;30ex&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 8px 25px 8px&quot;</span>
+        <span class="n">height</span><span class="o">=</span><span class="s2">&quot;18px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;30ex&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 4px 25px 4px&quot;</span>
     <span class="p">)</span>
     <span class="n">toggle_all_checkbox</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
         <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
