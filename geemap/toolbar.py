@@ -151,7 +151,13 @@ class Toolbar(widgets.VBox):
             layout=widgets.Layout(height="28px", width="72px"),
         )
 
-        self.toolbar_header = widgets.HBox()
+        self.toolbar_header = widgets.HBox(
+            layout=widgets.Layout(
+                display="flex",
+                justify_content="flex-end",
+                align_items="center"
+            )
+        )
         self.toolbar_header.children = [self.layers_button, self.toolbar_button]
         self.toolbar_footer = widgets.VBox()
         self.toolbar_footer.children = [self.grid]
@@ -159,7 +165,7 @@ class Toolbar(widgets.VBox):
         self.toolbar_button.observe(self._toolbar_btn_click, "value")
         self.layers_button.observe(self._layers_btn_click, "value")
 
-        super().__init__(children=[self.toolbar_button])
+        super().__init__(children=[self.toolbar_header])
         toolbar_event = ipyevents.Event(
             source=self, watched_events=["mouseenter", "mouseleave"]
         )
@@ -169,6 +175,12 @@ class Toolbar(widgets.VBox):
         """Resets the toolbar so that no widget is selected."""
         for widget in self.all_widgets:
             widget.value = False
+
+    def toggle_layers(self, enabled):
+        self.layers_button.value = enabled
+        self.on_layers_toggled(enabled)
+        if enabled:
+            self.toolbar_button.value = False
 
     def _reset_others(self, current):
         for other in self.all_widgets:
@@ -198,10 +210,8 @@ class Toolbar(widgets.VBox):
         if event["type"] == "mouseenter":
             self.children = [self.toolbar_header, self.toolbar_footer]
         elif event["type"] == "mouseleave":
-            if not self.toolbar_button.value:
-                self.children = [self.toolbar_button]
-                self.toolbar_button.value = False
-                self.layers_button.value = False
+            if not self.toolbar_button.value and not self.layers_button.value:
+                self.children = [self.toolbar_header]
 
     def _toolbar_btn_click(self, change):
         if change["new"]:
@@ -209,7 +219,17 @@ class Toolbar(widgets.VBox):
             self.children = [self.toolbar_header, self.toolbar_footer]
         else:
             if not self.layers_button.value:
-                self.children = [self.toolbar_button]
+                self.children = [self.toolbar_header]
+
+    def _layers_btn_click(self, change):
+        if change["new"]:
+            self.toolbar_button.value = False
+            self.children = [self.toolbar_header, self.toolbar_footer]
+        else:
+            if not self.toolbar_button.value:
+                self.children = [self.toolbar_header]
+        if self.on_layers_toggled:
+            self.on_layers_toggled(change["new"])
 
     @property
     def accessory_widget(self):
@@ -224,10 +244,6 @@ class Toolbar(widgets.VBox):
             self.toolbar_footer.children = [self._accessory_widget]
         else:
             self.toolbar_footer.children = [self.grid]
-
-    def _layers_btn_click(self, change):
-        if self.on_layers_toggled:
-            self.on_layers_toggled(change["new"])
 
 
 def inspector_gui(m=None):
