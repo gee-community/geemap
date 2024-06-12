@@ -16213,7 +16213,7 @@ def _get_colab_secret(key: str) -> Optional[str]:
         try:
             return userdata.get(key)
         except (userdata.SecretNotFoundError, userdata.NotebookAccessError):
-            return None  # Secret does't exist or insufficient access.
+            return None  # Secret doesn't exist or insufficient access.
     return None
 
 
