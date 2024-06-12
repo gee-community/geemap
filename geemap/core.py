@@ -641,6 +641,8 @@ class Map(ipyleaflet.Map, MapInterface):
             widget=toolbar_val, position=position
         )
         super().add(toolbar_control)
+        # Enable the layer manager by default.
+        toolbar_val.toggle_layers(True)
 
     def _add_inspector(self, position: str, **kwargs) -> None:
         if self._inspector:
