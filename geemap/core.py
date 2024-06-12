@@ -231,7 +231,11 @@ class AbstractDrawControl(object):
         if index >= 0:
             del self.geometries[index]
             del self.properties[index]
-            self._redraw_layer()
+            if self.count:
+                self._redraw_layer()
+            elif _DRAWN_FEATURES_LAYER in self.host_map.ee_layers:
+                # Remove drawn features layer if there are no geometries.
+                self.host_map.remove_layer(_DRAWN_FEATURES_LAYER)
             self._geometry_delete_dispatcher(self, geometry=geometry)
 
 
@@ -266,10 +270,6 @@ class MapDrawControl(ipyleaflet.DrawControl, AbstractDrawControl):
                     self._handle_geometry_edited(geo_json)
                 elif action == "deleted":
                     self._handle_geometry_deleted(geo_json)
-                    # Remove drawn features layer if there are no geometries.
-                    if not self.count:
-                        if _DRAWN_FEATURES_LAYER in self.host_map.ee_layers:
-                            self.host_map.remove_layer(_DRAWN_FEATURES_LAYER)
             except Exception as e:
                 self.reset(clear_draw_control=False)
                 print("There was an error creating Earth Engine Feature.")

@@ -202,8 +202,8 @@ class TestAbstractDrawControl(unittest.TestCase):
     }
 
     def setUp(self):
-        map = fake_map.FakeMap()
-        self._draw_control = TestAbstractDrawControl.TestDrawControl(map)
+        self.map = fake_map.FakeMap()
+        self._draw_control = TestAbstractDrawControl.TestDrawControl(self.map)
 
     def tearDown(self):
         pass
@@ -220,6 +220,7 @@ class TestAbstractDrawControl(unittest.TestCase):
         self.assertEquals(self._draw_control.collection, fake_ee.FeatureCollection([]))
         self.assertIsNone(self._draw_control.last_feature)
         self.assertEquals(self._draw_control.count, 0)
+        self.assertFalse("Drawn Features" in self.map.ee_layers)
 
     def test_handles_creation(self):
         self._draw_control.create(self.geo_json)
@@ -227,12 +228,15 @@ class TestAbstractDrawControl(unittest.TestCase):
             self._draw_control.geometries,
             [fake_ee.Geometry(self.geo_json["geometry"])],
         )
+        self.assertTrue("Drawn Features" in self.map.ee_layers)
 
     def test_handles_deletion(self):
         self._draw_control.create(self.geo_json)
+        self.assertTrue("Drawn Features" in self.map.ee_layers)
         self.assertEquals(len(self._draw_control.geometries), 1)
         self._draw_control.delete(0)
         self.assertEquals(len(self._draw_control.geometries), 0)
+        self.assertFalse("Drawn Features" in self.map.ee_layers)
 
     def test_handles_edit(self):
         self._draw_control.create(self.geo_json)
@@ -292,6 +296,7 @@ class TestAbstractDrawControl(unittest.TestCase):
         self._draw_control.reset(clear_draw_control=True)
         self.assertEquals(len(self._draw_control.geometries), 0)
         self.assertEquals(len(self._draw_control.geo_jsons), 0)
+        self.assertFalse("Drawn Features" in self.map.ee_layers)
 
         self._draw_control.create(self.geo_json)
         self.assertEquals(len(self._draw_control.geometries), 1)
@@ -300,6 +305,7 @@ class TestAbstractDrawControl(unittest.TestCase):
         self._draw_control.reset(clear_draw_control=False)
         self.assertEquals(len(self._draw_control.geometries), 0)
         self.assertEquals(len(self._draw_control.geo_jsons), 1)
+        self.assertFalse("Drawn Features" in self.map.ee_layers)
 
     def test_remove_geometry(self):
         self._draw_control.create(self.geo_json)
