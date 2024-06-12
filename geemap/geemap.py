@@ -743,38 +743,30 @@ class Map(core.Map):
                 'bottomright'.
             builtin_legend (str, optional): Name of the builtin legend to add
                 to the map. Defaults to None.
+            layer_name (str, optional): The associated layer for the legend.
+                Defaults to None.
             add_header (bool, optional): Whether the legend can be closed or
                 not. Defaults to True.
             widget_args (dict, optional): Additional arguments passed to the
                 widget_template() function. Defaults to {}.
         """
         try:
-            legend = map_widgets.Legend(
+            legend = self._add_legend(
                 title,
-                legend_dict,
-                keys,
-                colors,
+                keys or legend_dict.keys(),
+                colors or legend_dict.values(),
                 position,
                 builtin_legend,
+                layer_name,
                 add_header,
                 widget_args,
                 **kwargs,
             )
-
-            legend_control = ipyleaflet.WidgetControl(widget=legend, position=position)
-
-            self._legend_widget = legend
-            self._legend = legend_control
-            self.add(legend_control)
-
+            self._legend = legend
             if not hasattr(self, "legends"):
-                setattr(self, "legends", [legend_control])
+                self.legends = [legend]
             else:
-                self.legends.append(legend_control)
-
-            if layer_name in self.ee_layers:
-                self.ee_layers[layer_name]["legend"] = legend_control
-
+                self.legends.append(legend)
         except Exception as e:
             raise Exception(e)
 
@@ -817,33 +809,25 @@ class Map(core.Map):
             TypeError: If cmap or palette is not provided.
         """
 
-        colorbar = map_widgets.Colorbar(
+        colorbar = self._add_colorbar(
             vis_params,
             cmap,
             discrete,
             label,
             orientation,
+            position,
             transparent_bg,
+            layer_name,
             font_size,
             axis_off,
             max_width,
             **kwargs,
         )
-        colormap_ctrl = ipyleaflet.WidgetControl(
-            widget=colorbar, position=position, transparent_bg=transparent_bg
-        )
-
-        self._colorbar = colormap_ctrl
-        if layer_name in self.ee_layers:
-            if "colorbar" in self.ee_layers[layer_name]:
-                self.remove_control(self.ee_layers[layer_name]["colorbar"])
-            self.ee_layers[layer_name]["colorbar"] = colormap_ctrl
+        self._colorbar = colorbar
         if not hasattr(self, "colorbars"):
-            self.colorbars = [colormap_ctrl]
+            self.colorbars = [colorbar]
         else:
-            self.colorbars.append(colormap_ctrl)
-
-        self.add(colormap_ctrl)
+            self.colorbars.append(colorbar)
 
     def remove_colorbar(self):
         """Remove colorbar from the map."""
@@ -852,6 +836,9 @@ class Map(core.Map):
 
     def remove_colorbars(self):
         """Remove all colorbars from the map."""
+        for layer in self.ee_layers.values():
+            if widget := layer.pop("colorbar", None):
+                self.remove(widget)
         if hasattr(self, "colorbars"):
             for colorbar in self.colorbars:
                 if colorbar in self.controls:
@@ -865,6 +852,9 @@ class Map(core.Map):
 
     def remove_legends(self):
         """Remove all legends from the map."""
+        for layer in self.ee_layers.values():
+            if widget := layer.pop("legend", None):
+                self.remove(widget)
         if hasattr(self, "legends"):
             for legend in self.legends:
                 if legend in self.controls:

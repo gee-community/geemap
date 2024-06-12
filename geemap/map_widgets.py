@@ -1,6 +1,7 @@
 """Various ipywidgets that can be added to a map."""
 
 import functools
+from typing import List
 
 import IPython
 from IPython.core.display import HTML, display
@@ -10,8 +11,6 @@ import ipytree
 import ipywidgets
 
 from . import common
-
-from traceback import format_tb
 
 
 def _set_css_in_cell_output(info):
@@ -229,22 +228,18 @@ class Legend(ipywidgets.VBox):
     def __init__(
         self,
         title="Legend",
-        legend_dict=None,
         keys=None,
         colors=None,
         position="bottomright",
         builtin_legend=None,
         add_header=True,
-        widget_args={},
+        widget_args=None,
         **kwargs,
     ):
         """Adds a customized legend to the map.
 
          Args:
             title (str, optional): Title of the legend. Defaults to 'Legend'.
-            legend_dict (dict, optional): A dictionary containing legend items
-                as keys and color as values. If provided, keys and colors will
-                be ignored. Defaults to None.
             keys (list, optional): A list of legend keys. Defaults to None.
             colors (list, optional): A list of legend colors. Defaults to None.
             position (str, optional): Position of the legend. Defaults to
@@ -260,7 +255,6 @@ class Legend(ipywidgets.VBox):
             TypeError: If the keys are not a list.
             TypeError: If the colors are not list.
             TypeError: If the colors are not a list of tuples.
-            TypeError: If the legend_dict is not a dictionary.
             ValueError: If the legend template does not exist.
             ValueError: If a rgb value cannot to be converted to hex.
             ValueError: If the keys and colors are not the same length.
@@ -269,9 +263,11 @@ class Legend(ipywidgets.VBox):
 
         """
         import os  # pylint: disable=import-outside-toplevel
-        from IPython.display import display  # pylint: disable=import-outside-toplevel
         import pkg_resources  # pylint: disable=import-outside-toplevel
         from .legends import builtin_legends  # pylint: disable=import-outside-toplevel
+
+        if not widget_args:
+            widget_args = {}
 
         pkg_dir = os.path.dirname(
             pkg_resources.resource_filename("geemap", "geemap.py")
@@ -317,15 +313,6 @@ class Legend(ipywidgets.VBox):
                 legend_dict = builtin_legends[builtin_legend]
                 keys = list(legend_dict.keys())
                 colors = list(legend_dict.values())
-
-        if legend_dict is not None:
-            if not isinstance(legend_dict, dict):
-                raise TypeError("The legend dict must be a dictionary.")
-            else:
-                keys = list(legend_dict.keys())
-                colors = list(legend_dict.values())
-                if all(isinstance(item, tuple) for item in colors):
-                    colors = Legend.__convert_rgb_colors_to_hex(colors)
 
         Legend.__check_if_allowed(position, "position", Legend.ALLOWED_POSITIONS)
 
@@ -1024,6 +1011,14 @@ class LayerEditor(ipywidgets.VBox):
             self.on_close()
 
 
+def _tokenize_legend_colors(string: str, delimiter: str = ",") -> List[str]:
+    return common.to_hex_colors([c.strip() for c in string.split(delimiter)])
+
+
+def _tokenize_legend_labels(string: str, delimiter: str = ",") -> List[str]:
+    return [l.strip() for l in string.split(delimiter)]
+
+
 @Theme.apply
 class _RasterLayerEditor(ipywidgets.VBox):
     """Widget for displaying and editing layer visualization properties for raster layers."""
@@ -1534,30 +1529,14 @@ class _RasterLayerEditor(ipywidgets.VBox):
         )
         self._ee_layer.visible = False
 
-        def _remove_control(key):
-            if widget := self._layer_dict.get(key, None):
-                if widget in self._host_map.controls:
-                    self._host_map.remove(widget)
-                del self._layer_dict[key]
-
         if self._legend_checkbox.value:
-            _remove_control("colorbar")
+            palette_str = self._palette_label.value
             if self._linear_checkbox.value:
-                _remove_control("legend")
-
-                if (
-                    len(self._palette_label.value) > 0
-                    and "," in self._palette_label.value
-                ):
-                    colors = common.to_hex_colors(
-                        [
-                            color.strip()
-                            for color in self._palette_label.value.split(",")
-                        ]
-                    )
-
-                    if hasattr(self._host_map, "colorbar"):
-                        self._host_map.add_colorbar(
+                if palette_str:
+                    colors = _tokenize_legend_colors(palette_str)
+                    if hasattr(self._host_map, "_add_colorbar"):
+                        # pylint: disable-next=protected-access
+                        self._host_map._add_colorbar(
                             vis_params={
                                 "palette": colors,
                                 "min": self._value_range_slider.value[0],
@@ -1566,33 +1545,21 @@ class _RasterLayerEditor(ipywidgets.VBox):
                             layer_name=self._layer_name,
                         )
             elif self._step_checkbox.value:
-                if (
-                    len(self._palette_label.value) > 0
-                    and "," in self._palette_label.value
-                ):
-                    colors = common.to_hex_colors(
-                        [
-                            color.strip()
-                            for color in self._palette_label.value.split(",")
-                        ]
-                    )
-                    labels = [
-                        label.strip()
-                        for label in self._legend_labels_label.value.split(",")
-                    ]
-
-                    if hasattr(self._host_map, "add_legend"):
-                        self._host_map.add_legend(
+                labels_str = self._legend_labels_label.value
+                if palette_str and labels_str:
+                    colors = _tokenize_legend_colors(palette_str)
+                    labels = _tokenize_legend_labels(labels_str)
+                    if hasattr(self._host_map, "_add_legend"):
+                        # pylint: disable-next=protected-access
+                        self._host_map._add_legend(
                             title=self._legend_title_label.value,
-                            legend_keys=labels,
-                            legend_colors=colors,
                             layer_name=self._layer_name,
+                            keys=labels,
+                            colors=colors,
                         )
         else:
             if self._greyscale_radio_button.index == 0 and "palette" in vis:
                 self._render_colorbar(vis["palette"])
-                _remove_control("colorbar")
-                _remove_control("legend")
 
     def _legend_checkbox_changed(self, change):
         if change["new"]:
@@ -2010,26 +1977,18 @@ class _VectorLayerEditor(ipywidgets.VBox):
                     f"{self._new_layer_name.value}",
                 )
 
-                if (
-                    len(self._palette_label.value)
-                    and self._legend_checkbox.value
-                    and len(self._legend_labels_label.value) > 0
-                    and hasattr(self._host_map, "add_legend")
-                ):
-                    legend_colors = [
-                        color.strip() for color in self._palette_label.value.split(",")
-                    ]
-                    legend_keys = [
-                        label.strip()
-                        for label in self._legend_labels_label.value.split(",")
-                    ]
-
-                    if hasattr(self._host_map, "add_legend"):
-                        self._host_map.add_legend(
+                palette_str = self._palette_label.value
+                labels_str = self._legend_labels_label.value
+                if self._legend_checkbox.value and palette_str and labels_str:
+                    colors = _tokenize_legend_colors(palette_str)
+                    labels = _tokenize_legend_labels(labels_str)
+                    if hasattr(self._host_map, "_add_legend"):
+                        # pylint: disable-next=protected-access
+                        self._host_map._add_legend(
                             title=self._legend_title_label.value,
-                            legend_keys=legend_keys,
-                            legend_colors=legend_colors,
                             layer_name=self._new_layer_name.value,
+                            keys=labels,
+                            colors=colors,
                         )
             except Exception as exc:
                 self._compute_label.value = "Error: " + str(exc)
