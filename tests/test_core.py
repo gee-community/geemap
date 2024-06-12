@@ -138,8 +138,10 @@ class TestMap(unittest.TestCase):
             toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Layers"
         )
         self.assertTrue(layer_button.value)
-        self.assertIsNotNone(utils.query_widget(toolbar_control, map_widgets.LayerManager))
-        
+        self.assertIsNotNone(
+            utils.query_widget(toolbar_control, map_widgets.LayerManager)
+        )
+
         toolbar_button = utils.query_widget(
             toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Toolbar"
         )
@@ -155,12 +157,20 @@ class TestMap(unittest.TestCase):
 
         # Closing the toolbar button shows both buttons in the header.
         toolbar_button.value = False
-        self.assertIsNotNone(utils.query_widget(
-            toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Toolbar"
-        ))
-        self.assertIsNotNone(utils.query_widget(
-            toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Layers"
-        ))
+        self.assertIsNotNone(
+            utils.query_widget(
+                toolbar_control,
+                ipywidgets.ToggleButton,
+                lambda c: c.tooltip == "Toolbar",
+            )
+        )
+        self.assertIsNotNone(
+            utils.query_widget(
+                toolbar_control,
+                ipywidgets.ToggleButton,
+                lambda c: c.tooltip == "Layers",
+            )
+        )
 
     def test_add_draw_control(self):
         """Tests adding and getting the draw widget."""
