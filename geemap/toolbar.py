@@ -164,10 +164,6 @@ class Toolbar(widgets.VBox):
         self.layers_button.observe(self._layers_btn_click, "value")
 
         super().__init__(children=[self.toolbar_header])
-        toolbar_event = ipyevents.Event(
-            source=self, watched_events=["mouseenter", "mouseleave"]
-        )
-        toolbar_event.on_dom_event(self._handle_toolbar_event)
 
     def reset(self):
         """Resets the toolbar so that no widget is selected."""
@@ -204,13 +200,6 @@ class Toolbar(widgets.VBox):
             self.toggle_widget.tooltip = self._TOGGLE_TOOL_EXPAND_TOOLTIP
             self.toggle_widget.icon = self._TOGGLE_TOOL_EXPAND_ICON
 
-    def _handle_toolbar_event(self, event):
-        if event["type"] == "mouseenter":
-            self.children = [self.toolbar_header, self.toolbar_footer]
-        elif event["type"] == "mouseleave":
-            if not self.toolbar_button.value and not self.layers_button.value:
-                self.children = [self.toolbar_header]
-
     def _toolbar_btn_click(self, change):
         if change["new"]:
             self.layers_button.value = False
@@ -220,14 +209,15 @@ class Toolbar(widgets.VBox):
                 self.children = [self.toolbar_header]
 
     def _layers_btn_click(self, change):
+        # Allow callbacks to set accessory_widget to prevent flicker on click.
+        if self.on_layers_toggled:
+            self.on_layers_toggled(change["new"])
         if change["new"]:
             self.toolbar_button.value = False
             self.children = [self.toolbar_header, self.toolbar_footer]
         else:
             if not self.toolbar_button.value:
                 self.children = [self.toolbar_header]
-        if self.on_layers_toggled:
-            self.on_layers_toggled(change["new"])
 
     @property
     def accessory_widget(self):
