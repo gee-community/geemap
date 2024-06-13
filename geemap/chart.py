@@ -41,6 +41,55 @@ class DataTable(pd.DataFrame):
         super().__init__(data, **kwargs)
 
 
+def transpose_df(
+    df: pd.DataFrame,
+    label_col: str,
+    index_name: str = None,
+    indexes: list = None,
+) -> pd.DataFrame:
+    """
+    Transposes a pandas DataFrame and optionally sets a new index name and
+        custom indexes.
+
+    Args:
+        df (pd.DataFrame): The DataFrame to transpose.
+        label_col (str): The column to set as the index before transposing.
+        index_name (str, optional): The name to set for the index after
+            transposing. Defaults to None.
+        indexes (list, optional): A list of custom indexes to set after
+            transposing. The length of this list must match the number of rows
+            in the transposed DataFrame. Defaults to None.
+
+    Returns:
+        pd.DataFrame: The transposed DataFrame.
+
+    Raises:
+        ValueError: If `label_col` is not a column in `datatable`.
+        ValueError: If the length of `indexes` does not match the number of
+            rows in the transposed DataFrame.
+    """
+    # Check if the specified column exists in the DataFrame
+    if label_col not in df.columns:
+        raise ValueError(f"Column '{label_col}' not found in DataFrame")
+
+    # Set the specified column as the index
+    transposed_df = df.set_index(label_col).transpose()
+
+    # Set the index name if provided
+    if index_name:
+        transposed_df.columns.name = index_name
+
+    # Set custom indexes if provided
+    if indexes:
+        if len(indexes) != len(transposed_df.index):
+            raise ValueError(
+                "Length of custom indexes must match the number of rows in the transposed DataFrame"
+            )
+        transposed_df.index = indexes
+
+    return transposed_df
+
+
 class Chart:
     """
     A class to create and display various types of charts from data.
