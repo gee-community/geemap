@@ -84,7 +84,10 @@ class FakeMap:
         pass
 
     def remove_layer(self, layer):
+        if isinstance(layer, str):
+            layer = self.ee_layers[layer]["ee_layer"]
         self.layers.remove(layer)
+        del self.ee_layers[layer.name]
 
     def get_layer_names(self):
         return [layer.name for layer in self.layers]
@@ -112,6 +115,9 @@ class FakeEeTileLayer:
         self.visible = visible
         self.opacity = opacity
 
+    def observe(self, func, names):
+        pass
+
 
 class FakeTileLayer:
     def __init__(self, name="test-layer", visible=True, opacity=1.0):
@@ -128,3 +134,6 @@ class FakeGeoJSONLayer:
         self.name = name
         self.visible = visible
         self.style = style or {}
+
+    def observe(self, func, names):
+        pass

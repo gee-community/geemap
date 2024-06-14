@@ -7,6 +7,7 @@ import IPython
 from IPython.core.display import HTML, display
 
 import ee
+import ipyevents
 import ipytree
 import ipywidgets
 
@@ -752,7 +753,7 @@ class LayerManager(ipywidgets.VBox):
     def refresh_layers(self):
         """Recreates all the layer widgets."""
         toggle_all_layout = ipywidgets.Layout(
-            height="18px", width="30ex", padding="0px 8px 25px 8px"
+            height="18px", width="30ex", padding="0px 4px 25px 4px"
         )
         toggle_all_checkbox = ipywidgets.Checkbox(
             value=False,
@@ -796,7 +797,7 @@ class LayerManager(ipywidgets.VBox):
             max=1,
             step=0.01,
             readout=False,
-            layout=ipywidgets.Layout(width="80px"),
+            layout=ipywidgets.Layout(width="70px", padding="0px 3px 0px 0px"),
         )
         opacity_slider.observe(
             lambda change: self._on_layer_opacity_changed(change, layer), "value"
@@ -809,10 +810,107 @@ class LayerManager(ipywidgets.VBox):
         )
         settings_button.on_click(self._on_layer_settings_click)
 
-        return ipywidgets.HBox(
-            [visibility_checkbox, settings_button, opacity_slider],
-            layout=ipywidgets.Layout(padding="0px 8px 0px 8px"),
+        spinner = ipywidgets.Button(
+            icon="times",
+            layout=ipywidgets.Layout(width="25px", height="25px", padding="0px"),
+            tooltip="Loaded",
         )
+
+        def loading_change(change):
+            if change["new"]:
+                spinner.tooltip = "Loading ..."
+                spinner.icon = "spinner spin lg"
+            else:
+                spinner.tooltip = "Loaded"
+                spinner.icon = "times"
+
+        layer.observe(loading_change, "loading")
+
+        spinner_event = ipyevents.Event(
+            source=spinner, watched_events=["mouseenter", "mouseleave"]
+        )
+
+        def handle_spinner_event(event):
+            if event["type"] == "mouseenter":
+                spinner.icon = "times"
+            elif event["type"] == "mouseleave":
+                if layer.loading:
+                    spinner.icon = "spinner spin lg"
+                else:
+                    spinner.icon = "times"
+
+        spinner_event.on_dom_event(handle_spinner_event)
+
+        def remove_layer_click(_):
+            self._on_layer_remove_click(layer)
+
+        spinner.on_click(remove_layer_click)
+
+        return ipywidgets.HBox(
+            [
+                visibility_checkbox,
+                opacity_slider,
+                settings_button,
+                spinner,
+            ],
+            layout=ipywidgets.Layout(padding="0px 4px 0px 4px"),
+        )
+
+    def _find_layer_row_index(self, layer):
+        for index, child in enumerate(self._toolbar_footer.children[1:]):
+            if child.children[0].description == layer.name:
+                return index + 1
+        return -1
+
+    def _remove_confirm_widget(self):
+        for index, child in enumerate(self._toolbar_footer.children[1:]):
+            if child.children[0].value == "Remove layer?":
+                self._toolbar_footer.children = (
+                    self._toolbar_footer.children[: index + 1]
+                    + self._toolbar_footer.children[index + 2 :]
+                )
+                break
+
+    def _on_layer_remove_click(self, layer):
+        self._remove_confirm_widget()
+
+        label = ipywidgets.Label(
+            "Remove layer?",
+            layout=ipywidgets.Layout(padding="0px 4px 0px 4px"),
+        )
+        yes_button = ipywidgets.Button(
+            description="Yes",
+            button_style="primary",
+        )
+        yes_button.layout.width = "86px"
+        no_button = ipywidgets.Button(
+            description="No",
+            button_style="primary",
+        )
+        no_button.layout.width = "86px"
+
+        confirm_widget = ipywidgets.HBox(
+            [label, yes_button, no_button], layout=ipywidgets.Layout(width="284px")
+        )
+
+        layer_row_index = self._find_layer_row_index(layer)
+
+        self._toolbar_footer.children = (
+            list(self._toolbar_footer.children[: layer_row_index + 1])
+            + [confirm_widget]
+            + list(self._toolbar_footer.children[layer_row_index + 1 :])
+        )
+
+        def on_yes_button_click(_):
+            self._host_map.remove_layer(layer)
+            self._remove_confirm_widget()
+
+        yes_button.on_click(on_yes_button_click)
+
+        def on_no_button_click(_):
+            self._remove_confirm_widget()
+
+        no_button.on_click(on_no_button_click)
 
     def _compute_layer_opacity(self, layer):
         if layer in self._host_map.geojson_layers:
