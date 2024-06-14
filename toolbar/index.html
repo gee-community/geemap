@@ -5250,7 +5250,11 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
             <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;72px&quot;</span><span class="p">),</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+                <span class="n">display</span><span class="o">=</span><span class="s2">&quot;flex&quot;</span><span class="p">,</span> <span class="n">justify_content</span><span class="o">=</span><span class="s2">&quot;flex-end&quot;</span><span class="p">,</span> <span class="n">align_items</span><span class="o">=</span><span class="s2">&quot;center&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">]</span>
@@ -5258,16 +5262,18 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layers_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">])</span>
-        <span class="n">toolbar_event</span> <span class="o">=</span> <span class="n">ipyevents</span><span class="o">.</span><span class="n">Event</span><span class="p">(</span>
-            <span class="n">source</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">watched_events</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;mouseenter&quot;</span><span class="p">,</span> <span class="s2">&quot;mouseleave&quot;</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="n">toolbar_event</span><span class="o">.</span><span class="n">on_dom_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_toolbar_event</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the toolbar so that no widget is selected.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">:</span>
             <span class="n">widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">toggle_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">enabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_layers_toggled</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">enabled</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">_reset_others</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_widgets</span><span class="p">:</span>
@@ -5293,22 +5299,24 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_EXPAND_TOOLTIP</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_TOGGLE_TOOL_EXPAND_ICON</span>
 
-    <span class="k">def</span> <span class="nf">_handle_toolbar_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;mouseenter&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;mouseleave&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
-
     <span class="k">def</span> <span class="nf">_toolbar_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_layers_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="c1"># Allow callbacks to set accessory_widget to prevent flicker on click.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_layers_toggled</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_layers_toggled</span><span class="p">(</span><span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">accessory_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -5323,10 +5331,6 @@ Toolbar            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_accessory_widget</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">_layers_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_layers_toggled</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_layers_toggled</span><span class="p">(</span><span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">])</span>
 </code></pre></div>
         </details>
 
@@ -5600,7 +5604,11 @@ cleanup state when toggled off.</p></td>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;72px&quot;</span><span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span>
+        <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+            <span class="n">display</span><span class="o">=</span><span class="s2">&quot;flex&quot;</span><span class="p">,</span> <span class="n">justify_content</span><span class="o">=</span><span class="s2">&quot;flex-end&quot;</span><span class="p">,</span> <span class="n">align_items</span><span class="o">=</span><span class="s2">&quot;center&quot;</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">]</span>
@@ -5608,11 +5616,7 @@ cleanup state when toggled off.</p></td>
     <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">layers_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layers_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
-    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">])</span>
-    <span class="n">toolbar_event</span> <span class="o">=</span> <span class="n">ipyevents</span><span class="o">.</span><span class="n">Event</span><span class="p">(</span>
-        <span class="n">source</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">watched_events</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;mouseenter&quot;</span><span class="p">,</span> <span class="s2">&quot;mouseleave&quot;</span><span class="p">]</span>
-    <span class="p">)</span>
-    <span class="n">toolbar_event</span><span class="o">.</span><span class="n">on_dom_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_toolbar_event</span><span class="p">)</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">])</span>
 </code></pre></div>
         </details>
     </div>
@@ -5646,6 +5650,7 @@ cleanup state when toggled off.</p></td>
     </div>
 
   </div>
+
 
 
 

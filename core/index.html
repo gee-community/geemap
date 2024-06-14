@@ -5564,7 +5564,8 @@ AbstractDrawControl        </code>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the draw control.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            host_map (geemap.Map): The geemap.Map instance to be linked with the draw control.</span>
+<span class="sd">            host_map (geemap.Map): The geemap.Map instance to be linked with</span>
+<span class="sd">                the draw control.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span> <span class="o">=</span> <span class="n">host_map</span>
@@ -5712,9 +5713,9 @@ AbstractDrawControl        </code>
     <span class="k">def</span> <span class="nf">_redraw_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">},</span> <span class="s2">&quot;Drawn Features&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mf">0.5</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">},</span> <span class="n">_DRAWN_FEATURES_LAYER</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mf">0.5</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Drawn Features&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_DRAWN_FEATURES_LAYER</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
                 <span class="s2">&quot;ee_layer&quot;</span><span class="p">,</span> <span class="kc">None</span>
             <span class="p">)</span>
 
@@ -5746,7 +5747,11 @@ AbstractDrawControl        </code>
         <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">_DRAWN_FEATURES_LAYER</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
+                <span class="c1"># Remove drawn features layer if there are no geometries.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="n">_DRAWN_FEATURES_LAYER</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_delete_dispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
 </code></pre></div>
         </details>
@@ -5804,7 +5809,8 @@ AbstractDrawControl        </code>
       <tr>
         <td><code>host_map</code></td>
         <td><code>geemap.Map</code></td>
-        <td><p>The geemap.Map instance to be linked with the draw control.</p></td>
+        <td><p>The geemap.Map instance to be linked with
+the draw control.</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
@@ -5815,7 +5821,8 @@ AbstractDrawControl        </code>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the draw control.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        host_map (geemap.Map): The geemap.Map instance to be linked with the draw control.</span>
+<span class="sd">        host_map (geemap.Map): The geemap.Map instance to be linked with</span>
+<span class="sd">            the draw control.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span> <span class="o">=</span> <span class="n">host_map</span>
@@ -6408,6 +6415,8 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="n">widget</span><span class="o">=</span><span class="n">toolbar_val</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span>
         <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">toolbar_control</span><span class="p">)</span>
+        <span class="c1"># Enable the layer manager by default.</span>
+        <span class="n">toolbar_val</span><span class="o">.</span><span class="n">toggle_layers</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_inspector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inspector</span><span class="p">:</span>
