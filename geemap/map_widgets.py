@@ -1508,7 +1508,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
             if selected != "Any":
                 n_class = int(self._classes_dropdown.value)
 
-            colors = pyplot.cm.get_cmap(self._colormap_dropdown.value, n_class)
+            colors = pyplot.get_cmap(self._colormap_dropdown.value, n_class)
             cmap_colors = [
                 matplotlib.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
             ]
@@ -1569,7 +1569,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
             if self._classes_dropdown.value != "Any":
                 n_class = int(self._classes_dropdown.value)
 
-            colors = pyplot.cm.get_cmap(self._colormap_dropdown.value, n_class)
+            colors = pyplot.get_cmap(self._colormap_dropdown.value, n_class)
             cmap_colors = [
                 matplotlib.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
             ]
@@ -2125,7 +2125,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
                 if selected != "Any":
                     n_class = int(self._classes_dropdown.value)
 
-                colors = pyplot.cm.get_cmap(self._colormap_dropdown.value, n_class)
+                colors = pyplot.get_cmap(self._colormap_dropdown.value, n_class)
                 cmap_colors = [
                     matplotlib.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
                 ]
@@ -2150,7 +2150,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
             if self._classes_dropdown.value != "Any":
                 n_class = int(self._classes_dropdown.value)
 
-            colors = pyplot.cm.get_cmap(self._colormap_dropdown.value, n_class)
+            colors = pyplot.get_cmap(self._colormap_dropdown.value, n_class)
             cmap_colors = [
                 matplotlib.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
             ]
