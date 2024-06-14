@@ -7,6 +7,7 @@ from unittest.mock import patch, MagicMock, Mock, ANY
 import ipytree
 import ipywidgets
 import ee
+from matplotlib import pyplot
 
 from geemap import map_widgets
 from tests import fake_ee, fake_map, utils
@@ -706,6 +707,54 @@ class TestBasemap(unittest.TestCase):
         on_basemap_changed_mock.assert_called_once()
 
 
+class LayerEditorTestHarness:
+    """A wrapper around LayerEditor to expose widgets for testing."""
+
+    def __init__(self, layer_editor: map_widgets.LayerEditor):
+        self._layer_editor = layer_editor
+
+    def _query_checkbox(self, description):
+        return utils.query_widget(
+            self._layer_editor,
+            ipywidgets.Checkbox,
+            lambda c: c.description == description,
+        )
+
+    @property
+    def legend_checkbox(self):
+        return self._query_checkbox("Legend")
+
+    @property
+    def linear_colormap_checkbox(self):
+        return self._query_checkbox("Linear colormap")
+
+    @property
+    def step_colormap_checkbox(self):
+        return self._query_checkbox("Step colormap")
+
+    @property
+    def classes_dropdown(self):
+        return utils.query_widget(
+            self._layer_editor,
+            ipywidgets.Dropdown,
+            lambda c: c.description == "Classes:",
+        )
+
+    @property
+    def colormap_dropdown(self):
+        return utils.query_widget(
+            self._layer_editor,
+            ipywidgets.Dropdown,
+            lambda c: c.description == "Colormap:",
+        )
+
+    @property
+    def apply_button(self):
+        return utils.query_widget(
+            self._layer_editor, ipywidgets.Button, lambda c: c.description == "Apply"
+        )
+
+
 @patch.object(ee, "Feature", fake_ee.Feature)
 @patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
 @patch.object(ee, "Geometry", fake_ee.Geometry)
@@ -722,6 +771,7 @@ class TestLayerEditor(unittest.TestCase):
 
     def setUp(self):
         self._fake_map = fake_map.FakeMap()
+        pyplot.show = Mock()  # Plotting isn't captured by output widgets.
 
     def test_layer_editor_no_map(self):
         """Tests that a valid map must be passed in."""
@@ -765,3 +815,50 @@ class TestLayerEditor(unittest.TestCase):
         self.assertIsNotNone(
             utils.query_widget(widget, map_widgets._RasterLayerEditor, lambda _: True)
         )
+
+    def test_layer_editor_colorbar(self):
+        """Tests that linear legends checkbox changes the UI."""
+        fake_dict = self._fake_layer_dict(ee.Image())
+        self._fake_map.ee_layers["fake-ee-layer-name"] = fake_dict
+        widget = map_widgets.LayerEditor(self._fake_map, fake_dict)
+        harness = LayerEditorTestHarness(widget)
+
+        legend_checkbox = harness.legend_checkbox
+        self.assertIsNotNone(legend_checkbox)
+        self.assertIsNone(harness.linear_colormap_checkbox)
+        self.assertIsNone(harness.step_colormap_checkbox)
+
+        legend_checkbox.value = True
+        self.assertTrue(harness.linear_colormap_checkbox.value)
+        self.assertFalse(harness.step_colormap_checkbox.value)
+
+        harness.classes_dropdown.value = "3"
+        harness.colormap_dropdown.value = "Blues"
+        harness.apply_button.click()
+
+        self.assertIsNotNone(self._fake_map.ee_layers["fake-ee-layer-name"]["colorbar"])
+        self.assertNotIn("legend", self._fake_map.ee_layers["fake-ee-layer-name"])
+
+    def test_layer_editor_legend(self):
+        """Tests that linear legends checkbox changes the UI."""
+        fake_dict = self._fake_layer_dict(ee.Image())
+        self._fake_map.ee_layers["fake-ee-layer-name"] = fake_dict
+        widget = map_widgets.LayerEditor(self._fake_map, fake_dict)
+        harness = LayerEditorTestHarness(widget)
+
+        legend_checkbox = harness.legend_checkbox
+        self.assertIsNotNone(legend_checkbox)
+        self.assertIsNone(harness.linear_colormap_checkbox)
+        self.assertIsNone(harness.step_colormap_checkbox)
+
+        legend_checkbox.value = True
+        harness.step_colormap_checkbox.value = True
+        self.assertFalse(harness.linear_colormap_checkbox.value)
+        self.assertTrue(harness.step_colormap_checkbox.value)
+
+        harness.classes_dropdown.value = "3"
+        harness.colormap_dropdown.value = "Blues"
+        harness.apply_button.click()
+
+        self.assertNotIn("colorbar", self._fake_map.ee_layers["fake-ee-layer-name"])
+        self.assertIsNotNone(self._fake_map.ee_layers["fake-ee-layer-name"]["legend"])

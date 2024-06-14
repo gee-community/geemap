@@ -81,7 +81,6 @@ class FakeMap:
 
     def add(self, obj):
         del obj  # Unused.
-        pass
 
     def remove_layer(self, layer):
         if isinstance(layer, str):
@@ -99,10 +98,65 @@ class FakeMap:
         i = self.find_layer_index(old_layer)
         if i >= 0:
             self.layers[i] = new_layer
-        pass
 
     def add_basemap(self, basemap="HYBRID", show=True, **kwargs):
         self.add_layer(FakeTileLayer(name=basemap, visible=show))
+
+    def _add_legend(
+        self,
+        title=None,
+        keys=None,
+        colors=None,
+        position=None,
+        builtin_legend=None,
+        layer_name=None,
+        add_header=None,
+        widget_args=None,
+        **kwargs,
+    ):
+        del (
+            title,
+            keys,
+            colors,
+            position,
+            builtin_legend,
+            add_header,
+            widget_args,
+            kwargs,
+        )
+        if layer := self.ee_layers.get(layer_name):
+            layer["legend"] = {}
+
+    def _add_colorbar(
+        self,
+        vis_params=None,
+        cmap=None,
+        discrete=None,
+        label=None,
+        orientation=None,
+        position=None,
+        transparent_bg=None,
+        layer_name=None,
+        font_size=None,
+        axis_off=None,
+        max_width=None,
+        **kwargs,
+    ):
+        del (
+            vis_params,
+            cmap,
+            discrete,
+            label,
+            orientation,
+            position,
+            transparent_bg,
+            font_size,
+            axis_off,
+            max_width,
+            kwargs,
+        )
+        if layer := self.ee_layers.get(layer_name):
+            layer["colorbar"] = {}
 
     @property
     def cursor_style(self):
