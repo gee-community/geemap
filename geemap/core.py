@@ -502,11 +502,11 @@ class Map(ipyleaflet.Map, MapInterface):
     def get_center(self) -> Sequence:
         return self.center
 
-    def get_bounds(self, as_geo_json: bool = False) -> Sequence:
+    def get_bounds(self, as_geojson: bool = False) -> Sequence:
         """Returns the bounds of the current map view.
 
         Args:
-            as_geo_json (bool, optional): If true, returns map bounds as
+            as_geojson (bool, optional): If true, returns map bounds as
                 GeoJSON. Defaults to False.
 
         Returns:
@@ -522,7 +522,7 @@ class Map(ipyleaflet.Map, MapInterface):
         # https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html#ipyleaflet.Map.fit_bounds
         coords = [bounds[0][1], bounds[0][0], bounds[1][1], bounds[1][0]]
 
-        if as_geo_json:
+        if as_geojson:
             return ee.Geometry.BBox(*coords).getInfo()
         return coords
 
