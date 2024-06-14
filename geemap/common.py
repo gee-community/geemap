@@ -24,7 +24,7 @@ import zipfile
 import ee
 import ipywidgets as widgets
 from ipytree import Node, Tree
-from typing import Union, List, Dict, Optional, Tuple
+from typing import Union, List, Dict, Optional, Tuple, Any
 
 try:
     from IPython.display import display, IFrame, Javascript
@@ -38,20 +38,30 @@ def ee_initialize(
     service_account=False,
     auth_args={},
     user_agent_prefix="geemap",
+    project=None,
     **kwargs,
 ):
     """Authenticates Earth Engine and initialize an Earth Engine session
 
     Args:
-        token_name (str, optional): The name of the Earth Engine token. Defaults to "EARTHENGINE_TOKEN".
-            In Colab, you can also set a secret named "EE_PROJECT_ID" to initialize Earth Engine.
-        auth_mode (str, optional): The authentication mode, can be one of colab, notebook, localhost, or gcloud.
-            See https://developers.google.com/earth-engine/guides/auth for more details. Defaults to None.
-        service_account (bool, optional): If True, use a service account. Defaults to False.
-        auth_args (dict, optional): Additional authentication parameters for aa.Authenticate(). Defaults to {}.
-        user_agent_prefix (str, optional): If set, the prefix (version-less) value used for setting the user-agent string. Defaults to "geemap".
-        kwargs (dict, optional): Additional parameters for ee.Initialize(). For example,
-            opt_url='https://earthengine-highvolume.googleapis.com' to use the Earth Engine High-Volume platform. Defaults to {}.
+        token_name (str, optional): The name of the Earth Engine token.
+            Defaults to "EARTHENGINE_TOKEN". In Colab, you can also set a secret
+            named "EE_PROJECT_ID" to initialize Earth Engine.
+        auth_mode (str, optional): The authentication mode, can be one of colab,
+            notebook, localhost, or gcloud.
+            See https://developers.google.com/earth-engine/guides/auth for more
+            details. Defaults to None.
+        service_account (bool, optional): If True, use a service account.
+            Defaults to False.
+        auth_args (dict, optional): Additional authentication parameters for
+            aa.Authenticate(). Defaults to {}.
+        user_agent_prefix (str, optional): If set, the prefix (version-less)
+            value used for setting the user-agent string. Defaults to "geemap".
+        project (str, optional): The Google cloud project ID for Earth Engine.
+            Defaults to None.
+        kwargs (dict, optional): Additional parameters for ee.Initialize().
+            For example, opt_url='https://earthengine-highvolume.googleapis.com'
+            to use the Earth Engine High-Volume platform. Defaults to {}.
     """
     import httplib2
     from .__init__ import __version__
@@ -64,12 +74,19 @@ def ee_initialize(
         if in_colab_shell():
             from google.colab import userdata
 
-            try:
-                project_id = userdata.get("EE_PROJECT_ID")
-                auth_mode = "colab"
-                kwargs["project"] = project_id
-            except Exception:
-                auth_mode = "notebook"
+            if project is None:
+                try:
+                    project = userdata.get("EE_PROJECT_ID")
+                    kwargs["project"] = project
+                except Exception:
+                    raise Exception(
+                        "Please set a secret named 'EE_PROJECT_ID' in Colab or provide a project ID."
+                    )
+            # Authentication will automatically detect the Colab environment,
+            # no additional params needed.
+            ee.Authenticate()
+            ee.Initialize(**kwargs)
+            return
         else:
             auth_mode = "notebook"
 
@@ -12481,7 +12498,10 @@ def classify(
 
     if cmap is None:
         cmap = "Blues"
-    cmap = plt.cm.get_cmap(cmap, k)
+    try:
+        cmap = plt.get_cmap(cmap, k)
+    except:
+        cmap = plt.cm.get_cmap(cmap, k)
     if colors is None:
         colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
         colors = ["#" + i for i in colors]
@@ -13278,7 +13298,10 @@ def get_palette_colors(cmap_name=None, n_class=None, hashtag=False):
     import matplotlib as mpl
     import matplotlib.pyplot as plt
 
-    cmap = plt.cm.get_cmap(cmap_name, n_class)
+    try:
+        cmap = plt.get_cmap(cmap_name, n_class)
+    except:
+        cmap = plt.cm.get_cmap(cmap_name, n_class)
     colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
     if hashtag:
         colors = ["#" + i for i in colors]
@@ -15673,9 +15696,23 @@ def widget_template(
         )
     close_button_args["icon"] = close_button_icon
 
-    toolbar_button = widgets.ToggleButton(**widget_args)
+    try:
+        toolbar_button = widgets.ToggleButton(**widget_args)
+    except:
+        widget_args.pop("layout")
+        toolbar_button = widgets.ToggleButton(**widget_args)
+        toolbar_button.layout.width = "28px"
+        toolbar_button.layout.height = "28px"
+        toolbar_button.layout.padding = "0px 0px 0px 4px"
 
-    close_button = widgets.ToggleButton(**close_button_args)
+    try:
+        close_button = widgets.ToggleButton(**close_button_args)
+    except:
+        close_button_args.pop("layout")
+        close_button = widgets.ToggleButton(**close_button_args)
+        close_button.layout.width = "28px"
+        close_button.layout.height = "28px"
+        close_button.layout.padding = "0px 0px 0px 4px"
 
     toolbar_widget = widgets.VBox()
     toolbar_widget.children = [toolbar_button]
@@ -16167,3 +16204,32 @@ def is_on_aws():
         if item.endswith(".aws") or "ec2-user" in item:
             on_aws = True
     return on_aws
+
+
+def _get_colab_secret(key: str) -> Optional[str]:
+    """Returns a Colab secret (if available), otherwise None."""
+    if in_colab_shell():
+        from google.colab import userdata
+
+        try:
+            return userdata.get(key)
+        except (userdata.SecretNotFoundError, userdata.NotebookAccessError):
+            return None  # Secret doesn't exist or insufficient access.
+    return None
+
+
+def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
+    """
+    Retrieves the Google Maps API key from the environment or Colab user data.
+
+    Args:
+        key (str, optional): The name of the environment variable or Colab user
+            data key where the API key is stored. Defaults to
+            'GOOGLE_MAPS_API_KEY'.
+
+    Returns:
+        str: The API key, or None if it could not be found.
+    """
+    if api_key := _get_colab_secret(key):
+        return api_key
+    return os.environ.get(key, None)

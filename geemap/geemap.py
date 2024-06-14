@@ -113,15 +113,6 @@ class Map(core.Map):
         if "max_zoom" not in kwargs:
             kwargs["max_zoom"] = 24
 
-        # Use any basemap available through the basemap module, such as 'ROADMAP', 'OpenTopoMap'
-        if "basemap" in kwargs:
-            kwargs["basemap"] = check_basemap(kwargs["basemap"])
-            if kwargs["basemap"] in basemaps.keys():
-                kwargs["basemap"] = get_basemap(kwargs["basemap"])
-                kwargs["add_google_map"] = False
-            else:
-                kwargs.pop("basemap")
-
         self._xyz_dict = get_xyz_dict()
 
         self.baseclass = "ipyleaflet"
@@ -411,12 +402,14 @@ class Map(core.Map):
 
     getScale = get_scale
 
-    def add_basemap(self, basemap="ROADMAP", show=True, **kwargs):
+    def add_basemap(
+        self, basemap: Optional[str] = "ROADMAP", show: Optional[bool] = True, **kwargs
+    ) -> None:
         """Adds a basemap to the map.
 
         Args:
             basemap (str, optional): Can be one of string from basemaps. Defaults to 'ROADMAP'.
-            visible (bool, optional): Whether the basemap is visible or not. Defaults to True.
+            show (bool, optional): Whether the basemap is visible or not. Defaults to True.
             **kwargs: Keyword arguments for the TileLayer.
         """
         import xyzservices
@@ -424,21 +417,11 @@ class Map(core.Map):
         try:
             layer_names = self.get_layer_names()
 
-            map_dict = {
-                "ROADMAP": "Esri.WorldStreetMap",
-                "SATELLITE": "Esri.WorldImagery",
-                "TERRAIN": "Esri.WorldTopoMap",
-                "HYBRID": "Esri.WorldImagery",
-            }
-
             if isinstance(basemap, str):
-                if basemap.upper() in map_dict:
-                    if basemap in os.environ:
-                        if "name" in kwargs:
-                            kwargs["name"] = basemap
-                        basemap = os.environ[basemap]
-                    else:
-                        basemap = map_dict[basemap.upper()]
+                for map_name, tile_provider in self._available_basemaps.items():
+                    if basemap.upper() == map_name.upper():
+                        basemap = tile_provider
+                        break
 
             if isinstance(basemap, xyzservices.TileProvider):
                 name = basemap.name
@@ -946,18 +929,13 @@ class Map(core.Map):
                     bounds = [bounds[0][1], bounds[0][0], bounds[1][1], bounds[1][0]]
                     self.zoom_to_bounds(bounds)
 
-    def add_basemap_widget(self, value="OpenStreetMap", position="topright"):
+    def add_basemap_widget(self, position="topright"):
         """Add the Basemap GUI to the map.
 
         Args:
-            value (str): The default value from basemaps to select. Defaults to "OpenStreetMap".
             position (str, optional): The position of the Inspector GUI. Defaults to "topright".
         """
-        super()._add_basemap_selector(
-            position, basemaps=list(basemaps.keys()), value=value
-        )
-        if basemap_selector := self._basemap_selector:
-            basemap_selector.on_basemap_changed = self._on_basemap_changed
+        super()._add_basemap_selector(position=position)
 
     def add_draw_control(self, position="topleft"):
         """Add a draw control to the map
@@ -2525,7 +2503,7 @@ class Map(core.Map):
         count = len(self._chart_points)
         out_list = []
         if count > 0:
-            header = ["id", "longitude", "latitude"] + self._chart_labels
+            header = ["id", "latitude", "longitude"] + self._chart_labels
             out_list.append(header)
 
             for i in range(0, count):
