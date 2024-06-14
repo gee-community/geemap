@@ -1176,14 +1176,14 @@ class _RasterLayerEditor(ipywidgets.VBox):
         # ipywidgets doesn't support horizontal radio buttons
         # (https://github.com/jupyter-widgets/ipywidgets/issues/1247). Instead,
         # use two individual radio buttons with some hackery.
-        self._greyscale_radio_button = ipywidgets.RadioButtons(
+        self._grayscale_radio_button = ipywidgets.RadioButtons(
             options=["1 band (Grayscale)"],
-            layout={"width": "max-content", "margin": "0 15px 0 0"},
+            layout={"width": "max-content", "margin": "0 16px 0 0"},
         )
         self._rgb_radio_button = ipywidgets.RadioButtons(
             options=["3 bands (RGB)"], layout={"width": "max-content"}
         )
-        self._greyscale_radio_button.index = None
+        self._grayscale_radio_button.index = None
         self._rgb_radio_button.index = None
 
         band_dropdown_layout = ipywidgets.Layout(width="98px")
@@ -1301,6 +1301,20 @@ class _RasterLayerEditor(ipywidgets.VBox):
             style={"description_width": "50px"},
         )
 
+
+        # ipywidgets doesn't support horizontal radio buttons
+        # (https://github.com/jupyter-widgets/ipywidgets/issues/1247). Instead,
+        # use two individual radio buttons with some hackery.
+        self._palette_radio_button = ipywidgets.RadioButtons(
+            options=["Palette"], layout={"width": "max-content", "margin": "2px 16px 0px 2px"}
+        )
+        self._gamma_radio_button = ipywidgets.RadioButtons(
+            options=["Gamma"],
+            layout={"width": "max-content"},
+        )
+        self._gamma_radio_button.index = None
+        self._palette_radio_button.index = None
+
         self._gamma_slider = ipywidgets.FloatSlider(
             value=self._layer_gamma,
             min=0.1,
@@ -1368,13 +1382,21 @@ class _RasterLayerEditor(ipywidgets.VBox):
 
         children = []
         if self._band_count < 3:
-            self._greyscale_radio_button.index = 0
+            self._grayscale_radio_button.index = 0
             self._band_1_dropdown.layout.width = "300px"
             self._bands_hbox.children = [self._band_1_dropdown]
-            children = self._get_tool_layout(grayscale=True)
+            if 'palette' in self._vis_params:
+                self._palette_radio_button.index = 0
+            elif 'gamma' in self._vis_params:
+                self._gamma_radio_button.index = 0
+            else:
+                # Palette takes precedence.
+                self._palette_radio_button.index = 0
+            palette_selected = self._palette_radio_button.index == 0
+            children = self._set_toolbar_layout(grayscale=True, palette=palette_selected)
             self._legend_checkbox.value = False
 
-            if len(self._palette_label.value) > 0 and "," in self._palette_label.value:
+            if self._palette_label.value and "," in self._palette_label.value:
                 colors = common.to_hex_colors(
                     [color.strip() for color in self._palette_label.value.split(",")]
                 )
@@ -1392,10 +1414,13 @@ class _RasterLayerEditor(ipywidgets.VBox):
                 self._band_2_dropdown,
                 self._band_3_dropdown,
             ]
-            children = self._get_tool_layout(grayscale=False)
-
-        self._greyscale_radio_button.observe(self._radio1_observer, names=["value"])
-        self._rgb_radio_button.observe(self._radio2_observer, names=["value"])
+            # We never show the palette in RGB mode.
+            children = self._set_toolbar_layout(grayscale=False, palette=False)
+        
+        self._grayscale_radio_button.observe(self._grayscale_radio_observer, names=["value"])
+        self._rgb_radio_button.observe(self._rgb_radio_observer, names=["value"])
+        self._gamma_radio_button.observe(self._gamma_radio_observer, names=["value"])
+        self._palette_radio_button.observe(self._palette_radio_observer, names=["value"])
 
         super().__init__(
             layout=ipywidgets.Layout(
@@ -1441,33 +1466,48 @@ class _RasterLayerEditor(ipywidgets.VBox):
 
         self._value_range_slider.value = [min_val, max_val]
 
-    def _get_tool_layout(self, grayscale):
-        return [
-            ipywidgets.HBox([self._greyscale_radio_button, self._rgb_radio_button]),
+    def _set_toolbar_layout(self, grayscale, palette):
+        tools = [
+            ipywidgets.HBox([self._grayscale_radio_button, self._rgb_radio_button]),
             self._bands_hbox,
             self._stretch_hbox,
             self._value_range_slider,
             self._opacity_slider,
-            self._gamma_slider,
-        ] + (
-            [
-                ipywidgets.HBox([self._classes_dropdown, self._colormap_dropdown]),
-                self._palette_label,
-                self._colorbar_output,
-                ipywidgets.HBox(
-                    [
-                        self._legend_checkbox,
-                        self._color_picker,
-                        self._add_color_button,
-                        self._del_color_button,
-                        self._reset_color_button,
-                    ]
-                ),
-                self._legend_vbox,
-            ]
-            if grayscale
-            else []
-        )
+        ]
+        if grayscale:
+            inner_tools = []
+            # These options are only available in grayscale.
+            inner_tools.append(
+                ipywidgets.HBox([self._palette_radio_button, self._gamma_radio_button])
+            )
+            # Show palette options if palette is selected, otherwise show gamma option.
+            if palette:
+                inner_tools += [
+                    ipywidgets.HBox([self._classes_dropdown, self._colormap_dropdown]),
+                    self._palette_label,
+                    self._colorbar_output,
+                    ipywidgets.HBox(
+                        [
+                            self._legend_checkbox,
+                            self._color_picker,
+                            self._add_color_button,
+                            self._del_color_button,
+                            self._reset_color_button,
+                        ]
+                    ),
+                    self._legend_vbox,
+                ]
+            else:
+                inner_tools.append(self._gamma_slider)
+            tools.append(ipywidgets.VBox(inner_tools, 
+                                         layout=ipywidgets.Layout(
+                                             border='1px solid lightgray',
+                                             margin='0 8px 0 0'),
+                                             padding='10px'))
+        else:
+            # Palette option is not available in RGB mode.
+            tools.append(self._gamma_slider)
+        return tools
 
     def _get_colormaps(self):
         from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
@@ -1519,7 +1559,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
             ]
             self._render_colorbar(cmap_colors)
 
-            if len(self._palette_label.value) > 0 and "," in self._palette_label.value:
+            if self._palette_label.value and "," in self._palette_label.value:
                 labels = [
                     f"Class {i+1}"
                     for i in range(len(self._palette_label.value.split(",")))
@@ -1528,10 +1568,10 @@ class _RasterLayerEditor(ipywidgets.VBox):
 
     def _add_color_clicked(self, _):
         if self._color_picker.value is not None:
-            if len(self._palette_label.value) == 0:
-                self._palette_label.value = self._color_picker.value[1:]
-            else:
+            if self._palette_label.value:
                 self._palette_label.value += ", " + self._color_picker.value[1:]
+            else:
+                self._palette_label.value = self._color_picker.value[1:]
 
     def _del_color_clicked(self, _):
         if "," in self._palette_label.value:
@@ -1580,42 +1620,24 @@ class _RasterLayerEditor(ipywidgets.VBox):
             ]
             self._render_colorbar(cmap_colors)
 
-            if len(self._palette_label.value) > 0 and "," in self._palette_label.value:
+            if self._palette_label.value and "," in self._palette_label.value:
                 labels = [
                     f"Class {i+1}"
                     for i in range(len(self._palette_label.value.split(",")))
                 ]
                 self._legend_labels_label.value = ", ".join(labels)
 
-    def on_import_click(self):
+    def _get_vis_params_from_selection(self):
         vis = {}
-        if self._greyscale_radio_button.index == 0:
+        if self._grayscale_radio_button.index == 0:
             vis["bands"] = [self._band_1_dropdown.value]
-            if len(self._palette_label.value) > 0:
-                vis["palette"] = self._palette_label.value.split(",")
-        else:
-            vis["bands"] = [
-                self._band_1_dropdown.value,
-                self._band_2_dropdown.value,
-                self._band_3_dropdown.value,
-            ]
-
-        vis["min"] = self._value_range_slider.value[0]
-        vis["max"] = self._value_range_slider.value[1]
-        vis["opacity"] = self._opacity_slider.value
-        vis["gamma"] = self._gamma_slider.value
-
-        common.create_code_cell(f"vis_params = {str(vis)}")
-        print(f"vis_params = {str(vis)}")
-
-    def on_apply_click(self):
-        vis = {}
-        if self._greyscale_radio_button.index == 0:
-            vis["bands"] = [self._band_1_dropdown.value]
-            if len(self._palette_label.value) > 0:
-                vis["palette"] = [
-                    c.strip() for c in self._palette_label.value.split(",")
-                ]
+            if self._palette_radio_button.index == 0:
+                if self._palette_label.value:
+                    vis["palette"] = [
+                        c.strip() for c in self._palette_label.value.split(",")
+                    ]
+            else:
+                vis["gamma"] = self._gamma_slider.value
         else:
             vis["bands"] = [
                 self._band_1_dropdown.value,
@@ -1626,7 +1648,16 @@ class _RasterLayerEditor(ipywidgets.VBox):
 
         vis["min"] = self._value_range_slider.value[0]
         vis["max"] = self._value_range_slider.value[1]
+        return vis
 
+    def on_import_click(self):
+        vis = self._get_vis_params_from_selection()
+
+        common.create_code_cell(f"vis_params = {str(vis)}")
+        print(f"vis_params = {str(vis)}")
+
+    def on_apply_click(self):
+        vis = self._get_vis_params_from_selection()
         self._host_map.add_layer(
             self._ee_object, vis, self._layer_name, True, self._opacity_slider.value
         )
@@ -1644,7 +1675,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
                 _remove_control("legend")
 
                 if (
-                    len(self._palette_label.value) > 0
+                    self._palette_label.value
                     and "," in self._palette_label.value
                 ):
                     colors = common.to_hex_colors(
@@ -1665,7 +1696,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
                         )
             elif self._step_checkbox.value:
                 if (
-                    len(self._palette_label.value) > 0
+                    self._palette_label.value
                     and "," in self._palette_label.value
                 ):
                     colors = common.to_hex_colors(
@@ -1687,7 +1718,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
                             layer_name=self._layer_name,
                         )
         else:
-            if self._greyscale_radio_button.index == 0 and "palette" in vis:
+            if self._grayscale_radio_button.index == 0 and "palette" in vis:
                 self._render_colorbar(vis["palette"])
                 _remove_control("colorbar")
                 _remove_control("legend")
@@ -1701,43 +1732,79 @@ class _RasterLayerEditor(ipywidgets.VBox):
         else:
             self._legend_vbox.children = []
 
-    def _radio1_observer(self, _):
-        self._rgb_radio_button.unobserve(self._radio2_observer, names=["value"])
-        self._rgb_radio_button.index = None
-        self._rgb_radio_button.observe(self._radio2_observer, names=["value"])
-        self._band_1_dropdown.layout.width = "300px"
-        self._bands_hbox.children = [self._band_1_dropdown]
-        self._palette_label.value = ", ".join(self._layer_palette)
-        self._palette_label.disabled = False
-        self._color_picker.disabled = False
-        self._add_color_button.disabled = False
-        self._del_color_button.disabled = False
-        self._reset_color_button.disabled = False
-        self.children = self._get_tool_layout(grayscale=True)
+    def _render_grayscale_rgb_selection(self, grayscale):
+        if grayscale:
+            self._rgb_radio_button.unobserve(self._rgb_radio_observer, names=["value"])
+            self._rgb_radio_button.index = None
+            self._rgb_radio_button.observe(self._rgb_radio_observer, names=["value"])
+            self._band_1_dropdown.layout.width = "300px"
+            self._bands_hbox.children = [self._band_1_dropdown]
+        else:
+            self._grayscale_radio_button.unobserve(self._grayscale_radio_observer, names=["value"])
+            self._grayscale_radio_button.index = None
+            self._grayscale_radio_button.observe(self._grayscale_radio_observer, names=["value"])
+            self._band_1_dropdown.layout.width = "98px"
+            self._bands_hbox.children = [
+                self._band_1_dropdown,
+                self._band_2_dropdown,
+                self._band_3_dropdown,
+            ]
 
-        if len(self._palette_label.value) > 0 and "," in self._palette_label.value:
-            colors = [color.strip() for color in self._palette_label.value.split(",")]
-            self._render_colorbar(colors)
+    def _enable_palette(self, enabled):
+        if enabled and not self._palette_label.value:
+            # Only set this if it hasn't been overridden. Note that if no
+            # palette was originally set, then this will be left blank here.
+            self._palette_label.value = ", ".join(self._layer_palette)
+        self._palette_label.disabled = not enabled
+        self._color_picker.disabled = not enabled
+        self._add_color_button.disabled = not enabled
+        self._del_color_button.disabled = not enabled
+        self._reset_color_button.disabled = not enabled
 
-    def _radio2_observer(self, _):
-        dropdown_width = "98px"
-        self._greyscale_radio_button.unobserve(self._radio1_observer, names=["value"])
-        self._greyscale_radio_button.index = None
-        self._greyscale_radio_button.observe(self._radio1_observer, names=["value"])
-        self._band_1_dropdown.layout.width = dropdown_width
-        self._bands_hbox.children = [
-            self._band_1_dropdown,
-            self._band_2_dropdown,
-            self._band_3_dropdown,
-        ]
-        self._palette_label.value = ""
-        self._palette_label.disabled = True
-        self._color_picker.disabled = True
-        self._add_color_button.disabled = True
-        self._del_color_button.disabled = True
-        self._reset_color_button.disabled = True
-        self.children = self._get_tool_layout(grayscale=False)
-        self._colorbar_output.clear_output()
+    def _render_palette(self, enabled):
+        if enabled:
+            if self._palette_label.value and "," in self._palette_label.value:
+                colors = [color.strip() for color in self._palette_label.value.split(",")]
+                self._render_colorbar(colors)
+        else:
+            self._colorbar_output.clear_output()
+
+    def _grayscale_radio_observer(self, _):
+        self._render_grayscale_rgb_selection(True)
+        self._enable_palette(True)
+        palette_selected = self._palette_radio_button.index == 0
+        self._render_palette(palette_selected)
+        self.children = self._set_toolbar_layout(grayscale=True, palette=palette_selected)
+
+    def _rgb_radio_observer(self, _):
+        self._render_grayscale_rgb_selection(False)
+        self._enable_palette(False)
+        self._render_palette(False)
+        self.children = self._set_toolbar_layout(grayscale=False, palette=False)
+
+    def _render_gamma_palette_selection(self, gamma):
+        if gamma:
+            self._palette_radio_button.unobserve(self._palette_radio_observer, names=["value"])
+            self._palette_radio_button.index = None
+            self._palette_radio_button.observe(self._palette_radio_observer, names=["value"])
+        else:
+            self._gamma_radio_button.unobserve(self._gamma_radio_observer, names=["value"])
+            self._gamma_radio_button.index = None
+            self._gamma_radio_button.observe(self._gamma_radio_observer, names=["value"])
+
+    def _gamma_radio_observer(self, _):
+        self._render_gamma_palette_selection(True)
+        self._enable_palette(False)
+        self._render_palette(False)
+        grayscale = self._grayscale_radio_button.index == 0
+        self.children = self._set_toolbar_layout(grayscale=grayscale, palette=False)
+
+    def _palette_radio_observer(self, _):
+        self._render_gamma_palette_selection(False)
+        self._enable_palette(True)
+        self._render_palette(True)
+        grayscale = self._grayscale_radio_button.index == 0
+        self.children = self._set_toolbar_layout(grayscale=grayscale, palette=True)
 
 
 @Theme.apply
@@ -2056,7 +2123,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
 
         elif (
             self._style_chk.value
-            and len(self._palette_label.value) > 0
+            and self._palette_label.value
             and "," in self._palette_label.value
         ):
             try:
@@ -2109,7 +2176,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
                 )
 
                 if (
-                    len(self._palette_label.value)
+                    self._palette_label.value
                     and self._legend_checkbox.value
                     and len(self._legend_labels_label.value) > 0
                     and hasattr(self._host_map, "add_legend")
@@ -2173,7 +2240,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
                 self._render_colorbar(cmap_colors)
 
                 if (
-                    len(self._palette_label.value) > 0
+                    self._palette_label.value
                     and "," in self._palette_label.value
                 ):
                     labels = [
@@ -2197,7 +2264,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
             ]
             self._render_colorbar(cmap_colors)
 
-            if len(self._palette_label.value) > 0 and "," in self._palette_label.value:
+            if self._palette_label.value and "," in self._palette_label.value:
                 labels = [
                     f"Class {i+1}"
                     for i in range(len(self._palette_label.value.split(",")))
@@ -2212,10 +2279,10 @@ class _VectorLayerEditor(ipywidgets.VBox):
 
     def _add_color_clicked(self, _):
         if self._color_picker.value is not None:
-            if len(self._palette_label.value) == 0:
-                self._palette_label.value = self._color_picker.value[1:]
-            else:
+            if self._palette_label.value:
                 self._palette_label.value += ", " + self._color_picker.value[1:]
+            else:
+                self._palette_label.value = self._color_picker.value[1:]
 
     def _del_color_clicked(self, _):
         if "," in self._palette_label.value:
@@ -2277,7 +2344,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
                 ipywidgets.VBox([self._legend_title_label, self._legend_labels_label])
             ]
 
-            if len(self._palette_label.value) > 0 and "," in self._palette_label.value:
+            if self._palette_label.value and "," in self._palette_label.value:
                 labels = [
                     f"Class {i+1}"
                     for i in range(len(self._palette_label.value.split(",")))
