@@ -100,11 +100,11 @@ class TestMap(unittest.TestCase):
             "type": "Polygon",
             "coordinates": [[0, 1], [1, 2], [0, 1]],
         }
-        self.assertEqual(self.core_map.get_bounds(as_geo_json=True), expected_geo_json)
+        self.assertEqual(self.core_map.get_bounds(as_geojson=True), expected_geo_json)
 
         mock_bounds.__get__ = Mock(return_value=())
         with self.assertRaisesRegex(RuntimeError, "Map bounds are undefined"):
-            self.core_map.get_bounds(as_geo_json=True)
+            self.core_map.get_bounds(as_geojson=True)
 
     def test_add_basic_widget_by_name(self):
         """Tests that `add` adds widgets by name."""
