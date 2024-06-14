@@ -15,6 +15,8 @@ from . import ee_tile_layers
 from . import map_widgets
 from . import toolbar
 
+_DRAWN_FEATURES_LAYER = "Drawn Features"
+
 
 class DrawActions(enum.Enum):
     """Action types for the draw control.
@@ -46,7 +48,8 @@ class AbstractDrawControl(object):
         """Initialize the draw control.
 
         Args:
-            host_map (geemap.Map): The geemap.Map instance to be linked with the draw control.
+            host_map (geemap.Map): The geemap.Map instance to be linked with
+                the draw control.
         """
 
         self.host_map = host_map
@@ -194,9 +197,9 @@ class AbstractDrawControl(object):
     def _redraw_layer(self):
         if self.host_map:
             self.host_map.add_layer(
-                self.collection, {"color": "blue"}, "Drawn Features", False, 0.5
+                self.collection, {"color": "blue"}, _DRAWN_FEATURES_LAYER, False, 0.5
             )
-            self.layer = self.host_map.ee_layers.get("Drawn Features", {}).get(
+            self.layer = self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {}).get(
                 "ee_layer", None
             )
 
@@ -228,7 +231,11 @@ class AbstractDrawControl(object):
         if index >= 0:
             del self.geometries[index]
             del self.properties[index]
-            self._redraw_layer()
+            if self.count:
+                self._redraw_layer()
+            elif _DRAWN_FEATURES_LAYER in self.host_map.ee_layers:
+                # Remove drawn features layer if there are no geometries.
+                self.host_map.remove_layer(_DRAWN_FEATURES_LAYER)
             self._geometry_delete_dispatcher(self, geometry=geometry)
 
 
@@ -641,6 +648,8 @@ class Map(ipyleaflet.Map, MapInterface):
             widget=toolbar_val, position=position
         )
         super().add(toolbar_control)
+        # Enable the layer manager by default.
+        toolbar_val.toggle_layers(True)
 
     def _add_inspector(self, position: str, **kwargs) -> None:
         if self._inspector:
