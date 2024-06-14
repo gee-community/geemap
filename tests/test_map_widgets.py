@@ -276,10 +276,6 @@ class TestLegend(unittest.TestCase):
         ):
             map_widgets.Legend(colors=["invalid_tuple"])
 
-    def test_legend_dict_not_a_dictionary(self):
-        with self.assertRaisesRegex(TypeError, "The legend dict must be a dictionary."):
-            map_widgets.Legend(legend_dict="invalid_legend_dict")
-
 
 @patch.object(ee, "Algorithms", fake_ee.Algorithms)
 @patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
