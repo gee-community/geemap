@@ -969,6 +969,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#geemap.core.Map.getBounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      getBounds()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geemap.core.Map.get_bounds" class="md-nav__link">
     <span class="md-ellipsis">
       get_bounds()
@@ -5265,6 +5274,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#geemap.core.Map.getBounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      getBounds()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geemap.core.Map.get_bounds" class="md-nav__link">
     <span class="md-ellipsis">
       get_bounds()
@@ -6269,9 +6287,29 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
     <span class="k">def</span> <span class="nf">get_center</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span>
 
-    <span class="k">def</span> <span class="nf">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_geojson</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the current map view.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            as_geojson (bool, optional): If true, returns map bounds as</span>
+<span class="sd">                GeoJSON. Defaults to False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list|dict: A list in the format [west, south, east, north] in</span>
+<span class="sd">                degrees or a GeoJSON dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bounds</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Map bounds are undefined. Please display the &quot;</span> <span class="s2">&quot;map then try again.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># ipyleaflet returns bounds in the format [[south, west], [north, east]]</span>
+        <span class="c1"># https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html#ipyleaflet.Map.fit_bounds</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="n">as_geojson</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="o">*</span><span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">coords</span>
 
     <span class="k">def</span> <span class="nf">get_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="c1"># Reference:</span>
@@ -6668,6 +6706,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
     <span class="n">addLayer</span> <span class="o">=</span> <span class="n">add_layer</span>
     <span class="n">centerObject</span> <span class="o">=</span> <span class="n">center_object</span>
     <span class="n">setCenter</span> <span class="o">=</span> <span class="n">set_center</span>
+    <span class="n">getBounds</span> <span class="o">=</span> <span class="n">get_bounds</span>
 </code></pre></div>
         </details>
 
@@ -7006,16 +7045,36 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
 
 
-<h3 id="geemap.core.Map.get_bounds" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<h3 id="geemap.core.Map.getBounds" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">getBounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_geojson</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
-<a href="#geemap.core.Map.get_bounds" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#geemap.core.Map.getBounds" class="headerlink" title="Permanent link">&para;</a></h3>
 
     <div class="doc doc-contents ">
 
       <p>Returns the bounds of the current map view.</p>
 
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>as_geojson</code></td>
+        <td><code>bool</code></td>
+        <td><p>If true, returns map bounds as
+GeoJSON. Defaults to False.</p></td>
+        <td><code>False</code></td>
+      </tr>
+  </tbody>
+</table>
 <p><strong>Returns:</strong></p>
 <table>
   <thead>
@@ -7026,16 +7085,120 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
   </thead>
   <tbody>
     <tr>
-      <td><code>list</code></td>
-      <td><p>A list in the format [west, south, east, north] in degrees.</p></td>
+      <td><code>list|dict</code></td>
+      <td><p>A list in the format [west, south, east, north] in
+    degrees or a GeoJSON dictionary.</p></td>
     </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/core.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_geojson</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the current map view.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        as_geojson (bool, optional): If true, returns map bounds as</span>
+<span class="sd">            GeoJSON. Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list|dict: A list in the format [west, south, east, north] in</span>
+<span class="sd">            degrees or a GeoJSON dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">bounds</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">&quot;Map bounds are undefined. Please display the &quot;</span> <span class="s2">&quot;map then try again.&quot;</span>
+        <span class="p">)</span>
+    <span class="c1"># ipyleaflet returns bounds in the format [[south, west], [north, east]]</span>
+    <span class="c1"># https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html#ipyleaflet.Map.fit_bounds</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+
+    <span class="k">if</span> <span class="n">as_geojson</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="o">*</span><span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">coords</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.core.Map.get_bounds" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_geojson</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+<a href="#geemap.core.Map.get_bounds" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Returns the bounds of the current map view.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>as_geojson</code></td>
+        <td><code>bool</code></td>
+        <td><p>If true, returns map bounds as
+GeoJSON. Defaults to False.</p></td>
+        <td><code>False</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>list|dict</code></td>
+      <td><p>A list in the format [west, south, east, north] in
+    degrees or a GeoJSON dictionary.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/core.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_geojson</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the current map view.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        as_geojson (bool, optional): If true, returns map bounds as</span>
+<span class="sd">            GeoJSON. Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list|dict: A list in the format [west, south, east, north] in</span>
+<span class="sd">            degrees or a GeoJSON dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">bounds</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">&quot;Map bounds are undefined. Please display the &quot;</span> <span class="s2">&quot;map then try again.&quot;</span>
+        <span class="p">)</span>
+    <span class="c1"># ipyleaflet returns bounds in the format [[south, west], [north, east]]</span>
+    <span class="c1"># https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html#ipyleaflet.Map.fit_bounds</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+
+    <span class="k">if</span> <span class="n">as_geojson</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="o">*</span><span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">coords</span>
 </code></pre></div>
         </details>
     </div>
