@@ -213,7 +213,7 @@ class AbstractDrawControl(object):
                     old_layer.visible,
                     0.5,
                 )
-                self.host_map.substitute_layer(old_layer, new_layer)
+                self.host_map.substitute(old_layer, new_layer)
                 self.layer = self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {}).get(
                     "ee_layer", None
                 )
