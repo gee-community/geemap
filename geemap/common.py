@@ -11636,16 +11636,26 @@ def image_to_numpy(image):
     """
     import rasterio
     from osgeo import gdal
+    from contextlib import contextmanager
+
+    @contextmanager
+    def gdal_error_handler():
+        """Context manager for GDAL error handler."""
+        gdal.PushErrorHandler("CPLQuietErrorHandler")
+        try:
+            yield
+        finally:
+            gdal.PopErrorHandler()
 
     gdal.UseExceptions()
 
-    gdal.PushErrorHandler("CPLQuietErrorHandler")
+    with gdal_error_handler():
 
-    if not os.path.exists(image):
-        raise FileNotFoundError("The provided input file could not be found.")
+        if not os.path.exists(image):
+            raise FileNotFoundError("The provided input file could not be found.")
 
-    with rasterio.open(image, "r") as ds:
-        arr = ds.read()  # read all raster values
+        with rasterio.open(image, "r") as ds:
+            arr = ds.read()  # read all raster values
 
     return arr
 
