@@ -502,9 +502,29 @@ class Map(ipyleaflet.Map, MapInterface):
     def get_center(self) -> Sequence:
         return self.center
 
-    def get_bounds(self) -> Sequence:
+    def get_bounds(self, as_geojson: bool = False) -> Sequence:
+        """Returns the bounds of the current map view.
+
+        Args:
+            as_geojson (bool, optional): If true, returns map bounds as
+                GeoJSON. Defaults to False.
+
+        Returns:
+            list|dict: A list in the format [west, south, east, north] in
+                degrees or a GeoJSON dictionary.
+        """
         bounds = self.bounds
-        return [bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]]
+        if not bounds:
+            raise RuntimeError(
+                "Map bounds are undefined. Please display the " "map then try again."
+            )
+        # ipyleaflet returns bounds in the format [[south, west], [north, east]]
+        # https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html#ipyleaflet.Map.fit_bounds
+        coords = [bounds[0][1], bounds[0][0], bounds[1][1], bounds[1][0]]
+
+        if as_geojson:
+            return ee.Geometry.BBox(*coords).getInfo()
+        return coords
 
     def get_scale(self) -> float:
         # Reference:
@@ -901,3 +921,4 @@ class Map(ipyleaflet.Map, MapInterface):
     addLayer = add_layer
     centerObject = center_object
     setCenter = set_center
+    getBounds = get_bounds
