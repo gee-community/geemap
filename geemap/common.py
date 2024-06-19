@@ -13092,6 +13092,7 @@ def download_ee_image_tiles_parallel(
     unmask_value=None,
     column=None,
     job_args={"n_jobs": -1},
+    ee_init=True,
     **kwargs,
 ):
     """Download an Earth Engine Image as small tiles based on ee.FeatureCollection. Images larger than the `Earth Engine size limit are split and downloaded as
@@ -13127,6 +13128,7 @@ def download_ee_image_tiles_parallel(
             you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
         column (str, optional): The column name in the feature collection to use as the filename. Defaults to None.
         job_args (dict, optional): The arguments to pass to joblib.Parallel. Defaults to {"n_jobs": -1}.
+        ee_init (bool, optional): Whether to initialize Earth Engine. Defaults to True.
 
     """
     import joblib
@@ -13157,7 +13159,8 @@ def download_ee_image_tiles_parallel(
     collection = features.toList(count)
 
     def download_data(index):
-        ee_initialize(opt_url="https://earthengine-highvolume.googleapis.com")
+        if ee_init:
+            ee_initialize(opt_url="https://earthengine-highvolume.googleapis.com")
         region = ee.Feature(collection.get(index)).geometry()
         filename = os.path.join(
             out_dir, "{}{}.tif".format(prefix, names[index].replace("/", "_"))
