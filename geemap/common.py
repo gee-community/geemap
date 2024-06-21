@@ -74,7 +74,6 @@ def ee_initialize(
         if in_colab_shell():
             from google.colab import userdata
 
-            auth_args["auth_mode"] = "colab"
             if project is None:
                 try:
                     project = userdata.get("EE_PROJECT_ID")
@@ -83,7 +82,9 @@ def ee_initialize(
                     raise Exception(
                         "Please set a secret named 'EE_PROJECT_ID' in Colab or provide a project ID."
                     )
-            ee.Authenticate(**auth_args)
+            # Authentication will automatically detect the Colab environment,
+            # no additional params needed.
+            ee.Authenticate()
             ee.Initialize(**kwargs)
             return
         else:
@@ -11635,16 +11636,26 @@ def image_to_numpy(image):
     """
     import rasterio
     from osgeo import gdal
+    from contextlib import contextmanager
+
+    @contextmanager
+    def gdal_error_handler():
+        """Context manager for GDAL error handler."""
+        gdal.PushErrorHandler("CPLQuietErrorHandler")
+        try:
+            yield
+        finally:
+            gdal.PopErrorHandler()
 
     gdal.UseExceptions()
 
-    gdal.PushErrorHandler("CPLQuietErrorHandler")
+    with gdal_error_handler():
 
-    if not os.path.exists(image):
-        raise FileNotFoundError("The provided input file could not be found.")
+        if not os.path.exists(image):
+            raise FileNotFoundError("The provided input file could not be found.")
 
-    with rasterio.open(image, "r") as ds:
-        arr = ds.read()  # read all raster values
+        with rasterio.open(image, "r") as ds:
+            arr = ds.read()  # read all raster values
 
     return arr
 
@@ -13081,6 +13092,7 @@ def download_ee_image_tiles_parallel(
     unmask_value=None,
     column=None,
     job_args={"n_jobs": -1},
+    ee_init=True,
     **kwargs,
 ):
     """Download an Earth Engine Image as small tiles based on ee.FeatureCollection. Images larger than the `Earth Engine size limit are split and downloaded as
@@ -13116,6 +13128,7 @@ def download_ee_image_tiles_parallel(
             you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
         column (str, optional): The column name in the feature collection to use as the filename. Defaults to None.
         job_args (dict, optional): The arguments to pass to joblib.Parallel. Defaults to {"n_jobs": -1}.
+        ee_init (bool, optional): Whether to initialize Earth Engine. Defaults to True.
 
     """
     import joblib
@@ -13146,7 +13159,8 @@ def download_ee_image_tiles_parallel(
     collection = features.toList(count)
 
     def download_data(index):
-        ee_initialize(opt_url="https://earthengine-highvolume.googleapis.com")
+        if ee_init:
+            ee_initialize(opt_url="https://earthengine-highvolume.googleapis.com")
         region = ee.Feature(collection.get(index)).geometry()
         filename = os.path.join(
             out_dir, "{}{}.tif".format(prefix, names[index].replace("/", "_"))
@@ -16205,6 +16219,18 @@ def is_on_aws():
     return on_aws
 
 
+def _get_colab_secret(key: str) -> Optional[str]:
+    """Returns a Colab secret (if available), otherwise None."""
+    if in_colab_shell():
+        from google.colab import userdata
+
+        try:
+            return userdata.get(key)
+        except (userdata.SecretNotFoundError, userdata.NotebookAccessError):
+            return None  # Secret doesn't exist or insufficient access.
+    return None
+
+
 def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
     """
     Retrieves the Google Maps API key from the environment or Colab user data.
@@ -16217,10 +16243,6 @@ def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
     Returns:
         str: The API key, or None if it could not be found.
     """
-    if in_colab_shell():
-        from google.colab import userdata
-
-        if api_key := userdata.get(key):
-            return api_key
-
+    if api_key := _get_colab_secret(key):
+        return api_key
     return os.environ.get(key, None)
