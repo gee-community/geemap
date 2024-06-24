@@ -183,37 +183,38 @@ class AbstractDrawControl(object):
         ]
 
     def _redraw_layer(self):
-        if self.host_map:
-            # If the layer already exists, substitute it. This can avoid flickering.
-            if _DRAWN_FEATURES_LAYER in self.host_map.ee_layers:
-                old_layer = self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {})[
-                    "ee_layer"
-                ]
-                new_layer = ee_tile_layers.EELeafletTileLayer(
-                    self.collection,
-                    {"color": "blue"},
-                    _DRAWN_FEATURES_LAYER,
-                    old_layer.visible,
-                    0.5,
-                )
-                self.host_map.substitute(old_layer, new_layer)
-                self.layer = self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {}).get(
-                    "ee_layer", None
-                )
-                self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {})[
-                    "ee_layer"
-                ] = new_layer
-            else:  # Otherwise, add the layer.
-                self.host_map.add_layer(
-                    self.collection,
-                    {"color": "blue"},
-                    _DRAWN_FEATURES_LAYER,
-                    False,
-                    0.5,
-                )
-                self.layer = self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {}).get(
-                    "ee_layer", None
-                )
+        if not self.host_map:
+            return
+        # If the layer already exists, substitute it. This can avoid flickering.
+        if _DRAWN_FEATURES_LAYER in self.host_map.ee_layers:
+            old_layer = self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {})[
+                "ee_layer"
+            ]
+            new_layer = ee_tile_layers.EELeafletTileLayer(
+                self.collection,
+                {"color": "blue"},
+                _DRAWN_FEATURES_LAYER,
+                old_layer.visible,
+                0.5,
+            )
+            self.host_map.substitute(old_layer, new_layer)
+            self.layer = self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {}).get(
+                "ee_layer", None
+            )
+            self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {})[
+                "ee_layer"
+            ] = new_layer
+        else:  # Otherwise, add the layer.
+            self.host_map.add_layer(
+                self.collection,
+                {"color": "blue"},
+                _DRAWN_FEATURES_LAYER,
+                False,
+                0.5,
+            )
+            self.layer = self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {}).get(
+                "ee_layer", None
+            )
 
     def _handle_geometry_created(self, geo_json):
         geometry = common.geojson_to_ee(geo_json, geodesic=False)
@@ -229,7 +230,6 @@ class AbstractDrawControl(object):
         self.last_geometry = geometry
         self.last_draw_action = DrawActions.EDITED
         self._sync_geometries()
-        # self._redraw_layer()
         self._geometry_edit_dispatcher(self, geometry=geometry)
 
     def _handle_geometry_deleted(self, geo_json):
