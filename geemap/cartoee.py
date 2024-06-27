@@ -1161,6 +1161,7 @@ def get_image_collection_gif(
     scale_bar_dict={},
     overlay_layers=[],
     overlay_styles=[],
+    colorbar_dict={},
     verbose=True,
     **kwargs,
 ):
@@ -1183,6 +1184,7 @@ def get_image_collection_gif(
         scale_bar_dict (dict, optional): Parameters for the scale bar. See https://geemap.org/cartoee/#geemap.cartoee.add_scale_bar. Defaults. to {}.
         overlay_layers (list, optional): A list of Earth Engine objects to overlay on the map. Defaults to [].
         overlay_styles (list, optional): A list of dictionaries of visualization parameters for overlay layers. Defaults to [].
+        colorbar_dict (dict, optional): Parameters for the colorbar. See https://geemap.org/cartoee/#geemap.cartoee.add_colorbar. Defaults to {}.
         verbose (bool, optional): Whether or not to print text when the program is running. Defaults to True.
         **kwargs: Additional keyword arguments are passed to the add_layer() function.
     """
@@ -1261,6 +1263,10 @@ def get_image_collection_gif(
                 style=style,
                 **kwargs,
             )
+
+        # Add colorbar if colorbar_dict is not empty
+        if colorbar_dict:
+            add_colorbar(ax, **colorbar_dict)
 
         # Add grid
         if grid_interval is not None:
