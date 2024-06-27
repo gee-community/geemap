@@ -151,7 +151,11 @@ class Toolbar(widgets.VBox):
             layout=widgets.Layout(height="28px", width="72px"),
         )
 
-        self.toolbar_header = widgets.HBox()
+        self.toolbar_header = widgets.HBox(
+            layout=widgets.Layout(
+                display="flex", justify_content="flex-end", align_items="center"
+            )
+        )
         self.toolbar_header.children = [self.layers_button, self.toolbar_button]
         self.toolbar_footer = widgets.VBox()
         self.toolbar_footer.children = [self.grid]
@@ -159,16 +163,18 @@ class Toolbar(widgets.VBox):
         self.toolbar_button.observe(self._toolbar_btn_click, "value")
         self.layers_button.observe(self._layers_btn_click, "value")
 
-        super().__init__(children=[self.toolbar_button])
-        toolbar_event = ipyevents.Event(
-            source=self, watched_events=["mouseenter", "mouseleave"]
-        )
-        toolbar_event.on_dom_event(self._handle_toolbar_event)
+        super().__init__(children=[self.toolbar_header])
 
     def reset(self):
         """Resets the toolbar so that no widget is selected."""
         for widget in self.all_widgets:
             widget.value = False
+
+    def toggle_layers(self, enabled):
+        self.layers_button.value = enabled
+        self.on_layers_toggled(enabled)
+        if enabled:
+            self.toolbar_button.value = False
 
     def _reset_others(self, current):
         for other in self.all_widgets:
@@ -194,22 +200,24 @@ class Toolbar(widgets.VBox):
             self.toggle_widget.tooltip = self._TOGGLE_TOOL_EXPAND_TOOLTIP
             self.toggle_widget.icon = self._TOGGLE_TOOL_EXPAND_ICON
 
-    def _handle_toolbar_event(self, event):
-        if event["type"] == "mouseenter":
-            self.children = [self.toolbar_header, self.toolbar_footer]
-        elif event["type"] == "mouseleave":
-            if not self.toolbar_button.value:
-                self.children = [self.toolbar_button]
-                self.toolbar_button.value = False
-                self.layers_button.value = False
-
     def _toolbar_btn_click(self, change):
         if change["new"]:
             self.layers_button.value = False
             self.children = [self.toolbar_header, self.toolbar_footer]
         else:
             if not self.layers_button.value:
-                self.children = [self.toolbar_button]
+                self.children = [self.toolbar_header]
+
+    def _layers_btn_click(self, change):
+        # Allow callbacks to set accessory_widget to prevent flicker on click.
+        if self.on_layers_toggled:
+            self.on_layers_toggled(change["new"])
+        if change["new"]:
+            self.toolbar_button.value = False
+            self.children = [self.toolbar_header, self.toolbar_footer]
+        else:
+            if not self.toolbar_button.value:
+                self.children = [self.toolbar_header]
 
     @property
     def accessory_widget(self):
@@ -224,10 +232,6 @@ class Toolbar(widgets.VBox):
             self.toolbar_footer.children = [self._accessory_widget]
         else:
             self.toolbar_footer.children = [self.grid]
-
-    def _layers_btn_click(self, change):
-        if self.on_layers_toggled:
-            self.on_layers_toggled(change["new"])
 
 
 def inspector_gui(m=None):
@@ -2884,7 +2888,10 @@ def time_slider(m=None):
                 if selected != "Any":
                     n_class = int(classes.value)
 
-                colors = plt.cm.get_cmap(colormap.value, n_class)
+                try:
+                    colors = plt.get_cmap(colormap.value, n_class)
+                except:
+                    colors = plt.cm.get_cmap(colormap.value, n_class)
                 cmap_colors = [
                     mpl.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
                 ]
@@ -2965,7 +2972,10 @@ def time_slider(m=None):
             if classes.value != "Any":
                 n_class = int(classes.value)
 
-            colors = plt.cm.get_cmap(colormap.value, n_class)
+            try:
+                colors = plt.get_cmap(colormap.value, n_class)
+            except:
+                colors = plt.cm.get_cmap(colormap.value, n_class)
             cmap_colors = [mpl.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)]
 
             _, ax = plt.subplots(figsize=(6, 0.4))

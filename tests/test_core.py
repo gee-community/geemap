@@ -8,7 +8,7 @@ import ee
 import ipyleaflet
 import ipywidgets
 
-from geemap import core, toolbar
+from geemap import core, map_widgets, toolbar
 from tests import fake_ee, fake_map, utils
 
 
@@ -89,6 +89,23 @@ class TestMap(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Zoom must be an integer"):
             self.core_map.center_object(ee.Geometry.Point(), "2")
 
+    @unittest.mock.patch.object(core.Map, "bounds")
+    def test_get_bounds(self, mock_bounds):
+        """Tests that `get_bounds` returns the bounds of the map."""
+        mock_bounds.__get__ = Mock(return_value=[[1, 2], [3, 4]])
+        self.assertEqual(self.core_map.get_bounds(), [2, 1, 4, 3])
+        self.assertEqual(self.core_map.getBounds(), [2, 1, 4, 3])
+        expected_geo_json = {
+            "geodesic": False,
+            "type": "Polygon",
+            "coordinates": [[0, 1], [1, 2], [0, 1]],
+        }
+        self.assertEqual(self.core_map.get_bounds(as_geojson=True), expected_geo_json)
+
+        mock_bounds.__get__ = Mock(return_value=())
+        with self.assertRaisesRegex(RuntimeError, "Map bounds are undefined"):
+            self.core_map.get_bounds(as_geojson=True)
+
     def test_add_basic_widget_by_name(self):
         """Tests that `add` adds widgets by name."""
         self._clear_default_widgets()
@@ -133,15 +150,44 @@ class TestMap(unittest.TestCase):
 
         self.assertEqual(len(self.core_map.controls), 1)
         toolbar_control = self.core_map.controls[0].widget
-        utils.query_widget(
+        # Layer manager is selected and open by default.
+        layer_button = utils.query_widget(
+            toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Layers"
+        )
+        self.assertTrue(layer_button.value)
+        self.assertIsNotNone(
+            utils.query_widget(toolbar_control, map_widgets.LayerManager)
+        )
+
+        toolbar_button = utils.query_widget(
             toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Toolbar"
-        ).value = True  # Open the grid of tools.
+        )
+        toolbar_button.value = True  # Open the grid of tools.
+        self.assertFalse(layer_button.value)
+
         tool_grid = utils.query_widget(toolbar_control, ipywidgets.GridBox).children
 
         self.assertEqual(len(tool_grid), 3)
         self.assertEqual(tool_grid[0].tooltip, "Basemap selector")
         self.assertEqual(tool_grid[1].tooltip, "Inspector")
         self.assertEqual(tool_grid[2].tooltip, "Get help")
+
+        # Closing the toolbar button shows both buttons in the header.
+        toolbar_button.value = False
+        self.assertIsNotNone(
+            utils.query_widget(
+                toolbar_control,
+                ipywidgets.ToggleButton,
+                lambda c: c.tooltip == "Toolbar",
+            )
+        )
+        self.assertIsNotNone(
+            utils.query_widget(
+                toolbar_control,
+                ipywidgets.ToggleButton,
+                lambda c: c.tooltip == "Layers",
+            )
+        )
 
     def test_add_draw_control(self):
         """Tests adding and getting the draw widget."""
@@ -202,8 +248,8 @@ class TestAbstractDrawControl(unittest.TestCase):
     }
 
     def setUp(self):
-        map = fake_map.FakeMap()
-        self._draw_control = TestAbstractDrawControl.TestDrawControl(map)
+        self.map = fake_map.FakeMap()
+        self._draw_control = TestAbstractDrawControl.TestDrawControl(self.map)
 
     def tearDown(self):
         pass
@@ -220,6 +266,7 @@ class TestAbstractDrawControl(unittest.TestCase):
         self.assertEquals(self._draw_control.collection, fake_ee.FeatureCollection([]))
         self.assertIsNone(self._draw_control.last_feature)
         self.assertEquals(self._draw_control.count, 0)
+        self.assertFalse("Drawn Features" in self.map.ee_layers)
 
     def test_handles_creation(self):
         self._draw_control.create(self.geo_json)
@@ -227,12 +274,15 @@ class TestAbstractDrawControl(unittest.TestCase):
             self._draw_control.geometries,
             [fake_ee.Geometry(self.geo_json["geometry"])],
         )
+        self.assertTrue("Drawn Features" in self.map.ee_layers)
 
     def test_handles_deletion(self):
         self._draw_control.create(self.geo_json)
+        self.assertTrue("Drawn Features" in self.map.ee_layers)
         self.assertEquals(len(self._draw_control.geometries), 1)
         self._draw_control.delete(0)
         self.assertEquals(len(self._draw_control.geometries), 0)
+        self.assertFalse("Drawn Features" in self.map.ee_layers)
 
     def test_handles_edit(self):
         self._draw_control.create(self.geo_json)
@@ -292,6 +342,7 @@ class TestAbstractDrawControl(unittest.TestCase):
         self._draw_control.reset(clear_draw_control=True)
         self.assertEquals(len(self._draw_control.geometries), 0)
         self.assertEquals(len(self._draw_control.geo_jsons), 0)
+        self.assertFalse("Drawn Features" in self.map.ee_layers)
 
         self._draw_control.create(self.geo_json)
         self.assertEquals(len(self._draw_control.geometries), 1)
@@ -300,6 +351,7 @@ class TestAbstractDrawControl(unittest.TestCase):
         self._draw_control.reset(clear_draw_control=False)
         self.assertEquals(len(self._draw_control.geometries), 0)
         self.assertEquals(len(self._draw_control.geo_jsons), 1)
+        self.assertFalse("Drawn Features" in self.map.ee_layers)
 
     def test_remove_geometry(self):
         self._draw_control.create(self.geo_json)
