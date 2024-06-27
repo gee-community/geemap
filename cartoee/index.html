@@ -6930,7 +6930,7 @@ Dependencies not included in main geemap are: cartopy, PIL, and scipys</p>
 
 
 <h2 id="geemap.cartoee.get_image_collection_gif" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_image_collection_gif</span><span class="p">(</span><span class="n">ee_ic</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">out_gif</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mp4</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">grid_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;YYYY-MM-dd&#39;</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dpi_plot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">north_arrow_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">scale_bar_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">overlay_layers</span><span class="o">=</span><span class="p">[],</span> <span class="n">overlay_styles</span><span class="o">=</span><span class="p">[],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_image_collection_gif</span><span class="p">(</span><span class="n">ee_ic</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">out_gif</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mp4</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">grid_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;YYYY-MM-dd&#39;</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dpi_plot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">north_arrow_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">scale_bar_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">overlay_layers</span><span class="o">=</span><span class="p">[],</span> <span class="n">overlay_styles</span><span class="o">=</span><span class="p">[],</span> <span class="n">colorbar_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 
 <a href="#geemap.cartoee.get_image_collection_gif" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -7053,6 +7053,12 @@ Dependencies not included in main geemap are: cartopy, PIL, and scipys</p>
         <td><code>[]</code></td>
       </tr>
       <tr>
+        <td><code>colorbar_dict</code></td>
+        <td><code>dict</code></td>
+        <td><p>Parameters for the colorbar. See https://geemap.org/cartoee/#geemap.cartoee.add_colorbar. Defaults to {}.</p></td>
+        <td><code>{}</code></td>
+      </tr>
+      <tr>
         <td><code>verbose</code></td>
         <td><code>bool</code></td>
         <td><p>Whether or not to print text when the program is running. Defaults to True.</p></td>
@@ -7088,6 +7094,7 @@ Dependencies not included in main geemap are: cartopy, PIL, and scipys</p>
     <span class="n">scale_bar_dict</span><span class="o">=</span><span class="p">{},</span>
     <span class="n">overlay_layers</span><span class="o">=</span><span class="p">[],</span>
     <span class="n">overlay_styles</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">colorbar_dict</span><span class="o">=</span><span class="p">{},</span>
     <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
@@ -7110,6 +7117,7 @@ Dependencies not included in main geemap are: cartopy, PIL, and scipys</p>
 <span class="sd">        scale_bar_dict (dict, optional): Parameters for the scale bar. See https://geemap.org/cartoee/#geemap.cartoee.add_scale_bar. Defaults. to {}.</span>
 <span class="sd">        overlay_layers (list, optional): A list of Earth Engine objects to overlay on the map. Defaults to [].</span>
 <span class="sd">        overlay_styles (list, optional): A list of dictionaries of visualization parameters for overlay layers. Defaults to [].</span>
+<span class="sd">        colorbar_dict (dict, optional): Parameters for the colorbar. See https://geemap.org/cartoee/#geemap.cartoee.add_colorbar. Defaults to {}.</span>
 <span class="sd">        verbose (bool, optional): Whether or not to print text when the program is running. Defaults to True.</span>
 <span class="sd">        **kwargs: Additional keyword arguments are passed to the add_layer() function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -7188,6 +7196,10 @@ Dependencies not included in main geemap are: cartopy, PIL, and scipys</p>
                 <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
+
+        <span class="c1"># Add colorbar if colorbar_dict is not empty</span>
+        <span class="k">if</span> <span class="n">colorbar_dict</span><span class="p">:</span>
+            <span class="n">add_colorbar</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="o">**</span><span class="n">colorbar_dict</span><span class="p">)</span>
 
         <span class="c1"># Add grid</span>
         <span class="k">if</span> <span class="n">grid_interval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
