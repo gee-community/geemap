@@ -1266,7 +1266,7 @@ def get_image_collection_gif(
 
         # Add colorbar if colorbar_dict is not empty
         if colorbar_dict:
-            add_colorbar(ax, **colorbar_dict)
+            add_colorbar(ax, vis_params, **colorbar_dict)
 
         # Add grid
         if grid_interval is not None:
