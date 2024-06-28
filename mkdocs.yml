@@ -292,6 +292,7 @@ nav:
           - notebooks/140_ee_to_xarray.ipynb
           - notebooks/141_image_array_viz.ipynb
           - notebooks/142_google_maps.ipynb
+          - notebooks/143_precipitation_timelaps.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
