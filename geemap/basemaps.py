@@ -283,7 +283,7 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
                 location of the user. Defaults to 'US'.
             api_key (str, optional): The API key to use for the Google Maps API.
                 If not provided, it will try to get it from the environment or
-                Colab user data with the key 'MAPS_API_KEY'. Defaults to None.
+                Colab user data with the key 'GOOGLE_MAPS_API_KEY'. Defaults to None.
             **kwargs: Additional parameters to pass to the map generation. For more
                 info, visit https://bit.ly/3UhbZKU
 
@@ -364,7 +364,7 @@ def get_google_map_tile_providers(
             location of the user. Defaults to 'US'.
         api_key (str, optional): The API key to use for the Google Maps API.
             If not provided, it will try to get it from the environment or
-            Colab user data with the key 'MAPS_API_KEY'. Defaults to None.
+            Colab user data with the key 'GOOGLE_MAPS_API_KEY'. Defaults to None.
         **kwargs: Additional parameters to pass to the map generation. For more
             info, visit https://bit.ly/3UhbZKU
 
