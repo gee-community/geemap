@@ -12,13 +12,11 @@
         <meta name="author" content="Qiusheng Wu">
       
       
-        <link rel="canonical" href="https://geemap.org/notebooks/141_image_array_viz/">
+        <link rel="canonical" href="https://geemap.org/notebooks/143_precipitation_timelapse/">
       
       
-        <link rel="prev" href="../140_ee_to_xarray/">
+        <link rel="prev" href="../142_google_maps/">
       
-      
-        <link rel="next" href="../142_google_maps/">
       
       
       <link rel="icon" href="../../assets/favicon.png">
@@ -26,7 +24,7 @@
     
     
       
-        <title>141 image array viz - geemap</title>
+        <title>143 precipitation timelapse - geemap</title>
       
     
     
@@ -91,6 +89,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#143-precipitation-timelapse-animation" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -122,7 +125,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              141 image array viz
+              143 precipitation timelapse
             
           </span>
         </div>
@@ -4592,17 +4595,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../141_image_array_viz/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4611,7 +4607,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -4642,10 +4637,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../143_precipitation_timelapse/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -4654,6 +4658,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -4683,6 +4688,8 @@
   
   
   
+    
+  
   
 </nav>
                   </div>
@@ -4695,7 +4702,7 @@
               <article class="md-content__inner md-typeset">
                 
 
-    <a href="/notebooks/141_image_array_viz/141_image_array_viz.ipynb" title="Download Notebook" class="md-content__button md-icon">
+    <a href="/notebooks/143_precipitation_timelapse/143_precipitation_timelapse.ipynb" title="Download Notebook" class="md-content__button md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m14-9h-4V3H9v6H5l7 7 7-7Z"/></svg>
     </a>
 
@@ -4706,8 +4713,6 @@
   
   
 
-
-  <h1>141 image array viz</h1>
 
 <script>
 (function (global, factory) {
@@ -5144,19 +5149,18 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </style>
 <!-- End of mermaid configuration --><div class="jupyter-wrapper">
 <div class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><a href="https://githubtocolab.com/gee-community/geemap/blob/master/examples/notebooks/141_image_array_viz.ipynb" target="_parent"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg"/></a></p>
-<p><strong>Visualizing in-memory raster datasets and image arrays</strong></p>
+<h1 id="143-precipitation-timelapse-animation">143 Precipitation Timelapse animation<a class="anchor-link" href="#143-precipitation-timelapse-animation">¶</a></h1><p>This notebook demonstrates how to generate the timelapse animation of <a href="https://developers.google.com/earth-engine/datasets/catalog/NASA_GPM_L3_IMERG_V06">IMERG precipitation dataset</a>. In the animation, you can add map elements such as, title of map, north arrow, map scale, colorbar etc.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=1">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5174,16 +5178,18 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># !pip install -U geemap</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># !pip install .</span>
+<span class="c1"># !pip install cartopy scipy</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-1"># !pip install -U geemap</div>
+<div class="clipboard-copy-txt" id="cell-1"># !pip install .
+# !pip install cartopy scipy</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5201,29 +5207,28 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">ee</span>
-<span class="kn">import</span> <span class="nn">geemap</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">geemap</span>
+<span class="kn">import</span> <span class="nn">ee</span>
+
+<span class="n">ee</span><span class="o">.</span><span class="n">Authenticate</span><span class="p">()</span>
+<span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="s2">"YOUR-PROJECT-ID"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">geemap</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-2">import ee
-import geemap</div>
+<div class="clipboard-copy-txt" id="cell-2">import geemap
+import ee
+
+ee.Authenticate()
+ee.Initialize(project="YOUR-PROJECT-ID")
+
+print(geemap.__version__)</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Use a Landsat image covering San Francisco Bay Area.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5241,47 +5246,18 @@ import geemap</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">"LANDSAT/LC08/C02/T1_TOA/LC08_044034_20140318"</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
-    <span class="p">[</span><span class="s2">"B5"</span><span class="p">,</span> <span class="s2">"B4"</span><span class="p">,</span> <span class="s2">"B3"</span><span class="p">]</span>
-<span class="p">)</span>
-<span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"min"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
-    <span class="s2">"max"</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span>
-<span class="p">}</span>
-<span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"False Color (543)"</span><span class="p">)</span>
-<span class="n">m</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.7893</span><span class="p">,</span> <span class="mf">113.9213</span><span class="p">),</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">m</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3">m = geemap.Map()
-image = ee.Image("LANDSAT/LC08/C02/T1_TOA/LC08_044034_20140318").select(
-    ["B5", "B4", "B3"]
-)
-vis_params = {
-    "min": 0.0,
-    "max": 0.4,
-}
-m.add_layer(image, vis_params, "False Color (543)")
-m.centerObject(image)
+<div class="clipboard-copy-txt" id="cell-3">m = geemap.Map(center=(0.7893, 113.9213), zoom=5)
 m</div>
 </div>
 </div>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Retrieve the projection information from the image.</p>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5299,31 +5275,112 @@ m</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">projection</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">projection</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
-<span class="n">crs</span> <span class="o">=</span> <span class="n">projection</span><span class="p">[</span><span class="s2">"crs"</span><span class="p">]</span>
-<span class="n">crs</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Extract the required country boundary, in this case Indonesia</span>
+<span class="n">countries</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="s2">"FAO/GAUL/2015/level0"</span><span class="p">)</span>
+<span class="n">indonesia</span> <span class="o">=</span> <span class="n">countries</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s2">"ADM0_NAME"</span><span class="p">,</span> <span class="s2">"Indonesia"</span><span class="p">))</span>
+<span class="n">indonesia_geom</span> <span class="o">=</span> <span class="n">indonesia</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
+
+<span class="c1"># Load the IMERG precipitation data for the desired day</span>
+<span class="n">date</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="s2">"2023-07-15"</span><span class="p">)</span>
+<span class="n">precipitation_collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"NASA/GPM_L3/IMERG_V06"</span><span class="p">)</span><span class="o">.</span><span class="n">filterDate</span><span class="p">(</span>
+    <span class="n">date</span><span class="p">,</span> <span class="n">date</span><span class="o">.</span><span class="n">advance</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"day"</span><span class="p">)</span>
+<span class="p">)</span>
+
+
+<span class="c1"># Define a function to mask out precipitation less than 0.5 mm/hr</span>
+<span class="k">def</span> <span class="nf">mask_less_ppt</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+    <span class="n">masked_collection</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">image</span><span class="p">:</span> <span class="n">image</span><span class="o">.</span><span class="n">updateMask</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">gte</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">masked_collection</span>
+
+
+<span class="c1"># Mask out precipitation less than 0.5 mm/hr</span>
+<span class="n">masked_imerg_collection</span> <span class="o">=</span> <span class="n">mask_less_ppt</span><span class="p">(</span><span class="n">precipitation_collection</span><span class="p">)</span>
+
+<span class="c1"># add indonesia boundary to map</span>
+<span class="n">style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"color"</span><span class="p">:</span> <span class="s2">"000ffff0"</span><span class="p">,</span> <span class="s2">"width"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"lineType"</span><span class="p">:</span> <span class="s2">"solid"</span><span class="p">,</span> <span class="s2">"fillColor"</span><span class="p">:</span> <span class="s2">"00000000"</span><span class="p">}</span>
+<span class="n">m</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">indonesia</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="o">**</span><span class="n">style</span><span class="p">),</span> <span class="p">{},</span> <span class="s2">"Indonesia_boundary"</span><span class="p">)</span>
+
+
+<span class="c1"># Define visualization parameters</span>
+<span class="n">palette</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"000096"</span><span class="p">,</span>
+    <span class="s2">"0064ff"</span><span class="p">,</span>
+    <span class="s2">"00b4ff"</span><span class="p">,</span>
+    <span class="s2">"33db80"</span><span class="p">,</span>
+    <span class="s2">"9beb4a"</span><span class="p">,</span>
+    <span class="s2">"ffeb00"</span><span class="p">,</span>
+    <span class="s2">"ffb300"</span><span class="p">,</span>
+    <span class="s2">"ff6400"</span><span class="p">,</span>
+    <span class="s2">"eb1e00"</span><span class="p">,</span>
+    <span class="s2">"af0000"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="s2">"bands"</span><span class="p">:</span> <span class="s2">"precipitationCal"</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"000096"</span><span class="p">,</span> <span class="s2">"0064ff"</span><span class="p">,</span> <span class="s2">"00b4ff"</span><span class="p">,</span> <span class="s2">"eb1e00"</span><span class="p">,</span> <span class="s2">"af0000"</span><span class="p">],</span>
+<span class="p">}</span>
+
+<span class="c1"># # Add the precipitation data to the map</span>
+<span class="c1"># m.addLayer(masked_imerg_collection, vis_params, 'Precipitation (IMERG)')</span>
+<span class="c1"># m</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">projection = image.select(0).projection().getInfo()
-crs = projection["crs"]
-crs</div>
+<div class="clipboard-copy-txt" id="cell-4"># Extract the required country boundary, in this case Indonesia
+countries = ee.FeatureCollection("FAO/GAUL/2015/level0")
+indonesia = countries.filter(ee.Filter.eq("ADM0_NAME", "Indonesia"))
+indonesia_geom = indonesia.geometry()
+
+# Load the IMERG precipitation data for the desired day
+date = ee.Date("2023-07-15")
+precipitation_collection = ee.ImageCollection("NASA/GPM_L3/IMERG_V06").filterDate(
+    date, date.advance(1, "day")
+)
+
+
+# Define a function to mask out precipitation less than 0.5 mm/hr
+def mask_less_ppt(collection):
+    masked_collection = collection.map(lambda image: image.updateMask(image.gte(0.5)))
+    return masked_collection
+
+
+# Mask out precipitation less than 0.5 mm/hr
+masked_imerg_collection = mask_less_ppt(precipitation_collection)
+
+# add indonesia boundary to map
+style = {"color": "000ffff0", "width": 2, "lineType": "solid", "fillColor": "00000000"}
+m.addLayer(indonesia.style(**style), {}, "Indonesia_boundary")
+
+
+# Define visualization parameters
+palette = [
+    "000096",
+    "0064ff",
+    "00b4ff",
+    "33db80",
+    "9beb4a",
+    "ffeb00",
+    "ffb300",
+    "ff6400",
+    "eb1e00",
+    "af0000",
+]
+vis_params = {
+    "min": 0,
+    "max": 50,
+    "bands": "precipitationCal",
+    "palette": ["000096", "0064ff", "00b4ff", "eb1e00", "af0000"],
+}
+
+# # Add the precipitation data to the map
+# m.addLayer(masked_imerg_collection, vis_params, 'Precipitation (IMERG)')
+# m</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Read the Earth Engine image into an Xarray DataArray.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5341,33 +5398,28 @@ crs</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">ee_to_xarray</span><span class="p">(</span>
-    <span class="n">image</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="s2">"EPSG:32610"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">image</span><span class="o">.</span><span class="n">geometry</span><span class="p">(),</span> <span class="n">ee_mask_value</span><span class="o">=</span><span class="mi">0</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># clip the precipitation data to the Indonesia boundary</span>
+<span class="n">clipped_imerg_collection</span> <span class="o">=</span> <span class="n">masked_imerg_collection</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">image</span><span class="p">:</span> <span class="n">image</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">indonesia_geom</span><span class="p">)</span>
 <span class="p">)</span>
-<span class="n">ds</span>
+
+<span class="c1"># Get the number of images in the clipped collection</span>
+<span class="n">clipped_imerg_collection</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">ds = geemap.ee_to_xarray(
-    image, crs="EPSG:32610", scale=300, geometry=image.geometry(), ee_mask_value=0
+<div class="clipboard-copy-txt" id="cell-5"># clip the precipitation data to the Indonesia boundary
+clipped_imerg_collection = masked_imerg_collection.map(
+    lambda image: image.clip(indonesia_geom)
 )
-ds</div>
+
+# Get the number of images in the clipped collection
+clipped_imerg_collection.size().getInfo()</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Save the DataArray as a Cloud Optimized GeoTIFF.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=10">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5385,27 +5437,20 @@ ds</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">xee_to_image</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">filenames</span><span class="o">=</span><span class="p">[</span><span class="s2">"landsat.tif"</span><span class="p">])</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># get bounding box of indonesia</span>
+<span class="n">indonesia_bbox</span> <span class="o">=</span> <span class="n">indonesia</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span>
+<span class="n">indonesia_bbox</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">geemap.xee_to_image(ds, filenames=["landsat.tif"])</div>
+<div class="clipboard-copy-txt" id="cell-6"># get bounding box of indonesia
+indonesia_bbox = indonesia.geometry().bounds()
+indonesia_bbox</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=11">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Calculate the NDVI and save it to the DataArray.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=12">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5423,27 +5468,38 @@ ds</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ndvi</span> <span class="o">=</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"B5"</span><span class="p">]</span> <span class="o">-</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"B4"</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s2">"B5"</span><span class="p">]</span> <span class="o">+</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"B4"</span><span class="p">])</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># Display sample image</span>
+<span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">"max"</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="s2">"bands"</span><span class="p">:</span> <span class="s2">"precipitationCal"</span><span class="p">,</span>
+    <span class="s2">"palette"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"000096"</span><span class="p">,</span> <span class="s2">"0064ff"</span><span class="p">,</span> <span class="s2">"00b4ff"</span><span class="p">,</span> <span class="s2">"eb1e00"</span><span class="p">,</span> <span class="s2">"af0000"</span><span class="p">],</span>
+<span class="p">}</span>
+
+<span class="c1"># Display the first image in the clipped collection</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">clipped_imerg_collection</span><span class="o">.</span><span class="n">first</span><span class="p">())</span>
+<span class="n">m</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="s2">"First image"</span><span class="p">)</span>
+<span class="n">m</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-7">ndvi = (ds["B5"] - ds["B4"]) / (ds["B5"] + ds["B4"])</div>
+<div class="clipboard-copy-txt" id="cell-7"># Display sample image
+vis_params = {
+    "min": 0,
+    "max": 50,
+    "bands": "precipitationCal",
+    "palette": ["000096", "0064ff", "00b4ff", "eb1e00", "af0000"],
+}
+
+# Display the first image in the clipped collection
+image = ee.Image(clipped_imerg_collection.first())
+m.addLayer(image, vis_params, "First image")
+m</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=13">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Create an in-memory raster dataset from the DataArray.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=14">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5461,27 +5517,150 @@ ds</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">ndvi_image</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">array_to_image</span><span class="p">(</span><span class="n">ndvi</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">"landsat.tif"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="c1"># import the cartoee functionality from geemap</span>
+<span class="kn">from</span> <span class="nn">geemap</span> <span class="kn">import</span> <span class="n">cartoee</span>
+
+<span class="c1"># set the width and height of the map</span>
+<span class="n">w</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">h</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># set the center of the map</span>
+<span class="n">lon</span> <span class="o">=</span> <span class="mi">118</span>
+<span class="n">lat</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span>
+
+<span class="c1"># set the region of interest</span>
+<span class="n">region</span> <span class="o">=</span> <span class="p">[</span><span class="n">lon</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">lat</span> <span class="o">-</span> <span class="n">h</span><span class="p">,</span> <span class="n">lon</span> <span class="o">-</span> <span class="n">w</span><span class="p">,</span> <span class="n">lat</span> <span class="o">+</span> <span class="n">h</span><span class="p">]</span>
+
+
+<span class="c1"># use cartoee to get a map</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">get_map</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span> <span class="n">vis_params</span><span class="o">=</span><span class="n">vis_params</span><span class="p">)</span>
+
+<span class="c1"># add the Indonesia boundary to the map</span>
+<span class="n">outline_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"color"</span><span class="p">:</span> <span class="s2">"FF0000"</span><span class="p">,</span> <span class="s2">"width"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"fillColor"</span><span class="p">:</span> <span class="s2">"00000000"</span><span class="p">}</span>
+<span class="n">cartoee</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
+    <span class="n">ax</span><span class="p">,</span> <span class="n">indonesia</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="o">**</span><span class="n">outline_style</span><span class="p">),</span> <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="c1"># add gridlines to the map at a specified interval</span>
+<span class="n">cartoee</span><span class="o">.</span><span class="n">add_gridlines</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">":"</span><span class="p">)</span>
+
+<span class="c1"># add a colorbar to the map (right side)</span>
+<span class="n">cb</span> <span class="o">=</span> <span class="n">cartoee</span><span class="o">.</span><span class="n">add_colorbar</span><span class="p">(</span>
+    <span class="n">ax</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Rainfall (mm)"</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">"vertical"</span>
+<span class="p">)</span>
+
+<span class="c1"># add north arrow</span>
+<span class="n">north_arrow_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"N"</span><span class="p">,</span>
+    <span class="s2">"xy"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.21</span><span class="p">),</span>
+    <span class="s2">"arrow_length"</span><span class="p">:</span> <span class="mf">0.10</span><span class="p">,</span>
+    <span class="s2">"text_color"</span><span class="p">:</span> <span class="s2">"black"</span><span class="p">,</span>
+    <span class="s2">"arrow_color"</span><span class="p">:</span> <span class="s2">"white"</span><span class="p">,</span>
+    <span class="s2">"fontsize"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s2">"width"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s2">"headwidth"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s2">"ha"</span><span class="p">:</span> <span class="s2">"center"</span><span class="p">,</span>
+    <span class="s2">"va"</span><span class="p">:</span> <span class="s2">"center"</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">cartoee</span><span class="o">.</span><span class="n">add_north_arrow</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">north_arrow_dict</span><span class="p">)</span>
+
+<span class="c1"># add scale bar</span>
+<span class="n">scale_bar_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"length"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s2">"xy"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>
+    <span class="s2">"linewidth"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">"fontsize"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"black"</span><span class="p">,</span>
+    <span class="s2">"unit"</span><span class="p">:</span> <span class="s2">"km"</span><span class="p">,</span>
+    <span class="s2">"ha"</span><span class="p">:</span> <span class="s2">"center"</span><span class="p">,</span>
+    <span class="s2">"va"</span><span class="p">:</span> <span class="s2">"bottom"</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">cartoee</span><span class="o">.</span><span class="n">add_scale_bar_lite</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">scale_bar_dict</span><span class="p">)</span>
+
+<span class="c1"># add title</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Total Rainfall (2023-07-15)"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-8">ndvi_image = geemap.array_to_image(ndvi, source="landsat.tif")</div>
+<div class="clipboard-copy-txt" id="cell-8">import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
+import json
+
+# import the cartoee functionality from geemap
+from geemap import cartoee
+
+# set the width and height of the map
+w = 25
+h = 10
+
+# set the center of the map
+lon = 118
+lat = -3
+
+# set the region of interest
+region = [lon + w, lat - h, lon - w, lat + h]
+
+
+# use cartoee to get a map
+ax = cartoee.get_map(image, region=region, vis_params=vis_params)
+
+# add the Indonesia boundary to the map
+outline_style = {"color": "FF0000", "width": 2, "fillColor": "00000000"}
+cartoee.add_layer(
+    ax, indonesia.style(**outline_style), region=region, crs=ccrs.PlateCarree()
+)
+
+# add gridlines to the map at a specified interval
+cartoee.add_gridlines(ax, interval=[5, 5], linestyle=":")
+
+# add a colorbar to the map (right side)
+cb = cartoee.add_colorbar(
+    ax, vis_params, loc="right", label="Rainfall (mm)", orientation="vertical"
+)
+
+# add north arrow
+north_arrow_dict = {
+    "text": "N",
+    "xy": (0.1, 0.21),
+    "arrow_length": 0.10,
+    "text_color": "black",
+    "arrow_color": "white",
+    "fontsize": 10,
+    "width": 5,
+    "headwidth": 10,
+    "ha": "center",
+    "va": "center",
+}
+cartoee.add_north_arrow(ax, **north_arrow_dict)
+
+# add scale bar
+scale_bar_dict = {
+    "length": 100,
+    "xy": (0.1, 0.05),
+    "linewidth": 2,
+    "fontsize": 8,
+    "color": "black",
+    "unit": "km",
+    "ha": "center",
+    "va": "bottom",
+}
+cartoee.add_scale_bar_lite(ax, **scale_bar_dict)
+
+# add title
+ax.set_title(label="Total Rainfall (2023-07-15)", fontsize=10)
+
+plt.show()</div>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=15">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Visualize the in-memory raster dataset.</p>
 </div>
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=16">
+<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -5499,51 +5678,51 @@ ds</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">add_raster</span><span class="p">(</span><span class="s2">"landsat.tif"</span><span class="p">,</span> <span class="n">indexes</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">nodata</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"Landsat 7"</span><span class="p">)</span>
-<span class="n">m</span><span class="o">.</span><span class="n">add_raster</span><span class="p">(</span><span class="n">ndvi_image</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="s2">"Greens"</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s2">"NDVI"</span><span class="p">)</span>
-<span class="n">m</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="c1"># create a gif of the images in the clipped collection</span>
+<span class="n">cartoee</span><span class="o">.</span><span class="n">get_image_collection_gif</span><span class="p">(</span>
+    <span class="n">ee_ic</span><span class="o">=</span><span class="n">clipped_imerg_collection</span><span class="p">,</span>
+    <span class="n">out_dir</span><span class="o">=</span><span class="s2">"./img/gif_images"</span><span class="p">,</span>
+    <span class="n">out_gif</span><span class="o">=</span><span class="s2">"./img/animation.gif"</span><span class="p">,</span>
+    <span class="n">vis_params</span><span class="o">=</span><span class="n">vis_params</span><span class="p">,</span>
+    <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span>
+    <span class="n">fps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">mp4</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">grid_interval</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+    <span class="n">plot_title</span><span class="o">=</span><span class="s2">"Indonesia Daily Rainfall"</span><span class="p">,</span>
+    <span class="n">date_format</span><span class="o">=</span><span class="s2">"YYYY-MM-dd:HH-mm"</span><span class="p">,</span>
+    <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="n">dpi_plot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">file_format</span><span class="o">=</span><span class="s2">"png"</span><span class="p">,</span>
+    <span class="n">overlay_layers</span><span class="o">=</span><span class="p">[</span><span class="n">indonesia</span><span class="p">],</span>
+    <span class="n">overlay_styles</span><span class="o">=</span><span class="p">[</span><span class="n">outline_style</span><span class="p">],</span>
+    <span class="n">colorbar_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">"loc"</span><span class="p">:</span> <span class="s2">"right"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">:</span> <span class="s2">"Rainfall (mm)"</span><span class="p">,</span> <span class="s2">"orientation"</span><span class="p">:</span> <span class="s2">"vertical"</span><span class="p">},</span>
+    <span class="n">north_arrow_dict</span><span class="o">=</span><span class="n">north_arrow_dict</span><span class="p">,</span>
+    <span class="n">scale_bar_dict</span><span class="o">=</span><span class="n">scale_bar_dict</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-9">m.add_raster("landsat.tif", indexes=[1, 2, 3], nodata=-1, layer_name="Landsat 7")
-m.add_raster(ndvi_image, colormap="Greens", layer_name="NDVI")
-m</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=17">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Save the in-memory raster dataset to a GeoTIFF file.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=18">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div><div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="CodeMirror cm-s-jupyter">
-<div class="zeroclipboard-container">
-<clipboard-copy for="cell-10">
-<div>
-<span class="notice" hidden="">Copied!</span>
-<svg aria-hidden="true" class="clipboard-copy-icon" data-view-component="true" height="20" version="1.1" viewbox="0 0 16 16" width="20">
-<path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-<path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z" fill="currentColor" fill-rule="evenodd"></path>
-</svg>
-</div>
-</clipboard-copy>
-</div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">geemap</span><span class="o">.</span><span class="n">array_to_image</span><span class="p">(</span><span class="n">ndvi</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">"ndvi.tif"</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">"landsat.tif"</span><span class="p">)</span>
-</pre></div>
-<div class="clipboard-copy-txt" id="cell-10">geemap.array_to_image(ndvi, output="ndvi.tif", source="landsat.tif")</div>
+<div class="clipboard-copy-txt" id="cell-9"># create a gif of the images in the clipped collection
+cartoee.get_image_collection_gif(
+    ee_ic=clipped_imerg_collection,
+    out_dir="./img/gif_images",
+    out_gif="./img/animation.gif",
+    vis_params=vis_params,
+    region=region,
+    fps=2,
+    mp4=True,
+    grid_interval=(5, 5),
+    plot_title="Indonesia Daily Rainfall",
+    date_format="YYYY-MM-dd:HH-mm",
+    fig_size=(7, 7),
+    dpi_plot=100,
+    file_format="png",
+    overlay_layers=[indonesia],
+    overlay_styles=[outline_style],
+    colorbar_dict={"loc": "right", "label": "Rainfall (mm)", "orientation": "vertical"},
+    north_arrow_dict=north_arrow_dict,
+    scale_bar_dict=scale_bar_dict,
+    verbose=True,
+)</div>
 </div>
 </div>
 </div>
@@ -5579,7 +5758,7 @@ m</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-02-21T14:13:25+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-02-21</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-06-28T22:38:02+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-06-28</span>
   </span>
 
     
@@ -5589,7 +5768,7 @@ m</div>
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-12-25T04:24:40+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-12-25</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-06-28T22:38:02+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-06-28</span>
   </span>
 
     

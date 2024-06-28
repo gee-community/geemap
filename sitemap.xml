@@ -481,6 +481,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://geemap.org/notebooks/143_precipitation_timelapse/</loc>
+         <lastmod>2024-06-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://geemap.org/notebooks/14_legends/</loc>
          <lastmod>2024-06-28</lastmod>
          <changefreq>daily</changefreq>
