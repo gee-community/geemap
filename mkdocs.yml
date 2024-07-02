@@ -146,6 +146,7 @@ nav:
           - workshops/GEE_Workshop_2024.ipynb
           - workshops/TNGIC_2024.ipynb
           - workshops/IGIC_2024.ipynb
+          - workshops/SciPy_2024.ipynb
     - Notebooks:
           - notebooks/00_ee_auth_colab.ipynb
           - notebooks/00_geemap_colab.ipynb
