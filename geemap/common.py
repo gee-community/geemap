@@ -16246,3 +16246,41 @@ def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
     if api_key := _get_colab_secret(key):
         return api_key
     return os.environ.get(key, None)
+
+
+def xarray_to_raster(dataset, filename: str, **kwargs: Dict[str, Any]):
+    """Convert an xarray Dataset to a raster file.
+
+    Args:
+        dataset (xr.Dataset): The input xarray Dataset to be converted.
+        filename (str): The output filename for the raster file.
+        **kwargs (Dict[str, Any]): Additional keyword arguments passed to the `rio.to_raster()` method.
+            See https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html for more info.
+
+    Returns:
+        None
+    """
+    import rioxarray
+
+    dims = list(dataset.dims)
+
+    new_names = {}
+
+    if "lat" in dims:
+        new_names["lat"] = "y"
+        dims.remove("lat")
+    if "lon" in dims:
+        new_names["lon"] = "x"
+        dims.remove("lon")
+    if "lng" in dims:
+        new_names["lng"] = "x"
+        dims.remove("lng")
+    if "latitude" in dims:
+        new_names["latitude"] = "y"
+        dims.remove("latitude")
+    if "longitude" in dims:
+        new_names["longitude"] = "x"
+        dims.remove("longitude")
+
+    dataset = dataset.rename(new_names)
+    dataset.transpose(..., "y", "x").rio.to_raster(filename, **kwargs)
