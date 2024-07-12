@@ -38,7 +38,6 @@ backends = [
     "plotly",
 ]
 extra = [
-    "datapane",
     "ee_extra>=0.0.15",
     "ffmpeg-python",
     "gdown",
