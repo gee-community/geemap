@@ -32,6 +32,7 @@ jobs:
             - name: Install dependencies
               run: |
                   pip install .[all]
+                  pip install numpy==1.26.4
             - name: PKG-TEST
               run: |
                   python -m unittest discover tests/
