@@ -16248,7 +16248,7 @@ def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
     return os.environ.get(key, None)
 
 
-def xarray_to_raster(dataset, filename: str, **kwargs: Dict[str, Any]):
+def xarray_to_raster(dataset, filename: str, **kwargs: Dict[str, Any]) -> None:
     """Convert an xarray Dataset to a raster file.
 
     Args:
