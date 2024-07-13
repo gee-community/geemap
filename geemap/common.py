@@ -9133,10 +9133,9 @@ def ee_to_df(
         raise TypeError("ee_object must be an ee.FeatureCollection")
 
     try:
-        property_names = ee_object.first().propertyNames().sort().getInfo()
         if remove_geom:
             data = ee_object.map(
-                lambda f: ee.Feature(None, f.toDictionary(property_names))
+                lambda f: ee.Feature(None, f.toDictionary(f.propertyNames().sort()))
             )
         else:
             data = ee_object
