@@ -9704,21 +9704,32 @@ def osm_to_geojson(query, which_result=None, by_osmid=False, buffer_dist=None):
     return gdf.__geo_interface__
 
 
-def get_api_key(token_name, m=None):
-    """Retrieves an API key based on a system environmen variable.
+def get_api_key(name: Optional[str] = None, key: Optional[str] = None) -> Optional[str]:
+    """
+    Retrieves an API key. If a key is provided, it is returned directly. If a
+    name is provided, the function attempts to retrieve the key from user data
+    (if running in Google Colab) or from environment variables.
 
     Args:
-        token_name (str): The token name.
-        m (ipyleaflet.Map | folium.Map, optional): A Map instance. Defaults to None.
+        name (Optional[str], optional): The name of the key to retrieve. Defaults to None.
+        key (Optional[str], optional): The key to return directly. Defaults to None.
 
     Returns:
-        str: The API key.
+        Optional[str]: The retrieved key, or None if no key was found.
     """
-    api_key = os.environ.get(token_name)
-    if m is not None and token_name in m.api_keys:
-        api_key = m.api_keys[token_name]
 
-    return api_key
+    if key is not None:
+        return key
+    elif name is not None:
+        if in_colab_shell():
+            from google.colab import userdata
+
+            try:
+                return userdata.get(name)
+            except:
+                return os.environ.get(name)
+        else:
+            return os.environ.get(name)
 
 
 def planet_monthly_tropical(api_key=None, token_name="PLANET_API_KEY"):
