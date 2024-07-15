@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.28">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.29">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.6543a935.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.76a95c52.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -5754,26 +5754,39 @@ AbstractDrawControl        </code>
             <span class="k">return</span>
         <span class="c1"># The current geometries from the draw_control.</span>
         <span class="n">test_geojsons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_synced_geojson_from_draw_control</span><span class="p">()</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_geojsons</span><span class="p">):</span>
-            <span class="n">local_geometry</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">test_geometry</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_geojsons</span><span class="p">):</span>
-                <span class="n">local_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">test_geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">test_geojsons</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">geodesic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">test_geometry</span> <span class="o">==</span> <span class="n">local_geometry</span><span class="p">:</span>
-                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">break</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="ow">and</span> <span class="n">test_geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_geometry</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="n">geodesic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">geo_json</span> <span class="ow">in</span> <span class="n">test_geojsons</span>
+        <span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_redraw_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># If the layer already exists, substitute it. This can avoid flickering.</span>
+        <span class="k">if</span> <span class="n">_DRAWN_FEATURES_LAYER</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
+            <span class="n">old_layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_DRAWN_FEATURES_LAYER</span><span class="p">,</span> <span class="p">{})[</span>
+                <span class="s2">&quot;ee_layer&quot;</span>
+            <span class="p">]</span>
+            <span class="n">new_layer</span> <span class="o">=</span> <span class="n">ee_tile_layers</span><span class="o">.</span><span class="n">EELeafletTileLayer</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span>
+                <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">},</span>
+                <span class="n">_DRAWN_FEATURES_LAYER</span><span class="p">,</span>
+                <span class="n">old_layer</span><span class="o">.</span><span class="n">visible</span><span class="p">,</span>
+                <span class="mf">0.5</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">old_layer</span><span class="p">,</span> <span class="n">new_layer</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_DRAWN_FEATURES_LAYER</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;ee_layer&quot;</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_DRAWN_FEATURES_LAYER</span><span class="p">,</span> <span class="p">{})[</span>
+                <span class="s2">&quot;ee_layer&quot;</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="n">new_layer</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Otherwise, add the layer.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">},</span> <span class="n">_DRAWN_FEATURES_LAYER</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mf">0.5</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span>
+                <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">},</span>
+                <span class="n">_DRAWN_FEATURES_LAYER</span><span class="p">,</span>
+                <span class="kc">False</span><span class="p">,</span>
+                <span class="mf">0.5</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_DRAWN_FEATURES_LAYER</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
                 <span class="s2">&quot;ee_layer&quot;</span><span class="p">,</span> <span class="kc">None</span>
@@ -5793,7 +5806,6 @@ AbstractDrawControl        </code>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">EDITED</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sync_geometries</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_edit_dispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_handle_geometry_deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geo_json</span><span class="p">):</span>
@@ -7516,13 +7528,6 @@ MapDrawControl            (<span title="ipyleaflet.leaflet.DrawControl">DrawCont
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">MapDrawControl</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">host_map</span><span class="o">=</span><span class="n">host_map</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="c1"># NOTE: Overridden for backwards compatibility, where edited geometries are</span>
-    <span class="c1"># added to the layer instead of modified in place. Remove when</span>
-    <span class="c1"># https://github.com/jupyter-widgets/ipyleaflet/issues/1119 is fixed to</span>
-    <span class="c1"># allow geometry edits to be reflected on the tile layer.</span>
-    <span class="k">def</span> <span class="nf">_handle_geometry_edited</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geo_json</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_geometry_created</span><span class="p">(</span><span class="n">geo_json</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">_get_synced_geojson_from_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
 
@@ -7542,20 +7547,18 @@ MapDrawControl            (<span title="ipyleaflet.leaflet.DrawControl">DrawCont
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">on_draw</span><span class="p">(</span><span class="n">handle_draw</span><span class="p">)</span>
-        <span class="c1"># NOTE: Uncomment the following code once</span>
-        <span class="c1"># https://github.com/jupyter-widgets/ipyleaflet/issues/1119 is fixed</span>
-        <span class="c1"># to allow edited geometries to be reflected instead of added.</span>
-        <span class="c1"># def handle_data_update(_):</span>
-        <span class="c1">#     self._sync_geometries()</span>
-        <span class="c1"># self.observe(handle_data_update, &#39;data&#39;)</span>
+
+        <span class="k">def</span> <span class="nf">handle_data_update</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sync_geometries</span><span class="p">()</span>
+            <span class="c1"># Need to refresh the layer if the last action was an edit.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">==</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">EDITED</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">handle_data_update</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_remove_geometry_at_index_on_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="c1"># NOTE: Uncomment the following code once</span>
-        <span class="c1"># https://github.com/jupyter-widgets/ipyleaflet/issues/1119 is fixed to</span>
-        <span class="c1"># remove drawn geometries with `remove_last_drawn()`.</span>
-        <span class="c1"># del self.data[index]</span>
-        <span class="c1"># self.send_state(key=&#39;data&#39;)</span>
-        <span class="k">pass</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_state</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_clear_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Remove all drawn features from the map.</span>
