@@ -8464,15 +8464,15 @@ geemap.linked_maps(
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">pdsi_col</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"USGS/NLCD_RELEASES/2019_REL/NLCD"</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"landcover"</span><span class="p">)</span>
+<span class="n">collection</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"USGS/NLCD_RELEASES/2019_REL/NLCD"</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"landcover"</span><span class="p">)</span>
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"landcover"</span><span class="p">]}</span>
-<span class="n">years</span> <span class="o">=</span> <span class="n">pdsi_col</span><span class="o">.</span><span class="n">aggregate_array</span><span class="p">(</span><span class="s2">"system:index"</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+<span class="n">years</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">aggregate_array</span><span class="p">(</span><span class="s2">"system:index"</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
 <span class="n">years</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-41">m = geemap.Map(center=[40, -100], zoom=4)
-pdsi_col = ee.ImageCollection("USGS/NLCD_RELEASES/2019_REL/NLCD").select("landcover")
+collection = ee.ImageCollection("USGS/NLCD_RELEASES/2019_REL/NLCD").select("landcover")
 vis_params = {"bands": ["landcover"]}
-years = pdsi_col.aggregate_array("system:index").getInfo()
+years = collection.aggregate_array("system:index").getInfo()
 years</div>
 </div>
 </div>
@@ -8510,8 +8510,8 @@ years</div>
 </clipboard-copy>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">ts_inspector</span><span class="p">(</span>
-    <span class="n">left_ts</span><span class="o">=</span><span class="n">pdsi_col</span><span class="p">,</span>
-    <span class="n">right_ts</span><span class="o">=</span><span class="n">pdsi_col</span><span class="p">,</span>
+    <span class="n">left_ts</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span>
+    <span class="n">right_ts</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span>
     <span class="n">left_names</span><span class="o">=</span><span class="n">years</span><span class="p">,</span>
     <span class="n">right_names</span><span class="o">=</span><span class="n">years</span><span class="p">,</span>
     <span class="n">left_vis</span><span class="o">=</span><span class="n">vis_params</span><span class="p">,</span>
@@ -8521,8 +8521,8 @@ years</div>
 <span class="n">m</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-42">m.ts_inspector(
-    left_ts=pdsi_col,
-    right_ts=pdsi_col,
+    left_ts=collection,
+    right_ts=collection,
     left_names=years,
     right_names=years,
     left_vis=vis_params,
@@ -8706,7 +8706,7 @@ m</div>
 </div>
 <div class="highlight-ipynb hl-python"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mf">37.75</span><span class="p">,</span> <span class="o">-</span><span class="mf">122.45</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 
-<span class="n">pdsi_col</span> <span class="o">=</span> <span class="p">(</span>
+<span class="n">collection</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">(</span><span class="s2">"COPERNICUS/S2_SR"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">([</span><span class="o">-</span><span class="mf">122.45</span><span class="p">,</span> <span class="mf">37.75</span><span class="p">]))</span>
     <span class="o">.</span><span class="n">filterMetadata</span><span class="p">(</span><span class="s2">"CLOUDY_PIXEL_PERCENTAGE"</span><span class="p">,</span> <span class="s2">"less_than"</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
@@ -8714,12 +8714,12 @@ m</div>
 
 <span class="n">vis_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"min"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span> <span class="s2">"bands"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"B8"</span><span class="p">,</span> <span class="s2">"B4"</span><span class="p">,</span> <span class="s2">"B3"</span><span class="p">]}</span>
 
-<span class="n">m</span><span class="o">.</span><span class="n">add_time_slider</span><span class="p">(</span><span class="n">pdsi_col</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">add_time_slider</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">)</span>
 <span class="n">m</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-45">m = geemap.Map(center=[37.75, -122.45], zoom=12)
 
-pdsi_col = (
+collection = (
     ee.ImageCollection("COPERNICUS/S2_SR")
     .filterBounds(ee.Geometry.Point([-122.45, 37.75]))
     .filterMetadata("CLOUDY_PIXEL_PERCENTAGE", "less_than", 10)
@@ -8727,7 +8727,7 @@ pdsi_col = (
 
 vis_params = {"min": 0, "max": 4000, "bands": ["B8", "B4", "B3"]}
 
-m.add_time_slider(pdsi_col, vis_params)
+m.add_time_slider(collection, vis_params)
 m</div>
 </div>
 </div>
@@ -10709,7 +10709,7 @@ m</div>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-07-15T03:02:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-07-15</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-07-17T01:20:33+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-07-17</span>
   </span>
 
     
