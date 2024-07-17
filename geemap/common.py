@@ -86,6 +86,7 @@ def ee_initialize(
             # no additional params needed.
             ee.Authenticate()
             ee.Initialize(**kwargs)
+            ee.data.setUserAgent(user_agent)
             return
         else:
             auth_mode = "notebook"
