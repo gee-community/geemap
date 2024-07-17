@@ -2338,7 +2338,9 @@ class Map(folium.Map):
                     f"right_layer must be one of the following: {', '.join(basemaps.keys())} or a string url to a tif file."
                 )
 
-            control = SideBySideLayers(layer_left=left_layer, layer_right=right_layer)
+            control = folium.plugins.SideBySideLayers(
+                layer_left=left_layer, layer_right=right_layer
+            )
             left_layer.add_to(self)
             right_layer.add_to(self)
             control.add_to(self)
