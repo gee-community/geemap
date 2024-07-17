@@ -67,11 +67,13 @@ def ee_initialize(
     from .__init__ import __version__
 
     user_agent = f"{user_agent_prefix}/{__version__}"
+    ee.data.setUserAgent(user_agent)
+
     if "http_transport" not in kwargs:
         kwargs["http_transport"] = httplib2.Http()
 
     if auth_mode is None:
-        if in_colab_shell():
+        if in_colab_shell() and (ee.data._credentials is None):
             from google.colab import userdata
 
             if project is None:
@@ -153,8 +155,6 @@ def ee_initialize(
             except Exception:
                 ee.Authenticate(**auth_args)
                 ee.Initialize(**kwargs)
-
-    ee.data.setUserAgent(user_agent)
 
 
 def ee_export_image(
