@@ -2209,17 +2209,18 @@ def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
     return full_widget
 
 
-def timelapse_gui(m=None):
+def timelapse_gui(m=None, basemap="HYBRID"):
     """Creates timelapse animations.
 
     Args:
         m (geemap.Map, optional): A geemap Map instance. Defaults to None.
+        basemap (str, optional): The basemap to use. Defaults to "HYBRID".
 
     Returns:
         ipywidgets: The interactive GUI.
     """
-    if m is not None:
-        m.add_basemap("HYBRID")
+    if m is not None and (basemap is not None):
+        m.add_basemap(basemap)
 
     widget_width = "350px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
