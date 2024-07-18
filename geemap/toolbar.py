@@ -2245,8 +2245,6 @@ def timelapse_gui(m=None):
     collection = widgets.Dropdown(
         options=[
             "Landsat TM-ETM-OLI Surface Reflectance",
-            "Sentinel-2AB Surface Reflectance",
-            "MODIS",
         ],
         value="Landsat TM-ETM-OLI Surface Reflectance",
         description="Collection:",
@@ -2275,7 +2273,7 @@ def timelapse_gui(m=None):
             "SWIR2/NIR/Green",
             "SWIR1/NIR/Red",
         ],
-        value="NIR/Red/Green",
+        value="SWIR1/NIR/Red",
         style=style,
         layout=widgets.Layout(width="165px", padding=padding),
     )
@@ -2453,8 +2451,8 @@ def timelapse_gui(m=None):
             first_band.value = "NIR"
             second_band.value = "Red"
         elif nd_indices.value == "Water Index (NDWI)":
-            first_band.value = "NIR"
-            second_band.value = "SWIR1"
+            first_band.value = "Green"
+            second_band.value = "NIR"
         elif nd_indices.value == "Modified Water Index (MNDWI)":
             first_band.value = "Green"
             second_band.value = "SWIR1"
@@ -2498,7 +2496,12 @@ def timelapse_gui(m=None):
         end_date = str(end_month.value).zfill(2) + "-30"
 
         with output:
-            print("Computing... Please wait...")
+            output.clear_output()
+            message = "Computing... Please wait..."
+            if os.environ.get("EE_SOLARA", None) is None:
+                output.append_stdout(message)
+            else:
+                print(message)
 
         nd_bands = None
         if (first_band.value is not None) and (second_band.value is not None):
@@ -2507,11 +2510,18 @@ def timelapse_gui(m=None):
         temp_output = widgets.Output()
 
         if m is not None:
+            m.default_style = {"cursor": "wait"}
             out_dir = get_temp_dir()
             out_gif = os.path.join(out_dir, "timelapse_" + random_string(3) + ".gif")
 
             with temp_output:
                 temp_output.outputs = ()
+
+                if m.find_layer("Timelapse") is not None:
+                    m.remove(m.find_layer("Timelapse"))
+                if m.find_layer("Timelapse ND") is not None:
+                    m.remove(m.find_layer("Timelapse ND"))
+
                 m.add_landsat_ts_gif(
                     roi=m.user_roi,
                     label=title.value,
@@ -2535,7 +2545,7 @@ def timelapse_gui(m=None):
                     m.centerObject(m.user_roi)
 
             with output:
-                print("The timelapse has been added to the map.")
+                output.clear_output()
                 link = create_download_link(
                     out_gif,
                     title="Click here to download: ",
@@ -2547,6 +2557,8 @@ def timelapse_gui(m=None):
                         title="Click here to download: ",
                     )
                     display(link_nd)
+
+            m.default_style = {"cursor": "default"}
 
     create_gif.on_click(submit_clicked)
 
