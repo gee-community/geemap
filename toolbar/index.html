@@ -8675,7 +8675,7 @@ cleanup state when toggled off.</p></td>
 
 
 <h2 id="geemap.toolbar.timelapse_gui" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">timelapse_gui</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">timelapse_gui</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">basemap</span><span class="o">=</span><span class="s1">&#39;HYBRID&#39;</span><span class="p">)</span></code>
 
 
 <a href="#geemap.toolbar.timelapse_gui" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -8701,6 +8701,12 @@ cleanup state when toggled off.</p></td>
         <td><p>A geemap Map instance. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>basemap</code></td>
+        <td><code>str</code></td>
+        <td><p>The basemap to use. Defaults to "HYBRID".</p></td>
+        <td><code>&#39;HYBRID&#39;</code></td>
+      </tr>
   </tbody>
 </table>
 <p><strong>Returns:</strong></p>
@@ -8720,17 +8726,18 @@ cleanup state when toggled off.</p></td>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/toolbar.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">timelapse_gui</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">timelapse_gui</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">basemap</span><span class="o">=</span><span class="s2">&quot;HYBRID&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates timelapse animations.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        m (geemap.Map, optional): A geemap Map instance. Defaults to None.</span>
+<span class="sd">        basemap (str, optional): The basemap to use. Defaults to &quot;HYBRID&quot;.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        ipywidgets: The interactive GUI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">m</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="s2">&quot;HYBRID&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">basemap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">add_basemap</span><span class="p">(</span><span class="n">basemap</span><span class="p">)</span>
 
     <span class="n">widget_width</span> <span class="o">=</span> <span class="s2">&quot;350px&quot;</span>
     <span class="n">padding</span> <span class="o">=</span> <span class="s2">&quot;0px 0px 0px 5px&quot;</span>  <span class="c1"># upper, right, bottom, left</span>
@@ -8756,8 +8763,6 @@ cleanup state when toggled off.</p></td>
     <span class="n">collection</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
         <span class="n">options</span><span class="o">=</span><span class="p">[</span>
             <span class="s2">&quot;Landsat TM-ETM-OLI Surface Reflectance&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Sentinel-2AB Surface Reflectance&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;MODIS&quot;</span><span class="p">,</span>
         <span class="p">],</span>
         <span class="n">value</span><span class="o">=</span><span class="s2">&quot;Landsat TM-ETM-OLI Surface Reflectance&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Collection:&quot;</span><span class="p">,</span>
@@ -8786,7 +8791,7 @@ cleanup state when toggled off.</p></td>
             <span class="s2">&quot;SWIR2/NIR/Green&quot;</span><span class="p">,</span>
             <span class="s2">&quot;SWIR1/NIR/Red&quot;</span><span class="p">,</span>
         <span class="p">],</span>
-        <span class="n">value</span><span class="o">=</span><span class="s2">&quot;NIR/Red/Green&quot;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="s2">&quot;SWIR1/NIR/Red&quot;</span><span class="p">,</span>
         <span class="n">style</span><span class="o">=</span><span class="n">style</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;165px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
     <span class="p">)</span>
@@ -8964,8 +8969,8 @@ cleanup state when toggled off.</p></td>
             <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;NIR&quot;</span>
             <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Red&quot;</span>
         <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;Water Index (NDWI)&quot;</span><span class="p">:</span>
-            <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;NIR&quot;</span>
-            <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;SWIR1&quot;</span>
+            <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Green&quot;</span>
+            <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;NIR&quot;</span>
         <span class="k">elif</span> <span class="n">nd_indices</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;Modified Water Index (MNDWI)&quot;</span><span class="p">:</span>
             <span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Green&quot;</span>
             <span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;SWIR1&quot;</span>
@@ -9009,7 +9014,12 @@ cleanup state when toggled off.</p></td>
         <span class="n">end_date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">end_month</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-30&quot;</span>
 
         <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing... Please wait...&quot;</span><span class="p">)</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">clear_output</span><span class="p">()</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Computing... Please wait...&quot;</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;EE_SOLARA&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">append_stdout</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
         <span class="n">nd_bands</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">first_band</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">second_band</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
@@ -9018,11 +9028,18 @@ cleanup state when toggled off.</p></td>
         <span class="n">temp_output</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;wait&quot;</span><span class="p">}</span>
             <span class="n">out_dir</span> <span class="o">=</span> <span class="n">get_temp_dir</span><span class="p">()</span>
             <span class="n">out_gif</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;timelapse_&quot;</span> <span class="o">+</span> <span class="n">random_string</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.gif&quot;</span><span class="p">)</span>
 
             <span class="k">with</span> <span class="n">temp_output</span><span class="p">:</span>
                 <span class="n">temp_output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s2">&quot;Timelapse&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s2">&quot;Timelapse&quot;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s2">&quot;Timelapse ND&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">find_layer</span><span class="p">(</span><span class="s2">&quot;Timelapse ND&quot;</span><span class="p">))</span>
+
                 <span class="n">m</span><span class="o">.</span><span class="n">add_landsat_ts_gif</span><span class="p">(</span>
                     <span class="n">roi</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">user_roi</span><span class="p">,</span>
                     <span class="n">label</span><span class="o">=</span><span class="n">title</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
@@ -9046,7 +9063,7 @@ cleanup state when toggled off.</p></td>
                     <span class="n">m</span><span class="o">.</span><span class="n">centerObject</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">user_roi</span><span class="p">)</span>
 
             <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The timelapse has been added to the map.&quot;</span><span class="p">)</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">clear_output</span><span class="p">()</span>
                 <span class="n">link</span> <span class="o">=</span> <span class="n">create_download_link</span><span class="p">(</span>
                     <span class="n">out_gif</span><span class="p">,</span>
                     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Click here to download: &quot;</span><span class="p">,</span>
@@ -9058,6 +9075,8 @@ cleanup state when toggled off.</p></td>
                         <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Click here to download: &quot;</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="n">display</span><span class="p">(</span><span class="n">link_nd</span><span class="p">)</span>
+
+            <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
 
     <span class="n">create_gif</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">submit_clicked</span><span class="p">)</span>
 
