@@ -182,12 +182,16 @@ class Map(folium.Map):
 
     set_options = setOptions
 
-    def add_basemap(self, basemap="ROADMAP", **kwargs):
+    def add_basemap(
+        self, basemap: Optional[str] = "HYBRID", show: Optional[bool] = True, **kwargs
+    ):
         """Adds a basemap to the map.
 
         Args:
             basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'ROADMAP'.
         """
+        import xyzservices
+
         try:
             map_dict = {
                 "ROADMAP": "Esri.WorldStreetMap",
@@ -207,6 +211,46 @@ class Map(folium.Map):
                     else:
                         basemap = basemap.upper()
                         basemaps[basemap].add_to(self)
+
+                elif isinstance(basemap, xyzservices.TileProvider):
+                    name = basemap.name
+                    url = basemap.build_url()
+                    attribution = basemap.attribution
+                    if "max_zoom" in basemap.keys():
+                        max_zoom = basemap["max_zoom"]
+                    else:
+                        max_zoom = 22
+                    layer = folium.TileLayer(
+                        tiles=url,
+                        attr=attribution,
+                        name=name,
+                        max_zoom=max_zoom,
+                        overlay=True,
+                        control=True,
+                        show=show,
+                        **kwargs,
+                    )
+
+                    self.add_layer(layer)
+
+                    arc_add_layer(url, name)
+
+                elif basemap in basemaps:
+                    bmap = basemaps[basemap]
+                    bmap.show = show
+                    bmap.add_to(self)
+                    if isinstance(basemaps[basemap], folium.TileLayer):
+                        url = basemaps[basemap].tiles
+                    elif isinstance(basemaps[basemap], folium.WmsTileLayer):
+                        url = basemaps[basemap].url
+                    arc_add_layer(url, basemap)
+                else:
+                    print(
+                        "Basemap can only be one of the following: {}".format(
+                            ", ".join(basemaps.keys())
+                        )
+                    )
+
         except Exception:
             raise Exception(
                 "Basemap can only be one of the following: {}".format(
