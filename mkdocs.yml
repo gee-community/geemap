@@ -148,6 +148,7 @@ nav:
           - workshops/IGIC_2024.ipynb
           - workshops/SciPy_2024.ipynb
           - workshops/SatMOC_2024.ipynb
+          - workshops/GeoAI_2024.ipynb
     - Notebooks:
           - notebooks/00_ee_auth_colab.ipynb
           - notebooks/00_geemap_colab.ipynb
