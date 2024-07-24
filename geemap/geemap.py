@@ -1642,7 +1642,7 @@ class Map(core.Map):
             )
 
             self.add(control)
-            self.dragging = False
+            # self.dragging = False
 
             if left_label is not None:
                 if widget_layout is None:
@@ -1684,7 +1684,7 @@ class Map(core.Map):
                     self.layers = layers[:-1]
                     self.add(layers[-1])
 
-                self.dragging = True
+                # self.dragging = True
 
             close_button.observe(close_btn_click, "value")
             close_control = ipyleaflet.WidgetControl(
@@ -1886,7 +1886,7 @@ class Map(core.Map):
                 left_layer=left_layer, right_layer=right_layer
             )
             self.add(split_control)
-            self.dragging = False
+            # self.dragging = False
 
             if add_close_button:
                 self.add(close_control)
@@ -5011,7 +5011,7 @@ def ts_inspector(
     m = Map(center=center, zoom=zoom, **kwargs)
     control = ipyleaflet.SplitMapControl(left_layer=left_layer, right_layer=right_layer)
     m.add(control)
-    m.dragging = False
+    # m.dragging = False
 
     left_dropdown = widgets.Dropdown(
         options=keys, value=left_name, layout=widgets.Layout(width=width)
