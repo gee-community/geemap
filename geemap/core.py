@@ -178,26 +178,39 @@ class AbstractDrawControl(object):
             return
         # The current geometries from the draw_control.
         test_geojsons = self._get_synced_geojson_from_draw_control()
-        i = 0
-        while i < self.count and i < len(test_geojsons):
-            local_geometry = None
-            test_geometry = None
-            while i < self.count and i < len(test_geojsons):
-                local_geometry = self.geometries[i]
-                test_geometry = common.geojson_to_ee(test_geojsons[i], geodesic=False)
-                if test_geometry == local_geometry:
-                    i += 1
-                else:
-                    break
-            if i < self.count and test_geometry is not None:
-                self.geometries[i] = test_geometry
-        if self.layer is not None:
-            self._redraw_layer()
+        self.geometries = [
+            common.geojson_to_ee(geo_json, geodesic=False) for geo_json in test_geojsons
+        ]
 
     def _redraw_layer(self):
-        if self.host_map:
+        if not self.host_map:
+            return
+        # If the layer already exists, substitute it. This can avoid flickering.
+        if _DRAWN_FEATURES_LAYER in self.host_map.ee_layers:
+            old_layer = self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {})[
+                "ee_layer"
+            ]
+            new_layer = ee_tile_layers.EELeafletTileLayer(
+                self.collection,
+                {"color": "blue"},
+                _DRAWN_FEATURES_LAYER,
+                old_layer.visible,
+                0.5,
+            )
+            self.host_map.substitute(old_layer, new_layer)
+            self.layer = self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {}).get(
+                "ee_layer", None
+            )
+            self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {})[
+                "ee_layer"
+            ] = new_layer
+        else:  # Otherwise, add the layer.
             self.host_map.add_layer(
-                self.collection, {"color": "blue"}, _DRAWN_FEATURES_LAYER, False, 0.5
+                self.collection,
+                {"color": "blue"},
+                _DRAWN_FEATURES_LAYER,
+                False,
+                0.5,
             )
             self.layer = self.host_map.ee_layers.get(_DRAWN_FEATURES_LAYER, {}).get(
                 "ee_layer", None
@@ -217,7 +230,6 @@ class AbstractDrawControl(object):
         self.last_geometry = geometry
         self.last_draw_action = DrawActions.EDITED
         self._sync_geometries()
-        self._redraw_layer()
         self._geometry_edit_dispatcher(self, geometry=geometry)
 
     def _handle_geometry_deleted(self, geo_json):
@@ -250,13 +262,6 @@ class MapDrawControl(ipyleaflet.DrawControl, AbstractDrawControl):
         """
         super(MapDrawControl, self).__init__(host_map=host_map, **kwargs)
 
-    # NOTE: Overridden for backwards compatibility, where edited geometries are
-    # added to the layer instead of modified in place. Remove when
-    # https://github.com/jupyter-widgets/ipyleaflet/issues/1119 is fixed to
-    # allow geometry edits to be reflected on the tile layer.
-    def _handle_geometry_edited(self, geo_json):
-        return self._handle_geometry_created(geo_json)
-
     def _get_synced_geojson_from_draw_control(self):
         return [data.copy() for data in self.data]
 
@@ -276,20 +281,18 @@ class MapDrawControl(ipyleaflet.DrawControl, AbstractDrawControl):
                 raise Exception(e)
 
         self.on_draw(handle_draw)
-        # NOTE: Uncomment the following code once
-        # https://github.com/jupyter-widgets/ipyleaflet/issues/1119 is fixed
-        # to allow edited geometries to be reflected instead of added.
-        # def handle_data_update(_):
-        #     self._sync_geometries()
-        # self.observe(handle_data_update, 'data')
+
+        def handle_data_update(_):
+            self._sync_geometries()
+            # Need to refresh the layer if the last action was an edit.
+            if self.last_draw_action == DrawActions.EDITED:
+                self._redraw_layer()
+
+        self.observe(handle_data_update, "data")
 
     def _remove_geometry_at_index_on_draw_control(self, index):
-        # NOTE: Uncomment the following code once
-        # https://github.com/jupyter-widgets/ipyleaflet/issues/1119 is fixed to
-        # remove drawn geometries with `remove_last_drawn()`.
-        # del self.data[index]
-        # self.send_state(key='data')
-        pass
+        del self.data[index]
+        self.send_state(key="data")
 
     def _clear_draw_control(self):
         self.data = []  # Remove all drawn features from the map.
@@ -502,9 +505,29 @@ class Map(ipyleaflet.Map, MapInterface):
     def get_center(self) -> Sequence:
         return self.center
 
-    def get_bounds(self) -> Sequence:
+    def get_bounds(self, as_geojson: bool = False) -> Sequence:
+        """Returns the bounds of the current map view.
+
+        Args:
+            as_geojson (bool, optional): If true, returns map bounds as
+                GeoJSON. Defaults to False.
+
+        Returns:
+            list|dict: A list in the format [west, south, east, north] in
+                degrees or a GeoJSON dictionary.
+        """
         bounds = self.bounds
-        return [bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]]
+        if not bounds:
+            raise RuntimeError(
+                "Map bounds are undefined. Please display the " "map then try again."
+            )
+        # ipyleaflet returns bounds in the format [[south, west], [north, east]]
+        # https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html#ipyleaflet.Map.fit_bounds
+        coords = [bounds[0][1], bounds[0][0], bounds[1][1], bounds[1][0]]
+
+        if as_geojson:
+            return ee.Geometry.BBox(*coords).getInfo()
+        return coords
 
     def get_scale(self) -> float:
         # Reference:
@@ -1008,3 +1031,4 @@ class Map(ipyleaflet.Map, MapInterface):
     addLayer = add_layer
     centerObject = center_object
     setCenter = set_center
+    getBounds = get_bounds

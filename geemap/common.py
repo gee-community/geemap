@@ -67,11 +67,13 @@ def ee_initialize(
     from .__init__ import __version__
 
     user_agent = f"{user_agent_prefix}/{__version__}"
+    ee.data.setUserAgent(user_agent)
+
     if "http_transport" not in kwargs:
         kwargs["http_transport"] = httplib2.Http()
 
     if auth_mode is None:
-        if in_colab_shell():
+        if in_colab_shell() and (ee.data._credentials is None):
             from google.colab import userdata
 
             if project is None:
@@ -153,8 +155,6 @@ def ee_initialize(
             except Exception:
                 ee.Authenticate(**auth_args)
                 ee.Initialize(**kwargs)
-
-    ee.data.setUserAgent(user_agent)
 
 
 def ee_export_image(
@@ -9133,10 +9133,9 @@ def ee_to_df(
         raise TypeError("ee_object must be an ee.FeatureCollection")
 
     try:
-        property_names = ee_object.first().propertyNames().sort().getInfo()
         if remove_geom:
             data = ee_object.map(
-                lambda f: ee.Feature(None, f.toDictionary(property_names))
+                lambda f: ee.Feature(None, f.toDictionary(f.propertyNames().sort()))
             )
         else:
             data = ee_object
@@ -9705,21 +9704,32 @@ def osm_to_geojson(query, which_result=None, by_osmid=False, buffer_dist=None):
     return gdf.__geo_interface__
 
 
-def get_api_key(token_name, m=None):
-    """Retrieves an API key based on a system environmen variable.
+def get_api_key(name: Optional[str] = None, key: Optional[str] = None) -> Optional[str]:
+    """
+    Retrieves an API key. If a key is provided, it is returned directly. If a
+    name is provided, the function attempts to retrieve the key from user data
+    (if running in Google Colab) or from environment variables.
 
     Args:
-        token_name (str): The token name.
-        m (ipyleaflet.Map | folium.Map, optional): A Map instance. Defaults to None.
+        name (Optional[str], optional): The name of the key to retrieve. Defaults to None.
+        key (Optional[str], optional): The key to return directly. Defaults to None.
 
     Returns:
-        str: The API key.
+        Optional[str]: The retrieved key, or None if no key was found.
     """
-    api_key = os.environ.get(token_name)
-    if m is not None and token_name in m.api_keys:
-        api_key = m.api_keys[token_name]
 
-    return api_key
+    if key is not None:
+        return key
+    elif name is not None:
+        if in_colab_shell():
+            from google.colab import userdata
+
+            try:
+                return userdata.get(name)
+            except:
+                return os.environ.get(name)
+        else:
+            return os.environ.get(name)
 
 
 def planet_monthly_tropical(api_key=None, token_name="PLANET_API_KEY"):
@@ -11636,16 +11646,26 @@ def image_to_numpy(image):
     """
     import rasterio
     from osgeo import gdal
+    from contextlib import contextmanager
+
+    @contextmanager
+    def gdal_error_handler():
+        """Context manager for GDAL error handler."""
+        gdal.PushErrorHandler("CPLQuietErrorHandler")
+        try:
+            yield
+        finally:
+            gdal.PopErrorHandler()
 
     gdal.UseExceptions()
 
-    gdal.PushErrorHandler("CPLQuietErrorHandler")
+    with gdal_error_handler():
 
-    if not os.path.exists(image):
-        raise FileNotFoundError("The provided input file could not be found.")
+        if not os.path.exists(image):
+            raise FileNotFoundError("The provided input file could not be found.")
 
-    with rasterio.open(image, "r") as ds:
-        arr = ds.read()  # read all raster values
+        with rasterio.open(image, "r") as ds:
+            arr = ds.read()  # read all raster values
 
     return arr
 
@@ -13082,6 +13102,7 @@ def download_ee_image_tiles_parallel(
     unmask_value=None,
     column=None,
     job_args={"n_jobs": -1},
+    ee_init=True,
     **kwargs,
 ):
     """Download an Earth Engine Image as small tiles based on ee.FeatureCollection. Images larger than the `Earth Engine size limit are split and downloaded as
@@ -13117,6 +13138,7 @@ def download_ee_image_tiles_parallel(
             you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
         column (str, optional): The column name in the feature collection to use as the filename. Defaults to None.
         job_args (dict, optional): The arguments to pass to joblib.Parallel. Defaults to {"n_jobs": -1}.
+        ee_init (bool, optional): Whether to initialize Earth Engine. Defaults to True.
 
     """
     import joblib
@@ -13147,7 +13169,8 @@ def download_ee_image_tiles_parallel(
     collection = features.toList(count)
 
     def download_data(index):
-        ee_initialize(opt_url="https://earthengine-highvolume.googleapis.com")
+        if ee_init:
+            ee_initialize(opt_url="https://earthengine-highvolume.googleapis.com")
         region = ee.Feature(collection.get(index)).geometry()
         filename = os.path.join(
             out_dir, "{}{}.tif".format(prefix, names[index].replace("/", "_"))
@@ -16233,3 +16256,41 @@ def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
     if api_key := _get_colab_secret(key):
         return api_key
     return os.environ.get(key, None)
+
+
+def xarray_to_raster(dataset, filename: str, **kwargs: Dict[str, Any]) -> None:
+    """Convert an xarray Dataset to a raster file.
+
+    Args:
+        dataset (xr.Dataset): The input xarray Dataset to be converted.
+        filename (str): The output filename for the raster file.
+        **kwargs (Dict[str, Any]): Additional keyword arguments passed to the `rio.to_raster()` method.
+            See https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html for more info.
+
+    Returns:
+        None
+    """
+    import rioxarray
+
+    dims = list(dataset.dims)
+
+    new_names = {}
+
+    if "lat" in dims:
+        new_names["lat"] = "y"
+        dims.remove("lat")
+    if "lon" in dims:
+        new_names["lon"] = "x"
+        dims.remove("lon")
+    if "lng" in dims:
+        new_names["lng"] = "x"
+        dims.remove("lng")
+    if "latitude" in dims:
+        new_names["latitude"] = "y"
+        dims.remove("latitude")
+    if "longitude" in dims:
+        new_names["longitude"] = "x"
+        dims.remove("longitude")
+
+    dataset = dataset.rename(new_names)
+    dataset.transpose(..., "y", "x").rio.to_raster(filename, **kwargs)

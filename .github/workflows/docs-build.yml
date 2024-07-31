@@ -26,6 +26,7 @@ jobs:
                   python -m pip install --upgrade pip
                   pip install --user --no-cache-dir Cython
                   pip install .[all]
+                  pip install numpy==1.26.4
             - name: LOAD EE CREDENTIALS
               run: python ./.github/ee_token.py
               env:
@@ -40,7 +41,7 @@ jobs:
                   USE_FOLIUM: ${{ secrets.USE_FOLIUM }}
                   USE_MKDOCS: ${{ secrets.USE_MKDOCS }}
             - name: Deploy to Netlify
-              uses: nwtgck/actions-netlify@v2.0
+              uses: nwtgck/actions-netlify@v3.0
               with:
                   publish-dir: "./site"
                   production-branch: master

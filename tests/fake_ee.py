@@ -96,6 +96,12 @@ class Geometry:
                 "type": "Point",
                 "coordinates": [120, -70],
             }
+        if self.type().value == "BBox":
+            return {
+                "geodesic": False,
+                "type": "Polygon",
+                "coordinates": [[0, 1], [1, 2], [0, 1]],
+            }
         raise ValueError("Unexpected geometry type in test: ", self.type().value)
 
     def __eq__(self, other: object):
