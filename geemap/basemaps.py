@@ -60,7 +60,7 @@ XYZ_TILES = {
 # Custom WMS tile services.
 WMS_TILES = {
     "FWS NWI Wetlands": {
-        "url": "https://www.fws.gov/wetlands/arcgis/services/Wetlands/MapServer/WMSServer?",
+        "url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/services/Wetlands/MapServer/WMSServer?",
         "layers": "1",
         "name": "FWS NWI Wetlands",
         "attribution": "FWS",
