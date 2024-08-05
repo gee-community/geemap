@@ -146,6 +146,10 @@ nav:
           - workshops/GEE_Workshop_2024.ipynb
           - workshops/TNGIC_2024.ipynb
           - workshops/IGIC_2024.ipynb
+          - workshops/SciPy_2024.ipynb
+          - workshops/SatMOC_2024.ipynb
+          - workshops/GeoAI_2024.ipynb
+          - workshops/Taiwan_2024.ipynb
     - Notebooks:
           - notebooks/00_ee_auth_colab.ipynb
           - notebooks/00_geemap_colab.ipynb
@@ -292,6 +296,7 @@ nav:
           - notebooks/140_ee_to_xarray.ipynb
           - notebooks/141_image_array_viz.ipynb
           - notebooks/142_google_maps.ipynb
+          - notebooks/143_precipitation_timelapse.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
