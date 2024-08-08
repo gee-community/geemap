@@ -229,6 +229,7 @@ class Legend(ipywidgets.VBox):
     def __init__(
         self,
         title="Legend",
+        legend_dict=None,
         keys=None,
         colors=None,
         position="bottomright",
@@ -241,6 +242,9 @@ class Legend(ipywidgets.VBox):
 
          Args:
             title (str, optional): Title of the legend. Defaults to 'Legend'.
+            legend_dict (dict, optional): A dictionary containing legend items
+                as keys and color as values. If provided, keys and colors will
+                be ignored. Defaults to None.
             keys (list, optional): A list of legend keys. Defaults to None.
             colors (list, optional): A list of legend colors. Defaults to None.
             position (str, optional): Position of the legend. Defaults to
@@ -278,6 +282,15 @@ class Legend(ipywidgets.VBox):
         if not os.path.exists(legend_template):
             raise ValueError("The legend template does not exist.")
 
+        if legend_dict is not None:
+            if not isinstance(legend_dict, dict):
+                raise TypeError("The legend dict must be a dictionary.")
+            else:
+                keys = list(legend_dict.keys())
+                colors = list(legend_dict.values())
+                if all(isinstance(item, tuple) for item in colors):
+                    colors = Legend.__convert_rgb_colors_to_hex(colors)
+
         if "labels" in kwargs:
             keys = kwargs["labels"]
             kwargs.pop("labels")
@@ -314,9 +327,10 @@ class Legend(ipywidgets.VBox):
                 legend_dict = builtin_legends[builtin_legend]
                 keys = list(legend_dict.keys())
                 colors = list(legend_dict.values())
+            if all(isinstance(item, tuple) for item in colors):
+                colors = Legend.__convert_rgb_colors_to_hex(colors)
 
         Legend.__check_if_allowed(position, "position", Legend.ALLOWED_POSITIONS)
-
         header = []
         footer = []
         content = Legend.__create_legend_items(keys, colors)

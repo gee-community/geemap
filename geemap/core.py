@@ -810,6 +810,7 @@ class Map(ipyleaflet.Map, MapInterface):
     def _add_legend(
         self,
         title: str = "Legend",
+        legend_dict: Dict[str, str] = None,
         keys: List[Any] = None,
         colors: List[Any] = None,
         position: str = "bottomright",
@@ -823,6 +824,9 @@ class Map(ipyleaflet.Map, MapInterface):
 
         Args:
             title (str, optional): Title of the legend. Defaults to 'Legend'.
+            legend_dict (dict, optional): A dictionary containing legend items
+                as keys and color as values. If provided, keys and colors will
+                be ignored. Defaults to None.
             keys (list, optional): A list of legend keys. Defaults to None.
             colors (list, optional): A list of legend colors. Defaults to None.
             position (str, optional): Position of the legend. Defaults to
@@ -838,6 +842,7 @@ class Map(ipyleaflet.Map, MapInterface):
         """
         legend = map_widgets.Legend(
             title,
+            legend_dict,
             keys,
             colors,
             position,

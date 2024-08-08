@@ -753,8 +753,9 @@ class Map(core.Map):
         try:
             legend = self._add_legend(
                 title,
-                keys or legend_dict.keys(),
-                colors or legend_dict.values(),
+                legend_dict,
+                keys,
+                colors,
                 position,
                 builtin_legend,
                 layer_name,
