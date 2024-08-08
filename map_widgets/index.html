@@ -7112,7 +7112,7 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
         <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span><span class="p">,</span>
         <span class="n">builtin_legend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">add_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">widget_args</span><span class="o">=</span><span class="p">{},</span>
+        <span class="n">widget_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a customized legend to the map.</span>
@@ -7137,7 +7137,6 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
 <span class="sd">            TypeError: If the keys are not a list.</span>
 <span class="sd">            TypeError: If the colors are not list.</span>
 <span class="sd">            TypeError: If the colors are not a list of tuples.</span>
-<span class="sd">            TypeError: If the legend_dict is not a dictionary.</span>
 <span class="sd">            ValueError: If the legend template does not exist.</span>
 <span class="sd">            ValueError: If a rgb value cannot to be converted to hex.</span>
 <span class="sd">            ValueError: If the keys and colors are not the same length.</span>
@@ -7146,9 +7145,11 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">os</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
-        <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
         <span class="kn">import</span> <span class="nn">pkg_resources</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
         <span class="kn">from</span> <span class="nn">.legends</span> <span class="kn">import</span> <span class="n">builtin_legends</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">widget_args</span><span class="p">:</span>
+            <span class="n">widget_args</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span>
             <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;geemap&quot;</span><span class="p">,</span> <span class="s2">&quot;geemap.py&quot;</span><span class="p">)</span>
@@ -7157,6 +7158,15 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">legend_template</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The legend template does not exist.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">legend_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">legend_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The legend dict must be a dictionary.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="n">colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">):</span>
+                    <span class="n">colors</span> <span class="o">=</span> <span class="n">Legend</span><span class="o">.</span><span class="n">__convert_rgb_colors_to_hex</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="n">keys</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span>
@@ -7194,18 +7204,10 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
                 <span class="n">legend_dict</span> <span class="o">=</span> <span class="n">builtin_legends</span><span class="p">[</span><span class="n">builtin_legend</span><span class="p">]</span>
                 <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
                 <span class="n">colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-
-        <span class="k">if</span> <span class="n">legend_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">legend_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The legend dict must be a dictionary.&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-                <span class="n">colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-                <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">):</span>
-                    <span class="n">colors</span> <span class="o">=</span> <span class="n">Legend</span><span class="o">.</span><span class="n">__convert_rgb_colors_to_hex</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">):</span>
+                <span class="n">colors</span> <span class="o">=</span> <span class="n">Legend</span><span class="o">.</span><span class="n">__convert_rgb_colors_to_hex</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
 
         <span class="n">Legend</span><span class="o">.</span><span class="n">__check_if_allowed</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="s2">&quot;position&quot;</span><span class="p">,</span> <span class="n">Legend</span><span class="o">.</span><span class="n">ALLOWED_POSITIONS</span><span class="p">)</span>
-
         <span class="n">header</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">footer</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">Legend</span><span class="o">.</span><span class="n">__create_legend_items</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">colors</span><span class="p">)</span>
@@ -7328,7 +7330,7 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
 
 
 <h3 id="geemap.map_widgets.Legend.__init__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Legend&#39;</span><span class="p">,</span> <span class="n">legend_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;bottomright&#39;</span><span class="p">,</span> <span class="n">builtin_legend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">widget_args</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Legend&#39;</span><span class="p">,</span> <span class="n">legend_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;bottomright&#39;</span><span class="p">,</span> <span class="n">builtin_legend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">widget_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
@@ -7377,10 +7379,6 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
         <td><p>If the colors are not a list of tuples.</p></td>
       </tr>
       <tr>
-        <td><code>TypeError</code></td>
-        <td><p>If the legend_dict is not a dictionary.</p></td>
-      </tr>
-      <tr>
         <td><code>ValueError</code></td>
         <td><p>If the legend template does not exist.</p></td>
       </tr>
@@ -7413,7 +7411,7 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
     <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span><span class="p">,</span>
     <span class="n">builtin_legend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">add_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">widget_args</span><span class="o">=</span><span class="p">{},</span>
+    <span class="n">widget_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a customized legend to the map.</span>
@@ -7438,7 +7436,6 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
 <span class="sd">        TypeError: If the keys are not a list.</span>
 <span class="sd">        TypeError: If the colors are not list.</span>
 <span class="sd">        TypeError: If the colors are not a list of tuples.</span>
-<span class="sd">        TypeError: If the legend_dict is not a dictionary.</span>
 <span class="sd">        ValueError: If the legend template does not exist.</span>
 <span class="sd">        ValueError: If a rgb value cannot to be converted to hex.</span>
 <span class="sd">        ValueError: If the keys and colors are not the same length.</span>
@@ -7447,9 +7444,11 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">os</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
-    <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
     <span class="kn">import</span> <span class="nn">pkg_resources</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
     <span class="kn">from</span> <span class="nn">.legends</span> <span class="kn">import</span> <span class="n">builtin_legends</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">widget_args</span><span class="p">:</span>
+        <span class="n">widget_args</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span>
         <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;geemap&quot;</span><span class="p">,</span> <span class="s2">&quot;geemap.py&quot;</span><span class="p">)</span>
@@ -7458,6 +7457,15 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">legend_template</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The legend template does not exist.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">legend_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">legend_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The legend dict must be a dictionary.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">):</span>
+                <span class="n">colors</span> <span class="o">=</span> <span class="n">Legend</span><span class="o">.</span><span class="n">__convert_rgb_colors_to_hex</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span>
@@ -7495,18 +7503,10 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
             <span class="n">legend_dict</span> <span class="o">=</span> <span class="n">builtin_legends</span><span class="p">[</span><span class="n">builtin_legend</span><span class="p">]</span>
             <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="n">colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-
-    <span class="k">if</span> <span class="n">legend_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">legend_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The legend dict must be a dictionary.&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-            <span class="n">colors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">legend_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">):</span>
-                <span class="n">colors</span> <span class="o">=</span> <span class="n">Legend</span><span class="o">.</span><span class="n">__convert_rgb_colors_to_hex</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">):</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="n">Legend</span><span class="o">.</span><span class="n">__convert_rgb_colors_to_hex</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
 
     <span class="n">Legend</span><span class="o">.</span><span class="n">__check_if_allowed</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="s2">&quot;position&quot;</span><span class="p">,</span> <span class="n">Legend</span><span class="o">.</span><span class="n">ALLOWED_POSITIONS</span><span class="p">)</span>
-
     <span class="n">header</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">footer</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">content</span> <span class="o">=</span> <span class="n">Legend</span><span class="o">.</span><span class="n">__create_legend_items</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">colors</span><span class="p">)</span>
