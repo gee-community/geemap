@@ -6474,7 +6474,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
     <span class="k">def</span> <span class="nf">_find_widget_of_type</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">widget_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">,</span> <span class="n">return_control</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Finds a widget in the controls with the passed in type.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">):</span>
@@ -6705,6 +6705,118 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="s2">&quot;vis_params&quot;</span><span class="p">:</span> <span class="n">vis_params</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tile_layer</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_legend</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Legend&quot;</span><span class="p">,</span>
+        <span class="n">legend_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">colors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">position</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bottomright&quot;</span><span class="p">,</span>
+        <span class="n">builtin_legend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">layer_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">add_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">widget_args</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a customized legend to the map.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            title (str, optional): Title of the legend. Defaults to &#39;Legend&#39;.</span>
+<span class="sd">            legend_dict (dict, optional): A dictionary containing legend items</span>
+<span class="sd">                as keys and color as values. If provided, keys and colors will</span>
+<span class="sd">                be ignored. Defaults to None.</span>
+<span class="sd">            keys (list, optional): A list of legend keys. Defaults to None.</span>
+<span class="sd">            colors (list, optional): A list of legend colors. Defaults to None.</span>
+<span class="sd">            position (str, optional): Position of the legend. Defaults to</span>
+<span class="sd">                &#39;bottomright&#39;.</span>
+<span class="sd">            builtin_legend (str, optional): Name of the builtin legend to add</span>
+<span class="sd">                to the map. Defaults to None.</span>
+<span class="sd">            layer_name (str, optional): The associated layer for the legend.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            add_header (bool, optional): Whether the legend can be closed or</span>
+<span class="sd">                not. Defaults to True.</span>
+<span class="sd">            widget_args (dict, optional): Additional arguments passed to the</span>
+<span class="sd">                widget_template() function. Defaults to {}.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">legend</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">Legend</span><span class="p">(</span>
+            <span class="n">title</span><span class="p">,</span>
+            <span class="n">legend_dict</span><span class="p">,</span>
+            <span class="n">keys</span><span class="p">,</span>
+            <span class="n">colors</span><span class="p">,</span>
+            <span class="n">position</span><span class="p">,</span>
+            <span class="n">builtin_legend</span><span class="p">,</span>
+            <span class="n">add_header</span><span class="p">,</span>
+            <span class="n">widget_args</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">legend</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">layer</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">old_legend</span> <span class="o">:=</span> <span class="n">layer</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;legend&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">old_legend</span><span class="p">)</span>
+            <span class="n">layer</span><span class="p">[</span><span class="s2">&quot;legend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">control</span>
+
+    <span class="k">def</span> <span class="nf">_add_colorbar</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">vis_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span>
+        <span class="n">discrete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
+        <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span><span class="p">,</span>
+        <span class="n">transparent_bg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">layer_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">font_size</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
+        <span class="n">axis_off</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">max_width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a matplotlib colorbar to the map.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vis_params (dict): Visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.</span>
+<span class="sd">            cmap (str, optional): Matplotlib colormap. Defaults to &quot;gray&quot;. See https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py for options.</span>
+<span class="sd">            discrete (bool, optional): Whether to create a discrete colorbar. Defaults to False.</span>
+<span class="sd">            label (str, optional): Label for the colorbar. Defaults to None.</span>
+<span class="sd">            orientation (str, optional): Orientation of the colorbar, such as &quot;vertical&quot; and &quot;horizontal&quot;. Defaults to &quot;horizontal&quot;.</span>
+<span class="sd">            position (str, optional): Position of the colorbar on the map. It can be one of: topleft, topright, bottomleft, and bottomright. Defaults to &quot;bottomright&quot;.</span>
+<span class="sd">            transparent_bg (bool, optional): Whether to use transparent background. Defaults to False.</span>
+<span class="sd">            layer_name (str, optional): The layer name associated with the colorbar. Defaults to None.</span>
+<span class="sd">            font_size (int, optional): Font size for the colorbar. Defaults to 9.</span>
+<span class="sd">            axis_off (bool, optional): Whether to turn off the axis. Defaults to False.</span>
+<span class="sd">            max_width (str, optional): Maximum width of the colorbar in pixels. Defaults to None.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError: If the vis_params is not a dictionary.</span>
+<span class="sd">            ValueError: If the orientation is not either horizontal or vertical.</span>
+<span class="sd">            TypeError: If the provided min value is not scalar type.</span>
+<span class="sd">            TypeError: If the provided max value is not scalar type.</span>
+<span class="sd">            TypeError: If the provided opacity value is not scalar type.</span>
+<span class="sd">            TypeError: If cmap or palette is not provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">colorbar</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">Colorbar</span><span class="p">(</span>
+            <span class="n">vis_params</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="p">,</span>
+            <span class="n">discrete</span><span class="p">,</span>
+            <span class="n">label</span><span class="p">,</span>
+            <span class="n">orientation</span><span class="p">,</span>
+            <span class="n">transparent_bg</span><span class="p">,</span>
+            <span class="n">font_size</span><span class="p">,</span>
+            <span class="n">axis_off</span><span class="p">,</span>
+            <span class="n">max_width</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">colorbar</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">layer</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">old_colorbar</span> <span class="o">:=</span> <span class="n">layer</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;colorbar&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">old_colorbar</span><span class="p">)</span>
+            <span class="n">layer</span><span class="p">[</span><span class="s2">&quot;colorbar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">control</span>
 
     <span class="k">def</span> <span class="nf">_open_help_page</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="n">MapInterface</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span>

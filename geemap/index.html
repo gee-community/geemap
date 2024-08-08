@@ -7881,38 +7881,31 @@ Map            (<a class="autorefs autorefs-internal" title="geemap.core.Map" hr
 <span class="sd">                &#39;bottomright&#39;.</span>
 <span class="sd">            builtin_legend (str, optional): Name of the builtin legend to add</span>
 <span class="sd">                to the map. Defaults to None.</span>
+<span class="sd">            layer_name (str, optional): The associated layer for the legend.</span>
+<span class="sd">                Defaults to None.</span>
 <span class="sd">            add_header (bool, optional): Whether the legend can be closed or</span>
 <span class="sd">                not. Defaults to True.</span>
 <span class="sd">            widget_args (dict, optional): Additional arguments passed to the</span>
 <span class="sd">                widget_template() function. Defaults to {}.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">legend</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">Legend</span><span class="p">(</span>
+            <span class="n">legend</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_legend</span><span class="p">(</span>
                 <span class="n">title</span><span class="p">,</span>
                 <span class="n">legend_dict</span><span class="p">,</span>
                 <span class="n">keys</span><span class="p">,</span>
                 <span class="n">colors</span><span class="p">,</span>
                 <span class="n">position</span><span class="p">,</span>
                 <span class="n">builtin_legend</span><span class="p">,</span>
+                <span class="n">layer_name</span><span class="p">,</span>
                 <span class="n">add_header</span><span class="p">,</span>
                 <span class="n">widget_args</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
-
-            <span class="n">legend_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">legend</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">_legend_widget</span> <span class="o">=</span> <span class="n">legend</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_legend</span> <span class="o">=</span> <span class="n">legend_control</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">legend_control</span><span class="p">)</span>
-
+            <span class="bp">self</span><span class="o">.</span><span class="n">_legend</span> <span class="o">=</span> <span class="n">legend</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;legends&quot;</span><span class="p">):</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;legends&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">legend_control</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">legends</span> <span class="o">=</span> <span class="p">[</span><span class="n">legend</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">legends</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">legend_control</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">][</span><span class="s2">&quot;legend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">legend_control</span>
-
+                <span class="bp">self</span><span class="o">.</span><span class="n">legends</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">legend</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
@@ -7955,33 +7948,25 @@ Map            (<a class="autorefs autorefs-internal" title="geemap.core.Map" hr
 <span class="sd">            TypeError: If cmap or palette is not provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">colorbar</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">Colorbar</span><span class="p">(</span>
+        <span class="n">colorbar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_colorbar</span><span class="p">(</span>
             <span class="n">vis_params</span><span class="p">,</span>
             <span class="n">cmap</span><span class="p">,</span>
             <span class="n">discrete</span><span class="p">,</span>
             <span class="n">label</span><span class="p">,</span>
             <span class="n">orientation</span><span class="p">,</span>
+            <span class="n">position</span><span class="p">,</span>
             <span class="n">transparent_bg</span><span class="p">,</span>
+            <span class="n">layer_name</span><span class="p">,</span>
             <span class="n">font_size</span><span class="p">,</span>
             <span class="n">axis_off</span><span class="p">,</span>
             <span class="n">max_width</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">colormap_ctrl</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-            <span class="n">widget</span><span class="o">=</span><span class="n">colorbar</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">transparent_bg</span><span class="o">=</span><span class="n">transparent_bg</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_colorbar</span> <span class="o">=</span> <span class="n">colormap_ctrl</span>
-        <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;colorbar&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">][</span><span class="s2">&quot;colorbar&quot;</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">][</span><span class="s2">&quot;colorbar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">colormap_ctrl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_colorbar</span> <span class="o">=</span> <span class="n">colorbar</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;colorbars&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">colorbars</span> <span class="o">=</span> <span class="p">[</span><span class="n">colormap_ctrl</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">colorbars</span> <span class="o">=</span> <span class="p">[</span><span class="n">colorbar</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">colorbars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colormap_ctrl</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">colormap_ctrl</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">colorbars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colorbar</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">remove_colorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove colorbar from the map.&quot;&quot;&quot;</span>
@@ -7990,6 +7975,9 @@ Map            (<a class="autorefs autorefs-internal" title="geemap.core.Map" hr
 
     <span class="k">def</span> <span class="nf">remove_colorbars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all colorbars from the map.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="n">layer</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;colorbar&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;colorbars&quot;</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">colorbar</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colorbars</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">colorbar</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
@@ -8003,6 +7991,9 @@ Map            (<a class="autorefs autorefs-internal" title="geemap.core.Map" hr
 
     <span class="k">def</span> <span class="nf">remove_legends</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all legends from the map.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="n">layer</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;legend&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;legends&quot;</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">legend</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">legends</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">legend</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
@@ -13103,33 +13094,25 @@ Map            (<a class="autorefs autorefs-internal" title="geemap.core.Map" hr
 <span class="sd">        TypeError: If cmap or palette is not provided.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">colorbar</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">Colorbar</span><span class="p">(</span>
+    <span class="n">colorbar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_colorbar</span><span class="p">(</span>
         <span class="n">vis_params</span><span class="p">,</span>
         <span class="n">cmap</span><span class="p">,</span>
         <span class="n">discrete</span><span class="p">,</span>
         <span class="n">label</span><span class="p">,</span>
         <span class="n">orientation</span><span class="p">,</span>
+        <span class="n">position</span><span class="p">,</span>
         <span class="n">transparent_bg</span><span class="p">,</span>
+        <span class="n">layer_name</span><span class="p">,</span>
         <span class="n">font_size</span><span class="p">,</span>
         <span class="n">axis_off</span><span class="p">,</span>
         <span class="n">max_width</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">colormap_ctrl</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-        <span class="n">widget</span><span class="o">=</span><span class="n">colorbar</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">transparent_bg</span><span class="o">=</span><span class="n">transparent_bg</span>
-    <span class="p">)</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">_colorbar</span> <span class="o">=</span> <span class="n">colormap_ctrl</span>
-    <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s2">&quot;colorbar&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">][</span><span class="s2">&quot;colorbar&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">][</span><span class="s2">&quot;colorbar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">colormap_ctrl</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_colorbar</span> <span class="o">=</span> <span class="n">colorbar</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;colorbars&quot;</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">colorbars</span> <span class="o">=</span> <span class="p">[</span><span class="n">colormap_ctrl</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colorbars</span> <span class="o">=</span> <span class="p">[</span><span class="n">colorbar</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">colorbars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colormap_ctrl</span><span class="p">)</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">colormap_ctrl</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colorbars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colorbar</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -15715,6 +15698,13 @@ to the map. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
       <tr>
+        <td><code>layer_name</code></td>
+        <td><code>str</code></td>
+        <td><p>The associated layer for the legend.
+Defaults to None.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
         <td><code>add_header</code></td>
         <td><code>bool</code></td>
         <td><p>Whether the legend can be closed or
@@ -15758,38 +15748,31 @@ widget_template() function. Defaults to {}.</p></td>
 <span class="sd">            &#39;bottomright&#39;.</span>
 <span class="sd">        builtin_legend (str, optional): Name of the builtin legend to add</span>
 <span class="sd">            to the map. Defaults to None.</span>
+<span class="sd">        layer_name (str, optional): The associated layer for the legend.</span>
+<span class="sd">            Defaults to None.</span>
 <span class="sd">        add_header (bool, optional): Whether the legend can be closed or</span>
 <span class="sd">            not. Defaults to True.</span>
 <span class="sd">        widget_args (dict, optional): Additional arguments passed to the</span>
 <span class="sd">            widget_template() function. Defaults to {}.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">legend</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">Legend</span><span class="p">(</span>
+        <span class="n">legend</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_legend</span><span class="p">(</span>
             <span class="n">title</span><span class="p">,</span>
             <span class="n">legend_dict</span><span class="p">,</span>
             <span class="n">keys</span><span class="p">,</span>
             <span class="n">colors</span><span class="p">,</span>
             <span class="n">position</span><span class="p">,</span>
             <span class="n">builtin_legend</span><span class="p">,</span>
+            <span class="n">layer_name</span><span class="p">,</span>
             <span class="n">add_header</span><span class="p">,</span>
             <span class="n">widget_args</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
-
-        <span class="n">legend_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">legend</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_legend_widget</span> <span class="o">=</span> <span class="n">legend</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_legend</span> <span class="o">=</span> <span class="n">legend_control</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">legend_control</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_legend</span> <span class="o">=</span> <span class="n">legend</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;legends&quot;</span><span class="p">):</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;legends&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">legend_control</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">legends</span> <span class="o">=</span> <span class="p">[</span><span class="n">legend</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">legends</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">legend_control</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">][</span><span class="s2">&quot;legend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">legend_control</span>
-
+            <span class="bp">self</span><span class="o">.</span><span class="n">legends</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">legend</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 </code></pre></div>
@@ -22180,6 +22163,9 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
           <summary>Source code in <code>geemap/geemap.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">remove_colorbars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove all colorbars from the map.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="n">layer</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;colorbar&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;colorbars&quot;</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">colorbar</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colorbars</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">colorbar</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
@@ -22415,6 +22401,9 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
           <summary>Source code in <code>geemap/geemap.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">remove_legends</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove all legends from the map.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">widget</span> <span class="o">:=</span> <span class="n">layer</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;legend&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;legends&quot;</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">legend</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">legends</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">legend</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
