@@ -1202,15 +1202,21 @@ def image_by_region(image, regions, reducer, scale, xProperty, **kwargs):
 
 
 def image_doy_series(
-    imageCollection,
-    region,
-    regionReducer,
-    scale,
-    yearReducer,
-    startDay,
-    endDay,
-    **kwargs,
-):
+    image_collection,
+    region=None,
+    region_reducer=None,
+    scale=None,
+    year_reducer=None,
+    start_day=1,
+    end_day=366,
+    chart_type: str = "LineChart",
+    colors: Optional[List[str]] = None,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    options: Optional[Dict[str, Any]] = None,
+    **kwargs: Any,
+) -> Chart:
     """
     Generates a time series chart of an image collection for a specific region over a range of days of the year.
 
@@ -1222,34 +1228,98 @@ def image_doy_series(
         yearReducer (str | ee.Reducer): The reducer type for yearly statistics.
         startDay (int): The start day of the year.
         endDay (int): The end day of the year.
-        **kwargs: Additional keyword arguments.
+        chart_type (str): The type of chart to create. Supported types are
+            'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
+            'PieChart', 'AreaChart', and 'Table'.
+        colors (Optional[List[str]]): The colors to use for the chart.
+            Defaults to a predefined list of colors.
+        title (Optional[str]): The title of the chart. Defaults to the
+            chart type.
+        xlabel (Optional[str]): The label for the x-axis. Defaults to an
+            empty string.
+        ylabel (Optional[str]): The label for the y-axis. Defaults to an
+            empty string.
+        options (Optional[Dict[str, Any]]): Additional options for the chart.
+        **kwargs: Additional keyword arguments to pass to the bqplot Figure
+            or mark objects. For axes_options, see
+            https://bqplot.github.io/bqplot/api/axes
 
     Returns:
         None
     """
-    series = imageCollection.filter(
-        ee.Filter.calendarRange(startDay, endDay, "day_of_year")
-    )
-    fc = zonal_stats(
-        series,
-        region,
-        stat_type=regionReducer,
-        scale=scale,
-        verbose=False,
-        return_fc=True,
-    )
-    df = ee_to_df(fc)
-    years = df["year"].unique()
-    values = {
-        year: df[df["year"] == year].drop(columns=["year"]).mean() for year in years
-    }
 
-    # Creating a dataframe to hold the results
-    result_df = pd.DataFrame(values).T
+    # Function to add day-of-year ('doy') and year properties to each image.
+    def set_doys(collection):
+        def add_doy(img):
+            date = img.date()
+            year = date.get("year")
+            doy = date.getRelative("day", "year").floor().add(1)
+            return img.set({"doy": doy, "year": year})
 
-    # Plotting the results
-    line_chart = LineChart(result_df, years.tolist(), **kwargs)
-    line_chart.plot_chart()
+        return collection.map(add_doy)
+
+    # Reduces images with the same day of year.
+    def group_by_doy(collection, start, end, reducer):
+        collection = set_doys(collection)
+
+        doys = ee.FeatureCollection(
+            [ee.Feature(None, {"doy": i}) for i in range(start, end + 1)]
+        )
+
+        # Group images by therir day of year.
+        filter = ee.Filter(ee.Filter.equals(leftField="doy", rightField="doy"))
+        joined = ee.Join.saveAll("matches").apply(
+            primary=doys, secondary=collection, condition=filter
+        )
+
+        # For each DoY, reduce images across years.
+        def reduce_images(doy):
+            images = ee.ImageCollection.fromImages(doy.get("matches"))
+            image = images.reduce(reducer)
+            return image.set(
+                {
+                    "doy": doy.get("doy"),
+                    "geo": images.geometry(),  # // Retain geometry for future reduceRegion.
+                }
+            )
+
+        return ee.ImageCollection(joined.map(reduce_images))
+
+    # Set default values and filters if parameters are not provided.
+    region_reducer = region_reducer or ee.Reducer.mean()
+    year_reducer = year_reducer or ee.Reducer.mean()
+
+    # Optionally filter the image collection by region.
+    filtered_collection = image_collection
+    if region:
+        filtered_collection = filtered_collection.filterBounds(region)
+    filtered_collection = set_doys(filtered_collection)
+
+    doy_images = group_by_doy(filtered_collection, start_day, end_day, year_reducer)
+
+    # For each DoY, reduce images across years within the region.
+    def reduce_doy_images(image):
+        region_for_image = region if region else image.get("geo")
+        dictionary = image.reduceRegion(
+            reducer=region_reducer, geometry=region_for_image, scale=scale
+        )
+
+        return ee.Feature(None, {"doy": image.get("doy")}).set(dictionary)
+
+    reduced = ee.FeatureCollection(doy_images.map(reduce_doy_images))
+
+    df = ee_to_df(reduced)
+    df.columns = df.columns.str.replace(r"_.*", "", regex=True)
+
+    x_cols = "doy"
+    y_cols = df.columns.tolist()
+    y_cols.remove("doy")
+    print(y_cols)
+
+    fig = Chart(
+        df, chart_type, x_cols, y_cols, colors, title, xlabel, ylabel, options, **kwargs
+    )
+    return fig
 
 
 def image_doy_series_by_region(
