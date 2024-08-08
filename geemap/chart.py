@@ -110,7 +110,7 @@ def pivot_df(df: pd.DataFrame, index: str, columns: str, values: str) -> pd.Data
 
 class Chart:
     """
-    A class to create and display various types of charts from data.
+    A class to create and display various types of charts from a data table.
 
     Attributes:
         df (pd.DataFrame): The data to be displayed in the charts.
@@ -119,22 +119,21 @@ class Chart:
 
     def __init__(
         self,
-        data: Union[Dict[str, List[Any]], pd.DataFrame],
+        data_table: Union[Dict[str, List[Any]], pd.DataFrame],
         chart_type: str = "LineChart",
         x_cols: Optional[List[str]] = None,
         y_cols: Optional[List[str]] = None,
         colors: Optional[List[str]] = None,
         title: Optional[str] = None,
-        xlabel: Optional[str] = None,
-        ylabel: Optional[str] = None,
-        options: Optional[Dict[str, Any]] = None,
+        x_label: Optional[str] = None,
+        y_label: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
         """
         Initializes the Chart with data.
 
         Args:
-            data (Union[Dict[str, List[Any]], pd.DataFrame]): The input data.
+            data_table (Union[Dict[str, List[Any]], pd.DataFrame]): A 2-D array of data.
                 If it's a dictionary, it will be converted to a DataFrame.
             chart_type (str): The type of chart to create. Supported types are
                 'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
@@ -147,25 +146,23 @@ class Chart:
                 Defaults to a predefined list of colors.
             title (Optional[str]): The title of the chart. Defaults to the
                 chart type.
-            xlabel (Optional[str]): The label for the x-axis. Defaults to an
+            x_label (Optional[str]): The label for the x-axis. Defaults to an
                 empty string.
-            ylabel (Optional[str]): The label for the y-axis. Defaults to an
+            y_label (Optional[str]): The label for the y-axis. Defaults to an
                 empty string.
-            options (Optional[Dict[str, Any]]): Additional options for the chart.
             **kwargs: Additional keyword arguments to pass to the bqplot Figure
                 or mark objects. For axes_options, see
                 https://bqplot.github.io/bqplot/api/axes
         """
-        self.df = DataTable(data)
+        self.data_table = DataTable(data_table)
         self.chart_type = chart_type
         self.chart = None
         self.title = title
-        self.xlabel = xlabel
-        self.ylabel = ylabel
+        self.x_label = x_label
+        self.y_label = y_label
         self.x_cols = x_cols
         self.y_cols = y_cols
         self.colors = colors
-        self.options = options
 
         if title is not None:
             kwargs["title"] = title
@@ -194,10 +191,10 @@ class Chart:
         """
         if self.title is not None:
             self.figure.title = self.title
-        if self.xlabel is not None:
-            plt.xlabel(self.xlabel)
-        if self.ylabel is not None:
-            plt.ylabel(self.ylabel)
+        if self.x_label is not None:
+            plt.xlabel(self.x_label)
+        if self.y_label is not None:
+            plt.ylabel(self.y_label)
 
     def set_chart_type(
         self,
@@ -228,9 +225,9 @@ class Chart:
         colors = self.colors
 
         if x_cols is None:
-            x_cols = [self.df.columns[0]]
+            x_cols = [self.data_table.columns[0]]
         if y_cols is None:
-            y_cols = [self.df.columns[1]]
+            y_cols = [self.data_table.columns[1]]
 
         if isinstance(x_cols, str):
             x_cols = [x_cols]
@@ -282,22 +279,22 @@ class Chart:
 
             if chart_type == "ScatterChart":
                 self.chart = plt.scatter(
-                    self.df[x_col],
-                    self.df[y_col],
+                    self.data_table[x_col],
+                    self.data_table[y_col],
                     colors=[color],
                     **kwargs,
                 )
             elif chart_type == "LineChart":
                 self.chart = plt.plot(
-                    self.df[x_col],
-                    self.df[y_col],
+                    self.data_table[x_col],
+                    self.data_table[y_col],
                     colors=[color],
                     **kwargs,
                 )
             elif chart_type == "ColumnChart":
                 self.chart = plt.bar(
-                    self.df[x_col],
-                    self.df[y_col],
+                    self.data_table[x_col],
+                    self.data_table[y_col],
                     colors=[color],
                     **kwargs,
                 )
@@ -305,8 +302,8 @@ class Chart:
                 if "orientation" not in kwargs:
                     kwargs["orientation"] = "horizontal"
                 self.chart = plt.bar(
-                    self.df[x_col],
-                    self.df[y_col],
+                    self.data_table[x_col],
+                    self.data_table[y_col],
                     colors=[color],
                     **kwargs,
                 )
@@ -314,23 +311,23 @@ class Chart:
                 if "fill" not in kwargs:
                     kwargs["fill"] = "bottom"
                 self.chart = plt.plot(
-                    self.df[x_col],
-                    self.df[y_col],
+                    self.data_table[x_col],
+                    self.data_table[y_col],
                     colors=[color],
                     **kwargs,
                 )
             elif chart_type == "PieChart":
                 kwargs.pop("labels", None)
                 self.chart = plt.pie(
-                    sizes=self.df[y_col],
-                    labels=self.df[x_col],
-                    colors=colors[: len(self.df[x_col])],
+                    sizes=self.data_table[y_col],
+                    labels=self.data_table[x_col],
+                    colors=colors[: len(self.data_table[x_col])],
                     **kwargs,
                 )
             elif chart_type == "Table":
                 output = widgets.Output(**kwargs)
                 with output:
-                    display(self.df)
+                    display(self.data_table)
                 output.layout = widgets.Layout(width="50%")
                 display(output)
             else:
@@ -354,7 +351,7 @@ class Chart:
         Returns:
             DataTable: The DataTable instance containing the chart data.
         """
-        return self.df
+        return self.data_table
 
     def set_data_table(self, data: Union[Dict[str, List[Any]], pd.DataFrame]) -> None:
         """
@@ -363,7 +360,7 @@ class Chart:
         Args:
             data (Union[Dict[str, List[Any]], pd.DataFrame]): The new data to be used for the chart.
         """
-        self.df = DataTable(data)
+        self.data_table = DataTable(data)
 
     def set_options(self, **options: Any) -> None:
         """
@@ -374,247 +371,6 @@ class Chart:
         """
         for key, value in options.items():
             setattr(self.figure, key, value)
-
-
-class BaseChart:
-    """
-    A class to create and display various types of charts from data.
-
-    Attributes:
-        df (pd.DataFrame): The data to be displayed in the charts.
-        chart: The bqplot Figure object for the chart.
-    """
-
-    def __init__(self, data: Union[Dict, pd.DataFrame], **kwargs: Any) -> None:
-        """
-        Initializes the BaseChart with data.
-
-        Args:
-            data (dict or pd.DataFrame): The input data. If it's a dictionary,
-                it will be converted to a DataFrame.
-            **kwargs: Additional keyword arguments to pass to the pd.DataFrame
-                constructor.
-        """
-        self.df = DataTable(data)
-        self.chart = None
-        self.chart_type = None
-
-    def setChartType(
-        self,
-        chart_type: str,
-        x_cols: Optional[List[str]] = None,
-        y_cols: Optional[List[str]] = None,
-        colors: Optional[List[str]] = None,
-        x_label: Optional[str] = "",
-        y_label: Optional[str] = "",
-        title: Optional[str] = None,
-        **kwargs: Any,
-    ) -> "BaseChart":
-        """
-        Sets the chart type and other chart properties.
-
-        Args:
-            chart_type (str): The type of chart to create. Supported types are
-                'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
-                'PieChart', 'AreaChart', and 'Table'.
-            x_cols (list of str, optional): The columns to use for the x-axis.
-                Defaults to the first column.
-            y_cols (list of str, optional): The columns to use for the y-axis.
-                Defaults to the second column.
-            colors (list of str, optional): The colors to use for the chart.
-                Defaults to a predefined list of colors.
-            x_label (str, optional): The label for the x-axis. Defaults to an
-                empty string.
-            y_label (str, optional): The label for the y-axis. Defaults to an
-                empty string.
-            title (str, optional): The title of the chart. Defaults to the
-                chart type.
-            **kwargs: Additional keyword arguments to pass to the bqplot Figure
-                or mark objects.
-
-        Returns:
-            BaseChart: The BaseChart instance with the chart set.
-        """
-        self.chart_type = chart_type
-
-        if x_cols is None:
-            x_cols = [self.df.columns[0]]
-        if y_cols is None:
-            y_cols = [self.df.columns[1]]
-
-        if isinstance(x_cols, str):
-            x_cols = [x_cols]
-
-        if isinstance(y_cols, str):
-            y_cols = [y_cols]
-
-        if len(x_cols) == 1 and len(y_cols) > 1:
-            x_cols = x_cols * len(y_cols)
-
-        if title is not None:
-            kwargs["title"] = title
-
-        if chart_type == "PieChart":
-            if colors is None:
-                colors = [
-                    "#1f77b4",
-                    "#ff7f0e",
-                    "#2ca02c",
-                    "#d62728",
-                    "#9467bd",
-                    "#8c564b",
-                    "#e377c2",
-                    "#7f7f7f",
-                    "#bcbd22",
-                    "#17becf",
-                ]  # Default pie chart colors
-        else:
-            if colors is None:
-                colors = [
-                    "blue",
-                    "orange",
-                    "green",
-                    "red",
-                    "purple",
-                    "brown",
-                ]  # Default colors
-
-        x_sc = bq.OrdinalScale()
-        y_sc = bq.LinearScale()
-
-        marks = []
-        for i, (x_col, y_col) in enumerate(zip(x_cols, y_cols)):
-            color = colors[
-                i % len(colors)
-            ]  # Cycle through colors if not enough are provided
-            if "display_legend" not in kwargs and len(y_cols) > 1:
-                kwargs["display_legend"] = True
-                kwargs["labels"] = [y_col]
-            else:
-                kwargs["labels"] = [y_col]
-
-            if chart_type == "ScatterChart":
-                marks.append(
-                    bq.Scatter(
-                        x=self.df[x_col],
-                        y=self.df[y_col],
-                        scales={"x": x_sc, "y": y_sc},
-                        colors=[color],
-                        **kwargs,
-                    )
-                )
-            elif chart_type == "LineChart":
-                marks.append(
-                    bq.Lines(
-                        x=self.df[x_col],
-                        y=self.df[y_col],
-                        scales={"x": x_sc, "y": y_sc},
-                        colors=[color],
-                        **kwargs,
-                    )
-                )
-            elif chart_type == "ColumnChart":
-                marks.append(
-                    bq.Bars(
-                        x=self.df[x_col],
-                        y=self.df[y_col],
-                        scales={"x": x_sc, "y": y_sc},
-                        colors=[color],
-                        **kwargs,
-                    )
-                )
-            elif chart_type == "BarChart":
-                if "orientation" not in kwargs:
-                    kwargs["orientation"] = "horizontal"
-                marks.append(
-                    bq.Bars(
-                        x=self.df[x_col],
-                        y=self.df[y_col],
-                        scales={"x": x_sc, "y": y_sc},
-                        colors=[color],
-                        **kwargs,
-                    )
-                )
-            elif chart_type == "AreaChart":
-                if "fill" not in kwargs:
-                    kwargs["fill"] = "bottom"
-                marks.append(
-                    bq.Lines(
-                        x=self.df[x_col],
-                        y=self.df[y_col],
-                        scales={"x": x_sc, "y": y_sc},
-                        colors=[color],
-                        **kwargs,
-                    )
-                )
-            elif chart_type == "PieChart":
-                # Pie chart does not support multiple series in the same way; use only the first pair of x_col and y_col
-                self.chart = bq.Figure(title=title, **kwargs)
-                pie = bq.Pie(
-                    sizes=self.df[y_cols[0]].tolist(),
-                    labels=self.df[x_cols[0]].tolist(),
-                    colors=colors[: len(self.df[x_cols[0]])],
-                    **kwargs,
-                )
-                self.chart.marks = [pie]
-                return self
-            elif chart_type == "Table":
-                self.chart = widgets.Output(**kwargs)
-                with self.chart:
-                    display(self.df)
-                self.chart.layout = widgets.Layout(width="50%")
-                return self
-            else:
-                raise ValueError("Unsupported chart type")
-
-        x_axis = bq.Axis(scale=x_sc, label=x_label)
-        y_axis = bq.Axis(scale=y_sc, orientation="vertical", label=y_label)
-        self.chart = bq.Figure(marks=marks, axes=[x_axis, y_axis], **kwargs)
-
-        return self
-
-    def getChartType(self) -> Optional[str]:
-        """
-        Get the current chart type.
-
-        Returns:
-            Optional[str]: The current chart type, or None if no chart type is set.
-        """
-        return self.chart_type
-
-    def getDataTable(self) -> DataTable:
-        """
-        Get the DataTable used by the chart.
-
-        Returns:
-            DataTable: The DataTable instance containing the chart data.
-        """
-        return self.df
-
-    def setDataTable(self, data: Union[Dict[str, List[Any]], pd.DataFrame]) -> None:
-        """
-        Set a new DataTable for the chart.
-
-        Args:
-            data (Union[Dict[str, List[Any]], pd.DataFrame]): The new data to be used for the chart.
-        """
-        self.df = DataTable(data)
-
-    def setOptions(self, **options: Any) -> None:
-        """
-        Set additional options for the chart.
-
-        Args:
-            **options: Additional options to set for the chart.
-        """
-        for key, value in options.items():
-            setattr(self.chart, key, value)
-
-    def display(self) -> None:
-        """
-        Displays the chart.
-        """
-        display(self.chart)
 
 
 class BaseChartClass:
@@ -628,8 +384,8 @@ class BaseChartClass:
         self.layout_width = None
         self.layout_height = None
         self.display_legend = True
-        self.xlabel = None
-        self.ylabel = None
+        self.x_label = None
+        self.y_label = None
         self.labels = default_labels
         self.width = None
         self.height = None
@@ -681,9 +437,9 @@ class BarChart(BaseChartClass):
         self.type = type
 
     def generate_tooltip(self):
-        if (self.xlabel is not None) and (self.ylabel is not None):
+        if (self.x_label is not None) and (self.y_label is not None):
             self.bar_chart.tooltip = Tooltip(
-                fields=["x", "y"], labels=[self.xlabel, self.ylabel]
+                fields=["x", "y"], labels=[self.x_label, self.y_label]
             )
         else:
             self.bar_chart.tooltip = Tooltip(fields=["x", "y"])
@@ -709,6 +465,8 @@ class BarChart(BaseChartClass):
             legend_location=self.legend_location,
         )
 
+        print(self.x_data, self.y_data)
+
         self.bar_chart = plt.bar(
             self.x_data,
             self.y_data,
@@ -718,10 +476,10 @@ class BarChart(BaseChartClass):
 
         self.generate_tooltip()
         plt.ylim(*self.get_ylim())
-        if self.xlabel:
-            plt.xlabel(self.xlabel)
-        if self.ylabel:
-            plt.ylabel(self.ylabel)
+        if self.x_label:
+            plt.xlabel(self.x_label)
+        if self.y_label:
+            plt.ylabel(self.y_label)
 
         if self.width:
             fig.layout.width = self.width
@@ -754,10 +512,10 @@ class LineChart(BarChart):
 
         self.generate_tooltip()
         plt.ylim(*self.get_ylim())
-        if self.xlabel:
-            plt.xlabel(self.xlabel)
-        if self.ylabel:
-            plt.ylabel(self.ylabel)
+        if self.x_label:
+            plt.xlabel(self.x_label)
+        if self.y_label:
+            plt.ylabel(self.y_label)
 
         if self.width:
             fig.layout.width = self.width
@@ -850,44 +608,8 @@ class Feature_Groups(BarChart):
         return x_data, y_data
 
 
-class Image_byClass(LineChart):
-    """A object to define variables and get_data method."""
-
-    def __init__(
-        self,
-        image,
-        region,
-        reducer,
-        scale,
-        classLabels,
-        xLabels,
-        xProperty,
-        name="image.byClass",
-        **kwargs,
-    ):
-        self.classLabels = classLabels
-        self.xLabels = xLabels
-        super().__init__(image, classLabels, name, **kwargs)
-        self.x_data, self.y_data = self.get_data(
-            image, region, xProperty, reducer, scale
-        )
-
-    def get_data(self, image, region, xProperty, reducer, scale):
-        fc = zonal_stats(
-            image, region, stat_type=reducer, scale=scale, verbose=False, return_fc=True
-        )
-        bands = image.bandNames().getInfo()
-        df = ee_to_df(fc)[bands + [xProperty]]
-        columns = df.columns.tolist()
-        columns.remove(xProperty)
-        x_data = columns
-        y_data = df.drop([xProperty], axis=1).to_numpy()
-
-        return x_data, y_data
-
-
 def feature_by_feature(
-    features: ee.FeatureCollection, xProperty: str, yProperties: list, **kwargs
+    features: ee.FeatureCollection, x_property: str, y_properties: list, **kwargs
 ):
     """Generates a Chart from a set of features. Plots the value of one or more properties for each feature.
     Reference: https://developers.google.com/earth-engine/guides/charts_feature#uichartfeaturebyfeature
@@ -901,7 +623,7 @@ def feature_by_feature(
         Exception: Errors when creating the chart.
     """
     bar = Feature_ByFeature(
-        features=features, xProperty=xProperty, yProperties=yProperties, **kwargs
+        features=features, xProperty=x_property, yProperties=y_properties, **kwargs
     )
 
     try:
@@ -913,8 +635,8 @@ def feature_by_feature(
 
 def feature_by_property(
     features: ee.FeatureCollection,
-    xProperties: Union[list, dict],
-    seriesProperty: str,
+    x_properties: Union[list, dict],
+    series_property: str,
     **kwargs,
 ):
     """Generates a Chart from a set of features. Plots property values of one or more features.
@@ -922,9 +644,9 @@ def feature_by_property(
 
     Args:
         features (ee.FeatureCollection): The features to include in the chart.
-        xProperties (list | dict): One of (1) a list of properties to be plotted on the x-axis; or
+        x_properties (list | dict): One of (1) a list of properties to be plotted on the x-axis; or
             (2) a (property, label) dictionary specifying labels for properties to be used as values on the x-axis.
-        seriesProperty (str): The name of the property used to label each feature in the legend.
+        series_property (str): The name of the property used to label each feature in the legend.
 
     Raises:
         Exception: If the provided xProperties is not a list or dict.
@@ -932,8 +654,8 @@ def feature_by_property(
     """
     bar = Feature_ByProperty(
         features=features,
-        xProperties=xProperties,
-        seriesProperty=seriesProperty,
+        xProperties=x_properties,
+        seriesProperty=series_property,
         **kwargs,
     )
 
@@ -944,25 +666,25 @@ def feature_by_property(
         raise Exception(e)
 
 
-def feature_groups(features, xProperty, yProperty, seriesProperty, **kwargs):
+def feature_groups(features, x_property, y_property, series_property, **kwargs):
     """Generates a Chart from a set of features.
     Plots the value of one property for each feature.
     Reference:
     https://developers.google.com/earth-engine/guides/charts_feature#uichartfeaturegroups
     Args:
         features (ee.FeatureCollection): The feature collection to make a chart from.
-        xProperty (str): Features labeled by xProperty.
-        yProperty (str): Features labeled by yProperty.
-        seriesProperty (str): The property used to label each feature in the legend.
+        x_property (str): Features labeled by xProperty.
+        y_property (str): Features labeled by yProperty.
+        series_property (str): The property used to label each feature in the legend.
     Raises:
         Exception: Errors when creating the chart.
     """
 
     bar = Feature_Groups(
         features=features,
-        xProperty=xProperty,
-        yProperty=yProperty,
-        seriesProperty=seriesProperty,
+        xProperty=x_property,
+        yProperty=y_property,
+        seriesProperty=series_property,
         **kwargs,
     )
 
@@ -974,7 +696,7 @@ def feature_groups(features, xProperty, yProperty, seriesProperty, **kwargs):
 
 
 def feature_histogram(
-    features, property, maxBuckets=None, minBucketWidth=None, show=True, **kwargs
+    features, property, max_buckets=None, min_bucket_width=None, show=True, **kwargs
 ):
     """
     Generates a Chart from a set of features.
@@ -986,12 +708,15 @@ def feature_histogram(
     https://developers.google.com/earth-engine/guides/charts_feature#uichartfeaturehistogram
 
     Args:
-        features  (ee.FeatureCollection): The features to include in the chart.
-        property                   (str): The name of the property to generate the histogram for.
-        maxBuckets       (int, optional): The maximum number of buckets (bins) to use when building a histogram;
-                                          will be rounded up to a power of 2.
-        minBucketWidth (float, optional): The minimum histogram bucket width, or null to allow any power of 2.
-        show (bool, optional): Whether to show the chart. If not, it will return the bqplot chart object, which can be used to retrieve data for the chart. Defaults to True.
+        features (ee.FeatureCollection): The features to include in the chart.
+        property  (str): The name of the property to generate the histogram for.
+        max_buckets (int, optional): The maximum number of buckets (bins) to use
+            when building a histogram; will be rounded up to a power of 2.
+        min_bucket_width (float, optional): The minimum histogram bucket width,
+            or null to allow any power of 2.
+        show (bool, optional): Whether to show the chart. If not, it will return
+            the bqplot chart object, which can be used to retrieve data for the
+            chart. Defaults to True.
 
     Raises:
         Exception: If the provided xProperties is not a list or dict.
@@ -1032,22 +757,22 @@ def feature_histogram(
 
         data_range = max_value - min_value
 
-        if not maxBuckets:
+        if not max_buckets:
             initial_bin_size = nextPowerOf2(data_range / pow(2, 8))
-            if minBucketWidth:
-                if minBucketWidth < initial_bin_size:
-                    bin_size = grow_bin(minBucketWidth, initial_bin_size)
+            if min_bucket_width:
+                if min_bucket_width < initial_bin_size:
+                    bin_size = grow_bin(min_bucket_width, initial_bin_size)
                 else:
-                    bin_size = minBucketWidth
+                    bin_size = min_bucket_width
             else:
                 bin_size = initial_bin_size
         else:
-            initial_bin_size = math.ceil(data_range / nextPowerOf2(maxBuckets))
-            if minBucketWidth:
-                if minBucketWidth < initial_bin_size:
-                    bin_size = grow_bin(minBucketWidth, initial_bin_size)
+            initial_bin_size = math.ceil(data_range / nextPowerOf2(max_buckets))
+            if min_bucket_width:
+                if min_bucket_width < initial_bin_size:
+                    bin_size = grow_bin(min_bucket_width, initial_bin_size)
                 else:
-                    bin_size = minBucketWidth
+                    bin_size = min_bucket_width
             else:
                 bin_size = initial_bin_size
 
@@ -1077,20 +802,20 @@ def feature_histogram(
         if "height" in kwargs:
             fig.layout.height = kwargs["height"]
 
-        if "xlabel" not in kwargs:
-            xlabel = ""
+        if "x_label" not in kwargs:
+            x_label = ""
         else:
-            xlabel = kwargs["xlabel"]
+            x_label = kwargs["x_label"]
 
-        if "ylabel" not in kwargs:
-            ylabel = ""
+        if "y_label" not in kwargs:
+            y_label = ""
         else:
-            ylabel = kwargs["ylabel"]
+            y_label = kwargs["y_label"]
 
         histogram = plt.hist(
             sample=y_data,
             bins=num_bins,
-            axes_options={"count": {"label": ylabel}, "sample": {"label": xlabel}},
+            axes_options={"count": {"label": y_label}, "sample": {"label": x_label}},
         )
 
         if "colors" in kwargs:
@@ -1104,10 +829,10 @@ def feature_histogram(
         else:
             histogram.stroke_width = 0
 
-        if ("xlabel" in kwargs) and ("ylabel" in kwargs):
+        if ("x_label" in kwargs) and ("y_label" in kwargs):
             histogram.tooltip = Tooltip(
                 fields=["midpoint", "count"],
-                labels=[kwargs["xlabel"], kwargs["ylabel"]],
+                labels=[kwargs["x_label"], kwargs["y_label"]],
             )
         else:
             histogram.tooltip = Tooltip(fields=["midpoint", "count"])
@@ -1123,12 +848,12 @@ def feature_histogram(
 
 def image_by_class(
     image,
-    classBand,
+    class_band,
     region,
     reducer="MEAN",
     scale=None,
-    classLabels=None,
-    xLabels=None,
+    class_labels=None,
+    x_labels=None,
     chart_type="LineChart",
     **kwargs,
 ):
@@ -1138,13 +863,13 @@ def image_by_class(
 
     Args:
         image (ee.Image): Image to extract band values from.
-        classBand (str): The band name to use as class labels.
+        class_band (str): The band name to use as class labels.
         region (ee.Geometry | ee.FeatureCollection): The region(s) to reduce.
         reducer (str | ee.Reducer): The reducer type for zonal statistics. Can
             be one of 'mean', 'median', 'sum', 'min', 'max', etc.
         scale (int): The scale in meters at which to perform the analysis.
-        classLabels (list): List of class labels.
-        xLabels (list): List of x-axis labels.
+        class_labels (list): List of class labels.
+        x_labels (list): List of x-axis labels.
         chart_type (str): The type of chart to create. Supported types are
             'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart', 'PieChart',
                 'AreaChart', and 'Table'.
@@ -1157,33 +882,28 @@ def image_by_class(
         image, region, stat_type=reducer, scale=scale, verbose=False, return_fc=True
     )
     bands = image.bandNames().getInfo()
-    df = ee_to_df(fc)[bands + [classBand]]
+    df = ee_to_df(fc)[bands + [class_band]]
 
-    df_transposed = df.set_index(classBand).T
+    df_transposed = df.set_index(class_band).T
 
-    if xLabels is not None:
-        df_transposed["label"] = xLabels
+    if x_labels is not None:
+        df_transposed["label"] = x_labels
     else:
         df_transposed["label"] = df_transposed.index
 
-    if classLabels is None:
+    if class_labels is None:
         y_cols = df_transposed.columns.tolist()
         y_cols.remove("label")
     else:
-        y_cols = classLabels
+        y_cols = class_labels
 
-    fig = BaseChart(df_transposed)
-    fig.setChartType(
-        chart_type,
-        x_cols="label",
-        y_cols=y_cols,
-        **kwargs,
+    fig = Chart(
+        df_transposed, chart_type=chart_type, x_cols="label", y_cols=y_cols, **kwargs
     )
+    return fig
 
-    return fig.chart
 
-
-def image_by_region(image, regions, reducer, scale, xProperty, **kwargs):
+def image_by_region(image, regions, reducer, scale, x_property, **kwargs):
     """
     Generates a Chart from an image. Extracts and plots band values in one or more regions in the image, with each band in a separate series.
 
@@ -1192,7 +912,7 @@ def image_by_region(image, regions, reducer, scale, xProperty, **kwargs):
         regions (ee.FeatureCollection | ee.Geometry): Regions to reduce. Defaults to the image's footprint.
         reducer (str | ee.Reducer): The reducer type for zonal statistics. Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
         scale (int): The scale in meters at which to perform the analysis.
-        xProperty (str): The name of the property in the feature collection to use as the x-axis values.
+        x_property (str): The name of the property in the feature collection to use as the x-axis values.
         **kwargs: Additional keyword arguments to be passed to the `feature_by_feature` function.
 
     Returns:
@@ -1203,8 +923,8 @@ def image_by_region(image, regions, reducer, scale, xProperty, **kwargs):
         image, regions, stat_type=reducer, scale=scale, verbose=False, return_fc=True
     )
     bands = image.bandNames().getInfo()
-    df = ee_to_df(fc)[bands + [xProperty]]
-    feature_by_feature(df, xProperty, bands, **kwargs)
+    df = ee_to_df(fc)[bands + [x_property]]
+    feature_by_feature(df, x_property, bands, **kwargs)
 
 
 def image_doy_series(
@@ -1218,22 +938,22 @@ def image_doy_series(
     chart_type: str = "LineChart",
     colors: Optional[List[str]] = None,
     title: Optional[str] = None,
-    xlabel: Optional[str] = None,
-    ylabel: Optional[str] = None,
-    options: Optional[Dict[str, Any]] = None,
+    x_label: Optional[str] = None,
+    y_label: Optional[str] = None,
     **kwargs: Any,
 ) -> Chart:
     """
     Generates a time series chart of an image collection for a specific region over a range of days of the year.
 
     Args:
-        imageCollection (ee.ImageCollection): The image collection to analyze.
+        image_collection (ee.ImageCollection): The image collection to analyze.
         region (ee.Geometry | ee.FeatureCollection): The region to reduce.
-        regionReducer (str | ee.Reducer): The reducer type for zonal statistics. Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
+        region_reducer (str | ee.Reducer): The reducer type for zonal statistics.
+            Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
         scale (int): The scale in meters at which to perform the analysis.
-        yearReducer (str | ee.Reducer): The reducer type for yearly statistics.
-        startDay (int): The start day of the year.
-        endDay (int): The end day of the year.
+        year_reducer (str | ee.Reducer): The reducer type for yearly statistics.
+        start_day (int): The start day of the year.
+        end_day (int): The end day of the year.
         chart_type (str): The type of chart to create. Supported types are
             'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
             'PieChart', 'AreaChart', and 'Table'.
@@ -1241,11 +961,10 @@ def image_doy_series(
             Defaults to a predefined list of colors.
         title (Optional[str]): The title of the chart. Defaults to the
             chart type.
-        xlabel (Optional[str]): The label for the x-axis. Defaults to an
+        x_label (Optional[str]): The label for the x-axis. Defaults to an
             empty string.
-        ylabel (Optional[str]): The label for the y-axis. Defaults to an
+        y_label (Optional[str]): The label for the y-axis. Defaults to an
             empty string.
-        options (Optional[Dict[str, Any]]): Additional options for the chart.
         **kwargs: Additional keyword arguments to pass to the bqplot Figure
             or mark objects. For axes_options, see
             https://bqplot.github.io/bqplot/api/axes
@@ -1322,7 +1041,15 @@ def image_doy_series(
     y_cols.remove("doy")
 
     fig = Chart(
-        df, chart_type, x_cols, y_cols, colors, title, xlabel, ylabel, options, **kwargs
+        df,
+        chart_type,
+        x_cols,
+        y_cols,
+        colors,
+        title,
+        x_label,
+        y_label,
+        **kwargs,
     )
     return fig
 
@@ -1340,9 +1067,8 @@ def image_doy_series_by_region(
     chart_type: str = "LineChart",
     colors: Optional[List[str]] = None,
     title: Optional[str] = None,
-    xlabel: Optional[str] = None,
-    ylabel: Optional[str] = None,
-    options: Optional[Dict[str, Any]] = None,
+    x_label: Optional[str] = None,
+    y_label: Optional[str] = None,
     **kwargs: Any,
 ) -> Chart:
     """
@@ -1365,11 +1091,10 @@ def image_doy_series_by_region(
             Defaults to a predefined list of colors.
         title (Optional[str]): The title of the chart. Defaults to the
             chart type.
-        xlabel (Optional[str]): The label for the x-axis. Defaults to an
+        x_label (Optional[str]): The label for the x-axis. Defaults to an
             empty string.
-        ylabel (Optional[str]): The label for the y-axis. Defaults to an
+        y_label (Optional[str]): The label for the y-axis. Defaults to an
             empty string.
-        options (Optional[Dict[str, Any]]): Additional options for the chart.
         **kwargs: Additional keyword arguments to pass to the bqplot Figure
             or mark objects. For axes_options, see
             https://bqplot.github.io/bqplot/api/axes
@@ -1443,7 +1168,15 @@ def image_doy_series_by_region(
     y_cols.remove("doy")
 
     fig = Chart(
-        df, chart_type, "doy", y_cols, colors, title, xlabel, ylabel, options, **kwargs
+        df,
+        chart_type,
+        "doy",
+        y_cols,
+        colors,
+        title,
+        x_label,
+        y_label,
+        **kwargs,
     )
     return fig
 
@@ -1460,9 +1193,8 @@ def doy_series_by_year(
     chart_type: str = "LineChart",
     colors: Optional[List[str]] = None,
     title: Optional[str] = None,
-    xlabel: Optional[str] = None,
-    ylabel: Optional[str] = None,
-    options: Optional[Dict[str, Any]] = None,
+    x_label: Optional[str] = None,
+    y_label: Optional[str] = None,
     **kwargs: Any,
 ) -> Chart:
     """
@@ -1485,11 +1217,10 @@ def doy_series_by_year(
             Defaults to a predefined list of colors.
         title (Optional[str]): The title of the chart. Defaults to the
             chart type.
-        xlabel (Optional[str]): The label for the x-axis. Defaults to an
+        x_label (Optional[str]): The label for the x-axis. Defaults to an
             empty string.
-        ylabel (Optional[str]): The label for the y-axis. Defaults to an
+        y_label (Optional[str]): The label for the y-axis. Defaults to an
             empty string.
-        options (Optional[Dict[str, Any]]): Additional options for the chart.
         **kwargs: Additional keyword arguments to pass to the bqplot Figure
             or mark objects. For axes_options, see
             https://bqplot.github.io/bqplot/api/axes
@@ -1562,7 +1293,15 @@ def doy_series_by_year(
     x_cols = "doy"
 
     fig = Chart(
-        df, chart_type, x_cols, y_cols, colors, title, xlabel, ylabel, options, **kwargs
+        df,
+        chart_type,
+        x_cols,
+        y_cols,
+        colors,
+        title,
+        x_label,
+        y_label,
+        **kwargs,
     )
     return fig
 
@@ -1701,18 +1440,18 @@ def image_regions(image, regions, reducer, scale, seriesProperty, xLabels, **kwa
 
 
 def image_series(
-    imageCollection,
+    image_collection,
     region,
     reducer=None,
     scale=None,
-    xProperty="system:time_start",
+    x_property="system:time_start",
     chart_type: str = "LineChart",
     x_cols: Optional[List[str]] = None,
     y_cols: Optional[List[str]] = None,
     colors: Optional[List[str]] = None,
     title: Optional[str] = None,
-    xlabel: Optional[str] = None,
-    ylabel: Optional[str] = None,
+    x_label: Optional[str] = None,
+    y_label: Optional[str] = None,
     options: Optional[Dict[str, Any]] = None,
     **kwargs: Any,
 ) -> Chart:
@@ -1736,9 +1475,9 @@ def image_series(
             Defaults to a predefined list of colors.
         title (Optional[str]): The title of the chart. Defaults to the
             chart type.
-        xlabel (Optional[str]): The label for the x-axis. Defaults to an
+        x_label (Optional[str]): The label for the x-axis. Defaults to an
             empty string.
-        ylabel (Optional[str]): The label for the y-axis. Defaults to an
+        y_label (Optional[str]): The label for the y-axis. Defaults to an
             empty string.
         options (Optional[Dict[str, Any]]): Additional options for the chart.
         **kwargs: Additional keyword arguments to pass to the bqplot Figure
@@ -1753,7 +1492,7 @@ def image_series(
     if reducer is None:
         reducer = ee.Reducer.mean()
 
-    band_names = imageCollection.first().bandNames().getInfo()
+    band_names = image_collection.first().bandNames().getInfo()
 
     # Function to reduce the region and get the mean for each image.
     def get_stats(image):
@@ -1763,23 +1502,32 @@ def image_series(
         for band in band_names:
             results[band] = stats.get(band)
 
-        if xProperty == "system:time_start" or xProperty == "system:time_end":
+        if x_property == "system:time_start" or x_property == "system:time_end":
             results["date"] = image.date().format("YYYY-MM-dd")
         else:
-            results[xProperty] = image.get(xProperty).getInfo()
+            results[x_property] = image.get(x_property).getInfo()
 
         return ee.Feature(None, results)
 
     # Apply the function over the image collection.
     fc = ee.FeatureCollection(
-        imageCollection.map(get_stats).filter(ee.Filter.notNull(band_names))
+        image_collection.map(get_stats).filter(ee.Filter.notNull(band_names))
     )
     df = ee_to_df(fc)
     if "date" in df.columns:
         df["date"] = pd.to_datetime(df["date"])
 
     fig = Chart(
-        df, chart_type, x_cols, y_cols, colors, title, xlabel, ylabel, options, **kwargs
+        df,
+        chart_type,
+        x_cols,
+        y_cols,
+        colors,
+        title,
+        x_label,
+        y_label,
+        options,
+        **kwargs,
     )
     return fig
 
@@ -1797,8 +1545,8 @@ def image_series_by_region(
     y_cols: Optional[List[str]] = None,
     colors: Optional[List[str]] = None,
     title: Optional[str] = None,
-    xlabel: Optional[str] = None,
-    ylabel: Optional[str] = None,
+    x_label: Optional[str] = None,
+    y_label: Optional[str] = None,
     options: Optional[Dict[str, Any]] = None,
     **kwargs: Any,
 ) -> Chart:
@@ -1824,9 +1572,9 @@ def image_series_by_region(
             Defaults to a predefined list of colors.
         title (Optional[str]): The title of the chart. Defaults to the
             chart type.
-        xlabel (Optional[str]): The label for the x-axis. Defaults to an
+        x_label (Optional[str]): The label for the x-axis. Defaults to an
             empty string.
-        ylabel (Optional[str]): The label for the y-axis. Defaults to an
+        y_label (Optional[str]): The label for the y-axis. Defaults to an
             empty string.
         options (Optional[Dict[str, Any]]): Additional options for the chart.
         **kwargs: Additional keyword arguments to pass to the bqplot Figure
@@ -1863,6 +1611,15 @@ def image_series_by_region(
         df["index"] = indexes
 
     fig = Chart(
-        df, chart_type, x_cols, y_cols, colors, title, xlabel, ylabel, options, **kwargs
+        df,
+        chart_type,
+        x_cols,
+        y_cols,
+        colors,
+        title,
+        x_label,
+        y_label,
+        options,
+        **kwargs,
     )
     return fig
