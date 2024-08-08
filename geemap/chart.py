@@ -862,7 +862,7 @@ class Image_byClass(LineChart):
         return x_data, y_data
 
 
-def feature_byFeature(
+def feature_by_feature(
     features: ee.FeatureCollection, xProperty: str, yProperties: list, **kwargs
 ):
     """Generates a Chart from a set of features. Plots the value of one or more properties for each feature.
@@ -887,7 +887,7 @@ def feature_byFeature(
         raise Exception(e)
 
 
-def feature_byProperty(
+def feature_by_property(
     features: ee.FeatureCollection,
     xProperties: Union[list, dict],
     seriesProperty: str,
@@ -1097,7 +1097,7 @@ def feature_histogram(
         raise Exception(e)
 
 
-def image_byClass(
+def image_by_class(
     image,
     classBand,
     region,
@@ -1159,7 +1159,7 @@ def image_byClass(
     return fig.chart
 
 
-def image_byRegion(image, regions, reducer, scale, xProperty, **kwargs):
+def image_by_region(image, regions, reducer, scale, xProperty, **kwargs):
     """
     Generates a Chart from an image. Extracts and plots band values in one or more regions in the image, with each band in a separate series.
 
@@ -1169,7 +1169,7 @@ def image_byRegion(image, regions, reducer, scale, xProperty, **kwargs):
         reducer (str | ee.Reducer): The reducer type for zonal statistics. Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
         scale (int): The scale in meters at which to perform the analysis.
         xProperty (str): The name of the property in the feature collection to use as the x-axis values.
-        **kwargs: Additional keyword arguments to be passed to the `feature_byFeature` function.
+        **kwargs: Additional keyword arguments to be passed to the `feature_by_feature` function.
 
     Returns:
         None
@@ -1180,10 +1180,10 @@ def image_byRegion(image, regions, reducer, scale, xProperty, **kwargs):
     )
     bands = image.bandNames().getInfo()
     df = ee_to_df(fc)[bands + [xProperty]]
-    feature_byFeature(df, xProperty, bands, **kwargs)
+    feature_by_feature(df, xProperty, bands, **kwargs)
 
 
-def image_doySeries(
+def image_doy_series(
     imageCollection,
     region,
     regionReducer,
@@ -1234,7 +1234,7 @@ def image_doySeries(
     line_chart.plot_chart()
 
 
-def image_doySeriesByRegion(
+def image_doy_series_by_region(
     imageCollection,
     bandName,
     regions,
@@ -1281,7 +1281,7 @@ def image_doySeriesByRegion(
     line_chart.plot_chart()
 
 
-def image_doySeriesByYear(
+def image_doy_series_by_year(
     imageCollection,
     bandName,
     region,
@@ -1543,7 +1543,7 @@ def image_series(
     return fig
 
 
-def image_seriesByRegion(
+def image_series_by_region(
     imageCollection: ee.ImageCollection,
     regions: Union[ee.FeatureCollection, ee.Geometry],
     reducer: Optional[Union[str, ee.Reducer]] = None,
