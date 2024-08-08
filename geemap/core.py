@@ -575,7 +575,7 @@ class Map(ipyleaflet.Map, MapInterface):
 
     def _find_widget_of_type(
         self, widget_type: Type, return_control: bool = False
-    ) -> Optional[Any]:
+    ) -> Optional[ipywidgets.Widget]:
         """Finds a widget in the controls with the passed in type."""
         for widget in self.controls:
             if isinstance(widget, ipyleaflet.WidgetControl):
@@ -806,6 +806,118 @@ class Map(ipyleaflet.Map, MapInterface):
             "vis_params": vis_params,
         }
         super().add(tile_layer)
+
+    def _add_legend(
+        self,
+        title: str = "Legend",
+        legend_dict: Dict[str, str] = None,
+        keys: List[Any] = None,
+        colors: List[Any] = None,
+        position: str = "bottomright",
+        builtin_legend: str = None,
+        layer_name: str = None,
+        add_header: bool = True,
+        widget_args: Dict[Any, Any] = None,
+        **kwargs,
+    ):
+        """Adds a customized legend to the map.
+
+        Args:
+            title (str, optional): Title of the legend. Defaults to 'Legend'.
+            legend_dict (dict, optional): A dictionary containing legend items
+                as keys and color as values. If provided, keys and colors will
+                be ignored. Defaults to None.
+            keys (list, optional): A list of legend keys. Defaults to None.
+            colors (list, optional): A list of legend colors. Defaults to None.
+            position (str, optional): Position of the legend. Defaults to
+                'bottomright'.
+            builtin_legend (str, optional): Name of the builtin legend to add
+                to the map. Defaults to None.
+            layer_name (str, optional): The associated layer for the legend.
+                Defaults to None.
+            add_header (bool, optional): Whether the legend can be closed or
+                not. Defaults to True.
+            widget_args (dict, optional): Additional arguments passed to the
+                widget_template() function. Defaults to {}.
+        """
+        legend = map_widgets.Legend(
+            title,
+            legend_dict,
+            keys,
+            colors,
+            position,
+            builtin_legend,
+            add_header,
+            widget_args,
+            **kwargs,
+        )
+        control = ipyleaflet.WidgetControl(widget=legend, position=position)
+        if layer := self.ee_layers.get(layer_name, None):
+            if old_legend := layer.pop("legend", None):
+                self.remove(old_legend)
+            layer["legend"] = control
+
+        super().add(control)
+        return control
+
+    def _add_colorbar(
+        self,
+        vis_params=None,
+        cmap="gray",
+        discrete=False,
+        label=None,
+        orientation="horizontal",
+        position="bottomright",
+        transparent_bg=False,
+        layer_name=None,
+        font_size=9,
+        axis_off=False,
+        max_width=None,
+        **kwargs,
+    ):
+        """Add a matplotlib colorbar to the map.
+
+        Args:
+            vis_params (dict): Visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.
+            cmap (str, optional): Matplotlib colormap. Defaults to "gray". See https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py for options.
+            discrete (bool, optional): Whether to create a discrete colorbar. Defaults to False.
+            label (str, optional): Label for the colorbar. Defaults to None.
+            orientation (str, optional): Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
+            position (str, optional): Position of the colorbar on the map. It can be one of: topleft, topright, bottomleft, and bottomright. Defaults to "bottomright".
+            transparent_bg (bool, optional): Whether to use transparent background. Defaults to False.
+            layer_name (str, optional): The layer name associated with the colorbar. Defaults to None.
+            font_size (int, optional): Font size for the colorbar. Defaults to 9.
+            axis_off (bool, optional): Whether to turn off the axis. Defaults to False.
+            max_width (str, optional): Maximum width of the colorbar in pixels. Defaults to None.
+
+        Raises:
+            TypeError: If the vis_params is not a dictionary.
+            ValueError: If the orientation is not either horizontal or vertical.
+            TypeError: If the provided min value is not scalar type.
+            TypeError: If the provided max value is not scalar type.
+            TypeError: If the provided opacity value is not scalar type.
+            TypeError: If cmap or palette is not provided.
+        """
+        colorbar = map_widgets.Colorbar(
+            vis_params,
+            cmap,
+            discrete,
+            label,
+            orientation,
+            transparent_bg,
+            font_size,
+            axis_off,
+            max_width,
+            **kwargs,
+        )
+        control = ipyleaflet.WidgetControl(widget=colorbar, position=position)
+        if layer := self.ee_layers.get(layer_name, None):
+            if old_colorbar := layer.pop("colorbar", None):
+                self.remove(old_colorbar)
+            layer["colorbar"] = control
+
+        super().add(control)
+        return control
 
     def _open_help_page(
         self, host_map: MapInterface, selected: bool, item: toolbar.Toolbar.Item
