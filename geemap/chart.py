@@ -90,6 +90,24 @@ def transpose_df(
     return transposed_df
 
 
+def pivot_df(df: pd.DataFrame, index: str, columns: str, values: str) -> pd.DataFrame:
+    """
+    Pivots a DataFrame using the specified index, columns, and values.
+
+    Args:
+        df (pd.DataFrame): The DataFrame to pivot.
+        index (str): The column to use for the index.
+        columns (str): The column to use for the columns.
+        values (str): The column to use for the values.
+
+    Returns:
+        pd.DataFrame: The pivoted DataFrame.
+    """
+    df_pivot = df.pivot(index=index, columns=columns, values=values).reset_index()
+    df_pivot.columns = [index] + [f"{col}" for col in df_pivot.columns[1:]]
+    return df_pivot
+
+
 class Chart:
     """
     A class to create and display various types of charts from data.
@@ -1281,49 +1299,123 @@ def image_doy_series_by_region(
     line_chart.plot_chart()
 
 
-def image_doy_series_by_year(
-    imageCollection,
-    bandName,
-    region,
-    regionReducer,
-    scale,
-    sameDayReducer,
-    startDay,
-    endDay,
-    **kwargs,
-):
+def doy_series_by_year(
+    image_collection,
+    band_name,
+    region=None,
+    region_reducer=None,
+    scale=None,
+    same_day_reducer=None,
+    start_day=1,
+    end_day=366,
+    chart_type: str = "LineChart",
+    colors: Optional[List[str]] = None,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    options: Optional[Dict[str, Any]] = None,
+    **kwargs: Any,
+) -> Chart:
     """
-    Generates a time series chart of an image collection for a specific region over multiple years.
+    Generates a time series chart of an image collection for a specific region
+        over multiple years.
 
     Args:
-        imageCollection (ee.ImageCollection): The image collection to analyze.
-        bandName (str): The name of the band to analyze.
+        image_collection (ee.ImageCollection): The image collection to analyze.
+        band_name (str): The name of the band to analyze.
         region (ee.Geometry | ee.FeatureCollection): The region to analyze.
-        regionReducer (str | ee.Reducer): The reducer type for zonal statistics.
+        region_reducer (str | ee.Reducer): The reducer type for zonal statistics.
         scale (int): The scale in meters at which to perform the analysis.
-        sameDayReducer (str | ee.Reducer): The reducer type for daily statistics.
-        startDay (int): The start day of the year.
-        endDay (int): The end day of the year.
-        **kwargs: Additional keyword arguments.
+        same_day_reducer (str | ee.Reducer): The reducer type for daily statistics.
+        start_day (int): The start day of the year.
+        end_day (int): The end day of the year.
+        chart_type (str): The type of chart to create. Supported types are
+            'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
+            'PieChart', 'AreaChart', and 'Table'.
+        colors (Optional[List[str]]): The colors to use for the chart.
+            Defaults to a predefined list of colors.
+        title (Optional[str]): The title of the chart. Defaults to the
+            chart type.
+        xlabel (Optional[str]): The label for the x-axis. Defaults to an
+            empty string.
+        ylabel (Optional[str]): The label for the y-axis. Defaults to an
+            empty string.
+        options (Optional[Dict[str, Any]]): Additional options for the chart.
+        **kwargs: Additional keyword arguments to pass to the bqplot Figure
+            or mark objects. For axes_options, see
+            https://bqplot.github.io/bqplot/api/axes
 
     Returns:
         None
     """
-    series = imageCollection.filter(
-        ee.Filter.calendarRange(startDay, endDay, "day_of_year")
+
+    # Function to add day-of-year ('doy') and year properties to each image.
+    def set_doys(collection):
+        def add_doy(img):
+            date = img.date()
+            year = date.get("year")
+            doy = date.getRelative("day", "year").floor().add(1)
+            return img.set({"doy": doy, "year": year})
+
+        return collection.map(add_doy)
+
+    # Set default values and filters if parameters are not provided.
+    region_reducer = region_reducer or ee.Reducer.mean()
+    same_day_reducer = same_day_reducer or ee.Reducer.mean()
+
+    # Optionally filter the image collection by region.
+    filtered_collection = image_collection
+    if region:
+        filtered_collection = filtered_collection.filterBounds(region)
+    filtered_collection = set_doys(filtered_collection)
+
+    # Filter image collection by day of year.
+    filtered_collection = filtered_collection.filter(
+        ee.Filter.calendarRange(start_day, end_day, "day_of_year")
     )
-    fc = zonal_stats(
-        series,
-        region,
-        stat_type=regionReducer,
-        scale=scale,
-        verbose=False,
-        return_fc=True,
+
+    # Generate a feature for each (doy, value, year) combination.
+    def create_feature(image):
+        value = (
+            image.select(band_name)
+            .reduceRegion(reducer=region_reducer, geometry=region, scale=scale)
+            .get(band_name)
+        )  # Get the reduced value for the given band.
+        return ee.Feature(
+            None, {"doy": image.get("doy"), "year": image.get("year"), "value": value}
+        )
+
+    tuples = filtered_collection.map(create_feature)
+
+    # Group by unique (doy, year) pairs.
+    distinct_doy_year = tuples.distinct(["doy", "year"])
+
+    # Join the original tuples with the distinct (doy, year) pairs.
+    filter = ee.Filter.And(
+        ee.Filter.equals(leftField="doy", rightField="doy"),
+        ee.Filter.equals(leftField="year", rightField="year"),
     )
-    bands = [bandName, "year"]
-    df = ee_to_df(fc)[bands]
-    line_chart = Feature_ByProperty(df, [bandName], "year", **kwargs)
-    line_chart.plot_chart()
+    joined = ee.Join.saveAll("matches").apply(
+        primary=distinct_doy_year, secondary=tuples, condition=filter
+    )
+
+    # For each (doy, year), reduce the values of the joined features.
+    def reduce_features(doy_year):
+        features = ee.FeatureCollection(ee.List(doy_year.get("matches")))
+        value = features.aggregate_array("value").reduce(same_day_reducer)
+        return doy_year.set("value", value)
+
+    reduced = joined.map(reduce_features)
+
+    df = ee_to_df(reduced, columns=["doy", "year", "value"])
+    df = pivot_df(df, index="doy", columns="year", values="value")
+    y_cols = df.columns.tolist()[1:]
+    x_cols = "doy"
+
+    fig = Chart(
+        df, chart_type, x_cols, y_cols, colors, title, xlabel, ylabel, options, **kwargs
+    )
+    return fig
 
 
 def image_histogram(
