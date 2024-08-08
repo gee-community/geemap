@@ -1,4 +1,4 @@
-"""Module for creating charts for Earth Engine data.
+"""Module for creating charts from Earth Engine data.
 """
 
 # *******************************************************************************#
@@ -16,7 +16,7 @@ from bqplot import pyplot as plt
 from IPython.display import display
 from .common import ee_to_df, zonal_stats, image_dates
 
-from typing import List, Optional, Union, Dict, Any
+from typing import List, Optional, Union, Dict, Any, Tuple
 
 
 class DataTable(pd.DataFrame):
@@ -64,7 +64,7 @@ def transpose_df(
         pd.DataFrame: The transposed DataFrame.
 
     Raises:
-        ValueError: If `label_col` is not a column in `datatable`.
+        ValueError: If `label_col` is not a column in the DataFrame.
         ValueError: If the length of `indexes` does not match the number of
             rows in the transposed DataFrame.
     """
@@ -201,7 +201,7 @@ class Chart:
         chart_type: str,
         clear: bool = True,
         **kwargs: Any,
-    ):
+    ) -> None:
         """
         Sets the chart type and other chart properties.
 
@@ -358,7 +358,8 @@ class Chart:
         Set a new DataTable for the chart.
 
         Args:
-            data (Union[Dict[str, List[Any]], pd.DataFrame]): The new data to be used for the chart.
+            data (Union[Dict[str, List[Any]], pd.DataFrame]): The new data to be
+            used for the chart.
         """
         self.data_table = DataTable(data)
 
@@ -376,7 +377,22 @@ class Chart:
 class BaseChartClass:
     """This should include everything a chart module requires to plot figures."""
 
-    def __init__(self, features, default_labels, name, **kwargs):
+    def __init__(
+        self,
+        features: Union[ee.FeatureCollection, pd.DataFrame],
+        default_labels: List[str],
+        name: str,
+        **kwargs: Any,
+    ):
+        """
+        Initializes the BaseChartClass with the given features, labels, and name.
+
+        Args:
+            features (ee.FeatureCollection | pd.DataFrame): The features to plot.
+            default_labels (List[str]): The default labels for the chart.
+            name (str): The name of the chart.
+            **kwargs: Additional keyword arguments to set as attributes.
+        """
         self.ylim = None
         self.xlim = None
         self.title = ""
@@ -418,25 +434,58 @@ class BaseChartClass:
             setattr(self, key, value)
 
     @classmethod
-    def get_data(self):
+    def get_data(cls) -> None:
+        """
+        Placeholder method to get data for the chart.
+        """
         pass
 
     @classmethod
-    def plot_chart(self):
+    def plot_chart(cls) -> None:
+        """
+        Placeholder method to plot the chart.
+        """
         pass
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """
+        Returns the string representation of the chart.
+
+        Returns:
+            str: The name of the chart.
+        """
         return self.name
 
 
 class BarChart(BaseChartClass):
     """Create Bar Chart. All histogram/bar charts can use this object."""
 
-    def __init__(self, features, default_labels, name, type="grouped", **kwargs):
-        super().__init__(features, default_labels, name, **kwargs)
-        self.type = type
+    def __init__(
+        self,
+        features: Union[ee.FeatureCollection, pd.DataFrame],
+        default_labels: List[str],
+        name: str,
+        type: str = "grouped",
+        **kwargs: Any,
+    ):
+        """
+        Initializes the BarChart with the given features, labels, name, and type.
 
-    def generate_tooltip(self):
+        Args:
+            features (ee.FeatureCollection | pd.DataFrame): The features to plot.
+            default_labels (List[str]): The default labels for the chart.
+            name (str): The name of the chart.
+            type (str, optional): The type of bar chart ('grouped' or 'stacked').
+                Defaults to 'grouped'.
+            **kwargs: Additional keyword arguments to set as attributes.
+        """
+        super().__init__(features, default_labels, name, **kwargs)
+        self.type: str = type
+
+    def generate_tooltip(self) -> None:
+        """
+        Generates a tooltip for the bar chart.
+        """
         if (self.x_label is not None) and (self.y_label is not None):
             self.bar_chart.tooltip = Tooltip(
                 fields=["x", "y"], labels=[self.x_label, self.y_label]
@@ -444,7 +493,13 @@ class BarChart(BaseChartClass):
         else:
             self.bar_chart.tooltip = Tooltip(fields=["x", "y"])
 
-    def get_ylim(self):
+    def get_ylim(self) -> Tuple[float, float]:
+        """
+        Gets the y-axis limits for the bar chart.
+
+        Returns:
+            Tuple[float, float]: The minimum and maximum y-axis limits.
+        """
         if self.ylim:
             ylim_min, ylim_max = self.ylim[0], self.ylim[1]
         else:
@@ -459,7 +514,10 @@ class BarChart(BaseChartClass):
                 ylim_max = ylim_max + 0.2 * (ylim_max - ylim_min)
         return (ylim_min, ylim_max)
 
-    def plot_chart(self):
+    def plot_chart(self) -> None:
+        """
+        Plots the bar chart.
+        """
         fig = plt.figure(
             title=self.title,
             legend_location=self.legend_location,
@@ -495,10 +553,28 @@ class BarChart(BaseChartClass):
 class LineChart(BarChart):
     """A class to define variables and get_data method for a line chart."""
 
-    def __init__(self, features, labels, name="line.chart", **kwargs):
+    def __init__(
+        self,
+        features: Union[ee.FeatureCollection, pd.DataFrame],
+        labels: List[str],
+        name: str = "line.chart",
+        **kwargs: Any,
+    ):
+        """
+        Initializes the LineChart with the given features, labels, and name.
+
+        Args:
+            features (ee.FeatureCollection | pd.DataFrame): The features to plot.
+            labels (List[str]): The labels for the chart.
+            name (str, optional): The name of the chart. Defaults to 'line.chart'.
+            **kwargs: Additional keyword arguments to set as attributes.
+        """
         super().__init__(features, labels, name, **kwargs)
 
-    def plot_chart(self):
+    def plot_chart(self) -> None:
+        """
+        Plots the line chart.
+        """
         fig = plt.figure(
             title=self.title,
             legend_location=self.legend_location,
@@ -526,109 +602,215 @@ class LineChart(BarChart):
 
 
 class Feature_ByFeature(BarChart):
-    """A object to define variables and get_data method."""
+    """An object to define variables and get_data method for features by feature."""
 
     def __init__(
-        self, features, xProperty, yProperties, name="feature.byFeature", **kwargs
+        self,
+        features: Union[ee.FeatureCollection, pd.DataFrame],
+        x_property: str,
+        y_properties: List[str],
+        name: str = "feature.byFeature",
+        **kwargs: Any,
     ):
-        default_labels = yProperties
-        super().__init__(features, default_labels, name, **kwargs)
-        self.x_data, self.y_data = self.get_data(xProperty, yProperties)
+        """
+        Initializes the Feature_ByFeature with the given features, x_property,
+        y_properties, and name.
 
-    def get_data(self, xProperty, yProperties):
-        x_data = list(self.df[xProperty])
-        y_data = list(self.df[yProperties].values.T)
+        Args:
+            features (ee.FeatureCollection | pd.DataFrame): The features to plot.
+            x_property (str): The property to use for the x-axis.
+            y_properties (List[str]): The properties to use for the y-axis.
+            name (str, optional): The name of the chart. Defaults to
+                'feature.byFeature'.
+            **kwargs: Additional keyword arguments to set as attributes.
+        """
+        default_labels = y_properties
+        super().__init__(features, default_labels, name, **kwargs)
+        self.x_data, self.y_data = self.get_data(x_property, y_properties)
+
+    def get_data(
+        self, x_property: str, y_properties: List[str]
+    ) -> Tuple[List[Any], List[Any]]:
+        """
+        Gets the data for the chart.
+
+        Args:
+            x_property (str): The property to use for the x-axis.
+            y_properties (List[str]): The properties to use for the y-axis.
+
+        Returns:
+            Tuple[List[Any], List[Any]]: The x and y data for the chart.
+        """
+        x_data = list(self.df[x_property])
+        y_data = list(self.df[y_properties].values.T)
         return x_data, y_data
 
 
 class Feature_ByProperty(BarChart):
-    """A object to define variables and get_data method."""
+    """An object to define variables and get_data method for features by property."""
 
     def __init__(
-        self, features, xProperties, seriesProperty, name="feature.byProperty", **kwargs
+        self,
+        features: Union[ee.FeatureCollection, pd.DataFrame],
+        x_properties: Union[List[str], Dict[str, str]],
+        series_property: str,
+        name: str = "feature.byProperty",
+        **kwargs: Any,
     ):
+        """
+        Initializes the Feature_ByProperty with the given features, x_properties,
+        series_property, and name.
+
+        Args:
+            features (ee.FeatureCollection | pd.DataFrame): The features to plot.
+            x_properties (List[str] | Dict[str, str]): The properties to use for
+                the x-axis.
+            series_property (str): The property to use for labeling the series.
+            name (str, optional): The name of the chart. Defaults to
+                'feature.byProperty'.
+            **kwargs: Additional keyword arguments to set as attributes.
+
+        Raises:
+            Exception: If 'labels' is in kwargs.
+        """
         default_labels = None
         super().__init__(features, default_labels, name, **kwargs)
         if "labels" in kwargs:
             raise Exception("Please remove labels in kwargs and try again.")
 
-        self.labels = list(self.df[seriesProperty])
-        self.x_data, self.y_data = self.get_data(xProperties)
+        self.labels = list(self.df[series_property])
+        self.x_data, self.y_data = self.get_data(x_properties)
 
-    def get_data(self, xProperties):
-        if isinstance(xProperties, list):
-            x_data = xProperties
-            y_data = self.df[xProperties].values
-        elif isinstance(xProperties, dict):
-            x_data = list(xProperties.values())
-            y_data = self.df[list(xProperties.keys())].values
+    def get_data(
+        self, x_properties: Union[List[str], Dict[str, str]]
+    ) -> Tuple[List[Any], List[Any]]:
+        """
+        Gets the data for the chart.
+
+        Args:
+            x_properties (List[str] | Dict[str, str]): The properties to use for
+                the x-axis.
+
+        Returns:
+            Tuple[List[Any], List[Any]]: The x and y data for the chart.
+
+        Raises:
+            Exception: If x_properties is not a list or dictionary.
+        """
+        if isinstance(x_properties, list):
+            x_data = x_properties
+            y_data = self.df[x_properties].values
+        elif isinstance(x_properties, dict):
+            x_data = list(x_properties.values())
+            y_data = self.df[list(x_properties.keys())].values
         else:
-            raise Exception("xProperties must be a list or dictionary.")
+            raise Exception("x_properties must be a list or dictionary.")
 
         return x_data, y_data
 
 
 class Feature_Groups(BarChart):
-    """A object to define variables and get_data method."""
+    """An object to define variables and get_data method for feature groups."""
 
     def __init__(
         self,
-        features,
-        xProperty,
-        yProperty,
-        seriesProperty,
-        name="feature.groups",
-        type="stacked",
-        **kwargs,
+        features: Union[ee.FeatureCollection, pd.DataFrame],
+        x_property: str,
+        y_property: str,
+        series_property: str,
+        name: str = "feature.groups",
+        type: str = "stacked",
+        **kwargs: Any,
     ):
+        """
+        Initializes the Feature_Groups with the given features, x_property,
+        y_property, series_property, name, and type.
+
+        Args:
+            features (ee.FeatureCollection | pd.DataFrame): The features to plot.
+            x_property (str): The property to use for the x-axis.
+            y_property (str): The property to use for the y-axis.
+            series_property (str): The property to use for labeling the series.
+            name (str, optional): The name of the chart. Defaults to 'feature.groups'.
+            type (str, optional): The type of bar chart ('grouped' or 'stacked').
+                Defaults to 'stacked'.
+            **kwargs: Additional keyword arguments to set as attributes.
+        """
         df = ee_to_df(features)
-        self.unique_series_values = df[seriesProperty].unique().tolist()
+        self.unique_series_values = df[series_property].unique().tolist()
         default_labels = [str(x) for x in self.unique_series_values]
-        self.yProperty = yProperty
+        self.yProperty = y_property
         super().__init__(features, default_labels, name, type, **kwargs)
 
-        self.new_column_names = self.get_column_names(seriesProperty, yProperty)
-        self.x_data, self.y_data = self.get_data(xProperty, self.new_column_names)
+        self.new_column_names = self.get_column_names(series_property, y_property)
+        self.x_data, self.y_data = self.get_data(x_property, self.new_column_names)
 
-    def get_column_names(self, seriesProperty, yProperty):
+    def get_column_names(self, series_property: str, y_property: str) -> List[str]:
+        """
+        Gets the new column names for the DataFrame.
+
+        Args:
+            series_property (str): The property to use for labeling the series.
+            y_property (str): The property to use for the y-axis.
+
+        Returns:
+            List[str]: The new column names.
+        """
         new_column_names = []
 
         for value in self.unique_series_values:
-            sample_filter = (self.df[seriesProperty] == value).map({True: 1, False: 0})
-            column_name = str(yProperty) + "_" + str(value)
-            self.df[column_name] = self.df[yProperty] * sample_filter
+            sample_filter = (self.df[series_property] == value).map({True: 1, False: 0})
+            column_name = str(y_property) + "_" + str(value)
+            self.df[column_name] = self.df[y_property] * sample_filter
             new_column_names.append(column_name)
 
         return new_column_names
 
-    def get_data(self, xProperty, new_column_names):
-        x_data = list(self.df[xProperty])
+    def get_data(
+        self, x_property: str, new_column_names: List[str]
+    ) -> Tuple[List[Any], List[Any]]:
+        """
+        Gets the data for the chart.
+
+        Args:
+            x_property (str): The property to use for the x-axis.
+            new_column_names (List[str]): The new column names for the y-axis.
+
+        Returns:
+            Tuple[List[Any], List[Any]]: The x and y data for the chart.
+        """
+        x_data = list(self.df[x_property])
         y_data = [self.df[x] for x in new_column_names]
 
         return x_data, y_data
 
 
 def feature_by_feature(
-    features: ee.FeatureCollection, x_property: str, y_properties: list, **kwargs
-):
-    """Generates a Chart from a set of features. Plots the value of one or more properties for each feature.
+    features: ee.FeatureCollection,
+    x_property: str,
+    y_properties: List[str],
+    **kwargs: Any,
+) -> None:
+    """
+    Generates a Chart from a set of features. Plots the value of one or more
+    properties for each feature.
     Reference: https://developers.google.com/earth-engine/guides/charts_feature#uichartfeaturebyfeature
 
     Args:
         features (ee.FeatureCollection): The feature collection to generate a chart from.
-        xProperty (str): Features labeled by xProperty.
-        yProperties (list): Values of yProperties.
+        x_property (str): Features labeled by x_property.
+        y_properties (List[str]): Values of y_properties.
+        **kwargs: Additional keyword arguments to set as attributes.
 
     Raises:
         Exception: Errors when creating the chart.
     """
     bar = Feature_ByFeature(
-        features=features, xProperty=x_property, yProperties=y_properties, **kwargs
+        features=features, x_property=x_property, y_properties=y_properties, **kwargs
     )
 
     try:
         bar.plot_chart()
-
     except Exception as e:
         raise Exception(e)
 
@@ -639,14 +821,17 @@ def feature_by_property(
     series_property: str,
     **kwargs,
 ):
-    """Generates a Chart from a set of features. Plots property values of one or more features.
+    """Generates a Chart from a set of features. Plots property values of one or
+     more features.
     Reference: https://developers.google.com/earth-engine/guides/charts_feature#uichartfeaturebyproperty
 
     Args:
         features (ee.FeatureCollection): The features to include in the chart.
-        x_properties (list | dict): One of (1) a list of properties to be plotted on the x-axis; or
-            (2) a (property, label) dictionary specifying labels for properties to be used as values on the x-axis.
-        series_property (str): The name of the property used to label each feature in the legend.
+        x_properties (list | dict): One of (1) a list of properties to be
+            plotted on the x-axis; or (2) a (property, label) dictionary
+            specifying labels for properties to be used as values on the x-axis.
+        series_property (str): The name of the property used to label each
+            feature in the legend.
 
     Raises:
         Exception: If the provided xProperties is not a list or dict.
@@ -654,8 +839,8 @@ def feature_by_property(
     """
     bar = Feature_ByProperty(
         features=features,
-        xProperties=x_properties,
-        seriesProperty=series_property,
+        x_properties=x_properties,
+        series_property=series_property,
         **kwargs,
     )
 
@@ -666,25 +851,36 @@ def feature_by_property(
         raise Exception(e)
 
 
-def feature_groups(features, x_property, y_property, series_property, **kwargs):
-    """Generates a Chart from a set of features.
+def feature_groups(
+    features: ee.FeatureCollection,
+    x_property: str,
+    y_property: str,
+    series_property: str,
+    **kwargs: Any,
+) -> None:
+    """
+    Generates a Chart from a set of features.
     Plots the value of one property for each feature.
+
     Reference:
     https://developers.google.com/earth-engine/guides/charts_feature#uichartfeaturegroups
+
     Args:
         features (ee.FeatureCollection): The feature collection to make a chart from.
         x_property (str): Features labeled by xProperty.
         y_property (str): Features labeled by yProperty.
         series_property (str): The property used to label each feature in the legend.
+        **kwargs: Additional keyword arguments to set as attributes.
+
     Raises:
         Exception: Errors when creating the chart.
     """
 
     bar = Feature_Groups(
         features=features,
-        xProperty=x_property,
-        yProperty=y_property,
-        seriesProperty=series_property,
+        x_property=x_property,
+        y_property=y_property,
+        series_property=series_property,
         **kwargs,
     )
 
@@ -696,8 +892,13 @@ def feature_groups(features, x_property, y_property, series_property, **kwargs):
 
 
 def feature_histogram(
-    features, property, max_buckets=None, min_bucket_width=None, show=True, **kwargs
-):
+    features: ee.FeatureCollection,
+    property: str,
+    max_buckets: Optional[int] = None,
+    min_bucket_width: Optional[float] = None,
+    show: bool = True,
+    **kwargs: Any,
+) -> Optional[Any]:
     """
     Generates a Chart from a set of features.
     Computes and plots a histogram of the given property.
@@ -709,7 +910,7 @@ def feature_histogram(
 
     Args:
         features (ee.FeatureCollection): The features to include in the chart.
-        property  (str): The name of the property to generate the histogram for.
+        property (str): The name of the property to generate the histogram for.
         max_buckets (int, optional): The maximum number of buckets (bins) to use
             when building a histogram; will be rounded up to a power of 2.
         min_bucket_width (float, optional): The minimum histogram bucket width,
@@ -717,10 +918,14 @@ def feature_histogram(
         show (bool, optional): Whether to show the chart. If not, it will return
             the bqplot chart object, which can be used to retrieve data for the
             chart. Defaults to True.
+        **kwargs: Additional keyword arguments to set as attributes.
 
     Raises:
         Exception: If the provided xProperties is not a list or dict.
         Exception: If the chart fails to create.
+
+    Returns:
+        Optional[Any]: The bqplot chart object if show is False, otherwise None.
     """
     import math
 
@@ -847,36 +1052,35 @@ def feature_histogram(
 
 
 def image_by_class(
-    image,
-    class_band,
-    region,
-    reducer="MEAN",
-    scale=None,
-    class_labels=None,
-    x_labels=None,
-    chart_type="LineChart",
-    **kwargs,
-):
+    image: ee.Image,
+    class_band: str,
+    region: Union[ee.Geometry, ee.FeatureCollection],
+    reducer: Union[str, ee.Reducer] = "MEAN",
+    scale: Optional[int] = None,
+    class_labels: Optional[List[str]] = None,
+    x_labels: Optional[List[str]] = None,
+    chart_type: str = "LineChart",
+    **kwargs: Any,
+) -> Any:
     """
-    Generates a Chart from an image by class. Extracts and plots band values by
-        class.
+    Generates a Chart from an image by class. Extracts and plots band values by class.
 
     Args:
         image (ee.Image): Image to extract band values from.
         class_band (str): The band name to use as class labels.
         region (ee.Geometry | ee.FeatureCollection): The region(s) to reduce.
-        reducer (str | ee.Reducer): The reducer type for zonal statistics. Can
-            be one of 'mean', 'median', 'sum', 'min', 'max', etc.
-        scale (int): The scale in meters at which to perform the analysis.
-        class_labels (list): List of class labels.
-        x_labels (list): List of x-axis labels.
-        chart_type (str): The type of chart to create. Supported types are
+        reducer (str | ee.Reducer, optional): The reducer type for zonal statistics. Can
+            be one of 'mean', 'median', 'sum', 'min', 'max', etc. Defaults to 'MEAN'.
+        scale (int, optional): The scale in meters at which to perform the analysis.
+        class_labels (List[str], optional): List of class labels.
+        x_labels (List[str], optional): List of x-axis labels.
+        chart_type (str, optional): The type of chart to create. Supported types are
             'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart', 'PieChart',
-                'AreaChart', and 'Table'.
+            'AreaChart', and 'Table'. Defaults to 'LineChart'.
         **kwargs: Additional keyword arguments.
 
     Returns:
-        None
+        Any: The generated chart.
     """
     fc = zonal_stats(
         image, region, stat_type=reducer, scale=scale, verbose=False, return_fc=True
@@ -903,17 +1107,29 @@ def image_by_class(
     return fig
 
 
-def image_by_region(image, regions, reducer, scale, x_property, **kwargs):
+def image_by_region(
+    image: ee.Image,
+    regions: Union[ee.FeatureCollection, ee.Geometry],
+    reducer: Union[str, ee.Reducer],
+    scale: int,
+    x_property: str,
+    **kwargs: Any,
+) -> None:
     """
-    Generates a Chart from an image. Extracts and plots band values in one or more regions in the image, with each band in a separate series.
+    Generates a Chart from an image. Extracts and plots band values in one or more
+    regions in the image, with each band in a separate series.
 
     Args:
         image (ee.Image): Image to extract band values from.
-        regions (ee.FeatureCollection | ee.Geometry): Regions to reduce. Defaults to the image's footprint.
-        reducer (str | ee.Reducer): The reducer type for zonal statistics. Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
+        regions (ee.FeatureCollection | ee.Geometry): Regions to reduce.
+            Defaults to the image's footprint.
+        reducer (str | ee.Reducer): The reducer type for zonal statistics. Can
+            be one of 'mean', 'median', 'sum', 'min', 'max', etc.
         scale (int): The scale in meters at which to perform the analysis.
-        x_property (str): The name of the property in the feature collection to use as the x-axis values.
-        **kwargs: Additional keyword arguments to be passed to the `feature_by_feature` function.
+        x_property (str): The name of the property in the feature collection to
+            use as the x-axis values.
+        **kwargs: Additional keyword arguments to be passed to the
+            `feature_by_feature` function.
 
     Returns:
         None
@@ -928,13 +1144,13 @@ def image_by_region(image, regions, reducer, scale, x_property, **kwargs):
 
 
 def image_doy_series(
-    image_collection,
-    region=None,
-    region_reducer=None,
-    scale=None,
-    year_reducer=None,
-    start_day=1,
-    end_day=366,
+    image_collection: ee.ImageCollection,
+    region: Optional[Union[ee.Geometry, ee.FeatureCollection]] = None,
+    region_reducer: Optional[Union[str, ee.Reducer]] = None,
+    scale: Optional[int] = None,
+    year_reducer: Optional[Union[str, ee.Reducer]] = None,
+    start_day: int = 1,
+    end_day: int = 366,
     chart_type: str = "LineChart",
     colors: Optional[List[str]] = None,
     title: Optional[str] = None,
@@ -943,15 +1159,18 @@ def image_doy_series(
     **kwargs: Any,
 ) -> Chart:
     """
-    Generates a time series chart of an image collection for a specific region over a range of days of the year.
+    Generates a time series chart of an image collection for a specific region
+        over a range of days of the year.
 
     Args:
         image_collection (ee.ImageCollection): The image collection to analyze.
-        region (ee.Geometry | ee.FeatureCollection): The region to reduce.
-        region_reducer (str | ee.Reducer): The reducer type for zonal statistics.
-            Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
-        scale (int): The scale in meters at which to perform the analysis.
-        year_reducer (str | ee.Reducer): The reducer type for yearly statistics.
+        region (Optional[Union[ee.Geometry, ee.FeatureCollection]]): The region
+            to reduce.
+        region_reducer (Optional[Union[str, ee.Reducer]]): The reducer type for
+            zonal statistics.Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
+        scale (Optional[int]): The scale in meters at which to perform the analysis.
+        year_reducer (Optional[Union[str, ee.Reducer]]): The reducer type for
+            yearly statistics.
         start_day (int): The start day of the year.
         end_day (int): The end day of the year.
         chart_type (str): The type of chart to create. Supported types are
@@ -970,7 +1189,7 @@ def image_doy_series(
             https://bqplot.github.io/bqplot/api/axes
 
     Returns:
-        None
+        Chart: The generated chart.
     """
 
     # Function to add day-of-year ('doy') and year properties to each image.
@@ -1055,15 +1274,15 @@ def image_doy_series(
 
 
 def image_doy_series_by_region(
-    image_collection,
-    band_name,
-    regions,
-    region_reducer=None,
-    scale=None,
-    year_reducer=None,
-    series_property=None,
-    start_day=1,
-    end_day=366,
+    image_collection: ee.ImageCollection,
+    band_name: str,
+    regions: ee.FeatureCollection,
+    region_reducer: Optional[Union[str, ee.Reducer]] = None,
+    scale: Optional[int] = None,
+    year_reducer: Optional[Union[str, ee.Reducer]] = None,
+    series_property: Optional[str] = None,
+    start_day: int = 1,
+    end_day: int = 366,
     chart_type: str = "LineChart",
     colors: Optional[List[str]] = None,
     title: Optional[str] = None,
@@ -1072,16 +1291,19 @@ def image_doy_series_by_region(
     **kwargs: Any,
 ) -> Chart:
     """
-    Generates a time series chart of an image collection for multiple regions over a range of days of the year.
+    Generates a time series chart of an image collection for multiple regions
+    over a range of days of the year.
 
     Args:
         image_collection (ee.ImageCollection): The image collection to analyze.
-        band_mame (str): The name of the band to analyze.
+        band_name (str): The name of the band to analyze.
         regions (ee.FeatureCollection): The regions to analyze.
-        region_reducer (str | ee.Reducer): The reducer type for zonal statistics.
-        scale (int): The scale in meters at which to perform the analysis.
-        year_reducer (str | ee.Reducer): The reducer type for yearly statistics.
-        series_property (str): The property to use for labeling the series.
+        region_reducer (Optional[Union[str, ee.Reducer]]): The reducer type for
+            zonal statistics.
+        scale (Optional[int]): The scale in meters at which to perform the analysis.
+        year_reducer (Optional[Union[str, ee.Reducer]]): The reducer type for
+            yearly statistics.
+        series_property (Optional[str]): The property to use for labeling the series.
         start_day (int): The start day of the year.
         end_day (int): The end day of the year.
         chart_type (str): The type of chart to create. Supported types are
@@ -1100,7 +1322,7 @@ def image_doy_series_by_region(
             https://bqplot.github.io/bqplot/api/axes
 
     Returns:
-        None
+        Chart: The generated chart.
     """
 
     image_collection = image_collection.select(band_name)
@@ -1182,14 +1404,14 @@ def image_doy_series_by_region(
 
 
 def doy_series_by_year(
-    image_collection,
-    band_name,
-    region=None,
-    region_reducer=None,
-    scale=None,
-    same_day_reducer=None,
-    start_day=1,
-    end_day=366,
+    image_collection: ee.ImageCollection,
+    band_name: str,
+    region: Optional[Union[ee.Geometry, ee.FeatureCollection]] = None,
+    region_reducer: Optional[Union[str, ee.Reducer]] = None,
+    scale: Optional[int] = None,
+    same_day_reducer: Optional[Union[str, ee.Reducer]] = None,
+    start_day: int = 1,
+    end_day: int = 366,
     chart_type: str = "LineChart",
     colors: Optional[List[str]] = None,
     title: Optional[str] = None,
@@ -1199,15 +1421,18 @@ def doy_series_by_year(
 ) -> Chart:
     """
     Generates a time series chart of an image collection for a specific region
-        over multiple years.
+    over multiple years.
 
     Args:
         image_collection (ee.ImageCollection): The image collection to analyze.
         band_name (str): The name of the band to analyze.
-        region (ee.Geometry | ee.FeatureCollection): The region to analyze.
-        region_reducer (str | ee.Reducer): The reducer type for zonal statistics.
-        scale (int): The scale in meters at which to perform the analysis.
-        same_day_reducer (str | ee.Reducer): The reducer type for daily statistics.
+        region (Optional[Union[ee.Geometry, ee.FeatureCollection]]): The region
+            to analyze.
+        region_reducer (Optional[Union[str, ee.Reducer]]): The reducer type for
+            zonal statistics.
+        scale (Optional[int]): The scale in meters at which to perform the analysis.
+        same_day_reducer (Optional[Union[str, ee.Reducer]]): The reducer type
+            for daily statistics.
         start_day (int): The start day of the year.
         end_day (int): The end day of the year.
         chart_type (str): The type of chart to create. Supported types are
@@ -1226,7 +1451,7 @@ def doy_series_by_year(
             https://bqplot.github.io/bqplot/api/axes
 
     Returns:
-        None
+        Chart: The generated chart.
     """
 
     # Function to add day-of-year ('doy') and year properties to each image.
@@ -1310,30 +1535,30 @@ def image_histogram(
     image: ee.Image,
     region: ee.Geometry,
     scale: int,
-    maxBuckets: int,
-    minBucketWidth: float,
-    maxRaw: int,
-    maxPixels: int,
+    max_buckets: int,
+    min_bucket_width: float,
+    max_raw: int,
+    max_pixels: int,
     reducer_args: Dict[str, Any] = {},
     **kwargs: Dict[str, Any],
 ) -> bq.Figure:
     """
     Creates a histogram for each band of the specified image within the given
-        region using bqplot.
+    region using bqplot.
 
     Args:
         image (ee.Image): The Earth Engine image for which to create histograms.
         region (ee.Geometry): The region over which to calculate the histograms.
         scale (int): The scale in meters of the calculation.
-        maxBuckets (int): The maximum number of buckets in the histogram.
-        minBucketWidth (float): The minimum width of the buckets in the histogram.
-        maxRaw (int): The maximum number of pixels to include in the histogram.
-        maxPixels (int): The maximum number of pixels to reduce.
-        reducer_args (dict): Additional arguments to pass to the image.reduceRegion.
+        max_buckets (int): The maximum number of buckets in the histogram.
+        min_bucket_width (float): The minimum width of the buckets in the histogram.
+        max_raw (int): The maximum number of pixels to include in the histogram.
+        max_pixels (int): The maximum number of pixels to reduce.
+        reducer_args (Dict[str, Any]): Additional arguments to pass to the image.reduceRegion.
 
     Keyword Args:
-        colors (list[str]): Colors for the histograms of each band.
-        labels (list[str]): Labels for the histograms of each band.
+        colors (List[str]): Colors for the histograms of each band.
+        labels (List[str]): Labels for the histograms of each band.
         title (str): Title of the combined histogram plot.
         legend_location (str): Location of the legend in the plot.
 
@@ -1343,11 +1568,11 @@ def image_histogram(
     # Calculate the histogram data.
     histogram = image.reduceRegion(
         reducer=ee.Reducer.histogram(
-            maxBuckets=maxBuckets, minBucketWidth=minBucketWidth, maxRaw=maxRaw
+            maxBuckets=max_buckets, minBucketWidth=min_bucket_width, maxRaw=max_raw
         ),
         geometry=region,
         scale=scale,
-        maxPixels=maxPixels,
+        maxPixels=max_pixels,
         **reducer_args,
     )
 
@@ -1415,36 +1640,47 @@ def image_histogram(
     return combined_fig
 
 
-def image_regions(image, regions, reducer, scale, seriesProperty, xLabels, **kwargs):
+def image_regions(
+    image: ee.Image,
+    regions: Union[ee.FeatureCollection, ee.Geometry],
+    reducer: Union[str, ee.Reducer],
+    scale: int,
+    series_property: str,
+    x_labels: List[str],
+    **kwargs: Any,
+) -> None:
     """
-    Generates a Chart from an image by regions. Extracts and plots band values in multiple regions.
+    Generates a Chart from an image by regions. Extracts and plots band values
+    in multiple regions.
 
     Args:
         image (ee.Image): Image to extract band values from.
-        regions (ee.FeatureCollection | ee.Geometry): Regions to reduce. Defaults to the image's footprint.
-        reducer (str | ee.Reducer): The reducer type for zonal statistics. Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
+        regions (Union[ee.FeatureCollection, ee.Geometry]): Regions to reduce.
+            Defaults to the image's footprint.
+        reducer (Union[str, ee.Reducer]): The reducer type for zonal statistics.
+            Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
         scale (int): The scale in meters at which to perform the analysis.
-        seriesProperty (str): The property to use for labeling the series.
-        xLabels (list): List of x-axis labels.
+        series_property (str): The property to use for labeling the series.
+        x_labels (List[str]): List of x-axis labels.
         **kwargs: Additional keyword arguments.
 
     Returns:
-        None
+        bq.Figure: The bqplot figure.
     """
     fc = zonal_stats(
         image, regions, stat_type=reducer, scale=scale, verbose=False, return_fc=True
     )
     bands = image.bandNames().getInfo()
-    df = ee_to_df(fc)[bands + [seriesProperty]]
-    feature_groups(df, seriesProperty, bands, seriesProperty, **kwargs)
+    df = ee_to_df(fc)[bands + [series_property]]
+    feature_groups(df, series_property, bands, series_property, **kwargs)
 
 
 def image_series(
-    image_collection,
-    region,
-    reducer=None,
-    scale=None,
-    x_property="system:time_start",
+    image_collection: ee.ImageCollection,
+    region: Union[ee.Geometry, ee.FeatureCollection],
+    reducer: Optional[Union[str, ee.Reducer]] = None,
+    scale: Optional[int] = None,
+    x_property: str = "system:time_start",
     chart_type: str = "LineChart",
     x_cols: Optional[List[str]] = None,
     y_cols: Optional[List[str]] = None,
@@ -1459,11 +1695,11 @@ def image_series(
     Generates a time series chart of an image collection for a specific region.
 
     Args:
-        imageCollection (ee.ImageCollection): The image collection to analyze.
-        region (ee.Geometry | ee.FeatureCollection): The region to reduce.
-        reducer (str | ee.Reducer): The reducer to use.
-        scale (int): The scale in meters at which to perform the analysis.
-        xProperty (str): The name of the property to use as the x-axis values.
+        image_collection (ee.ImageCollection): The image collection to analyze.
+        region (Union[ee.Geometry, ee.FeatureCollection]): The region to reduce.
+        reducer (Optional[Union[str, ee.Reducer]]): The reducer to use.
+        scale (Optional[int]): The scale in meters at which to perform the analysis.
+        x_property (str): The name of the property to use as the x-axis values.
         chart_type (str): The type of chart to create. Supported types are
             'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
             'PieChart', 'AreaChart', and 'Table'.
@@ -1486,7 +1722,6 @@ def image_series(
 
     Returns:
         Chart: The chart object.
-
     """
 
     if reducer is None:
@@ -1533,13 +1768,13 @@ def image_series(
 
 
 def image_series_by_region(
-    imageCollection: ee.ImageCollection,
+    image_collection: ee.ImageCollection,
     regions: Union[ee.FeatureCollection, ee.Geometry],
     reducer: Optional[Union[str, ee.Reducer]] = None,
     band: Optional[str] = None,
     scale: Optional[int] = None,
-    xProperty: str = "system:time_start",
-    seriesProperty: str = "system:index",
+    x_property: str = "system:time_start",
+    series_property: str = "system:index",
     chart_type: str = "LineChart",
     x_cols: Optional[List[str]] = None,
     y_cols: Optional[List[str]] = None,
@@ -1547,20 +1782,19 @@ def image_series_by_region(
     title: Optional[str] = None,
     x_label: Optional[str] = None,
     y_label: Optional[str] = None,
-    options: Optional[Dict[str, Any]] = None,
     **kwargs: Any,
 ) -> Chart:
     """
     Generates a time series chart of an image collection for multiple regions.
 
     Args:
-        imageCollection (ee.ImageCollection): The image collection to analyze.
+        image_collection (ee.ImageCollection): The image collection to analyze.
         regions (ee.FeatureCollection | ee.Geometry): The regions to reduce.
         reducer (str | ee.Reducer): The reducer type for zonal statistics.
         band (str): The name of the band to analyze.
         scale (int): The scale in meters at which to perform the analysis.
-        xProperty (str): The name of the property to use as the x-axis values.
-        seriesProperty (str): The property to use for labeling the series.
+        x_property (str): The name of the property to use as the x-axis values.
+        series_property (str): The property to use for labeling the series.
         chart_type (str): The type of chart to create. Supported types are
             'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
             'PieChart', 'AreaChart', and 'Table'.
@@ -1588,26 +1822,26 @@ def image_series_by_region(
         reducer = ee.Reducer.mean()
 
     if band is None:
-        band = imageCollection.first().bandNames().get(0).getInfo()
+        band = image_collection.first().bandNames().get(0).getInfo()
 
-    image = imageCollection.select(band).toBands()
+    image = image_collection.select(band).toBands()
 
     fc = zonal_stats(
         image, regions, stat_type=reducer, scale=scale, verbose=False, return_fc=True
     )
-    columns = image.bandNames().getInfo() + [seriesProperty]
+    columns = image.bandNames().getInfo() + [series_property]
     df = ee_to_df(fc, columns=columns)
 
-    headers = df[seriesProperty].tolist()
-    df = df.drop(columns=[seriesProperty]).T
+    headers = df[series_property].tolist()
+    df = df.drop(columns=[series_property]).T
     df.columns = headers
 
-    if xProperty == "system:time_start" or xProperty == "system:time_end":
-        indexes = image_dates(imageCollection).getInfo()
+    if x_property == "system:time_start" or x_property == "system:time_end":
+        indexes = image_dates(image_collection).getInfo()
         df["index"] = pd.to_datetime(indexes)
 
     else:
-        indexes = imageCollection.aggregate_array(xProperty).getInfo()
+        indexes = image_collection.aggregate_array(x_property).getInfo()
         df["index"] = indexes
 
     fig = Chart(
@@ -1619,7 +1853,6 @@ def image_series_by_region(
         title,
         x_label,
         y_label,
-        options,
         **kwargs,
     )
     return fig
