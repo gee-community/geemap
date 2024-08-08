@@ -241,6 +241,12 @@ class Chart:
         if len(x_cols) == 1 and len(y_cols) > 1:
             x_cols = x_cols * len(y_cols)
 
+        if "axes_options" not in kwargs:
+            kwargs["axes_options"] = {
+                "x": {"label_offset": "30px"},
+                "y": {"label_offset": "40px"},
+            }
+
         if chart_type == "PieChart":
             if colors is None:
                 colors = [
@@ -1266,7 +1272,7 @@ def image_doy_series(
             [ee.Feature(None, {"doy": i}) for i in range(start, end + 1)]
         )
 
-        # Group images by therir day of year.
+        # Group images by their day of year.
         filter = ee.Filter(ee.Filter.equals(leftField="doy", rightField="doy"))
         joined = ee.Join.saveAll("matches").apply(
             primary=doys, secondary=collection, condition=filter
@@ -1314,7 +1320,6 @@ def image_doy_series(
     x_cols = "doy"
     y_cols = df.columns.tolist()
     y_cols.remove("doy")
-    print(y_cols)
 
     fig = Chart(
         df, chart_type, x_cols, y_cols, colors, title, xlabel, ylabel, options, **kwargs
@@ -1323,50 +1328,124 @@ def image_doy_series(
 
 
 def image_doy_series_by_region(
-    imageCollection,
-    bandName,
+    image_collection,
+    band_name,
     regions,
-    regionReducer,
-    scale,
-    yearReducer,
-    seriesProperty,
-    startDay,
-    endDay,
-    **kwargs,
-):
+    region_reducer=None,
+    scale=None,
+    year_reducer=None,
+    series_property=None,
+    start_day=1,
+    end_day=366,
+    chart_type: str = "LineChart",
+    colors: Optional[List[str]] = None,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    options: Optional[Dict[str, Any]] = None,
+    **kwargs: Any,
+) -> Chart:
     """
     Generates a time series chart of an image collection for multiple regions over a range of days of the year.
 
     Args:
-        imageCollection (ee.ImageCollection): The image collection to analyze.
-        bandName (str): The name of the band to analyze.
+        image_collection (ee.ImageCollection): The image collection to analyze.
+        band_mame (str): The name of the band to analyze.
         regions (ee.FeatureCollection): The regions to analyze.
-        regionReducer (str | ee.Reducer): The reducer type for zonal statistics.
+        region_reducer (str | ee.Reducer): The reducer type for zonal statistics.
         scale (int): The scale in meters at which to perform the analysis.
-        yearReducer (str | ee.Reducer): The reducer type for yearly statistics.
-        seriesProperty (str): The property to use for labeling the series.
-        startDay (int): The start day of the year.
-        endDay (int): The end day of the year.
-        **kwargs: Additional keyword arguments.
+        year_reducer (str | ee.Reducer): The reducer type for yearly statistics.
+        series_property (str): The property to use for labeling the series.
+        start_day (int): The start day of the year.
+        end_day (int): The end day of the year.
+        chart_type (str): The type of chart to create. Supported types are
+            'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
+            'PieChart', 'AreaChart', and 'Table'.
+        colors (Optional[List[str]]): The colors to use for the chart.
+            Defaults to a predefined list of colors.
+        title (Optional[str]): The title of the chart. Defaults to the
+            chart type.
+        xlabel (Optional[str]): The label for the x-axis. Defaults to an
+            empty string.
+        ylabel (Optional[str]): The label for the y-axis. Defaults to an
+            empty string.
+        options (Optional[Dict[str, Any]]): Additional options for the chart.
+        **kwargs: Additional keyword arguments to pass to the bqplot Figure
+            or mark objects. For axes_options, see
+            https://bqplot.github.io/bqplot/api/axes
 
     Returns:
         None
     """
-    series = imageCollection.filter(
-        ee.Filter.calendarRange(startDay, endDay, "day_of_year")
-    )
+
+    image_collection = image_collection.select(band_name)
+
+    # Function to add day-of-year ('doy') and year properties to each image.
+    def set_doys(collection):
+        def add_doy(img):
+            date = img.date()
+            year = date.get("year")
+            doy = date.getRelative("day", "year").floor().add(1)
+            return img.set({"doy": doy, "year": year})
+
+        return collection.map(add_doy)
+
+    # Reduces images with the same day of year.
+    def group_by_doy(collection, start, end, reducer):
+        collection = set_doys(collection)
+
+        doys = ee.FeatureCollection(
+            [ee.Feature(None, {"doy": i}) for i in range(start, end + 1)]
+        )
+
+        # Group images by their day of year.
+        filter = ee.Filter(ee.Filter.equals(leftField="doy", rightField="doy"))
+        joined = ee.Join.saveAll("matches").apply(
+            primary=doys, secondary=collection, condition=filter
+        )
+
+        # For each DoY, reduce images across years.
+        def reduce_images(doy):
+            images = ee.ImageCollection.fromImages(doy.get("matches"))
+            image = images.reduce(reducer)
+            return image.set(
+                {
+                    "doy": doy.get("doy"),
+                    "geo": images.geometry(),  # // Retain geometry for future reduceRegion.
+                }
+            )
+
+        return ee.ImageCollection(joined.map(reduce_images))
+
+    if year_reducer is None:
+        year_reducer = ee.Reducer.mean()
+    if region_reducer is None:
+        region_reducer = ee.Reducer.mean()
+
+    doy_images = group_by_doy(image_collection, start_day, end_day, year_reducer)
+
+    if series_property is None:
+        series_property = "system:index"
+    regions = regions.select([series_property])
     fc = zonal_stats(
-        series,
+        doy_images.toBands(),
         regions,
-        stat_type=regionReducer,
+        stat_type=region_reducer,
         scale=scale,
         verbose=False,
         return_fc=True,
     )
-    bands = [bandName] + [seriesProperty]
-    df = ee_to_df(fc)[bands]
-    line_chart = Feature_ByProperty(df, [bandName], seriesProperty, **kwargs)
-    line_chart.plot_chart()
+    df = ee_to_df(fc)
+    df = transpose_df(df, label_col=series_property, index_name="doy")
+    df["doy"] = df.index.str.split("_").str[0].astype(int)
+    df.sort_values("doy", inplace=True)
+    y_cols = df.columns.tolist()
+    y_cols.remove("doy")
+
+    fig = Chart(
+        df, chart_type, "doy", y_cols, colors, title, xlabel, ylabel, options, **kwargs
+    )
+    return fig
 
 
 def doy_series_by_year(
