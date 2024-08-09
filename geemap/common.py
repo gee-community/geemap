@@ -74,16 +74,9 @@ def ee_initialize(
 
     if auth_mode is None:
         if in_colab_shell() and (ee.data._credentials is None):
-            from google.colab import userdata
 
             if project is None:
-                try:
-                    project = userdata.get("EE_PROJECT_ID")
-                    kwargs["project"] = project
-                except Exception:
-                    raise Exception(
-                        "Please set a secret named 'EE_PROJECT_ID' in Colab or provide a project ID."
-                    )
+                kwargs["project"] = get_api_key("EE_PROJECT_ID")
             # Authentication will automatically detect the Colab environment,
             # no additional params needed.
             ee.Authenticate()
@@ -95,14 +88,9 @@ def ee_initialize(
     auth_args["auth_mode"] = auth_mode
 
     if ee.data._credentials is None:
-        ee_token = os.environ.get(token_name)
-        if in_colab_shell():
-            from google.colab import userdata
-
-            try:
-                ee_token = userdata.get(token_name)
-            except Exception:
-                pass
+        if project is None:
+            kwargs["project"] = get_api_key("EE_PROJECT_ID")
+        ee_token = get_api_key(token_name)
         if service_account:
             try:
                 credential_file_path = os.path.expanduser(
