@@ -297,6 +297,11 @@ nav:
           - notebooks/141_image_array_viz.ipynb
           - notebooks/142_google_maps.ipynb
           - notebooks/143_precipitation_timelapse.ipynb
+          - notebooks/144_chart_features.ipynb
+          - notebooks/145_chart_image.ipynb
+          - notebooks/146_chart_image_collection.ipynb
+          - notebooks/147_chart_array_list.ipynb
+          - notebooks/148_chart_data_table.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
