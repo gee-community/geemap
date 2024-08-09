@@ -25704,13 +25704,13 @@ to use the Earth Engine High-Volume platform. Defaults to {}.</p></td>
     <span class="k">if</span> <span class="s2">&quot;http_transport&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;http_transport&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">httplib2</span><span class="o">.</span><span class="n">Http</span><span class="p">()</span>
 
+    <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">project</span>
+
     <span class="k">if</span> <span class="n">auth_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">in_colab_shell</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_credentials</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-
-            <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span>
-            <span class="c1"># Authentication will automatically detect the Colab environment,</span>
-            <span class="c1"># no additional params needed.</span>
             <span class="n">ee</span><span class="o">.</span><span class="n">Authenticate</span><span class="p">()</span>
             <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">return</span>
@@ -25720,8 +25720,6 @@ to use the Earth Engine High-Volume platform. Defaults to {}.</p></td>
     <span class="n">auth_args</span><span class="p">[</span><span class="s2">&quot;auth_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">auth_mode</span>
 
     <span class="k">if</span> <span class="n">ee</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_credentials</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span>
         <span class="n">ee_token</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="n">token_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">service_account</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
