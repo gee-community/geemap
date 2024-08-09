@@ -72,13 +72,13 @@ def ee_initialize(
     if "http_transport" not in kwargs:
         kwargs["http_transport"] = httplib2.Http()
 
+    if project is None:
+        kwargs["project"] = get_api_key("EE_PROJECT_ID")
+    else:
+        kwargs["project"] = project
+
     if auth_mode is None:
         if in_colab_shell() and (ee.data._credentials is None):
-
-            if project is None:
-                kwargs["project"] = get_api_key("EE_PROJECT_ID")
-            # Authentication will automatically detect the Colab environment,
-            # no additional params needed.
             ee.Authenticate()
             ee.Initialize(**kwargs)
             return
@@ -88,8 +88,6 @@ def ee_initialize(
     auth_args["auth_mode"] = auth_mode
 
     if ee.data._credentials is None:
-        if project is None:
-            kwargs["project"] = get_api_key("EE_PROJECT_ID")
         ee_token = get_api_key(token_name)
         if service_account:
             try:
