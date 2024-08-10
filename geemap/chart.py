@@ -1669,8 +1669,8 @@ def image_regions(
         image, regions, stat_type=reducer, scale=scale, verbose=False, return_fc=True
     )
     bands = image.bandNames().getInfo()
-    df = ee_to_df(fc)[bands + [series_property]]
-    feature_groups(df, series_property, bands, series_property, **kwargs)
+    fc = fc.select(bands + [series_property])
+    return feature_by_property(fc, x_labels, series_property, **kwargs)
 
 
 def image_series(
