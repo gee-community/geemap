@@ -1686,7 +1686,6 @@ def image_series(
     title: Optional[str] = None,
     x_label: Optional[str] = None,
     y_label: Optional[str] = None,
-    options: Optional[Dict[str, Any]] = None,
     **kwargs: Any,
 ) -> Chart:
     """
@@ -1713,7 +1712,6 @@ def image_series(
             empty string.
         y_label (Optional[str]): The label for the y-axis. Defaults to an
             empty string.
-        options (Optional[Dict[str, Any]]): Additional options for the chart.
         **kwargs: Additional keyword arguments to pass to the bqplot Figure
             or mark objects. For axes_options, see
             https://bqplot.github.io/bqplot/api/axes
@@ -1759,7 +1757,6 @@ def image_series(
         title,
         x_label,
         y_label,
-        options,
         **kwargs,
     )
     return fig
@@ -1808,7 +1805,6 @@ def image_series_by_region(
             empty string.
         y_label (Optional[str]): The label for the y-axis. Defaults to an
             empty string.
-        options (Optional[Dict[str, Any]]): Additional options for the chart.
         **kwargs: Additional keyword arguments to pass to the bqplot Figure
             or mark objects. For axes_options, see
             https://bqplot.github.io/bqplot/api/axes
