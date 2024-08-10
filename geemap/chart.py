@@ -523,8 +523,6 @@ class BarChart(BaseChartClass):
             legend_location=self.legend_location,
         )
 
-        print(self.x_data, self.y_data)
-
         self.bar_chart = plt.bar(
             self.x_data,
             self.y_data,
