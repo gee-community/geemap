@@ -249,6 +249,16 @@ class Chart:
         self._set_plt_options()
         display(self.figure)
 
+    def save_png(self, filepath: str = "chart.png", scale: float = 1.0) -> None:
+        """
+        Save the chart as a PNG image.
+
+        Args:
+            filepath (str): The path to save the PNG image. Defaults to 'chart.png'.
+            scale (float): The scale factor for the image. Defaults to 1.0.
+        """
+        self.figure.save_png(filepath, scale=scale)
+
     def _ipython_display_(self) -> None:
         """
         Display the chart with toolbar.
