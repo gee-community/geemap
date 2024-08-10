@@ -24,6 +24,8 @@ class DataTable(pd.DataFrame):
     def __init__(
         self,
         data: Union[Dict[str, List[Any]], pd.DataFrame, None] = None,
+        date_column: Optional[str] = None,
+        date_format: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -32,13 +34,24 @@ class DataTable(pd.DataFrame):
         Args:
             data (Union[Dict[str, List[Any]], pd.DataFrame, None]): The input
                 data. If it's a dictionary, it will be converted to a DataFrame.
+            date_column (Optional[str]): The column to convert to a DataFrame.
+            date_format (Optional[str]): The format of the date column.
             **kwargs: Additional keyword arguments to pass to the pd.DataFrame
                 constructor.
         """
         if isinstance(data, ee.FeatureCollection):
             data = ee_to_df(data)
+        elif isinstance(data, ee.List):
+            data = data.getInfo()
+            kwargs["columns"] = data[0]
+            data = data[1:]
 
         super().__init__(data, **kwargs)
+
+        if date_column is not None:
+            self[date_column] = pd.to_datetime(
+                self[date_column], format=date_format, errors="coerce"
+            )
 
 
 def transpose_df(
@@ -331,78 +344,104 @@ class Chart:
                     "brown",
                 ]  # Default colors
 
-        for i, (x_col, y_col) in enumerate(zip(x_cols, y_cols)):
-            color = colors[i % len(colors)]
-            if "display_legend" not in kwargs and len(y_cols) > 1:
-                kwargs["display_legend"] = True
-                kwargs["labels"] = [y_col]
-            else:
-                kwargs["labels"] = [y_col]
+        if chart_type == "IntervalChart":
 
-            if chart_type == "ScatterChart":
-                self.chart = plt.scatter(
-                    self.data_table[x_col],
-                    self.data_table[y_col],
-                    colors=[color],
-                    **kwargs,
-                )
-            elif chart_type == "LineChart":
-                self.chart = plt.plot(
-                    self.data_table[x_col],
-                    self.data_table[y_col],
-                    colors=[color],
-                    **kwargs,
-                )
-            elif chart_type == "AreaChart":
-                if "fill" not in kwargs:
-                    kwargs["fill"] = "bottom"
-                self.chart = plt.plot(
-                    self.data_table[x_col],
-                    self.data_table[y_col],
-                    colors=[color],
-                    **kwargs,
-                )
-            elif chart_type == "ColumnChart":
-                self.chart = plt.bar(
-                    self.data_table[x_col],
-                    self.data_table[y_col],
-                    colors=[color],
-                    **kwargs,
-                )
-            elif chart_type == "BarChart":
-                if "orientation" not in kwargs:
-                    kwargs["orientation"] = "horizontal"
-                self.chart = plt.bar(
-                    self.data_table[x_col],
-                    self.data_table[y_col],
-                    colors=[color],
-                    **kwargs,
-                )
-            elif chart_type == "AreaChart":
-                if "fill" not in kwargs:
-                    kwargs["fill"] = "bottom"
-                self.chart = plt.plot(
-                    self.data_table[x_col],
-                    self.data_table[y_col],
-                    colors=[color],
-                    **kwargs,
-                )
-            elif chart_type == "PieChart":
-                kwargs.pop("labels", None)
-                self.chart = plt.pie(
-                    sizes=self.data_table[y_col],
-                    labels=self.data_table[x_col],
-                    colors=colors[: len(self.data_table[x_col])],
-                    **kwargs,
-                )
-            elif chart_type == "Table":
-                output = widgets.Output(**kwargs)
-                with output:
-                    display(self.data_table)
-                output.layout = widgets.Layout(width="50%")
-                display(output)
-            else:
-                raise ValueError("Unsupported chart type")
+            x = self.data_table[x_cols[0]]
+            y = [self.data_table[y_col] for y_col in y_cols]
+            if "fill" not in kwargs:
+                kwargs["fill"] = "between"
+
+            self.chart = plt.plot(
+                x,
+                y,
+                colors=colors,
+                **kwargs,
+            )
+        else:
+            for i, (x_col, y_col) in enumerate(zip(x_cols, y_cols)):
+                color = colors[i % len(colors)]
+                if "display_legend" not in kwargs and len(y_cols) > 1:
+                    kwargs["display_legend"] = True
+                    kwargs["labels"] = [y_col]
+                else:
+                    kwargs["labels"] = [y_col]
+
+                x = self.data_table[x_col]
+                y = self.data_table[y_col]
+
+                if isinstance(x, pd.Series) and (
+                    not pd.api.types.is_datetime64_any_dtype(x)
+                ):
+                    x = x.tolist()
+                if isinstance(y, pd.Series) and (
+                    not pd.api.types.is_datetime64_any_dtype(y)
+                ):
+                    y = y.tolist()
+
+                if chart_type == "ScatterChart":
+                    self.chart = plt.scatter(
+                        x,
+                        y,
+                        colors=[color],
+                        **kwargs,
+                    )
+                elif chart_type == "LineChart":
+                    self.chart = plt.plot(
+                        x,
+                        y,
+                        colors=[color],
+                        **kwargs,
+                    )
+                elif chart_type == "AreaChart":
+                    if "fill" not in kwargs:
+                        kwargs["fill"] = "bottom"
+                    self.chart = plt.plot(
+                        x,
+                        y,
+                        colors=[color],
+                        **kwargs,
+                    )
+                elif chart_type == "ColumnChart":
+                    self.chart = plt.bar(
+                        x,
+                        y,
+                        colors=[color],
+                        **kwargs,
+                    )
+                elif chart_type == "BarChart":
+                    if "orientation" not in kwargs:
+                        kwargs["orientation"] = "horizontal"
+                    self.chart = plt.bar(
+                        x,
+                        y,
+                        colors=[color],
+                        **kwargs,
+                    )
+                elif chart_type == "AreaChart":
+                    if "fill" not in kwargs:
+                        kwargs["fill"] = "bottom"
+                    self.chart = plt.plot(
+                        x,
+                        y,
+                        colors=[color],
+                        **kwargs,
+                    )
+                elif chart_type == "PieChart":
+                    kwargs.pop("labels", None)
+                    self.chart = plt.pie(
+                        sizes=y,
+                        labels=x,
+                        colors=colors[: len(x)],
+                        **kwargs,
+                    )
+                elif chart_type == "Table":
+                    output = widgets.Output(**kwargs)
+                    with output:
+                        display(self.data_table)
+                    output.layout = widgets.Layout(width="50%")
+                    display(output)
+                else:
+                    raise ValueError("Unsupported chart type")
 
         self._set_plt_options()
 
