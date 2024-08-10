@@ -1925,8 +1925,8 @@ def image_series_by_region(
 
 def array_values(
     array: Union[ee.Array, ee.List, List[List[float]]],
-    axis: int = 1,
     x_labels: Optional[Union[ee.Array, ee.List, List[float]]] = None,
+    axis: int = 1,
     series_names: Optional[List[str]] = None,
     chart_type: str = "LineChart",
     colors: Optional[List[str]] = None,
@@ -1940,9 +1940,9 @@ def array_values(
 
     Args:
         array (Union[ee.Array, ee.List, List[List[float]]]): The array to convert.
-        axis (int): The axis along which to transpose the array if needed. Defaults to 1.
         x_labels (Optional[Union[ee.Array, ee.List, List[float]]]): The labels
             for the x-axis. Defaults to None.
+        axis (int): The axis along which to transpose the array if needed. Defaults to 1.
         series_names (Optional[List[str]]): The names of the series. Defaults to None.
         chart_type (str): The type of chart to create. Defaults to "LineChart".
         colors (Optional[List[str]]): The colors to use for the chart. Defaults to None.
