@@ -16280,3 +16280,24 @@ def xarray_to_raster(dataset, filename: str, **kwargs: Dict[str, Any]) -> None:
 
     dataset = dataset.rename(new_names)
     dataset.transpose(..., "y", "x").rio.to_raster(filename, **kwargs)
+
+
+def hex_to_rgba(hex_color: str, opacity: float) -> str:
+    """
+    Converts a hex color code to an RGBA color string.
+
+    Args:
+        hex_color (str): The hex color code to convert. It can be in the format
+            '#RRGGBB' or 'RRGGBB'.
+        opacity (float): The opacity value for the RGBA color. It should be a
+            float between 0.0 (completely transparent) and 1.0 (completely opaque).
+
+    Returns:
+        str: The RGBA color string in the format 'rgba(R, G, B, A)'.
+    """
+    hex_color = hex_color.lstrip("#")
+    h_len = len(hex_color)
+    r, g, b = (
+        int(hex_color[i : i + h_len // 3], 16) for i in range(0, h_len, h_len // 3)
+    )
+    return f"rgba({r},{g},{b},{opacity})"

@@ -14,7 +14,7 @@ import ipywidgets as widgets
 from bqplot import Tooltip
 from bqplot import pyplot as plt
 from IPython.display import display
-from .common import ee_to_df, zonal_stats, image_dates
+from .common import ee_to_df, zonal_stats, image_dates, hex_to_rgba
 
 from typing import List, Optional, Union, Dict, Any, Tuple
 
@@ -108,6 +108,59 @@ def pivot_df(df: pd.DataFrame, index: str, columns: str, values: str) -> pd.Data
     return df_pivot
 
 
+def array_to_df(
+    y_values: Union[ee.Array, ee.List, List[List[float]]],
+    x_values: Optional[Union[ee.Array, ee.List, List[float]]] = None,
+    y_labels: Optional[List[str]] = None,
+    x_label: str = "x",
+    axis: int = 1,
+    **kwargs: Any,
+) -> pd.DataFrame:
+    """
+    Converts arrays or lists of y-values and optional x-values into a pandas DataFrame.
+
+    Args:
+        y_values (Union[ee.Array, ee.List, List[List[float]]]): The y-values to convert.
+        x_values (Optional[Union[ee.Array, ee.List, List[float]]]): The x-values to convert.
+            Defaults to None.
+        y_labels (Optional[List[str]]): The labels for the y-values. Defaults to None.
+        x_label (str): The label for the x-values. Defaults to "x".
+        axis (int): The axis along which to transpose the y-values if needed. Defaults to 1.
+        **kwargs: Additional keyword arguments to pass to the pandas DataFrame constructor.
+
+    Returns:
+        pd.DataFrame: The resulting DataFrame.
+    """
+
+    if isinstance(y_values, ee.Array) or isinstance(y_values, ee.List):
+        y_values = y_values.getInfo()
+
+    if isinstance(x_values, ee.Array) or isinstance(x_values, ee.List):
+        x_values = x_values.getInfo()
+
+    if axis == 0:
+        y_values = np.transpose(y_values)
+
+    if x_values is None:
+        x_values = list(range(1, len(y_values[0]) + 1))
+
+    data = {x_label: x_values}
+
+    if y_labels is None:
+        y_labels = [
+            f"y{i}".zfill(len(str(len(y_values)))) for i in range(len(y_values))
+        ]
+
+    if len(y_labels) != len(y_values):
+        raise ValueError("The length of y_labels must match the length of y_values.")
+
+    for i, series in enumerate(y_labels):
+        data[series] = y_values[i]
+
+    df = pd.DataFrame(data, **kwargs)
+    return df
+
+
 class Chart:
     """
     A class to create and display various types of charts from a data table.
@@ -163,6 +216,8 @@ class Chart:
         self.x_cols = x_cols
         self.y_cols = y_cols
         self.colors = colors
+        self.xlim = kwargs.pop("xlim", None)
+        self.ylim = kwargs.pop("ylim", None)
 
         if title is not None:
             kwargs["title"] = title
@@ -175,17 +230,17 @@ class Chart:
         """
         Display the chart without toolbar.
         """
-        self._set_title_and_labels()
+        self._set_plt_options()
         display(self.figure)
 
     def _ipython_display_(self) -> None:
         """
         Display the chart with toolbar.
         """
-        self._set_title_and_labels()
+        self._set_plt_options()
         plt.show()
 
-    def _set_title_and_labels(self) -> None:
+    def _set_plt_options(self) -> None:
         """
         Set the title and labels for the chart.
         """
@@ -195,6 +250,10 @@ class Chart:
             plt.xlabel(self.x_label)
         if self.y_label is not None:
             plt.ylabel(self.y_label)
+        if self.xlim is not None:
+            plt.xlim(self.xlim[0], self.xlim[1])
+        if self.ylim is not None:
+            plt.ylim(self.ylim[0], self.ylim[1])
 
     def set_chart_type(
         self,
@@ -333,7 +392,7 @@ class Chart:
             else:
                 raise ValueError("Unsupported chart type")
 
-        self._set_title_and_labels()
+        self._set_plt_options()
 
     def get_chart_type(self) -> Optional[str]:
         """
@@ -1847,6 +1906,53 @@ def image_series_by_region(
         title,
         x_label,
         y_label,
+        **kwargs,
+    )
+    return fig
+
+
+def array_values(
+    array: Union[ee.Array, ee.List, List[List[float]]],
+    axis: int = 1,
+    x_labels: Optional[Union[ee.Array, ee.List, List[float]]] = None,
+    series_names: Optional[List[str]] = None,
+    chart_type: str = "LineChart",
+    colors: Optional[List[str]] = None,
+    title: Optional[str] = None,
+    x_label: Optional[str] = None,
+    y_label: Optional[str] = None,
+    **kwargs: Any,
+) -> Chart:
+    """
+    Converts an array to a DataFrame and generates a chart.
+
+    Args:
+        array (Union[ee.Array, ee.List, List[List[float]]]): The array to convert.
+        axis (int): The axis along which to transpose the array if needed. Defaults to 1.
+        x_labels (Optional[Union[ee.Array, ee.List, List[float]]]): The labels
+            for the x-axis. Defaults to None.
+        series_names (Optional[List[str]]): The names of the series. Defaults to None.
+        chart_type (str): The type of chart to create. Defaults to "LineChart".
+        colors (Optional[List[str]]): The colors to use for the chart. Defaults to None.
+        title (Optional[str]): The title of the chart. Defaults to None.
+        x_label (Optional[str]): The label for the x-axis. Defaults to None.
+        y_label (Optional[str]): The label for the y-axis. Defaults to None.
+        **kwargs: Additional keyword arguments to pass to the Chart constructor.
+
+    Returns:
+        Chart: The generated chart.
+    """
+
+    df = array_to_df(array, x_values=x_labels, y_labels=series_names, axis=axis)
+    fig = Chart(
+        df,
+        x_cols=["x"],
+        y_cols=df.columns.tolist()[1:],
+        chart_type=chart_type,
+        colors=colors,
+        title=title,
+        x_label=x_label,
+        y_label=y_label,
         **kwargs,
     )
     return fig
