@@ -146,9 +146,12 @@ def array_to_df(
 
     data = {x_label: x_values}
 
+    if not isinstance(y_values[0], list):
+        y_values = [y_values]
+
     if y_labels is None:
         y_labels = [
-            f"y{i}".zfill(len(str(len(y_values)))) for i in range(len(y_values))
+            f"y{str(i+1).zfill(len(str(len(y_values))))}" for i in range(len(y_values))
         ]
 
     if len(y_labels) != len(y_values):
@@ -344,6 +347,15 @@ class Chart:
                     **kwargs,
                 )
             elif chart_type == "LineChart":
+                self.chart = plt.plot(
+                    self.data_table[x_col],
+                    self.data_table[y_col],
+                    colors=[color],
+                    **kwargs,
+                )
+            elif chart_type == "AreaChart":
+                if "fill" not in kwargs:
+                    kwargs["fill"] = "bottom"
                 self.chart = plt.plot(
                     self.data_table[x_col],
                     self.data_table[y_col],
