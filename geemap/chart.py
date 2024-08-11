@@ -34,7 +34,7 @@ class DataTable(pd.DataFrame):
         Args:
             data (Union[Dict[str, List[Any]], pd.DataFrame, None]): The input
                 data. If it's a dictionary, it will be converted to a DataFrame.
-            date_column (Optional[str]): The column to convert to a DataFrame.
+            date_column (Optional[str]): The date column to convert to a DataFrame.
             date_format (Optional[str]): The format of the date column.
             **kwargs: Additional keyword arguments to pass to the pd.DataFrame
                 constructor.
@@ -182,7 +182,10 @@ class Chart:
     A class to create and display various types of charts from a data table.
 
     Attributes:
-        df (pd.DataFrame): The data to be displayed in the charts.
+        data_table (pd.DataFrame): The data to be displayed in the charts.
+        chart_type (str): The type of chart to create. Supported types are
+            'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart', 'PieChart',
+            'AreaChart', and 'Table'.
         chart: The bqplot Figure object for the chart.
     """
 
@@ -451,7 +454,12 @@ class Chart:
                     output.layout = widgets.Layout(width="50%")
                     display(output)
                 else:
-                    raise ValueError("Unsupported chart type")
+                    self.chart = plt.plot(
+                        x,
+                        y,
+                        colors=[color],
+                        **kwargs,
+                    )
 
         self._set_plt_options()
 
