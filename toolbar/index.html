@@ -9106,17 +9106,18 @@ cleanup state when toggled off.</p></td>
 
             <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
                 <span class="n">output</span><span class="o">.</span><span class="n">clear_output</span><span class="p">()</span>
-                <span class="n">link</span> <span class="o">=</span> <span class="n">create_download_link</span><span class="p">(</span>
-                    <span class="n">out_gif</span><span class="p">,</span>
-                    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Click here to download: &quot;</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">display</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">nd_bands</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">link_nd</span> <span class="o">=</span> <span class="n">create_download_link</span><span class="p">(</span>
-                        <span class="n">out_gif</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.gif&quot;</span><span class="p">,</span> <span class="s2">&quot;_nd.gif&quot;</span><span class="p">),</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_gif</span><span class="p">):</span>
+                    <span class="n">link</span> <span class="o">=</span> <span class="n">create_download_link</span><span class="p">(</span>
+                        <span class="n">out_gif</span><span class="p">,</span>
                         <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Click here to download: &quot;</span><span class="p">,</span>
                     <span class="p">)</span>
-                    <span class="n">display</span><span class="p">(</span><span class="n">link_nd</span><span class="p">)</span>
+                    <span class="n">display</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">nd_bands</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">link_nd</span> <span class="o">=</span> <span class="n">create_download_link</span><span class="p">(</span>
+                            <span class="n">out_gif</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.gif&quot;</span><span class="p">,</span> <span class="s2">&quot;_nd.gif&quot;</span><span class="p">),</span>
+                            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Click here to download: &quot;</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">display</span><span class="p">(</span><span class="n">link_nd</span><span class="p">)</span>
 
             <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
 
