@@ -848,7 +848,7 @@ class LayerManager(ipywidgets.VBox):
             if event["type"] == "mouseenter":
                 spinner.icon = "times"
             elif event["type"] == "mouseleave":
-                if layer.loading:
+                if hasattr(layer, "loading") and layer.loading:
                     spinner.icon = "spinner spin lg"
                 else:
                     spinner.icon = "times"
