@@ -12,7 +12,7 @@ import ee
 import ipywidgets as widgets
 from IPython.display import display, HTML
 from typing import Optional
-from .common import get_api_key
+from .common import get_api_key, temp_file_path
 from .geemap import Map, ee_initialize
 
 try:
@@ -87,6 +87,7 @@ class Genie(widgets.VBox):
 
         m = Map()
         m.add("layer_manager")
+        self.map = m
 
         analysis_model = None
 
@@ -281,17 +282,48 @@ class Genie(widgets.VBox):
                 return str(e)
 
         def _analyze_image(additional_instructions: str = "") -> str:
-            bounds = m.bounds
-            s, w = bounds[0]
-            n, e = bounds[1]
-            zoom = int(m.zoom)
+            # bounds = m.bounds
+            # s, w = bounds[0]
+            # n, e = bounds[1]
+            # zoom = int(m.zoom)
 
-            min_tile_x, max_tile_y = _lat_lon_to_tile(w, s, zoom)
-            max_tile_x, min_tile_y = _lat_lon_to_tile(e, n, zoom)
-            min_tile_x = max(0, min_tile_x)
-            max_tile_x = min(2**zoom - 1, max_tile_x)
-            min_tile_y = max(0, min_tile_y)
-            max_tile_y = min(2**zoom - 1, max_tile_y)
+            # min_tile_x, max_tile_y = _lat_lon_to_tile(w, s, zoom)
+            # max_tile_x, min_tile_y = _lat_lon_to_tile(e, n, zoom)
+            # min_tile_x = max(0, min_tile_x)
+            # max_tile_x = min(2**zoom - 1, max_tile_x)
+            # min_tile_y = max(0, min_tile_y)
+            # max_tile_y = min(2**zoom - 1, max_tile_y)
+
+            # with debug_output:
+            #     if additional_instructions:
+            #         print(f"RUNNING IMAGE ANALYSIS: {additional_instructions}...\n")
+            #     else:
+            #         print("RUNNING IMAGE ANALYSIS...\n")
+
+            # layers = list(m.ee_layer_dict.values())
+            # if not layers:
+            #     return "No data layers loaded"
+            # url_template = layers[-1]["ee_layer"].url
+            # tile_width = 256
+            # tile_height = 256
+            # image_width = (max_tile_x - min_tile_x + 1) * tile_width
+            # image_height = (max_tile_y - min_tile_y + 1) * tile_height
+
+            # # Create a new blank image
+            # image = PIL.Image.new("RGB", (image_width, image_height))
+
+            # for y in range(min_tile_y, max_tile_y + 1):
+            #     for x in range(min_tile_x, max_tile_x + 1):
+            #         tile_url = str.format(url_template, x=x, y=y, z=zoom)
+            #         # print(tile_url)
+            #         tile_img = PIL.Image.open(io.BytesIO(get_image(tile_url)))
+
+            #         offset_x = (x - min_tile_x) * tile_width
+            #         offset_y = (y - min_tile_y) * tile_height
+            #         image.paste(tile_img, (offset_x, offset_y))
+
+            # width, height = image.size
+            # num_bands = len(image.getbands())
 
             with debug_output:
                 if additional_instructions:
@@ -302,30 +334,18 @@ class Genie(widgets.VBox):
             layers = list(m.ee_layer_dict.values())
             if not layers:
                 return "No data layers loaded"
-            url_template = layers[-1]["ee_layer"].url
-            tile_width = 256
-            tile_height = 256
-            image_width = (max_tile_x - min_tile_x + 1) * tile_width
-            image_height = (max_tile_y - min_tile_y + 1) * tile_height
+            image_temp_file = temp_file_path(extension="jpg")
+            layer_name = layers[-1]["ee_layer"].name
+            m.layer_to_image(layer_name, output=image_temp_file, scale=m.get_scale())
+            image = PIL.Image.open(image_temp_file)
 
-            # Create a new blank image
-            image = PIL.Image.new("RGB", (image_width, image_height))
-
-            for y in range(min_tile_y, max_tile_y + 1):
-                for x in range(min_tile_x, max_tile_x + 1):
-                    tile_url = str.format(url_template, x=x, y=y, z=zoom)
-                    # print(tile_url)
-                    tile_img = PIL.Image.open(io.BytesIO(get_image(tile_url)))
-
-                    offset_x = (x - min_tile_x) * tile_width
-                    offset_y = (y - min_tile_y) * tile_height
-                    image.paste(tile_img, (offset_x, offset_y))
-
-            width, height = image.size
-            num_bands = len(image.getbands())
             image_array = np.array(image)
             image_min = np.min(image_array)
             image_max = np.max(image_array)
+
+            file = open(image_temp_file, "rb")
+            image_widget.value = file.read()
+            file.close()
 
             # Skip an LLM call when we can simply tell that something is wrong.
             # (Also, LLMs might hallucinate on uniform images.)
