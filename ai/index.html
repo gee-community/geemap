@@ -1,0 +1,5892 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A Python package for interactive mapping with Google Earth Engine">
+      
+      
+        <meta name="author" content="Qiusheng Wu">
+      
+      
+        <link rel="canonical" href="https://geemap.org/ai/">
+      
+      
+        <link rel="prev" href="../changelog/">
+      
+      
+        <link rel="next" href="../basemaps/">
+      
+      
+      <link rel="icon" href="../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.31">
+    
+    
+      
+        <title>ai module - geemap</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.3cba04c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans:300,300i,400,400i,700,700i%7CRegular:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Google Sans";--md-code-font:"Regular"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../css/timeago.css">
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function n(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],n("js",new Date),n("config","G-H322CB6ZEC"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&n("event","search",{search_term:this.value})}),document$.subscribe(function(){var a=document.forms.feedback;if(void 0!==a)for(var e of a.querySelectorAll("[type=submit]"))e.addEventListener("click",function(e){e.preventDefault();var t=document.location.pathname,e=this.getAttribute("data-md-value");n("event","feedback",{page:t,data:e}),a.firstElementChild.disabled=!0;e=a.querySelector(".md-feedback__note [data-md-value='"+e+"']");e&&(e.hidden=!1)}),a.hidden=!1}),location$.subscribe(function(e){n("config","G-H322CB6ZEC",{page_path:e.pathname})})});var e=document.createElement("script");e.async=!0,e.src="https://www.googletagmanager.com/gtag/js?id=G-H322CB6ZEC",document.getElementById("__analytics").insertAdjacentElement("afterEnd",e)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ai-module" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="geemap" class="md-header__button md-logo" aria-label="geemap" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            geemap
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ai module
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/gee-community/geemap" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="geemap" class="md-nav__button md-logo" aria-label="geemap" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    geemap
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/gee-community/geemap" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://book.geemap.org" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Book
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../get-started/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Get Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cheat Sheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tutorials
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://courses.geemap.org" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Courses
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../citations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Citations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://streamlit.geemap.org" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Streamlit Web App
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://blog.gishub.org" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://youtube.com/@giswqs" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    YouTube Channel
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/gee-community/geemap/issues" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Report Issues
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_17" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    API Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_17_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_17">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    ai module
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    ai module
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#geemap.ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      geemap.ai
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geemap.ai.Genie" class="md-nav__link">
+    <span class="md-ellipsis">
+      Genie
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basemaps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    basemaps module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cartoee/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    cartoee module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chart/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    chart module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../colormaps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    colormaps module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    common module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conversion/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    conversion module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../core/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    core module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datasets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    datasets module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deck/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    deck module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ee_tile_layers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ee_tile_layers module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    examples module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../foliumap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    foliumap module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../geemap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    geemap module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kepler/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    kepler module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../legends/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    legends module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../map_widgets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    map_widgets module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ml/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ml module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../osm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    osm module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plot/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    plot module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plotlymap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    plotlymap module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../report/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    report module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timelapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    timelapse module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../toolbar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    toolbar module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_18" >
+        
+          
+          <label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Workshops
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_18_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_18">
+            <span class="md-nav__icon md-icon"></span>
+            Workshops
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/GeoPython_2021/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GeoPython 2021
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/GEE_Workshop_2021/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GEE Workshop 2021
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/SRM_Workshop_2022/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SRM Workshop 2022
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/Crop_Mapping_2022/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Crop Mapping 2022
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/Japan_2022/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Japan 2022
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/GEE_Workshop_2022_Part1/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GEE Workshop 2022 Part1
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/GEE_Workshop_2022_Part2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GEE Workshop 2022 Part2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/AmericaView_2023/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AmericaView 2023
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/SciPy_2023/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SciPy 2023
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/City_Plus_2023/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    City Plus 2023
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/G4G_2023/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    G4G 2023
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/NCSU_2023/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NCSU 2023
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/AGU_2023/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AGU 2023
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/Alaska_2024_Part1/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Alaska 2024 Part1
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/Alaska_2024_Part2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Alaska 2024 Part2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/Alaska_2024_Part3/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Alaska 2024 Part3
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/GEE_Workshop_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GEE Workshop 2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/TNGIC_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TNGIC 2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/IGIC_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IGIC 2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/SciPy_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SciPy 2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/SatMOC_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SatMOC 2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/GeoAI_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GeoAI 2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workshops/Taiwan_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Taiwan 2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_19" >
+        
+          
+          <label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Notebooks
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_19_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_19">
+            <span class="md-nav__icon md-icon"></span>
+            Notebooks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/00_ee_auth_colab/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    00 ee auth colab
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/00_geemap_colab/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    00 geemap colab
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/00_geemap_key_features/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    00 geemap key features
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/01_geemap_intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    01 geemap intro
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/02_using_basemaps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    02 using basemaps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/03_inspector_tool/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    03 inspector tool
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/04_split_panel_map/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    04 split panel map
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/05_drawing_tools/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    05 drawing tools
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/06_marker_cluster/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    06 marker cluster
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/07_geojson/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    07 geojson
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/08_ee_js_to_ipynb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    08 ee js to ipynb
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/09_plotting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    09 plotting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/10_shapefiles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    10 shapefiles
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/11_export_image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    11 export image
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/12_zonal_statistics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    12 zonal statistics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/13_zonal_statistics_by_group/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    13 zonal statistics by group
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/14_legends/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    14 legends
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/15_convert_js_to_py/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    15 convert js to py
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/16_add_animated_text/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    16 add animated text
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/17_add_colorbar_to_gif/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    17 add colorbar to gif
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/18_create_landsat_timelapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    18 create landsat timelapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/19_search_places_and_datasets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    19 search places and datasets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/20_timeseries_inspector/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    20 timeseries inspector
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/21_export_map_to_html_png/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    21 export map to html png
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/22_import_scripts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    22 import scripts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/23_import_assets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    23 import assets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/24_publish_maps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    24 publish maps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/25_load_rasters/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    25 load rasters
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/26_heroku/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    26 heroku
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/27_timelapse_app/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    27 timelapse app
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/28_voila/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    28 voila
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/29_pydeck/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    29 pydeck
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/30_image_props_stats/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    30 image props stats
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/31_unsupervised_classification/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    31 unsupervised classification
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/32_supervised_classification/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    32 supervised classification
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/33_accuracy_assessment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    33 accuracy assessment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/34_extract_values/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    34 extract values
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/35_geemap_colab/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    35 geemap colab
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/36_quality_mosaic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    36 quality mosaic
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/37_pydeck_3d/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    37 pydeck 3d
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/38_cloud_geotiff/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    38 cloud geotiff
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/39_timelapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    39 timelapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/40_ipywidgets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    40 ipywidgets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/41_water_app/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    41 water app
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/42_upload_data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    42 upload data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/43_extract_values_to_points/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    43 extract values to points
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/44_cog_stac/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    44 cog stac
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/45_cog_mosaic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    45 cog mosaic
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/46_local_rf_training/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    46 local rf training
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/47_image_thumbnails/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    47 image thumbnails
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/48_folium_legend/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    48 folium legend
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/49_colorbar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    49 colorbar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/50_cartoee_quickstart/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    50 cartoee quickstart
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/51_cartoee_projections/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    51 cartoee projections
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/52_cartoee_gif/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    52 cartoee gif
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/53_layer_vis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    53 layer vis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/54_vector_vis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    54 vector vis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/55_raster_vis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    55 raster vis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/56_local_data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    56 local data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/57_cartoee_blend/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    57 cartoee blend
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/58_add_vector/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    58 add vector
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/59_whitebox/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    59 whitebox
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/60_colormaps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    60 colormaps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/61_cartoee_scalebar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    61 cartoee scalebar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/62_time_slider/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    62 time slider
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/63_charts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    63 charts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/64_data_catalog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    64 data catalog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/65_vector_styling/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    65 vector styling
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/66_cartoee_legend/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    66 cartoee legend
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/67_training_samples/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    67 training samples
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/68_netcdf_to_ee/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    68 netcdf to ee
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/69_cartoee_vector/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    69 cartoee vector
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/70_linked_maps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    70 linked maps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/71_timelapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    71 timelapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/72_time_slider_gui/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    72 time slider gui
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/73_transect/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    73 transect
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/74_csv_to_points/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    74 csv to points
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/75_sankee/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    75 sankee
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/76_osm_to_ee/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    76 osm to ee
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/77_planet_imagery/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    77 planet imagery
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/78_ts_inspector/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    78 ts inspector
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/79_chart_histogram/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    79 chart histogram
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/80_point_layer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    80 point layer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/81_goes_timelapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    81 goes timelapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/82_contours/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    82 contours
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/83_local_tile/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    83 local tile
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/84_openstreetmap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    84 openstreetmap
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/85_postgis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    85 postgis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/86_image_overlay/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    86 image overlay
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/87_add_points_from_xy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    87 add points from xy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/88_circle_markers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    88 circle markers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/89_add_labels/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    89 add labels
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/90_naip_timelapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    90 naip timelapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/91_planetary_computer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    91 planetary computer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/92_plotly/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    92 plotly
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/93_cog_inspector/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    93 cog inspector
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/94_heremap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    94 heremap
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/95_create_cog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    95 create cog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/96_image_chips/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    96 image chips
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/97_join_table/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    97 join table
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/98_timelapse_fading/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    98 timelapse fading
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/99_landsat_9/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    99 landsat 9
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/100_numpy_to_cog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    100 numpy to cog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/101_lidar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    101 lidar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/102_blend_hillshade/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    102 blend hillshade
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/103_split_control/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    103 split control
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/104_clip_image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    104 clip image
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/105_netcdf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    105 netcdf
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/106_kepler_gl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    106 kepler gl
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/107_pydeck/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    107 pydeck
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/108_image_zonal_stats/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    108 image zonal stats
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/109_coordinate_grids/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    109 coordinate grids
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/110_choropleth/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    110 choropleth
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/111_image_count/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    111 image count
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/112_cartoee_basemap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    112 cartoee basemap
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/113_image_area/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    113 image area
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/114_dynamic_world/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    114 dynamic world
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/115_land_cover/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    115 land cover
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/116_land_cover_timeseries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    116 land cover timeseries
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/117_fishnet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    117 fishnet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/118_download_image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    118 download image
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/119_plot_raster/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    119 plot raster
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/120_javascript/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    120 javascript
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/121_vector_style/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    121 vector style
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/122_lidar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    122 lidar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/123_sentinel1_timelapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    123 sentinel1 timelapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/124_more_datasets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    124 more datasets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/125_example_code/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    125 example code
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/126_inspector/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    126 inspector
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/127_create_legend/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    127 create legend
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/128_add_widget/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    128 add widget
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/129_vector_to_gif/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    129 vector to gif
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/130_print_objects/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    130 print objects
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/131_arcgis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    131 arcgis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/132_folium_colorbar/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    132 folium colorbar
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/133_gradio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    133 gradio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/134_ee_to_geotiff/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    134 ee to geotiff
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/135_segmentation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    135 segmentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/136_download_parallel/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    136 download parallel
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/137_create_grid/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    137 create grid
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/138_draw_control/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    138 draw control
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/139_layer_to_image/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    139 layer to image
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/140_ee_to_xarray/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    140 ee to xarray
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/141_image_array_viz/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    141 image array viz
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/142_google_maps/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    142 google maps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/143_precipitation_timelapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    143 precipitation timelapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notebooks/149_gemini/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    149 gemini
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#geemap.ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      geemap.ai
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geemap.ai.Genie" class="md-nav__link">
+    <span class="md-ellipsis">
+      Genie
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+
+
+
+                  
+
+  
+  
+
+
+<h1 id="ai-module">ai module<a class="headerlink" href="#ai-module" title="Permanent link">&para;</a></h1>
+
+
+  <div class="doc doc-object doc-module">
+
+<a id="geemap.ai"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="geemap.ai.Genie" class="doc doc-heading">
+        <code>
+Genie            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
+        </code>
+
+
+
+<a href="#geemap.ai.Genie" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>A widget for interacting with the Genie AI model.</p>
+<p>The source code is adapted from the ee_genie.ipynb at <a href="https://bit.ly/3YEm7B6">https://bit.ly/3YEm7B6</a>.
+Credit to the original author Simon Ilyushchenko (<a href="https://github.com/simonff">https://github.com/simonff</a>).</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>project</code></td>
+        <td><code>Optional[str]</code></td>
+        <td><p>Google Cloud project ID. Defaults to None.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>google_api_key</code></td>
+        <td><code>Optional[str]</code></td>
+        <td><p>Google API key. Defaults to None.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>gemini_model</code></td>
+        <td><code>str</code></td>
+        <td><p>The Gemini model to use. Defaults to "gemini-1.5-flash".
+For a list of available models, see https://bit.ly/4fKfXW7.</p></td>
+        <td><code>&#39;gemini-1.5-flash&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>target_score</code></td>
+        <td><code>float</code></td>
+        <td><p>The target score for the model. Defaults to 0.8.</p></td>
+        <td><code>0.8</code></td>
+      </tr>
+      <tr>
+        <td><code>widget_height</code></td>
+        <td><code>str</code></td>
+        <td><p>The height of the widget. Defaults to "600px".</p></td>
+        <td><code>&#39;600px&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>initialize_ee</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether to initialize Earth Engine. Defaults to True.</p></td>
+        <td><code>True</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>ValueError</code></td>
+        <td><p>If the project ID or Google API key is not provided.</p></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/ai.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Genie</span><span class="p">(</span><span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A widget for interacting with the Genie AI model.</span>
+
+<span class="sd">    The source code is adapted from the ee_genie.ipynb at &lt;https://bit.ly/3YEm7B6&gt;.</span>
+<span class="sd">    Credit to the original author Simon Ilyushchenko (&lt;https://github.com/simonff&gt;).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        project (Optional[str], optional): Google Cloud project ID. Defaults to None.</span>
+<span class="sd">        google_api_key (Optional[str], optional): Google API key. Defaults to None.</span>
+<span class="sd">        gemini_model (str, optional): The Gemini model to use. Defaults to &quot;gemini-1.5-flash&quot;.</span>
+<span class="sd">            For a list of available models, see https://bit.ly/4fKfXW7.</span>
+<span class="sd">        target_score (float, optional): The target score for the model. Defaults to 0.8.</span>
+<span class="sd">        widget_height (str, optional): The height of the widget. Defaults to &quot;600px&quot;.</span>
+<span class="sd">        initialize_ee (bool, optional): Whether to initialize Earth Engine. Defaults to True.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the project ID or Google API key is not provided.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">google_api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">gemini_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gemini-1.5-flash&quot;</span><span class="p">,</span>
+        <span class="n">target_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span>
+        <span class="n">widget_height</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;600px&quot;</span><span class="p">,</span>
+        <span class="n">initialize_ee</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Initialization</span>
+
+        <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">project</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;GOOGLE_PROJECT_ID&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Please provide a valid project ID via the &#39;project&#39; parameter.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">google_api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">google_api_key</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">google_api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Please provide a valid Google API key via the &#39;google_api_key&#39; parameter.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">initialize_ee</span><span class="p">:</span>
+            <span class="n">ee_initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span>
+
+        <span class="n">genai</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">google_api_key</span><span class="p">)</span>
+        <span class="n">storage_client</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span>
+        <span class="n">bucket</span> <span class="o">=</span> <span class="n">storage_client</span><span class="o">.</span><span class="n">get_bucket</span><span class="p">(</span><span class="s2">&quot;earthengine-stac&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Score to aim for (on the 0-1 scale). The exact meaning of what &quot;score&quot; means</span>
+        <span class="c1"># is left to the LLM.</span>
+
+        <span class="c1"># Count of analysis rounds</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_dirty</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">()</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;layer_manager&quot;</span><span class="p">)</span>
+
+        <span class="n">analysis_model</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">image_model</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">GenerativeModel</span><span class="p">(</span><span class="n">gemini_model</span><span class="p">)</span>
+
+        <span class="c1"># UI widget definitions</span>
+
+        <span class="c1"># We define the widgets early because some functions will write to the debug</span>
+        <span class="c1"># and/or chat panels.</span>
+
+        <span class="n">command_input</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Text</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;show a whole continent Australia DEM visualization using a palette that captures the elevation range&quot;</span><span class="p">,</span>
+            <span class="c1"># value=&#39;show NYC&#39;,</span>
+            <span class="c1"># value=&#39;show an area with many center pivot irrigation circles&#39;,</span>
+            <span class="c1"># value=&#39;show a fire scar&#39;,</span>
+            <span class="c1"># value=&#39;show an open pit mine&#39;,</span>
+            <span class="c1"># value=&#39;a sea port&#39;,</span>
+            <span class="c1"># value=&#39;flood consequences&#39;,</span>
+            <span class="c1"># value=&#39;show an interesting modis composite with the relevant visualization and analyze it over Costa Rica&#39;,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;🙂&quot;</span><span class="p">,</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;50px&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">command_output</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;Last command will be here&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">status_label</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Textarea</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;LLM response will be here&quot;</span><span class="p">,</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;50%&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;100px&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># widget_height = &quot;600px&quot;</span>
+        <span class="n">debug_output</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span>
+            <span class="n">layout</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;border&quot;</span><span class="p">:</span> <span class="s2">&quot;1px solid black&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;height&quot;</span><span class="p">:</span> <span class="n">widget_height</span><span class="p">,</span>
+                <span class="s2">&quot;overflow&quot;</span><span class="p">:</span> <span class="s2">&quot;scroll&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="s2">&quot;500px&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;padding&quot;</span><span class="p">:</span> <span class="s2">&quot;5px&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEBUG COLUMN</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">logo</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;https://drive.usercontent.google.com/download?id=1zE6G_nxXa3G5N0G_32jEhzdum2kMDfNY&amp;export=view&amp;authuser=0&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">content</span>
+
+        <span class="n">image_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">logo</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;png&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+
+        <span class="n">chat_output</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span>
+            <span class="n">layout</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;border&quot;</span><span class="p">:</span> <span class="s2">&quot;1px solid black&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;height&quot;</span><span class="p">:</span> <span class="s2">&quot;600px&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;overflow&quot;</span><span class="p">:</span> <span class="s2">&quot;scroll&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="s2">&quot;300px&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">chat_output</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CHAT COLUMN</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Simple functions that LLM will call</span>
+
+        <span class="k">def</span> <span class="nf">set_center</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Sets the map center to the given coordinates and zoom level and</span>
+<span class="sd">            returns instructions on what to do next.&quot;&quot;&quot;</span>
+            <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SET_CENTER(</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">zoom</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">zoom</span> <span class="o">=</span> <span class="n">zoom</span>
+            <span class="c1"># global map_dirty</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map_dirty</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="s2">&quot;Do not call any more functions in this request to let geemap bounds &quot;</span>
+                <span class="s2">&quot;update. Wait for user input.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">add_image_layer</span><span class="p">(</span><span class="n">image_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Adds to the map center an ee.Image with the given id</span>
+<span class="sd">            and returns status message (success or failure).&quot;&quot;&quot;</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">command_output</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;add_image_layer(&#39;</span><span class="si">{</span><span class="n">image_id</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">image_id</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s2">&quot;success&quot;</span>
+
+        <span class="k">def</span> <span class="nf">get_dataset_description</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Fetches JSON STAC description for the given Earth Engine dataset id.&quot;&quot;&quot;</span>
+            <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LOOKING UP </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">dataset_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># Get the blob (file)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;catalog&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">dataset_id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span>
+            <span class="p">)</span>
+            <span class="n">blob</span> <span class="o">=</span> <span class="n">bucket</span><span class="o">.</span><span class="n">blob</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">blob</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                <span class="k">return</span> <span class="s2">&quot;dataset file not found: &quot;</span> <span class="o">+</span> <span class="n">path</span>
+
+            <span class="n">file_contents</span> <span class="o">=</span> <span class="n">blob</span><span class="o">.</span><span class="n">download_as_string</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">file_contents</span>
+
+        <span class="k">def</span> <span class="nf">get_image</span><span class="p">(</span><span class="n">image_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Fetches from Earth Engine the content of the given URL as bytes.&quot;&quot;&quot;</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">image_url</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="n">image_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+                <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">error_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Error downloading image: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">error_details</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+                        <span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="p">{})</span>
+                        <span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">error_details</span><span class="p">:</span>
+                        <span class="n">error_message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; - </span><span class="si">{</span><span class="n">error_details</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;URL </span><span class="si">%s</span><span class="s2"> causes </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">image_url</span><span class="p">,</span> <span class="n">error_message</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">show_layer</span><span class="p">(</span><span class="n">python_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Execute the given Earth Engine Python client code and add the result to</span>
+<span class="sd">            the map. Returns the status message (success or error message).&quot;&quot;&quot;</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">layers</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">while</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot;&#39;</span> <span class="ow">in</span> <span class="n">python_code</span><span class="p">:</span>
+                <span class="n">python_code</span> <span class="o">=</span> <span class="n">python_code</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+            <span class="n">command_output</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;show_layer(&#39;</span><span class="si">{</span><span class="n">python_code</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
+            <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IMAGE:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">python_code</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">locals</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">exec</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;import ee; im = </span><span class="si">{</span><span class="n">python_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">{},</span> <span class="nb">locals</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="nb">locals</span><span class="p">[</span><span class="s2">&quot;im&quot;</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ERROR: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;success&quot;</span>
+
+        <span class="k">def</span> <span class="nf">inner_monologue</span><span class="p">(</span><span class="n">thoughts</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Sends the current thinking of the LLM model to the user so that they are</span>
+<span class="sd">            aware of what the model is thinking between function calls.&quot;&quot;&quot;</span>
+            <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;THOUGHTS:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">thoughts</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;success&quot;</span>
+
+        <span class="c1"># Functions for textual analysis of images</span>
+
+        <span class="k">def</span> <span class="nf">_lat_lon_to_tile</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">zoom_level</span><span class="p">):</span>
+            <span class="c1"># Convert latitude and longitude to Mercator coordinates</span>
+            <span class="n">x_merc</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon</span> <span class="o">+</span> <span class="mi">180</span><span class="p">)</span> <span class="o">/</span> <span class="mi">360</span>
+            <span class="n">y_merc</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="mi">1</span>
+                <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                    <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">lat</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">lat</span><span class="p">))</span>
+                <span class="p">)</span>
+                <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+            <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+            <span class="c1"># Calculate number of tiles</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">zoom_level</span>
+
+            <span class="c1"># Convert to tile coordinates</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">x_merc</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
+            <span class="n">Y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">y_merc</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span>
+
+        <span class="k">def</span> <span class="nf">analyze_image</span><span class="p">(</span><span class="n">additional_instructions</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Returns GenAI image analysis describing the current map image.</span>
+<span class="sd">            Optional additional instructions might be passed to target the analysis</span>
+<span class="sd">            more precisely.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="c1"># global map_dirty</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_dirty</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MAP DIRTY&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">(</span>
+                    <span class="s2">&quot;Map is not ready. Stop further processing and ask for user input&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_analyze_image</span><span class="p">(</span><span class="n">additional_instructions</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">_analyze_image</span><span class="p">(</span><span class="n">additional_instructions</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="n">s</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">zoom</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">zoom</span><span class="p">)</span>
+
+            <span class="n">min_tile_x</span><span class="p">,</span> <span class="n">max_tile_y</span> <span class="o">=</span> <span class="n">_lat_lon_to_tile</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
+            <span class="n">max_tile_x</span><span class="p">,</span> <span class="n">min_tile_y</span> <span class="o">=</span> <span class="n">_lat_lon_to_tile</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
+            <span class="n">min_tile_x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_tile_x</span><span class="p">)</span>
+            <span class="n">max_tile_x</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">zoom</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_tile_x</span><span class="p">)</span>
+            <span class="n">min_tile_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_tile_y</span><span class="p">)</span>
+            <span class="n">max_tile_y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">zoom</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_tile_y</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">additional_instructions</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RUNNING IMAGE ANALYSIS: </span><span class="si">{</span><span class="n">additional_instructions</span><span class="si">}</span><span class="s2">...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;RUNNING IMAGE ANALYSIS...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">layers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">layers</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;No data layers loaded&quot;</span>
+            <span class="n">url_template</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;ee_layer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">url</span>
+            <span class="n">tile_width</span> <span class="o">=</span> <span class="mi">256</span>
+            <span class="n">tile_height</span> <span class="o">=</span> <span class="mi">256</span>
+            <span class="n">image_width</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_tile_x</span> <span class="o">-</span> <span class="n">min_tile_x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">tile_width</span>
+            <span class="n">image_height</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_tile_y</span> <span class="o">-</span> <span class="n">min_tile_y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">tile_height</span>
+
+            <span class="c1"># Create a new blank image</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">image_width</span><span class="p">,</span> <span class="n">image_height</span><span class="p">))</span>
+
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_tile_y</span><span class="p">,</span> <span class="n">max_tile_y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_tile_x</span><span class="p">,</span> <span class="n">max_tile_x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">tile_url</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url_template</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">zoom</span><span class="p">)</span>
+                    <span class="c1"># print(tile_url)</span>
+                    <span class="n">tile_img</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">get_image</span><span class="p">(</span><span class="n">tile_url</span><span class="p">)))</span>
+
+                    <span class="n">offset_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">min_tile_x</span><span class="p">)</span> <span class="o">*</span> <span class="n">tile_width</span>
+                    <span class="n">offset_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">min_tile_y</span><span class="p">)</span> <span class="o">*</span> <span class="n">tile_height</span>
+                    <span class="n">image</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">tile_img</span><span class="p">,</span> <span class="p">(</span><span class="n">offset_x</span><span class="p">,</span> <span class="n">offset_y</span><span class="p">))</span>
+
+            <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">num_bands</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">getbands</span><span class="p">())</span>
+            <span class="n">image_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="n">image_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">image_array</span><span class="p">)</span>
+            <span class="n">image_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">image_array</span><span class="p">)</span>
+
+            <span class="c1"># Skip an LLM call when we can simply tell that something is wrong.</span>
+            <span class="c1"># (Also, LLMs might hallucinate on uniform images.)</span>
+            <span class="k">if</span> <span class="n">image_min</span> <span class="o">==</span> <span class="n">image_max</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;The image tile has a single uniform color with value &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">image_min</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;You are an objective, precise overhead imagery analyst.</span>
+<span class="s2">        Describe what the provided map tile depicts in terms of:</span>
+
+<span class="s2">        1. The colors, textures, and patterns visible in the image.</span>
+<span class="s2">        2. The spatial distribution, shape, and extent of distinct features or regions.</span>
+<span class="s2">        3. Any notable contrasts, boundaries, or gradients between different areas.</span>
+
+<span class="s2">        Avoid making assumptions about the specific geographic location, time period,</span>
+<span class="s2">        or cause of the observed features. Focus solely on the literal contents of the</span>
+<span class="s2">        image itself. Clearly indicate which features look natural, which look human-made,</span>
+<span class="s2">        and which look like image artifacts. (Eg, a completely straight blue line</span>
+<span class="s2">        is unlikely to be a river.)</span>
+
+<span class="s2">        If the image is ambiguous or unclear, state so directly. Do not speculate or</span>
+<span class="s2">        hypothesize beyond what is directly visible.</span>
+
+<span class="s2">        If the image is of mostly the same color (white, gray, or black) with little</span>
+<span class="s2">        contrast, just report that and do not describe the features.</span>
+
+<span class="s2">        Use clear, concise language. Avoid subjective interpretations or analogies.</span>
+<span class="s2">        Organize your response into structured paragraphs.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">additional_instructions</span><span class="p">:</span>
+                <span class="n">query</span> <span class="o">+=</span> <span class="n">additional_instructions</span>
+            <span class="n">req</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;parts&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">},</span>
+                    <span class="p">{</span><span class="s2">&quot;inline_data&quot;</span><span class="p">:</span> <span class="n">image</span><span class="p">},</span>
+                <span class="p">]</span>
+            <span class="p">}</span>
+            <span class="n">image_response</span> <span class="o">=</span> <span class="n">image_model</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ANALYSIS RESULT: </span><span class="si">{</span><span class="n">image_response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">image_response</span><span class="o">.</span><span class="n">text</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UNEXPECTED IMAGE RESPONSE: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">image_response</span><span class="p">)</span>
+                <span class="nb">breakpoint</span><span class="p">()</span>
+
+        <span class="c1"># Function for scoring how well image analysis corresponds to the user query.</span>
+
+        <span class="c1"># Note that we ask for the score outside of the main agent chat to keep</span>
+        <span class="c1"># the scoring more objective.</span>
+
+        <span class="n">scoring_system_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        After looking at the user query and the map tile analysis, start</span>
+<span class="s2">        your answer with a number between 0 and 1 indicating how relevant</span>
+<span class="s2">        the image is as an answer to the query. (0=irrelevant, 1=perfect answer)</span>
+
+<span class="s2">        Make sure you have enough justification to definitively declare the analysis</span>
+<span class="s2">        relevant - it&#39;s better to give a false negative than a false positive. However,</span>
+<span class="s2">        the image analysis identifies specific matching landmarks (eg, the</span>
+<span class="s2">        the outlines of Manhattan island for a request to show NYC), believe it.</span>
+
+<span class="s2">        Do not assume  too much (eg, that the presence of green doesn&#39;t by itself mean the</span>
+<span class="s2">        image shows forest); attempt to find multiple (at least three) independent</span>
+<span class="s2">        lines of evidence before declaring victory and cite all these lines of evidence</span>
+<span class="s2">        in your response.</span>
+
+<span class="s2">        Be very, very skeptical - look for specific features that match only the query</span>
+<span class="s2">        and nothing else (eg, if the query looks for a river, a completely straight blue</span>
+<span class="s2">        line is unlikely to be a river). Think about what size the features are based on</span>
+<span class="s2">        the zoom level and whether this size matches the feature size expected from</span>
+<span class="s2">        first principles.</span>
+
+<span class="s2">        If there is ambiguity or uncertainty, express it in your analysis and</span>
+<span class="s2">        lower the score accordingly. If the image analysis is inconclusive, try zooming</span>
+<span class="s2">        out to make sure you are looking at the right spot. Do not reduce the score if</span>
+<span class="s2">        the analysis does not mention visualization parameters - they are just given for</span>
+<span class="s2">        your reference. The image might show an area slightly larger than requested -</span>
+<span class="s2">        this is okay, do not reduce the score on this account.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">score_response</span><span class="p">(</span>
+            <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">visualization_parameters</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">analysis</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Returns how well the given analysis describes a map tile returned for</span>
+<span class="sd">            the given query. The analysis starts with a number between 0 and 1.</span>
+
+<span class="sd">            Arguments:</span>
+<span class="sd">            query: user-specified query</span>
+<span class="sd">            visualization_parameters: description of the bands used and visualization</span>
+<span class="sd">                parameters applied to the map tile</span>
+<span class="sd">            analysis: the textual description of the map tile</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VIZ PARAMS: </span><span class="si">{</span><span class="n">visualization_parameters</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">question</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;For user query </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2"> please score the following analysis:</span>
+<span class="s2">            </span><span class="si">{</span><span class="n">analysis</span><span class="si">}</span><span class="s2">. The answer must start with a number between 0 and 1.&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">visualization_parameters</span><span class="p">:</span>
+                <span class="n">question</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Do not assume that common bands or visualization</span>
+<span class="s2">                parameters should have been used, as the visualization used the</span>
+<span class="s2">                following parameters: </span><span class="si">{</span><span class="n">visualization_parameters</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+
+            <span class="n">result</span> <span class="o">=</span> <span class="n">analysis_model</span><span class="o">.</span><span class="n">ask</span><span class="p">(</span><span class="n">question</span><span class="p">)</span>
+            <span class="c1"># global iteration</span>
+            <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SCORE #</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">iteration</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UNEXPECTED SCORE RESPONSE: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># Main prompt for the agent</span>
+
+        <span class="n">system_prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        The client is running in a Python notebook with a geemap Map displayed.</span>
+<span class="s2">        When composing Python code, do not use getMapId - just return the single-line</span>
+<span class="s2">        layer definition like &#39;ee.Image(&quot;USGS/SRTMGL1_003&quot;)&#39; that we will pass to</span>
+<span class="s2">        Map.addLayer(). Do not escape quotation marks in Python code.</span>
+
+<span class="s2">        Be sure to use Python, not Javascript, syntax for keyword parameters in</span>
+<span class="s2">        Python code (that is, &quot;function(arg=value)&quot;) Using the provided functions,</span>
+<span class="s2">        respond to the user command following below (or respond why it&#39;s not possible).</span>
+<span class="s2">        If you get an Earth Engine error, attempt to fix it and then try again.</span>
+
+<span class="s2">        Before you choose a dataset, think about what kind of dataset would be most</span>
+<span class="s2">        suitable for the query. Also think about what zoom level would be suitable for</span>
+<span class="s2">        the query, keeping in mind that for high-resolution image collections higher</span>
+<span class="s2">        zoom levels are better to speed up tile loading.</span>
+
+<span class="s2">        Once you have chosen a dataset, read its description using the provided function</span>
+<span class="s2">        to see what spatial and temporal range it covers, what bands it has, as well as</span>
+<span class="s2">        to find the recommended visualization parameters. Explain using the inner</span>
+<span class="s2">        monlogue function why you chose a specific dataset, zoom level and map location.</span>
+
+<span class="s2">        Prefer mosaicing image collections using the mosaic() function, don&#39;t get</span>
+<span class="s2">        individual images from collections via</span>
+<span class="s2">        &#39;first()&#39;. Choose a tile size and zoom level that will ensure the</span>
+<span class="s2">        tile has enough pixels in it to avoid graininess, but not so many</span>
+<span class="s2">        that processing becomes very expensive. Do not use wide date ranges</span>
+<span class="s2">        with collections that have many images, but remember that Landsat and</span>
+<span class="s2">        Sentinel-2 have revisit period of several days. Do not use sample</span>
+<span class="s2">        locations - try to come up with actual locations that are relevant to</span>
+<span class="s2">        the request.</span>
+
+<span class="s2">        Use Landsat Collection 2, not Landsat Collection 1 ids. If you are getting</span>
+<span class="s2">        repeated errors when filtering by a time range, read the dataset description</span>
+<span class="s2">        to confirm that the dataset has data for the selected range.</span>
+
+<span class="s2">        Important: after using the set_center() function, just say that you have called</span>
+<span class="s2">        this function and wait for the user to hit enter, after which you should</span>
+<span class="s2">        continue answering the original request. This will make sure the map is updated</span>
+<span class="s2">        on the client side.</span>
+
+<span class="s2">        Once the map is updated and the user told you to proceed, call the analyze_image</span>
+<span class="s2">        function() to describe the image for the same location that will be shown in</span>
+<span class="s2">        geemap. If you pass additional instructions to analyze_image(), do not disclose</span>
+<span class="s2">        what the image is supposed to be to discourage hallucinations - you can only tell</span>
+<span class="s2">        the analysis function to pay attention to specific areas (eg, center or top left)</span>
+<span class="s2">        or shapes (eg, a line at the bottom) in the image. You can also tell the analysis</span>
+<span class="s2">        function about the chosen bands, color palette and min/max visualization</span>
+<span class="s2">        parameters, if any, to help it interpret the colors correctly. If the image</span>
+<span class="s2">        turns out to be uniform in color with no features,</span>
+<span class="s2">        use min/max visualization parameters to enhance contrast.</span>
+
+<span class="s2">        Frequently call the inner_monologue() functions to tell the user about your</span>
+<span class="s2">        current thought process. This is a good time to reflect if you have been running</span>
+<span class="s2">        into repeated errors of the same kind, and if so, to try a different approach.</span>
+
+<span class="s2">        When you are done, call the score_response() function to evaluate the analysis.</span>
+<span class="s2">        You can also tell the scoring function about the chosen bands, color palette</span>
+<span class="s2">        and min/max visualization parameters, if any. If the analysis score is below</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">target_score</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">        keep trying to find and show a better image. You might have to change the dataset,</span>
+<span class="s2">        map location, zoom level, date range, bands, or other parameters - think about</span>
+<span class="s2">        what went wrong in the previous attempt and make the change that&#39;s most likely</span>
+<span class="s2">        to improve the score.</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Class for LLM chat with function calling</span>
+
+        <span class="n">gemini_tools</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">set_center</span><span class="p">,</span>
+            <span class="n">show_layer</span><span class="p">,</span>
+            <span class="n">analyze_image</span><span class="p">,</span>
+            <span class="n">inner_monologue</span><span class="p">,</span>
+            <span class="n">get_dataset_description</span><span class="p">,</span>
+            <span class="n">score_response</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="k">class</span> <span class="nc">Gemini</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Gemini LLM.&quot;&quot;&quot;</span>
+
+            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system_prompt</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">tools</span><span class="p">:</span>
+                    <span class="n">tools</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_text_model</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">GenerativeModel</span><span class="p">(</span>
+                    <span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;gemini-1.5-pro-latest&quot;</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="n">tools</span>
+                <span class="p">)</span>
+
+                <span class="n">initial_messages</span> <span class="o">=</span> <span class="n">glm</span><span class="o">.</span><span class="n">Content</span><span class="p">(</span>
+                    <span class="n">role</span><span class="o">=</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">parts</span><span class="o">=</span><span class="p">[</span><span class="n">glm</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">system_prompt</span><span class="p">)]</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_chat_proxy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_model</span><span class="o">.</span><span class="n">start_chat</span><span class="p">(</span>
+                    <span class="n">history</span><span class="o">=</span><span class="n">initial_messages</span><span class="p">,</span> <span class="n">enable_automatic_function_calling</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">ask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">question</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">condition</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">sleep_duration</span> <span class="o">=</span> <span class="mi">10</span>
+                        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_model</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
+                            <span class="n">question</span> <span class="o">+</span> <span class="n">condition</span>
+                        <span class="p">)</span>
+                        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+                    <span class="k">except</span> <span class="n">genai</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">generation_types</span><span class="o">.</span><span class="n">StopCandidateException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span>
+                            <span class="n">glm</span><span class="o">.</span><span class="n">Candidate</span><span class="o">.</span><span class="n">FinishReason</span><span class="o">.</span><span class="n">RECITATION</span>
+                            <span class="o">==</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">finish_reason</span>
+                        <span class="p">):</span>
+                            <span class="n">condition</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;Previous attempt returned a RECITATION error. &quot;</span>
+                                <span class="s2">&quot;Rephrase the answer to avoid it.&quot;</span>
+                            <span class="p">)</span>
+                        <span class="k">with</span> <span class="n">chat_output</span><span class="p">:</span>
+                            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;😡&quot;</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="k">with</span> <span class="n">chat_output</span><span class="p">:</span>
+                            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🤔&quot;</span>
+                        <span class="k">continue</span>
+                    <span class="k">except</span> <span class="p">(</span>
+                        <span class="n">google</span><span class="o">.</span><span class="n">api_core</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">TooManyRequests</span><span class="p">,</span>
+                        <span class="n">google</span><span class="o">.</span><span class="n">api_core</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DeadlineExceeded</span><span class="p">,</span>
+                    <span class="p">):</span>
+                        <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;💤&quot;</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep_duration</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Response </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2"> led to error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="nb">breakpoint</span><span class="p">()</span>
+                        <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="k">def</span> <span class="nf">chat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">question</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Adds a question to the ongoing chat session.&quot;&quot;&quot;</span>
+                <span class="c1"># Always delay a bit to reduce the chance for rate-limiting errors.</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">condition</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">sleep_duration</span> <span class="o">=</span> <span class="mi">10</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">response</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chat_proxy</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+                            <span class="n">question</span> <span class="o">+</span> <span class="n">condition</span><span class="p">,</span>
+                            <span class="n">generation_config</span><span class="o">=</span><span class="p">{</span>
+                                <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">temperature</span><span class="p">,</span>
+                                <span class="c1"># Use a generous but limited output size to encourage in-depth</span>
+                                <span class="c1"># replies.</span>
+                                <span class="s2">&quot;max_output_tokens&quot;</span><span class="p">:</span> <span class="mi">5000</span><span class="p">,</span>
+                            <span class="p">},</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="s2">&quot;Cannot get analysis with reason&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">finish_reason</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, terminating&quot;</span>
+                            <span class="p">)</span>
+                    <span class="k">except</span> <span class="n">genai</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">generation_types</span><span class="o">.</span><span class="n">StopCandidateException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span>
+                            <span class="n">glm</span><span class="o">.</span><span class="n">Candidate</span><span class="o">.</span><span class="n">FinishReason</span><span class="o">.</span><span class="n">RECITATION</span>
+                            <span class="o">==</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">finish_reason</span>
+                        <span class="p">):</span>
+                            <span class="n">condition</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="s2">&quot;Previous attempt returned a RECITATION error. &quot;</span>
+                                <span class="s2">&quot;Rephrase the answer to avoid it.&quot;</span>
+                            <span class="p">)</span>
+                        <span class="k">with</span> <span class="n">chat_output</span><span class="p">:</span>
+                            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;😡&quot;</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="k">with</span> <span class="n">chat_output</span><span class="p">:</span>
+                            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🤔&quot;</span>
+                        <span class="k">continue</span>
+                    <span class="k">except</span> <span class="p">(</span>
+                        <span class="n">google</span><span class="o">.</span><span class="n">api_core</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">TooManyRequests</span><span class="p">,</span>
+                        <span class="n">google</span><span class="o">.</span><span class="n">api_core</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">DeadlineExceeded</span><span class="p">,</span>
+                    <span class="p">):</span>
+                        <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;💤&quot;</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Response </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2"> led to the error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Gemini</span><span class="p">(</span><span class="n">system_prompt</span><span class="p">,</span> <span class="n">gemini_tools</span><span class="p">)</span>
+        <span class="n">analysis_model</span> <span class="o">=</span> <span class="n">Gemini</span><span class="p">(</span><span class="n">scoring_system_prompt</span><span class="p">)</span>
+
+        <span class="c1"># UI functions</span>
+
+        <span class="k">def</span> <span class="nf">set_cursor_waiting</span><span class="p">():</span>
+            <span class="n">js_code</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            document.querySelector(&#39;body&#39;).style.cursor = &#39;wait&#39;;</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+            <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;script&gt;</span><span class="si">{</span><span class="n">js_code</span><span class="si">}</span><span class="s2">&lt;/script&gt;&quot;</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">set_cursor_default</span><span class="p">():</span>
+            <span class="n">js_code</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            document.querySelector(&#39;body&#39;).style.cursor = &#39;default&#39;;</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+            <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;script&gt;</span><span class="si">{</span><span class="n">js_code</span><span class="si">}</span><span class="s2">&lt;/script&gt;&quot;</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">on_submit</span><span class="p">(</span><span class="n">widget</span><span class="p">):</span>
+            <span class="c1"># global map_dirty</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map_dirty</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🙂&quot;</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">command</span><span class="p">:</span>
+                <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;go on&quot;</span>
+            <span class="k">with</span> <span class="n">chat_output</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&gt; &quot;</span> <span class="o">+</span> <span class="n">command</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">command</span> <span class="o">!=</span> <span class="s2">&quot;go on&quot;</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&gt; &quot;</span> <span class="o">+</span> <span class="n">command</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">set_cursor_waiting</span><span class="p">()</span>
+            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🤔&quot;</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_dirty</span><span class="p">:</span>
+                <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🙏&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🙂&quot;</span>
+            <span class="n">set_cursor_default</span><span class="p">()</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="s2">&quot;&lt;EMPTY RESPONSE, HIT ENTER&gt;&quot;</span>
+            <span class="k">with</span> <span class="n">chat_output</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">response</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">command_input</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="n">command_input</span><span class="o">.</span><span class="n">on_submit</span><span class="p">(</span><span class="n">on_submit</span><span class="p">)</span>
+
+        <span class="c1"># UI layout</span>
+
+        <span class="c1"># Arrange the chat history and input in a vertical box</span>
+        <span class="n">chat_ui</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">image_widget</span><span class="p">,</span> <span class="n">chat_output</span><span class="p">],</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;420px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">widget_height</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">chat_output</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="s2">&quot;400px&quot;</span>
+        <span class="p">)</span>  <span class="c1"># Fixed width for the left control</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">flex</span><span class="o">=</span><span class="s2">&quot;1 1 auto&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">widget_height</span><span class="p">)</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">chat_ui</span><span class="p">,</span> <span class="n">debug_output</span><span class="p">,</span> <span class="n">m</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">align_items</span><span class="o">=</span><span class="s2">&quot;flex-start&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">message_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">message_widget</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🙂 = waiting for user input&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🙏 = waiting for user to hit enter after calling set_center()&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🤔 = thinking&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;💤 = sleeping due to retries&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;😡 = Gemini recitation error&quot;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">table</span><span class="p">,</span> <span class="n">command_input</span><span class="p">,</span> <span class="n">message_widget</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;overflow&quot;</span><span class="p">:</span> <span class="s2">&quot;hidden&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-08-14T03:39:53+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-08-14</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2Z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-08-14T03:39:53+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-08-14</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+  
+
+
+
+
+                
+
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2020 - 2024 Qiusheng Wu
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/giswqs" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://medium.com/@giswqs" target="_blank" rel="noopener" title="medium.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M180.5 74.262C80.813 74.262 0 155.633 0 256s80.819 181.738 180.5 181.738S361 356.373 361 256 280.191 74.262 180.5 74.262Zm288.25 10.646c-49.845 0-90.245 76.619-90.245 171.095s40.406 171.1 90.251 171.1 90.251-76.619 90.251-171.1H559c0-94.503-40.4-171.095-90.248-171.095Zm139.506 17.821c-17.526 0-31.735 68.628-31.735 153.274s14.2 153.274 31.735 153.274S640 340.631 640 256c0-84.649-14.215-153.271-31.742-153.271Z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/giswqs" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/qiushengwu" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://youtube.com/@giswqs" target="_blank" rel="noopener" title="youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
+      
+        <script src="../js/timeago.min.js"></script>
+      
+        <script src="../js/timeago_mkdocs_material.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,3 @@
+# ai module
+
+::: geemap.ai
