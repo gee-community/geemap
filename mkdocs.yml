@@ -103,6 +103,7 @@ nav:
     - YouTube Channel: https://youtube.com/@giswqs
     - Report Issues: https://github.com/gee-community/geemap/issues
     - API Reference:
+          - ai module: ai.md
           - basemaps module: basemaps.md
           - cartoee module: cartoee.md
           - chart module: chart.md
@@ -302,6 +303,7 @@ nav:
           - notebooks/146_chart_image_collection.ipynb
           - notebooks/147_chart_array_list.ipynb
           - notebooks/148_chart_data_table.ipynb
+          - notebooks/149_gemini.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb

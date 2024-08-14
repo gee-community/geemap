@@ -2547,17 +2547,18 @@ def timelapse_gui(m=None, basemap="HYBRID"):
 
             with output:
                 output.clear_output()
-                link = create_download_link(
-                    out_gif,
-                    title="Click here to download: ",
-                )
-                display(link)
-                if nd_bands is not None:
-                    link_nd = create_download_link(
-                        out_gif.replace(".gif", "_nd.gif"),
+                if os.path.exists(out_gif):
+                    link = create_download_link(
+                        out_gif,
                         title="Click here to download: ",
                     )
-                    display(link_nd)
+                    display(link)
+                    if nd_bands is not None:
+                        link_nd = create_download_link(
+                            out_gif.replace(".gif", "_nd.gif"),
+                            title="Click here to download: ",
+                        )
+                        display(link_nd)
 
             m.default_style = {"cursor": "default"}
 
