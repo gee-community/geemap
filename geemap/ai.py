@@ -29,8 +29,8 @@ except ImportError:
 class Genie(widgets.VBox):
     """A widget for interacting with the Genie AI model.
 
-    The source code is adapted from the ee_genie.ipynb at https://bit.ly/3YEm7B6.
-    Credit to the original author Simon Ilyushchenko (simonf@google.com).
+    The source code is adapted from the ee_genie.ipynb at <https://bit.ly/3YEm7B6>.
+    Credit to the original author Simon Ilyushchenko (<https://github.com/simonff>).
 
     Args:
         project (Optional[str], optional): Google Cloud project ID. Defaults to None.
@@ -54,7 +54,7 @@ class Genie(widgets.VBox):
         # Initialization
 
         if project is None:
-            project = get_api_key("EE_PROJECT_ID")
+            project = get_api_key("EE_PROJECT_ID") or get_api_key("GOOGLE_PROJECT_ID")
         if project is None:
             raise ValueError(
                 "Please provide a valid project ID via the 'project' parameter."
