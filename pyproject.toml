@@ -32,6 +32,11 @@ geemap = "geemap.cli:main"
 all = [
     "geemap[backends,extra,lidar,raster,sql,apps,vector,workshop]",
 ]
+ai = [
+    "google-api-core",
+    "google-cloud-storage",
+    "google-generativeai",
+]
 backends = [
     "keplergl",
     "pydeck",
