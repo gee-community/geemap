@@ -13,7 +13,7 @@ import ipywidgets as widgets
 from IPython.display import display, HTML
 from typing import Optional
 from .common import get_api_key
-from .geemap import Map
+from .geemap import Map, ee_initialize
 
 try:
     from google.cloud import storage
@@ -35,9 +35,11 @@ class Genie(widgets.VBox):
     Args:
         project (Optional[str], optional): Google Cloud project ID. Defaults to None.
         google_api_key (Optional[str], optional): Google API key. Defaults to None.
-        gemini_model (str, optional): The Gemini model to use. Defaults to "gemini-pro-vision".
+        gemini_model (str, optional): The Gemini model to use. Defaults to "gemini-1.5-flash".
+            For a list of available models, see https://bit.ly/4fKfXW7.
         target_score (float, optional): The target score for the model. Defaults to 0.8.
         widget_height (str, optional): The height of the widget. Defaults to "600px".
+        initialize_ee (bool, optional): Whether to initialize Earth Engine. Defaults to True.
 
     Raises:
         ValueError: If the project ID or Google API key is not provided.
@@ -47,9 +49,10 @@ class Genie(widgets.VBox):
         self,
         project: Optional[str] = None,
         google_api_key: Optional[str] = None,
-        gemini_model: str = "gemini-pro-vision",
+        gemini_model: str = "gemini-1.5-flash",
         target_score: float = 0.8,
         widget_height: str = "600px",
+        initialize_ee: bool = True,
     ) -> None:
         # Initialization
 
@@ -67,6 +70,9 @@ class Genie(widgets.VBox):
                 "Please provide a valid Google API key via the 'google_api_key' parameter."
             )
 
+        if initialize_ee:
+            ee_initialize(project=project)
+
         genai.configure(api_key=google_api_key)
         storage_client = storage.Client(project=project)
         bucket = storage_client.get_bucket("earthengine-stac")
@@ -75,13 +81,14 @@ class Genie(widgets.VBox):
         # is left to the LLM.
 
         # Count of analysis rounds
-        round = 1
+
+        self.iteration = 1
+        self.map_dirty = False
 
         m = Map()
         m.add("layer_manager")
 
         analysis_model = None
-        map_dirty = False
 
         image_model = genai.GenerativeModel(gemini_model)
 
@@ -152,8 +159,8 @@ class Genie(widgets.VBox):
                 print(f"SET_CENTER({x}, {y}, {zoom})\n")
             m.set_center(x, y)
             m.zoom = zoom
-            global map_dirty
-            map_dirty = True
+            # global map_dirty
+            self.map_dirty = True
             return (
                 "Do not call any more functions in this request to let geemap bounds "
                 "update. Wait for user input."
@@ -261,8 +268,8 @@ class Genie(widgets.VBox):
             Optional additional instructions might be passed to target the analysis
             more precisely.
             """
-            global map_dirty
-            if map_dirty:
+            # global map_dirty
+            if self.map_dirty:
                 print("MAP DIRTY")
                 return (
                     "Map is not ready. Stop further processing and ask for user input"
@@ -425,10 +432,14 @@ class Genie(widgets.VBox):
                 following parameters: {visualization_parameters}"""
 
             result = analysis_model.ask(question)
-            global round
+            # global iteration
             with debug_output:
-                print(f"SCORE #{round}:\n {result}\n")
-            round += 1
+                print(f"SCORE #{self.iteration}:\n {result}\n")
+            try:
+                self.iteration += 1
+            except Exception as e:
+                with debug_output:
+                    print(f"UNEXPECTED SCORE RESPONSE: {e}")
             return result
 
         # Main prompt for the agent
@@ -634,8 +645,8 @@ class Genie(widgets.VBox):
             display(HTML(f"<script>{js_code}</script>"))
 
         def on_submit(widget):
-            global map_dirty
-            map_dirty = False
+            # global map_dirty
+            self.map_dirty = False
             command_input.description = "🙂"
             command = widget.value
             if not command:
@@ -649,7 +660,7 @@ class Genie(widgets.VBox):
             set_cursor_waiting()
             command_input.description = "🤔"
             response = model.chat(command, temperature=0)
-            if map_dirty:
+            if self.map_dirty:
                 command_input.description = "🙏"
             else:
                 command_input.description = "🙂"
