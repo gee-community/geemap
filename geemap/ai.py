@@ -107,7 +107,7 @@ class Genie(widgets.VBox):
             # value='a sea port',
             # value='flood consequences',
             # value='show an interesting modis composite with the relevant visualization and analyze it over Costa Rica',
-            description="🙂",
+            description="❓",
             layout=widgets.Layout(width="100%", height="50px"),
         )
 
@@ -543,11 +543,13 @@ class Genie(widgets.VBox):
         class Gemini:
             """Gemini LLM."""
 
-            def __init__(self, system_prompt, tools=None):
+            def __init__(
+                self, system_prompt, tools=None, model_name="gemini-1.5-pro-latest"
+            ):
                 if not tools:
                     tools = []
                 self._text_model = genai.GenerativeModel(
-                    model_name="gemini-1.5-pro-latest", tools=tools
+                    model_name=model_name, tools=tools
                 )
 
                 initial_messages = glm.Content(
@@ -576,7 +578,7 @@ class Genie(widgets.VBox):
                                 "Rephrase the answer to avoid it."
                             )
                         with chat_output:
-                            command_input.description = "😡"
+                            command_input.description = "🆁"
                         time.sleep(1)
                         with chat_output:
                             command_input.description = "🤔"
@@ -628,7 +630,7 @@ class Genie(widgets.VBox):
                                 "Rephrase the answer to avoid it."
                             )
                         with chat_output:
-                            command_input.description = "😡"
+                            command_input.description = "🆁"
                         time.sleep(1)
                         with chat_output:
                             command_input.description = "🤔"
@@ -647,8 +649,8 @@ class Genie(widgets.VBox):
                         with debug_output:
                             print(f"Response {response} led to the error {e}")
 
-        model = Gemini(system_prompt, gemini_tools)
-        analysis_model = Gemini(scoring_system_prompt)
+        model = Gemini(system_prompt, gemini_tools, model_name=gemini_model)
+        analysis_model = Gemini(scoring_system_prompt, model_name=gemini_model)
 
         # UI functions
 
@@ -667,7 +669,7 @@ class Genie(widgets.VBox):
         def on_submit(widget):
             # global map_dirty
             self.map_dirty = False
-            command_input.description = "🙂"
+            command_input.description = "❓"
             command = widget.value
             if not command:
                 command = "go on"
@@ -683,7 +685,7 @@ class Genie(widgets.VBox):
             if self.map_dirty:
                 command_input.description = "🙏"
             else:
-                command_input.description = "🙂"
+                command_input.description = "❓"
             set_cursor_default()
             response = response.strip()
             if not response:
@@ -713,11 +715,11 @@ class Genie(widgets.VBox):
 
         message_widget = widgets.Output()
         with message_widget:
-            print("🙂 = waiting for user input")
+            print("❓ = waiting for user input")
             print("🙏 = waiting for user to hit enter after calling set_center()")
             print("🤔 = thinking")
             print("💤 = sleeping due to retries")
-            print("😡 = Gemini recitation error")
+            print("🆁 = Gemini recitation error")
 
         super().__init__(
             [table, command_input, message_widget], layout={"overflow": "hidden"}
