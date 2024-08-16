@@ -5098,7 +5098,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p></td>
             <span class="c1"># value=&#39;a sea port&#39;,</span>
             <span class="c1"># value=&#39;flood consequences&#39;,</span>
             <span class="c1"># value=&#39;show an interesting modis composite with the relevant visualization and analyze it over Costa Rica&#39;,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;🙂&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;❓&quot;</span><span class="p">,</span>
             <span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;50px&quot;</span><span class="p">),</span>
         <span class="p">)</span>
 
@@ -5534,11 +5534,13 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p></td>
         <span class="k">class</span> <span class="nc">Gemini</span><span class="p">:</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Gemini LLM.&quot;&quot;&quot;</span>
 
-            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system_prompt</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">system_prompt</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;gemini-1.5-pro-latest&quot;</span>
+            <span class="p">):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">tools</span><span class="p">:</span>
                     <span class="n">tools</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_text_model</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">GenerativeModel</span><span class="p">(</span>
-                    <span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;gemini-1.5-pro-latest&quot;</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="n">tools</span>
+                    <span class="n">model_name</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span> <span class="n">tools</span><span class="o">=</span><span class="n">tools</span>
                 <span class="p">)</span>
 
                 <span class="n">initial_messages</span> <span class="o">=</span> <span class="n">glm</span><span class="o">.</span><span class="n">Content</span><span class="p">(</span>
@@ -5567,7 +5569,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p></td>
                                 <span class="s2">&quot;Rephrase the answer to avoid it.&quot;</span>
                             <span class="p">)</span>
                         <span class="k">with</span> <span class="n">chat_output</span><span class="p">:</span>
-                            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;😡&quot;</span>
+                            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🆁&quot;</span>
                         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                         <span class="k">with</span> <span class="n">chat_output</span><span class="p">:</span>
                             <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🤔&quot;</span>
@@ -5619,7 +5621,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p></td>
                                 <span class="s2">&quot;Rephrase the answer to avoid it.&quot;</span>
                             <span class="p">)</span>
                         <span class="k">with</span> <span class="n">chat_output</span><span class="p">:</span>
-                            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;😡&quot;</span>
+                            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🆁&quot;</span>
                         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                         <span class="k">with</span> <span class="n">chat_output</span><span class="p">:</span>
                             <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🤔&quot;</span>
@@ -5638,8 +5640,8 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p></td>
                         <span class="k">with</span> <span class="n">debug_output</span><span class="p">:</span>
                             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Response </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2"> led to the error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">model</span> <span class="o">=</span> <span class="n">Gemini</span><span class="p">(</span><span class="n">system_prompt</span><span class="p">,</span> <span class="n">gemini_tools</span><span class="p">)</span>
-        <span class="n">analysis_model</span> <span class="o">=</span> <span class="n">Gemini</span><span class="p">(</span><span class="n">scoring_system_prompt</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Gemini</span><span class="p">(</span><span class="n">system_prompt</span><span class="p">,</span> <span class="n">gemini_tools</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="n">gemini_model</span><span class="p">)</span>
+        <span class="n">analysis_model</span> <span class="o">=</span> <span class="n">Gemini</span><span class="p">(</span><span class="n">scoring_system_prompt</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="n">gemini_model</span><span class="p">)</span>
 
         <span class="c1"># UI functions</span>
 
@@ -5658,7 +5660,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p></td>
         <span class="k">def</span> <span class="nf">on_submit</span><span class="p">(</span><span class="n">widget</span><span class="p">):</span>
             <span class="c1"># global map_dirty</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">map_dirty</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🙂&quot;</span>
+            <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;❓&quot;</span>
             <span class="n">command</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">value</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">command</span><span class="p">:</span>
                 <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;go on&quot;</span>
@@ -5674,7 +5676,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p></td>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_dirty</span><span class="p">:</span>
                 <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🙏&quot;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;🙂&quot;</span>
+                <span class="n">command_input</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;❓&quot;</span>
             <span class="n">set_cursor_default</span><span class="p">()</span>
             <span class="n">response</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="p">:</span>
@@ -5704,11 +5706,11 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p></td>
 
         <span class="n">message_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">message_widget</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🙂 = waiting for user input&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;❓ = waiting for user input&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🙏 = waiting for user to hit enter after calling set_center()&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🤔 = thinking&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;💤 = sleeping due to retries&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;😡 = Gemini recitation error&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🆁 = Gemini recitation error&quot;</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="p">[</span><span class="n">table</span><span class="p">,</span> <span class="n">command_input</span><span class="p">,</span> <span class="n">message_widget</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;overflow&quot;</span><span class="p">:</span> <span class="s2">&quot;hidden&quot;</span><span class="p">}</span>
