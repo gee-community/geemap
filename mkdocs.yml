@@ -98,8 +98,6 @@ nav:
     - Citations: citations.md
     - FAQ: faq.md
     - Changelog: changelog.md
-    - Streamlit Web App: https://streamlit.geemap.org
-    - Blog: https://blog.gishub.org
     - YouTube Channel: https://youtube.com/@giswqs
     - Report Issues: https://github.com/gee-community/geemap/issues
     - API Reference:
