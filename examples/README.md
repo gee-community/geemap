@@ -13,7 +13,7 @@
 
 More video tutorials for geemap and Earth Engine are available on my [YouTube channel](https://youtube.com/@giswqs). If you can't access YouTube in your country, you can try [西瓜视频](http://gishub.org/xigua) or [哔哩哔哩](https://space.bilibili.com/527404442)。
 
-[![Earth Engine Tutorials on YouTube](https://wetlands.io/file/images/youtube.png)](https://youtube.com/@giswqs)
+[![Earth Engine Tutorials on YouTube](https://wetlands.io/file/images/youtube2024.jpeg)](https://youtube.com/@giswqs)
 
 ## Tutorials
 

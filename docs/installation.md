@@ -45,12 +45,6 @@ The optional dependencies can be installed using one of the following:
 -   `pip install geemap[streamlit]`: installing streamlit-folium.
 -   `pip install geemap[vector]`: installing geopandas, osmnx.
 
-Optionally, you can install some [Jupyter notebook extensions](https://github.com/ipython-contrib/jupyter_contrib_nbextensions), which can improve your productivity in the notebook environment. Some useful extensions include Table of Contents, Gist-it, Autopep8, Variable Inspector, etc. See this [post](https://towardsdatascience.com/jupyter-notebook-extensions-517fa69d2231) for more information.
-
-```bash
-conda install jupyter_contrib_nbextensions -c conda-forge
-```
-
 Check the **YouTube** video below on how to install geemap using conda.
 
 [![geemap](https://img.youtube.com/vi/h0pz3S6Tvx0/0.jpg)](https://www.youtube.com/watch?v=h0pz3S6Tvx0 "Install geemap")
