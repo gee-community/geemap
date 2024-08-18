@@ -2,15 +2,13 @@
 
 ## YouTube Channel
 
-More video tutorials for geemap and Earth Engine are available on my [YouTube channel](https://youtube.com/@giswqs). If you can't access YouTube in your country, you can try [西瓜视频](http://gishub.org/xigua) or [哔哩哔哩](https://space.bilibili.com/527404442)。
+More video tutorials for geemap and Earth Engine are available on my [YouTube channel](https://youtube.com/@giswqs). If you can't access YouTube in your country, you can try [Bilibili](https://space.bilibili.com/527404442)。
 
-[![Earth Engine Tutorials on YouTube](https://wetlands.io/file/images/youtube.png)](https://youtube.com/@giswqs)
+[![Earth Engine Tutorials on YouTube](https://wetlands.io/file/images/youtube2024.jpeg)](https://youtube.com/@giswqs)
 
 ## geemap Tutorials
 
-[![image](https://colab.research.google.com/assets/colab-badge.svg)](https://gishub.org/geemap-colab)
-[![image](https://mybinder.org/badge_logo.svg)](https://gishub.org/geemap-binder)
-[![image](https://mybinder.org/badge_logo.svg)](https://gishub.org/geemap-binder)
+[![image](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gee-community/geemap/blob/master)
 
 1. [Introducing the geemap Python package for interactive mapping with Google Earth Engine](#1-introducing-the-geemap-python-package-for-interactive-mapping-with-google-earth-engine) ([video](https://youtu.be/h0pz3S6Tvx0) | [gif](https://i.imgur.com/pI39k7v.gif) | [notebook](https://geemap.org/notebooks/01_geemap_intro))
 2. [Using basemaps in geemap and ipyleaflet for interactive mapping with Google Earth Engine](#2-using-basemaps-in-geemap-and-ipyleaflet-for-interactive-mapping-with-google-earth-engine) ([video](https://youtu.be/6J5ZCIUPXfI) | [gif](https://i.imgur.com/P5B2f7p.gif) | [notebook](https://geemap.org/notebooks/02_using_basemaps))
@@ -155,3 +153,10 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 141. Visualizing in-memory raster datasets and image arrays ([notebook](https://geemap.org/notebooks/141_image_array_viz))
 142. Using Google Maps as basemaps ([notebook](https://geemap.org/notebooks/142_google_maps))
 143. Timeseries animation for precipitation dataset ([notebook](https://geemap.org/notebooks/143_precipitation_timelapse) | [video](https://youtu.be/CWwDVn2Mi6M))
+144. Feature and FeatureCollection Charts ([notebook](https://geemap.org/notebooks/144_chart_features))
+145. Image Charts ([notebook](https://geemap.org/notebooks/145_chart_image))
+146. ImageCollection Charts ([notebook](https://geemap.org/notebooks/146_chart_image_collection))
+147. Array and List Charts ([notebook](https://geemap.org/notebooks/147_chart_array_list))
+148. DataTable Charts ([notebook](https://geemap.org/notebooks/148_chart_data_table))
+149. Using Gemini and EE Genie for automatic code generation ([notebook](https://geemap.org/notebooks/149_gemini))
+150. Visualizing Earth Engine data in 3D with MapLibre ([notebook](https://geemap.org/notebooks/150_maplibre))

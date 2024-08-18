@@ -1,6 +1,6 @@
 # Welcome to geemap
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gee-community/geemap/blob/master/docs/notebooks/00_geemap_colab.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gee-community/geemap/blob/master)
 [![Open in Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gee-community/geemap/master?labpath=docs%2Fnotebooks%2F00_geemap_colab.ipynb)
 [![Open In Studio Lab](https://studiolab.sagemaker.aws/studiolab.svg)](https://studiolab.sagemaker.aws/import/github/gee-community/geemap/blob/master/docs/notebooks/00_geemap_colab.ipynb)
 [![image](https://img.shields.io/pypi/v/geemap.svg)](https://pypi.python.org/pypi/geemap)
@@ -12,7 +12,6 @@
 [![image](https://img.shields.io/badge/YouTube-Channel-red)](https://youtube.com/@giswqs)
 [![image](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![image](https://joss.theoj.org/papers/10.21105/joss.02305/status.svg)](https://joss.theoj.org/papers/10.21105/joss.02305)
-[![chat](https://badges.gitter.im/Join%20Chat.svg)](https://matrix.to/#/#geemap:gitter.im)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/gee-community/geemap/master.svg)](https://results.pre-commit.ci/latest/github/gee-community/geemap/master)
 
 [![logo](https://i.imgur.com/9OOSpDm.png)](https://github.com/gee-community/geemap/blob/master/docs/assets/logo.png)
@@ -26,6 +25,10 @@
 -   360+ GEE notebook examples: <https://github.com/giswqs/earthengine-py-notebooks>
 -   GEE Tutorials on YouTube: <https://youtube.com/@giswqs>
 -   Free software: [MIT license](https://opensource.org/licenses/MIT)
+
+Join our Discord server 👇
+
+[![](https://dcbadge.limes.pink/api/server/https://discord.gg/UgZecTUq5P)](https://discord.gg/UgZecTUq5P)
 
 **Acknowledgment:** The geemap project is supported by the National Aeronautics and Space Administration (NASA) under Grant No. 80NSSC22K1742 issued through the [Open Source Tools, Frameworks, and Libraries 2020 Program](https://bit.ly/3RVBRcQ).
 
@@ -88,4 +91,4 @@ Below is a partial list of features available for the geemap package. Please che
 
 I have created a [YouTube Channel](https://youtube.com/@giswqs) for sharing **geemap** tutorials. You can subscribe to my channel for regular updates. If there is any specific tutorial you would like to see, please submit a feature request [here](https://github.com/gee-community/geemap/issues).
 
-[![Earth Engine Tutorials on YouTube](https://wetlands.io/file/images/youtube.png)](https://youtube.com/@giswqs)
+[![Earth Engine Tutorials on YouTube](https://wetlands.io/file/images/youtube2024.jpeg)](https://youtube.com/@giswqs)
