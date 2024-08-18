@@ -16301,3 +16301,291 @@ def hex_to_rgba(hex_color: str, opacity: float) -> str:
         int(hex_color[i : i + h_len // 3], 16) for i in range(0, h_len, h_len // 3)
     )
     return f"rgba({r},{g},{b},{opacity})"
+
+
+def replace_top_level_hyphens(d: Union[Dict, Any]) -> Union[Dict, Any]:
+    """
+    Replaces hyphens with underscores in top-level dictionary keys.
+
+    Args:
+        d (Union[Dict, Any]): The input dictionary or any other data type.
+
+    Returns:
+        Union[Dict, Any]: The modified dictionary with top-level keys having hyphens replaced with underscores,
+        or the original input if it's not a dictionary.
+    """
+    if isinstance(d, dict):
+        return {k.replace("-", "_"): v for k, v in d.items()}
+    return d
+
+
+def replace_hyphens_in_keys(d: Union[Dict, List, Any]) -> Union[Dict, List, Any]:
+    """
+    Recursively replaces hyphens with underscores in dictionary keys.
+
+    Args:
+        d (Union[Dict, List, Any]): The input dictionary, list or any other data type.
+
+    Returns:
+        Union[Dict, List, Any]: The modified dictionary or list with keys having hyphens replaced with underscores,
+        or the original input if it's not a dictionary or list.
+    """
+    if isinstance(d, dict):
+        return {k.replace("-", "_"): replace_hyphens_in_keys(v) for k, v in d.items()}
+    elif isinstance(d, list):
+        return [replace_hyphens_in_keys(i) for i in d]
+    else:
+        return d
+
+
+def remove_port_from_string(data: str) -> str:
+    """
+    Removes the port number from all URLs in the given string.
+
+    Args::
+        data (str): The input string containing URLs.
+
+    Returns:
+        str: The string with port numbers removed from all URLs.
+    """
+    import re
+
+    # Regular expression to match URLs with port numbers
+    url_with_port_pattern = re.compile(r"(http://[\d\w.]+):\d+")
+
+    # Function to remove the port from the matched URLs
+    def remove_port(match):
+        return match.group(1)
+
+    # Substitute the URLs with ports removed
+    result = url_with_port_pattern.sub(remove_port, data)
+
+    return result
+
+
+def pmtiles_metadata(input_file: str) -> Dict[str, Union[str, int, List[str]]]:
+    """
+    Fetch the metadata from a local or remote .pmtiles file.
+
+    This function retrieves metadata from a PMTiles file, whether it's local or hosted remotely.
+    If it's remote, the function fetches the header to determine the range of bytes to download
+    for obtaining the metadata. It then reads the metadata and extracts the layer names.
+
+    Args:
+        input_file (str): Path to the .pmtiles file, or its URL if the file is hosted remotely.
+
+    Returns:
+        dict: A dictionary containing the metadata information, including layer names.
+
+    Raises:
+        ImportError: If the pmtiles library is not installed.
+        ValueError: If the input file is not a .pmtiles file or if it does not exist.
+
+    Example:
+        >>> metadata = pmtiles_metadata("https://example.com/path/to/tiles.pmtiles")
+        >>> print(metadata["layer_names"])
+        ['buildings', 'roads']
+
+    Note:
+        If fetching a remote PMTiles file, this function may perform multiple requests to minimize
+        the amount of data downloaded.
+    """
+
+    import json
+    import requests
+    from urllib.parse import urlparse
+
+    try:
+        from pmtiles.reader import Reader, MmapSource, MemorySource
+    except ImportError:
+        print(
+            "pmtiles is not installed. Please install it using `pip install pmtiles`."
+        )
+        return
+
+    # ignore uri parameters when checking file suffix
+    if not urlparse(input_file).path.endswith(".pmtiles"):
+        raise ValueError("Input file must be a .pmtiles file.")
+
+    header = pmtiles_header(input_file)
+    metadata_offset = header["metadata_offset"]
+    metadata_length = header["metadata_length"]
+
+    if input_file.startswith("http"):
+        headers = {"Range": f"bytes=0-{metadata_offset + metadata_length}"}
+        response = requests.get(input_file, headers=headers)
+        content = MemorySource(response.content)
+        metadata = Reader(content).metadata()
+    else:
+        with open(input_file, "rb") as f:
+            reader = Reader(MmapSource(f))
+            metadata = reader.metadata()
+            if "json" in metadata:
+                metadata["vector_layers"] = json.loads(metadata["json"])[
+                    "vector_layers"
+                ]
+
+    vector_layers = metadata["vector_layers"]
+    layer_names = [layer["id"] for layer in vector_layers]
+
+    if "tilestats" in metadata:
+        geometries = [layer["geometry"] for layer in metadata["tilestats"]["layers"]]
+        metadata["geometries"] = geometries
+
+    metadata["layer_names"] = layer_names
+    metadata["center"] = header["center"]
+    metadata["bounds"] = header["bounds"]
+    return metadata
+
+
+def pmtiles_style(
+    url: str,
+    layers: Optional[Union[str, List[str]]] = None,
+    cmap: str = "Set3",
+    n_class: Optional[int] = None,
+    opacity: float = 0.5,
+    circle_radius: int = 5,
+    line_width: int = 1,
+    attribution: str = "PMTiles",
+    **kwargs,
+):
+    """
+    Generates a Mapbox style JSON for rendering PMTiles data.
+
+    Args:
+        url (str): The URL of the PMTiles file.
+        layers (str or list[str], optional): The layers to include in the style. If None, all layers will be included.
+            Defaults to None.
+        cmap (str, optional): The color map to use for styling the layers. Defaults to "Set3".
+        n_class (int, optional): The number of classes to use for styling. If None, the number of classes will be
+            determined automatically based on the color map. Defaults to None.
+        opacity (float, optional): The fill opacity for polygon layers. Defaults to 0.5.
+        circle_radius (int, optional): The circle radius for point layers. Defaults to 5.
+        line_width (int, optional): The line width for line layers. Defaults to 1.
+        attribution (str, optional): The attribution text for the data source. Defaults to "PMTiles".
+
+    Returns:
+        dict: The Mapbox style JSON.
+
+    Raises:
+        ValueError: If the layers argument is not a string or a list.
+        ValueError: If a layer specified in the layers argument does not exist in the PMTiles file.
+    """
+
+    if cmap == "Set3":
+        palette = [
+            "#8dd3c7",
+            "#ffffb3",
+            "#bebada",
+            "#fb8072",
+            "#80b1d3",
+            "#fdb462",
+            "#b3de69",
+            "#fccde5",
+            "#d9d9d9",
+            "#bc80bd",
+            "#ccebc5",
+            "#ffed6f",
+        ]
+    elif isinstance(cmap, list):
+        palette = cmap
+    else:
+        from .colormaps import get_palette
+
+        palette = ["#" + c for c in get_palette(cmap, n_class)]
+
+    n_class = len(palette)
+
+    metadata = pmtiles_metadata(url)
+    layer_names = metadata["layer_names"]
+
+    style = {
+        "version": 8,
+        "sources": {
+            "source": {
+                "type": "vector",
+                "url": "pmtiles://" + url,
+                "attribution": attribution,
+            }
+        },
+        "layers": [],
+    }
+
+    if layers is None:
+        layers = layer_names
+    elif isinstance(layers, str):
+        layers = [layers]
+    elif isinstance(layers, list):
+        for layer in layers:
+            if layer not in layer_names:
+                raise ValueError(f"Layer {layer} does not exist in the PMTiles file.")
+    else:
+        raise ValueError("The layers argument must be a string or a list.")
+
+    for i, layer_name in enumerate(layers):
+        layer_point = {
+            "id": f"{layer_name}_point",
+            "source": "source",
+            "source-layer": layer_name,
+            "type": "circle",
+            "paint": {
+                "circle-color": palette[i % n_class],
+                "circle-radius": circle_radius,
+            },
+            "filter": ["==", ["geometry-type"], "Point"],
+        }
+
+        layer_stroke = {
+            "id": f"{layer_name}_stroke",
+            "source": "source",
+            "source-layer": layer_name,
+            "type": "line",
+            "paint": {
+                "line-color": palette[i % n_class],
+                "line-width": line_width,
+            },
+            "filter": ["==", ["geometry-type"], "LineString"],
+        }
+
+        layer_fill = {
+            "id": f"{layer_name}_fill",
+            "source": "source",
+            "source-layer": layer_name,
+            "type": "fill",
+            "paint": {
+                "fill-color": palette[i % n_class],
+                "fill-opacity": opacity,
+            },
+            "filter": ["==", ["geometry-type"], "Polygon"],
+        }
+
+        style["layers"].extend([layer_point, layer_stroke, layer_fill])
+
+    return style
+
+
+def check_html_string(html_string):
+    """Check if an HTML string contains local images and convert them to base64.
+
+    Args:
+        html_string (str): The HTML string.
+
+    Returns:
+        str: The HTML string with local images converted to base64.
+    """
+    import re
+    import base64
+
+    # Search for img tags with src attribute
+    img_regex = r'<img[^>]+src\s*=\s*["\']([^"\':]+)["\'][^>]*>'
+
+    for match in re.findall(img_regex, html_string):
+        with open(match, "rb") as img_file:
+            img_data = img_file.read()
+            base64_data = base64.b64encode(img_data).decode("utf-8")
+            html_string = html_string.replace(
+                'src="{}"'.format(match),
+                'src="data:image/png;base64,' + base64_data + '"',
+            )
+
+    return html_string

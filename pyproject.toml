@@ -30,7 +30,7 @@ geemap = "geemap.cli:main"
 
 [project.optional-dependencies]
 all = [
-    "geemap[backends,extra,lidar,raster,sql,apps,vector,workshop]",
+    "geemap[backends,extra,lidar,raster,sql,apps,vector,workshop,maplibre]",
 ]
 ai = [
     "google-api-core",
@@ -99,6 +99,17 @@ workshop = [
     "ffmpeg-python",
     "gdown",
 ]
+maplibre = [
+        "geopandas",
+        "h3",
+        "ipyvuetify",
+        "localtileserver",
+        "mapclassify",
+        "maplibre",
+        "pmtiles",
+        "rioxarray",
+        "xarray",
+    ]
 
 [tool]
 [tool.setuptools.packages.find]
