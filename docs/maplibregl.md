@@ -1,0 +1,3 @@
+# maplibregl module
+
+::: geemap.maplibregl
