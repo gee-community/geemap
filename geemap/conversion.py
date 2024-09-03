@@ -327,7 +327,7 @@ def js_to_python(
     github_repo=None,
     show_map=True,
     import_geemap=False,
-    Map="Map",
+    Map="m",
 ):
     """Converts an Earth Engine JavaScript to Python script.
 
@@ -615,7 +615,7 @@ def js_to_python(
                     for i in range(len(line) - 1):
                         if line[len(line) - i - 1] == ")":
                             line = line[: len(line) - i - 1] + ".getInfo())"
-                            print(line)
+                            # print(line)
                             endOfPrintReplaced = True
                             break
                     if endOfPrintReplaced:
@@ -647,6 +647,7 @@ def js_to_python(
                         numIncorrectParameters = numIncorrectParameters - 1
                     else:
                         if currentDictionaryScopeDepth < 1:
+                            line = line.replace(": ", "=")
                             line = line.replace(":", " =")
 
                 if "= {" in line and "({" not in line:
@@ -701,7 +702,7 @@ def js_to_python(
                     output += line + "\n"
 
     if show_map:
-        output += "Map"
+        output += Map
 
     out_dir = os.path.dirname(out_file)
     if not os.path.exists(out_dir):
@@ -731,7 +732,7 @@ def js_snippet_to_py(
     import_ee=True,
     import_geemap=False,
     show_map=True,
-    Map="Map",
+    Map="m",
 ):
     """Converts an Earth Engine JavaScript snippet wrapped in triple quotes to Python directly on a Jupyter notebook.
 
@@ -765,9 +766,9 @@ def js_snippet_to_py(
         out_lines = []
         if import_ee:
             out_lines.append("import ee\n")
-        if import_geemap:
-            out_lines.append("import geemap\n\n")
-            out_lines.append(f"{Map} = geemap.Map()\n")
+        # if import_geemap:
+        #     out_lines.append("import geemap\n\n")
+        #     out_lines.append(f"{Map} = geemap.Map()\n")
 
         with open(out_py, encoding="utf-8") as f:
             lines = f.readlines()
@@ -781,6 +782,9 @@ def js_snippet_to_py(
                         continue
                     elif ".style(" in line and (".style(**" not in line):
                         line = line.replace(".style(", ".style(**")
+                        out_lines.append(line)
+                    elif "({" in line:
+                        line = line.replace("({", "(**{")
                         out_lines.append(line)
                     else:
                         out_lines.append(line)
@@ -806,7 +810,7 @@ def js_to_python_dir(
     use_qgis=True,
     github_repo=None,
     import_geemap=False,
-    Map="Map",
+    Map="m",
 ):
     """Converts all Earth Engine JavaScripts in a folder recursively to Python scripts.
 
@@ -861,7 +865,7 @@ def js_to_python_dir(
 #     return line
 
 
-def remove_qgis_import(in_file, Map="Map"):
+def remove_qgis_import(in_file, Map="m"):
     """Removes 'from ee_plugin import Map' from an Earth Engine Python script.
 
     Args:
@@ -1007,7 +1011,7 @@ def py_to_ipynb(
     out_file=None,
     github_username=None,
     github_repo=None,
-    Map="Map",
+    Map="m",
 ):
     """Converts Earth Engine Python script to Jupyter notebook.
 
@@ -1093,7 +1097,7 @@ def py_to_ipynb_dir(
     out_dir=None,
     github_username=None,
     github_repo=None,
-    Map="Map",
+    Map="m",
 ):
     """Converts Earth Engine Python scripts in a folder recursively to Jupyter notebooks.
 
