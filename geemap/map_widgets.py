@@ -399,7 +399,7 @@ class Legend(ipywidgets.VBox):
             display(legend_widget)
 
     def __check_if_allowed(
-        self, value: str, value_name: str, allowed_list: List[str]
+        value: str, value_name: str, allowed_list: List[str]
     ) -> bool:
         """Checks if a value is allowed.
 
@@ -422,7 +422,7 @@ class Legend(ipywidgets.VBox):
             )
         return True
 
-    def __convert_rgb_colors_to_hex(self, colors: List[tuple]) -> List[str]:
+    def __convert_rgb_colors_to_hex(colors: List[tuple]) -> List[str]:
         """Converts a list of RGB colors to hex.
 
         Args:
@@ -439,7 +439,7 @@ class Legend(ipywidgets.VBox):
         except:
             raise ValueError("Unable to convert rgb value to hex.")
 
-    def __create_legend_items(self, keys: List[str], colors: List[str]) -> List[str]:
+    def __create_legend_items(keys: List[str], colors: List[str]) -> List[str]:
         """Creates HTML legend items.
 
         Args:
@@ -460,7 +460,7 @@ class Legend(ipywidgets.VBox):
             legend_items.append(item)
         return legend_items
 
-    def __create_layout(self, **kwargs: Any) -> Dict[str, Optional[str]]:
+    def __create_layout(**kwargs: Any) -> Dict[str, Optional[str]]:
         """Creates the layout for the legend.
 
         Args:
@@ -500,7 +500,7 @@ class Legend(ipywidgets.VBox):
             "width": width,
         }
 
-    def __create_layout_property(self, name, default_value, **kwargs):
+    def __create_layout_property(name, default_value, **kwargs):
         return default_value if name not in kwargs else kwargs[name]
 
 
