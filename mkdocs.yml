@@ -109,7 +109,7 @@ nav:
           - common module: common.md
           - conversion module: conversion.md
           - core module: core.md
-          - core module: coreutils.md
+          - coreutils module: coreutils.md
           - datasets module: datasets.md
           - deck module: deck.md
           - ee_tile_layers module: ee_tile_layers.md
