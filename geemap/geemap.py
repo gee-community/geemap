@@ -13,7 +13,7 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 
 import os
 import warnings
-from typing import Optional, Any, Dict
+from typing import List, Dict, Any, Optional, Union
 
 import ee
 import ipyleaflet
@@ -51,35 +51,71 @@ class Map(core.Map):
 
     # Map attributes for drawing features
     @property
-    def draw_control(self):
+    def draw_control(self) -> Any:
+        """Gets the draw control.
+
+        Returns:
+            Any: The draw control.
+        """
         return self.get_draw_control()
 
     @property
-    def draw_control_lite(self):
+    def draw_control_lite(self) -> Any:
+        """Gets the lite version of the draw control.
+
+        Returns:
+            Any: The lite draw control.
+        """
         return self.get_draw_control()
 
     @property
-    def draw_features(self):
+    def draw_features(self) -> List[Any]:
+        """Gets the drawn features.
+
+        Returns:
+            List[Any]: The list of drawn features.
+        """
         return self._draw_control.features if self._draw_control else []
 
     @property
-    def draw_last_feature(self):
+    def draw_last_feature(self) -> Optional[Any]:
+        """Gets the last drawn feature.
+
+        Returns:
+            Optional[Any]: The last drawn feature.
+        """
         return self._draw_control.last_feature if self._draw_control else None
 
     @property
-    def draw_layer(self):
+    def draw_layer(self) -> Optional[Any]:
+        """Gets the draw layer.
+
+        Returns:
+            Optional[Any]: The draw layer.
+        """
         return self._draw_control.layer if self._draw_control else None
 
     @property
-    def user_roi(self):
+    def user_roi(self) -> Optional[Any]:
+        """Gets the user region of interest.
+
+        Returns:
+            Optional[Any]: The user region of interest.
+        """
         return self._draw_control.last_geometry if self._draw_control else None
 
     @property
-    def user_rois(self):
+    def user_rois(self) -> Optional[Any]:
+        """Gets the user regions of interest.
+
+        Returns:
+            Optional[Any]: The user regions of interest.
+        """
         return self._draw_control.collection if self._draw_control else None
 
     def __init__(self, **kwargs):
-        """Initialize a map object. The following additional parameters can be passed in addition to the ipyleaflet.Map parameters:
+        """Initialize a map object. The following additional parameters can be
+            passed in addition to the ipyleaflet.Map parameters:
 
         Args:
             ee_initialize (bool, optional): Whether or not to initialize ee. Defaults to True.
@@ -87,10 +123,12 @@ class Map(core.Map):
             zoom (int, optional): Zoom level of the map. Defaults to 2.
             height (str, optional): Height of the map. Defaults to "600px".
             width (str, optional): Width of the map. Defaults to "100%".
-            basemap (str, optional): Name of the basemap to add to the map. Defaults to "ROADMAP". Other options include "ROADMAP", "SATELLITE", "TERRAIN".
+            basemap (str, optional): Name of the basemap to add to the map.
+                Defaults to "ROADMAP". Other options include "ROADMAP", "SATELLITE", "TERRAIN".
             add_google_map (bool, optional): Whether to add Google Maps to the map. Defaults to True.
             sandbox_path (str, optional): The path to a sandbox folder for voila web app. Defaults to None.
-            lite_mode (bool, optional): Whether to enable lite mode, which only displays zoom control on the map. Defaults to False.
+            lite_mode (bool, optional): Whether to enable lite mode, which only displays
+                zoom control on the map. Defaults to False.
             data_ctrl (bool, optional): Whether to add the data control to the map. Defaults to True.
             zoom_ctrl (bool, optional): Whether to add the zoom control to the map. Defaults to True.
             fullscreen_ctrl (bool, optional): Whether to add the fullscreen control to the map. Defaults to True.
@@ -149,7 +187,12 @@ class Map(core.Map):
             self.roi_reducer = ee.Reducer.mean()
         self.roi_reducer_scale = None
 
-    def _control_config(self):
+    def _control_config(self) -> Dict[str, List[str]]:
+        """Configures the map controls based on the provided arguments.
+
+        Returns:
+            Dict[str, List[str]]: The configuration of map controls.
+        """
         if self.kwargs.get("lite_mode"):
             return {"topleft": ["zoom_control"]}
 
@@ -182,57 +225,107 @@ class Map(core.Map):
         }
 
     @property
-    def ee_layer_names(self):
+    def ee_layer_names(self) -> List[str]:
+        """Gets the names of the EE layers.
+
+        Returns:
+            List[str]: The names of the EE layers.
+        """
         warnings.warn(
             "ee_layer_names is deprecated. Use ee_layers.keys() instead.",
             DeprecationWarning,
         )
-        return self.ee_layers.keys()
+        return list(self.ee_layers.keys())
 
     @property
-    def ee_layer_dict(self):
+    def ee_layer_dict(self) -> Dict[str, Any]:
+        """Gets the dictionary of EE layers.
+
+        Returns:
+            Dict[str, Any]: The dictionary of EE layers.
+        """
         warnings.warn(
             "ee_layer_dict is deprecated. Use ee_layers instead.", DeprecationWarning
         )
         return self.ee_layers
 
     @property
-    def ee_raster_layer_names(self):
+    def ee_raster_layer_names(self) -> List[str]:
+        """Gets the names of the EE raster layers.
+
+        Returns:
+            List[str]: The names of the EE raster layers.
+        """
         warnings.warn(
             "ee_raster_layer_names is deprecated. Use self.ee_raster_layers.keys() instead.",
             DeprecationWarning,
         )
-        return self.ee_raster_layers.keys()
+        return list(self.ee_raster_layers.keys())
 
     @property
-    def ee_vector_layer_names(self):
+    def ee_vector_layer_names(self) -> List[str]:
+        """Gets the names of the EE vector layers.
+
+        Returns:
+            List[str]: The names of the EE vector layers.
+        """
         warnings.warn(
             "ee_vector_layer_names is deprecated. Use self.ee_vector_layers.keys() instead.",
             DeprecationWarning,
         )
-        return self.ee_vector_layers.keys()
+        return list(self.ee_vector_layers.keys())
 
     @property
-    def ee_raster_layers(self):
+    def ee_raster_layers(self) -> Dict[str, Any]:
+        """Gets the dictionary of EE raster layers.
+
+        Returns:
+            Dict[str, Any]: The dictionary of EE raster layers.
+        """
         return dict(filter(self._raster_filter, self.ee_layers.items()))
 
     @property
-    def ee_vector_layers(self):
+    def ee_vector_layers(self) -> Dict[str, Any]:
+        """Gets the dictionary of EE vector layers.
+
+        Returns:
+            Dict[str, Any]: The dictionary of EE vector layers.
+        """
         return dict(filter(self._vector_filter, self.ee_layers.items()))
 
-    def _raster_filter(self, pair):
+    def _raster_filter(self, pair: Tuple[str, Dict[str, Any]]) -> bool:
+        """Filters the raster layers.
+
+        Args:
+            pair (Tuple[str, Dict[str, Any]]): The layer pair to filter.
+
+        Returns:
+            bool: True if the layer is a raster layer, False otherwise.
+        """
         return isinstance(pair[1]["ee_object"], (ee.Image, ee.ImageCollection))
 
-    def _vector_filter(self, pair):
+    def _vector_filter(self, pair: Tuple[str, Dict[str, Any]]) -> bool:
+        """Filters the vector layers.
+
+        Args:
+            pair (Tuple[str, Dict[str, Any]]): The layer pair to filter.
+
+        Returns:
+            bool: True if the layer is a vector layer, False otherwise.
+        """
         return isinstance(
             pair[1]["ee_object"], (ee.Geometry, ee.Feature, ee.FeatureCollection)
         )
 
-    def add(self, obj, position="topright", **kwargs):
+    def add(
+        self, obj: Union[str, Any], position: str = "topright", **kwargs: Any
+    ) -> None:
         """Adds a layer or control to the map.
 
         Args:
-            object (object): The layer or control to add to the map.
+            obj (Union[str, Any]): The layer or control to add to the map.
+            position (str, optional): The position of the control on the map. Defaults to "topright".
+            **kwargs: Additional keyword arguments.
         """
         if isinstance(obj, str):
             basemap = check_basemap(obj)
@@ -276,24 +369,30 @@ class Map(core.Map):
         else:
             super().add(obj, position=position, **kwargs)
 
-    def add_controls(self, controls, position="topleft"):
+    def add_controls(
+        self, controls: Union[List[Any], Any], position: str = "topleft"
+    ) -> None:
         """Adds a list of controls to the map.
 
         Args:
-            controls (list): A list of controls to add to the map.
-            position (str, optional): The position of the controls on the map. Defaults to 'topleft'.
+            controls (Union[List[Any], Any]): A list of controls or a single
+                control to add to the map.
+            position (str, optional): The position of the controls on the map.
+                Defaults to "topleft".
         """
         if not isinstance(controls, list):
             controls = [controls]
         for control in controls:
             self.add(control, position)
 
-    def set_options(self, mapTypeId="HYBRID", **kwargs):
+    def set_options(self, mapTypeId: str = "HYBRID", **kwargs: Any) -> None:
         """Adds Google basemap and controls to the ipyleaflet map.
 
         Args:
-            mapTypeId (str, optional): A mapTypeId to set the basemap to. Can be one of "ROADMAP", "SATELLITE",
-                "HYBRID" or "TERRAIN" to select one of the standard Google Maps API map types. Defaults to 'HYBRID'.
+            mapTypeId (str, optional): A mapTypeId to set the basemap to. Can be
+                one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN" to select
+                one of the standard Google Maps API map types. Defaults to 'HYBRID'.
+            **kwargs: Additional keyword arguments.
         """
 
         try:
@@ -306,16 +405,27 @@ class Map(core.Map):
     setOptions = set_options
 
     def add_ee_layer(
-        self, ee_object, vis_params={}, name=None, shown=True, opacity=1.0
-    ):
+        self,
+        ee_object: Union[
+            ee.FeatureCollection, ee.Feature, ee.Image, ee.ImageCollection
+        ],
+        vis_params: Optional[Dict[str, Any]] = None,
+        name: Optional[str] = None,
+        shown: bool = True,
+        opacity: float = 1.0,
+    ) -> None:
         """Adds a given EE object to the map as a layer.
 
         Args:
-            ee_object (Collection|Feature|Image|MapId): The object to add to the map.
-            vis_params (dict, optional): The visualization parameters. Defaults to {}.
-            name (str, optional): The name of the layer. Defaults to 'Layer N'.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
+            ee_object (Union[ee.FeatureCollection, ee.Feature, ee.Image, ee.ImageCollection]):
+                The object to add to the map.
+            vis_params (Optional[Dict[str, Any]], optional): The visualization parameters.
+                Defaults to {}.
+            name (Optional[str], optional): The name of the layer. Defaults to 'Layer N'.
+            shown (bool, optional): A flag indicating whether the layer should be on by
+                default. Defaults to True.
+            opacity (float, optional): The layer's opacity represented as a number
+                between 0 and 1. Defaults to 1.
         """
         has_plot_dropdown = (
             hasattr(self, "_plot_dropdown_widget")
@@ -343,7 +453,7 @@ class Map(core.Map):
 
     addLayer = add_ee_layer
 
-    def remove_ee_layer(self, name):
+    def remove_ee_layer(self, name: str) -> None:
         """Removes an Earth Engine layer.
 
         Args:
@@ -355,13 +465,13 @@ class Map(core.Map):
             if ee_layer in self.layers:
                 self.remove_layer(ee_layer)
 
-    def set_center(self, lon, lat, zoom=None):
+    def set_center(self, lon: float, lat: float, zoom: Optional[int] = None) -> None:
         """Centers the map view at a given coordinates with the given zoom level.
 
         Args:
             lon (float): The longitude of the center, in degrees.
             lat (float): The latitude of the center, in degrees.
-            zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.
+            zoom (Optional[int], optional): The zoom level, from 1 to 24. Defaults to None.
         """
         super().set_center(lon, lat, zoom)
         if is_arcpy():
@@ -369,12 +479,15 @@ class Map(core.Map):
 
     setCenter = set_center
 
-    def center_object(self, ee_object, zoom=None):
+    def center_object(
+        self, ee_object: Union[ee.Element, ee.Geometry], zoom: Optional[int] = None
+    ) -> None:
         """Centers the map view on a given object.
 
         Args:
-            ee_object (Element|Geometry): An Earth Engine object to center on a geometry, image or feature.
-            zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.
+            ee_object (Union[ee.Element, ee.Geometry]): An Earth Engine object to
+                center on a geometry, image or feature.
+            zoom (Optional[int], optional): The zoom level, from 1 to 24. Defaults to None.
         """
         super().center_object(ee_object, zoom)
         if is_arcpy():
@@ -383,16 +496,19 @@ class Map(core.Map):
 
     centerObject = center_object
 
-    def zoom_to_bounds(self, bounds):
+    def zoom_to_bounds(
+        self, bounds: Union[List[float], Tuple[float, float, float, float]]
+    ) -> None:
         """Zooms to a bounding box in the form of [minx, miny, maxx, maxy].
 
         Args:
-            bounds (list | tuple): A list/tuple containing minx, miny, maxx, maxy values for the bounds.
+            bounds (Union[List[float], Tuple[float, float, float, float]]): A
+                list/tuple containing minx, miny, maxx, maxy values for the bounds.
         """
         #  The ipyleaflet fit_bounds method takes lat/lon bounds in the form [[south, west], [north, east]].
         self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
 
-    def get_scale(self):
+    def get_scale(self) -> float:
         """Returns the approximate pixel scale of the current map view, in meters.
 
         Returns:
@@ -403,14 +519,19 @@ class Map(core.Map):
     getScale = get_scale
 
     def add_basemap(
-        self, basemap: Optional[str] = "ROADMAP", show: Optional[bool] = True, **kwargs
+        self,
+        basemap: Optional[str] = "ROADMAP",
+        show: Optional[bool] = True,
+        **kwargs: Any,
     ) -> None:
         """Adds a basemap to the map.
 
         Args:
-            basemap (str, optional): Can be one of string from basemaps. Defaults to 'ROADMAP'.
-            show (bool, optional): Whether the basemap is visible or not. Defaults to True.
-            **kwargs: Keyword arguments for the TileLayer.
+            basemap (Optional[str], optional): Can be one of the strings from basemaps.
+                Defaults to 'ROADMAP'.
+            show (Optional[bool], optional): Whether the basemap is visible or not.
+                Defaults to True.
+            **kwargs: Additional keyword arguments for the TileLayer.
         """
         import xyzservices
 
@@ -463,11 +584,11 @@ class Map(core.Map):
                 )
             )
 
-    def get_layer_names(self):
+    def get_layer_names(self) -> List[str]:
         """Gets layer names as a list.
 
         Returns:
-            list: A list of layer names.
+            List[str]: A list of layer names.
         """
         layer_names = []
 
@@ -477,14 +598,14 @@ class Map(core.Map):
 
         return layer_names
 
-    def find_layer(self, name):
-        """Finds layer by name
+    def find_layer(self, name: str) -> Optional[ipyleaflet.Layer]:
+        """Finds a layer by name.
 
         Args:
             name (str): Name of the layer to find.
 
         Returns:
-            object: ipyleaflet layer object.
+            Optional[ipyleaflet.Layer]: The ipyleaflet layer object if found, else None.
         """
         layers = self.layers
 
@@ -494,7 +615,7 @@ class Map(core.Map):
 
         return None
 
-    def show_layer(self, name, show=True):
+    def show_layer(self, name: str, show: bool = True) -> None:
         """Shows or hides a layer on the map.
 
         Args:
@@ -506,14 +627,14 @@ class Map(core.Map):
         if layer is not None:
             layer.visible = show
 
-    def find_layer_index(self, name):
-        """Finds layer index by name
+    def find_layer_index(self, name: str) -> int:
+        """Finds the index of a layer by name.
 
         Args:
             name (str): Name of the layer to find.
 
         Returns:
-            int: Index of the layer with the specified name
+            int: Index of the layer with the specified name, or -1 if not found.
         """
         layers = self.layers
 
@@ -523,8 +644,8 @@ class Map(core.Map):
 
         return -1
 
-    def layer_opacity(self, name, opacity=1.0):
-        """Changes layer opacity.
+    def layer_opacity(self, name: str, opacity: float = 1.0) -> None:
+        """Changes the opacity of a layer.
 
         Args:
             name (str): The name of the layer to change opacity.
@@ -538,21 +659,23 @@ class Map(core.Map):
 
     def add_tile_layer(
         self,
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        name="Untitled",
-        attribution="",
-        opacity=1.0,
-        shown=True,
-        **kwargs,
-    ):
+        url: str = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        name: str = "Untitled",
+        attribution: str = "",
+        opacity: float = 1.0,
+        shown: bool = True,
+        **kwargs: Any,
+    ) -> None:
         """Adds a TileLayer to the map.
 
         Args:
-            url (str, optional): The URL of the tile layer. Defaults to 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'.
+            url (str, optional): The URL of the tile layer. Defaults to
+                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'.
             name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
             attribution (str, optional): The attribution to use. Defaults to ''.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            opacity (float, optional): The opacity of the layer. Defaults to 1.0.
+            shown (bool, optional): A flag indicating whether the layer should
+                be on by default. Defaults to True.
         """
 
         if "max_zoom" not in kwargs:
@@ -577,29 +700,38 @@ class Map(core.Map):
 
     def set_plot_options(
         self,
-        add_marker_cluster=False,
-        sample_scale=None,
-        plot_type=None,
-        overlay=False,
-        position="bottomright",
-        min_width=None,
-        max_width=None,
-        min_height=None,
-        max_height=None,
-        **kwargs,
-    ):
+        add_marker_cluster: bool = False,
+        sample_scale: Optional[float] = None,
+        plot_type: Optional[str] = None,
+        overlay: bool = False,
+        position: str = "bottomright",
+        min_width: Optional[int] = None,
+        max_width: Optional[int] = None,
+        min_height: Optional[int] = None,
+        max_height: Optional[int] = None,
+        **kwargs: Any,
+    ) -> None:
         """Sets plotting options.
 
         Args:
-            add_marker_cluster (bool, optional): Whether to add a marker cluster. Defaults to False.
-            sample_scale (float, optional):  A nominal scale in meters of the projection to sample in . Defaults to None.
-            plot_type (str, optional): The plot type can be one of "None", "bar", "scatter" or "hist". Defaults to None.
-            overlay (bool, optional): Whether to overlay plotted lines on the figure. Defaults to False.
-            position (str, optional): Position of the control, can be ‘bottomleft’, ‘bottomright’, ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
-            min_width (int, optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            max_width (int, optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            min_height (int, optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            add_marker_cluster (bool, optional): Whether to add a marker cluster.
+                Defaults to False.
+            sample_scale (float, optional):  A nominal scale in meters of the
+                projection to sample in . Defaults to None.
+            plot_type (str, optional): The plot type can be one of "None", "bar",
+                "scatter" or "hist". Defaults to None.
+            overlay (bool, optional): Whether to overlay plotted lines on the figure.
+                Defaults to False.
+            position (str, optional): Position of the control, can be ‘bottomleft’,
+                ‘bottomright’, ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
+            min_width (int, optional): Min width of the widget (in pixels),
+                if None it will respect the content size. Defaults to None.
+            max_width (int, optional): Max width of the widget (in pixels),
+                if None it will respect the content size. Defaults to None.
+            min_height (int, optional): Min height of the widget (in pixels),
+                if None it will respect the content size. Defaults to None.
+            max_height (int, optional): Max height of the widget (in pixels),
+                if None it will respect the content size. Defaults to None.
 
         """
         plot_options_dict = {}
@@ -626,17 +758,17 @@ class Map(core.Map):
 
     def plot(
         self,
-        x,
-        y,
-        plot_type=None,
-        overlay=False,
-        position="bottomright",
-        min_width=None,
-        max_width=None,
-        min_height=None,
-        max_height=None,
-        **kwargs,
-    ):
+        x: Union[List[float], Any],
+        y: Union[List[float], Any],
+        plot_type: Optional[str] = None,
+        overlay: bool = False,
+        position: str = "bottomright",
+        min_width: Optional[int] = None,
+        max_width: Optional[int] = None,
+        min_height: Optional[int] = None,
+        max_height: Optional[int] = None,
+        **kwargs: Any,
+    ) -> None:
         """Creates a plot based on x-array and y-array data.
 
         Args:
@@ -705,11 +837,12 @@ class Map(core.Map):
                 print("Failed to create plot.")
                 raise Exception(e)
 
-    def add_layer_control(self, position="topright"):
+    def add_layer_control(self, position: str = "topright") -> None:
         """Adds a layer control to the map.
 
         Args:
-            position (str, optional): _description_. Defaults to "topright".
+            position (str, optional): The position of the layer control on the map.
+                Defaults to "topright".
         """
         if self.layer_control is None:
             layer_control = ipyleaflet.LayersControl(position=position)
@@ -719,17 +852,17 @@ class Map(core.Map):
 
     def add_legend(
         self,
-        title="Legend",
-        legend_dict=None,
-        keys=None,
-        colors=None,
-        position="bottomright",
-        builtin_legend=None,
-        layer_name=None,
-        add_header=True,
-        widget_args={},
-        **kwargs,
-    ):
+        title: str = "Legend",
+        legend_dict: Optional[Dict[str, str]] = None,
+        keys: Optional[List[str]] = None,
+        colors: Optional[List[str]] = None,
+        position: str = "bottomright",
+        builtin_legend: Optional[str] = None,
+        layer_name: Optional[str] = None,
+        add_header: bool = True,
+        widget_args: Dict[str, Any] = {},
+        **kwargs: Any,
+    ) -> None:
         """Adds a customized basemap to the map.
 
         Args:
@@ -773,19 +906,19 @@ class Map(core.Map):
 
     def add_colorbar(
         self,
-        vis_params=None,
-        cmap="gray",
-        discrete=False,
-        label=None,
-        orientation="horizontal",
-        position="bottomright",
-        transparent_bg=False,
-        layer_name=None,
-        font_size=9,
-        axis_off=False,
-        max_width=None,
-        **kwargs,
-    ):
+        vis_params: Optional[Dict[str, Any]] = None,
+        cmap: str = "gray",
+        discrete: bool = False,
+        label: Optional[str] = None,
+        orientation: str = "horizontal",
+        position: str = "bottomright",
+        transparent_bg: bool = False,
+        layer_name: Optional[str] = None,
+        font_size: int = 9,
+        axis_off: bool = False,
+        max_width: Optional[str] = None,
+        **kwargs: Any,
+    ) -> None:
         """Add a matplotlib colorbar to the map
 
         Args:
@@ -830,13 +963,13 @@ class Map(core.Map):
         else:
             self.colorbars.append(colorbar)
 
-    def remove_colorbar(self):
-        """Remove colorbar from the map."""
+    def remove_colorbar(self) -> None:
+        """Removes the colorbar from the map."""
         if hasattr(self, "_colorbar") and self._colorbar is not None:
             self.remove_control(self._colorbar)
 
-    def remove_colorbars(self):
-        """Remove all colorbars from the map."""
+    def remove_colorbars(self) -> None:
+        """Removes all colorbars from the map."""
         for layer in self.ee_layers.values():
             if widget := layer.pop("colorbar", None):
                 self.remove(widget)
@@ -845,14 +978,14 @@ class Map(core.Map):
                 if colorbar in self.controls:
                     self.remove_control(colorbar)
 
-    def remove_legend(self):
-        """Remove legend from the map."""
+    def remove_legend(self) -> None:
+        """Removes the legend from the map."""
         if hasattr(self, "_legend") and self._legend is not None:
             if self._legend in self.controls:
                 self.remove_control(self._legend)
 
-    def remove_legends(self):
-        """Remove all legends from the map."""
+    def remove_legends(self) -> None:
+        """Removes all legends from the map."""
         for layer in self.ee_layers.values():
             if widget := layer.pop("legend", None):
                 self.remove(widget)
@@ -861,23 +994,24 @@ class Map(core.Map):
                 if legend in self.controls:
                     self.remove_control(legend)
 
-    def create_vis_widget(self, layer_dict):
-        """Create a GUI for changing layer visualization parameters interactively.
+    def create_vis_widget(self, layer_dict: Dict[str, Any]) -> None:
+        """Creates a GUI for changing layer visualization parameters interactively.
 
         Args:
-            layer_dict (dict): A dict containing information about the layer. It is an element from Map.ee_layers.
+            layer_dict (Dict[str, Any]): A dictionary containing information about
+                the layer. It is an element from Map.ee_layers.
         """
         self._add_layer_editor(position="topright", layer_dict=layer_dict)
 
     def add_inspector(
         self,
-        names=None,
-        visible=True,
-        decimals=2,
-        position="topright",
-        opened=True,
-        show_close_button=True,
-    ):
+        names: Optional[Union[str, List[str]]] = None,
+        visible: bool = True,
+        decimals: int = 2,
+        position: str = "topright",
+        opened: bool = True,
+        show_close_button: bool = True,
+    ) -> None:
         """Add the Inspector GUI to the map.
 
         Args:
@@ -897,8 +1031,11 @@ class Map(core.Map):
         )
 
     def add_layer_manager(
-        self, position="topright", opened=True, show_close_button=True
-    ):
+        self,
+        position: str = "topright",
+        opened: bool = True,
+        show_close_button: bool = True,
+    ) -> None:
         """Add the Layer Manager to the map.
 
         Args:
@@ -911,7 +1048,12 @@ class Map(core.Map):
             layer_manager.collapsed = not opened
             layer_manager.close_button_hidden = not show_close_button
 
-    def _on_basemap_changed(self, basemap_name):
+    def _on_basemap_changed(self, basemap_name: str) -> None:
+        """Handles the event when the basemap is changed.
+
+        Args:
+            basemap_name (str): The name of the new basemap.
+        """
         if basemap_name not in self.get_layer_names():
             self.add_basemap(basemap_name)
             if basemap_name in self._xyz_dict:
@@ -920,23 +1062,23 @@ class Map(core.Map):
                     bounds = [bounds[0][1], bounds[0][0], bounds[1][1], bounds[1][0]]
                     self.zoom_to_bounds(bounds)
 
-    def add_basemap_widget(self, position="topright"):
+    def add_basemap_widget(self, position: str = "topright") -> None:
         """Add the Basemap GUI to the map.
 
         Args:
-            position (str, optional): The position of the Inspector GUI. Defaults to "topright".
+            position (str, optional): The position of the Basemap GUI. Defaults to "topright".
         """
         super()._add_basemap_selector(position=position)
 
-    def add_draw_control(self, position="topleft"):
-        """Add a draw control to the map
+    def add_draw_control(self, position: str = "topleft") -> None:
+        """Add a draw control to the map.
 
         Args:
             position (str, optional): The position of the draw control. Defaults to "topleft".
         """
         super().add("draw_control", position=position)
 
-    def add_draw_control_lite(self, position="topleft"):
+    def add_draw_control_lite(self, position: str = "topleft") -> None:
         """Add a lite version draw control to the map for the plotting tool.
 
         Args:
@@ -955,41 +1097,60 @@ class Map(core.Map):
             remove=False,
         )
 
-    def add_toolbar(self, position="topright", **kwargs):
+    def add_toolbar(self, position: str = "topright", **kwargs: Any) -> None:
         """Add a toolbar to the map.
 
         Args:
             position (str, optional): The position of the toolbar. Defaults to "topright".
+            **kwargs: Additional keyword arguments.
         """
         self.add("toolbar", position, **kwargs)
 
-    def _toolbar_main_tools(self):
+    def _toolbar_main_tools(self) -> Any:
+        """Gets the main tools for the toolbar.
+
+        Returns:
+            Any: The main tools for the toolbar.
+        """
         return toolbar.main_tools
 
-    def _toolbar_extra_tools(self):
+    def _toolbar_extra_tools(self) -> Any:
+        """Gets the extra tools for the toolbar.
+
+        Returns:
+            Any: The extra tools for the toolbar.
+        """
         return toolbar.extra_tools
 
-    def add_plot_gui(self, position="topright", **kwargs):
+    def add_plot_gui(self, position: str = "topright", **kwargs: Any) -> None:
         """Adds the plot widget to the map.
 
         Args:
             position (str, optional): Position of the widget. Defaults to "topright".
+            **kwargs: Additional keyword arguments.
         """
-
         from .toolbar import ee_plot_gui
 
         ee_plot_gui(self, position, **kwargs)
 
     def add_gui(
-        self, name, position="topright", opened=True, show_close_button=True, **kwargs
-    ):
+        self,
+        name: str,
+        position: str = "topright",
+        opened: bool = True,
+        show_close_button: bool = True,
+        **kwargs: Any,
+    ) -> None:
         """Add a GUI to the map.
 
         Args:
-            name (str): The name of the GUI. Options include "layer_manager", "inspector", "plot", and "timelapse".
+            name (str): The name of the GUI. Options include "layer_manager",
+                "inspector", "plot", and "timelapse".
             position (str, optional): The position of the GUI. Defaults to "topright".
             opened (bool, optional): Whether the GUI is opened. Defaults to True.
-            show_close_button (bool, optional): Whether to show the close button. Defaults to True.
+            show_close_button (bool, optional): Whether to show the close button.
+                Defaults to True.
+            **kwargs: Additional keyword arguments.
         """
         name = name.lower()
         if name == "layer_manager":

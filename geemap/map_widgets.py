@@ -1,10 +1,11 @@
 """Various ipywidgets that can be added to a map."""
 
 import functools
-from typing import List
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 
 import IPython
-from IPython.core.display import HTML, display
+from IPython.display import HTML, display
 
 import ee
 import ipyevents
@@ -14,7 +15,15 @@ import ipywidgets
 from . import common
 
 
-def _set_css_in_cell_output(info):
+def _set_css_in_cell_output(info: Any) -> None:
+    """Sets CSS styles in the cell output for different themes.
+
+    Args:
+        info (Any): Information passed to the function (unused).
+
+    Returns:
+        None
+    """
     display(
         HTML(
             """
@@ -56,7 +65,15 @@ class Theme:
     current_theme = "colab" if common.in_colab_shell() else "light"
 
     @staticmethod
-    def apply(cls):
+    def apply(cls: Any) -> Any:
+        """Applies the theme to the given class.
+
+        Args:
+            cls (Any): The class to which the theme will be applied.
+
+        Returns:
+            Any: The class with the applied theme.
+        """
         original_init = cls.__init__
 
         @functools.wraps(cls.__init__)
@@ -74,16 +91,16 @@ class Colorbar(ipywidgets.Output):
 
     def __init__(
         self,
-        vis_params=None,
-        cmap="gray",
-        discrete=False,
-        label=None,
-        orientation="horizontal",
-        transparent_bg=False,
-        font_size=9,
-        axis_off=False,
-        max_width=None,
-        **kwargs,
+        vis_params: Optional[Union[Dict[str, Any], list, tuple]] = None,
+        cmap: str = "gray",
+        discrete: bool = False,
+        label: Optional[str] = None,
+        orientation: str = "horizontal",
+        transparent_bg: bool = False,
+        font_size: int = 9,
+        axis_off: bool = False,
+        max_width: Optional[str] = None,
+        **kwargs: Any,
     ):
         """Add a matplotlib colorbar to the map.
 
@@ -203,7 +220,21 @@ class Colorbar(ipywidgets.Output):
             self.outputs = ()
             matplotlib.pyplot.show()
 
-    def _get_dimensions(self, orientation, kwargs):
+    def _get_dimensions(
+        self, orientation: str, kwargs: Dict[str, Any]
+    ) -> Tuple[float, float]:
+        """Get the dimensions of the colorbar based on orientation.
+
+        Args:
+            orientation (str): Orientation of the colorbar.
+            kwargs (Dict[str, Any]): Additional keyword arguments.
+
+        Returns:
+            Tuple[float, float]: Width and height of the colorbar.
+
+        Raises:
+            ValueError: If the orientation is not either horizontal or vertical.
+        """
         default_dims = {"horizontal": (3.0, 0.3), "vertical": (0.3, 3.0)}
         if orientation in default_dims:
             default = default_dims[orientation]
@@ -228,15 +259,15 @@ class Legend(ipywidgets.VBox):
 
     def __init__(
         self,
-        title="Legend",
-        legend_dict=None,
-        keys=None,
-        colors=None,
-        position="bottomright",
-        builtin_legend=None,
-        add_header=True,
-        widget_args=None,
-        **kwargs,
+        title: str = "Legend",
+        legend_dict: Optional[Dict[str, str]] = None,
+        keys: Optional[List[str]] = None,
+        colors: Optional[List[Union[str, tuple]]] = None,
+        position: str = "bottomright",
+        builtin_legend: Optional[str] = None,
+        add_header: bool = True,
+        widget_args: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
     ):
         """Adds a customized legend to the map.
 
@@ -367,7 +398,22 @@ class Legend(ipywidgets.VBox):
         with legend_output:
             display(legend_widget)
 
-    def __check_if_allowed(value, value_name, allowed_list):
+    def __check_if_allowed(
+        value: str, value_name: str, allowed_list: List[str]
+    ) -> bool:
+        """Checks if a value is allowed.
+
+        Args:
+            value (str): The value to check.
+            value_name (str): The name of the value.
+            allowed_list (List[str]): The list of allowed values.
+
+        Returns:
+            bool: True if the value is allowed, otherwise raises a ValueError.
+
+        Raises:
+            ValueError: If the value is not allowed.
+        """
         if value not in allowed_list:
             raise ValueError(
                 "The "
@@ -376,13 +422,33 @@ class Legend(ipywidgets.VBox):
             )
         return True
 
-    def __convert_rgb_colors_to_hex(colors):
+    def __convert_rgb_colors_to_hex(colors: List[tuple]) -> List[str]:
+        """Converts a list of RGB colors to hex.
+
+        Args:
+            colors (List[tuple]): A list of RGB color tuples.
+
+        Returns:
+            List[str]: A list of hex color strings.
+
+        Raises:
+            ValueError: If unable to convert an RGB value to hex.
+        """
         try:
             return [common.rgb_to_hex(x) for x in colors]
         except:
             raise ValueError("Unable to convert rgb value to hex.")
 
-    def __create_legend_items(keys, colors):
+    def __create_legend_items(keys: List[str], colors: List[str]) -> List[str]:
+        """Creates HTML legend items.
+
+        Args:
+            keys (List[str]): A list of legend keys.
+            colors (List[str]): A list of legend colors.
+
+        Returns:
+            List[str]: A list of HTML strings for the legend items.
+        """
         legend_items = []
         for index, key in enumerate(keys):
             color = colors[index]
@@ -394,7 +460,15 @@ class Legend(ipywidgets.VBox):
             legend_items.append(item)
         return legend_items
 
-    def __create_layout(**kwargs):
+    def __create_layout(**kwargs: Any) -> Dict[str, Optional[str]]:
+        """Creates the layout for the legend.
+
+        Args:
+            **kwargs (Any): Additional keyword arguments for layout properties.
+
+        Returns:
+            Dict[str, Optional[str]]: A dictionary of layout properties.
+        """
         height = Legend.__create_layout_property("height", None, **kwargs)
 
         min_height = Legend.__create_layout_property("min_height", None, **kwargs)
@@ -436,12 +510,12 @@ class Inspector(ipywidgets.VBox):
 
     def __init__(
         self,
-        host_map,
-        names=None,
-        visible=True,
-        decimals=2,
-        opened=True,
-        show_close_button=True,
+        host_map: "geemap.Map",
+        names: Optional[Union[str, List[str]]] = None,
+        visible: bool = True,
+        decimals: int = 2,
+        opened: bool = True,
+        show_close_button: bool = True,
     ):
         """Creates an Inspector widget for Earth Engine data.
 
@@ -540,18 +614,37 @@ class Inspector(ipywidgets.VBox):
         if self.on_close is not None:
             self.on_close()
 
-    def _create_checkbox(self, title, checked):
+    def _create_checkbox(self, title: str, checked: bool) -> ipywidgets.Checkbox:
+        """Creates a checkbox widget.
+
+        Args:
+            title (str): The title of the checkbox.
+            checked (bool): Whether the checkbox is checked.
+
+        Returns:
+            ipywidgets.Checkbox: The created checkbox widget.
+        """
         layout = ipywidgets.Layout(width="auto", padding="0px 6px 0px 0px")
         return ipywidgets.Checkbox(
             description=title, indent=False, value=checked, layout=layout
         )
 
-    def _on_map_interaction(self, **kwargs):
+    def _on_map_interaction(self, **kwargs: Any) -> None:
+        """Handles map interaction events.
+
+        Args:
+            **kwargs (Any): The interaction event arguments.
+        """
         latlon = kwargs.get("coordinates")
         if kwargs.get("type") == "click":
             self._on_map_click(latlon)
 
-    def _on_map_click(self, latlon):
+    def _on_map_click(self, latlon: List[float]) -> None:
+        """Handles map click events.
+
+        Args:
+            latlon (List[float]): The latitude and longitude of the click event.
+        """
         if self.toolbar_button.value:
             self._host_map.default_style = {"cursor": "wait"}
             self._clear_inspector_output()
@@ -567,21 +660,42 @@ class Inspector(ipywidgets.VBox):
             self.tree_output.children = [ipytree.Tree(nodes=nodes)]
             self._host_map.default_style = {"cursor": "crosshair"}
 
-    def _clear_inspector_output(self):
+    def _clear_inspector_output(self) -> None:
+        """Clears the inspector output."""
         self.tree_output.children = []
         self.children = []
         self.children = [self.toolbar_header, self.inspector_checks, self.tree_output]
 
-    def _on_point_checkbox_changed(self, change):
+    def _on_point_checkbox_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the point checkbox.
+
+        Args:
+            change (Dict[str, Any]): The change event arguments.
+        """
         self._expand_point_tree = change["new"]
 
-    def _on_pixels_checkbox_changed(self, change):
+    def _on_pixels_checkbox_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the pixels checkbox.
+
+        Args:
+            change (Dict[str, Any]): The change event arguments.
+        """
         self._expand_pixels_tree = change["new"]
 
-    def _on_objects_checkbox_changed(self, change):
+    def _on_objects_checkbox_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the objects checkbox.
+
+        Args:
+            change (Dict[str, Any]): The change event arguments.
+        """
         self._expand_objects_tree = change["new"]
 
-    def _on_toolbar_btn_click(self, change):
+    def _on_toolbar_btn_click(self, change: Dict[str, Any]) -> None:
+        """Handles toolbar button click events.
+
+        Args:
+            change (Dict[str, Any]): The change event arguments.
+        """
         if change["new"]:
             self._host_map.default_style = {"cursor": "crosshair"}
             self.children = [
@@ -594,11 +708,21 @@ class Inspector(ipywidgets.VBox):
             self.children = [self.toolbar_button]
             self._host_map.default_style = {"cursor": "default"}
 
-    def _on_close_btn_click(self, change):
+    def _on_close_btn_click(self, change: Dict[str, Any]) -> None:
+        """Handles close button click events.
+
+        Args:
+            change (Dict[str, Any]): The change event arguments.
+        """
         if change["new"]:
             self.cleanup()
 
-    def _get_visible_map_layers(self):
+    def _get_visible_map_layers(self) -> Dict[str, Any]:
+        """Gets the visible map layers.
+
+        Returns:
+            Dict[str, Any]: A dictionary of visible map layers.
+        """
         layers = {}
         if self._names is not None:
             names = [names] if isinstance(names, str) else self._names
@@ -609,7 +733,19 @@ class Inspector(ipywidgets.VBox):
             layers = self._host_map.ee_layers
         return {k: v for k, v in layers.items() if v["ee_layer"].visible}
 
-    def _root_node(self, title, nodes, **kwargs):
+    def _root_node(
+        self, title: str, nodes: List[ipytree.Node], **kwargs: Any
+    ) -> ipytree.Node:
+        """Creates a root node for the tree.
+
+        Args:
+            title (str): The title of the root node.
+            nodes (List[ipytree.Node]): The child nodes of the root node.
+            **kwargs (Any): Additional keyword arguments.
+
+        Returns:
+            ipytree.Node: The created root node.
+        """
         return ipytree.Node(
             title,
             icon="archive",
@@ -621,7 +757,15 @@ class Inspector(ipywidgets.VBox):
             **kwargs,
         )
 
-    def _point_info(self, latlon):
+    def _point_info(self, latlon: List[float]) -> ipytree.Node:
+        """Gets information about a point.
+
+        Args:
+            latlon (List[float]): The latitude and longitude of the point.
+
+        Returns:
+            ipytree.Node: The node containing the point information.
+        """
         scale = self._host_map.get_scale()
         label = (
             f"Point ({latlon[1]:.{self._decimals}f}, "
@@ -635,7 +779,18 @@ class Inspector(ipywidgets.VBox):
         ]
         return self._root_node(label, nodes, opened=self._expand_point_tree)
 
-    def _query_point(self, latlon, ee_object):
+    def _query_point(
+        self, latlon: List[float], ee_object: ee.ComputedObject
+    ) -> Optional[Dict[str, Any]]:
+        """Queries a point on the map.
+
+        Args:
+            latlon (List[float]): The latitude and longitude of the point.
+            ee_object (ee.ComputedObject): The Earth Engine object to query.
+
+        Returns:
+            Optional[Dict[str, Any]]: The query result.
+        """
         point = ee.Geometry.Point(latlon[::-1])
         scale = self._host_map.get_scale()
         if isinstance(ee_object, ee.ImageCollection):
@@ -644,7 +799,15 @@ class Inspector(ipywidgets.VBox):
             return ee_object.reduceRegion(ee.Reducer.first(), point, scale).getInfo()
         return None
 
-    def _pixels_info(self, latlon):
+    def _pixels_info(self, latlon: List[float]) -> ipytree.Node:
+        """Gets information about pixels at a point.
+
+        Args:
+            latlon (List[float]): The latitude and longitude of the point.
+
+        Returns:
+            ipytree.Node: The node containing the pixels information.
+        """
         if not self._visible:
             return self._root_node("Pixels", [])
 
@@ -667,12 +830,28 @@ class Inspector(ipywidgets.VBox):
 
         return self._root_node("Pixels", nodes)
 
-    def _get_bbox(self, latlon):
+    def _get_bbox(self, latlon: List[float]) -> ee.Geometry.BBox:
+        """Gets a bounding box around a point.
+
+        Args:
+            latlon (List[float]): The latitude and longitude of the point.
+
+        Returns:
+            ee.Geometry.BBox: The bounding box around the point.
+        """
         lat, lon = latlon
         delta = 0.005
         return ee.Geometry.BBox(lon - delta, lat - delta, lon + delta, lat + delta)
 
-    def _objects_info(self, latlon):
+    def _objects_info(self, latlon: List[float]) -> ipytree.Node:
+        """Gets information about objects at a point.
+
+        Args:
+            latlon (List[float]): The latitude and longitude of the point.
+
+        Returns:
+            ipytree.Node: The node containing the objects information.
+        """
         if not self._visible:
             return self._root_node("Objects", [])
 
@@ -699,8 +878,11 @@ class Inspector(ipywidgets.VBox):
 
 @Theme.apply
 class LayerManager(ipywidgets.VBox):
-    def __init__(self, host_map):
+    """A layer manager widget for managing map layers."""
+
+    def __init__(self, host_map: "geemap.Map"):
         """Initializes a layer manager widget.
+
         Args:
             host_map (geemap.Map): The geemap.Map object.
         """
@@ -741,30 +923,33 @@ class LayerManager(ipywidgets.VBox):
         super().__init__([self._toolbar_header, self._toolbar_footer])
 
     @property
-    def collapsed(self):
+    def collapsed(self) -> bool:
+        """bool: Whether the layer manager is collapsed."""
         return not self._collapse_button.value
 
     @collapsed.setter
-    def collapsed(self, value):
+    def collapsed(self, value: bool) -> None:
         self._collapse_button.value = not value
 
     @property
-    def header_hidden(self):
+    def header_hidden(self) -> bool:
+        """bool: Whether the header is hidden."""
         return self._toolbar_header.layout.display == "none"
 
     @header_hidden.setter
-    def header_hidden(self, value):
+    def header_hidden(self, value: bool) -> None:
         self._toolbar_header.layout.display = "none" if value else "block"
 
     @property
-    def close_button_hidden(self):
+    def close_button_hidden(self) -> bool:
+        """bool: Whether the close button is hidden."""
         return self._close_button.style.display == "none"
 
     @close_button_hidden.setter
-    def close_button_hidden(self, value):
+    def close_button_hidden(self, value: bool) -> None:
         self._close_button.style.display = "none" if value else "inline-block"
 
-    def refresh_layers(self):
+    def refresh_layers(self) -> None:
         """Recreates all the layer widgets."""
         toggle_all_layout = ipywidgets.Layout(
             height="18px", width="30ex", padding="0px 4px 25px 4px"
@@ -783,18 +968,32 @@ class LayerManager(ipywidgets.VBox):
             layer_rows.append(self._render_layer_row(layer))
         self._toolbar_footer.children = [toggle_all_checkbox] + layer_rows
 
-    def _on_close_click(self, _):
+    def _on_close_click(self, _) -> None:
+        """Handles the close button click event."""
         if self.on_close:
             self.on_close()
 
-    def _on_collapse_click(self, change):
+    def _on_collapse_click(self, change: Dict[str, Any]) -> None:
+        """Handles the collapse button click event.
+
+        Args:
+            change (Dict[str, Any]): The change event arguments.
+        """
         if change["new"]:
             self.refresh_layers()
             self.children = [self._toolbar_header, self._toolbar_footer]
         else:
             self.children = [self._collapse_button]
 
-    def _render_layer_row(self, layer):
+    def _render_layer_row(self, layer: Any) -> ipywidgets.HBox:
+        """Renders a row for a layer.
+
+        Args:
+            layer (Any): The layer to render.
+
+        Returns:
+            ipywidgets.HBox: The rendered layer row.
+        """
         visibility_checkbox = ipywidgets.Checkbox(
             value=self._compute_layer_visibility(layer),
             description=layer.name,
@@ -870,13 +1069,22 @@ class LayerManager(ipywidgets.VBox):
             layout=ipywidgets.Layout(padding="0px 4px 0px 4px"),
         )
 
-    def _find_layer_row_index(self, layer):
+    def _find_layer_row_index(self, layer: Any) -> int:
+        """Finds the index of a layer row.
+
+        Args:
+            layer (Any): The layer to find.
+
+        Returns:
+            int: The index of the layer row.
+        """
         for index, child in enumerate(self._toolbar_footer.children[1:]):
             if child.children[0].description == layer.name:
                 return index + 1
         return -1
 
-    def _remove_confirm_widget(self):
+    def _remove_confirm_widget(self) -> None:
+        """Removes the confirm widget."""
         for index, child in enumerate(self._toolbar_footer.children[1:]):
             if child.children[0].value == "Remove layer?":
                 self._toolbar_footer.children = (
@@ -885,7 +1093,12 @@ class LayerManager(ipywidgets.VBox):
                 )
                 break
 
-    def _on_layer_remove_click(self, layer):
+    def _on_layer_remove_click(self, layer: Any) -> None:
+        """Handles the layer remove click event.
+
+        Args:
+            layer (Any): The layer to remove.
+        """
         self._remove_confirm_widget()
 
         label = ipywidgets.Label(
@@ -926,35 +1139,73 @@ class LayerManager(ipywidgets.VBox):
 
         no_button.on_click(on_no_button_click)
 
-    def _compute_layer_opacity(self, layer):
+    def _compute_layer_opacity(self, layer: Any) -> float:
+        """Computes the opacity of a layer.
+
+        Args:
+            layer (Any): The layer to compute the opacity for.
+
+        Returns:
+            float: The opacity of the layer.
+        """
         if layer in self._host_map.geojson_layers:
             opacity = layer.style.get("opacity", 1.0)
             fill_opacity = layer.style.get("fillOpacity", 1.0)
             return max(opacity, fill_opacity)
         return layer.opacity if hasattr(layer, "opacity") else 1.0
 
-    def _compute_layer_visibility(self, layer):
+    def _compute_layer_visibility(self, layer: Any) -> bool:
+        """Computes the visibility of a layer.
+
+        Args:
+            layer (Any): The layer to compute the visibility for.
+
+        Returns:
+            bool: The visibility of the layer.
+        """
         return layer.visible if hasattr(layer, "visible") else True
 
-    def _on_layer_settings_click(self, button):
+    def _on_layer_settings_click(self, button: ipywidgets.Button) -> None:
+        """Handles the layer settings click event.
+
+        Args:
+            button (ipywidgets.Button): The button that was clicked.
+        """
         if self.on_open_vis:
             self.on_open_vis(button.tooltip)
 
-    def _on_all_layers_visibility_toggled(self, change):
+    def _on_all_layers_visibility_toggled(self, change: Dict[str, Any]) -> None:
+        """Handles the all layers visibility toggled event.
+
+        Args:
+            change (Dict[str, Any]): The change event arguments.
+        """
         checkboxes = [
             row.children[0] for row in self._toolbar_footer.children[1:]
         ]  # Skip the all on/off checkbox.
         for checkbox in checkboxes:
             checkbox.value = change["new"]
 
-    def _on_layer_opacity_changed(self, change, layer):
+    def _on_layer_opacity_changed(self, change: Dict[str, Any], layer: Any) -> None:
+        """Handles the layer opacity changed event.
+
+        Args:
+            change (Dict[str, Any]): The change event arguments.
+            layer (Any): The layer to change the opacity for.
+        """
         if layer in self._host_map.geojson_layers:
             # For non-TileLayer, use layer.style.opacity and layer.style.fillOpacity.
             layer.style.update({"opacity": change["new"], "fillOpacity": change["new"]})
         elif hasattr(layer, "opacity"):
             layer.opacity = change["new"]
 
-    def _on_layer_visibility_changed(self, change, layer):
+    def _on_layer_visibility_changed(self, change: Dict[str, Any], layer: Any) -> None:
+        """Handles the layer visibility changed event.
+
+        Args:
+            change (Dict[str, Any]): The change event arguments.
+            layer (Any): The layer to change the visibility for.
+        """
         if hasattr(layer, "visible"):
             layer.visible = change["new"]
 
@@ -986,7 +1237,7 @@ class LayerManager(ipywidgets.VBox):
 class Basemap(ipywidgets.HBox):
     """Widget for selecting a basemap."""
 
-    def __init__(self, basemaps, value):
+    def __init__(self, basemaps: List[str], value: str):
         """Creates a widget for selecting a basemap.
 
         Args:
@@ -1013,15 +1264,22 @@ class Basemap(ipywidgets.HBox):
 
         super().__init__([self._dropdown, close_button])
 
-    def _on_dropdown_click(self, change):
+    def _on_dropdown_click(self, change: dict) -> None:
+        """Handles the dropdown value change event.
+
+        Args:
+            change (dict): The change event dictionary.
+        """
         if self.on_basemap_changed and change["new"]:
             self.on_basemap_changed(self._dropdown.value)
 
-    def cleanup(self):
+    def cleanup(self) -> None:
+        """Cleans up the widget by calling the on_close callback if set."""
         if self.on_close:
             self.on_close()
 
-    def _on_close_click(self, _):
+    def _on_close_click(self, _) -> None:
+        """Handles the close button click event."""
         self.cleanup()
 
 
@@ -1029,12 +1287,12 @@ class Basemap(ipywidgets.HBox):
 class LayerEditor(ipywidgets.VBox):
     """Widget for displaying and editing layer visualization properties."""
 
-    def __init__(self, host_map, layer_dict):
+    def __init__(self, host_map: "geemap.Map", layer_dict: Optional[Dict[str, Any]]):
         """Initializes a layer editor widget.
 
         Args:
             host_map (geemap.Map): The geemap.Map object.
-            layer_dict (dict): The layer object to edit.
+            layer_dict (Optional[Dict[str, Any]]): The layer object to edit.
         """
 
         self.on_close = None
@@ -1100,7 +1358,12 @@ class LayerEditor(ipywidgets.VBox):
         super().__init__(children=[])
         self._on_toggle_click({"new": True})
 
-    def _on_toggle_click(self, change):
+    def _on_toggle_click(self, change: Dict[str, Any]) -> None:
+        """Handles the toggle button click event.
+
+        Args:
+            change (Dict[str, Any]): The change event arguments.
+        """
         if change["new"]:
             self.children = [
                 ipywidgets.HBox([self._close_button, self._toggle_button, self._label]),
@@ -1112,22 +1375,43 @@ class LayerEditor(ipywidgets.VBox):
                 ipywidgets.HBox([self._close_button, self._toggle_button, self._label]),
             ]
 
-    def _on_import_click(self, _):
+    def _on_import_click(self, _) -> None:
+        """Handles the import button click event."""
         self._embedded_widget.on_import_click()
 
-    def _on_apply_click(self, _):
+    def _on_apply_click(self, _) -> None:
+        """Handles the apply button click event."""
         self._embedded_widget.on_apply_click()
 
-    def _on_close_click(self, _):
+    def _on_close_click(self, _) -> None:
+        """Handles the close button click event."""
         if self.on_close:
             self.on_close()
 
 
 def _tokenize_legend_colors(string: str, delimiter: str = ",") -> List[str]:
+    """Tokenizes a string of legend colors.
+
+    Args:
+        string (str): The string of legend colors.
+        delimiter (str, optional): The delimiter used to split the string. Defaults to ",".
+
+    Returns:
+        List[str]: A list of hex color strings.
+    """
     return common.to_hex_colors([c.strip() for c in string.split(delimiter)])
 
 
 def _tokenize_legend_labels(string: str, delimiter: str = ",") -> List[str]:
+    """Tokenizes a string of legend labels.
+
+    Args:
+        string (str): The string of legend labels.
+        delimiter (str, optional): The delimiter used to split the string. Defaults to ",".
+
+    Returns:
+        List[str]: A list of legend labels.
+    """
     return [l.strip() for l in string.split(delimiter)]
 
 
@@ -1135,12 +1419,12 @@ def _tokenize_legend_labels(string: str, delimiter: str = ",") -> List[str]:
 class _RasterLayerEditor(ipywidgets.VBox):
     """Widget for displaying and editing layer visualization properties for raster layers."""
 
-    def __init__(self, host_map, layer_dict):
+    def __init__(self, host_map: "geemap.Map", layer_dict: Dict[str, Any]):
         """Initializes a raster layer editor widget.
 
         Args:
             host_map (geemap.Map): The geemap.Map object.
-            layer_dict (dict): The layer object to edit.
+            layer_dict (Dict[str, Any]): The layer object to edit.
         """
         self._host_map = host_map
         self._layer_dict = layer_dict
@@ -1448,8 +1732,12 @@ class _RasterLayerEditor(ipywidgets.VBox):
             children=children,
         )
 
-    def _value_stretch_changed(self, value):
-        """Apply the selected stretch option and update widget states."""
+    def _value_stretch_changed(self, value: Dict[str, Any]) -> None:
+        """Apply the selected stretch option and update widget states.
+
+        Args:
+            value (Dict[str, Any]): The change event dictionary containing the new value.
+        """
         stretch_option = value["new"]
 
         if stretch_option:
@@ -1460,7 +1748,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
             self._stretch_button.disabled = True
             self._value_range_slider.disabled = False
 
-    def _update_stretch(self, *_):
+    def _update_stretch(self, *args: Any) -> None:
         """Calculate and set the range slider by applying stretch parameters."""
         stretch_params = self._stretch_dropdown.value
 
@@ -1481,7 +1769,18 @@ class _RasterLayerEditor(ipywidgets.VBox):
 
         self._value_range_slider.value = [min_val, max_val]
 
-    def _set_toolbar_layout(self, grayscale, palette):
+    def _set_toolbar_layout(
+        self, grayscale: bool, palette: bool
+    ) -> List[ipywidgets.Widget]:
+        """Sets the layout of the toolbar based on grayscale and palette options.
+
+        Args:
+            grayscale (bool): Whether the grayscale option is selected.
+            palette (bool): Whether the palette option is selected.
+
+        Returns:
+            List[ipywidgets.Widget]: The list of toolbar widgets.
+        """
         tools = [
             ipywidgets.HBox([self._grayscale_radio_button, self._rgb_radio_button]),
             self._bands_hbox,
@@ -1528,14 +1827,24 @@ class _RasterLayerEditor(ipywidgets.VBox):
             tools.append(self._gamma_slider)
         return tools
 
-    def _get_colormaps(self):
+    def _get_colormaps(self) -> List[str]:
+        """Gets the list of available colormaps.
+
+        Returns:
+            List[str]: The list of colormap names.
+        """
         from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
 
         colormap_options = pyplot.colormaps()
         colormap_options.sort()
         return colormap_options
 
-    def _render_colorbar(self, colors):
+    def _render_colorbar(self, colors: List[str]) -> None:
+        """Renders a colorbar with the given colors.
+
+        Args:
+            colors (List[str]): The list of colors to use in the colorbar.
+        """
         import matplotlib  # pylint: disable=import-outside-toplevel
         from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
 
@@ -1559,7 +1868,12 @@ class _RasterLayerEditor(ipywidgets.VBox):
         with self._colorbar_output:
             pyplot.show()
 
-    def _classes_changed(self, change):
+    def _classes_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the classes dropdown.
+
+        Args:
+            change (Dict[str, Any]): The change event dictionary.
+        """
         import matplotlib  # pylint: disable=import-outside-toplevel
         from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
 
@@ -1585,31 +1899,44 @@ class _RasterLayerEditor(ipywidgets.VBox):
                 ]
                 self._legend_labels_label.value = ", ".join(labels)
 
-    def _add_color_clicked(self, _):
+    def _add_color_clicked(self, _) -> None:
+        """Handles the add color button click event."""
         if self._color_picker.value is not None:
             if self._palette_label.value:
                 self._palette_label.value += ", " + self._color_picker.value[1:]
             else:
                 self._palette_label.value = self._color_picker.value[1:]
 
-    def _del_color_clicked(self, _):
+    def _del_color_clicked(self, _) -> None:
+        """Handles the delete color button click event."""
         if "," in self._palette_label.value:
             items = [item.strip() for item in self._palette_label.value.split(",")]
             self._palette_label.value = ", ".join(items[:-1])
         else:
             self._palette_label.value = ""
 
-    def _reset_color_clicked(self, _):
+    def _reset_color_clicked(self, _) -> None:
+        """Handles the reset color button click event."""
         self._palette_label.value = ""
 
-    def _linear_checkbox_changed(self, change):
+    def _linear_checkbox_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the linear checkbox.
+
+        Args:
+            change (Dict[str, Any]): The change event dictionary.
+        """
         if change["new"]:
             self._step_checkbox.value = False
             self._legend_vbox.children = [self._colormap_hbox]
         else:
             self._step_checkbox.value = True
 
-    def _step_checkbox_changed(self, change):
+    def _step_checkbox_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the step checkbox.
+
+        Args:
+            change (Dict[str, Any]): The change event dictionary.
+        """
         if change["new"]:
             self._linear_checkbox.value = False
             if len(self._layer_palette) > 0:
@@ -1624,7 +1951,12 @@ class _RasterLayerEditor(ipywidgets.VBox):
         else:
             self._linear_checkbox.value = True
 
-    def _colormap_changed(self, change):
+    def _colormap_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the colormap dropdown.
+
+        Args:
+            change (Dict[str, Any]): The change event dictionary.
+        """
         import matplotlib  # pylint: disable=import-outside-toplevel
         from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
 
@@ -1646,7 +1978,12 @@ class _RasterLayerEditor(ipywidgets.VBox):
                 ]
                 self._legend_labels_label.value = ", ".join(labels)
 
-    def _get_vis_params_from_selection(self):
+    def _get_vis_params_from_selection(self) -> Dict[str, Any]:
+        """Gets the visualization parameters from the current selection.
+
+        Returns:
+            Dict[str, Any]: The visualization parameters.
+        """
         vis = {}
         if self._grayscale_radio_button.index == 0:
             vis["bands"] = [self._band_1_dropdown.value]
@@ -1669,13 +2006,15 @@ class _RasterLayerEditor(ipywidgets.VBox):
         vis["max"] = self._value_range_slider.value[1]
         return vis
 
-    def on_import_click(self):
+    def on_import_click(self) -> None:
+        """Handles the import button click event."""
         vis = self._get_vis_params_from_selection()
 
         common.create_code_cell(f"vis_params = {str(vis)}")
         print(f"vis_params = {str(vis)}")
 
-    def on_apply_click(self):
+    def on_apply_click(self) -> None:
+        """Handles the apply button click event."""
         vis = self._get_vis_params_from_selection()
         self._host_map.add_layer(
             self._ee_object, vis, self._layer_name, True, self._opacity_slider.value
@@ -1714,7 +2053,12 @@ class _RasterLayerEditor(ipywidgets.VBox):
             if self._grayscale_radio_button.index == 0 and "palette" in vis:
                 self._render_colorbar(vis["palette"])
 
-    def _legend_checkbox_changed(self, change):
+    def _legend_checkbox_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the legend checkbox.
+
+        Args:
+            change (Dict[str, Any]): The change event dictionary.
+        """
         if change["new"]:
             self._linear_checkbox.value = True
             self._legend_vbox.children = [
@@ -1723,7 +2067,12 @@ class _RasterLayerEditor(ipywidgets.VBox):
         else:
             self._legend_vbox.children = []
 
-    def _render_grayscale_rgb_selection(self, grayscale):
+    def _render_grayscale_rgb_selection(self, grayscale: bool) -> None:
+        """Renders the grayscale or RGB selection.
+
+        Args:
+            grayscale (bool): Whether the grayscale option is selected.
+        """
         if grayscale:
             self._rgb_radio_button.unobserve(self._rgb_radio_observer, names=["value"])
             self._rgb_radio_button.index = None
@@ -1745,7 +2094,12 @@ class _RasterLayerEditor(ipywidgets.VBox):
                 self._band_3_dropdown,
             ]
 
-    def _enable_palette(self, enabled):
+    def _enable_palette(self, enabled: bool) -> None:
+        """Enables or disables the palette options.
+
+        Args:
+            enabled (bool): Whether to enable the palette options.
+        """
         if enabled and not self._palette_label.value:
             # Only set this if it hasn't been overridden. Note that if no
             # palette was originally set, then this will be left blank here.
@@ -1756,7 +2110,12 @@ class _RasterLayerEditor(ipywidgets.VBox):
         self._del_color_button.disabled = not enabled
         self._reset_color_button.disabled = not enabled
 
-    def _render_palette(self, enabled):
+    def _render_palette(self, enabled: bool) -> None:
+        """Renders the palette if enabled.
+
+        Args:
+            enabled (bool): Whether to render the palette.
+        """
         if enabled:
             if self._palette_label.value and "," in self._palette_label.value:
                 colors = [
@@ -1766,7 +2125,8 @@ class _RasterLayerEditor(ipywidgets.VBox):
         else:
             self._colorbar_output.clear_output()
 
-    def _grayscale_radio_observer(self, _):
+    def _grayscale_radio_observer(self, _) -> None:
+        """Observer for the grayscale radio button."""
         self._render_grayscale_rgb_selection(True)
         self._enable_palette(True)
         palette_selected = self._palette_radio_button.index == 0
@@ -1775,13 +2135,19 @@ class _RasterLayerEditor(ipywidgets.VBox):
             grayscale=True, palette=palette_selected
         )
 
-    def _rgb_radio_observer(self, _):
+    def _rgb_radio_observer(self, _) -> None:
+        """Observer for the RGB radio button."""
         self._render_grayscale_rgb_selection(False)
         self._enable_palette(False)
         self._render_palette(False)
         self.children = self._set_toolbar_layout(grayscale=False, palette=False)
 
-    def _render_gamma_palette_selection(self, gamma):
+    def _render_gamma_palette_selection(self, gamma: bool) -> None:
+        """Renders the gamma or palette selection.
+
+        Args:
+            gamma (bool): Whether the gamma option is selected.
+        """
         if gamma:
             self._palette_radio_button.unobserve(
                 self._palette_radio_observer, names=["value"]
@@ -1799,14 +2165,16 @@ class _RasterLayerEditor(ipywidgets.VBox):
                 self._gamma_radio_observer, names=["value"]
             )
 
-    def _gamma_radio_observer(self, _):
+    def _gamma_radio_observer(self, _) -> None:
+        """Observer for the gamma radio button."""
         self._render_gamma_palette_selection(True)
         self._enable_palette(False)
         self._render_palette(False)
         grayscale = self._grayscale_radio_button.index == 0
         self.children = self._set_toolbar_layout(grayscale=grayscale, palette=False)
 
-    def _palette_radio_observer(self, _):
+    def _palette_radio_observer(self, _) -> None:
+        """Observer for the palette radio button."""
         self._render_gamma_palette_selection(False)
         self._enable_palette(True)
         self._render_palette(True)
@@ -1838,18 +2206,21 @@ class _VectorLayerEditor(ipywidgets.VBox):
     ]
 
     @property
-    def _layer_name(self):
+    def _layer_name(self) -> str:
+        """Returns the name of the layer."""
         return self._ee_layer.name
 
     @property
-    def _layer_opacity(self):
+    def _layer_opacity(self) -> float:
+        """Returns the opacity of the layer."""
         return self._ee_layer.opacity
 
-    def __init__(self, host_map, layer_dict):
+    def __init__(self, host_map: "geemap.Map", layer_dict: Dict[str, Any]):
         """Initializes a layer manager widget.
 
         Args:
             host_map (geemap.Map): The geemap.Map object.
+            layer_dict (Dict[str, Any]): The layer object to edit.
         """
 
         self._host_map = host_map
@@ -2097,7 +2468,12 @@ class _VectorLayerEditor(ipywidgets.VBox):
             ],
         )
 
-    def _get_vis_params(self):
+    def _get_vis_params(self) -> Dict[str, Any]:
+        """Gets the visualization parameters for the layer.
+
+        Returns:
+            Dict[str, Any]: The visualization parameters.
+        """
         vis = {}
         vis["color"] = self._color_picker.value[1:] + str(
             hex(int(self._color_opacity_slider.value * 255))
@@ -2113,7 +2489,8 @@ class _VectorLayerEditor(ipywidgets.VBox):
 
         return vis
 
-    def on_apply_click(self):
+    def on_apply_click(self) -> None:
+        """Handles the apply button click event."""
         self._compute_label.value = "Computing ..."
 
         if self._new_layer_name.value in self._host_map.ee_layers:
@@ -2201,7 +2578,12 @@ class _VectorLayerEditor(ipywidgets.VBox):
             self._ee_layer.visible = False
             self._compute_label.value = ""
 
-    def _render_colorbar(self, colors):
+    def _render_colorbar(self, colors: List[str]) -> None:
+        """Renders a colorbar with the given colors.
+
+        Args:
+            colors (List[str]): The list of colors to use in the colorbar.
+        """
         import matplotlib  # pylint: disable=import-outside-toplevel
         from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
 
@@ -2221,7 +2603,12 @@ class _VectorLayerEditor(ipywidgets.VBox):
         with self._colorbar_output:
             pyplot.show()
 
-    def _classes_changed(self, change):
+    def _classes_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the classes dropdown.
+
+        Args:
+            change (Dict[str, Any]): The change event dictionary.
+        """
         import matplotlib  # pylint: disable=import-outside-toplevel
         from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
 
@@ -2245,7 +2632,12 @@ class _VectorLayerEditor(ipywidgets.VBox):
                     ]
                     self._legend_labels_label.value = ", ".join(labels)
 
-    def _colormap_changed(self, change):
+    def _colormap_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the colormap dropdown.
+
+        Args:
+            change (Dict[str, Any]): The change event dictionary.
+        """
         import matplotlib  # pylint: disable=import-outside-toplevel
         from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
 
@@ -2267,30 +2659,48 @@ class _VectorLayerEditor(ipywidgets.VBox):
                 ]
                 self._legend_labels_label.value = ", ".join(labels)
 
-    def _fill_color_opacity_change(self, change):
+    def _fill_color_opacity_change(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the fill color opacity slider.
+
+        Args:
+            change (Dict[str, Any]): The change event dictionary.
+        """
         self._fill_color_opacity_label.value = str(change["new"])
 
-    def _color_opacity_change(self, change):
+    def _color_opacity_change(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the color opacity slider.
+
+        Args:
+            change (Dict[str, Any]): The change event dictionary.
+        """
         self._color_opacity_label.value = str(change["new"])
 
-    def _add_color_clicked(self, _):
+    def _add_color_clicked(self, _) -> None:
+        """Handles the add color button click event."""
         if self._color_picker.value is not None:
             if self._palette_label.value:
                 self._palette_label.value += ", " + self._color_picker.value[1:]
             else:
                 self._palette_label.value = self._color_picker.value[1:]
 
-    def _del_color_clicked(self, _):
+    def _del_color_clicked(self, _) -> None:
+        """Handles the delete color button click event."""
         if "," in self._palette_label.value:
             items = [item.strip() for item in self._palette_label.value.split(",")]
             self._palette_label.value = ", ".join(items[:-1])
         else:
             self._palette_label.value = ""
 
-    def _reset_color_clicked(self, _):
+    def _reset_color_clicked(self, _) -> None:
+        """Handles the reset color button click event."""
         self._palette_label.value = ""
 
-    def _style_chk_changed(self, change):
+    def _style_chk_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the style checkbox.
+
+        Args:
+            change (Dict[str, Any]): The change event dictionary.
+        """
         from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
 
         if change["new"]:
@@ -2334,7 +2744,12 @@ class _VectorLayerEditor(ipywidgets.VBox):
             self._compute_label.value = ""
             self._colorbar_output.clear_output()
 
-    def _legend_chk_changed(self, change):
+    def _legend_chk_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the legend checkbox.
+
+        Args:
+            change (Dict[str, Any]): The change event dictionary.
+        """
         if change["new"]:
             self._style_vbox.children = list(self._style_vbox.children) + [
                 ipywidgets.VBox([self._legend_title_label, self._legend_labels_label])
@@ -2364,7 +2779,12 @@ class _VectorLayerEditor(ipywidgets.VBox):
                 ),
             ]
 
-    def _field_changed(self, change):
+    def _field_changed(self, change: Dict[str, Any]) -> None:
+        """Handles changes to the field dropdown.
+
+        Args:
+            change (Dict[str, Any]): The change event dictionary.
+        """
         if change["new"]:
             self._compute_label.value = "Computing ..."
             options = self._ee_object.aggregate_array(
@@ -2377,7 +2797,8 @@ class _VectorLayerEditor(ipywidgets.VBox):
             self._field_values_dropdown.options = options
             self._compute_label.value = ""
 
-    def on_import_click(self):
+    def on_import_click(self) -> None:
+        """Handles the import button click event."""
         vis = self._get_vis_params()
         common.create_code_cell(f"style = {str(vis)}")
         print(f"style = {str(vis)}")
