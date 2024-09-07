@@ -1000,6 +1000,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.Basemap.cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      cleanup()
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1097,6 +1106,33 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#geemap.map_widgets.LayerManager.close_button_hidden" class="md-nav__link">
+    <span class="md-ellipsis">
+      close_button_hidden
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.LayerManager.collapsed" class="md-nav__link">
+    <span class="md-ellipsis">
+      collapsed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.LayerManager.header_hidden" class="md-nav__link">
+    <span class="md-ellipsis">
+      header_hidden
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geemap.map_widgets.LayerManager.__init__" class="md-nav__link">
     <span class="md-ellipsis">
       __init__()
@@ -1149,6 +1185,21 @@
       Theme
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Theme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.Theme.apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      apply()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -5191,6 +5242,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.Basemap.cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      cleanup()
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5288,6 +5348,33 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#geemap.map_widgets.LayerManager.close_button_hidden" class="md-nav__link">
+    <span class="md-ellipsis">
+      close_button_hidden
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.LayerManager.collapsed" class="md-nav__link">
+    <span class="md-ellipsis">
+      collapsed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.LayerManager.header_hidden" class="md-nav__link">
+    <span class="md-ellipsis">
+      header_hidden
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geemap.map_widgets.LayerManager.__init__" class="md-nav__link">
     <span class="md-ellipsis">
       __init__()
@@ -5340,6 +5427,21 @@
       Theme
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Theme">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.Theme.apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      apply()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -5407,7 +5509,7 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
 <span class="k">class</span> <span class="nc">Basemap</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for selecting a basemap.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a widget for selecting a basemap.</span>
 
 <span class="sd">        Args:</span>
@@ -5434,15 +5536,22 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span><span class="p">,</span> <span class="n">close_button</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_on_dropdown_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_dropdown_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the dropdown value change event.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            change (dict): The change event dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="ow">and</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cleans up the widget by calling the on_close callback if set.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the close button click event.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 </code></pre></div>
         </details>
@@ -5503,7 +5612,7 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a widget for selecting a basemap.</span>
 
 <span class="sd">    Args:</span>
@@ -5535,6 +5644,33 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
 
   </div>
 
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.map_widgets.Basemap.cleanup" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#geemap.map_widgets.Basemap.cleanup" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Cleans up the widget by calling the on_close callback if set.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cleans up the widget by calling the on_close callback if set.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
@@ -5573,16 +5709,16 @@ Colorbar            (<span title="ipywidgets.widgets.widget_output.Output">Outpu
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">vis_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span>
-        <span class="n">discrete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
-        <span class="n">transparent_bg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">font_size</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
-        <span class="n">axis_off</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">max_width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="n">vis_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span>
+        <span class="n">discrete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">label</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">orientation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
+        <span class="n">transparent_bg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">font_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
+        <span class="n">axis_off</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">max_width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a matplotlib colorbar to the map.</span>
 
@@ -5702,7 +5838,21 @@ Colorbar            (<span title="ipywidgets.widgets.widget_output.Output">Outpu
             <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
             <span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_get_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_dimensions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">orientation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the dimensions of the colorbar based on orientation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            orientation (str): Orientation of the colorbar.</span>
+<span class="sd">            kwargs (Dict[str, Any]): Additional keyword arguments.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[float, float]: Width and height of the colorbar.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If the orientation is not either horizontal or vertical.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">default_dims</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;horizontal&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span> <span class="s2">&quot;vertical&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)}</span>
         <span class="k">if</span> <span class="n">orientation</span> <span class="ow">in</span> <span class="n">default_dims</span><span class="p">:</span>
             <span class="n">default</span> <span class="o">=</span> <span class="n">default_dims</span><span class="p">[</span><span class="n">orientation</span><span class="p">]</span>
@@ -5861,16 +6011,16 @@ Defaults to None.</p></td>
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">vis_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span>
-    <span class="n">discrete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
-    <span class="n">transparent_bg</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">font_size</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
-    <span class="n">axis_off</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">max_width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="n">vis_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span>
+    <span class="n">discrete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">label</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">orientation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
+    <span class="n">transparent_bg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">font_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="n">axis_off</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">max_width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Add a matplotlib colorbar to the map.</span>
 
@@ -6032,12 +6182,12 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">host_map</span><span class="p">,</span>
-        <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">opened</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">show_close_button</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;geemap.Map&quot;</span><span class="p">,</span>
+        <span class="n">names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">visible</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">decimals</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">opened</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">show_close_button</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an Inspector widget for Earth Engine data.</span>
 
@@ -6136,18 +6286,37 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_create_checkbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">checked</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_checkbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">checked</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a checkbox widget.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            title (str): The title of the checkbox.</span>
+<span class="sd">            checked (bool): Whether the checkbox is checked.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ipywidgets.Checkbox: The created checkbox widget.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">layout</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 6px 0px 0px&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
             <span class="n">description</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">checked</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_on_map_interaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_map_interaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles map interaction events.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **kwargs (Any): The interaction event arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">latlon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;click&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_on_map_click</span><span class="p">(</span><span class="n">latlon</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_on_map_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_map_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles map click events.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            latlon (List[float]): The latitude and longitude of the click event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;wait&quot;</span><span class="p">}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_clear_inspector_output</span><span class="p">()</span>
@@ -6163,21 +6332,42 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
             <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">ipytree</span><span class="o">.</span><span class="n">Tree</span><span class="p">(</span><span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">)]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_clear_inspector_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_clear_inspector_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clears the inspector output.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inspector_checks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_output</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_on_point_checkbox_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_point_checkbox_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles changes to the point checkbox.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            change (Dict[str, Any]): The change event arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_expand_point_tree</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_on_pixels_checkbox_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_pixels_checkbox_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles changes to the pixels checkbox.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            change (Dict[str, Any]): The change event arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_expand_pixels_tree</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_on_objects_checkbox_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_objects_checkbox_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles changes to the objects checkbox.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            change (Dict[str, Any]): The change event arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_expand_objects_tree</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_on_toolbar_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_toolbar_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles toolbar button click events.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            change (Dict[str, Any]): The change event arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
@@ -6190,11 +6380,21 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
             <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar_button</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_on_close_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_close_btn_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles close button click events.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            change (Dict[str, Any]): The change event arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_get_visible_map_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_visible_map_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the visible map layers.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, Any]: A dictionary of visible map layers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">names</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span>
@@ -6205,7 +6405,19 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
             <span class="n">layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">ee_layers</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;ee_layer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">visible</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_root_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_root_node</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a root node for the tree.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            title (str): The title of the root node.</span>
+<span class="sd">            nodes (List[ipytree.Node]): The child nodes of the root node.</span>
+<span class="sd">            **kwargs (Any): Additional keyword arguments.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ipytree.Node: The created root node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span>
             <span class="n">title</span><span class="p">,</span>
             <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;archive&quot;</span><span class="p">,</span>
@@ -6217,7 +6429,15 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_point_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_point_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets information about a point.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            latlon (List[float]): The latitude and longitude of the point.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ipytree.Node: The node containing the point information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">get_scale</span><span class="p">()</span>
         <span class="n">label</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Point (</span><span class="si">{</span><span class="n">latlon</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_decimals</span><span class="si">}</span><span class="s2">f</span><span class="si">}</span><span class="s2">, &quot;</span>
@@ -6231,7 +6451,18 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
         <span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_node</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">opened</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_expand_point_tree</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_query_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_query_point</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Queries a point on the map.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            latlon (List[float]): The latitude and longitude of the point.</span>
+<span class="sd">            ee_object (ee.ComputedObject): The Earth Engine object to query.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[Dict[str, Any]]: The query result.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">point</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">latlon</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">get_scale</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">):</span>
@@ -6240,7 +6471,15 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
             <span class="k">return</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">reduceRegion</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">first</span><span class="p">(),</span> <span class="n">point</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_pixels_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_pixels_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets information about pixels at a point.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            latlon (List[float]): The latitude and longitude of the point.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ipytree.Node: The node containing the pixels information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_node</span><span class="p">(</span><span class="s2">&quot;Pixels&quot;</span><span class="p">,</span> <span class="p">[])</span>
 
@@ -6263,12 +6502,28 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_node</span><span class="p">(</span><span class="s2">&quot;Pixels&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a bounding box around a point.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            latlon (List[float]): The latitude and longitude of the point.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ee.Geometry.BBox: The bounding box around the point.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">latlon</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.005</span>
         <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="n">lon</span> <span class="o">-</span> <span class="n">delta</span><span class="p">,</span> <span class="n">lat</span> <span class="o">-</span> <span class="n">delta</span><span class="p">,</span> <span class="n">lon</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="n">lat</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_objects_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_objects_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latlon</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ipytree</span><span class="o">.</span><span class="n">Node</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets information about objects at a point.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            latlon (List[float]): The latitude and longitude of the point.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ipytree.Node: The node containing the objects information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visible</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_node</span><span class="p">(</span><span class="s2">&quot;Objects&quot;</span><span class="p">,</span> <span class="p">[])</span>
 
@@ -6381,12 +6636,12 @@ button. Defaults to True.</p></td>
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">host_map</span><span class="p">,</span>
-    <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">opened</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">show_close_button</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;geemap.Map&quot;</span><span class="p">,</span>
+    <span class="n">names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">visible</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">decimals</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">opened</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_close_button</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an Inspector widget for Earth Engine data.</span>
 
@@ -6548,12 +6803,12 @@ LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</s
 <span class="k">class</span> <span class="nc">LayerEditor</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for displaying and editing layer visualization properties.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">layer_dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;geemap.Map&quot;</span><span class="p">,</span> <span class="n">layer_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes a layer editor widget.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            host_map (geemap.Map): The geemap.Map object.</span>
-<span class="sd">            layer_dict (dict): The layer object to edit.</span>
+<span class="sd">            layer_dict (Optional[Dict[str, Any]]): The layer object to edit.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
@@ -6619,7 +6874,12 @@ LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</s
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_on_toggle_click</span><span class="p">({</span><span class="s2">&quot;new&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
 
-    <span class="k">def</span> <span class="nf">_on_toggle_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_toggle_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the toggle button click event.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            change (Dict[str, Any]): The change event arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_close_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toggle_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">]),</span>
@@ -6631,13 +6891,16 @@ LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</s
                 <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_close_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toggle_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">]),</span>
             <span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_on_import_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_import_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the import button click event.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_embedded_widget</span><span class="o">.</span><span class="n">on_import_click</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_on_apply_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_apply_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the apply button click event.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_embedded_widget</span><span class="o">.</span><span class="n">on_apply_click</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the close button click event.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
 </code></pre></div>
@@ -6691,7 +6954,7 @@ LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</s
       </tr>
       <tr>
         <td><code>layer_dict</code></td>
-        <td><code>dict</code></td>
+        <td><code>Optional[Dict[str, Any]]</code></td>
         <td><p>The layer object to edit.</p></td>
         <td><em>required</em></td>
       </tr>
@@ -6699,12 +6962,12 @@ LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</s
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">layer_dict</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;geemap.Map&quot;</span><span class="p">,</span> <span class="n">layer_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes a layer editor widget.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        host_map (geemap.Map): The geemap.Map object.</span>
-<span class="sd">        layer_dict (dict): The layer object to edit.</span>
+<span class="sd">        layer_dict (Optional[Dict[str, Any]]): The layer object to edit.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
@@ -6802,13 +7065,17 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
 
     <div class="doc doc-contents ">
 
+      <p>A layer manager widget for managing map layers.</p>
 
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
 <span class="k">class</span> <span class="nc">LayerManager</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A layer manager widget for managing map layers.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;geemap.Map&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes a layer manager widget.</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            host_map (geemap.Map): The geemap.Map object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -6849,30 +7116,33 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="p">])</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">collapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">collapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;bool: Whether the layer manager is collapsed.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collapse_button</span><span class="o">.</span><span class="n">value</span>
 
     <span class="nd">@collapsed</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">collapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">collapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_collapse_button</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">header_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">header_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;bool: Whether the header is hidden.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_header</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">display</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span>
 
     <span class="nd">@header_hidden</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">header_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">header_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_header</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="s2">&quot;block&quot;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">close_button_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">close_button_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;bool: Whether the close button is hidden.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_close_button</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">display</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span>
 
     <span class="nd">@close_button_hidden</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">close_button_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">close_button_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_close_button</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="s2">&quot;inline-block&quot;</span>
 
-    <span class="k">def</span> <span class="nf">refresh_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">refresh_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Recreates all the layer widgets.&quot;&quot;&quot;</span>
         <span class="n">toggle_all_layout</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
             <span class="n">height</span><span class="o">=</span><span class="s2">&quot;18px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;30ex&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 4px 25px 4px&quot;</span>
@@ -6891,18 +7161,32 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
             <span class="n">layer_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_render_layer_row</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toggle_all_checkbox</span><span class="p">]</span> <span class="o">+</span> <span class="n">layer_rows</span>
 
-    <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the close button click event.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_on_collapse_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_collapse_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the collapse button click event.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            change (Dict[str, Any]): The change event arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">refresh_layers</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_collapse_button</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_render_layer_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_render_layer_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Renders a row for a layer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layer (Any): The layer to render.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ipywidgets.HBox: The rendered layer row.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">visibility_checkbox</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
             <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_layer_visibility</span><span class="p">(</span><span class="n">layer</span><span class="p">),</span>
             <span class="n">description</span><span class="o">=</span><span class="n">layer</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -6978,13 +7262,22 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
             <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 4px 0px 4px&quot;</span><span class="p">),</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_find_layer_row_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_find_layer_row_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finds the index of a layer row.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layer (Any): The layer to find.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The index of the layer row.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">child</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
             <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">description</span> <span class="o">==</span> <span class="n">layer</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
 
-    <span class="k">def</span> <span class="nf">_remove_confirm_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_remove_confirm_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes the confirm widget.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">child</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
             <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;Remove layer?&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">(</span>
@@ -6993,7 +7286,12 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
                 <span class="p">)</span>
                 <span class="k">break</span>
 
-    <span class="k">def</span> <span class="nf">_on_layer_remove_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_layer_remove_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the layer remove click event.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layer (Any): The layer to remove.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_remove_confirm_widget</span><span class="p">()</span>
 
         <span class="n">label</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
@@ -7034,35 +7332,73 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
 
         <span class="n">no_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">on_no_button_click</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_compute_layer_opacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_compute_layer_opacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the opacity of a layer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layer (Any): The layer to compute the opacity for.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The opacity of the layer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">geojson_layers</span><span class="p">:</span>
             <span class="n">opacity</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;opacity&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
             <span class="n">fill_opacity</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fillOpacity&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">opacity</span><span class="p">,</span> <span class="n">fill_opacity</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">layer</span><span class="o">.</span><span class="n">opacity</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;opacity&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="mf">1.0</span>
 
-    <span class="k">def</span> <span class="nf">_compute_layer_visibility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_compute_layer_visibility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the visibility of a layer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layer (Any): The layer to compute the visibility for.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: The visibility of the layer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;visible&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_on_layer_settings_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_layer_settings_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="p">:</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the layer settings click event.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            button (ipywidgets.Button): The button that was clicked.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_open_vis</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_open_vis</span><span class="p">(</span><span class="n">button</span><span class="o">.</span><span class="n">tooltip</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_on_all_layers_visibility_toggled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_all_layers_visibility_toggled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the all layers visibility toggled event.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            change (Dict[str, Any]): The change event arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">checkboxes</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">row</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_footer</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
         <span class="p">]</span>  <span class="c1"># Skip the all on/off checkbox.</span>
         <span class="k">for</span> <span class="n">checkbox</span> <span class="ow">in</span> <span class="n">checkboxes</span><span class="p">:</span>
             <span class="n">checkbox</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_on_layer_opacity_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_layer_opacity_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">layer</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the layer opacity changed event.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            change (Dict[str, Any]): The change event arguments.</span>
+<span class="sd">            layer (Any): The layer to change the opacity for.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">geojson_layers</span><span class="p">:</span>
             <span class="c1"># For non-TileLayer, use layer.style.opacity and layer.style.fillOpacity.</span>
             <span class="n">layer</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;opacity&quot;</span><span class="p">:</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">],</span> <span class="s2">&quot;fillOpacity&quot;</span><span class="p">:</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]})</span>
         <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;opacity&quot;</span><span class="p">):</span>
             <span class="n">layer</span><span class="o">.</span><span class="n">opacity</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_on_layer_visibility_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_layer_visibility_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">layer</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the layer visibility changed event.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            change (Dict[str, Any]): The change event arguments.</span>
+<span class="sd">            layer (Any): The layer to change the visibility for.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;visible&quot;</span><span class="p">):</span>
             <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
 
@@ -7100,6 +7436,72 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
 
 
 
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="geemap.map_widgets.LayerManager.close_button_hidden" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">close_button_hidden</span><span class="p">:</span> <span class="nb">bool</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-writable"><code>writable</code></small>
+  </span>
+
+<a href="#geemap.map_widgets.LayerManager.close_button_hidden" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="geemap.map_widgets.LayerManager.collapsed" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">collapsed</span><span class="p">:</span> <span class="nb">bool</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-writable"><code>writable</code></small>
+  </span>
+
+<a href="#geemap.map_widgets.LayerManager.collapsed" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="geemap.map_widgets.LayerManager.header_hidden" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">header_hidden</span><span class="p">:</span> <span class="nb">bool</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-property"><code>property</code></small>
+      <small class="doc doc-property doc-property-writable"><code>writable</code></small>
+  </span>
+
+<a href="#geemap.map_widgets.LayerManager.header_hidden" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      
+    </div>
+
+  </div>
 
 
 
@@ -7144,8 +7546,9 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;geemap.Map&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes a layer manager widget.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        host_map (geemap.Map): The geemap.Map object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -7208,7 +7611,7 @@ LayerManager            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</
 
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">refresh_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">refresh_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recreates all the layer widgets.&quot;&quot;&quot;</span>
     <span class="n">toggle_all_layout</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
         <span class="n">height</span><span class="o">=</span><span class="s2">&quot;18px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;30ex&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 4px 25px 4px&quot;</span>
@@ -7275,15 +7678,15 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Legend&quot;</span><span class="p">,</span>
-        <span class="n">legend_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span><span class="p">,</span>
-        <span class="n">builtin_legend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">add_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">widget_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Legend&quot;</span><span class="p">,</span>
+        <span class="n">legend_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">colors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">position</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bottomright&quot;</span><span class="p">,</span>
+        <span class="n">builtin_legend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">add_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">widget_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a customized legend to the map.</span>
 
@@ -7414,7 +7817,22 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
         <span class="k">with</span> <span class="n">legend_output</span><span class="p">:</span>
             <span class="n">display</span><span class="p">(</span><span class="n">legend_widget</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__check_if_allowed</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">value_name</span><span class="p">,</span> <span class="n">allowed_list</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__check_if_allowed</span><span class="p">(</span>
+        <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">allowed_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if a value is allowed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value (str): The value to check.</span>
+<span class="sd">            value_name (str): The name of the value.</span>
+<span class="sd">            allowed_list (List[str]): The list of allowed values.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the value is allowed, otherwise raises a ValueError.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If the value is not allowed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_list</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;The &quot;</span>
@@ -7423,13 +7841,33 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
             <span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">__convert_rgb_colors_to_hex</span><span class="p">(</span><span class="n">colors</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__convert_rgb_colors_to_hex</span><span class="p">(</span><span class="n">colors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">tuple</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts a list of RGB colors to hex.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            colors (List[tuple]): A list of RGB color tuples.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[str]: A list of hex color strings.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If unable to convert an RGB value to hex.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">rgb_to_hex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unable to convert rgb value to hex.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__create_legend_items</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__create_legend_items</span><span class="p">(</span><span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">colors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates HTML legend items.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            keys (List[str]): A list of legend keys.</span>
+<span class="sd">            colors (List[str]): A list of legend colors.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[str]: A list of HTML strings for the legend items.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">legend_items</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
             <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
@@ -7441,7 +7879,15 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
             <span class="n">legend_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">legend_items</span>
 
-    <span class="k">def</span> <span class="nf">__create_layout</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__create_layout</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates the layout for the legend.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **kwargs (Any): Additional keyword arguments for layout properties.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, Optional[str]]: A dictionary of layout properties.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">height</span> <span class="o">=</span> <span class="n">Legend</span><span class="o">.</span><span class="n">__create_layout_property</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">min_height</span> <span class="o">=</span> <span class="n">Legend</span><span class="o">.</span><span class="n">__create_layout_property</span><span class="p">(</span><span class="s2">&quot;min_height&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -7574,15 +8020,15 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Legend&quot;</span><span class="p">,</span>
-    <span class="n">legend_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span><span class="p">,</span>
-    <span class="n">builtin_legend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">add_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">widget_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Legend&quot;</span><span class="p">,</span>
+    <span class="n">legend_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">colors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">position</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bottomright&quot;</span><span class="p">,</span>
+    <span class="n">builtin_legend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">add_header</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">widget_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a customized legend to the map.</span>
 
@@ -7754,7 +8200,15 @@ Theme        </code>
     <span class="n">current_theme</span> <span class="o">=</span> <span class="s2">&quot;colab&quot;</span> <span class="k">if</span> <span class="n">common</span><span class="o">.</span><span class="n">in_colab_shell</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;light&quot;</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies the theme to the given class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cls (Any): The class to which the theme will be applied.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Any: The class with the applied theme.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">original_init</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span>
 
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
@@ -7778,6 +8232,85 @@ Theme        </code>
 
 
 
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.map_widgets.Theme.apply" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">apply</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#geemap.map_widgets.Theme.apply" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Applies the theme to the given class.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>cls</code></td>
+        <td><code>Any</code></td>
+        <td><p>The class to which the theme will be applied.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Any</code></td>
+      <td><p>The class with the applied theme.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies the theme to the given class.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cls (Any): The class to which the theme will be applied.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Any: The class with the applied theme.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">original_init</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">original_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_class</span><span class="p">(</span><span class="s2">&quot;geemap-</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Theme</span><span class="o">.</span><span class="n">current_theme</span><span class="p">))</span>
+
+    <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="n">wrapper</span>
+    <span class="k">return</span> <span class="bp">cls</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 

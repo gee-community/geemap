@@ -5180,21 +5180,27 @@ EEFoliumTileLayer            (<span title="folium.raster_layers.TileLayer">TileL
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">ee_object</span><span class="p">,</span>
-        <span class="n">vis_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Layer untitled&quot;</span><span class="p">,</span>
-        <span class="n">shown</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">opacity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="n">ee_object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span>
+        <span class="p">],</span>
+        <span class="n">vis_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Layer untitled&quot;</span><span class="p">,</span>
+        <span class="n">shown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">opacity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the folium tile layer.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ee_object (Collection|Feature|Image|MapId): The object to add to the map.</span>
-<span class="sd">            vis_params (dict, optional): The visualization parameters. Defaults to None.</span>
+<span class="sd">            ee_object (Union[ee.Geometry, ee.Feature, ee.FeatureCollection,</span>
+<span class="sd">                ee.Image, ee.ImageCollection]): The object to add to the map.</span>
+<span class="sd">            vis_params (Optional[Dict[str, Any]]): The visualization parameters.</span>
+<span class="sd">                Defaults to None.</span>
 <span class="sd">            name (str, optional): The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
-<span class="sd">            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.</span>
-<span class="sd">            opacity (float, optional): The layer&#39;s opacity represented as a number between 0 and 1. Defaults to 1.</span>
+<span class="sd">            shown (bool, optional): A flag indicating whether the layer should</span>
+<span class="sd">                be on by default. Defaults to True.</span>
+<span class="sd">            opacity (float, optional): The layer&#39;s opacity represented as a</span>
+<span class="sd">                number between 0 and 1. Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
             <span class="n">ee_object</span><span class="p">,</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span>
@@ -5255,14 +5261,16 @@ EEFoliumTileLayer            (<span title="folium.raster_layers.TileLayer">TileL
   <tbody>
       <tr>
         <td><code>ee_object</code></td>
-        <td><code>Collection|Feature|Image|MapId</code></td>
+        <td><code>Union[ee.Geometry, ee.Feature, ee.FeatureCollection,
+ee.Image, ee.ImageCollection]</code></td>
         <td><p>The object to add to the map.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>vis_params</code></td>
-        <td><code>dict</code></td>
-        <td><p>The visualization parameters. Defaults to None.</p></td>
+        <td><code>Optional[Dict[str, Any]]</code></td>
+        <td><p>The visualization parameters.
+Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
       <tr>
@@ -5274,13 +5282,15 @@ EEFoliumTileLayer            (<span title="folium.raster_layers.TileLayer">TileL
       <tr>
         <td><code>shown</code></td>
         <td><code>bool</code></td>
-        <td><p>A flag indicating whether the layer should be on by default. Defaults to True.</p></td>
+        <td><p>A flag indicating whether the layer should
+be on by default. Defaults to True.</p></td>
         <td><code>True</code></td>
       </tr>
       <tr>
         <td><code>opacity</code></td>
         <td><code>float</code></td>
-        <td><p>The layer's opacity represented as a number between 0 and 1. Defaults to 1.</p></td>
+        <td><p>The layer's opacity represented as a
+number between 0 and 1. Defaults to 1.</p></td>
         <td><code>1.0</code></td>
       </tr>
   </tbody>
@@ -5289,21 +5299,27 @@ EEFoliumTileLayer            (<span title="folium.raster_layers.TileLayer">TileL
           <summary>Source code in <code>geemap/ee_tile_layers.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">ee_object</span><span class="p">,</span>
-    <span class="n">vis_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Layer untitled&quot;</span><span class="p">,</span>
-    <span class="n">shown</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">opacity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="n">ee_object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span>
+    <span class="p">],</span>
+    <span class="n">vis_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Layer untitled&quot;</span><span class="p">,</span>
+    <span class="n">shown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">opacity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the folium tile layer.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ee_object (Collection|Feature|Image|MapId): The object to add to the map.</span>
-<span class="sd">        vis_params (dict, optional): The visualization parameters. Defaults to None.</span>
+<span class="sd">        ee_object (Union[ee.Geometry, ee.Feature, ee.FeatureCollection,</span>
+<span class="sd">            ee.Image, ee.ImageCollection]): The object to add to the map.</span>
+<span class="sd">        vis_params (Optional[Dict[str, Any]]): The visualization parameters.</span>
+<span class="sd">            Defaults to None.</span>
 <span class="sd">        name (str, optional): The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
-<span class="sd">        shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.</span>
-<span class="sd">        opacity (float, optional): The layer&#39;s opacity represented as a number between 0 and 1. Defaults to 1.</span>
+<span class="sd">        shown (bool, optional): A flag indicating whether the layer should</span>
+<span class="sd">            be on by default. Defaults to True.</span>
+<span class="sd">        opacity (float, optional): The layer&#39;s opacity represented as a</span>
+<span class="sd">            number between 0 and 1. Defaults to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
         <span class="n">ee_object</span><span class="p">,</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span>
@@ -5369,21 +5385,27 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">ee_object</span><span class="p">,</span>
-        <span class="n">vis_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Layer untitled&quot;</span><span class="p">,</span>
-        <span class="n">shown</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">opacity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="n">ee_object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span>
+        <span class="p">],</span>
+        <span class="n">vis_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Layer untitled&quot;</span><span class="p">,</span>
+        <span class="n">shown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">opacity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the ipyleaflet tile layer.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ee_object (Collection|Feature|Image|MapId): The object to add to the map.</span>
-<span class="sd">            vis_params (dict, optional): The visualization parameters. Defaults to None.</span>
+<span class="sd">            ee_object (Union[ee.Geometry, ee.Feature, ee.FeatureCollection,</span>
+<span class="sd">                ee.Image, ee.ImageCollection]): The object to add to the map.</span>
+<span class="sd">            vis_params (Optional[Dict[str, Any]]): The visualization parameters.</span>
+<span class="sd">                Defaults to None.</span>
 <span class="sd">            name (str, optional): The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
-<span class="sd">            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.</span>
-<span class="sd">            opacity (float, optional): The layer&#39;s opacity represented as a number between 0 and 1. Defaults to 1.</span>
+<span class="sd">            shown (bool, optional): A flag indicating whether the layer should</span>
+<span class="sd">                be on by default. Defaults to True.</span>
+<span class="sd">            opacity (float, optional): The layer&#39;s opacity represented as a</span>
+<span class="sd">                number between 0 and 1. Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span> <span class="o">=</span> <span class="n">ee_object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
@@ -5400,19 +5422,25 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
         <span class="p">)</span>
 
     <span class="nd">@lru_cache</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_calculate_vis_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_calculate_vis_stats</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">],</span>
+        <span class="n">bands</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate stats used for visualization parameters.</span>
 
 <span class="sd">        Stats are calculated consistently with the Code Editor visualization parameters,</span>
 <span class="sd">        and are cached to avoid recomputing for the same bounds and bands.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            bounds (ee.Geometry|ee.Feature|ee.FeatureCollection): The bounds to sample.</span>
-<span class="sd">            bands (tuple): The bands to sample.</span>
+<span class="sd">            bounds (Union[ee.Geometry, ee.Feature, ee.FeatureCollection]): The</span>
+<span class="sd">                bounds to sample.</span>
+<span class="sd">            bands (Tuple[str, ...]): The bands to sample.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            tuple: The minimum, maximum, standard deviation, and mean values across the</span>
-<span class="sd">                specified bands.</span>
+<span class="sd">            Tuple[float, float, float, float]: The minimum, maximum, standard</span>
+<span class="sd">                deviation, and mean values across the specified bands.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">stat_reducer</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">minMax</span><span class="p">()</span>
@@ -5447,18 +5475,24 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
 
         <span class="k">return</span> <span class="p">(</span><span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">std_dev</span><span class="p">,</span> <span class="n">mean</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">calculate_vis_minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">percent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">calculate_vis_minmax</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">],</span>
+        <span class="n">bands</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">percent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sigma</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the min and max clip values for visualization.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            bounds (ee.Geometry|ee.Feature|ee.FeatureCollection): The bounds to sample.</span>
-<span class="sd">            bands (list, optional): The bands to sample. If None, all bands are used.</span>
-<span class="sd">            percent (float, optional): The percent to use when stretching.</span>
-<span class="sd">            sigma (float, optional): The number of standard deviations to use when</span>
-<span class="sd">                stretching.</span>
+<span class="sd">            bounds (Union[ee.Geometry, ee.Feature, ee.FeatureCollection]): The bounds to sample.</span>
+<span class="sd">            bands (Optional[List[str]]): The bands to sample. If None, all bands are used.</span>
+<span class="sd">            percent (Optional[float]): The percent to use when stretching.</span>
+<span class="sd">            sigma (Optional[float]): The number of standard deviations to use when stretching.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            tuple: The minimum and maximum values to clip to.</span>
+<span class="sd">            Tuple[float, float]: The minimum and maximum values to clip to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span> <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -5526,14 +5560,16 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
   <tbody>
       <tr>
         <td><code>ee_object</code></td>
-        <td><code>Collection|Feature|Image|MapId</code></td>
+        <td><code>Union[ee.Geometry, ee.Feature, ee.FeatureCollection,
+ee.Image, ee.ImageCollection]</code></td>
         <td><p>The object to add to the map.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>vis_params</code></td>
-        <td><code>dict</code></td>
-        <td><p>The visualization parameters. Defaults to None.</p></td>
+        <td><code>Optional[Dict[str, Any]]</code></td>
+        <td><p>The visualization parameters.
+Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
       <tr>
@@ -5545,13 +5581,15 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
       <tr>
         <td><code>shown</code></td>
         <td><code>bool</code></td>
-        <td><p>A flag indicating whether the layer should be on by default. Defaults to True.</p></td>
+        <td><p>A flag indicating whether the layer should
+be on by default. Defaults to True.</p></td>
         <td><code>True</code></td>
       </tr>
       <tr>
         <td><code>opacity</code></td>
         <td><code>float</code></td>
-        <td><p>The layer's opacity represented as a number between 0 and 1. Defaults to 1.</p></td>
+        <td><p>The layer's opacity represented as a
+number between 0 and 1. Defaults to 1.</p></td>
         <td><code>1.0</code></td>
       </tr>
   </tbody>
@@ -5560,21 +5598,27 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
           <summary>Source code in <code>geemap/ee_tile_layers.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">ee_object</span><span class="p">,</span>
-    <span class="n">vis_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Layer untitled&quot;</span><span class="p">,</span>
-    <span class="n">shown</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">opacity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="n">ee_object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span>
+    <span class="p">],</span>
+    <span class="n">vis_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Layer untitled&quot;</span><span class="p">,</span>
+    <span class="n">shown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">opacity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the ipyleaflet tile layer.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ee_object (Collection|Feature|Image|MapId): The object to add to the map.</span>
-<span class="sd">        vis_params (dict, optional): The visualization parameters. Defaults to None.</span>
+<span class="sd">        ee_object (Union[ee.Geometry, ee.Feature, ee.FeatureCollection,</span>
+<span class="sd">            ee.Image, ee.ImageCollection]): The object to add to the map.</span>
+<span class="sd">        vis_params (Optional[Dict[str, Any]]): The visualization parameters.</span>
+<span class="sd">            Defaults to None.</span>
 <span class="sd">        name (str, optional): The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
-<span class="sd">        shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.</span>
-<span class="sd">        opacity (float, optional): The layer&#39;s opacity represented as a number between 0 and 1. Defaults to 1.</span>
+<span class="sd">        shown (bool, optional): A flag indicating whether the layer should</span>
+<span class="sd">            be on by default. Defaults to True.</span>
+<span class="sd">        opacity (float, optional): The layer&#39;s opacity represented as a</span>
+<span class="sd">            number between 0 and 1. Defaults to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span> <span class="o">=</span> <span class="n">ee_object</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
@@ -5624,27 +5668,26 @@ EELeafletTileLayer            (<span title="ipyleaflet.leaflet.TileLayer">TileLa
   <tbody>
       <tr>
         <td><code>bounds</code></td>
-        <td><code>ee.Geometry|ee.Feature|ee.FeatureCollection</code></td>
+        <td><code>Union[ee.Geometry, ee.Feature, ee.FeatureCollection]</code></td>
         <td><p>The bounds to sample.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>bands</code></td>
-        <td><code>list</code></td>
+        <td><code>Optional[List[str]]</code></td>
         <td><p>The bands to sample. If None, all bands are used.</p></td>
         <td><code>None</code></td>
       </tr>
       <tr>
         <td><code>percent</code></td>
-        <td><code>float</code></td>
+        <td><code>Optional[float]</code></td>
         <td><p>The percent to use when stretching.</p></td>
         <td><code>None</code></td>
       </tr>
       <tr>
         <td><code>sigma</code></td>
-        <td><code>float</code></td>
-        <td><p>The number of standard deviations to use when
-stretching.</p></td>
+        <td><code>Optional[float]</code></td>
+        <td><p>The number of standard deviations to use when stretching.</p></td>
         <td><code>None</code></td>
       </tr>
   </tbody>
@@ -5659,25 +5702,31 @@ stretching.</p></td>
   </thead>
   <tbody>
     <tr>
-      <td><code>tuple</code></td>
+      <td><code>Tuple[float, float]</code></td>
       <td><p>The minimum and maximum values to clip to.</p></td>
     </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/ee_tile_layers.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate_vis_minmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">percent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">calculate_vis_minmax</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">bounds</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">],</span>
+    <span class="n">bands</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">percent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">sigma</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the min and max clip values for visualization.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        bounds (ee.Geometry|ee.Feature|ee.FeatureCollection): The bounds to sample.</span>
-<span class="sd">        bands (list, optional): The bands to sample. If None, all bands are used.</span>
-<span class="sd">        percent (float, optional): The percent to use when stretching.</span>
-<span class="sd">        sigma (float, optional): The number of standard deviations to use when</span>
-<span class="sd">            stretching.</span>
+<span class="sd">        bounds (Union[ee.Geometry, ee.Feature, ee.FeatureCollection]): The bounds to sample.</span>
+<span class="sd">        bands (Optional[List[str]]): The bands to sample. If None, all bands are used.</span>
+<span class="sd">        percent (Optional[float]): The percent to use when stretching.</span>
+<span class="sd">        sigma (Optional[float]): The number of standard deviations to use when stretching.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        tuple: The minimum and maximum values to clip to.</span>
+<span class="sd">        Tuple[float, float]: The minimum and maximum values to clip to.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span> <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
