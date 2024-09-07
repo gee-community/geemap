@@ -13,7 +13,7 @@ import folium
 import ipyleaflet
 from functools import lru_cache
 
-from . import common
+from . import coreutils
 
 
 def _get_tile_url_format(
@@ -118,7 +118,7 @@ def _validate_palette(
             raise ValueError("The provided palette Box object is invalid.")
         return list(palette["default"])
     if isinstance(palette, str):
-        return common.check_cmap(palette)
+        return coreutils.check_cmap(palette)
     if isinstance(palette, list):
         return palette
     raise ValueError("The palette must be a list of colors, a string, or a Box object.")
