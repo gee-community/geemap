@@ -14,6 +14,7 @@
 
 
 import os
+import re
 import shutil
 import urllib.request
 from collections import deque
@@ -413,6 +414,11 @@ def js_to_python(
             lines = check_map_functions(lines)
 
             for index, line in enumerate(lines):
+
+                if "Map.setOptions" in line:
+                    # Regular expression to remove everything after the comma and before ');'
+                    line = re.sub(r",[^)]+(?=\);)", "", line)
+
                 if ("/* color" in line) and ("*/" in line):
                     line = (
                         line[: line.index("/*")].lstrip()
@@ -750,6 +756,10 @@ def js_snippet_to_py(
 
     in_js = temp_file_path(".js")
     out_py = temp_file_path(".py")
+
+    in_js_snippet = re.sub(
+        r"([a-zA-Z0-9_]+)\s*:", r'"\1":', in_js_snippet
+    )  # Add quotes around keys
 
     try:
         with open(in_js, "w") as f:
