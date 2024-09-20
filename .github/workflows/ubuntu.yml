@@ -13,7 +13,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                python-version: ["3.9", "3.10", "3.11"]
+                python-version: ["3.9", "3.10", "3.11", "3.12"]
         steps:
             - uses: actions/checkout@v4
             - name: Set up Python
@@ -32,11 +32,8 @@ jobs:
             - name: Install dependencies
               run: |
                   pip install .[all]
-                  pip install numpy==1.26.4
             - name: PKG-TEST
               run: |
                   python -m unittest discover tests/
               env:
-                  HEREMAPS_API_KEY: ${{ secrets.HEREMAPS_API_KEY }}
-                  PLANET_API_KEY: ${{ secrets.PLANET_API_KEY }}
                   EARTHENGINE_TOKEN: ${{ secrets.EARTHENGINE_TOKEN }}
