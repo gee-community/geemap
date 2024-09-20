@@ -12,7 +12,7 @@ import ipyevents
 import ipytree
 import ipywidgets
 
-from . import common
+from . import coreutils
 
 
 def _set_css_in_cell_output(info: Any) -> None:
@@ -62,7 +62,7 @@ except AttributeError:
 class Theme:
     """Applies dynamic theme in Colab, otherwise light."""
 
-    current_theme = "colab" if common.in_colab_shell() else "light"
+    current_theme = "colab" if coreutils.in_colab_shell() else "light"
 
     @staticmethod
     def apply(cls: Any) -> Any:
@@ -175,7 +175,9 @@ class Colorbar(ipywidgets.Output):
             raise ValueError("opacity or alpha value must be scalar type.")
 
         if "palette" in vis_params.keys():
-            hexcodes = common.to_hex_colors(common.check_cmap(vis_params["palette"]))
+            hexcodes = coreutils.to_hex_colors(
+                coreutils.check_cmap(vis_params["palette"])
+            )
             if discrete:
                 cmap = matplotlib.colors.ListedColormap(hexcodes)
                 linspace = numpy.linspace(vmin, vmax, cmap.N + 1)
@@ -383,7 +385,7 @@ class Legend(ipywidgets.VBox):
             if "widget_icon" not in widget_args:
                 widget_args["widget_icon"] = "bars"
 
-            legend_output_widget = common.widget_template(
+            legend_output_widget = coreutils.widget_template(
                 legend_output,
                 position=position,
                 display_widget=legend_widget,
@@ -435,7 +437,7 @@ class Legend(ipywidgets.VBox):
             ValueError: If unable to convert an RGB value to hex.
         """
         try:
-            return [common.rgb_to_hex(x) for x in colors]
+            return [coreutils.rgb_to_hex(x) for x in colors]
         except:
             raise ValueError("Unable to convert rgb value to hex.")
 
@@ -867,7 +869,7 @@ class Inspector(ipywidgets.VBox):
                     geom.type().compareTo(ee.String("Point")), point, bbox
                 )
                 ee_object = ee_object.filterBounds(is_point).first()
-                tree_node = common.get_info(
+                tree_node = coreutils.get_info(
                     ee_object, layer_name, self._expand_objects_tree, True
                 )
                 if tree_node:
@@ -1399,7 +1401,7 @@ def _tokenize_legend_colors(string: str, delimiter: str = ",") -> List[str]:
     Returns:
         List[str]: A list of hex color strings.
     """
-    return common.to_hex_colors([c.strip() for c in string.split(delimiter)])
+    return coreutils.to_hex_colors([c.strip() for c in string.split(delimiter)])
 
 
 def _tokenize_legend_labels(string: str, delimiter: str = ",") -> List[str]:
@@ -1692,7 +1694,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
             self._legend_checkbox.value = False
 
             if self._palette_label.value and "," in self._palette_label.value:
-                colors = common.to_hex_colors(
+                colors = coreutils.to_hex_colors(
                     [color.strip() for color in self._palette_label.value.split(",")]
                 )
                 self._render_colorbar(colors)
@@ -1848,7 +1850,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
         import matplotlib  # pylint: disable=import-outside-toplevel
         from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
 
-        colors = common.to_hex_colors(colors)
+        colors = coreutils.to_hex_colors(colors)
 
         _, ax = pyplot.subplots(figsize=(4, 0.3))
         cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
@@ -2010,7 +2012,7 @@ class _RasterLayerEditor(ipywidgets.VBox):
         """Handles the import button click event."""
         vis = self._get_vis_params_from_selection()
 
-        common.create_code_cell(f"vis_params = {str(vis)}")
+        coreutils.create_code_cell(f"vis_params = {str(vis)}")
         print(f"vis_params = {str(vis)}")
 
     def on_apply_click(self) -> None:
@@ -2434,7 +2436,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
             layout=ipywidgets.Layout(height="60px", width="300px")
         )
 
-        is_point = common.geometry_type(self._ee_object) in ["Point", "MultiPoint"]
+        is_point = coreutils.geometry_type(self._ee_object) in ["Point", "MultiPoint"]
         self._point_size_label.disabled = not is_point
         self._point_shape_dropdown.disabled = not is_point
 
@@ -2478,7 +2480,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
         vis["color"] = self._color_picker.value[1:] + str(
             hex(int(self._color_opacity_slider.value * 255))
         )[2:].zfill(2)
-        if common.geometry_type(self._ee_object) in ["Point", "MultiPoint"]:
+        if coreutils.geometry_type(self._ee_object) in ["Point", "MultiPoint"]:
             vis["pointSize"] = self._point_size_label.value
             vis["pointShape"] = self._point_shape_dropdown.value
         vis["width"] = self._line_width_label.value
@@ -2587,7 +2589,7 @@ class _VectorLayerEditor(ipywidgets.VBox):
         import matplotlib  # pylint: disable=import-outside-toplevel
         from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
 
-        colors = common.to_hex_colors(colors)
+        colors = coreutils.to_hex_colors(colors)
 
         _, ax = pyplot.subplots(figsize=(4, 0.3))
         cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
@@ -2800,5 +2802,5 @@ class _VectorLayerEditor(ipywidgets.VBox):
     def on_import_click(self) -> None:
         """Handles the import button click event."""
         vis = self._get_vis_params()
-        common.create_code_cell(f"style = {str(vis)}")
+        coreutils.create_code_cell(f"style = {str(vis)}")
         print(f"style = {str(vis)}")

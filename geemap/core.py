@@ -10,7 +10,7 @@ import ipyleaflet
 import ipywidgets
 
 from . import basemaps
-from . import common
+from . import coreutils
 from . import ee_tile_layers
 from . import map_widgets
 from . import toolbar
@@ -237,7 +237,8 @@ class AbstractDrawControl(object):
         # The current geometries from the draw_control.
         test_geojsons = self._get_synced_geojson_from_draw_control()
         self.geometries = [
-            common.geojson_to_ee(geo_json, geodesic=False) for geo_json in test_geojsons
+            coreutils.geojson_to_ee(geo_json, geodesic=False)
+            for geo_json in test_geojsons
         ]
 
     def _redraw_layer(self) -> None:
@@ -281,7 +282,7 @@ class AbstractDrawControl(object):
         Args:
             geo_json (dict): The GeoJSON representation of the geometry.
         """
-        geometry = common.geojson_to_ee(geo_json, geodesic=False)
+        geometry = coreutils.geojson_to_ee(geo_json, geodesic=False)
         self.last_geometry = geometry
         self.last_draw_action = DrawActions.CREATED
         self.geometries.append(geometry)
@@ -295,7 +296,7 @@ class AbstractDrawControl(object):
         Args:
             geo_json (dict): The GeoJSON representation of the geometry.
         """
-        geometry = common.geojson_to_ee(geo_json, geodesic=False)
+        geometry = coreutils.geojson_to_ee(geo_json, geodesic=False)
         self.last_geometry = geometry
         self.last_draw_action = DrawActions.EDITED
         self._sync_geometries()
@@ -307,7 +308,7 @@ class AbstractDrawControl(object):
         Args:
             geo_json (dict): The GeoJSON representation of the geometry.
         """
-        geometry = common.geojson_to_ee(geo_json, geodesic=False)
+        geometry = coreutils.geojson_to_ee(geo_json, geodesic=False)
         self.last_geometry = geometry
         self.last_draw_action = DrawActions.DELETED
         try:
@@ -707,7 +708,7 @@ class Map(ipyleaflet.Map, MapInterface):
 
         # Authenticate and initialize EE.
         if kwargs.get("ee_initialize", True):
-            common.ee_initialize(user_agent_prefix=self._USER_AGENT_PREFIX)
+            coreutils.ee_initialize(user_agent_prefix=self._USER_AGENT_PREFIX)
 
         # Listen for layers being added/removed so we can update the layer manager.
         self.observe(self._on_layers_change, "layers")
@@ -1254,7 +1255,7 @@ class Map(ipyleaflet.Map, MapInterface):
         """
         del host_map, item  # Unused.
         if selected:
-            common.open_url("https://geemap.org")
+            coreutils.open_url("https://geemap.org")
 
     def _toolbar_main_tools(self) -> List[toolbar.Toolbar.Item]:
         """Gets the main tools for the toolbar.
@@ -1361,7 +1362,7 @@ class Map(ipyleaflet.Map, MapInterface):
             Dict[str, Any]: The available basemaps.
         """
         tile_providers = list(basemaps.get_xyz_dict().values())
-        if common.get_google_maps_api_key():
+        if coreutils.get_google_maps_api_key():
             tile_providers = tile_providers + list(
                 basemaps.get_google_map_tile_providers().values()
             )
