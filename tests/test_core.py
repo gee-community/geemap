@@ -258,19 +258,19 @@ class TestAbstractDrawControl(unittest.TestCase):
         # Initialized is set by the `_bind_draw_controls` method.
         self.assertTrue(self._draw_control.initialized)
         self.assertIsNone(self._draw_control.layer)
-        self.assertEquals(self._draw_control.geometries, [])
-        self.assertEquals(self._draw_control.properties, [])
+        self.assertEqual(self._draw_control.geometries, [])
+        self.assertEqual(self._draw_control.properties, [])
         self.assertIsNone(self._draw_control.last_geometry)
         self.assertIsNone(self._draw_control.last_draw_action)
-        self.assertEquals(self._draw_control.features, [])
-        self.assertEquals(self._draw_control.collection, fake_ee.FeatureCollection([]))
+        self.assertEqual(self._draw_control.features, [])
+        self.assertEqual(self._draw_control.collection, fake_ee.FeatureCollection([]))
         self.assertIsNone(self._draw_control.last_feature)
-        self.assertEquals(self._draw_control.count, 0)
+        self.assertEqual(self._draw_control.count, 0)
         self.assertFalse("Drawn Features" in self.map.ee_layers)
 
     def test_handles_creation(self):
         self._draw_control.create(self.geo_json)
-        self.assertEquals(
+        self.assertEqual(
             self._draw_control.geometries,
             [fake_ee.Geometry(self.geo_json["geometry"])],
         )
@@ -279,18 +279,18 @@ class TestAbstractDrawControl(unittest.TestCase):
     def test_handles_deletion(self):
         self._draw_control.create(self.geo_json)
         self.assertTrue("Drawn Features" in self.map.ee_layers)
-        self.assertEquals(len(self._draw_control.geometries), 1)
+        self.assertEqual(len(self._draw_control.geometries), 1)
         self._draw_control.delete(0)
-        self.assertEquals(len(self._draw_control.geometries), 0)
+        self.assertEqual(len(self._draw_control.geometries), 0)
         self.assertFalse("Drawn Features" in self.map.ee_layers)
 
     def test_handles_edit(self):
         self._draw_control.create(self.geo_json)
-        self.assertEquals(len(self._draw_control.geometries), 1)
+        self.assertEqual(len(self._draw_control.geometries), 1)
 
         self._draw_control.edit(0, self.geo_json2)
-        self.assertEquals(len(self._draw_control.geometries), 1)
-        self.assertEquals(
+        self.assertEqual(len(self._draw_control.geometries), 1)
+        self.assertEqual(
             self._draw_control.geometries[0],
             fake_ee.Geometry(self.geo_json2["geometry"]),
         )
@@ -302,55 +302,53 @@ class TestAbstractDrawControl(unittest.TestCase):
         self.assertIsNotNone(self._draw_control.layer)
         # Test geometries accessor.
         geometry = fake_ee.Geometry(self.geo_json["geometry"])
-        self.assertEquals(len(self._draw_control.geometries), 1)
-        self.assertEquals(self._draw_control.geometries, [geometry])
+        self.assertEqual(len(self._draw_control.geometries), 1)
+        self.assertEqual(self._draw_control.geometries, [geometry])
         # Test properties accessor.
-        self.assertEquals(self._draw_control.properties, [None])
+        self.assertEqual(self._draw_control.properties, [None])
         # Test last_geometry accessor.
-        self.assertEquals(self._draw_control.last_geometry, geometry)
+        self.assertEqual(self._draw_control.last_geometry, geometry)
         # Test last_draw_action accessor.
-        self.assertEquals(self._draw_control.last_draw_action, core.DrawActions.CREATED)
+        self.assertEqual(self._draw_control.last_draw_action, core.DrawActions.CREATED)
         # Test features accessor.
         feature = fake_ee.Feature(geometry, None)
-        self.assertEquals(self._draw_control.features, [feature])
+        self.assertEqual(self._draw_control.features, [feature])
         # Test collection accessor.
-        self.assertEquals(
+        self.assertEqual(
             self._draw_control.collection, fake_ee.FeatureCollection([feature])
         )
         # Test last_feature accessor.
-        self.assertEquals(self._draw_control.last_feature, feature)
+        self.assertEqual(self._draw_control.last_feature, feature)
         # Test count accessor.
-        self.assertEquals(self._draw_control.count, 1)
+        self.assertEqual(self._draw_control.count, 1)
 
     def test_feature_property_access(self):
         self._draw_control.create(self.geo_json)
         geometry = self._draw_control.geometries[0]
         self.assertIsNone(self._draw_control.get_geometry_properties(geometry))
-        self.assertEquals(
-            self._draw_control.features, [fake_ee.Feature(geometry, None)]
-        )
+        self.assertEqual(self._draw_control.features, [fake_ee.Feature(geometry, None)])
         self._draw_control.set_geometry_properties(geometry, {"test": 1})
-        self.assertEquals(
+        self.assertEqual(
             self._draw_control.features, [fake_ee.Feature(geometry, {"test": 1})]
         )
 
     def test_reset(self):
         self._draw_control.create(self.geo_json)
-        self.assertEquals(len(self._draw_control.geometries), 1)
+        self.assertEqual(len(self._draw_control.geometries), 1)
 
         # When clear_draw_control is True, deletes the underlying geometries.
         self._draw_control.reset(clear_draw_control=True)
-        self.assertEquals(len(self._draw_control.geometries), 0)
-        self.assertEquals(len(self._draw_control.geo_jsons), 0)
+        self.assertEqual(len(self._draw_control.geometries), 0)
+        self.assertEqual(len(self._draw_control.geo_jsons), 0)
         self.assertFalse("Drawn Features" in self.map.ee_layers)
 
         self._draw_control.create(self.geo_json)
-        self.assertEquals(len(self._draw_control.geometries), 1)
+        self.assertEqual(len(self._draw_control.geometries), 1)
         # When clear_draw_control is False, does not delete the underlying
         # geometries.
         self._draw_control.reset(clear_draw_control=False)
-        self.assertEquals(len(self._draw_control.geometries), 0)
-        self.assertEquals(len(self._draw_control.geo_jsons), 1)
+        self.assertEqual(len(self._draw_control.geometries), 0)
+        self.assertEqual(len(self._draw_control.geo_jsons), 1)
         self.assertFalse("Drawn Features" in self.map.ee_layers)
 
     def test_remove_geometry(self):
@@ -358,29 +356,29 @@ class TestAbstractDrawControl(unittest.TestCase):
         self._draw_control.create(self.geo_json2)
         geometry1 = self._draw_control.geometries[0]
         geometry2 = self._draw_control.geometries[1]
-        self.assertEquals(len(self._draw_control.geometries), 2)
-        self.assertEquals(len(self._draw_control.properties), 2)
-        self.assertEquals(self._draw_control.last_draw_action, core.DrawActions.CREATED)
-        self.assertEquals(self._draw_control.last_geometry, geometry2)
+        self.assertEqual(len(self._draw_control.geometries), 2)
+        self.assertEqual(len(self._draw_control.properties), 2)
+        self.assertEqual(self._draw_control.last_draw_action, core.DrawActions.CREATED)
+        self.assertEqual(self._draw_control.last_geometry, geometry2)
 
         # When there are two geometries and the removed geometry is the last
         # one, then we treat it like an undo.
         self._draw_control.remove_geometry(geometry2)
-        self.assertEquals(len(self._draw_control.geometries), 1)
-        self.assertEquals(len(self._draw_control.properties), 1)
-        self.assertEquals(
+        self.assertEqual(len(self._draw_control.geometries), 1)
+        self.assertEqual(len(self._draw_control.properties), 1)
+        self.assertEqual(
             self._draw_control.last_draw_action, core.DrawActions.REMOVED_LAST
         )
-        self.assertEquals(self._draw_control.last_geometry, geometry1)
+        self.assertEqual(self._draw_control.last_geometry, geometry1)
 
         # When there's only one geometry, last_geometry is the removed geometry.
         self._draw_control.remove_geometry(geometry1)
-        self.assertEquals(len(self._draw_control.geometries), 0)
-        self.assertEquals(len(self._draw_control.properties), 0)
-        self.assertEquals(
+        self.assertEqual(len(self._draw_control.geometries), 0)
+        self.assertEqual(len(self._draw_control.properties), 0)
+        self.assertEqual(
             self._draw_control.last_draw_action, core.DrawActions.REMOVED_LAST
         )
-        self.assertEquals(self._draw_control.last_geometry, geometry1)
+        self.assertEqual(self._draw_control.last_geometry, geometry1)
 
         # When there are two geometries and the removed geometry is the first
         # one, then treat it like a normal delete.
@@ -389,10 +387,10 @@ class TestAbstractDrawControl(unittest.TestCase):
         geometry1 = self._draw_control.geometries[0]
         geometry2 = self._draw_control.geometries[1]
         self._draw_control.remove_geometry(geometry1)
-        self.assertEquals(len(self._draw_control.geometries), 1)
-        self.assertEquals(len(self._draw_control.properties), 1)
-        self.assertEquals(self._draw_control.last_draw_action, core.DrawActions.DELETED)
-        self.assertEquals(self._draw_control.last_geometry, geometry1)
+        self.assertEqual(len(self._draw_control.geometries), 1)
+        self.assertEqual(len(self._draw_control.properties), 1)
+        self.assertEqual(self._draw_control.last_draw_action, core.DrawActions.DELETED)
+        self.assertEqual(self._draw_control.last_geometry, geometry1)
 
     class TestDrawControl(core.AbstractDrawControl):
         """Implements an AbstractDrawControl for tests."""
