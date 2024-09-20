@@ -18,7 +18,7 @@
         <link rel="prev" href="../conversion/">
       
       
-        <link rel="next" href="../datasets/">
+        <link rel="next" href="../coreutils/">
       
       
       <link rel="icon" href="../assets/favicon.png">
@@ -1252,6 +1252,27 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coreutils/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    coreutils module
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -6178,7 +6199,8 @@ AbstractDrawControl        </code>
         <span class="c1"># The current geometries from the draw_control.</span>
         <span class="n">test_geojsons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_synced_geojson_from_draw_control</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="n">geodesic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">geo_json</span> <span class="ow">in</span> <span class="n">test_geojsons</span>
+            <span class="n">coreutils</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="n">geodesic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">geo_json</span> <span class="ow">in</span> <span class="n">test_geojsons</span>
         <span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_redraw_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -6222,7 +6244,7 @@ AbstractDrawControl        </code>
 <span class="sd">        Args:</span>
 <span class="sd">            geo_json (dict): The GeoJSON representation of the geometry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="n">geodesic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="n">geodesic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">CREATED</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
@@ -6236,7 +6258,7 @@ AbstractDrawControl        </code>
 <span class="sd">        Args:</span>
 <span class="sd">            geo_json (dict): The GeoJSON representation of the geometry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="n">geodesic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="n">geodesic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">EDITED</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sync_geometries</span><span class="p">()</span>
@@ -6248,7 +6270,7 @@ AbstractDrawControl        </code>
 <span class="sd">        Args:</span>
 <span class="sd">            geo_json (dict): The GeoJSON representation of the geometry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">geometry</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="n">geodesic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">geojson_to_ee</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="n">geodesic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_draw_action</span> <span class="o">=</span> <span class="n">DrawActions</span><span class="o">.</span><span class="n">DELETED</span>
         <span class="k">try</span><span class="p">:</span>
@@ -7254,7 +7276,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
         <span class="c1"># Authenticate and initialize EE.</span>
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ee_initialize&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
-            <span class="n">common</span><span class="o">.</span><span class="n">ee_initialize</span><span class="p">(</span><span class="n">user_agent_prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_USER_AGENT_PREFIX</span><span class="p">)</span>
+            <span class="n">coreutils</span><span class="o">.</span><span class="n">ee_initialize</span><span class="p">(</span><span class="n">user_agent_prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_USER_AGENT_PREFIX</span><span class="p">)</span>
 
         <span class="c1"># Listen for layers being added/removed so we can update the layer manager.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_layers_change</span><span class="p">,</span> <span class="s2">&quot;layers&quot;</span><span class="p">)</span>
@@ -7801,7 +7823,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">item</span>  <span class="c1"># Unused.</span>
         <span class="k">if</span> <span class="n">selected</span><span class="p">:</span>
-            <span class="n">common</span><span class="o">.</span><span class="n">open_url</span><span class="p">(</span><span class="s2">&quot;https://geemap.org&quot;</span><span class="p">)</span>
+            <span class="n">coreutils</span><span class="o">.</span><span class="n">open_url</span><span class="p">(</span><span class="s2">&quot;https://geemap.org&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_toolbar_main_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the main tools for the toolbar.</span>
@@ -7908,7 +7930,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 <span class="sd">            Dict[str, Any]: The available basemaps.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tile_providers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">basemaps</span><span class="o">.</span><span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">common</span><span class="o">.</span><span class="n">get_google_maps_api_key</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_google_maps_api_key</span><span class="p">():</span>
             <span class="n">tile_providers</span> <span class="o">=</span> <span class="n">tile_providers</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span>
                 <span class="n">basemaps</span><span class="o">.</span><span class="n">get_google_map_tile_providers</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
             <span class="p">)</span>
@@ -8122,7 +8144,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
     <span class="c1"># Authenticate and initialize EE.</span>
     <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ee_initialize&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
-        <span class="n">common</span><span class="o">.</span><span class="n">ee_initialize</span><span class="p">(</span><span class="n">user_agent_prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_USER_AGENT_PREFIX</span><span class="p">)</span>
+        <span class="n">coreutils</span><span class="o">.</span><span class="n">ee_initialize</span><span class="p">(</span><span class="n">user_agent_prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_USER_AGENT_PREFIX</span><span class="p">)</span>
 
     <span class="c1"># Listen for layers being added/removed so we can update the layer manager.</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_layers_change</span><span class="p">,</span> <span class="s2">&quot;layers&quot;</span><span class="p">)</span>

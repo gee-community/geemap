@@ -759,6 +759,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../coreutils/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    coreutils module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../datasets/" class="md-nav__link">
         
   
@@ -5793,7 +5814,9 @@ Colorbar            (<span title="ipywidgets.widgets.widget_output.Output">Outpu
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;opacity or alpha value must be scalar type.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="s2">&quot;palette&quot;</span> <span class="ow">in</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">hexcodes</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">to_hex_colors</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">check_cmap</span><span class="p">(</span><span class="n">vis_params</span><span class="p">[</span><span class="s2">&quot;palette&quot;</span><span class="p">]))</span>
+            <span class="n">hexcodes</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">to_hex_colors</span><span class="p">(</span>
+                <span class="n">coreutils</span><span class="o">.</span><span class="n">check_cmap</span><span class="p">(</span><span class="n">vis_params</span><span class="p">[</span><span class="s2">&quot;palette&quot;</span><span class="p">])</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="n">discrete</span><span class="p">:</span>
                 <span class="n">cmap</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">(</span><span class="n">hexcodes</span><span class="p">)</span>
                 <span class="n">linspace</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -6095,7 +6118,9 @@ Defaults to None.</p></td>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;opacity or alpha value must be scalar type.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="s2">&quot;palette&quot;</span> <span class="ow">in</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">hexcodes</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">to_hex_colors</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">check_cmap</span><span class="p">(</span><span class="n">vis_params</span><span class="p">[</span><span class="s2">&quot;palette&quot;</span><span class="p">]))</span>
+        <span class="n">hexcodes</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">to_hex_colors</span><span class="p">(</span>
+            <span class="n">coreutils</span><span class="o">.</span><span class="n">check_cmap</span><span class="p">(</span><span class="n">vis_params</span><span class="p">[</span><span class="s2">&quot;palette&quot;</span><span class="p">])</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">discrete</span><span class="p">:</span>
             <span class="n">cmap</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">ListedColormap</span><span class="p">(</span><span class="n">hexcodes</span><span class="p">)</span>
             <span class="n">linspace</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -6539,7 +6564,7 @@ Inspector            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</spa
                     <span class="n">geom</span><span class="o">.</span><span class="n">type</span><span class="p">()</span><span class="o">.</span><span class="n">compareTo</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="s2">&quot;Point&quot;</span><span class="p">)),</span> <span class="n">point</span><span class="p">,</span> <span class="n">bbox</span>
                 <span class="p">)</span>
                 <span class="n">ee_object</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">filterBounds</span><span class="p">(</span><span class="n">is_point</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-                <span class="n">tree_node</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">get_info</span><span class="p">(</span>
+                <span class="n">tree_node</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_info</span><span class="p">(</span>
                     <span class="n">ee_object</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand_objects_tree</span><span class="p">,</span> <span class="kc">True</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">tree_node</span><span class="p">:</span>
@@ -7802,7 +7827,7 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
             <span class="k">if</span> <span class="s2">&quot;widget_icon&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">widget_args</span><span class="p">:</span>
                 <span class="n">widget_args</span><span class="p">[</span><span class="s2">&quot;widget_icon&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;bars&quot;</span>
 
-            <span class="n">legend_output_widget</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">widget_template</span><span class="p">(</span>
+            <span class="n">legend_output_widget</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">widget_template</span><span class="p">(</span>
                 <span class="n">legend_output</span><span class="p">,</span>
                 <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span>
                 <span class="n">display_widget</span><span class="o">=</span><span class="n">legend_widget</span><span class="p">,</span>
@@ -7854,7 +7879,7 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
 <span class="sd">            ValueError: If unable to convert an RGB value to hex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">common</span><span class="o">.</span><span class="n">rgb_to_hex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">coreutils</span><span class="o">.</span><span class="n">rgb_to_hex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unable to convert rgb value to hex.&quot;</span><span class="p">)</span>
 
@@ -8144,7 +8169,7 @@ Legend            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
         <span class="k">if</span> <span class="s2">&quot;widget_icon&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">widget_args</span><span class="p">:</span>
             <span class="n">widget_args</span><span class="p">[</span><span class="s2">&quot;widget_icon&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;bars&quot;</span>
 
-        <span class="n">legend_output_widget</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">widget_template</span><span class="p">(</span>
+        <span class="n">legend_output_widget</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">widget_template</span><span class="p">(</span>
             <span class="n">legend_output</span><span class="p">,</span>
             <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span>
             <span class="n">display_widget</span><span class="o">=</span><span class="n">legend_widget</span><span class="p">,</span>
@@ -8197,7 +8222,7 @@ Theme        </code>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Theme</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies dynamic theme in Colab, otherwise light.&quot;&quot;&quot;</span>
 
-    <span class="n">current_theme</span> <span class="o">=</span> <span class="s2">&quot;colab&quot;</span> <span class="k">if</span> <span class="n">common</span><span class="o">.</span><span class="n">in_colab_shell</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;light&quot;</span>
+    <span class="n">current_theme</span> <span class="o">=</span> <span class="s2">&quot;colab&quot;</span> <span class="k">if</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">in_colab_shell</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;light&quot;</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
