@@ -16,7 +16,7 @@ jobs:
               uses: conda-incubator/setup-miniconda@v3
               with:
                   auto-activate-base: true
-                  python-version: "3.11"
+                  python-version: "3.12"
             - name: Install GDAL
               run: conda install -c conda-forge gdal --yes
             # - name: Test GDAL installation

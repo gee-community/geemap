@@ -15,7 +15,7 @@ jobs:
             fail-fast: false
             matrix:
                 config:
-                    - { os: macOS-latest, py: "3.11" }
+                    - { os: macOS-latest, py: "3.12" }
         env:
             SDKROOT: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
         steps:
