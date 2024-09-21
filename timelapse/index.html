@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.35">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.36">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.35f28582.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.06209087.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -13609,22 +13609,22 @@ Full list properties: https://developers.google.com/earth-engine/datasets/catalo
         <span class="n">instrumentMode</span> <span class="ow">or</span> <span class="p">{</span><span class="s2">&quot;VV&quot;</span><span class="p">:</span> <span class="s2">&quot;IW&quot;</span><span class="p">,</span> <span class="s2">&quot;VH&quot;</span><span class="p">:</span> <span class="s2">&quot;IW&quot;</span><span class="p">,</span> <span class="s2">&quot;HH&quot;</span><span class="p">:</span> <span class="s2">&quot;EW&quot;</span><span class="p">,</span> <span class="s2">&quot;HV&quot;</span><span class="p">:</span> <span class="s2">&quot;EW&quot;</span><span class="p">}[</span><span class="n">band</span><span class="p">]</span>
     <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">remove_outliers</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">remove_outliers_func</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">remove_outliers</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">image</span>
         <span class="n">edge</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">band</span><span class="p">)</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="o">-</span><span class="mf">30.0</span><span class="p">)</span>
         <span class="n">maskedimage</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">mask</span><span class="p">()</span><span class="o">.</span><span class="n">And</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">Not</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">updateMask</span><span class="p">(</span><span class="n">maskedimage</span><span class="p">)</span>
 
-    <span class="n">col</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">collection</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s2">&quot;instrumentMode&quot;</span><span class="p">,</span> <span class="n">instrumentMode</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">filter</span><span class="p">(</span>
-            <span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">listContains</span><span class="p">(</span>
-                <span class="s2">&quot;transmitterReceiverPolarisation&quot;</span><span class="p">,</span> <span class="n">transmitterReceiverPolarisation</span>
-            <span class="p">)</span>
+    <span class="n">col</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s2">&quot;instrumentMode&quot;</span><span class="p">,</span> <span class="n">instrumentMode</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+        <span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">listContains</span><span class="p">(</span>
+            <span class="s2">&quot;transmitterReceiverPolarisation&quot;</span><span class="p">,</span> <span class="n">transmitterReceiverPolarisation</span>
         <span class="p">)</span>
-        <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">remove_outliers</span><span class="p">)</span>
     <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">remove_outliers</span><span class="p">:</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">remove_outliers_func</span><span class="p">)</span>
+
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">col</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Filter</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">orbitProperties_pass</span><span class="p">:</span>
@@ -14185,7 +14185,7 @@ Full list properties: https://developers.google.com/earth-engine/datasets/catalo
       <tr>
         <td><code>out_gif</code></td>
         <td><code>str</code></td>
-        <td><p>File path to the output animated GIF. Defaults to Downloads\s1_ts_*.gif.</p></td>
+        <td><p>File path to the output animated GIF. Defaults to the Downloads folder s1_ts_*.gif.</p></td>
         <td><code>None</code></td>
       </tr>
       <tr>
@@ -14404,7 +14404,7 @@ Full list properties: https://developers.google.com/earth-engine/datasets/catalo
 
 <span class="sd">    Args:</span>
 <span class="sd">        roi (object, optional): Region of interest to create the timelapse. Defaults to LV &amp; Lake Mead.</span>
-<span class="sd">        out_gif (str, optional): File path to the output animated GIF. Defaults to Downloads\s1_ts_*.gif.</span>
+<span class="sd">        out_gif (str, optional): File path to the output animated GIF. Defaults to the Downloads folder s1_ts_*.gif.</span>
 <span class="sd">        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.</span>
 <span class="sd">        end_year (int, optional): Ending year for the timelapse. Defaults to current year.</span>
 <span class="sd">        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to &#39;01-01&#39;.</span>
