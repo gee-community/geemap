@@ -576,7 +576,7 @@ def js_to_python(
                     "Export.video.toDrive", "geemap.ee_export_video_to_drive"
                 )
                 line = line.replace("||", "or")
-                line = line.replace("\****", "#")
+                line = line.replace(r"\****", "#")
                 line = line.replace("def =", "_def =")
                 line = line.replace(", def, ", ", _def, ")
                 line = line.replace("(def, ", "(_def, ")

@@ -1405,22 +1405,22 @@ def sentinel1_filtering(
         instrumentMode or {"VV": "IW", "VH": "IW", "HH": "EW", "HV": "EW"}[band]
     )
 
-    def remove_outliers(image):
+    def remove_outliers_func(image):
         if not remove_outliers:
             return image
         edge = image.select(band).lt(-30.0)
         maskedimage = image.mask().And(edge.Not())
         return image.updateMask(maskedimage)
 
-    col = (
-        collection.filter(ee.Filter.eq("instrumentMode", instrumentMode))
-        .filter(
-            ee.Filter.listContains(
-                "transmitterReceiverPolarisation", transmitterReceiverPolarisation
-            )
+    col = collection.filter(ee.Filter.eq("instrumentMode", instrumentMode)).filter(
+        ee.Filter.listContains(
+            "transmitterReceiverPolarisation", transmitterReceiverPolarisation
         )
-        .map(remove_outliers)
     )
+
+    if remove_outliers:
+        col = col.map(remove_outliers_func)
+
     for k, v in kwargs.items():
         col = col.filter(ee.Filter.eq(k, v))
     if orbitProperties_pass:
@@ -3232,7 +3232,7 @@ def sentinel1_timelapse_legacy(
 
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to LV & Lake Mead.
-        out_gif (str, optional): File path to the output animated GIF. Defaults to Downloads\s1_ts_*.gif.
+        out_gif (str, optional): File path to the output animated GIF. Defaults to the Downloads folder s1_ts_*.gif.
         start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
         end_year (int, optional): Ending year for the timelapse. Defaults to current year.
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
