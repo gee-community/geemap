@@ -38,7 +38,10 @@ jobs:
               run: |
                   uv pip install --find-links https://girder.github.io/large_image_wheels GDAL pyproj
                   uv pip install -r pyproject.toml --extra all
-
+            - name: LOAD EE CREDENTIALS
+              run: python ./.github/ee_token.py
+              env:
+                  EARTHENGINE_TOKEN: ${{ secrets.EARTHENGINE_TOKEN }}
             - name: Test import
               run: |
                   uv run python -c "import geemap; print('geemap import successful')"
@@ -48,8 +51,6 @@ jobs:
             - name: Running tests
               run: |
                   uv run python -m unittest discover tests/
-              env:
-                  EARTHENGINE_TOKEN: ${{ secrets.EARTHENGINE_TOKEN }}
             - name: Install mkdocs
               run: |
                   uv pip install -r requirements_docs.txt
