@@ -37,7 +37,6 @@ jobs:
             - name: Install optional dependencies
               run: |
                   uv pip install --find-links https://girder.github.io/large_image_wheels GDAL pyproj
-                  uv pip install pytest
                   uv pip install -r pyproject.toml --extra all
 
             - name: Test import
@@ -46,9 +45,9 @@ jobs:
                   uv run python -c "from osgeo import gdal; print('gdal import successful')"
                   uv run gdalinfo --version
 
-            - name: Running pytest
+            - name: Running tests
               run: |
-                  uv run pytest . --verbose
+                  uv run python -m unittest discover tests/
 
             - name: Install mkdocs
               run: |
