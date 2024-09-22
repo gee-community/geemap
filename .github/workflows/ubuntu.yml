@@ -48,3 +48,5 @@ jobs:
             - name: Running tests
               run: |
                   uv run python -m unittest discover tests/
+              env:
+                  EARTHENGINE_TOKEN: ${{ secrets.EARTHENGINE_TOKEN }}
