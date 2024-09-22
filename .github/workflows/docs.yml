@@ -1,43 +1,56 @@
 name: docs
+
 on:
     push:
         branches:
             - master
+
 jobs:
     deploy:
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                python-version: ["3.12"]
+
+        env:
+            USE_FOLIUM: ${{ secrets.USE_FOLIUM }}
+            USE_MKDOCS: ${{ secrets.USE_MKDOCS }}
+            MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
+
         steps:
             - uses: actions/checkout@v4
               with:
                   fetch-depth: 0
-            - uses: actions/setup-python@v5
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v2
               with:
-                  python-version: "3.12"
-            - name: Install GDAL
-              run: |
-                  python -m pip install --upgrade pip
-                  pip install --find-links=https://girder.github.io/large_image_wheels --no-cache GDAL pyproj
-            - name: Test GDAL installation
-              run: |
-                  python -c "from osgeo import gdal"
-                  gdalinfo --version
-            - name: Install libgeos
-              run: sudo apt -y install libgeos-dev
+                  version: "0.4.12"
+                  enable-cache: true
+
+            - name: Set up Python ${{ matrix.python-version }}
+              run: uv python install ${{ matrix.python-version }}
+
             - name: Install dependencies
+              run: uv sync --python ${{ matrix.python-version }}
+
+            - name: Install optional dependencies
               run: |
-                  python -m pip install --upgrade pip
-                  pip install --user --no-cache-dir Cython
-                  pip install .[all]
-            - name: LOAD EE CREDENTIALS
-              run: python ./.github/ee_token.py
-              env:
-                  EARTHENGINE_TOKEN: ${{ secrets.EARTHENGINE_TOKEN }}
-            - name: GEEMAP-TEST
+                  uv pip install --find-links https://girder.github.io/large_image_wheels GDAL pyproj
+                  uv pip install pytest
+                  uv pip install -r requirements_dev.txt
+
+            - name: Test import
               run: |
-                  python -m unittest discover tests/
-            - run: pip install -r requirements_docs.txt
-            - run: cp -R examples/data docs/data
-            - run: mkdocs gh-deploy --force
-              env:
-                  USE_FOLIUM: ${{ secrets.USE_FOLIUM }}
-                  USE_MKDOCS: ${{ secrets.USE_MKDOCS }}
+                  uv run python -c "import geemap; print('geemap import successful')"
+                  uv run python -c "from osgeo import gdal; print('gdal import successful')"
+                  uv run gdalinfo --version
+
+            - name: Running pytest
+              run: |
+                  uv run pytest . --verbose
+
+            - name: Install mkdocs
+              run: |
+                  uv pip install -r requirements_docs.txt
+                  uv run mkdocs gh-deploy --force

@@ -6,7 +6,7 @@ dynamic = [
 ]
 description = "A Python package for interactive mapping using Google Earth Engine and ipyleaflet"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 keywords = [
     "geemap",
 ]
@@ -18,11 +18,11 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 [project.entry-points."console_scripts"]
@@ -139,10 +139,6 @@ filename = "geemap/__init__.py"
 search = '__version__ = "{current_version}"'
 replace = '__version__ = "{new_version}"'
 
-
-
-
-
 [tool.flake8]
 exclude = [
     "docs",
@@ -150,8 +146,6 @@ exclude = [
 max-line-length = 88
 
 [tool.setuptools_scm]
-
-
 
 
 [project.urls]
