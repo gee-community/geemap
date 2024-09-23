@@ -16,13 +16,18 @@ jobs:
                 python-version: ["3.12"]
         steps:
             - uses: actions/checkout@v4
-            - name: Set up Python
-              uses: actions/setup-python@v5
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v2
               with:
-                  python-version: ${{ matrix.python-version }}
-            - name: Install package
-              run: |
-                  pip install setuptools
-                  pip install .
+                  version: "0.4.12"
+                  enable-cache: true
+
+            - name: Set up Python ${{ matrix.python-version }}
+              run: uv python install ${{ matrix.python-version }}
+
+            - name: Install dependencies
+              run: uv sync --python ${{ matrix.python-version }}
+
             - name: Test import
-              run: python -c "import geemap; print('geemap import successful')"
+              run: uv run python -c "import geemap; print('geemap import successful')"

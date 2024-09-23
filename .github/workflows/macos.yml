@@ -19,15 +19,20 @@ jobs:
         env:
             SDKROOT: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
         steps:
-            - name: CHECKOUT CODE
-              uses: actions/checkout@v4
-            - name: SETUP PYTHON
-              uses: actions/setup-python@v5
+            - uses: actions/checkout@v4
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v2
               with:
-                  python-version: ${{ matrix.config.py }}
+                  version: "0.4.12"
+                  enable-cache: true
+
+            - name: Set up Python ${{ matrix.config.py }}
+              run: uv python install ${{ matrix.config.py }}
+
             - name: Install dependencies
+              run: uv sync --python ${{ matrix.config.py }}
+
+            - name: Test import
               run: |
-                  python -m pip install --upgrade pip
-                  pip install --no-cache-dir Cython
-                  pip install -r requirements.txt
-                  pip install .
+                  uv run python -c "import geemap; print('geemap import successful')"

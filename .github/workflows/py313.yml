@@ -1,23 +1,22 @@
-name: "TestingWindows"
+name: TestingUbuntu
 
 on:
     push:
-        branches:
-            - master
+        branches: ["master"]
     pull_request:
-        branches:
-            - master
+        branches: ["master"]
+
 jobs:
-    test-windows:
-        runs-on: windows-latest
+    test-ubuntu:
+        runs-on: ubuntu-latest
+
         strategy:
+            fail-fast: false
             matrix:
-                python-version: ["3.12"]
+                python-version: ["3.13"]
 
         env:
-            USE_FOLIUM: ${{ secrets.USE_FOLIUM }}
             USE_MKDOCS: ${{ secrets.USE_MKDOCS }}
-            MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
 
         steps:
             - uses: actions/checkout@v4
@@ -37,3 +36,7 @@ jobs:
             - name: Test import
               run: |
                   uv run python -c "import geemap; print('geemap import successful')"
+
+            - name: Running tests
+              run: |
+                  uv run python -m unittest discover tests/
