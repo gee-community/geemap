@@ -8,6 +8,14 @@ the [Earth Engine Code Editor](https://code.earthengine.google.com/) to get fami
 
 ![signup](https://i.imgur.com/ng0FzUT.png)
 
+## Install using uv
+
+[uv](https://docs.astral.sh/uv) is an extremely fast Python package and project manager, written in Rust. It is designed to be a drop-in replacement for pip. You can install geospatial using uv as follows:
+
+```bash
+uv pip install geemap
+```
+
 ## Install from PyPI
 
 **Geemap** is available on [PyPI](https://pypi.org/project/geemap/). To install **geemap**, run this command in your terminal:
