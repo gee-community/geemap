@@ -13,7 +13,6 @@ jobs:
                 python-version: ["3.12"]
 
         env:
-            USE_FOLIUM: ${{ secrets.USE_FOLIUM }}
             USE_MKDOCS: ${{ secrets.USE_MKDOCS }}
             MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
 

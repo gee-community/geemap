@@ -16,7 +16,6 @@ jobs:
                 python-version: ["3.9", "3.10", "3.11", "3.12"]
 
         env:
-            USE_FOLIUM: ${{ secrets.USE_FOLIUM }}
             USE_MKDOCS: ${{ secrets.USE_MKDOCS }}
 
         steps:
