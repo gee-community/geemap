@@ -14,7 +14,6 @@ jobs:
 
         env:
             USE_MKDOCS: ${{ secrets.USE_MKDOCS }}
-            MAPBOX_TOKEN: ${{ secrets.MAPBOX_TOKEN }}
 
         steps:
             - uses: actions/checkout@v4
@@ -37,10 +36,6 @@ jobs:
               run: |
                   uv pip install --find-links https://girder.github.io/large_image_wheels GDAL pyproj
                   uv pip install -r pyproject.toml --extra all
-            - name: LOAD EE CREDENTIALS
-              run: python ./.github/ee_token.py
-              env:
-                  EARTHENGINE_TOKEN: ${{ secrets.EARTHENGINE_TOKEN }}
             - name: Test import
               run: |
                   uv run python -c "import geemap; print('geemap import successful')"
