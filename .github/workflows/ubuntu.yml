@@ -32,12 +32,11 @@ jobs:
               run: uv python install ${{ matrix.python-version }}
 
             - name: Install dependencies
-              run: uv venv --python ${{ matrix.python-version }}
+              run: uv sync --python ${{ matrix.python-version }}
 
             - name: Install optional dependencies
               run: |
                   uv pip install --find-links https://girder.github.io/large_image_wheels gdal pyproj
-                  uv pip install -r pyproject.toml --extra all
             - name: Test import
               run: |
                   uv run python -c "import geemap; print('geemap import successful')"
@@ -47,3 +46,5 @@ jobs:
             - name: Running tests
               run: |
                   uv run python -m unittest discover tests/
+              env:
+                  EARTHENGINE_TOKEN: ${{ secrets.EARTHENGINE_TOKEN }}
