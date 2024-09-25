@@ -9611,20 +9611,7 @@ Map            (<a class="autorefs autorefs-internal" title="geemap.core.Map" hr
 
     <span class="k">def</span> <span class="nf">basemap_demo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A demo for using geemap basemaps.&quot;&quot;&quot;</span>
-        <span class="n">dropdown</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-            <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">basemaps</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
-            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;HYBRID&quot;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Basemaps&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="k">def</span> <span class="nf">on_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-            <span class="n">basemap_name</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
-            <span class="n">old_basemap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">substitute_layer</span><span class="p">(</span><span class="n">old_basemap</span><span class="p">,</span> <span class="n">get_basemap</span><span class="p">(</span><span class="n">basemaps</span><span class="p">[</span><span class="n">basemap_name</span><span class="p">]))</span>
-
-        <span class="n">dropdown</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">on_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-        <span class="n">basemap_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">dropdown</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">basemap_control</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_basemap_widget</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">add_colorbar_branca</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -21688,20 +21675,7 @@ be on by default. Defaults to True.</p></td>
           <summary>Source code in <code>geemap/geemap.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">basemap_demo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A demo for using geemap basemaps.&quot;&quot;&quot;</span>
-    <span class="n">dropdown</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-        <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">basemaps</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
-        <span class="n">value</span><span class="o">=</span><span class="s2">&quot;HYBRID&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Basemaps&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">on_click</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
-        <span class="n">basemap_name</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span>
-        <span class="n">old_basemap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">substitute_layer</span><span class="p">(</span><span class="n">old_basemap</span><span class="p">,</span> <span class="n">get_basemap</span><span class="p">(</span><span class="n">basemaps</span><span class="p">[</span><span class="n">basemap_name</span><span class="p">]))</span>
-
-    <span class="n">dropdown</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">on_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-    <span class="n">basemap_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">dropdown</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">basemap_control</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">add_basemap_widget</span><span class="p">()</span>
 </code></pre></div>
         </details>
     </div>
