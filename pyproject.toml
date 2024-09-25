@@ -1,6 +1,6 @@
 [project]
 name = "geemap"
-version = "0.34.4"
+version = "0.34.5"
 dynamic = [
     "dependencies",
 ]
@@ -125,7 +125,7 @@ universal = true
 
 
 [tool.bumpversion]
-current_version = "0.34.4"
+current_version = "0.34.5"
 commit = true
 tag = true
 
