@@ -533,6 +533,12 @@ def widget_template(
 
     name = "_" + random_string()  # a random attribute name
 
+    if widget_args is None:
+        widget_args = {}
+
+    if close_button_args is None:
+        close_button_args = {}
+
     if "value" not in widget_args:
         widget_args["value"] = False
     if "tooltip" not in widget_args:
