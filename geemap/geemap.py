@@ -2048,20 +2048,7 @@ class Map(core.Map):
 
     def basemap_demo(self):
         """A demo for using geemap basemaps."""
-        dropdown = widgets.Dropdown(
-            options=list(basemaps.keys()),
-            value="HYBRID",
-            description="Basemaps",
-        )
-
-        def on_click(change):
-            basemap_name = change["new"]
-            old_basemap = self.layers[-1]
-            self.substitute_layer(old_basemap, get_basemap(basemaps[basemap_name]))
-
-        dropdown.observe(on_click, "value")
-        basemap_control = ipyleaflet.WidgetControl(widget=dropdown, position="topright")
-        self.add(basemap_control)
+        self.add_basemap_widget()
 
     def add_colorbar_branca(
         self,
