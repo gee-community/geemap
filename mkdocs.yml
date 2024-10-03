@@ -152,6 +152,7 @@ nav:
           - workshops/GeoAI_2024.ipynb
           - workshops/Taiwan_2024.ipynb
           - workshops/FOSS4GNA_2024.ipynb
+          - workshops/IPPN_2024.ipynb
     - Notebooks:
           - notebooks/00_ee_auth_colab.ipynb
           - notebooks/00_geemap_colab.ipynb
