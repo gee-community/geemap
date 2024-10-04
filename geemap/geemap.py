@@ -551,7 +551,7 @@ class Map(core.Map):
                 if "max_zoom" in basemap.keys():
                     max_zoom = basemap["max_zoom"]
                 else:
-                    max_zoom = 22
+                    max_zoom = 30
                 layer = ipyleaflet.TileLayer(
                     url=url,
                     name=name,

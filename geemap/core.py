@@ -1370,6 +1370,7 @@ class Map(ipyleaflet.Map, MapInterface):
         ret_dict = {}
         for tile_info in tile_providers:
             tile_info["url"] = tile_info.build_url()
+            tile_info["max_zoom"] = 30
             ret_dict[tile_info["name"]] = tile_info
 
         # Each alias needs to point to a single map. For each alias, pick the

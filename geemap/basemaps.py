@@ -43,16 +43,19 @@ XYZ_TILES = {
         "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         "attribution": "Esri",
         "name": "Esri.WorldImagery",
+        "max_zoom": 30,
     },
     "TERRAIN": {
         "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
         "attribution": "Esri",
         "name": "Esri.WorldTopoMap",
+        "max_zoom": 30,
     },
     "HYBRID": {
         "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         "attribution": "Esri",
         "name": "Esri.WorldImagery",
+        "max_zoom": 30,
     },
 }
 
@@ -154,6 +157,7 @@ WMS_TILES = {
         "attribution": "USGS",
         "format": "image/png",
         "transparent": True,
+        "max_zoom": 30,
     },
     "USGS NAIP Imagery False Color": {
         "url": "https://imagery.nationalmap.gov/arcgis/services/USGSNAIPImagery/ImageServer/WMSServer?",
@@ -430,6 +434,7 @@ def xyz_to_leaflet():
     for tile_type, tile_dict in custom_tiles.items():
         for tile_provider, tile_info in tile_dict.items():
             tile_info["type"] = tile_type
+            tile_info["max_zoom"] = 30
             leaflet_dict[tile_info["name"]] = tile_info
 
     # Add xyzservices.provider tiles.
@@ -437,6 +442,7 @@ def xyz_to_leaflet():
         if tile_info["name"] in ignore_list:
             continue
         tile_info["url"] = tile_info.build_url()
+        tile_info["max_zoom"] = 30
         leaflet_dict[tile_info["name"]] = tile_info
 
     return leaflet_dict
@@ -459,7 +465,7 @@ def xyz_to_folium():
             name=tile["name"],
             overlay=True,
             control=True,
-            max_zoom=22,
+            max_zoom=30,
         )
 
     for key, tile in custom_tiles["wms"].items():
@@ -472,6 +478,7 @@ def xyz_to_folium():
             transparent=tile["transparent"],
             overlay=True,
             control=True,
+            max_zoom=30,
         )
 
     for item in get_xyz_dict().values():
@@ -481,7 +488,7 @@ def xyz_to_folium():
             tiles=item.build_url(),
             attr=item.attribution,
             name=item.name,
-            max_zoom=item.get("max_zoom", 22),
+            max_zoom=item.get("max_zoom", 30),
             overlay=True,
             control=True,
         )
