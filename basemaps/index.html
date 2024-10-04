@@ -6058,7 +6058,7 @@ Defaults to False.</p></td>
             <span class="n">name</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
             <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">control</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">max_zoom</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span>
+            <span class="n">max_zoom</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">custom_tiles</span><span class="p">[</span><span class="s2">&quot;wms&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -6071,6 +6071,7 @@ Defaults to False.</p></td>
             <span class="n">transparent</span><span class="o">=</span><span class="n">tile</span><span class="p">[</span><span class="s2">&quot;transparent&quot;</span><span class="p">],</span>
             <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">control</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">max_zoom</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -6080,7 +6081,7 @@ Defaults to False.</p></td>
             <span class="n">tiles</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">build_url</span><span class="p">(),</span>
             <span class="n">attr</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">attribution</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">max_zoom</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max_zoom&quot;</span><span class="p">,</span> <span class="mi">22</span><span class="p">),</span>
+            <span class="n">max_zoom</span><span class="o">=</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max_zoom&quot;</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
             <span class="n">overlay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">control</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
@@ -6143,6 +6144,7 @@ Defaults to False.</p></td>
     <span class="k">for</span> <span class="n">tile_type</span><span class="p">,</span> <span class="n">tile_dict</span> <span class="ow">in</span> <span class="n">custom_tiles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">tile_provider</span><span class="p">,</span> <span class="n">tile_info</span> <span class="ow">in</span> <span class="n">tile_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile_type</span>
+            <span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;max_zoom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span>
             <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tile_info</span>
 
     <span class="c1"># Add xyzservices.provider tiles.</span>
@@ -6150,6 +6152,7 @@ Defaults to False.</p></td>
         <span class="k">if</span> <span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">ignore_list</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">build_url</span><span class="p">()</span>
+        <span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;max_zoom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span>
         <span class="n">leaflet_dict</span><span class="p">[</span><span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tile_info</span>
 
     <span class="k">return</span> <span class="n">leaflet_dict</span>

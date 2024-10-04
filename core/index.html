@@ -7959,6 +7959,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="n">ret_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">tile_info</span> <span class="ow">in</span> <span class="n">tile_providers</span><span class="p">:</span>
             <span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile_info</span><span class="o">.</span><span class="n">build_url</span><span class="p">()</span>
+            <span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;max_zoom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span>
             <span class="n">ret_dict</span><span class="p">[</span><span class="n">tile_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tile_info</span>
 
         <span class="c1"># Each alias needs to point to a single map. For each alias, pick the</span>
