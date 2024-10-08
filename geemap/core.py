@@ -3,7 +3,7 @@
 import enum
 import logging
 import math
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Type
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, TypedDict, Type
 
 import ee
 import ipyleaflet
@@ -403,8 +403,18 @@ class MapDrawControl(ipyleaflet.DrawControl, AbstractDrawControl):
 class MapInterface:
     """Interface for all maps."""
 
-    # The layers on the map.
-    ee_layers: Dict[str, Dict[str, Any]]
+    class EELayerMetadata(TypedDict):
+        """Metadata for layers backed by Earth Engine objects."""
+
+        ee_object: ee.ComputedObject
+        ee_layer: Any
+        vis_params: Dict[str, Any]
+
+    # All layers (including basemaps, GeoJSON layers, etc.).
+    layers: List[Any]
+
+    # Layers backed by Earth Engine objects and keyed by layer name.
+    ee_layers: Dict[str, EELayerMetadata]
 
     # The GeoJSON layers on the map.
     geojson_layers: List[Any]
@@ -549,6 +559,14 @@ class MapInterface:
             opacity (float): Opacity of the layer. Defaults to 1.0.
         """
         del ee_object, vis_params, name, shown, opacity  # Unused.
+        raise NotImplementedError()
+
+    def remove_layer(self, layer: Any) -> None:
+        """Removes a layer from the map.
+        Args:
+            layer (str): The layer to remove.
+        """
+        del layer  # Unused.
         raise NotImplementedError()
 
 
