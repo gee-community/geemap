@@ -1154,6 +1154,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#geemap.core.MapInterface.EELayerMetadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      EELayerMetadata
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geemap.core.MapInterface.add" class="md-nav__link">
     <span class="md-ellipsis">
       add()
@@ -1220,6 +1229,15 @@
   <a href="#geemap.core.MapInterface.remove" class="md-nav__link">
     <span class="md-ellipsis">
       remove()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.core.MapInterface.remove_layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      remove_layer()
     </span>
   </a>
   
@@ -5861,6 +5879,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#geemap.core.MapInterface.EELayerMetadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      EELayerMetadata
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geemap.core.MapInterface.add" class="md-nav__link">
     <span class="md-ellipsis">
       add()
@@ -5927,6 +5954,15 @@
   <a href="#geemap.core.MapInterface.remove" class="md-nav__link">
     <span class="md-ellipsis">
       remove()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.core.MapInterface.remove_layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      remove_layer()
     </span>
   </a>
   
@@ -9468,8 +9504,18 @@ MapInterface        </code>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MapInterface</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interface for all maps.&quot;&quot;&quot;</span>
 
-    <span class="c1"># The layers on the map.</span>
-    <span class="n">ee_layers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+    <span class="k">class</span> <span class="nc">EELayerMetadata</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Metadata for layers backed by Earth Engine objects.&quot;&quot;&quot;</span>
+
+        <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span>
+        <span class="n">ee_layer</span><span class="p">:</span> <span class="n">Any</span>
+        <span class="n">vis_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+
+    <span class="c1"># All layers (including basemaps, GeoJSON layers, etc.).</span>
+    <span class="n">layers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+
+    <span class="c1"># Layers backed by Earth Engine objects and keyed by layer name.</span>
+    <span class="n">ee_layers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">EELayerMetadata</span><span class="p">]</span>
 
     <span class="c1"># The GeoJSON layers on the map.</span>
     <span class="n">geojson_layers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
@@ -9615,6 +9661,14 @@ MapInterface        </code>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">shown</span><span class="p">,</span> <span class="n">opacity</span>  <span class="c1"># Unused.</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes a layer from the map.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            layer (str): The layer to remove.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="n">layer</span>  <span class="c1"># Unused.</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </code></pre></div>
         </details>
 
@@ -9701,6 +9755,41 @@ MapInterface        </code>
 
   </div>
 
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="geemap.core.MapInterface.EELayerMetadata" class="doc doc-heading">
+        <code>
+EELayerMetadata            (<span title="dict">dict</span>)
+        </code>
+
+
+
+<a href="#geemap.core.MapInterface.EELayerMetadata" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Metadata for layers backed by Earth Engine objects.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/core.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">EELayerMetadata</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Metadata for layers backed by Earth Engine objects.&quot;&quot;&quot;</span>
+
+    <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span>
+    <span class="n">ee_layer</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="n">vis_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+</code></pre></div>
+        </details>
+
+
+    </div>
+
+  </div>
 
 
 
@@ -10143,6 +10232,56 @@ MapInterface        </code>
 <span class="sd">        widget (str): The widget to remove.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">del</span> <span class="n">widget</span>  <span class="c1"># Unused.</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.core.MapInterface.remove_layer" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span></code>
+
+
+<a href="#geemap.core.MapInterface.remove_layer" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Removes a layer from the map.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>layer</code></td>
+        <td><code>str</code></td>
+        <td><p>The layer to remove.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/core.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes a layer from the map.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        layer (str): The layer to remove.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">del</span> <span class="n">layer</span>  <span class="c1"># Unused.</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </code></pre></div>
         </details>
