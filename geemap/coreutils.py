@@ -14,7 +14,7 @@ except ImportError:
     pass
 
 
-def get_environment_variable(key: str) -> Optional[str]:
+def get_env_var(key: str) -> Optional[str]:
     """Retrieves an environment variable or Colab secret for the given key.
 
     Colab secrets have precedence over environment variables.
@@ -83,7 +83,7 @@ def ee_initialize(
         kwargs["http_transport"] = httplib2.Http()
 
     if project is None:
-        kwargs["project"] = get_environment_variable("EE_PROJECT_ID")
+        kwargs["project"] = get_env_var("EE_PROJECT_ID")
     else:
         kwargs["project"] = project
 
@@ -98,7 +98,7 @@ def ee_initialize(
     auth_args["auth_mode"] = auth_mode
 
     if ee.data._credentials is None:
-        ee_token = get_environment_variable(token_name)
+        ee_token = get_env_var(token_name)
         if service_account:
             try:
                 credential_file_path = os.path.expanduser(
@@ -340,7 +340,7 @@ def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
     Returns:
         str: The API key, or None if it could not be found.
     """
-    if api_key := get_environment_variable(key):
+    if api_key := get_env_var(key):
         return api_key
     return os.environ.get(key, None)
 
