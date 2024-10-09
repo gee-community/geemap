@@ -12,7 +12,7 @@ import ee
 import ipywidgets as widgets
 from IPython.display import display, HTML
 from typing import Optional
-from .common import get_api_key, temp_file_path
+from .common import get_environment_variable, temp_file_path
 from .geemap import Map, ee_initialize
 
 try:
@@ -57,14 +57,16 @@ class Genie(widgets.VBox):
         # Initialization
 
         if project is None:
-            project = get_api_key("EE_PROJECT_ID") or get_api_key("GOOGLE_PROJECT_ID")
+            project = get_environment_variable(
+                "EE_PROJECT_ID"
+            ) or get_environment_variable("GOOGLE_PROJECT_ID")
         if project is None:
             raise ValueError(
                 "Please provide a valid project ID via the 'project' parameter."
             )
 
         if google_api_key is None:
-            google_api_key = get_api_key("GOOGLE_API_KEY")
+            google_api_key = get_environment_variable("GOOGLE_API_KEY")
         if google_api_key is None:
             raise ValueError(
                 "Please provide a valid Google API key via the 'google_api_key' parameter."

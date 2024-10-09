@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import zipfile
 
 import ee
@@ -13,32 +14,29 @@ except ImportError:
     pass
 
 
-def get_api_key(name: Optional[str] = None, key: Optional[str] = None) -> Optional[str]:
-    """
-    Retrieves an API key. If a key is provided, it is returned directly. If a
-    name is provided, the function attempts to retrieve the key from user data
-    (if running in Google Colab) or from environment variables.
+def get_environment_variable(key: str) -> Optional[str]:
+    """Retrieves an environment variable or Colab secret for the given key.
+
+    Colab secrets have precedence over environment variables.
 
     Args:
-        name (Optional[str], optional): The name of the key to retrieve. Defaults to None.
-        key (Optional[str], optional): The key to return directly. Defaults to None.
+        key (str): The key that's used to fetch the environment variable.
 
     Returns:
-        Optional[str]: The retrieved key, or None if no key was found.
+        Optional[str]: The retrieved key, or None if no environment variable was found.
     """
+    if not key:
+        return None
 
-    if key is not None:
-        return key
-    elif name is not None:
-        if in_colab_shell():
-            from google.colab import userdata
+    if in_colab_shell():
+        from google.colab import userdata
 
-            try:
-                return userdata.get(name)
-            except (userdata.SecretNotFoundError, userdata.NotebookAccessError):
-                return os.environ.get(name)
-        else:
-            return os.environ.get(name)
+        try:
+            return userdata.get(key)
+        except (userdata.SecretNotFoundError, userdata.NotebookAccessError):
+            pass
+
+    return os.environ.get(key)
 
 
 def ee_initialize(
@@ -85,7 +83,7 @@ def ee_initialize(
         kwargs["http_transport"] = httplib2.Http()
 
     if project is None:
-        kwargs["project"] = get_api_key("EE_PROJECT_ID")
+        kwargs["project"] = get_environment_variable("EE_PROJECT_ID")
     else:
         kwargs["project"] = project
 
@@ -100,7 +98,7 @@ def ee_initialize(
     auth_args["auth_mode"] = auth_mode
 
     if ee.data._credentials is None:
-        ee_token = get_api_key(token_name)
+        ee_token = get_environment_variable(token_name)
         if service_account:
             try:
                 credential_file_path = os.path.expanduser(
@@ -342,7 +340,7 @@ def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
     Returns:
         str: The API key, or None if it could not be found.
     """
-    if api_key := get_api_key(key):
+    if api_key := get_environment_variable(key):
         return api_key
     return os.environ.get(key, None)
 
@@ -354,12 +352,7 @@ def in_colab_shell() -> bool:
     Returns:
         bool: True if running in Google Colab, False otherwise.
     """
-    import sys
-
-    if "google.colab" in sys.modules:
-        return True
-    else:
-        return False
+    return "google.colab" in sys.modules
 
 
 def check_color(in_color: Union[str, Tuple[int, int, int]]) -> str:
