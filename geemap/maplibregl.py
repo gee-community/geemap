@@ -1292,8 +1292,8 @@ class Map(MapWidget):
             html = html.replace(div_before, div_after)
 
         if replace_key or (os.getenv("MAPTILER_REPLACE_KEY") is not None):
-            key_before = get_environment_variable("MAPTILER_KEY")
-            key_after = get_environment_variable("MAPTILER_KEY_PUBLIC")
+            key_before = get_env_var("MAPTILER_KEY")
+            key_after = get_env_var("MAPTILER_KEY_PUBLIC")
             if key_after is not None:
                 html = html.replace(key_before, key_after)
 
@@ -2217,7 +2217,7 @@ class Map(MapWidget):
         """
 
         if api_key is None:
-            api_key = get_environment_variable(token)
+            api_key = get_env_var(token)
 
         if api_key is None:
             print("An API key is required to use the 3D terrain feature.")
@@ -2748,7 +2748,7 @@ class Map(MapWidget):
             None
         """
 
-        MAPTILER_KEY = get_environment_variable("MAPTILER_KEY")
+        MAPTILER_KEY = get_env_var("MAPTILER_KEY")
         source = {
             "url": f"https://api.maptiler.com/tiles/v3/tiles.json?key={MAPTILER_KEY}",
             "type": "vector",
@@ -2913,7 +2913,7 @@ def construct_maptiler_style(style: str, api_key: Optional[str] = None) -> str:
     """
 
     if api_key is None:
-        api_key = get_environment_variable("MAPTILER_KEY")
+        api_key = get_env_var("MAPTILER_KEY")
 
     url = f"https://api.maptiler.com/maps/{style}/style.json?key={api_key}"
 
@@ -2965,7 +2965,7 @@ def maptiler_3d_style(
     """
 
     if api_key is None:
-        api_key = get_environment_variable(token)
+        api_key = get_env_var(token)
 
     if api_key is None:
         print("An API key is required to use the 3D terrain feature.")
