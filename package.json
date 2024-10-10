@@ -1,0 +1,15 @@
+{
+	"scripts": {
+		"dev": "npm run build -- --sourcemap=inline --watch",
+		"build": "esbuild js/*.ts --minify --format=esm --bundle --outdir=geemap/static",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"lit": "^3.2.0"
+	},
+	"devDependencies": {
+		"@anywidget/types": "^0.1.9",
+		"esbuild": "^0.23.0",
+		"typescript": "^5.5.3"
+	}
+}
