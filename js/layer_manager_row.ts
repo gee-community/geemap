@@ -69,7 +69,7 @@ export class LayerManagerRow extends LitElement {
                 0% { transform: rotate(0deg); }
                 100% { transform: rotate(360deg); }
             }
-                
+
             button.loading .spinner,
             button.loading:hover .close-icon,
             button.done-loading .close-icon {
