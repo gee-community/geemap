@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "geemap"
 version = "0.34.5"
@@ -42,9 +46,12 @@ dependencies = [
     "scooby",
 ]
 
+[project.scripts]
+geemap = "geemap.cli:main"
+
 [project.optional-dependencies]
 all = [
-    "geemap[backends,extra,lidar,raster,sql,apps,vector,workshop,maplibre]",
+    "geemap[backends,dev,extra,lidar,raster,sql,apps,vector,workshop,maplibre]",
 ]
 ai = [
     "google-api-core",
@@ -54,6 +61,10 @@ ai = [
 backends = [
     "keplergl",
     "pydeck",
+]
+dev = [
+    "watchfiles",
+    "jupyterlab",
 ]
 extra = [
     "ee_extra>=0.0.15",
@@ -132,10 +143,8 @@ geemap = "geemap.cli:main"
 include = ["geemap*"]
 exclude = ["docs*"]
 
-
 [tool.distutils.bdist_wheel]
 universal = true
-
 
 [tool.bumpversion]
 current_version = "0.34.5"
@@ -158,10 +167,28 @@ exclude = [
 ]
 max-line-length = 88
 
+[tool.hatch.envs.default]
+features = ["dev"]
+
+[tool.hatch.build]
+only-packages = true
+artifacts = ["geemap/static/*"]
+
+[tool.hatch.build.hooks.jupyter-builder]
+build-function = "hatch_jupyter_builder.npm_builder"
+ensured-targets = [
+    "geemap/static/layer_manager_row.js",
+    "geemap/static/layer_manager.js",
+]
+skip-if-exists = [
+    "geemap/static/layer_manager_row.js",
+    "geemap/static/layer_manager.js",
+]
+dependencies = ["hatch-jupyter-builder>=0.5.0"]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+npm = "npm"
+build_cmd = "build"
 
 [project.urls]
 Homepage = "https://github.com/gee-community/geemap"
-
-[build-system]
-requires = ["setuptools>=64", "setuptools_scm>=8"]
-build-backend = "setuptools.build_meta"
