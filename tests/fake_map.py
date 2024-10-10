@@ -1,4 +1,10 @@
+"""Fake map used for testing."""
+
+import unittest
+
 import ee
+import ipywidgets
+import traitlets
 
 from geemap import ee_tile_layers
 
@@ -15,6 +21,7 @@ class FakeMap:
         self.ee_layers = {}
         self.geojson_layers = []
         self.controls = []
+        self.add = unittest.mock.MagicMock()
 
         self._recognized_attrs = self.__dict__.keys()
 
@@ -78,9 +85,6 @@ class FakeMap:
                 "vis_params": vis_params,
             }
         self.layers.append(layer)
-
-    def add(self, obj):
-        del obj  # Unused.
 
     def remove_layer(self, layer):
         if isinstance(layer, str):
@@ -173,14 +177,19 @@ class FakeEeTileLayer:
         pass
 
 
-class FakeTileLayer:
+class FakeTileLayer(ipywidgets.Widget):
+    """A fake tile layer."""
+
+    name = traitlets.Unicode("").tag(sync=True)
+    visible = traitlets.Bool(True).tag(sync=True)
+    opacity = traitlets.Float(1).tag(sync=True)
+    loading = traitlets.Bool(False).tag(sync=True)
+
     def __init__(self, name="test-layer", visible=True, opacity=1.0):
+        super().__init__()
         self.name = name
         self.visible = visible
         self.opacity = opacity
-
-    def observe(self, func, names):
-        pass
 
 
 class FakeGeoJSONLayer:

@@ -1,18 +1,26 @@
 """Various ipywidgets that can be added to a map."""
 
 import functools
-from typing import Any, Dict, List, Optional, Tuple, Union
-
+import pathlib
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import IPython
 from IPython.display import HTML, display
 
+import anywidget
 import ee
-import ipyevents
 import ipytree
 import ipywidgets
+import traitlets
 
 from . import coreutils
+
+
+class TypedTuple(traitlets.Container):
+    """A trait for a tuple of any length with type-checked elements."""
+
+    klass = tuple
+    _cast_types = (list,)
 
 
 def _set_css_in_cell_output(info: Any) -> None:
@@ -878,361 +886,140 @@ class Inspector(ipywidgets.VBox):
         return self._root_node("Objects", nodes)
 
 
-@Theme.apply
-class LayerManager(ipywidgets.VBox):
-    """A layer manager widget for managing map layers."""
+class LayerManagerRow(anywidget.AnyWidget):
+    """A layer manager row widget for geemap."""
 
-    def __init__(self, host_map: "geemap.Map"):
-        """Initializes a layer manager widget.
+    _esm = pathlib.Path(__file__).parent / "static" / "layer_manager_row.js"
+    _css = pathlib.Path(__file__).parent / "static" / "layer_manager_row.css"
 
-        Args:
-            host_map (geemap.Map): The geemap.Map object.
-        """
-        self._host_map = host_map
+    name = traitlets.Unicode("").tag(sync=True)
+    visible = traitlets.Bool(True).tag(sync=True)
+    opacity = traitlets.Float(1).tag(sync=True)
+    is_loading = traitlets.Bool(False).tag(sync=True)
+
+    def __init__(self, host_map: "core.MapInterface", layer: Any):
+        super().__init__()
+        self.host_map = host_map
+        self.layer = layer
+        if not host_map or not layer:
+            raise ValueError(
+                "Must pass a valid map and layer when creating a layer manager row."
+            )
+
+        self.name = layer.name
+        self.visible = self._get_layer_visibility()
+        self.opacity = self._get_layer_opacity()
+
+        self.opacity_link: Optional[ipywidgets.widget_link.Link] = None
+        self.visibility_link: Optional[ipywidgets.widget_link.Link] = None
+        self._setup_event_listeners()
+
+    def _can_set_up_jslink(self, obj: Any, trait: str) -> bool:
+        return isinstance(obj, ipywidgets.Widget) and hasattr(obj, trait)
+
+    def _traitlet_link_type(self) -> Callable[..., Any]:
+        if coreutils.in_colab_shell():
+            # TODO: jslink doesn't work in Colab before the layers are added to the map.
+            # A potential workaround is calling display() on the layer before jslinking.
+            return ipywidgets.link
+        return ipywidgets.jslink
+
+    def _setup_event_listeners(self) -> None:
+        self.layer.observe(self._on_layer_loading_changed, "loading")
+        self.on_msg(self._handle_message_event)
+
+        link_func = self._traitlet_link_type()
+        if self._can_set_up_jslink(self.layer, "opacity"):
+            self.opacity_link = link_func((self.layer, "opacity"), (self, "opacity"))
+        if self._can_set_up_jslink(self.layer, "visible"):
+            self.visibility_link = link_func((self.layer, "visible"), (self, "visible"))
+
+    def _on_layer_loading_changed(self, change: Dict[str, Any]) -> None:
+        self.is_loading = change.get("new", False)
+
+    def _handle_message_event(
+        self, widget: ipywidgets.Widget, content: Dict[str, Any], buffers: List[Any]
+    ) -> None:
+        del widget, buffers  # Unused
+        if content.get("type") == "click":
+            self._handle_button_click(content.get("id", ""))
+
+    @traitlets.observe("opacity")
+    def _on_opacity_change(self, change: Dict[str, Any]) -> None:
+        if self._can_set_up_jslink(self.layer, "opacity"):
+            return  # Return if the opacity is handled by a jslink.
+        if opacity := change.get("new"):
+            if self.layer in self.host_map.geojson_layers:
+                # For GeoJSON layers, use style.opacity and style.fillOpacity.
+                self.layer.style.update({"opacity": opacity, "fillOpacity": opacity})
+
+    def _get_layer_opacity(self) -> float:
+        if hasattr(self.layer, "opacity"):
+            return self.layer.opacity
+        elif self.layer in self.host_map.geojson_layers:
+            opacity = self.layer.style.get("opacity", 1.0)
+            fill_opacity = self.layer.style.get("fillOpacity", 1.0)
+            return max(opacity, fill_opacity)
+        return 1.0
+
+    def _get_layer_visibility(self) -> bool:
+        if hasattr(self.layer, "visible"):
+            return self.layer.visible
+        return True
+
+    def _handle_button_click(self, msg_id: str) -> None:
+        if msg_id == "settings":
+            self._open_layer_editor()
+        elif msg_id == "delete":
+            self._delete_layer()
+
+    def _open_layer_editor(self) -> None:
+        metadata = self.host_map.ee_layers.get(self.name, None)
+        self.host_map.add("layer_editor", position="bottomright", layer_dict=metadata)
+
+    def _delete_layer(self) -> None:
+        self.host_map.remove_layer(self.layer)
+
+
+class LayerManager(anywidget.AnyWidget):
+    """A layer manager widget for geemap."""
+
+    _esm = pathlib.Path(__file__).parent / "static" / "layer_manager.js"
+    _css = pathlib.Path(__file__).parent / "static" / "layer_manager.css"
+
+    # Whether all layers should be visible or not. Represented as a checkbox in the UI.
+    visible = traitlets.Bool(True).tag(sync=True)
+
+    # Child widgets in the container. Using a tuple here to force reassignment to update
+    # the list. When a proper notifying-list trait exists, use that instead.
+    children = TypedTuple(
+        trait=traitlets.Instance(ipywidgets.Widget),
+        help="List of widget children",
+    ).tag(sync=True, **ipywidgets.widget_serialization)
+
+    def __init__(self, host_map: "core.MapInterface"):
+        super().__init__()
+        self.host_map = host_map
         if not host_map:
             raise ValueError("Must pass a valid map when creating a layer manager.")
 
-        self._collapse_button = ipywidgets.ToggleButton(
-            value=False,
-            tooltip="Layer Manager",
-            icon="server",
-            layout=ipywidgets.Layout(
-                width="28px", height="28px", padding="0px 0px 0px 4px"
-            ),
-        )
-        self._close_button = ipywidgets.Button(
-            tooltip="Close the tool",
-            icon="times",
-            button_style="primary",
-            layout=ipywidgets.Layout(width="28px", height="28px", padding="0px"),
-        )
-
-        self._toolbar_header = ipywidgets.HBox(
-            children=[self._close_button, self._collapse_button]
-        )
-        self._toolbar_footer = ipywidgets.VBox(children=[])
-
-        self._collapse_button.observe(self._on_collapse_click, "value")
-        self._close_button.on_click(self._on_close_click)
-
-        self.on_close = None
-        self.on_open_vis = None
-
-        self.collapsed = False
-        self.header_hidden = False
-        self.close_button_hidden = False
-
-        super().__init__([self._toolbar_header, self._toolbar_footer])
-
-    @property
-    def collapsed(self) -> bool:
-        """bool: Whether the layer manager is collapsed."""
-        return not self._collapse_button.value
-
-    @collapsed.setter
-    def collapsed(self, value: bool) -> None:
-        self._collapse_button.value = not value
-
-    @property
-    def header_hidden(self) -> bool:
-        """bool: Whether the header is hidden."""
-        return self._toolbar_header.layout.display == "none"
-
-    @header_hidden.setter
-    def header_hidden(self, value: bool) -> None:
-        self._toolbar_header.layout.display = "none" if value else "block"
-
-    @property
-    def close_button_hidden(self) -> bool:
-        """bool: Whether the close button is hidden."""
-        return self._close_button.style.display == "none"
-
-    @close_button_hidden.setter
-    def close_button_hidden(self, value: bool) -> None:
-        self._close_button.style.display = "none" if value else "inline-block"
-
     def refresh_layers(self) -> None:
-        """Recreates all the layer widgets."""
-        toggle_all_layout = ipywidgets.Layout(
-            height="18px", width="30ex", padding="0px 4px 25px 4px"
-        )
-        toggle_all_checkbox = ipywidgets.Checkbox(
-            value=False,
-            description="All layers on/off",
-            indent=False,
-            layout=toggle_all_layout,
-        )
-        toggle_all_checkbox.observe(self._on_all_layers_visibility_toggled, "value")
+        """Refresh the layers in the layer manager.
 
-        layer_rows = []
-        # non_basemap_layers = self._host_map.layers[1:]  # Skip the basemap.
-        for layer in self._host_map.layers:
-            layer_rows.append(self._render_layer_row(layer))
-        self._toolbar_footer.children = [toggle_all_checkbox] + layer_rows
-
-    def _on_close_click(self, _) -> None:
-        """Handles the close button click event."""
-        if self.on_close:
-            self.on_close()
-
-    def _on_collapse_click(self, change: Dict[str, Any]) -> None:
-        """Handles the collapse button click event.
-
-        Args:
-            change (Dict[str, Any]): The change event arguments.
+        Uses the map interface to pull active layers. This function must be called
+        whenever a layer is added or removed on the map.
         """
-        if change["new"]:
-            self.refresh_layers()
-            self.children = [self._toolbar_header, self._toolbar_footer]
-        else:
-            self.children = [self._collapse_button]
+        self.children = list(map(self._create_row_widget, self.host_map.layers))
 
-    def _render_layer_row(self, layer: Any) -> ipywidgets.HBox:
-        """Renders a row for a layer.
+    def _create_row_widget(self, layer: Any) -> LayerManagerRow:
+        return LayerManagerRow(self.host_map, layer)
 
-        Args:
-            layer (Any): The layer to render.
-
-        Returns:
-            ipywidgets.HBox: The rendered layer row.
-        """
-        visibility_checkbox = ipywidgets.Checkbox(
-            value=self._compute_layer_visibility(layer),
-            description=layer.name,
-            indent=False,
-            layout=ipywidgets.Layout(height="18px", width="140px"),
-        )
-        visibility_checkbox.observe(
-            lambda change: self._on_layer_visibility_changed(change, layer), "value"
-        )
-
-        opacity_slider = ipywidgets.FloatSlider(
-            value=self._compute_layer_opacity(layer),
-            min=0,
-            max=1,
-            step=0.01,
-            readout=False,
-            layout=ipywidgets.Layout(width="70px", padding="0px 3px 0px 0px"),
-        )
-        opacity_slider.observe(
-            lambda change: self._on_layer_opacity_changed(change, layer), "value"
-        )
-
-        settings_button = ipywidgets.Button(
-            icon="gear",
-            layout=ipywidgets.Layout(width="25px", height="25px", padding="0px"),
-            tooltip=layer.name,
-        )
-        settings_button.on_click(self._on_layer_settings_click)
-
-        spinner = ipywidgets.Button(
-            icon="times",
-            layout=ipywidgets.Layout(width="25px", height="25px", padding="0px"),
-            tooltip="Loaded",
-        )
-
-        def loading_change(change):
-            if change["new"]:
-                spinner.tooltip = "Loading ..."
-                spinner.icon = "spinner spin lg"
-            else:
-                spinner.tooltip = "Loaded"
-                spinner.icon = "times"
-
-        layer.observe(loading_change, "loading")
-
-        spinner_event = ipyevents.Event(
-            source=spinner, watched_events=["mouseenter", "mouseleave"]
-        )
-
-        def handle_spinner_event(event):
-            if event["type"] == "mouseenter":
-                spinner.icon = "times"
-            elif event["type"] == "mouseleave":
-                if hasattr(layer, "loading") and layer.loading:
-                    spinner.icon = "spinner spin lg"
-                else:
-                    spinner.icon = "times"
-
-        spinner_event.on_dom_event(handle_spinner_event)
-
-        def remove_layer_click(_):
-            self._on_layer_remove_click(layer)
-
-        spinner.on_click(remove_layer_click)
-
-        return ipywidgets.HBox(
-            [
-                visibility_checkbox,
-                opacity_slider,
-                settings_button,
-                spinner,
-            ],
-            layout=ipywidgets.Layout(padding="0px 4px 0px 4px"),
-        )
-
-    def _find_layer_row_index(self, layer: Any) -> int:
-        """Finds the index of a layer row.
-
-        Args:
-            layer (Any): The layer to find.
-
-        Returns:
-            int: The index of the layer row.
-        """
-        for index, child in enumerate(self._toolbar_footer.children[1:]):
-            if child.children[0].description == layer.name:
-                return index + 1
-        return -1
-
-    def _remove_confirm_widget(self) -> None:
-        """Removes the confirm widget."""
-        for index, child in enumerate(self._toolbar_footer.children[1:]):
-            if child.children[0].value == "Remove layer?":
-                self._toolbar_footer.children = (
-                    self._toolbar_footer.children[: index + 1]
-                    + self._toolbar_footer.children[index + 2 :]
-                )
-                break
-
-    def _on_layer_remove_click(self, layer: Any) -> None:
-        """Handles the layer remove click event.
-
-        Args:
-            layer (Any): The layer to remove.
-        """
-        self._remove_confirm_widget()
-
-        label = ipywidgets.Label(
-            "Remove layer?",
-            layout=ipywidgets.Layout(padding="0px 4px 0px 4px"),
-        )
-        yes_button = ipywidgets.Button(
-            description="Yes",
-            button_style="primary",
-        )
-        yes_button.layout.width = "86px"
-        no_button = ipywidgets.Button(
-            description="No",
-            button_style="primary",
-        )
-        no_button.layout.width = "86px"
-
-        confirm_widget = ipywidgets.HBox(
-            [label, yes_button, no_button], layout=ipywidgets.Layout(width="284px")
-        )
-
-        layer_row_index = self._find_layer_row_index(layer)
-
-        self._toolbar_footer.children = (
-            list(self._toolbar_footer.children[: layer_row_index + 1])
-            + [confirm_widget]
-            + list(self._toolbar_footer.children[layer_row_index + 1 :])
-        )
-
-        def on_yes_button_click(_):
-            self._host_map.remove_layer(layer)
-            self._remove_confirm_widget()
-
-        yes_button.on_click(on_yes_button_click)
-
-        def on_no_button_click(_):
-            self._remove_confirm_widget()
-
-        no_button.on_click(on_no_button_click)
-
-    def _compute_layer_opacity(self, layer: Any) -> float:
-        """Computes the opacity of a layer.
-
-        Args:
-            layer (Any): The layer to compute the opacity for.
-
-        Returns:
-            float: The opacity of the layer.
-        """
-        if layer in self._host_map.geojson_layers:
-            opacity = layer.style.get("opacity", 1.0)
-            fill_opacity = layer.style.get("fillOpacity", 1.0)
-            return max(opacity, fill_opacity)
-        return layer.opacity if hasattr(layer, "opacity") else 1.0
-
-    def _compute_layer_visibility(self, layer: Any) -> bool:
-        """Computes the visibility of a layer.
-
-        Args:
-            layer (Any): The layer to compute the visibility for.
-
-        Returns:
-            bool: The visibility of the layer.
-        """
-        return layer.visible if hasattr(layer, "visible") else True
-
-    def _on_layer_settings_click(self, button: ipywidgets.Button) -> None:
-        """Handles the layer settings click event.
-
-        Args:
-            button (ipywidgets.Button): The button that was clicked.
-        """
-        if self.on_open_vis:
-            self.on_open_vis(button.tooltip)
-
-    def _on_all_layers_visibility_toggled(self, change: Dict[str, Any]) -> None:
-        """Handles the all layers visibility toggled event.
-
-        Args:
-            change (Dict[str, Any]): The change event arguments.
-        """
-        checkboxes = [
-            row.children[0] for row in self._toolbar_footer.children[1:]
-        ]  # Skip the all on/off checkbox.
-        for checkbox in checkboxes:
-            checkbox.value = change["new"]
-
-    def _on_layer_opacity_changed(self, change: Dict[str, Any], layer: Any) -> None:
-        """Handles the layer opacity changed event.
-
-        Args:
-            change (Dict[str, Any]): The change event arguments.
-            layer (Any): The layer to change the opacity for.
-        """
-        if layer in self._host_map.geojson_layers:
-            # For non-TileLayer, use layer.style.opacity and layer.style.fillOpacity.
-            layer.style.update({"opacity": change["new"], "fillOpacity": change["new"]})
-        elif hasattr(layer, "opacity"):
-            layer.opacity = change["new"]
-
-    def _on_layer_visibility_changed(self, change: Dict[str, Any], layer: Any) -> None:
-        """Handles the layer visibility changed event.
-
-        Args:
-            change (Dict[str, Any]): The change event arguments.
-            layer (Any): The layer to change the visibility for.
-        """
-        if hasattr(layer, "visible"):
-            layer.visible = change["new"]
-
-        layer_name = change["owner"].description
-        if layer_name not in self._host_map.ee_layers:
-            return
-
-        layer_dict = self._host_map.ee_layers[layer_name]
-        for attachment_name in ["legend", "colorbar"]:
-            attachment = layer_dict.get(attachment_name, None)
-            attachment_on_map = attachment in self._host_map.controls
-            if change["new"] and not attachment_on_map:
-                try:
-                    self._host_map.add(attachment)
-                except:
-                    from ipyleaflet import WidgetControl
-
-                    widget = attachment.widget
-                    position = attachment.position
-                    control = WidgetControl(widget=widget, position=position)
-                    self._host_map.add(control)
-                    layer_dict["colorbar"] = control
-
-            elif not change["new"] and attachment_on_map:
-                self._host_map.remove_control(attachment)
+    @traitlets.observe("visible")
+    def _observe_visible(self, change: Dict[str, Any]) -> None:
+        # When the `visible` property changes, propagate that change to all children.
+        if (visible := change.get("new")) is not None:
+            for child in self.children:
+                child.visible = visible
 
 
 @Theme.apply
