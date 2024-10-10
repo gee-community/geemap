@@ -5218,14 +5218,14 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p></td>
         <span class="c1"># Initialization</span>
 
         <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">project</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;GOOGLE_PROJECT_ID&quot;</span><span class="p">)</span>
+            <span class="n">project</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;GOOGLE_PROJECT_ID&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Please provide a valid project ID via the &#39;project&#39; parameter.&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">google_api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">google_api_key</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">)</span>
+            <span class="n">google_api_key</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">google_api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Please provide a valid Google API key via the &#39;google_api_key&#39; parameter.&quot;</span>

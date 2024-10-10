@@ -877,9 +877,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#geemap.coreutils.get_api_key" class="md-nav__link">
+  <a href="#geemap.coreutils.get_env_var" class="md-nav__link">
     <span class="md-ellipsis">
-      get_api_key()
+      get_env_var()
     </span>
   </a>
   
@@ -5278,9 +5278,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#geemap.coreutils.get_api_key" class="md-nav__link">
+  <a href="#geemap.coreutils.get_env_var" class="md-nav__link">
     <span class="md-ellipsis">
-      get_api_key()
+      get_env_var()
     </span>
   </a>
   
@@ -6019,7 +6019,7 @@ to use the Earth Engine High-Volume platform. Defaults to {}.</p></td>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;http_transport&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">httplib2</span><span class="o">.</span><span class="n">Http</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">project</span>
 
@@ -6034,7 +6034,7 @@ to use the Earth Engine High-Volume platform. Defaults to {}.</p></td>
     <span class="n">auth_args</span><span class="p">[</span><span class="s2">&quot;auth_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">auth_mode</span>
 
     <span class="k">if</span> <span class="n">ee</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_credentials</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ee_token</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="n">token_name</span><span class="p">)</span>
+        <span class="n">ee_token</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="n">token_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">service_account</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">credential_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span>
@@ -6361,17 +6361,16 @@ ee.FeatureCollection.</p></td>
 
 
 
-<h2 id="geemap.coreutils.get_api_key" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_api_key</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<h2 id="geemap.coreutils.get_env_var" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">get_env_var</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></code>
 
 
-<a href="#geemap.coreutils.get_api_key" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#geemap.coreutils.get_env_var" class="headerlink" title="Permanent link">&para;</a></h2>
 
     <div class="doc doc-contents ">
 
-      <p>Retrieves an API key. If a key is provided, it is returned directly. If a
-name is provided, the function attempts to retrieve the key from user data
-(if running in Google Colab) or from environment variables.</p>
+      <p>Retrieves an environment variable or Colab secret for the given key.</p>
+<p>Colab secrets have precedence over environment variables.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -6385,16 +6384,10 @@ name is provided, the function attempts to retrieve the key from user data
   </thead>
   <tbody>
       <tr>
-        <td><code>name</code></td>
-        <td><code>Optional[str]</code></td>
-        <td><p>The name of the key to retrieve. Defaults to None.</p></td>
-        <td><code>None</code></td>
-      </tr>
-      <tr>
         <td><code>key</code></td>
-        <td><code>Optional[str]</code></td>
-        <td><p>The key to return directly. Defaults to None.</p></td>
-        <td><code>None</code></td>
+        <td><code>str</code></td>
+        <td><p>The key that's used to fetch the environment variable.</p></td>
+        <td><em>required</em></td>
       </tr>
   </tbody>
 </table>
@@ -6409,38 +6402,35 @@ name is provided, the function attempts to retrieve the key from user data
   <tbody>
     <tr>
       <td><code>Optional[str]</code></td>
-      <td><p>The retrieved key, or None if no key was found.</p></td>
+      <td><p>The retrieved key, or None if no environment variable was found.</p></td>
     </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/coreutils.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_api_key</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Retrieves an API key. If a key is provided, it is returned directly. If a</span>
-<span class="sd">    name is provided, the function attempts to retrieve the key from user data</span>
-<span class="sd">    (if running in Google Colab) or from environment variables.</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_env_var</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieves an environment variable or Colab secret for the given key.</span>
+
+<span class="sd">    Colab secrets have precedence over environment variables.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        name (Optional[str], optional): The name of the key to retrieve. Defaults to None.</span>
-<span class="sd">        key (Optional[str], optional): The key to return directly. Defaults to None.</span>
+<span class="sd">        key (str): The key that&#39;s used to fetch the environment variable.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Optional[str]: The retrieved key, or None if no key was found.</span>
+<span class="sd">        Optional[str]: The retrieved key, or None if no environment variable was found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">key</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">in_colab_shell</span><span class="p">():</span>
-            <span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">userdata</span>
+    <span class="k">if</span> <span class="n">in_colab_shell</span><span class="p">():</span>
+        <span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">userdata</span>
 
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-            <span class="k">except</span> <span class="p">(</span><span class="n">userdata</span><span class="o">.</span><span class="n">SecretNotFoundError</span><span class="p">,</span> <span class="n">userdata</span><span class="o">.</span><span class="n">NotebookAccessError</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">userdata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">userdata</span><span class="o">.</span><span class="n">SecretNotFoundError</span><span class="p">,</span> <span class="n">userdata</span><span class="o">.</span><span class="n">NotebookAccessError</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -6513,7 +6503,7 @@ data key where the API key is stored. Defaults to
 <span class="sd">    Returns:</span>
 <span class="sd">        str: The API key, or None if it could not be found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">api_key</span> <span class="o">:=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">api_key</span> <span class="o">:=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">api_key</span>
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
@@ -6901,12 +6891,7 @@ If False, returns the widget as ipytree.Tree. Defaults to False.</p></td>
 <span class="sd">    Returns:</span>
 <span class="sd">        bool: True if running in Google Colab, False otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-
-    <span class="k">if</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
 </code></pre></div>
         </details>
     </div>

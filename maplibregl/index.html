@@ -7347,8 +7347,8 @@ Map            (<span title="maplibre.ipywidget.MapWidget">MapWidget</span>)
             <span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">div_before</span><span class="p">,</span> <span class="n">div_after</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">replace_key</span> <span class="ow">or</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MAPTILER_REPLACE_KEY&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="n">key_before</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY&quot;</span><span class="p">)</span>
-            <span class="n">key_after</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY_PUBLIC&quot;</span><span class="p">)</span>
+            <span class="n">key_before</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY&quot;</span><span class="p">)</span>
+            <span class="n">key_after</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY_PUBLIC&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">key_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key_before</span><span class="p">,</span> <span class="n">key_after</span><span class="p">)</span>
 
@@ -8272,7 +8272,7 @@ Map            (<span title="maplibre.ipywidget.MapWidget">MapWidget</span>)
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">api_key</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+            <span class="n">api_key</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;An API key is required to use the 3D terrain feature.&quot;</span><span class="p">)</span>
@@ -8803,7 +8803,7 @@ Map            (<span title="maplibre.ipywidget.MapWidget">MapWidget</span>)
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">MAPTILER_KEY</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY&quot;</span><span class="p">)</span>
+        <span class="n">MAPTILER_KEY</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY&quot;</span><span class="p">)</span>
         <span class="n">source</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;https://api.maptiler.com/tiles/v3/tiles.json?key=</span><span class="si">{</span><span class="n">MAPTILER_KEY</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;vector&quot;</span><span class="p">,</span>
@@ -9247,7 +9247,7 @@ building height range defined by the 'values'. Defaults to ["lightgray", "royalb
 <span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">MAPTILER_KEY</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY&quot;</span><span class="p">)</span>
+    <span class="n">MAPTILER_KEY</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY&quot;</span><span class="p">)</span>
     <span class="n">source</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;https://api.maptiler.com/tiles/v3/tiles.json?key=</span><span class="si">{</span><span class="n">MAPTILER_KEY</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;vector&quot;</span><span class="p">,</span>
@@ -15563,8 +15563,8 @@ Defaults to False.</p></td>
         <span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">div_before</span><span class="p">,</span> <span class="n">div_after</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">replace_key</span> <span class="ow">or</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MAPTILER_REPLACE_KEY&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="n">key_before</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY&quot;</span><span class="p">)</span>
-        <span class="n">key_after</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY_PUBLIC&quot;</span><span class="p">)</span>
+        <span class="n">key_before</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY&quot;</span><span class="p">)</span>
+        <span class="n">key_after</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY_PUBLIC&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">key_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">html</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key_before</span><span class="p">,</span> <span class="n">key_after</span><span class="p">)</span>
 
@@ -15943,7 +15943,7 @@ attempts to retrieve the API key using a predefined method. Defaults to None.</p
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">api_key</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY&quot;</span><span class="p">)</span>
+        <span class="n">api_key</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;MAPTILER_KEY&quot;</span><span class="p">)</span>
 
     <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.maptiler.com/maps/</span><span class="si">{</span><span class="n">style</span><span class="si">}</span><span class="s2">/style.json?key=</span><span class="si">{</span><span class="n">api_key</span><span class="si">}</span><span class="s2">&quot;</span>
 
@@ -16114,7 +16114,7 @@ webp, png, jpg. Defaults to None.</p></td>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">api_key</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+        <span class="n">api_key</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;An API key is required to use the 3D terrain feature.&quot;</span><span class="p">)</span>
