@@ -1,3 +1,4 @@
+anywidget
 bqplot
 colour
 earthengine-api>=1.0.0

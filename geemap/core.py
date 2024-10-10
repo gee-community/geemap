@@ -926,14 +926,10 @@ class Map(ipyleaflet.Map, MapInterface):
             if self._layer_manager:
                 return
 
-            def _on_open_vis(layer_name: str) -> None:
-                layer = self.ee_layers.get(layer_name, None)
-                self._add_layer_editor(position="bottomright", layer_dict=layer)
-
             layer_manager = map_widgets.LayerManager(self)
             layer_manager.header_hidden = True
             layer_manager.close_button_hidden = True
-            layer_manager.on_open_vis = _on_open_vis
+            layer_manager.refresh_layers()
             self._toolbar.accessory_widget = layer_manager
         else:
             self._toolbar.accessory_widget = None
@@ -949,13 +945,9 @@ class Map(ipyleaflet.Map, MapInterface):
         if self._layer_manager:
             return
 
-        def _on_open_vis(layer_name: str) -> None:
-            layer = self.ee_layers.get(layer_name, None)
-            self._add_layer_editor(position="bottomright", layer_dict=layer)
-
         layer_manager = map_widgets.LayerManager(self, **kwargs)
         layer_manager.on_close = lambda: self.remove("layer_manager")
-        layer_manager.on_open_vis = _on_open_vis
+        layer_manager.refresh_layers()
         layer_manager_control = ipyleaflet.WidgetControl(
             widget=layer_manager, position=position
         )
