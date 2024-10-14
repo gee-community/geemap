@@ -1,7 +1,7 @@
 {
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
-		"build": "esbuild js/*.ts --minify --format=esm --bundle --outdir=geemap/static",
+		"build": "esbuild js/*.ts --format=esm --bundle --outdir=geemap/static",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
