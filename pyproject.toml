@@ -26,6 +26,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
+    "anywidget",
     "bqplot",
     "colour",
     "earthengine-api>=1.0.0",
@@ -144,8 +145,8 @@ maplibre = [
 geemap = "geemap.cli:main"
 
 [tool]
-[tool.setuptools.packages.find]
-include = ["geemap*"]
+[tool.hatch.build.targets.sdist]
+packages = ["geemap"]
 exclude = ["docs*"]
 
 [tool.distutils.bdist_wheel]
