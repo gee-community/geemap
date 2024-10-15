@@ -886,6 +886,7 @@ class Inspector(ipywidgets.VBox):
         return self._root_node("Objects", nodes)
 
 
+@Theme.apply
 class LayerManagerRow(anywidget.AnyWidget):
     """A layer manager row widget for geemap."""
 
@@ -981,6 +982,7 @@ class LayerManagerRow(anywidget.AnyWidget):
         self.host_map.remove_layer(self.layer)
 
 
+@Theme.apply
 class LayerManager(anywidget.AnyWidget):
     """A layer manager widget for geemap."""
 
