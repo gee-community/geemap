@@ -1,3 +1,0 @@
-# colormaps module
-
-::: geemap.colormaps

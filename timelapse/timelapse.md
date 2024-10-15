@@ -1,3 +1,0 @@
-# timelapse module
-
-::: geemap.timelapse

@@ -1,3 +1,0 @@
-# report module
-
-::: geemap.report

@@ -1,3 +1,0 @@
-# ml module
-
-::: geemap.ml

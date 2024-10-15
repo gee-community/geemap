@@ -1,3 +1,0 @@
-# geemap module
-
-::: geemap.geemap

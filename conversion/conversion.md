@@ -1,3 +1,0 @@
-# conversion module
-
-::: geemap.conversion

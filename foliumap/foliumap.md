@@ -1,3 +1,0 @@
-# foliumap module
-
-::: geemap.foliumap

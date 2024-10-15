@@ -1,3 +1,0 @@
-# toolbar module
-
-::: geemap.toolbar

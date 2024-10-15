@@ -1,3 +1,0 @@
-# datasets module
-
-::: geemap.datasets

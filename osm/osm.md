@@ -1,3 +1,0 @@
-# osm module
-
-::: geemap.osm

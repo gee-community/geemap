@@ -1,3 +1,0 @@
-# cartoee module
-
-::: geemap.cartoee

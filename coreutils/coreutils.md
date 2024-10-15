@@ -1,3 +1,0 @@
-# coreutils module
-
-::: geemap.coreutils
