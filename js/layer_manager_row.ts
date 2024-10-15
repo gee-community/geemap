@@ -1,4 +1,4 @@
-import type { AnyModel, RenderContext } from "@anywidget/types";
+import type { AnyModel, RenderProps } from "@anywidget/types";
 import { html, css, LitElement, TemplateResult, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
@@ -6,7 +6,7 @@ import "./common.css";
 import { legacyStyles } from './ipywidgets_styles';
 import { materialStyles } from "./material_styles";
 
-interface LayerManagerRowModel {
+export interface LayerManagerRowModel {
     name: string;
     visible: boolean;
     opacity: number;
@@ -229,7 +229,7 @@ if (!customElements.get(LayerManagerRow.componentName)) {
     customElements.define(LayerManagerRow.componentName, LayerManagerRow);
 }
 
-function render({ model, el }: RenderContext<LayerManagerRowModel>) {
+function render({ model, el }: RenderProps<LayerManagerRowModel>) {
     const row = <LayerManagerRow>document.createElement(LayerManagerRow.componentName);
     row.model = model;
     el.appendChild(row);
