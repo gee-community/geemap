@@ -1,9 +1,6 @@
 [project]
 name = "geemap"
 version = "0.34.5"
-dynamic = [
-    "dependencies",
-]
 description = "A Python package for interactive mapping using Google Earth Engine and ipyleaflet"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -24,9 +21,26 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-
-[project.entry-points."console_scripts"]
-geemap = "geemap.cli:main"
+dependencies = [
+    "bqplot",
+    "colour",
+    "earthengine-api>=1.0.0",
+    "eerepr>=0.0.4",
+    "folium>=0.17.0",
+    "geocoder",
+    "ipyevents",
+    "ipyfilechooser>=0.6.0",
+    "ipyleaflet>=0.19.2",
+    "ipytree",
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "plotly",
+    "pyperclip",
+    "pyshp>=2.3.1",
+    "python-box",
+    "scooby",
+]
 
 [project.optional-dependencies]
 all = [
@@ -40,7 +54,6 @@ ai = [
 backends = [
     "keplergl",
     "pydeck",
-    "plotly",
 ]
 extra = [
     "ee_extra>=0.0.15",
@@ -111,13 +124,13 @@ maplibre = [
         "xarray",
     ]
 
+[project.entry-points."console_scripts"]
+geemap = "geemap.cli:main"
+
 [tool]
 [tool.setuptools.packages.find]
 include = ["geemap*"]
 exclude = ["docs*"]
-
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
 
 
 [tool.distutils.bdist_wheel]
@@ -144,8 +157,6 @@ exclude = [
     "docs",
 ]
 max-line-length = 88
-
-[tool.setuptools_scm]
 
 
 [project.urls]
