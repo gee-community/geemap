@@ -130,19 +130,16 @@ workshop = [
     "gdown",
 ]
 maplibre = [
-        "geopandas",
-        "h3",
-        "ipyvuetify",
-        "localtileserver",
-        "mapclassify",
-        "maplibre",
-        "pmtiles",
-        "rioxarray",
-        "xarray",
-    ]
-
-[project.entry-points."console_scripts"]
-geemap = "geemap.cli:main"
+    "geopandas",
+    "h3",
+    "ipyvuetify",
+    "localtileserver",
+    "mapclassify",
+    "maplibre",
+    "pmtiles",
+    "rioxarray",
+    "xarray",
+]
 
 [tool]
 [tool.hatch.build.targets.sdist]
