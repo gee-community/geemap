@@ -886,12 +886,11 @@ class Inspector(ipywidgets.VBox):
         return self._root_node("Objects", nodes)
 
 
+@Theme.apply
 class LayerManagerRow(anywidget.AnyWidget):
     """A layer manager row widget for geemap."""
 
     _esm = pathlib.Path(__file__).parent / "static" / "layer_manager_row.js"
-    _css = pathlib.Path(__file__).parent / "static" / "layer_manager_row.css"
-
     name = traitlets.Unicode("").tag(sync=True)
     visible = traitlets.Bool(True).tag(sync=True)
     opacity = traitlets.Float(1).tag(sync=True)
@@ -981,11 +980,11 @@ class LayerManagerRow(anywidget.AnyWidget):
         self.host_map.remove_layer(self.layer)
 
 
+@Theme.apply
 class LayerManager(anywidget.AnyWidget):
     """A layer manager widget for geemap."""
 
     _esm = pathlib.Path(__file__).parent / "static" / "layer_manager.js"
-    _css = pathlib.Path(__file__).parent / "static" / "layer_manager.css"
 
     # Whether all layers should be visible or not. Represented as a checkbox in the UI.
     visible = traitlets.Bool(True).tag(sync=True)

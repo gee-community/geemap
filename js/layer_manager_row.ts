@@ -2,11 +2,11 @@ import type { AnyModel, RenderProps } from "@anywidget/types";
 import { html, css, LitElement, TemplateResult, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
-import "./common.css";
 import { legacyStyles } from './ipywidgets_styles';
 import { materialStyles } from "./material_styles";
+import { loadFonts } from "./utils";
 
-export interface LayerManagerRowModel {
+interface LayerManagerRowModel {
     name: string;
     visible: boolean;
     opacity: number;
@@ -230,6 +230,7 @@ if (!customElements.get(LayerManagerRow.componentName)) {
 }
 
 function render({ model, el }: RenderProps<LayerManagerRowModel>) {
+    loadFonts();
     const row = <LayerManagerRow>document.createElement(LayerManagerRow.componentName);
     row.model = model;
     el.appendChild(row);
