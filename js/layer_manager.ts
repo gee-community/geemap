@@ -88,6 +88,7 @@ export class LayerManager extends LitElement {
     }
 }
 
+// Without this check, there's a component registry issue when developing locally.
 if (!customElements.get(LayerManager.componentName)) {
     customElements.define(LayerManager.componentName, LayerManager);
 }

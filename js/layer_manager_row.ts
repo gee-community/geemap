@@ -1,6 +1,7 @@
 import type { AnyModel, RenderProps } from "@anywidget/types";
 import { html, css, LitElement, TemplateResult, nothing } from "lit";
 import { property } from "lit/decorators.js";
+import { classMap } from 'lit/directives/class-map.js';
 
 import { legacyStyles } from './ipywidgets_styles';
 import { materialStyles } from "./material_styles";
@@ -122,7 +123,7 @@ export class LayerManagerRow extends LitElement {
     visible: boolean = true;
 
     @property()
-    opacity: number = 0;
+    opacity: number = 1;
 
     @property()
     isLoading: boolean = false;
@@ -156,7 +157,12 @@ export class LayerManagerRow extends LitElement {
                     <span class="material-symbols-outlined">&#xe8b8;</span>
                 </button>
                 <button
-                    class="legacy-button settings-delete-button ${this.isLoading ? 'loading' : 'done-loading'}"
+                    class=${classMap({
+            'legacy-button': true,
+            'settings-delete-button': true,
+            'loading': this.isLoading,
+            'done-loading': !this.isLoading
+        })}
                     @click="${this.onDeleteClicked}"
                 >
                     <div class="spinner"></div>
@@ -167,7 +173,7 @@ export class LayerManagerRow extends LitElement {
         `;
     }
 
-    private renderConfirmDialog(): TemplateResult | typeof nothing | void {
+    private renderConfirmDialog(): TemplateResult | typeof nothing {
         if (!this.isConfirmDialogVisible) {
             return nothing;
         }
@@ -225,6 +231,7 @@ export class LayerManagerRow extends LitElement {
     }
 }
 
+// Without this check, there's a component registry issue when developing locally.
 if (!customElements.get(LayerManagerRow.componentName)) {
     customElements.define(LayerManagerRow.componentName, LayerManagerRow);
 }
