@@ -30,6 +30,9 @@ module.exports = function (config) {
         "random": true
       }
     },
+    karmaTypescriptConfig: {
+      tsconfig: './tsconfig.json'
+    },
     reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,

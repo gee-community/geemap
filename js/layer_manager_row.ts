@@ -167,7 +167,7 @@ export class LayerManagerRow extends LitElement {
         `;
     }
 
-    private renderConfirmDialog(): TemplateResult | void {
+    private renderConfirmDialog(): TemplateResult | typeof nothing | void {
         if (!this.isConfirmDialogVisible) {
             return nothing;
         }
