@@ -1,4 +1,4 @@
-import type { AnyModel, RenderContext } from "@anywidget/types";
+import type { AnyModel, RenderProps } from "@anywidget/types";
 import { html, css, LitElement } from "lit";
 import { property } from "lit/decorators.js";
 import { legacyStyles } from './ipywidgets_styles';
@@ -88,11 +88,12 @@ export class LayerManager extends LitElement {
     }
 }
 
+// Without this check, there's a component registry issue when developing locally.
 if (!customElements.get(LayerManager.componentName)) {
     customElements.define(LayerManager.componentName, LayerManager);
 }
 
-async function render({ model, el }: RenderContext<LayerManagerModel>) {
+async function render({ model, el }: RenderProps<LayerManagerModel>) {
     loadFonts();
     const manager = <LayerManager>document.createElement(LayerManager.componentName);
     manager.model = model;
