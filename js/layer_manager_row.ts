@@ -2,9 +2,9 @@ import type { AnyModel, RenderContext } from "@anywidget/types";
 import { html, css, LitElement, TemplateResult, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
-import "./common.css";
 import { legacyStyles } from './ipywidgets_styles';
 import { materialStyles } from "./material_styles";
+import { loadFonts } from "./utils";
 
 interface LayerManagerRowModel {
     name: string;
@@ -230,6 +230,7 @@ if (!customElements.get(LayerManagerRow.componentName)) {
 }
 
 function render({ model, el }: RenderContext<LayerManagerRowModel>) {
+    loadFonts();
     const row = <LayerManagerRow>document.createElement(LayerManagerRow.componentName);
     row.model = model;
     el.appendChild(row);
