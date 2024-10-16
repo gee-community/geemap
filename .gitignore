@@ -28,6 +28,7 @@ md2rst.md
 md2rst.rst
 testing/
 geemap/geemap_v*.py
+geemap/static/
 .Python
 env/
 build/
