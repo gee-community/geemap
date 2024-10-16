@@ -7,6 +7,15 @@ async function unpackModels(modelIds: Array<string>, manager: IWidgetManager): P
     );
 }
 
+export function loadFonts() {
+    if (!document.querySelector('.custom-fonts')) {
+        const styleElement = document.createElement('style');
+        styleElement.classList.add('custom-fonts');
+        styleElement.textContent = '@import "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined";'
+        document.body.appendChild(styleElement);
+    }
+}
+
 export async function updateChildren(container: HTMLElement, model: AnyModel<any>) {
     const children = model.get("children");
     const child_models = await unpackModels(children, model.widget_manager);

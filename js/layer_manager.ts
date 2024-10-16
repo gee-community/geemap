@@ -2,9 +2,7 @@ import type { AnyModel, RenderContext } from "@anywidget/types";
 import { html, css, LitElement } from "lit";
 import { property } from "lit/decorators.js";
 import { legacyStyles } from './ipywidgets_styles';
-import { updateChildren } from "./utils";
-
-import "./common.css";
+import { loadFonts, updateChildren } from "./utils";
 
 interface LayerManagerModel {
     children: any;
@@ -95,6 +93,7 @@ if (!customElements.get(LayerManager.componentName)) {
 }
 
 async function render({ model, el }: RenderContext<LayerManagerModel>) {
+    loadFonts();
     const manager = <LayerManager>document.createElement(LayerManager.componentName);
     manager.model = model;
     el.appendChild(manager);
