@@ -12601,6 +12601,7 @@ def download_ee_image_tiles_parallel(
     column=None,
     job_args={"n_jobs": -1},
     ee_init=True,
+    project_id=None,
     **kwargs,
 ):
     """Download an Earth Engine Image as small tiles based on ee.FeatureCollection. Images larger than the `Earth Engine size limit are split and downloaded as
@@ -12637,6 +12638,7 @@ def download_ee_image_tiles_parallel(
         column (str, optional): The column name in the feature collection to use as the filename. Defaults to None.
         job_args (dict, optional): The arguments to pass to joblib.Parallel. Defaults to {"n_jobs": -1}.
         ee_init (bool, optional): Whether to initialize Earth Engine. Defaults to True.
+        project_id (str, optional): The Earth Engine project ID. Defaults to None.
 
     """
     import joblib
@@ -12668,7 +12670,10 @@ def download_ee_image_tiles_parallel(
 
     def download_data(index):
         if ee_init:
-            ee_initialize(opt_url="https://earthengine-highvolume.googleapis.com")
+            ee_initialize(
+                opt_url="https://earthengine-highvolume.googleapis.com",
+                project=project_id,
+            )
         region = ee.Feature(collection.get(index)).geometry()
         filename = os.path.join(
             out_dir, "{}{}.tif".format(prefix, names[index].replace("/", "_"))
