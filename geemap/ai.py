@@ -1,4 +1,4 @@
-"""This module contains functions for interacting with AI models. 
+"""This module contains functions for interacting with AI models.
     The Genie class source code is adapted from the ee_genie.ipynb at <https://bit.ly/3YEm7B6>.
     Credit to the original author Simon Ilyushchenko (<https://github.com/simonff>).
     The DataExplorer class source code is adapted from <https://bit.ly/48cE24D>.
