@@ -44,12 +44,17 @@ dependencies = [
 
 [project.optional-dependencies]
 all = [
-    "geemap[backends,extra,lidar,raster,sql,apps,vector,workshop,maplibre]",
+    "geemap[ai,backends,extra,lidar,raster,sql,apps,vector,workshop,maplibre]",
 ]
 ai = [
     "google-api-core",
     "google-cloud-storage",
     "google-generativeai",
+    "google_cloud_aiplatform",
+    "langchain-community",
+    "langchain_google_genai",
+    "langchain",
+    "iso8601"
 ]
 backends = [
     "keplergl",
