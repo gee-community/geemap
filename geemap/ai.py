@@ -1,61 +1,61 @@
+"""This module contains functions for interacting with AI models. 
+    The Genie class source code is adapted from the ee_genie.ipynb at <https://bit.ly/3YEm7B6>.
+    Credit to the original author Simon Ilyushchenko (<https://github.com/simonff>).
+    The DataExplorer class source code is adapted from <https://bit.ly/48cE24D>.
+    Credit to the original author Renee Johnston (<https://github.com/raj02006>)
+"""
+
+# Standard library imports
 import io
 import json
 import math
 import os
 import time
-
-import numpy as np
-import PIL
-import requests
-
-import ee
-import ipywidgets as widgets
-from IPython.display import display, HTML
-from typing import Optional
-from .common import get_env_var, temp_file_path
-from .geemap import Map, ee_initialize
-
-try:
-    from google.cloud import storage
-
-    import google.generativeai as genai
-    import google.ai.generativelanguage as glm
-    import google.api_core
-except ImportError:
-    print("Please install the required packages.")
-    print("pip install 'geemap[ai]'")
-
-
-# Standard library imports
 from concurrent import futures
 from contextlib import redirect_stdout
 import dataclasses
 import datetime
-import io
-import json
 import logging
 import re
 import sys
-from typing import Any, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 import uuid
 
-# Third-party imports
-import ee
-
-# import geemap
-from .geemap import Map, get_env_var, js_snippet_to_py, ee_initialize
-
-import google.api_core
-from google.api_core import exceptions as google_exceptions
-from google.cloud import storage
-import google.generativeai as genai
-from IPython.display import HTML, Javascript, display
-from ipyleaflet import LayerException
-import ipywidgets as widgets
-import iso8601
-from jinja2 import Template
+import numpy as np
 import pandas as pd
+
+import PIL
 import requests
+
+import ee
+import typing_extensions
+import ipywidgets as widgets
+from ipyleaflet import LayerException
+from jinja2 import Template
+from IPython.display import HTML, Javascript, display
+
+try:
+
+    import vertexai
+    import google.generativeai as genai
+    import google.ai.generativelanguage as glm
+    import google.api_core
+    from google.cloud import storage
+    from google.api_core import exceptions as google_exceptions
+    from vertexai.preview.language_models import TextEmbeddingModel
+    from langchain.embeddings.base import Embeddings
+    from langchain.indexes import VectorstoreIndexCreator
+    from langchain.schema import Document
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    from langchain_core.vectorstores.base import VectorStore
+    from langchain.indexes.vectorstore import VectorStoreIndexWrapper
+    from langchain_core.language_models.base import BaseLanguageModel
+except ImportError:
+    print("Please install the required packages.")
+    print("pip install 'geemap[ai]'")
+
+# Third-party imports
+import iso8601
 import tenacity
 from tenacity import (
     retry,
@@ -63,17 +63,8 @@ from tenacity import (
     wait_exponential,
     retry_if_exception_type,
 )
-import typing_extensions
-import vertexai
-from vertexai.preview.language_models import TextEmbeddingModel
-from geemap.common import get_env_var
-from langchain.embeddings.base import Embeddings
-from langchain.indexes import VectorstoreIndexCreator
-from langchain.schema import Document
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.vectorstores.base import VectorStore
-from langchain.indexes.vectorstore import VectorStoreIndexWrapper
-from langchain_core.language_models.base import BaseLanguageModel
+
+from .geemap import Map, get_env_var, js_snippet_to_py, ee_initialize, temp_file_path
 
 # Google Colab-specific imports (only if you're working in Google Colab)
 if "google.colab" in sys.modules:
@@ -781,17 +772,19 @@ class Genie(widgets.VBox):
 
 
 def matches_interval(
-    collection_interval: tuple[datetime.datetime, datetime.datetime],
-    query_interval: tuple[datetime.datetime, datetime.datetime],
-):
+    collection_interval: Tuple[datetime.datetime, datetime.datetime],
+    query_interval: Tuple[datetime.datetime, datetime.datetime],
+) -> bool:
     """Checks if the collection's datetime interval matches the query datetime interval.
 
     Args:
-      collection_interval: Temporal interval of the collection.
-      query_interval: a tuple with the query interval start and end
+        collection_interval (Tuple[datetime.datetime, datetime.datetime]):
+            Temporal interval of the collection.
+        query_interval (Tuple[datetime.datetime, datetime.datetime]): A tuple
+            with the query interval start and end.
 
     Returns:
-      True if the datetime interval matches
+        bool: True if the datetime interval matches, False otherwise.
     """
     start_query, end_query = query_interval
     start_collection, end_collection = collection_interval
@@ -802,17 +795,18 @@ def matches_interval(
 
 
 def matches_datetime(
-    collection_interval: tuple[datetime.datetime, Optional[datetime.datetime]],
+    collection_interval: Tuple[datetime.datetime, Optional[datetime.datetime]],
     query_datetime: datetime.datetime,
-):
+) -> bool:
     """Checks if the collection's datetime interval matches the query datetime.
 
     Args:
-      collection_interval: Temporal interval of the collection.
-      query_datetime: a datetime coming from a query
+        collection_interval (Tuple[datetime.datetime, Optional[datetime.datetime]]):
+            Temporal interval of the collection.
+        query_datetime (datetime.datetime): A datetime coming from a query.
 
     Returns:
-      True if the datetime interval matches
+        bool: True if the datetime interval matches, False otherwise.
     """
     if collection_interval[1] is None:
         # End date should always be set in STAC JSON files, but just in case...
@@ -828,7 +822,17 @@ def matches_datetime(
     retry=tenacity.retry_if_exception_type(LayerException),
     # before_sleep=lambda retry_state: print(f"LayerException occurred. Retrying in 1 seconds... (Attempt {retry_state.attempt_number}/3)")
 )
-def run_ee_code(code: str, ee, geemap_instance: Map):
+def run_ee_code(code: str, ee: Any, geemap_instance: Map) -> None:
+    """Executes Earth Engine Python code within the context of a geemap instance.
+
+    Args:
+        code (str): The Earth Engine Python code to execute.
+        ee (Any): The Earth Engine module.
+        geemap_instance (Map): The geemap instance.
+
+    Raises:
+        Exception: Re-raises any exception encountered during code execution.
+    """
     try:
         # geemap appears to have some stray print statements.
         _ = io.StringIO()
@@ -851,6 +855,11 @@ class BBox:
     north: float
 
     def is_global(self) -> bool:
+        """Checks if the bounding box is global.
+
+        Returns:
+            bool: True if the bounding box is global, False otherwise.
+        """
         return (
             self.west == -180
             and self.south == -90
@@ -859,8 +868,18 @@ class BBox:
         )
 
     @classmethod
-    def from_list(cls, bbox_list: list[float]):
-        """Constructs a BBox from a list of four numbers [west,south,east,north]."""
+    def from_list(cls, bbox_list: List[float]) -> "BBox":
+        """Constructs a BBox from a list of four numbers [west, south, east, north].
+
+        Args:
+            bbox_list (List[float]): List of four numbers representing the bounding box.
+
+        Returns:
+            BBox: The constructed BBox object.
+
+        Raises:
+            ValueError: If the coordinates are not in the correct order.
+        """
         if bbox_list[0] > bbox_list[2]:
             raise ValueError(
                 "The smaller (west) coordinate must be listed first in a bounding box"
@@ -873,19 +892,24 @@ class BBox:
             )
         return cls(bbox_list[0], bbox_list[1], bbox_list[2], bbox_list[3])
 
-    def to_list(self) -> list[float]:
-        return [self.west, self.south, self.east, self.north]
-
-    def intersects(self, query_bbox) -> bool:
-        """Checks if this bbox intersects with the query bbox.
-
-        Doesn't handle bboxes extending past the antimeridaian.
-
-        Args:
-          query_bbox: Bounding box from the query.
+    def to_list(self) -> List[float]:
+        """Converts the BBox to a list of four numbers [west, south, east, north].
 
         Returns:
-          True if the two bounding boxes intersect
+            List[float]: List of four numbers representing the bounding box.
+        """
+        return [self.west, self.south, self.east, self.north]
+
+    def intersects(self, query_bbox: "BBox") -> bool:
+        """Checks if this bbox intersects with the query bbox.
+
+        Doesn't handle bboxes extending past the antimeridian.
+
+        Args:
+            query_bbox (BBox): Bounding box from the query.
+
+        Returns:
+            bool: True if the two bounding boxes intersect, False otherwise.
         """
         return (
             query_bbox.west < self.east
@@ -900,39 +924,86 @@ class Collection:
 
     stac_json: dict[str, Any]
 
-    def __init__(self, stac_json: dict[str, Any]):
+    def __init__(self, stac_json: Dict[str, Any]) -> None:
+        """Initializes the Collection.
+
+        Args:
+            stac_json (Dict[str, Any]): The STAC JSON of the collection.
+        """
         self.stac_json = stac_json
         if stac_json.get("gee:status") == "deprecated":
             # Set the STAC 'deprecated' field that we don't set in the jsonnet files
             stac_json["deprecated"] = True
 
     def __getitem__(self, item: str) -> Any:
+        """Gets an item from the STAC JSON.
+
+        Args:
+            item (str): The key of the item to get.
+
+        Returns:
+            Any: The value of the item.
+        """
         return self.stac_json[item]
 
     def get(self, item: str, default: Optional[Any] = None) -> Optional[Any]:
-        """Matches dict's get by returning None if there is no item."""
+        """Matches dict's get by returning None if there is no item.
+
+        Args:
+            item (str): The key of the item to get.
+            default (Optional[Any]): The default value to return if the item is not found. Defaults to None.
+
+        Returns:
+            Optional[Any]: The value of the item or the default value.
+        """
         return self.stac_json.get(item, default)
 
     def public_id(self) -> str:
+        """Gets the public ID of the collection.
+
+        Returns:
+            str: The public ID of the collection.
+        """
         return self["id"]
 
     def hyphen_id(self) -> str:
+        """Gets the hyphenated ID of the collection.
+
+        Returns:
+            str: The hyphenated ID of the collection.
+        """
         return self["id"].replace("/", "_")
 
     def get_dataset_type(self) -> str:
-        """Could be Image, ImageCollection, FeatureCollection, Feature."""
+        """Gets the dataset type of the collection.
+
+        Returns:
+            str: The dataset type of the collection.
+        """
         return self["gee:type"]
 
     def is_deprecated(self) -> bool:
-        """Returns True for collections that are deprecated or have a successor."""
+        """Checks if the collection is deprecated or has a successor.
+
+        Returns:
+            bool: True if the collection is deprecated or has a successor, False otherwise.
+        """
         if self.get("deprecated", False):
             logging.info("Skipping deprecated collection: %s", self.public_id())
             return True
 
     def datetime_interval(
         self,
-    ) -> Iterable[tuple[datetime.datetime, Optional[datetime.datetime]]]:
-        """Returns datetime objects representing temporal extents."""
+    ) -> Iterable[Tuple[datetime.datetime, Optional[datetime.datetime]]]:
+        """Returns datetime objects representing temporal extents.
+
+        Returns:
+            Iterable[Tuple[datetime.datetime, Optional[datetime.datetime]]]:
+                An iterable of tuples representing temporal extents.
+
+        Raises:
+            ValueError: If the temporal interval start is not found.
+        """
         for stac_interval in self.stac_json["extent"]["temporal"]["interval"]:
             if not stac_interval[0]:
                 raise ValueError(
@@ -947,22 +1018,47 @@ class Collection:
             yield (start_date, end_date)
 
     def start(self) -> datetime.datetime:
+        """Gets the start datetime of the collection.
+
+        Returns:
+            datetime.datetime: The start datetime of the collection.
+        """
         return list(self.datetime_interval())[0][0]
 
-    def start_str(self) -> datetime.datetime:
+    def start_str(self) -> str:
+        """Gets the start datetime of the collection as a string.
+
+        Returns:
+            str: The start datetime of the collection as a string.
+        """
         if not self.start():
             return ""
         return self.start().strftime("%Y-%m-%d")
 
     def end(self) -> Optional[datetime.datetime]:
+        """Gets the end datetime of the collection.
+
+        Returns:
+            Optional[datetime.datetime]: The end datetime of the collection.
+        """
         return list(self.datetime_interval())[0][1]
 
-    def end_str(self) -> Optional[datetime.datetime]:
+    def end_str(self) -> str:
+        """Gets the end datetime of the collection as a string.
+
+        Returns:
+            str: The end datetime of the collection as a string.
+        """
         if not self.end():
             return ""
         return self.end().strftime("%Y-%m-%d")
 
     def bbox_list(self) -> Sequence[BBox]:
+        """Gets the bounding boxes of the collection.
+
+        Returns:
+            Sequence[BBox]: A sequence of bounding boxes.
+        """
         if "extent" not in self.stac_json:
             # Assume global if nothing listed.
             return (BBox(-180, -90, 180, 90),)
@@ -970,13 +1066,23 @@ class Collection:
             [BBox.from_list(x) for x in self.stac_json["extent"]["spatial"]["bbox"]]
         )
 
-    def bands(self) -> List[Dict]:
+    def bands(self) -> List[Dict[str, Any]]:
+        """Gets the bands of the collection.
+
+        Returns:
+            List[Dict[str, Any]]: A list of dictionaries representing the bands.
+        """
         summaries = self.stac_json.get("summaries")
         if not summaries:
             return []
         return summaries.get("eo:bands", [])
 
     def spatial_resolution_m(self) -> float:
+        """Gets the spatial resolution of the collection in meters.
+
+        Returns:
+            float: The spatial resolution of the collection in meters.
+        """
         summaries = self.stac_json.get("summaries")
         if not summaries:
             return -1
@@ -992,31 +1098,59 @@ class Collection:
         return -1
 
     def temporal_resolution_str(self) -> str:
+        """Gets the temporal resolution of the collection as a string.
+
+        Returns:
+            str: The temporal resolution of the collection as a string.
+        """
         interval_dict = self.stac_json.get("gee:interval")
         if not interval_dict:
             return ""
         return f"{interval_dict['interval']} {interval_dict['unit']}"
 
     def python_code(self) -> str:
+        """Gets the Python code sample for the collection.
+
+        Returns:
+            str: The Python code sample for the collection.
+        """
         code = self.stac_json.get("code")
         if not code:
             return ""
 
         return code.get("py_code")
 
-    def set_python_code(self, code: str):
+    def set_python_code(self, code: str) -> None:
+        """Sets the Python code sample for the collection.
+
+        Args:
+            code (str): The Python code sample to set.
+        """
         if not code:
             self.stac_json["code"] = {"js_code": "", "py_code": code}
 
         self.stac_json["code"]["py_code"] = code
 
-    def set_js_code(self, code: str):
+    def set_js_code(self, code: str) -> None:
+        """Sets the JavaScript code sample for the collection.
+
+        Args:
+            code (str): The JavaScript code sample to set.
+        """
         if not code:
             return ""
         js_code = self.stac_json.get("code").get("js_code")
         self.stac_json["code"] = {"js_code": "", "py_code": code}
 
-    def image_preview_url(self):
+    def image_preview_url(self) -> str:
+        """Gets the URL of the preview image for the collection.
+
+        Returns:
+            str: The URL of the preview image for the collection.
+
+        Raises:
+            ValueError: If no preview image is found.
+        """
         for link in self.stac_json["links"]:
             if (
                 "rel" in link
@@ -1026,7 +1160,12 @@ class Collection:
                 return link["href"]
         raise ValueError(f"No preview image found for {id}")
 
-    def catalog_url(self):
+    def catalog_url(self) -> str:
+        """Gets the URL of the catalog for the collection.
+
+        Returns:
+            str: The URL of the catalog for the collection.
+        """
         links = self.stac_json["links"]
         for link in links:
             if "rel" in link and link["rel"] == "catalog":
@@ -1180,11 +1319,26 @@ class Catalog:
 
     collections: CollectionList
 
-    def __init__(self, storage_client: storage.Client):
+    def __init__(self, storage_client: storage.Client) -> None:
+        """Initializes the Catalog with collections loaded from Google Cloud Storage.
+
+        Args:
+            storage_client (storage.Client): The Google Cloud Storage client.
+        """
         self.collections = CollectionList(self._load_collections(storage_client))
 
     def get_collection(self, id: str) -> Collection:
-        """Returns the collection with the given id."""
+        """Returns the collection with the given id.
+
+        Args:
+            id (str): The ID of the collection.
+
+        Returns:
+            Collection: The collection with the given ID.
+
+        Raises:
+            ValueError: If no collection with the given ID is found.
+        """
         col = self.collections.filter_by_ids([id])
         if len(col) == 0:
             raise ValueError(f"No collection with id {id}")
@@ -1206,15 +1360,27 @@ class Catalog:
             f"(Attempt {retry_state.attempt_number}/3)"
         ),
     )
-    def _read_file(self, file_blob: google.cloud.storage.blob.Blob) -> Collection:
-        """Reads the contents of a file from the specified bucket."""
+    def _read_file(self, file_blob: storage.Blob) -> Collection:
+        """Reads the contents of a file from the specified bucket.
+
+        Args:
+            file_blob (storage.Blob): The blob representing the file.
+
+        Returns:
+            Collection: The collection created from the file contents.
+        """
         file_contents = file_blob.download_as_string().decode()
         return Collection(json.loads(file_contents))
 
-    def _read_files(
-        self, file_blobs: list[google.cloud.storage.blob.Blob]
-    ) -> list[Collection]:
-        """Processes files in parallel."""
+    def _read_files(self, file_blobs: List[storage.Blob]) -> List[Collection]:
+        """Processes files in parallel.
+
+        Args:
+            file_blobs (List[storage.Blob]): The list of file blobs.
+
+        Returns:
+            List[Collection]: The list of collections created from the file contents.
+        """
         collections = []
         with futures.ThreadPoolExecutor(max_workers=10) as executor:
             file_futures = [
@@ -1225,7 +1391,14 @@ class Catalog:
         return collections
 
     def _load_collections(self, storage_client: storage.Client) -> Sequence[Collection]:
-        """Loads all EE STAC JSON files from GCS, with datetimes as objects."""
+        """Loads all EE STAC JSON files from GCS, with datetimes as objects.
+
+        Args:
+            storage_client (storage.Client): The Google Cloud Storage client.
+
+        Returns:
+            Sequence[Collection]: A tuple of collections loaded from the files.
+        """
         bucket = storage_client.get_bucket("earthengine-stac")
         files = [
             x
@@ -1249,8 +1422,17 @@ class Catalog:
         # Returning a tuple for immutability.
         return tuple(res)
 
-    def _load_all_code_samples(self, storage_client: storage.Client):
-        """Loads js + py example scripts from GCS into dict keyed by dataset ID."""
+    def _load_all_code_samples(
+        self, storage_client: storage.Client
+    ) -> Dict[str, Dict[str, str]]:
+        """Loads js + py example scripts from GCS into dict keyed by dataset ID.
+
+        Args:
+            storage_client (storage.Client): The Google Cloud Storage client.
+
+        Returns:
+            Dict[str, Dict[str, str]]: A dictionary mapping dataset IDs to their code samples.
+        """
 
         # Get json file from GCS bucket
         # 'gs://earthengine-catalog/catalog/example_scripts.json'
@@ -1276,7 +1458,14 @@ class Catalog:
         return code_samples_dict
 
     def _make_python_code_sample(self, js_code: str) -> str:
-        """Converts EE JS code into python."""
+        """Converts EE JS code into python.
+
+        Args:
+            js_code (str): The JavaScript code to convert.
+
+        Returns:
+            str: The converted Python code.
+        """
 
         # geemap appears to have some stray print statements.
         _ = io.StringIO()
@@ -1295,20 +1484,50 @@ class Catalog:
 
 
 class PrecomputedEmbeddings(Embeddings):
-    def __init__(self, embeddings_dict):
+    """Class for handling precomputed embeddings."""
+
+    def __init__(self, embeddings_dict: Dict[str, List[float]]) -> None:
+        """Initializes the PrecomputedEmbeddings.
+
+        Args:
+            embeddings_dict (Dict[str, List[float]]): A dictionary mapping texts to their embeddings.
+        """
         self.embeddings_dict = embeddings_dict
         self.model = TextEmbeddingModel.from_pretrained("google/text-embedding-004")
 
-    def embed_documents(self, texts):
+    def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        """Embeds a list of documents.
+
+        Args:
+            texts (List[str]): The list of texts to embed.
+
+        Returns:
+            List[List[float]]: The list of embeddings.
+        """
         return [self.embeddings_dict[text] for text in texts]
 
-    def embed_query(self, text):
+    def embed_query(self, text: str) -> List[float]:
+        """Embeds a query text.
+
+        Args:
+            text (str): The query text to embed.
+
+        Returns:
+            List[float]: The embedding of the query text.
+        """
         embeddings = self.model.get_embeddings([text])
         return embeddings[0].values
 
 
 def make_langchain_index(embeddings_df: pd.DataFrame) -> VectorStoreIndexWrapper:
-    """Creates an index from a dataframe of precomputed embeddings."""
+    """Creates an index from a dataframe of precomputed embeddings.
+
+    Args:
+        embeddings_df (pd.DataFrame): The dataframe containing precomputed embeddings.
+
+    Returns:
+        VectorStoreIndexWrapper: The vector store index wrapper.
+    """
     # Create a dictionary mapping texts to their embeddings
     embeddings_dict = dict(zip(embeddings_df["id"], embeddings_df["embedding"]))
 
@@ -1331,12 +1550,21 @@ def make_langchain_index(embeddings_df: pd.DataFrame) -> VectorStoreIndexWrapper
 
 # Wrap Langchain embeddings in our own EE dataset wrapper
 class EarthEngineDatasetIndex:
+    """Class for indexing and searching Earth Engine datasets."""
+
     index: VectorStoreIndexWrapper
     vectorstore: VectorStore
     data_catalog: Catalog
     llm: BaseLanguageModel
 
     def __init__(self, data_catalog, index, llm):
+        """Initializes the EarthEngineDatasetIndex.
+
+        Args:
+            data_catalog (Catalog): The data catalog containing the datasets.
+            index (VectorStoreIndexWrapper): The vector store index wrapper.
+            llm (BaseLanguageModel): The language model for query processing.
+        """
         self.index = index
         self.data_catalog = data_catalog
         self.vectorstore = index.vectorstore
@@ -1354,23 +1582,23 @@ class EarthEngineDatasetIndex:
         query: str,
         results: int = 10,
         threshold: float = 0.7,
-        bounding_box: Optional[list[float]] = None,
-        temporal_interval: tuple[datetime.datetime, datetime.datetime] = None,
+        bounding_box: Optional[List[float]] = None,
+        temporal_interval: Optional[Tuple[datetime.datetime, datetime.datetime]] = None,
     ) -> CollectionList:
-        """
-        Retrieve relevant dataset from the Earth Engine data catalog.
+        """Retrieve relevant datasets from the Earth Engine data catalog.
 
-        query: str. The kind of data being searched for. ie 'population'.
-        results: int. The number of datasets to return. 4 is recommended.
-        threshold: float. The maximum dot product between the query and catalog
-          embeddings. Recommended 0.7.
-        bounding_box: Optional[list[float]]. The spatial bounding box for the query, in the
-          format [lon1, lat1, lon2, lon2]. If None then no spatial filter is appled.
-        temporal: Optional[list[Optional[list[int]]]]. If provided, temporal
-          constraints are provided as a list of two int lists following the structure
-          [[year, month, day], [year, month, day]]. A none can be used to set no
-          start or end date. For example [None, [2022,12,31]] will return all datasets
-          that have data before 2022-12-31.)
+        Args:
+            query (str): The kind of data being searched for, e.g., 'population'.
+            results (int): The number of datasets to return. Defaults to 10.
+            threshold (float): The maximum dot product between the query and catalog embeddings.
+                Defaults to 0.7.
+            bounding_box (Optional[List[float]]): The spatial bounding box for the query,
+                in the format [lon1, lat1, lon2, lon2]. Defaults to None.
+            temporal_interval (Optional[Tuple[datetime.datetime, datetime.datetime]]):
+            Temporal constraints as a tuple of datetime objects. Defaults to None.
+
+        Returns:
+            CollectionList: A list of collections that match the query.
         """
         similar_docs = self.index.vectorstore.similarity_search_with_score(
             query, llm=self.llm, k=results
@@ -1391,9 +1619,24 @@ class EarthEngineDatasetIndex:
         query: str,
         results: int = 20,
         threshold: float = 0.7,
-        bounding_box: Optional[list[float]] = None,
-        temporal_interval: tuple[datetime.datetime, datetime.datetime] = None,
-    ):
+        bounding_box: Optional[List[float]] = None,
+        temporal_interval: Optional[Tuple[datetime.datetime, datetime.datetime]] = None,
+    ) -> pd.DataFrame:
+        """Retrieve relevant datasets and their match scores as a DataFrame.
+
+        Args:
+            query (str): The kind of data being searched for, e.g., 'population'.
+            results (int): The number of datasets to return. Defaults to 20.
+            threshold (float): The maximum dot product between the query and catalog embeddings.
+                Defaults to 0.7.
+            bounding_box (Optional[List[float]]): The spatial bounding box for the query,
+                in the format [lon1, lat1, lon2, lon2]. Defaults to None.
+            temporal_interval (Optional[Tuple[datetime.datetime, datetime.datetime]]):
+                Temporal constraints as a tuple of datetime objects. Defaults to None.
+
+        Returns:
+            pd.DataFrame: A DataFrame containing the dataset IDs and their match scores.
+        """
         scores_df = self.ids_to_match_scores_df(
             query, results, bounding_box, temporal_interval
         )
@@ -1405,12 +1648,24 @@ class EarthEngineDatasetIndex:
 
     def ids_to_match_scores_df(
         self,
-        query,
-        results,
-        bounding_box: Optional[list[float]] = None,
-        temporal_interval: tuple[datetime.datetime, datetime.datetime] = None,
-    ):
+        query: str,
+        results: int,
+        bounding_box: Optional[List[float]] = None,
+        temporal_interval: Optional[Tuple[datetime.datetime, datetime.datetime]] = None,
+    ) -> pd.DataFrame:
+        """Convert dataset IDs and match scores to a DataFrame.
 
+        Args:
+            query (str): The kind of data being searched for, e.g., 'population'.
+            results (int): The number of datasets to return.
+            bounding_box (Optional[List[float]]): The spatial bounding box for the query,
+                in the format [lon1, lat1, lon2, lon2]. Defaults to None.
+            temporal_interval (Optional[Tuple[datetime.datetime, datetime.datetime]]):
+                Temporal constraints as a tuple of datetime objects. Defaults to None.
+
+        Returns:
+            pd.DataFrame: A DataFrame containing the dataset IDs and their match scores.
+        """
         similar_docs = self.index.vectorstore.similarity_search_with_score(
             query, llm=self.llm, k=results
         )
@@ -1426,9 +1681,20 @@ def explain_relevance(
     dataset_id: str,
     catalog: Catalog,
     model_name: str = "gemini-1.5-pro-latest",
-    stream=False,
-):
-    """Prompts LLM to explain the relevance of a dataset to a query."""
+    stream: bool = False,
+) -> str:
+    """Prompts LLM to explain the relevance of a dataset to a query.
+
+    Args:
+        query (str): The user's query.
+        dataset_id (str): The ID of the dataset.
+        catalog (Catalog): The catalog containing the dataset.
+        model_name (str): The name of the model to use. Defaults to "gemini-1.5-pro-latest".
+        stream (bool): Whether to stream the response. Defaults to False.
+
+    Returns:
+        str: The explanation of the dataset's relevance to the query.
+    """
 
     stac_json = catalog.get_collection(dataset_id).stac_json
     return explain_relevance_from_stac_json(query, stac_json, model_name, stream)
@@ -1442,9 +1708,22 @@ def explain_relevance(
     ),
 )
 def explain_relevance_from_stac_json(
-    query, stac_json, model_name: str = "gemini-1.5-pro-latest", stream=False
-):
+    query: str,
+    stac_json: Dict[str, Any],
+    model_name: str = "gemini-1.5-pro-latest",
+    stream: bool = False,
+) -> str:
+    """Prompts LLM to explain the relevance of a dataset to a query using its STAC JSON.
 
+    Args:
+        query (str): The user's query.
+        stac_json (Dict[str, Any]): The STAC JSON of the dataset.
+        model_name (str): The name of the model to use. Defaults to "gemini-1.5-pro-latest".
+        stream (bool): Whether to stream the response. Defaults to False.
+
+    Returns:
+        str: The explanation of the dataset's relevance to the query.
+    """
     stac_json_str = json.dumps(stac_json)
 
     prompt = f"""
@@ -1479,8 +1758,16 @@ def explain_relevance_from_stac_json(
         (requests.exceptions.RequestException, ConnectionError)
     ),
 )
-def is_valid_question(question, model_name: str = "gemini-1.5-pro-latest"):
-    """Filters out questions that cannot be answered by a dataset search tool."""
+def is_valid_question(question: str, model_name: str = "gemini-1.5-pro-latest") -> bool:
+    """Filters out questions that cannot be answered by a dataset search tool.
+
+    Args:
+        question (str): The user's question.
+        model_name (str): The name of the model to use. Defaults to "gemini-1.5-pro-latest".
+
+    Returns:
+        bool: True if the question is valid, False otherwise.
+    """
 
     prompt = f"""
   You are a tool whose job is to determine whether or not the following question
@@ -1515,10 +1802,20 @@ class CodeThoughts(typing_extensions.TypedDict):
 )
 def fix_ee_python_code(
     code: str, ee: Any, geemap_instance: Map, model_name: str = "gemini-1.5-pro-latest"
-):
-    """Asks a model to do ee python code correction in the event of error."""
+) -> str:
+    """Asks a model to do ee python code correction in the event of error.
 
-    def create_error_prompt(code, error_msg):
+    Args:
+        code (str): The Earth Engine Python code to fix.
+        ee (Any): The Earth Engine module.
+        geemap_instance (Map): The geemap instance.
+        model_name (str): The name of the model to use. Defaults to "gemini-1.5-pro-latest".
+
+    Returns:
+        str: The corrected Earth Engine Python code.
+    """
+
+    def create_error_prompt(code: str, error_msg: str) -> str:
         return f"""
       You are an extremely laconic code correction robot.
       I am attempting to execute the following snippet of python Earth Engine code,
@@ -1579,6 +1876,7 @@ def fix_ee_python_code(
 
 
 class DatasetSearchInterface:
+    """Interface for searching and displaying Earth Engine datasets."""
 
     collections: CollectionList
     query: str
@@ -1592,7 +1890,13 @@ class DatasetSearchInterface:
     details_code_box: widgets.Widget
     map_widget: widgets.Widget
 
-    def __init__(self, query: str, collections: CollectionList):
+    def __init__(self, query: str, collections: CollectionList) -> None:
+        """Initializes the DatasetSearchInterface.
+
+        Args:
+            query (str): The search query string.
+            collections (CollectionList): The list of dataset collections.
+        """
 
         self.query = query
         self.collections = collections
@@ -1758,8 +2062,15 @@ class DatasetSearchInterface:
         display(main_layout)
         display(Javascript(self._dataset_select_js_code))
 
-    def _build_table_html(self, collections: CollectionList):
-        # Create the table HTML
+    def _build_table_html(self, collections: CollectionList) -> str:
+        """Builds the HTML for the dataset table.
+
+        Args:
+            collections (CollectionList): The list of dataset collections.
+
+        Returns:
+            str: The HTML string for the dataset table.
+        """
         table_html = """
     <table class="custom-table">
         <tr>
@@ -1786,7 +2097,12 @@ class DatasetSearchInterface:
         table_html += "</table>"
         return table_html
 
-    def update_outputs(self, selected_dataset):
+    def update_outputs(self, selected_dataset: str) -> None:
+        """Updates the output widgets based on the selected dataset.
+
+        Args:
+            selected_dataset (str): The ID of the selected dataset.
+        """
         collection = self.collections.filter_by_ids([selected_dataset])
 
         if not collection:
@@ -1830,9 +2146,15 @@ class DatasetSearchInterface:
         self.details_code_box.layout.visibility = "visible"
         self.map_widget.layout.visibility = "visible"
 
-    def _dataset_select_js_code(self, callback_id):
-        """Handles a dataset onclick event"""
-        # JavaScript for handling table row selection
+    def _dataset_select_js_code(self, callback_id: str) -> str:
+        """Generates JavaScript code for handling dataset selection.
+
+        Args:
+            callback_id (str): The callback ID for the dataset selection.
+
+        Returns:
+            str: The JavaScript code as a string.
+        """
         return Template(
             syntax.javascript(
                 """
@@ -1878,27 +2200,37 @@ class DatasetSearchInterface:
 
 class DatasetExplorer:
     """A widget for exploring Earth Engine datasets.
-
-    Args:
-        project (Optional[str], optional): Google Cloud project ID. Defaults to None.
-        google_api_key (Optional[str], optional): Google API key. Defaults to None.
-        initialize_ee (bool, optional): Whether to initialize Earth Engine. Defaults to True.
-
-    Raises:
-        ValueError: If the project ID or Google API key is not provided.
+    The DataExplorer class source code is adapted from <https://bit.ly/48cE24D>.
+    Credit to the original author Renee Johnston (<https://github.com/raj02006>)
     """
 
     def __init__(
         self,
-        project: Optional[str] = None,
-        google_api_key: Optional[str] = None,
-        initialize_ee: bool = True,
+        project_id: str = "GOOGLE_PROJECT_ID",
+        google_api_key: str = "GOOGLE_API_KEY",
+        vertex_ai_zone: str = "us-central1",
+        model: str = "gemini-1.5-pro",
+        embeddings_cloud_path: str = "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl",
     ) -> None:
+        """Initializes the DatasetExplorer.
+
+        Args:
+            project_id (str): Google Cloud project ID. Defaults to "GOOGLE_PROJECT_ID".
+            google_api_key (str): Google API key. Defaults to "GOOGLE_API_KEY".
+            vertex_ai_zone (str): Vertex AI zone. Defaults to "us-central1".
+            model (str): Model name for ChatGoogleGenerativeAI. Defaults to "gemini-1.5-pro".
+            embeddings_cloud_path (str): Cloud path to the embeddings file.
+                Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".
+        """
 
         # @title Setup
-        project_name = get_env_var("GOOGLE_PROJECT_ID")
-        vertex_ai_zone = "us-central1"
-        genai.configure(api_key=get_env_var("GOOGLE_API_KEY"))
+        project_name = get_env_var(project_id)
+        if project_name is None:
+            project_name = get_env_var("EE_PROJECT_ID")
+        if project_name is None:
+            raise ValueError("Please provide a Google Cloud project ID.")
+
+        genai.configure(api_key=get_env_var(google_api_key))
 
         ee.Authenticate()
         ee.Initialize(project=project_name)
@@ -1907,15 +2239,13 @@ class DatasetExplorer:
 
         # Make sure geemap initialized correctly.
         ee_initialize(project=project_name)
-        m = Map()
+        m = Map(draw_ctrl=False)
         m.add("layer_manager")
 
         catalog = Catalog(storage_client)
 
         # Pre-built embeddings.
-        EMBEDDINGS_CLOUD_PATH = (
-            "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl"
-        )
+        EMBEDDINGS_CLOUD_PATH = embeddings_cloud_path
 
         # Copy embeddings from GCS bucket to a local file
         EMBEDDINGS_LOCAL_PATH = "catalog_embeddings.jsonl"
@@ -1936,7 +2266,7 @@ class DatasetExplorer:
         embeddings_df = pd.read_json(local_path, lines=True)
 
         llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-pro", google_api_key=get_env_var("GOOGLE_API_KEY")
+            model=model, google_api_key=get_env_var(google_api_key)
         )
 
         local_path = load_embeddings(EMBEDDINGS_CLOUD_PATH, EMBEDDINGS_LOCAL_PATH)
@@ -1945,11 +2275,30 @@ class DatasetExplorer:
 
         self.ee_index = EarthEngineDatasetIndex(catalog, langchain_index, llm)
 
-    def query(self, query: str = None):
+    def show(self, query: Optional[str] = None, **kwargs: Any) -> widgets.VBox:
+        """Displays a query interface for searching datasets.
+
+        Args:
+            query (Optional[str]): The initial query string. Defaults to None.
+            **kwargs (Any): Additional keyword arguments for widget styling.
+
+        Returns:
+            widgets.VBox: A VBox containing the query input and output display.
+        """
 
         output.no_vertical_scroll()
 
-        def Question(query):
+        if "style" not in kwargs:
+            kwargs["style"] = {"description_width": "initial"}
+        if "layout" not in kwargs:
+            kwargs["layout"] = widgets.Layout(width="98%")
+
+        def Question(query: str) -> None:
+            """Handles the query and displays the dataset search results.
+
+            Args:
+                query (str): The query string.
+            """
             if not is_valid_question(query):
                 print("Invalid question. Please try again.")
                 return
@@ -1965,17 +2314,22 @@ class DatasetExplorer:
 
         query_widget = widgets.Text(
             value=query,
-            placeholder="Type your query here",
+            placeholder="Type your query here and press Enter",
             description="Query:",
-            disabled=False,
-            layout=widgets.Layout(width="50%"),
+            tooltip="Type your query here and press Enter",
+            **kwargs,
         )
 
         output_widget = widgets.Output()
 
         display_widget = widgets.VBox([query_widget, output_widget])
 
-        def on_query_change(text):
+        def on_query_change(text: widgets.Text) -> None:
+            """Handles the event when the query text is submitted.
+
+            Args:
+                text (widgets.Text): The text widget containing the query.
+            """
             output_widget.clear_output()
             with output_widget:
                 print("Loading ...")
