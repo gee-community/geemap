@@ -44,7 +44,7 @@ dependencies = [
 
 [project.optional-dependencies]
 all = [
-    "geemap[backends,extra,lidar,raster,sql,apps,vector,workshop,maplibre]",
+    "geemap[ai,backends,extra,lidar,raster,sql,apps,vector,workshop,maplibre]",
 ]
 ai = [
     "google-api-core",
