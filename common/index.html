@@ -20045,7 +20045,7 @@ you should set the unmask value to a  non-zero value so that the zero values are
 
 
 <h2 id="geemap.common.download_ee_image_tiles_parallel" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">download_ee_image_tiles_parallel</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_tile_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_tile_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unmask_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">job_args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_jobs&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span> <span class="n">ee_init</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">download_ee_image_tiles_parallel</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="s1">&#39;near&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_tile_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_tile_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unmask_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">job_args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_jobs&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span> <span class="n">ee_init</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">project_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 
 <a href="#geemap.common.download_ee_image_tiles_parallel" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -20191,6 +20191,12 @@ you should set the unmask value to a  non-zero value so that the zero values are
         <td><p>Whether to initialize Earth Engine. Defaults to True.</p></td>
         <td><code>True</code></td>
       </tr>
+      <tr>
+        <td><code>project_id</code></td>
+        <td><code>str</code></td>
+        <td><p>The Earth Engine project ID. Defaults to None.</p></td>
+        <td><code>None</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
@@ -20215,6 +20221,7 @@ you should set the unmask value to a  non-zero value so that the zero values are
     <span class="n">column</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">job_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;n_jobs&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span>
     <span class="n">ee_init</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">project_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download an Earth Engine Image as small tiles based on ee.FeatureCollection. Images larger than the `Earth Engine size limit are split and downloaded as</span>
@@ -20251,6 +20258,7 @@ you should set the unmask value to a  non-zero value so that the zero values are
 <span class="sd">        column (str, optional): The column name in the feature collection to use as the filename. Defaults to None.</span>
 <span class="sd">        job_args (dict, optional): The arguments to pass to joblib.Parallel. Defaults to {&quot;n_jobs&quot;: -1}.</span>
 <span class="sd">        ee_init (bool, optional): Whether to initialize Earth Engine. Defaults to True.</span>
+<span class="sd">        project_id (str, optional): The Earth Engine project ID. Defaults to None.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">joblib</span>
@@ -20282,7 +20290,10 @@ you should set the unmask value to a  non-zero value so that the zero values are
 
     <span class="k">def</span> <span class="nf">download_data</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ee_init</span><span class="p">:</span>
-            <span class="n">ee_initialize</span><span class="p">(</span><span class="n">opt_url</span><span class="o">=</span><span class="s2">&quot;https://earthengine-highvolume.googleapis.com&quot;</span><span class="p">)</span>
+            <span class="n">ee_initialize</span><span class="p">(</span>
+                <span class="n">opt_url</span><span class="o">=</span><span class="s2">&quot;https://earthengine-highvolume.googleapis.com&quot;</span><span class="p">,</span>
+                <span class="n">project</span><span class="o">=</span><span class="n">project_id</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="n">region</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">))</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">.tif&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">names</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">))</span>
