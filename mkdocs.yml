@@ -307,6 +307,7 @@ nav:
           - notebooks/148_chart_data_table.ipynb
           - notebooks/149_gemini.ipynb
           - notebooks/150_maplibre.ipynb
+          - notebooks/151_dataset_explorer.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
