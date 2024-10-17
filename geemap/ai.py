@@ -1489,7 +1489,7 @@ def is_valid_question(question, model_name: str = "gemini-1.5-pro-latest"):
 
   For example, if the original query is "hello" - you should answer False. If
   the original query is "cheese futures" you should still answer True because
-  the user could be interested in cheese production, and therfore agricultural
+  the user could be interested in cheese production, and therefore agricultural
   land where cattle might be raised.
 
   Here is the original query:
@@ -1811,7 +1811,7 @@ class DatasetSearchInterface:
             )
 
         # Code and LLM thought content is now fully loaded.
-        # We ought to make this asynchronus in another version
+        # We ought to make this asynchronous in another version
         self.map_output.clear_output()
 
         with self.code_output:
