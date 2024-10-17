@@ -50,6 +50,11 @@ ai = [
     "google-api-core",
     "google-cloud-storage",
     "google-generativeai",
+    "google_cloud_aiplatform",
+    "langchain-community",
+    "langchain_google_genai",
+    "langchain",
+    "iso8601"
 ]
 backends = [
     "keplergl",

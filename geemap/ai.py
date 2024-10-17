@@ -23,7 +23,61 @@ try:
     import google.api_core
 except ImportError:
     print("Please install the required packages.")
-    print("pip install google-cloud-storage google-generativeai google-api-core")
+    print("pip install 'geemap[ai]'")
+
+
+# Standard library imports
+from concurrent import futures
+from contextlib import redirect_stdout
+import dataclasses
+import datetime
+import io
+import json
+import logging
+import re
+import sys
+from typing import Any, Dict, Iterable, List, Optional, Sequence
+import uuid
+
+# Third-party imports
+import ee
+
+# import geemap
+from .geemap import Map, get_env_var, js_snippet_to_py, ee_initialize
+
+import google.api_core
+from google.api_core import exceptions as google_exceptions
+from google.cloud import storage
+import google.generativeai as genai
+from IPython.display import HTML, Javascript, display
+from ipyleaflet import LayerException
+import ipywidgets as widgets
+import iso8601
+from jinja2 import Template
+import pandas as pd
+import requests
+import tenacity
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_exponential,
+    retry_if_exception_type,
+)
+import typing_extensions
+import vertexai
+from vertexai.preview.language_models import TextEmbeddingModel
+from geemap.common import get_env_var
+from langchain.embeddings.base import Embeddings
+from langchain.indexes import VectorstoreIndexCreator
+from langchain.schema import Document
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.vectorstores.base import VectorStore
+from langchain.indexes.vectorstore import VectorStoreIndexWrapper
+from langchain_core.language_models.base import BaseLanguageModel
+
+# Google Colab-specific imports (only if you're working in Google Colab)
+if "google.colab" in sys.modules:
+    from google.colab import output, data_table, syntax
 
 
 class Genie(widgets.VBox):
@@ -724,3 +778,1210 @@ class Genie(widgets.VBox):
         super().__init__(
             [table, command_input, message_widget], layout={"overflow": "hidden"}
         )
+
+
+def matches_interval(
+    collection_interval: tuple[datetime.datetime, datetime.datetime],
+    query_interval: tuple[datetime.datetime, datetime.datetime],
+):
+    """Checks if the collection's datetime interval matches the query datetime interval.
+
+    Args:
+      collection_interval: Temporal interval of the collection.
+      query_interval: a tuple with the query interval start and end
+
+    Returns:
+      True if the datetime interval matches
+    """
+    start_query, end_query = query_interval
+    start_collection, end_collection = collection_interval
+    if end_collection is None:
+        # End date should always be set in STAC JSON files, but just in case...
+        end_collection = datetime.datetime.now(tz=datetime.UTC)
+    return end_query > start_collection and start_query <= end_collection
+
+
+def matches_datetime(
+    collection_interval: tuple[datetime.datetime, Optional[datetime.datetime]],
+    query_datetime: datetime.datetime,
+):
+    """Checks if the collection's datetime interval matches the query datetime.
+
+    Args:
+      collection_interval: Temporal interval of the collection.
+      query_datetime: a datetime coming from a query
+
+    Returns:
+      True if the datetime interval matches
+    """
+    if collection_interval[1] is None:
+        # End date should always be set in STAC JSON files, but just in case...
+        end_date = datetime.datetime.now(tz=datetime.UTC)
+    else:
+        end_date = collection_interval[1]
+    return collection_interval[0] <= query_datetime <= end_date
+
+
+@tenacity.retry(
+    stop=tenacity.stop_after_attempt(3),
+    wait=tenacity.wait_fixed(1),
+    retry=tenacity.retry_if_exception_type(LayerException),
+    # before_sleep=lambda retry_state: print(f"LayerException occurred. Retrying in 1 seconds... (Attempt {retry_state.attempt_number}/3)")
+)
+def run_ee_code(code: str, ee, geemap_instance: Map):
+    try:
+        # geemap appears to have some stray print statements.
+        _ = io.StringIO()
+        with redirect_stdout(_):
+            # Note that sometimes the geemap code uses both 'Map' and 'm' to refer to a map instance.
+            exec(code, {"ee": ee, "Map": geemap_instance, "m": geemap_instance})
+    except Exception:
+        # Re-raise the exception with the original traceback
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        raise exc_value.with_traceback(exc_traceback)
+
+
+@dataclasses.dataclass
+class BBox:
+    """Class representing a lat/lon bounding box."""
+
+    west: float
+    south: float
+    east: float
+    north: float
+
+    def is_global(self) -> bool:
+        return (
+            self.west == -180
+            and self.south == -90
+            and self.east == 180
+            and self.north == 90
+        )
+
+    @classmethod
+    def from_list(cls, bbox_list: list[float]):
+        """Constructs a BBox from a list of four numbers [west,south,east,north]."""
+        if bbox_list[0] > bbox_list[2]:
+            raise ValueError(
+                "The smaller (west) coordinate must be listed first in a bounding box"
+                f" corner list. Found {bbox_list}"
+            )
+        if bbox_list[1] > bbox_list[3]:
+            raise ValueError(
+                "The smaller (south) coordinate must be listed first in a bounding"
+                f" box corner list. Found {bbox_list}"
+            )
+        return cls(bbox_list[0], bbox_list[1], bbox_list[2], bbox_list[3])
+
+    def to_list(self) -> list[float]:
+        return [self.west, self.south, self.east, self.north]
+
+    def intersects(self, query_bbox) -> bool:
+        """Checks if this bbox intersects with the query bbox.
+
+        Doesn't handle bboxes extending past the antimeridaian.
+
+        Args:
+          query_bbox: Bounding box from the query.
+
+        Returns:
+          True if the two bounding boxes intersect
+        """
+        return (
+            query_bbox.west < self.east
+            and query_bbox.east > self.west
+            and query_bbox.south < self.north
+            and query_bbox.north > self.south
+        )
+
+
+class Collection:
+    """A simple wrapper for a STAC Collection.."""
+
+    stac_json: dict[str, Any]
+
+    def __init__(self, stac_json: dict[str, Any]):
+        self.stac_json = stac_json
+        if stac_json.get("gee:status") == "deprecated":
+            # Set the STAC 'deprecated' field that we don't set in the jsonnet files
+            stac_json["deprecated"] = True
+
+    def __getitem__(self, item: str) -> Any:
+        return self.stac_json[item]
+
+    def get(self, item: str, default: Optional[Any] = None) -> Optional[Any]:
+        """Matches dict's get by returning None if there is no item."""
+        return self.stac_json.get(item, default)
+
+    def public_id(self) -> str:
+        return self["id"]
+
+    def hyphen_id(self) -> str:
+        return self["id"].replace("/", "_")
+
+    def get_dataset_type(self) -> str:
+        """Could be Image, ImageCollection, FeatureCollection, Feature."""
+        return self["gee:type"]
+
+    def is_deprecated(self) -> bool:
+        """Returns True for collections that are deprecated or have a successor."""
+        if self.get("deprecated", False):
+            logging.info("Skipping deprecated collection: %s", self.public_id())
+            return True
+
+    def datetime_interval(
+        self,
+    ) -> Iterable[tuple[datetime.datetime, Optional[datetime.datetime]]]:
+        """Returns datetime objects representing temporal extents."""
+        for stac_interval in self.stac_json["extent"]["temporal"]["interval"]:
+            if not stac_interval[0]:
+                raise ValueError(
+                    "Expected a non-empty temporal interval start for "
+                    + self.public_id()
+                )
+            start_date = iso8601.parse_date(stac_interval[0])
+            if stac_interval[1] is not None:
+                end_date = iso8601.parse_date(stac_interval[1])
+            else:
+                end_date = None
+            yield (start_date, end_date)
+
+    def start(self) -> datetime.datetime:
+        return list(self.datetime_interval())[0][0]
+
+    def start_str(self) -> datetime.datetime:
+        if not self.start():
+            return ""
+        return self.start().strftime("%Y-%m-%d")
+
+    def end(self) -> Optional[datetime.datetime]:
+        return list(self.datetime_interval())[0][1]
+
+    def end_str(self) -> Optional[datetime.datetime]:
+        if not self.end():
+            return ""
+        return self.end().strftime("%Y-%m-%d")
+
+    def bbox_list(self) -> Sequence[BBox]:
+        if "extent" not in self.stac_json:
+            # Assume global if nothing listed.
+            return (BBox(-180, -90, 180, 90),)
+        return tuple(
+            [BBox.from_list(x) for x in self.stac_json["extent"]["spatial"]["bbox"]]
+        )
+
+    def bands(self) -> List[Dict]:
+        summaries = self.stac_json.get("summaries")
+        if not summaries:
+            return []
+        return summaries.get("eo:bands", [])
+
+    def spatial_resolution_m(self) -> float:
+        summaries = self.stac_json.get("summaries")
+        if not summaries:
+            return -1
+        if summaries.get("gsd"):
+            return summaries.get("gsd")[0]
+
+        # Fallback for cases where the stac does not follow convention.
+        gsd_lst = re.findall(r'"gsd": (\d+)', json.dumps(self.stac_json))
+
+        if len(gsd_lst) > 0:
+            return float(gsd_lst[0])
+
+        return -1
+
+    def temporal_resolution_str(self) -> str:
+        interval_dict = self.stac_json.get("gee:interval")
+        if not interval_dict:
+            return ""
+        return f"{interval_dict['interval']} {interval_dict['unit']}"
+
+    def python_code(self) -> str:
+        code = self.stac_json.get("code")
+        if not code:
+            return ""
+
+        return code.get("py_code")
+
+    def set_python_code(self, code: str):
+        if not code:
+            self.stac_json["code"] = {"js_code": "", "py_code": code}
+
+        self.stac_json["code"]["py_code"] = code
+
+    def set_js_code(self, code: str):
+        if not code:
+            return ""
+        js_code = self.stac_json.get("code").get("js_code")
+        self.stac_json["code"] = {"js_code": "", "py_code": code}
+
+    def image_preview_url(self):
+        for link in self.stac_json["links"]:
+            if (
+                "rel" in link
+                and link["rel"] == "preview"
+                and link["type"] == "image/png"
+            ):
+                return link["href"]
+        raise ValueError(f"No preview image found for {id}")
+
+    def catalog_url(self):
+        links = self.stac_json["links"]
+        for link in links:
+            if "rel" in link and link["rel"] == "catalog":
+                return link["href"]
+
+            # Ideally there would be a 'catalog' link but sometimes there isn't.
+            base_url = "https://developers.google.com/earth-engine/datasets/catalog/"
+            if link["href"].startswith(base_url):
+                return link["href"].split("#")[0]
+
+        logging.warning(f"No catalog link found for {self.public_id()}")
+        return ""
+
+
+# @title class CollectionList()
+class CollectionList(Sequence[Collection]):
+    """List of stac.Collections; can be filtered to return a smaller sublist."""
+
+    _collections = Sequence[Collection]
+
+    def __init__(self, collections: Sequence[Collection]):
+        self._collections = tuple(collections)
+
+    def __iter__(self):
+        return iter(self._collections)
+
+    def __getitem__(self, index):
+        return self._collections[index]
+
+    def __len__(self):
+        return len(self._collections)
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, CollectionList):
+            return self._collections == other._collections
+        return False
+
+    def __hash__(self) -> int:
+        return hash(self._collections)
+
+    def filter_by_ids(self, ids: Iterable[str]):
+        """Returns a sublist with only the collections matching the given ids."""
+        return self.__class__([c for c in self._collections if c.public_id() in ids])
+
+    def filter_by_datetime(
+        self,
+        query_datetime: datetime.datetime,
+    ):
+        """Returns a sublist with the time interval matching the given time."""
+        result = []
+        for collection in self._collections:
+            for datetime_interval in collection.datetime_interval():
+                if matches_datetime(datetime_interval, query_datetime):
+                    result.append(collection)
+                    break
+        return self.__class__(result)
+
+    def filter_by_interval(
+        self,
+        query_interval: tuple[datetime.datetime, datetime.datetime],
+    ):
+        """Returns a sublist with the time interval matching the given interval."""
+        result = []
+        for collection in self._collections:
+            for datetime_interval in collection.datetime_interval():
+                if matches_interval(datetime_interval, query_interval):
+                    result.append(collection)
+                    break
+        return self.__class__(result)
+
+    def filter_by_bounding_box_list(self, query_bbox: BBox):
+        """Returns a sublist with the bbox matching the given bbox."""
+        result = []
+        for collection in self._collections:
+            for collection_bbox in collection.bbox_list():
+                if collection_bbox.intersects(query_bbox):
+                    result.append(collection)
+                    break
+        return self.__class__(result)
+
+    def filter_by_bounding_box(self, query_bbox: BBox):
+        """Returns a sublist with the bbox matching the given bbox."""
+        result = []
+        for collection in self._collections:
+            for collection_bbox in collection.bbox_list():
+                if collection_bbox.intersects(query_bbox):
+                    result.append(collection)
+                    break
+        return self.__class__(result)
+
+    def start_str(self) -> datetime.datetime:
+        return self.start().strftime("%Y-%m-%d")
+
+    def sort_by_spatial_resolution(self, reverse=False):
+        """
+        Sorts the collections based on their spatial resolution.
+        Collections with spatial_resolution_m() == -1 are pushed to the end.
+
+        Args:
+            reverse (bool): If True, sort in descending order (highest resolution first).
+                            If False (default), sort in ascending order (lowest resolution first).
+
+        Returns:
+            CollectionList: A new CollectionList instance with sorted collections.
+        """
+
+        def sort_key(collection):
+            resolution = collection.spatial_resolution_m()
+            if resolution == -1:
+                return float("inf") if not reverse else float("-inf")
+            return resolution
+
+        sorted_collections = sorted(self._collections, key=sort_key, reverse=reverse)
+        return self.__class__(sorted_collections)
+
+    def limit(self, n: int):
+        """
+        Returns a new CollectionList containing the first n entries.
+
+        Args:
+            n (int): The number of entries to include in the new list.
+
+        Returns:
+            CollectionList: A new CollectionList instance with at most n collections.
+        """
+        return self.__class__(self._collections[:n])
+
+    def to_df(self):
+        """Converts a collection list to a dataframe with a select set of fields."""
+
+        rows = []
+        for col in self._collections:
+            # Remove text in parens in dataset name.
+            short_title = re.sub(r"\([^)]*\)", "", col.get("title")).strip()
+
+            row = {
+                "id": col.public_id(),
+                "name": short_title,
+                "temp_res": col.temporal_resolution_str(),
+                "spatial_res_m": col.spatial_resolution_m(),
+                "earliest": col.start_str(),
+                "latest": col.end_str(),
+                "url": col.catalog_url(),
+            }
+            rows.append(row)
+        return pd.DataFrame(rows)
+
+
+class Catalog:
+    """Class containing all collections in the EE STAC catalog."""
+
+    collections: CollectionList
+
+    def __init__(self, storage_client: storage.Client):
+        self.collections = CollectionList(self._load_collections(storage_client))
+
+    def get_collection(self, id: str) -> Collection:
+        """Returns the collection with the given id."""
+        col = self.collections.filter_by_ids([id])
+        if len(col) == 0:
+            raise ValueError(f"No collection with id {id}")
+        return col[0]
+
+    @tenacity.retry(
+        stop=tenacity.stop_after_attempt(5),
+        wait=tenacity.wait_exponential(multiplier=1, min=4, max=10),
+        retry=tenacity.retry_if_exception_type(
+            (
+                google_exceptions.GoogleAPICallError,
+                google_exceptions.RetryError,
+                ConnectionError,
+            )
+        ),
+        before_sleep=lambda retry_state: print(
+            f"Error occurred: {str(retry_state.outcome.exception())}\n"
+            f"Retrying in {retry_state.next_action.sleep} seconds... "
+            f"(Attempt {retry_state.attempt_number}/3)"
+        ),
+    )
+    def _read_file(self, file_blob: google.cloud.storage.blob.Blob) -> Collection:
+        """Reads the contents of a file from the specified bucket."""
+        file_contents = file_blob.download_as_string().decode()
+        return Collection(json.loads(file_contents))
+
+    def _read_files(
+        self, file_blobs: list[google.cloud.storage.blob.Blob]
+    ) -> list[Collection]:
+        """Processes files in parallel."""
+        collections = []
+        with futures.ThreadPoolExecutor(max_workers=10) as executor:
+            file_futures = [
+                executor.submit(self._read_file, file_blob) for file_blob in file_blobs
+            ]
+            for future in file_futures:
+                collections.append(future.result())
+        return collections
+
+    def _load_collections(self, storage_client: storage.Client) -> Sequence[Collection]:
+        """Loads all EE STAC JSON files from GCS, with datetimes as objects."""
+        bucket = storage_client.get_bucket("earthengine-stac")
+        files = [
+            x
+            for x in bucket.list_blobs(prefix="catalog/")
+            if x.name.endswith(".json")
+            and not x.name.endswith("/catalog.json")
+            and not x.name.endswith("/units.json")
+        ]
+        logging.warning("Found %d files, loading...", len(files))
+        collections = self._read_files(files)
+
+        code_samples_dict = self._load_all_code_samples(storage_client)
+
+        res = []
+        for c in collections:
+            if c.is_deprecated():
+                continue
+            c.stac_json["code"] = code_samples_dict.get(c.hyphen_id())
+            res.append(c)
+        logging.warning("Loaded %d collections (skipping deprecated ones)", len(res))
+        # Returning a tuple for immutability.
+        return tuple(res)
+
+    def _load_all_code_samples(self, storage_client: storage.Client):
+        """Loads js + py example scripts from GCS into dict keyed by dataset ID."""
+
+        # Get json file from GCS bucket
+        # 'gs://earthengine-catalog/catalog/example_scripts.json'
+        bucket = storage_client.get_bucket("earthengine-catalog")
+        blob = bucket.blob("catalog/example_scripts.json")
+        file_contents = blob.download_as_string().decode()
+        data = json.loads(file_contents)
+
+        # Flatten json to get a map from ID (using '_' rather than '/') to code
+        # sample.
+        all_datasets_by_provider = data[0]["contents"]
+        code_samples_dict = {}
+        for provider in all_datasets_by_provider:
+            for dataset in provider["contents"]:
+                js_code = dataset["code"]
+                py_code = self._make_python_code_sample(js_code)
+
+                code_samples_dict[dataset["name"]] = {
+                    "js_code": js_code,
+                    "py_code": py_code,
+                }
+
+        return code_samples_dict
+
+    def _make_python_code_sample(self, js_code: str) -> str:
+        """Converts EE JS code into python."""
+
+        # geemap appears to have some stray print statements.
+        _ = io.StringIO()
+        with redirect_stdout(_):
+            code_list = js_snippet_to_py(
+                js_code,
+                add_new_cell=False,
+                import_ee=False,
+                import_geemap=False,
+                show_map=False,
+            )
+        return "".join(code_list)
+
+
+# @title Embeddings classes and helper methods
+
+
+class PrecomputedEmbeddings(Embeddings):
+    def __init__(self, embeddings_dict):
+        self.embeddings_dict = embeddings_dict
+        self.model = TextEmbeddingModel.from_pretrained("google/text-embedding-004")
+
+    def embed_documents(self, texts):
+        return [self.embeddings_dict[text] for text in texts]
+
+    def embed_query(self, text):
+        embeddings = self.model.get_embeddings([text])
+        return embeddings[0].values
+
+
+def make_langchain_index(embeddings_df: pd.DataFrame) -> VectorStoreIndexWrapper:
+    """Creates an index from a dataframe of precomputed embeddings."""
+    # Create a dictionary mapping texts to their embeddings
+    embeddings_dict = dict(zip(embeddings_df["id"], embeddings_df["embedding"]))
+
+    # Create our custom embeddings class
+    precomputed_embeddings = PrecomputedEmbeddings(embeddings_dict)
+
+    # Create Langchain Document objects
+    documents = []
+    for index, row in embeddings_df.iterrows():
+        page_content = row["id"]
+        metadata = {"summary": row["summary"], "name": row["name"]}
+        documents.append(Document(page_content=page_content, metadata=metadata))
+
+    # Create the VectorstoreIndexCreator
+    index_creator = VectorstoreIndexCreator(embedding=precomputed_embeddings)
+
+    # Create the index
+    return index_creator.from_documents(documents)
+
+
+# Wrap Langchain embeddings in our own EE dataset wrapper
+class EarthEngineDatasetIndex:
+    index: VectorStoreIndexWrapper
+    vectorstore: VectorStore
+    data_catalog: Catalog
+    llm: BaseLanguageModel
+
+    def __init__(self, data_catalog, index, llm):
+        self.index = index
+        self.data_catalog = data_catalog
+        self.vectorstore = index.vectorstore
+        self.llm = llm
+
+    @tenacity.retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(
+            (requests.exceptions.RequestException, ConnectionError)
+        ),
+    )
+    def find_top_matches(
+        self,
+        query: str,
+        results: int = 10,
+        threshold: float = 0.7,
+        bounding_box: Optional[list[float]] = None,
+        temporal_interval: tuple[datetime.datetime, datetime.datetime] = None,
+    ) -> CollectionList:
+        """
+        Retrieve relevant dataset from the Earth Engine data catalog.
+
+        query: str. The kind of data being searched for. ie 'population'.
+        results: int. The number of datasets to return. 4 is recommended.
+        threshold: float. The maximum dot product between the query and catalog
+          embeddings. Recommended 0.7.
+        bounding_box: Optional[list[float]]. The spatial bounding box for the query, in the
+          format [lon1, lat1, lon2, lon2]. If None then no spatial filter is appled.
+        temporal: Optional[list[Optional[list[int]]]]. If provided, temporal
+          constraints are provided as a list of two int lists following the structure
+          [[year, month, day], [year, month, day]]. A none can be used to set no
+          start or end date. For example [None, [2022,12,31]] will return all datasets
+          that have data before 2022-12-31.)
+        """
+        similar_docs = self.index.vectorstore.similarity_search_with_score(
+            query, llm=self.llm, k=results
+        )
+        dataset_ids = [doc[0].page_content for doc in similar_docs]
+        datasets = self.data_catalog.collections.filter_by_ids(dataset_ids)
+        return datasets
+
+    @tenacity.retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        retry=retry_if_exception_type(
+            (requests.exceptions.RequestException, ConnectionError)
+        ),
+    )
+    def find_top_matches_with_score_df(
+        self,
+        query: str,
+        results: int = 20,
+        threshold: float = 0.7,
+        bounding_box: Optional[list[float]] = None,
+        temporal_interval: tuple[datetime.datetime, datetime.datetime] = None,
+    ):
+        scores_df = self.ids_to_match_scores_df(
+            query, results, bounding_box, temporal_interval
+        )
+        dataset_ids = scores_df["id"].tolist()
+        col_list = self.data_catalog.collections.filter_by_ids(dataset_ids)
+        collection_df = col_list.to_df()
+        df = pd.merge(collection_df, scores_df, on="id", how="inner")
+        return df.sort_values(by="match_score", ascending=False)
+
+    def ids_to_match_scores_df(
+        self,
+        query,
+        results,
+        bounding_box: Optional[list[float]] = None,
+        temporal_interval: tuple[datetime.datetime, datetime.datetime] = None,
+    ):
+
+        similar_docs = self.index.vectorstore.similarity_search_with_score(
+            query, llm=self.llm, k=results
+        )
+        dataset_ids, scores = zip(
+            *[(doc[0].page_content, doc[1]) for doc in similar_docs]
+        )
+
+        return pd.DataFrame({"id": dataset_ids, "match_score": scores})
+
+
+def explain_relevance(
+    query: str,
+    dataset_id: str,
+    catalog: Catalog,
+    model_name: str = "gemini-1.5-pro-latest",
+    stream=False,
+):
+    """Prompts LLM to explain the relevance of a dataset to a query."""
+
+    stac_json = catalog.get_collection(dataset_id).stac_json
+    return explain_relevance_from_stac_json(query, stac_json, model_name, stream)
+
+
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=4, max=10),
+    retry=retry_if_exception_type(
+        (requests.exceptions.RequestException, ConnectionError)
+    ),
+)
+def explain_relevance_from_stac_json(
+    query, stac_json, model_name: str = "gemini-1.5-pro-latest", stream=False
+):
+
+    stac_json_str = json.dumps(stac_json)
+
+    prompt = f"""
+  I am an Earth Engine user contemplating using a dataset to support
+  my investigation of the following query. Provide a concise, paragraph-long
+  summary explaining why this dataset may be a good fit for my use case.
+  If it does not seem like an appropriate dataset, say so.
+  If relevant, call attention to a max of 3 bands that may be of particular interest.
+  Weigh the tradeoffs between temporal and spatial resolution, particularly
+  if the original query specifies regions of interest, time periods, or
+  frequency of data collection. If I have not specified any
+  spatial constraints, do your best based on the nature of their query. For example,
+  if I'm wanting to study something small, like buildings, I will likely need good spatial resolution.
+
+  Here is the original query:
+  {query}
+
+  Here is the stac json metadata for the dataset:
+  {stac_json_str}
+  """
+    model = genai.GenerativeModel(model_name)
+    response = model.generate_content(prompt, stream=stream)
+    if stream:
+        return response
+    return response.text
+
+
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=4, max=10),
+    retry=retry_if_exception_type(
+        (requests.exceptions.RequestException, ConnectionError)
+    ),
+)
+def is_valid_question(question, model_name: str = "gemini-1.5-pro-latest"):
+    """Filters out questions that cannot be answered by a dataset search tool."""
+
+    prompt = f"""
+  You are a tool whose job is to determine whether or not the following question
+  relates even in a small way to geospatial datasets.  Please provide a single
+  word answer either True or False.
+
+  For example, if the original query is "hello" - you should answer False. If
+  the original query is "cheese futures" you should still answer True because
+  the user could be interested in cheese production, and therfore agricultural
+  land where cattle might be raised.
+
+  Here is the original query:
+  {question}
+  """
+    model = genai.GenerativeModel(model_name)
+    response = model.generate_content(prompt)
+    # Err on the side of returning True
+    return response.text.lower().strip() != "false"
+
+
+class CodeThoughts(typing_extensions.TypedDict):
+    code: str
+    thoughts: str
+
+
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=4, max=10),
+    retry=retry_if_exception_type(
+        (requests.exceptions.RequestException, ConnectionError)
+    ),
+)
+def fix_ee_python_code(
+    code: str, ee: Any, geemap_instance: Map, model_name: str = "gemini-1.5-pro-latest"
+):
+    """Asks a model to do ee python code correction in the event of error."""
+
+    def create_error_prompt(code, error_msg):
+        return f"""
+      You are an extremely laconic code correction robot.
+      I am attempting to execute the following snippet of python Earth Engine code,
+      using a geemap instance:
+
+      ```
+        {code}
+      ```
+
+      I have encountered the following error, please fix it. In 1-2 sentences,
+      explain your debugging thought process in the 'thoughts' field. Note that
+      the setOptions method exists only in the ee javascript library. Code
+      referencing that method can be removed.
+
+      Include the complete revised code snippet in the code field.
+      Do not provide any other comentary in the code field. Do not add any new
+      imports to the code snippet.
+
+      {error_msg}
+    """
+
+    generation_config = {
+        "response_mime_type": "application/json",
+        "response_schema": CodeThoughts,
+    }
+
+    model = genai.GenerativeModel(model_name, generation_config=generation_config)
+
+    max_attempts = 5
+    total_attempts = 0
+    broken = True
+    while total_attempts < max_attempts and broken:
+        try:
+            run_ee_code(code, ee, geemap_instance)
+            # logging.warning(f'Code success! after {total_attempts} try.')
+            return code
+        except Exception as e:
+            logging.warning("Code execution error, asking Gemini for help.")
+
+            gemini_json_fail = True
+            while gemini_json_fail:
+                response = model.generate_content(create_error_prompt(code, str(e)))
+                try:
+                    code_thoughts = json.loads(response.text)
+                    gemini_json_fail = False
+                except json.JSONDecodeError:
+                    pass
+
+            total_attempts += 1
+
+            code = code_thoughts["code"]
+            thoughts = code_thoughts["thoughts"]
+            logging.warning(f"Gemini thoughts: \n{thoughts}")
+            # logging.warning(f'Gemini new code: {code}')
+            if total_attempts == max_attempts:
+                raise Exception(e)
+    logging.warning(f"Failed to fix code after {max_attempts} attempts.")
+
+
+class DatasetSearchInterface:
+
+    collections: CollectionList
+    query: str
+    dataset_table: widgets.Widget
+    code_output: widgets.Widget
+    details_output: widgets.Widget
+    map_output: widgets.Widget
+    geemap_instance: Map
+
+    # Parent containers for controlling widget visibility.
+    details_code_box: widgets.Widget
+    map_widget: widgets.Widget
+
+    def __init__(self, query: str, collections: CollectionList):
+
+        self.query = query
+        self.collections = collections
+
+        # Create the output widgets
+        self.code_output = widgets.Output(layout=widgets.Layout(width="50%"))
+        self.details_output = widgets.Output(
+            layout=widgets.Layout(height="300px", width="100%")
+        )
+
+        # Initialize dataset table
+        table_html = self._build_table_html(collections)
+        self.dataset_table = widgets.HTML(value=table_html)
+
+        _callback_id = "dataset-select" + str(uuid.uuid4())
+        output.register_callback(_callback_id, self.update_outputs)
+        self._dataset_select_js_code = self._dataset_select_js_code(_callback_id)
+        # self._dataset_select_js_code(_callback_id)
+
+        # Initialize map
+        self.map_output = widgets.Output(layout=widgets.Layout(width="100%"))
+        self.geemap_instance = Map(height="600px", width="100%")
+
+    def display(self):
+        """Display the UI in the cell."""
+        # Create title and description with Material Design styling
+        # title = widgets.HTML(value='<h2 class="main-title">Earth Engine Dataset Explorer</h2>')
+
+        # Wrap outputs in a widget box for border styling
+        details_widget = widgets.Box(
+            [self.details_output],
+            layout=widgets.Layout(
+                border="1px solid #E0E0E0", padding="10px", margin="5px", width="100%"
+            ),
+        )
+        code_widget = widgets.Box(
+            [self.code_output],
+            layout=widgets.Layout(
+                border="1px solid #E0E0E0", padding="10px", margin="5px", width="100%"
+            ),
+        )
+        self.map_widget = widgets.Box(
+            [self.map_output],
+            layout=widgets.Layout(
+                border="1px solid #E0E0E0",
+                padding="10px",
+                margin="5px",
+                width="100%",
+                height="600x",
+            ),
+        )
+
+        # Create the vertical box for code and details
+        self.details_code_box = widgets.VBox(
+            [details_widget, code_widget],
+            layout=widgets.Layout(width="50%", height="600px"),
+        )
+
+        # Create a horizontal box for map and details/code
+        map_details_code_box = widgets.HBox(
+            [self.map_widget, self.details_code_box],
+            layout=widgets.Layout(
+                border="1px solid #E0E0E0", padding="10px", margin="5px"
+            ),
+        )
+
+        # Create the main layout with Material Design styling
+        main_content = widgets.VBox(
+            [self.dataset_table, map_details_code_box],
+            layout=widgets.Layout(
+                width="100%", border="1px solid #E0E0E0", padding="10px", margin="5px"
+            ),
+        )
+
+        # Add debug panel to the main layout
+        main_layout = widgets.VBox(
+            [
+                # title,
+                main_content,
+            ],
+            layout=widgets.Layout(height="1500px", width="100%", padding="24px"),
+        )
+
+        # @title CSS
+        # Custom CSS for Material Design styling with enhanced table styling, chat panel, and debug panel
+        CSS = syntax.css(
+            """
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: #212121;
+            margin-bottom: 16px;
+        }
+
+        .custom-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #212121;
+            margin-bottom: 12px;
+        }
+
+        .details-text {
+            font-size: 14px;
+            color: #616161;
+            line-height: 1.5;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+            font-family: 'Roboto', sans-serif;
+        }
+        .custom-table th, .custom-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        .custom-table th {
+            background-color: #F5F5F5;
+            font-weight: 500;
+            color: #212121;
+        }
+        .custom-table tr:hover {
+            background-color: #E3F2FD;
+        }
+        .custom-table tr.selected {
+            background-color: #BBDEFB;
+        }
+
+        /* Ensure borders are visible */
+        .jupyter-widgets.widget-box {
+            border: 1px solid #E0E0E0 !important;
+            overflow: auto;
+        }
+
+        /* Make the map span full width */
+        .geemap-container {
+            width: 100% !important;
+            height: 600px !important;
+        }
+
+        # Disable table clicks while things are loading
+        .disabled {
+        pointer-events: none;
+        /* You might also want to visually indicate the disabled state */
+        opacity: 0.5;
+        cursor: default;
+        }
+        """
+        )
+
+        # Display the widget
+        display(HTML(f"<style>{CSS}</style>"))
+        display(main_layout)
+        display(Javascript(self._dataset_select_js_code))
+
+    def _build_table_html(self, collections: CollectionList):
+        # Create the table HTML
+        table_html = """
+    <table class="custom-table">
+        <tr>
+            <th>Dataset ID</th>
+            <th> Name </th>
+            <th>Temporal Resolution</th>
+            <th>Spatial Resolution (m)</th>
+            <th>Earliest</th>
+            <th>Latest</th>
+        </tr>
+    """
+        for dataset in collections:
+            table_html += f"""
+        <tr data-dataset="{dataset.public_id()}">
+            <td>{dataset.public_id()}</td>
+            <td>{dataset.get('title')}</td>
+            <td>{dataset.temporal_resolution_str()}</td>
+            <td>{dataset.spatial_resolution_m()}</td>
+            <td>{dataset.start_str()}</td>
+            <td>{dataset.end_str()}</td>
+        </tr>
+        """
+
+        table_html += "</table>"
+        return table_html
+
+    def update_outputs(self, selected_dataset):
+        collection = self.collections.filter_by_ids([selected_dataset])
+
+        if not collection:
+            self.details_code_box.layout.visibility = "hidden"
+            self.map_widget.layout.visibility = "hidden"
+            return
+
+        dataset = collection[0]
+
+        # Clear everything when a new dataset is selected.
+        self.map_output.clear_output()
+        self.code_output.clear_output()
+        self.details_output.clear_output()
+        # Clear previous layers. Keep only the base layer
+        self.geemap_instance.layers = self.geemap_instance.layers[:1]
+
+        with self.map_output:
+            display(HTML("<h3>Loading...</h3>"))
+            code = fix_ee_python_code(dataset.python_code(), ee, self.geemap_instance)
+            llm_thoughts = explain_relevance_from_stac_json(
+                self.query, dataset.stac_json
+            )
+
+        # Code and LLM thought content is now fully loaded.
+        # We ought to make this asynchronus in another version
+        self.map_output.clear_output()
+
+        with self.code_output:
+            display(HTML('<div class="custom-title">Earth Engine Code</div>'))
+            print(code)
+
+        with self.details_output:
+            # display(HTML('<h3>Thinking...</h3>'))
+            # self.details_output.clear_output()
+            display(HTML('<div class="custom-title">Thoughts with Gemini</div>'))
+            print(llm_thoughts)
+
+        with self.map_output:
+            display(self.geemap_instance)
+
+        self.details_code_box.layout.visibility = "visible"
+        self.map_widget.layout.visibility = "visible"
+
+    def _dataset_select_js_code(self, callback_id):
+        """Handles a dataset onclick event"""
+        # JavaScript for handling table row selection
+        return Template(
+            syntax.javascript(
+                """
+    function initializeTableInteraction() {
+        const table = document.querySelector('.custom-table');
+        if (!table) {
+            console.error('Table not found');
+            return;
+        }
+
+        function selectRow(row) {
+            // Remove selection from previously selected row
+            const prevSelected = table.querySelector('tr.selected');
+            if (prevSelected) prevSelected.classList.remove('selected');
+
+            // Add selection to the new row
+            row.classList.add('selected');
+            const selectedDataset = row.dataset.dataset;
+            console.log('Selected dataset:', selectedDataset);
+            google.colab.kernel.invokeFunction('{{callback_id}}', [selectedDataset], {});
+
+        }
+
+        table.addEventListener('click', (event) => {
+            const row = event.target.closest('tr');
+            if (!row || !row.dataset.dataset) return;
+            selectRow(row);
+        });
+
+        // Select the first row by default
+        const firstRow = table.querySelector('tr[data-dataset]');
+        if (firstRow) {
+            selectRow(firstRow);
+        }
+    }
+
+    // Run the initialization function after a short delay to ensure the DOM is ready
+    setTimeout(initializeTableInteraction, 1000);
+    """
+            )
+        ).render(callback_id=callback_id)
+
+
+class DatasetExplorer:
+    """A widget for exploring Earth Engine datasets.
+
+    Args:
+        project (Optional[str], optional): Google Cloud project ID. Defaults to None.
+        google_api_key (Optional[str], optional): Google API key. Defaults to None.
+        initialize_ee (bool, optional): Whether to initialize Earth Engine. Defaults to True.
+
+    Raises:
+        ValueError: If the project ID or Google API key is not provided.
+    """
+
+    def __init__(
+        self,
+        project: Optional[str] = None,
+        google_api_key: Optional[str] = None,
+        initialize_ee: bool = True,
+    ) -> None:
+
+        # @title Setup
+        project_name = get_env_var("GOOGLE_PROJECT_ID")
+        vertex_ai_zone = "us-central1"
+        genai.configure(api_key=get_env_var("GOOGLE_API_KEY"))
+
+        ee.Authenticate()
+        ee.Initialize(project=project_name)
+        storage_client = storage.Client(project=project_name)
+        vertexai.init(project=project_name, location=vertex_ai_zone)
+
+        # Make sure geemap initialized correctly.
+        ee_initialize(project=project_name)
+        m = Map()
+        m.add("layer_manager")
+
+        catalog = Catalog(storage_client)
+
+        # Pre-built embeddings.
+        EMBEDDINGS_CLOUD_PATH = (
+            "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl"
+        )
+
+        # Copy embeddings from GCS bucket to a local file
+        EMBEDDINGS_LOCAL_PATH = "catalog_embeddings.jsonl"
+
+        def load_embeddings(
+            gcs_path=EMBEDDINGS_CLOUD_PATH, local_path=EMBEDDINGS_LOCAL_PATH
+        ):
+            parts = gcs_path.split("/")
+            bucket_name = parts[2]
+            blob_path = "/".join(parts[3:])
+            bucket = storage_client.get_bucket(bucket_name)
+            blob = bucket.blob(blob_path)
+            blob.download_to_filename(local_path)
+            return local_path
+
+        # Load our embeddings data into a dataframe:
+        local_path = load_embeddings(EMBEDDINGS_CLOUD_PATH, EMBEDDINGS_LOCAL_PATH)
+        embeddings_df = pd.read_json(local_path, lines=True)
+
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-1.5-pro", google_api_key=get_env_var("GOOGLE_API_KEY")
+        )
+
+        local_path = load_embeddings(EMBEDDINGS_CLOUD_PATH, EMBEDDINGS_LOCAL_PATH)
+        embeddings_df = pd.read_json(local_path, lines=True)
+        langchain_index = make_langchain_index(embeddings_df)
+
+        self.ee_index = EarthEngineDatasetIndex(catalog, langchain_index, llm)
+
+    def query(self, query: str = None):
+
+        output.no_vertical_scroll()
+
+        def Question(query):
+            if not is_valid_question(query):
+                print("Invalid question. Please try again.")
+                return
+
+            datasets = self.ee_index.find_top_matches(query)
+            # datasets = datasets.sort_by_spatial_resolution().limit(5)
+            datasets = datasets.limit(7)
+            dataset_search = DatasetSearchInterface(query, datasets)
+            dataset_search.display()
+
+        if query is None:
+            query = "How have global land surface temperatures changed over time?"
+
+        query_widget = widgets.Text(
+            value=query,
+            placeholder="Type your query here",
+            description="Query:",
+            disabled=False,
+            layout=widgets.Layout(width="50%"),
+        )
+
+        output_widget = widgets.Output()
+
+        display_widget = widgets.VBox([query_widget, output_widget])
+
+        def on_query_change(text):
+            output_widget.clear_output()
+            with output_widget:
+                print("Loading ...")
+                output_widget.clear_output(wait=True)
+                Question(text.value)
+
+        query_widget.on_submit(on_query_change)
+
+        return display_widget
