@@ -459,82 +459,144 @@ class TestInspector(unittest.TestCase):
         )
 
 
-class TestLayerManager(unittest.TestCase):
-    """Tests for the LayerManager class in the `map_widgets` module."""
+def _create_fake_map() -> fake_map.FakeMap:
+    ret = fake_map.FakeMap()
+    ret.layers = [
+        fake_map.FakeTileLayer("OpenStreetMap"),  # Basemap
+        fake_map.FakeTileLayer("GMaps", False, 0.5),  # Extra basemap
+        fake_map.FakeEeTileLayer("test-layer", True, 0.8),
+        fake_map.FakeGeoJSONLayer(
+            "test-geojson-layer",
+            False,
+            {"some-style": "red", "opacity": 0.3, "fillOpacity": 0.2},
+        ),
+    ]
+    ret.ee_layers = {
+        "test-layer": {"ee_object": None, "ee_layer": ret.layers[2], "vis_params": None}
+    }
+    ret.geojson_layers = [ret.layers[3]]
+    return ret
 
-    @property
-    def collapse_button(self):
-        """Returns the collapse button on layer_manager or None."""
-        return utils.query_widget(
-            self.layer_manager,
-            ipywidgets.ToggleButton,
-            lambda c: c.tooltip == "Layer Manager",
-        )
 
-    @property
-    def close_button(self):
-        """Returns the close button on layer_manager or None."""
-        return utils.query_widget(
-            self.layer_manager,
-            ipywidgets.Button,
-            lambda c: c.tooltip == "Close the tool",
-        )
-
-    @property
-    def toggle_all_checkbox(self):
-        """Returns the toggle all checkbox on layer_manager or None."""
-        return utils.query_widget(
-            self.layer_manager,
-            ipywidgets.Checkbox,
-            lambda c: c.description == "All layers on/off",
-        )
-
-    @property
-    def layer_rows(self):
-        """Returns the ipywidgets rows on layer_manager."""
-        return utils.query_widget(
-            self.layer_manager, ipywidgets.VBox, lambda c: True
-        ).children[1:]
-
-    def _query_checkbox_on_row(self, row, name):
-        return utils.query_widget(
-            row, ipywidgets.Checkbox, lambda c: c.description == name
-        )
-
-    def _query_slider_on_row(self, row):
-        return utils.query_widget(row, ipywidgets.FloatSlider, lambda _: True)
-
-    def _query_button_on_row(self, row):
-        return utils.query_widget(row, ipywidgets.Button, lambda _: True)
-
-    def _validate_row(self, row, name, checked, opacity):
-        self.assertEqual(self._query_checkbox_on_row(row, name).value, checked)
-        self.assertEqual(self._query_slider_on_row(row).value, opacity)
-        self.assertIsNotNone(self._query_button_on_row(row))
+@unittest.mock.patch(
+    "geemap.map_widgets.LayerManagerRow._traitlet_link_type",
+    new=unittest.mock.Mock(return_value=ipywidgets.link),
+)  # jslink isn't supported in ipywidgets
+class TestLayerManagerRow(unittest.TestCase):
+    """Tests for the LayerManagerRow class in the `layer_manager` module."""
 
     def setUp(self):
-        self.fake_map = fake_map.FakeMap()
-        self.fake_map.layers = [
-            fake_map.FakeTileLayer(name="OpenStreetMap"),  # Basemap
-            fake_map.FakeTileLayer(
-                name="GMaps", visible=False, opacity=0.5
-            ),  # Extra basemap
-            fake_map.FakeEeTileLayer(name="test-layer", visible=True, opacity=0.8),
-            fake_map.FakeGeoJSONLayer(
-                name="test-geojson-layer",
-                visible=False,
-                style={"some-style": "red", "opacity": 0.3, "fillOpacity": 0.2},
-            ),
-        ]
-        self.fake_map.ee_layers = {
-            "test-layer": {
+        self.fake_map = _create_fake_map()
+
+    def test_row_invalid_map_or_layer(self):
+        """Tests that a valid map and layer must be passed in."""
+        with self.assertRaisesRegex(ValueError, "valid map and layer"):
+            map_widgets.LayerManagerRow(None, None)
+
+    def test_row(self):
+        """Tests LayerManagerRow is initialized correctly for a standard layer."""
+        layer = fake_map.FakeTileLayer(name="layer-name", visible=False, opacity=0.2)
+        row = map_widgets.LayerManagerRow(self.fake_map, layer)
+
+        self.assertFalse(row.is_loading)
+        self.assertEqual(row.name, layer.name)
+        self.assertEqual(row.visible, layer.visible)
+        self.assertEqual(row.opacity, layer.opacity)
+
+    def test_geojson_row(self):
+        """Tests LayerManagerRow is initialized correctly for a GeoJSON layer."""
+        layer = fake_map.FakeGeoJSONLayer(
+            name="layer-name", visible=True, style={"opacity": 0.2, "fillOpacity": 0.4}
+        )
+        self.fake_map.geojson_layers.append(layer)
+        row = map_widgets.LayerManagerRow(self.fake_map, layer)
+
+        self.assertEqual(row.name, layer.name)
+        self.assertTrue(row.visible)
+        self.assertEqual(row.opacity, 0.4)
+
+    def test_layer_update_row_properties(self):
+        """Tests layer updates update row traitlets."""
+        layer = fake_map.FakeTileLayer(name="layer-name", visible=False, opacity=0.2)
+        row = map_widgets.LayerManagerRow(self.fake_map, layer)
+
+        layer.loading = True
+        layer.opacity = 0.42
+        layer.visible = True
+        self.assertTrue(row.is_loading)
+        self.assertEqual(row.opacity, 0.42)
+        self.assertTrue(row.visible)
+
+    def test_row_update_layer_properties(self):
+        """Tests row updates update layer traitlets."""
+        layer = fake_map.FakeTileLayer(name="layer-name", visible=False, opacity=0.2)
+        row = map_widgets.LayerManagerRow(self.fake_map, layer)
+
+        row.opacity = 0.42
+        row.visible = True
+        self.assertEqual(layer.opacity, 0.42)
+        self.assertTrue(layer.visible)
+
+    def test_geojson_row_update_layer_properties(self):
+        """Tests GeoJSON row updates update layer traitlets."""
+        layer = fake_map.FakeGeoJSONLayer(
+            name="layer-name", visible=True, style={"opacity": 0.2, "fillOpacity": 0.4}
+        )
+        self.fake_map.geojson_layers.append(layer)
+        row = map_widgets.LayerManagerRow(self.fake_map, layer)
+
+        row.opacity = 0.42
+        row.visible = True
+        self.assertEqual(layer.style["opacity"], 0.42)
+        self.assertEqual(layer.style["fillOpacity"], 0.42)
+        self.assertTrue(layer.visible)
+
+    def test_settings_button_clicked_non_ee_layer(self):
+        """Tests that the layer vis editor is opened when settings is clicked."""
+        row = map_widgets.LayerManagerRow(self.fake_map, self.fake_map.layers[0])
+
+        msg = {"type": "click", "id": "settings"}
+        row._handle_custom_msg(msg, [])  # pylint: disable=protected-access
+
+        self.fake_map.add.assert_called_once_with(
+            "layer_editor", position="bottomright", layer_dict=None
+        )
+
+    def test_settings_button_clicked_ee_layer(self):
+        """Tests that the layer vis editor is opened when settings is clicked."""
+        row = map_widgets.LayerManagerRow(self.fake_map, self.fake_map.layers[2])
+
+        msg = {"type": "click", "id": "settings"}
+        row._handle_custom_msg(msg, [])  # pylint: disable=protected-access
+
+        self.fake_map.add.assert_called_once_with(
+            "layer_editor",
+            position="bottomright",
+            layer_dict={
                 "ee_object": None,
                 "ee_layer": self.fake_map.layers[2],
                 "vis_params": None,
             },
-        }
-        self.fake_map.geojson_layers = [self.fake_map.layers[3]]
+        )
 
+    def test_delete_button_clicked(self):
+        """Tests that the layer is removed when delete is clicked."""
+        row = map_widgets.LayerManagerRow(self.fake_map, self.fake_map.layers[0])
+
+        msg = {"type": "click", "id": "delete"}
+        row._handle_custom_msg(msg, [])  # pylint: disable=protected-access
+
+        self.assertEqual(len(self.fake_map.layers), 3)
+        self.assertEqual(self.fake_map.layers[0].name, "GMaps")
+        self.assertEqual(self.fake_map.layers[1].name, "test-layer")
+        self.assertEqual(self.fake_map.layers[2].name, "test-geojson-layer")
+
+
+class TestLayerManager(unittest.TestCase):
+    """Tests for the LayerManager class in the `layer_manager` module."""
+
+    def setUp(self):
+        self.fake_map = _create_fake_map()
         self.layer_manager = map_widgets.LayerManager(self.fake_map)
 
     def test_layer_manager_no_map(self):
@@ -542,122 +604,38 @@ class TestLayerManager(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "valid map"):
             map_widgets.LayerManager(None)
 
-    def test_layer_manager(self):
-        self.assertIsNotNone(self.collapse_button)
-        self.assertIsNotNone(self.close_button)
-        self.assertIsNotNone(self.toggle_all_checkbox)
+    def _validate_row(
+        self, index: int, name: str, visible: bool, opacity: float
+    ) -> None:
+        child = self.layer_manager.children[index]
+        self.assertEqual(child.host_map, self.fake_map)
+        self.assertEqual(child.layer, self.fake_map.layers[index])
+        self.assertEqual(child.name, name)
+        self.assertEqual(child.visible, visible)
+        self.assertAlmostEqual(child.opacity, opacity)
 
-        # Verify computed properties are correct.
-        self.assertFalse(self.layer_manager.collapsed)
-        self.assertFalse(self.layer_manager.header_hidden)
-        self.assertFalse(self.layer_manager.close_button_hidden)
-
-        self.assertEqual(len(self.layer_rows), 4)
-        self._validate_row(self.layer_rows[1], "GMaps", False, 0.5)
-        self._validate_row(self.layer_rows[2], "test-layer", True, 0.8)
-        self._validate_row(self.layer_rows[3], "test-geojson-layer", False, 0.3)
-
-    def test_layer_manager_toggle_all_visibility(self):
-        """Tests that the toggle all checkbox changes visibilities."""
-        # True then False because the event doesn't fire if the value doesn't change.
-        self.toggle_all_checkbox.value = True
-        self.toggle_all_checkbox.value = False
-
-        layers = self.fake_map.layers
-        for layer in layers[1:]:  # The base layer doesn't get toggled.
-            self.assertFalse(layer.visible, f"{layer.name} shouldn't be visible")
-
-        self.toggle_all_checkbox.value = True
-
-        for layer in self.fake_map.layers:
-            self.assertEqual(layer.visible, True, f"{layer.name} should be visible")
-
-    def test_layer_manager_opacity_changed(self):
-        """Tests that the opacity slider changes opacities."""
-        ee_layer = self.layer_rows[2]
-        ee_layer_slider = self._query_slider_on_row(ee_layer)
-        ee_layer_slider.value = 0.01
-        self.assertEqual(self.fake_map.layers[2].opacity, 0.01)
-
-        geojson_layer = self.layer_rows[3]
-        geojson_layer_slider = self._query_slider_on_row(geojson_layer)
-        geojson_layer_slider.value = 0.02
-        self.assertEqual(
-            self.fake_map.layers[3].style,
-            {"some-style": "red", "opacity": 0.02, "fillOpacity": 0.02},
-        )
-
-    def test_layer_manager_click_settings(self):
-        """Tests that the settings button fires an event."""
-        on_open_vis_mock = Mock()
-        self.layer_manager.on_open_vis = on_open_vis_mock
-        ee_layer_button = self._query_button_on_row(self.layer_rows[1])
-
-        ee_layer_button.click()
-
-        on_open_vis_mock.assert_called_once()
-
-    def test_layer_manager_click_close(self):
-        """Tests that the close button fires an event."""
-        on_close_mock = Mock()
-        self.layer_manager.on_close = on_close_mock
-
-        self.close_button.click()
-
-        on_close_mock.assert_called_once()
-
-    def test_layer_manager_refresh_layers(self):
-        """Tests that refresh_layers refreshes the layers."""
-        self.fake_map.layers = []
+    def test_refresh_layers_updates_children(self):
+        """Tests that refresh layers updates children."""
         self.layer_manager.refresh_layers()
 
-        self.assertEqual(len(self.layer_rows), 0)
+        self.assertEqual(len(self.layer_manager.children), len(self.fake_map.layers))
+        self._validate_row(0, name="OpenStreetMap", visible=True, opacity=1.0)
+        self._validate_row(1, name="GMaps", visible=False, opacity=0.5)
+        self._validate_row(2, name="test-layer", visible=True, opacity=0.8)
+        self._validate_row(3, name="test-geojson-layer", visible=False, opacity=0.3)
 
-    def test_layer_manager_collapsed(self):
-        """Tests that setting the collapsed property collapses the widget."""
-        self.layer_manager.collapsed = True
+    def test_visibility_updates_children(self):
+        """Tests that tweaking the visibility updates children visibilities."""
+        self.layer_manager.refresh_layers()
+        self.assertTrue(self.layer_manager.visible)
 
-        self.assertIsNotNone(self.collapse_button)
-        self.assertIsNone(self.close_button)
-        self.assertIsNone(self.toggle_all_checkbox)
-        self.assertEqual(len(self.layer_rows), 0)
+        self.layer_manager.visible = False
+        for child in self.layer_manager.children:
+            self.assertFalse(child.visible)
 
-        self.layer_manager.collapsed = False
-
-        self.assertIsNotNone(self.collapse_button)
-        self.assertIsNotNone(self.close_button)
-        self.assertIsNotNone(self.toggle_all_checkbox)
-        self.assertEqual(len(self.layer_rows), 4)
-
-    def test_layer_manager_header_hidden(self):
-        """Tests that setting the header_hidden property hides the header."""
-        self.layer_manager.header_hidden = True
-
-        self.assertIsNone(self.collapse_button)
-        self.assertIsNone(self.close_button)
-        self.assertIsNotNone(self.toggle_all_checkbox)
-
-        self.layer_manager.header_hidden = False
-
-        self.assertIsNotNone(self.collapse_button)
-        self.assertIsNotNone(self.close_button)
-        self.assertIsNotNone(self.toggle_all_checkbox)
-
-    def test_layer_manager_close_button_hidden(self):
-        """Tests that setting the close_button_hidden property hides the close
-        button.
-        """
-        self.layer_manager.close_button_hidden = True
-
-        self.assertIsNotNone(self.collapse_button)
-        self.assertIsNone(self.close_button)
-        self.assertIsNotNone(self.toggle_all_checkbox)
-
-        self.layer_manager.close_button_hidden = False
-
-        self.assertIsNotNone(self.collapse_button)
-        self.assertIsNotNone(self.close_button)
-        self.assertIsNotNone(self.toggle_all_checkbox)
+        self.layer_manager.visible = True
+        for child in self.layer_manager.children:
+            self.assertTrue(child.visible)
 
 
 class TestBasemap(unittest.TestCase):
