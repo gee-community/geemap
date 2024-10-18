@@ -7,7 +7,7 @@ import { legacyStyles } from './ipywidgets_styles';
 import { materialStyles } from "./material_styles";
 import { loadFonts } from "./utils";
 
-interface LayerManagerRowModel {
+export interface LayerManagerRowModel {
     name: string;
     visible: boolean;
     opacity: number;

@@ -4,7 +4,7 @@ import { property } from "lit/decorators.js";
 import { legacyStyles } from './ipywidgets_styles';
 import { loadFonts, updateChildren } from "./utils";
 
-interface LayerManagerModel {
+export interface LayerManagerModel {
     children: any;
     visible: boolean;
 }
