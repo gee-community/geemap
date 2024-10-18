@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "geemap"
-version = "0.34.5"
+version = "0.35.0"
 description = "A Python package for interactive mapping using Google Earth Engine and ipyleaflet"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -52,12 +52,17 @@ geemap = "geemap.cli:main"
 
 [project.optional-dependencies]
 all = [
-    "geemap[backends,dev,extra,lidar,raster,sql,apps,vector,workshop,maplibre]",
+    "geemap[ai,backends,dev,extra,lidar,raster,sql,apps,vector,workshop,maplibre]",
 ]
 ai = [
     "google-api-core",
     "google-cloud-storage",
     "google-generativeai",
+    "google_cloud_aiplatform",
+    "langchain-community",
+    "langchain_google_genai",
+    "langchain",
+    "iso8601"
 ]
 backends = [
     "keplergl",
@@ -145,7 +150,7 @@ exclude = ["docs*"]
 universal = true
 
 [tool.bumpversion]
-current_version = "0.34.5"
+current_version = "0.35.0"
 commit = true
 tag = true
 

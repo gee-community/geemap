@@ -167,6 +167,7 @@ More video tutorials for geemap and Earth Engine are available on my [YouTube ch
 148. DataTable Charts ([notebook](https://geemap.org/notebooks/148_chart_data_table))
 149. Using Gemini and EE Genie for automatic code generation ([notebook](https://geemap.org/notebooks/149_gemini))
 150. Visualizing Earth Engine data in 3D with MapLibre ([notebook](https://geemap.org/notebooks/150_maplibre))
+151. Earth Engine Dataset Explorer ([notebook](https://geemap.org/notebooks/151_dataset_explorer))
 
 ### 1. Introducing the geemap Python package for interactive mapping with Google Earth Engine
 
