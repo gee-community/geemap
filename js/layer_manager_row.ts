@@ -7,7 +7,7 @@ import { legacyStyles } from './ipywidgets_styles';
 import { materialStyles } from "./material_styles";
 import { loadFonts } from "./utils";
 
-interface LayerManagerRowModel {
+export interface LayerManagerRowModel {
     name: string;
     visible: boolean;
     opacity: number;
@@ -151,7 +151,7 @@ export class LayerManagerRow extends LitElement {
                     @input="${this.onLayerOpacityChanged}"
                 />
                 <button
-                    class="legacy-button settings-delete-button"
+                    class="legacy-button settings-delete-button settings-button"
                     @click="${this.onSettingsClicked}"
                 >
                     <span class="material-symbols-outlined">&#xe8b8;</span>
@@ -160,6 +160,7 @@ export class LayerManagerRow extends LitElement {
                     class=${classMap({
             'legacy-button': true,
             'settings-delete-button': true,
+            'delete-button': true,
             'loading': this.isLoading,
             'done-loading': !this.isLoading
         })}
@@ -181,13 +182,13 @@ export class LayerManagerRow extends LitElement {
             <div class="row">
                 <span class="legacy-text remove-layer-text">Remove layer?</span>
                     <button
-                        class="legacy-button primary confirm-deny-button"
+                        class="legacy-button primary confirm-deny-button confirm-deletion-button"
                         @click="${this.confirmDeletion}"
                     >
                         Yes
                     </button>
                     <button
-                        class="legacy-button primary confirm-deny-button"
+                        class="legacy-button primary confirm-deny-button cancel-deletion-button"
                         @click="${this.cancelDeletion}"
                     >
                         No

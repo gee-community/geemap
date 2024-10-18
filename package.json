@@ -3,11 +3,12 @@
 		"dev": "npm run build -- --sourcemap=inline --watch",
 		"build": "esbuild js/*.ts --format=esm --bundle --outdir=geemap/static",
 		"typecheck": "tsc --noEmit",
-		"test": "karma start karma.conf.js --single-run --watch=false",
-		"test:debug": "karma start karma.conf.js"
+		"test": "karma start karma.conf.cjs --single-run --watch=false",
+		"test:watch": "karma start karma.conf.cjs"
 	},
+	"type": "module",
 	"dependencies": {
-		"lit": "^3.2.0"
+		"lit": "^3.2.1"
 	},
 	"devDependencies": {
 		"@anywidget/types": "^0.1.9",
@@ -21,9 +22,13 @@
 		"karma-chrome-launcher": "^3.2.0",
 		"karma-jasmine": "^5.1.0",
 		"karma-jasmine-html-reporter": "^2.1.0",
-		"karma-typescript": "^5.5.4",
+		"karma-spec-reporter": "^0.0.36",
+		"karma-webpack": "^5.0.1",
 		"puppeteer": "^23.5.3",
 		"puppeteer-core": "^23.5.3",
-		"typescript": "^5.5.3"
+		"ts-loader": "^9.5.1",
+		"typescript": "^5.5.3",
+		"webpack": "^5.95.0",
+		"webpack-cli": "^5.1.4"
 	}
 }
