@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.41">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.43">
     
     
       
@@ -5919,7 +5919,7 @@ Defaults to False.</p></td>
 
 
 <h2 id="geemap.coreutils.ee_initialize" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ee_initialize</span><span class="p">(</span><span class="n">token_name</span><span class="o">=</span><span class="s1">&#39;EARTHENGINE_TOKEN&#39;</span><span class="p">,</span> <span class="n">auth_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">service_account</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">auth_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_agent_prefix</span><span class="o">=</span><span class="s1">&#39;geemap&#39;</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ee_initialize</span><span class="p">(</span><span class="n">token_name</span><span class="o">=</span><span class="s1">&#39;EARTHENGINE_TOKEN&#39;</span><span class="p">,</span> <span class="n">auth_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">auth_args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_agent_prefix</span><span class="o">=</span><span class="s1">&#39;geemap&#39;</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 
 <a href="#geemap.coreutils.ee_initialize" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -5957,13 +5957,6 @@ details. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
       <tr>
-        <td><code>service_account</code></td>
-        <td><code>bool</code></td>
-        <td><p>If True, use a service account.
-Defaults to False.</p></td>
-        <td><code>False</code></td>
-      </tr>
-      <tr>
         <td><code>auth_args</code></td>
         <td><code>dict</code></td>
         <td><p>Additional authentication parameters for
@@ -5999,7 +5992,6 @@ to use the Earth Engine High-Volume platform. Defaults to {}.</p></td>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">ee_initialize</span><span class="p">(</span>
     <span class="n">token_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;EARTHENGINE_TOKEN&quot;</span><span class="p">,</span>
     <span class="n">auth_mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">service_account</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">auth_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">user_agent_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;geemap&quot;</span><span class="p">,</span>
     <span class="n">project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -6015,8 +6007,6 @@ to use the Earth Engine High-Volume platform. Defaults to {}.</p></td>
 <span class="sd">            notebook, localhost, or gcloud.</span>
 <span class="sd">            See https://developers.google.com/earth-engine/guides/auth for more</span>
 <span class="sd">            details. Defaults to None.</span>
-<span class="sd">        service_account (bool, optional): If True, use a service account.</span>
-<span class="sd">            Defaults to False.</span>
 <span class="sd">        auth_args (dict, optional): Additional authentication parameters for</span>
 <span class="sd">            aa.Authenticate(). Defaults to {}.</span>
 <span class="sd">        user_agent_prefix (str, optional): If set, the prefix (version-less)</span>
@@ -6027,17 +6017,33 @@ to use the Earth Engine High-Volume platform. Defaults to {}.</p></td>
 <span class="sd">            For example, opt_url=&#39;https://earthengine-highvolume.googleapis.com&#39;</span>
 <span class="sd">            to use the Earth Engine High-Volume platform. Defaults to {}.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">httplib2</span>
+    <span class="kn">import</span> <span class="nn">google.oauth2.credentials</span>
     <span class="kn">from</span> <span class="nn">.__init__</span> <span class="kn">import</span> <span class="n">__version__</span>
-
-    <span class="k">if</span> <span class="n">auth_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">auth_args</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="n">user_agent</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">user_agent_prefix</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="n">ee</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">setUserAgent</span><span class="p">(</span><span class="n">user_agent</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="s2">&quot;http_transport&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;http_transport&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">httplib2</span><span class="o">.</span><span class="n">Http</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ee</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_credentials</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">ee_token</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="n">token_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ee_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="n">stored</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">ee_token</span><span class="p">)</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">google</span><span class="o">.</span><span class="n">oauth2</span><span class="o">.</span><span class="n">credentials</span><span class="o">.</span><span class="n">Credentials</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span>
+            <span class="n">token_uri</span><span class="o">=</span><span class="s2">&quot;https://oauth2.googleapis.com/token&quot;</span><span class="p">,</span>
+            <span class="n">client_id</span><span class="o">=</span><span class="n">stored</span><span class="p">[</span><span class="s2">&quot;client_id&quot;</span><span class="p">],</span>
+            <span class="n">client_secret</span><span class="o">=</span><span class="n">stored</span><span class="p">[</span><span class="s2">&quot;client_secret&quot;</span><span class="p">],</span>
+            <span class="n">refresh_token</span><span class="o">=</span><span class="n">stored</span><span class="p">[</span><span class="s2">&quot;refresh_token&quot;</span><span class="p">],</span>
+            <span class="n">quota_project_id</span><span class="o">=</span><span class="n">stored</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">auth_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">auth_args</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span>
@@ -6054,60 +6060,8 @@ to use the Earth Engine High-Volume platform. Defaults to {}.</p></td>
 
     <span class="n">auth_args</span><span class="p">[</span><span class="s2">&quot;auth_mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">auth_mode</span>
 
-    <span class="k">if</span> <span class="n">ee</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_credentials</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ee_token</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="n">token_name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">service_account</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">credential_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span>
-                    <span class="s2">&quot;~/.config/earthengine/private-key.json&quot;</span>
-                <span class="p">)</span>
-
-                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">credential_file_path</span><span class="p">):</span>
-                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">credential_file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                        <span class="n">token_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">token_name</span> <span class="o">=</span> <span class="s2">&quot;EARTHENGINE_TOKEN&quot;</span>
-                    <span class="n">ee_token</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">token_name</span><span class="p">)</span>
-                    <span class="n">token_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">ee_token</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">service_account</span> <span class="o">=</span> <span class="n">token_dict</span><span class="p">[</span><span class="s2">&quot;client_email&quot;</span><span class="p">]</span>
-                <span class="n">private_key</span> <span class="o">=</span> <span class="n">token_dict</span><span class="p">[</span><span class="s2">&quot;private_key&quot;</span><span class="p">]</span>
-
-                <span class="n">credentials</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">ServiceAccountCredentials</span><span class="p">(</span>
-                    <span class="n">service_account</span><span class="p">,</span> <span class="n">key_data</span><span class="o">=</span><span class="n">private_key</span>
-                <span class="p">)</span>
-                <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">ee_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">credential_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span>
-                        <span class="s2">&quot;~/.config/earthengine/credentials&quot;</span>
-                    <span class="p">)</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">credential_file_path</span><span class="p">):</span>
-                        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span>
-                            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">credential_file_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span>
-                        <span class="p">)</span>
-                        <span class="k">if</span> <span class="n">ee_token</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ee_token</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span>
-                            <span class="s2">&quot;}&quot;</span>
-                        <span class="p">):</span>  <span class="c1"># deals with token generated by new auth method (earthengine-api&gt;=0.1.304).</span>
-                            <span class="n">token_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">ee_token</span><span class="p">)</span>
-                            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">credential_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">token_dict</span><span class="p">))</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="n">credential</span> <span class="o">=</span> <span class="p">(</span>
-                                <span class="s1">&#39;{&quot;refresh_token&quot;:&quot;</span><span class="si">%s</span><span class="s1">&quot;}&#39;</span> <span class="o">%</span> <span class="n">ee_token</span>
-                            <span class="p">)</span>  <span class="c1"># deals with token generated by old auth method.</span>
-                            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">credential_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">credential</span><span class="p">)</span>
-
-                <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">ee</span><span class="o">.</span><span class="n">Authenticate</span><span class="p">(</span><span class="o">**</span><span class="n">auth_args</span><span class="p">)</span>
-                <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">ee</span><span class="o">.</span><span class="n">Authenticate</span><span class="p">(</span><span class="o">**</span><span class="n">auth_args</span><span class="p">)</span>
+    <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
