@@ -4,6 +4,7 @@ import sys
 import zipfile
 
 import ee
+import ee.data
 import ipywidgets as widgets
 from ipytree import Node, Tree
 from typing import Union, List, Dict, Optional, Tuple, Any
@@ -72,6 +73,9 @@ def ee_initialize(
 
     user_agent = f"{user_agent_prefix}/{__version__}"
     ee.data.setUserAgent(user_agent)
+
+    if ee.data._credentials is not None:
+        return
 
     ee_token = get_env_var(token_name)
     if ee_token is not None:
