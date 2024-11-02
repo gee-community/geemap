@@ -1,6 +1,6 @@
 [project]
 name = "geemap"
-version = "0.35.0"
+version = "0.35.1"
 description = "A Python package for interactive mapping using Google Earth Engine and ipyleaflet"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -143,7 +143,7 @@ universal = true
 
 
 [tool.bumpversion]
-current_version = "0.35.0"
+current_version = "0.35.1"
 commit = true
 tag = true
 
