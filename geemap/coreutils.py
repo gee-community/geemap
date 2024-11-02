@@ -4,7 +4,6 @@ import sys
 import zipfile
 
 import ee
-import ee.data
 import ipywidgets as widgets
 from ipytree import Node, Tree
 from typing import Union, List, Dict, Optional, Tuple, Any
