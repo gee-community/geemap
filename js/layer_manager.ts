@@ -1,7 +1,8 @@
 import type { AnyModel, RenderProps } from "@anywidget/types";
 import { html, css, LitElement } from "lit";
 import { property } from "lit/decorators.js";
-import { legacyStyles } from './ipywidgets_styles';
+
+import { legacyStyles } from "./ipywidgets_styles";
 import { loadFonts, updateChildren } from "./utils";
 
 export interface LayerManagerModel {
@@ -35,7 +36,10 @@ export class LayerManager extends LitElement {
     ];
 
     private _model: AnyModel<LayerManagerModel> | undefined = undefined;
-    private static modelNameToViewName = new Map<keyof LayerManagerModel, keyof LayerManager | null>([
+    private static modelNameToViewName = new Map<
+        keyof LayerManagerModel,
+        keyof LayerManager | null
+    >([
         ["children", null],
         ["visible", "visible"],
     ]);
@@ -67,7 +71,9 @@ export class LayerManager extends LitElement {
                         .checked="${this.visible}"
                         @change="${this.onLayerVisibilityChanged}"
                     />
-                    <span class="legacy-text all-layers-text">All layers on/off</span>
+                    <span class="legacy-text all-layers-text"
+                        >All layers on/off</span
+                    >
                 </div>
                 <slot></slot>
             </div>
@@ -95,7 +101,9 @@ if (!customElements.get(LayerManager.componentName)) {
 
 async function render({ model, el }: RenderProps<LayerManagerModel>) {
     loadFonts();
-    const manager = <LayerManager>document.createElement(LayerManager.componentName);
+    const manager = <LayerManager>(
+        document.createElement(LayerManager.componentName)
+    );
     manager.model = model;
     el.appendChild(manager);
 
