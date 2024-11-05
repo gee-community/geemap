@@ -152,9 +152,14 @@ export class LayerManagerRow extends LitElement {
                     type="checkbox"
                     class="layer-visibility-checkbox"
                     .checked="${this.visible}"
-                    @change="${this.onLayerVisibilityChanged}"
+                    @click="${this.onLayerVisibilityChanged}"
                 />
-                <span class="legacy-text layer-name">${this.name}</span>
+                <span
+                    class="legacy-text layer-name"
+                    @click="${this.onLayerVisibilityChanged}"
+                >
+                    ${this.name}
+                </span>
                 <input
                     type="range"
                     class="legacy-slider layer-opacity-slider"
@@ -220,9 +225,8 @@ export class LayerManagerRow extends LitElement {
         this._model?.save_changes();
     }
 
-    private onLayerVisibilityChanged(event: Event) {
-        const target = event.target as HTMLInputElement;
-        this.visible = target.checked;
+    private onLayerVisibilityChanged(_event: Event) {
+        this.visible = !this.visible;
     }
 
     private onLayerOpacityChanged(event: Event) {
