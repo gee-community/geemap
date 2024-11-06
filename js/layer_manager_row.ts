@@ -1,11 +1,18 @@
 import type { AnyModel, RenderProps } from "@anywidget/types";
-import { html, css, LitElement, TemplateResult, nothing } from "lit";
+import {
+    css,
+    html,
+    nothing,
+    LitElement,
+    PropertyValues,
+    TemplateResult,
+} from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
-import { materialStyles } from "./material_styles";
-import { loadFonts } from "./utils";
+import { materialStyles } from "./styles";
+import { loadFonts, reverseMap } from "./utils";
 
 export interface LayerManagerRowModel {
     name: string;
@@ -31,6 +38,7 @@ export class LayerManagerRow extends LitElement {
             }
 
             .layer-name {
+                cursor: pointer;
                 flex-grow: 1;
                 max-width: 150px;
                 overflow: hidden;
@@ -112,6 +120,9 @@ export class LayerManagerRow extends LitElement {
         ["opacity", "opacity"],
         ["is_loading", "isLoading"],
     ]);
+    private static viewNameToModelName = reverseMap(
+        LayerManagerRow.modelNameToViewName
+    );
 
     set model(model: AnyModel<LayerManagerRowModel>) {
         this._model = model;
@@ -130,20 +141,11 @@ export class LayerManagerRow extends LitElement {
         }
     }
 
-    @property()
-    name: string = "";
-
-    @property()
-    visible: boolean = true;
-
-    @property()
-    opacity: number = 1;
-
-    @property()
-    isLoading: boolean = false;
-
-    @property()
-    isConfirmDialogVisible: boolean = false;
+    @property() name: string = "";
+    @property() visible: boolean = true;
+    @property() opacity: number = 1;
+    @property() isLoading: boolean = false;
+    @property() isConfirmDialogVisible: boolean = false;
 
     render(): TemplateResult {
         return html`
@@ -177,11 +179,11 @@ export class LayerManagerRow extends LitElement {
                 </button>
                 <button
                     class=${classMap({
-            "legacy-button": true,
-            "settings-delete-button": true,
-            loading: this.isLoading,
-            "done-loading": !this.isLoading,
-        })}
+                        "legacy-button": true,
+                        "settings-delete-button": true,
+                        loading: this.isLoading,
+                        "done-loading": !this.isLoading,
+                    })}
                     @click="${this.onDeleteClicked}"
                 >
                     <div class="spinner"></div>
@@ -217,10 +219,15 @@ export class LayerManagerRow extends LitElement {
         `;
     }
 
-    updated(changedProperties: any) {
+    updated(changedProperties: PropertyValues<LayerManagerRow>): void {
         // Update the model properties so they're reflected in Python.
-        for (const [property, _] of changedProperties) {
-            this._model?.set(property, this[property as keyof LayerManagerRow]);
+        for (const [viewProp, _] of changedProperties) {
+            const castViewProp = viewProp as keyof LayerManagerRow;
+            if (LayerManagerRow.viewNameToModelName.has(castViewProp)) {
+                const modelProp =
+                    LayerManagerRow.viewNameToModelName.get(castViewProp);
+                this._model?.set(modelProp as any, this[castViewProp] as any);
+            }
         }
         this._model?.save_changes();
     }
