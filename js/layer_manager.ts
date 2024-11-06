@@ -1,9 +1,9 @@
 import type { AnyModel, RenderProps } from "@anywidget/types";
-import { html, css, LitElement } from "lit";
+import { html, css, LitElement, PropertyValues, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
-import { loadFonts, updateChildren } from "./utils";
+import { loadFonts, reverseMap, updateChildren } from "./utils";
 
 export interface LayerManagerModel {
     children: any;
@@ -43,6 +43,9 @@ export class LayerManager extends LitElement {
         ["children", null],
         ["visible", "visible"],
     ]);
+    private static viewNameToModelName = reverseMap(
+        LayerManager.modelNameToViewName
+    );
 
     set model(model: AnyModel<LayerManagerModel>) {
         this._model = model;
@@ -58,10 +61,9 @@ export class LayerManager extends LitElement {
         }
     }
 
-    @property()
-    visible: boolean = false;
+    @property() visible: boolean = false;
 
-    render() {
+    render(): TemplateResult {
         return html`
             <div class="container">
                 <div class="row">
@@ -80,15 +82,20 @@ export class LayerManager extends LitElement {
         `;
     }
 
-    updated(changedProperties: any) {
+    updated(changedProperties: PropertyValues<LayerManager>): void {
         // Update the model properties so they're reflected in Python.
-        for (const [property, _] of changedProperties) {
-            this._model?.set(property, this[property as keyof LayerManager]);
+        for (const [viewProp, _] of changedProperties) {
+            const castViewProp = viewProp as keyof LayerManager;
+            if (LayerManager.viewNameToModelName.has(castViewProp)) {
+                const modelProp =
+                    LayerManager.viewNameToModelName.get(castViewProp);
+                this._model?.set(modelProp as any, this[castViewProp] as any);
+            }
         }
         this._model?.save_changes();
     }
 
-    private onLayerVisibilityChanged(event: Event) {
+    private onLayerVisibilityChanged(event: Event): void {
         const target = event.target as HTMLInputElement;
         this.visible = target.checked;
     }
