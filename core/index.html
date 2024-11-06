@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.43">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.44">
     
     
       
@@ -7554,14 +7554,10 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_manager</span><span class="p">:</span>
                 <span class="k">return</span>
 
-            <span class="k">def</span> <span class="nf">_on_open_vis</span><span class="p">(</span><span class="n">layer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_add_layer_editor</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span><span class="p">,</span> <span class="n">layer_dict</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
-
             <span class="n">layer_manager</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="n">layer_manager</span><span class="o">.</span><span class="n">header_hidden</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">layer_manager</span><span class="o">.</span><span class="n">close_button_hidden</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">layer_manager</span><span class="o">.</span><span class="n">on_open_vis</span> <span class="o">=</span> <span class="n">_on_open_vis</span>
+            <span class="n">layer_manager</span><span class="o">.</span><span class="n">refresh_layers</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar</span><span class="o">.</span><span class="n">accessory_widget</span> <span class="o">=</span> <span class="n">layer_manager</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar</span><span class="o">.</span><span class="n">accessory_widget</span> <span class="o">=</span> <span class="kc">None</span>
@@ -7577,13 +7573,9 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_manager</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="k">def</span> <span class="nf">_on_open_vis</span><span class="p">(</span><span class="n">layer_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_add_layer_editor</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span><span class="p">,</span> <span class="n">layer_dict</span><span class="o">=</span><span class="n">layer</span><span class="p">)</span>
-
         <span class="n">layer_manager</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">layer_manager</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;layer_manager&quot;</span><span class="p">)</span>
-        <span class="n">layer_manager</span><span class="o">.</span><span class="n">on_open_vis</span> <span class="o">=</span> <span class="n">_on_open_vis</span>
+        <span class="n">layer_manager</span><span class="o">.</span><span class="n">refresh_layers</span><span class="p">()</span>
         <span class="n">layer_manager_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
             <span class="n">widget</span><span class="o">=</span><span class="n">layer_manager</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span>
         <span class="p">)</span>
