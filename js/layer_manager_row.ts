@@ -1,18 +1,12 @@
-import type { AnyModel, RenderProps } from "@anywidget/types";
-import {
-    css,
-    html,
-    nothing,
-    LitElement,
-    PropertyValues,
-    TemplateResult,
-} from "lit";
+import type { RenderProps } from "@anywidget/types";
+import { css, html, nothing, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
 import { materialStyles } from "./styles";
-import { loadFonts, reverseMap } from "./utils";
+import { loadFonts } from "./utils";
+import { LitWidget } from "./lit_widget";
 
 export interface LayerManagerRowModel {
     name: string;
@@ -21,7 +15,10 @@ export interface LayerManagerRowModel {
     is_loading: boolean;
 }
 
-export class LayerManagerRow extends LitElement {
+export class LayerManagerRow extends LitWidget<
+    LayerManagerRowModel,
+    LayerManagerRow
+> {
     static get componentName() {
         return `layer-manager-row`;
     }
@@ -110,35 +107,16 @@ export class LayerManagerRow extends LitElement {
         `,
     ];
 
-    private _model: AnyModel<LayerManagerRowModel> | undefined = undefined;
-    private static modelNameToViewName = new Map<
+    modelNameToViewName(): Map<
         keyof LayerManagerRowModel,
         keyof LayerManagerRow | null
-    >([
-        ["name", "name"],
-        ["visible", "visible"],
-        ["opacity", "opacity"],
-        ["is_loading", "isLoading"],
-    ]);
-    private static viewNameToModelName = reverseMap(
-        LayerManagerRow.modelNameToViewName
-    );
-
-    set model(model: AnyModel<LayerManagerRowModel>) {
-        this._model = model;
-        for (const [
-            modelKey,
-            widgetKey,
-        ] of LayerManagerRow.modelNameToViewName) {
-            if (widgetKey) {
-                // Get initial values from the Python model.
-                (this as any)[widgetKey] = model.get(modelKey);
-                // Listen for updates to the model.
-                model.on(`change:${modelKey}`, () => {
-                    (this as any)[widgetKey] = model.get(modelKey);
-                });
-            }
-        }
+    > {
+        return new Map([
+            ["name", "name"],
+            ["visible", "visible"],
+            ["opacity", "opacity"],
+            ["is_loading", "isLoading"],
+        ]);
     }
 
     @property() name: string = "";
@@ -219,19 +197,6 @@ export class LayerManagerRow extends LitElement {
         `;
     }
 
-    updated(changedProperties: PropertyValues<LayerManagerRow>): void {
-        // Update the model properties so they're reflected in Python.
-        for (const [viewProp, _] of changedProperties) {
-            const castViewProp = viewProp as keyof LayerManagerRow;
-            if (LayerManagerRow.viewNameToModelName.has(castViewProp)) {
-                const modelProp =
-                    LayerManagerRow.viewNameToModelName.get(castViewProp);
-                this._model?.set(modelProp as any, this[castViewProp] as any);
-            }
-        }
-        this._model?.save_changes();
-    }
-
     private onLayerVisibilityChanged(_event: Event) {
         this.visible = !this.visible;
     }
@@ -242,7 +207,7 @@ export class LayerManagerRow extends LitElement {
     }
 
     private onSettingsClicked(_: Event) {
-        this._model?.send({ type: "click", id: "settings" });
+        this.model?.send({ type: "click", id: "settings" });
     }
 
     private onDeleteClicked(_: Event) {
@@ -250,7 +215,7 @@ export class LayerManagerRow extends LitElement {
     }
 
     private confirmDeletion(_: Event) {
-        this._model?.send({ type: "click", id: "delete" });
+        this.model?.send({ type: "click", id: "delete" });
     }
 
     private cancelDeletion(_: Event) {
