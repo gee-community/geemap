@@ -429,14 +429,14 @@ class TestInspector(unittest.TestCase):
 
         objects_root = self._query_node(self.inspector, "Objects")
         self.assertIsNotNone(objects_root)
-        layer_3_root = self._query_node(objects_root, "test-map-3: Feature ")
+        layer_3_root = self._query_node(objects_root, "test-map-3: Feature")
         self.assertIsNotNone(layer_3_root)
         self.assertIsNotNone(self._query_node(layer_3_root, "type: Feature"))
         self.assertIsNotNone(self._query_node(layer_3_root, "id: 00000000000000000001"))
-        self.assertIsNotNone(self._query_node(layer_3_root, "fullname: "))
+        self.assertIsNotNone(self._query_node(layer_3_root, "fullname: some-full-name"))
         self.assertIsNotNone(self._query_node(layer_3_root, "linearid: 110469267091"))
         self.assertIsNotNone(self._query_node(layer_3_root, "mtfcc: S1400"))
-        self.assertIsNotNone(self._query_node(layer_3_root, "rttyp: "))
+        self.assertIsNotNone(self._query_node(layer_3_root, "rttyp: some-rttyp"))
 
     def test_map_click_twice(self):
         """Tests that clicking the map a second time removes the original output."""
