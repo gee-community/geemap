@@ -26,6 +26,32 @@ class Image:
     def reduceRegion(self, *_, **__):
         return Dictionary({"B1": 42, "B2": 3.14})
 
+    def getInfo(self):
+        return {
+            "type": "Image",
+            "bands": [
+                {
+                    "id": "band-1",
+                    "data_type": {
+                        "type": "PixelType",
+                        "precision": "int",
+                        "min": -2,
+                        "max": 2,
+                    },
+                    "dimensions": [4, 2],
+                    "crs": "EPSG:4326",
+                    "crs_transform": [1, 0, -180, 0, -1, 84],
+                },
+            ],
+            "version": 42,
+            "id": "some/image/id",
+            "properties": {
+                "type_name": "Image",
+                "keywords": ["keyword-1", "keyword-2"],
+                "thumb": "https://some-thumbnail.png",
+            },
+        }
+
 
 class List:
     def __init__(self, items, *_, **__):
@@ -164,10 +190,10 @@ class Feature:
             },
             "id": "00000000000000000001",
             "properties": {
-                "fullname": "",
+                "fullname": "some-full-name",
                 "linearid": "110469267091",
                 "mtfcc": "S1400",
-                "rttyp": "",
+                "rttyp": "some-rttyp",
             },
         }
 
@@ -178,11 +204,18 @@ class Feature:
 
 
 class ImageCollection:
-    def __init__(self, *_, **__):
-        pass
+    def __init__(self, images: list[Image], *_, **__):
+        self.images = images
 
     def mosaic(self, *_, **__):
         return Image()
+
+    def getInfo(self):
+        return {
+            "type": "ImageCollection",
+            "bands": [],
+            "features": [f.getInfo() for f in self.images],
+        }
 
 
 class Reducer:

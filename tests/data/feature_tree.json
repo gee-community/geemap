@@ -1,0 +1,50 @@
+{
+    "label": "Feature",
+    "children": [
+        {
+            "label": "type: Feature",
+            "children": [],
+            "expanded": false,
+            "topLevel": false
+        },
+        {
+            "label": "id: 00000000000000000001",
+            "children": [],
+            "expanded": false,
+            "topLevel": false
+        },
+        {
+            "label": "properties: Object (4 properties)",
+            "children": [
+                {
+                    "label": "fullname: some-full-name",
+                    "children": [],
+                    "expanded": false,
+                    "topLevel": false
+                },
+                {
+                    "label": "linearid: 110469267091",
+                    "children": [],
+                    "expanded": false,
+                    "topLevel": false
+                },
+                {
+                    "label": "mtfcc: S1400",
+                    "children": [],
+                    "expanded": false,
+                    "topLevel": false
+                },
+                {
+                    "label": "rttyp: some-rttyp",
+                    "children": [],
+                    "expanded": false,
+                    "topLevel": false
+                }
+            ],
+            "expanded": false,
+            "topLevel": false
+        }
+    ],
+    "expanded": false,
+    "topLevel": false
+}

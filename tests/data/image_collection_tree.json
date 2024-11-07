@@ -1,0 +1,208 @@
+{
+    "label": "ImageCollection",
+    "children": [
+        {
+            "label": "type: ImageCollection",
+            "children": [],
+            "expanded": false,
+            "topLevel": false
+        },
+        {
+            "label": "bands: List (0 elements)",
+            "children": [],
+            "expanded": false,
+            "topLevel": false
+        },
+        {
+            "label": "features",
+            "children": [
+                {
+                    "label": "0: \"some/image/id\"",
+                    "children": [
+                        {
+                            "label": "type: Image",
+                            "children": [],
+                            "expanded": false,
+                            "topLevel": false
+                        },
+                        {
+                            "label": "bands: List (1 elements)",
+                            "children": [
+                                {
+                                    "label": "0: \"band-1\", int, EPSG:4326, 4x2 px",
+                                    "children": [
+                                        {
+                                            "label": "id: band-1",
+                                            "children": [],
+                                            "expanded": false,
+                                            "topLevel": false
+                                        },
+                                        {
+                                            "label": "data_type",
+                                            "children": [
+                                                {
+                                                    "label": "type: PixelType",
+                                                    "children": [],
+                                                    "expanded": false,
+                                                    "topLevel": false
+                                                },
+                                                {
+                                                    "label": "precision: int",
+                                                    "children": [],
+                                                    "expanded": false,
+                                                    "topLevel": false
+                                                },
+                                                {
+                                                    "label": "min: -2",
+                                                    "children": [],
+                                                    "expanded": false,
+                                                    "topLevel": false
+                                                },
+                                                {
+                                                    "label": "max: 2",
+                                                    "children": [],
+                                                    "expanded": false,
+                                                    "topLevel": false
+                                                }
+                                            ],
+                                            "expanded": false,
+                                            "topLevel": false
+                                        },
+                                        {
+                                            "label": "dimensions",
+                                            "children": [
+                                                {
+                                                    "label": "0: 4",
+                                                    "children": [],
+                                                    "expanded": false,
+                                                    "topLevel": false
+                                                },
+                                                {
+                                                    "label": "1: 2",
+                                                    "children": [],
+                                                    "expanded": false,
+                                                    "topLevel": false
+                                                }
+                                            ],
+                                            "expanded": false,
+                                            "topLevel": false
+                                        },
+                                        {
+                                            "label": "crs: EPSG:4326",
+                                            "children": [],
+                                            "expanded": false,
+                                            "topLevel": false
+                                        },
+                                        {
+                                            "label": "crs_transform",
+                                            "children": [
+                                                {
+                                                    "label": "0: 1",
+                                                    "children": [],
+                                                    "expanded": false,
+                                                    "topLevel": false
+                                                },
+                                                {
+                                                    "label": "1: 0",
+                                                    "children": [],
+                                                    "expanded": false,
+                                                    "topLevel": false
+                                                },
+                                                {
+                                                    "label": "2: -180",
+                                                    "children": [],
+                                                    "expanded": false,
+                                                    "topLevel": false
+                                                },
+                                                {
+                                                    "label": "3: 0",
+                                                    "children": [],
+                                                    "expanded": false,
+                                                    "topLevel": false
+                                                },
+                                                {
+                                                    "label": "4: -1",
+                                                    "children": [],
+                                                    "expanded": false,
+                                                    "topLevel": false
+                                                },
+                                                {
+                                                    "label": "5: 84",
+                                                    "children": [],
+                                                    "expanded": false,
+                                                    "topLevel": false
+                                                }
+                                            ],
+                                            "expanded": false,
+                                            "topLevel": false
+                                        }
+                                    ],
+                                    "expanded": false,
+                                    "topLevel": false
+                                }
+                            ],
+                            "expanded": false,
+                            "topLevel": false
+                        },
+                        {
+                            "label": "version: 42",
+                            "children": [],
+                            "expanded": false,
+                            "topLevel": false
+                        },
+                        {
+                            "label": "id: some/image/id",
+                            "children": [],
+                            "expanded": false,
+                            "topLevel": false
+                        },
+                        {
+                            "label": "properties: Object (3 properties)",
+                            "children": [
+                                {
+                                    "label": "type_name: Image",
+                                    "children": [],
+                                    "expanded": false,
+                                    "topLevel": false
+                                },
+                                {
+                                    "label": "keywords",
+                                    "children": [
+                                        {
+                                            "label": "0: keyword-1",
+                                            "children": [],
+                                            "expanded": false,
+                                            "topLevel": false
+                                        },
+                                        {
+                                            "label": "1: keyword-2",
+                                            "children": [],
+                                            "expanded": false,
+                                            "topLevel": false
+                                        }
+                                    ],
+                                    "expanded": false,
+                                    "topLevel": false
+                                },
+                                {
+                                    "label": "thumb: https://some-thumbnail.png",
+                                    "children": [],
+                                    "expanded": false,
+                                    "topLevel": false
+                                }
+                            ],
+                            "expanded": false,
+                            "topLevel": false
+                        }
+                    ],
+                    "expanded": false,
+                    "topLevel": false
+                }
+            ],
+            "expanded": false,
+            "topLevel": false
+        }
+    ],
+    "expanded": false,
+    "topLevel": false
+}

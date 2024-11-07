@@ -2,11 +2,11 @@ import json
 import os
 import sys
 import zipfile
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import ee
 import ipywidgets as widgets
 from ipytree import Node, Tree
-from typing import Union, List, Dict, Optional, Tuple, Any
 
 try:
     from IPython.display import display, Javascript
@@ -114,6 +114,128 @@ def ee_initialize(
     ee.Initialize(**kwargs)
 
 
+def _new_tree_node(
+    label: str,
+    children: Optional[list[dict[str, Any]]] = None,
+    expanded: bool = False,
+    top_level: bool = False,
+) -> Dict[str, Any]:
+    """Returns node JSON for an interactive representation of an EE ComputedObject."""
+    return {
+        "label": label,
+        "children": children or [],
+        "expanded": expanded,
+        "topLevel": top_level,
+    }
+
+
+def _order_items(item_dict: dict[str, Any], ordering_list: list[str]) -> dict[str, Any]:
+    """Orders dictionary items in a specified order.
+
+    Adapted from https://github.com/google/earthengine-jupyter.
+    """
+    # Keys consist of:
+    # - keys in ordering_list first, in the correct order; and then
+    # - keys not in ordering_list, sorted.
+    keys = [x for x in ordering_list if x in item_dict.keys()] + sorted(
+        [x for x in item_dict.keys() if x not in ordering_list]
+    )
+    return dict([(key, item_dict[key]) for key in keys])
+
+
+def _walk_tree(
+    info: Union[list[Any], dict[str, Any]], opened: bool
+) -> list[dict[str, Any]]:
+    node_list = []
+    if isinstance(info, list):
+        for index, item in enumerate(info):
+            node_name = f"{index}: {item}"
+            children = []
+            if isinstance(item, dict):
+                node_name = f"{index}: "
+                extensions = []
+                if "id" in item:
+                    extensions.append(f"\"{item['id']}\"")
+                if "data_type" in item:
+                    extensions.append(str(item["data_type"]["precision"]))
+                if "crs" in item:
+                    extensions.append(str(item["crs"]))
+                if "dimensions" in item:
+                    dimensions = item["dimensions"]
+                    extensions.append(f"{dimensions[0]}x{dimensions[1]} px")
+                node_name += ", ".join(extensions)
+                children = _walk_tree(item, opened)
+            node_list.append(_new_tree_node(node_name, children, expanded=opened))
+    elif isinstance(info, dict):
+        for k, v in info.items():
+            if isinstance(v, (list, dict)):
+                if k == "properties":
+                    k = f"properties: Object ({len(v)} properties)"
+                elif k == "bands":
+                    k = f"bands: List ({len(v)} elements)"
+                node_list.append(
+                    _new_tree_node(f"{k}", _walk_tree(v, opened), expanded=opened)
+                )
+            else:
+                node_list.append(_new_tree_node(f"{k}: {v}", expanded=opened))
+    else:
+        node_list.append(_new_tree_node(f"{info}", expanded=opened))
+    return node_list
+
+
+def build_computed_object_tree(
+    ee_object: Union[ee.FeatureCollection, ee.Image, ee.Geometry, ee.Feature],
+    layer_name: str = "",
+    opened: bool = False,
+) -> dict[str, Any]:
+    """Return a tree structure representing an EE object.
+
+    The source code was adapted from https://github.com/google/earthengine-jupyter.
+    Credits to Tyler Erickson.
+
+    Args:
+        ee_object (Union[ee.FeatureCollection, ee.Image, ee.Geometry, ee.Feature]):
+            The Earth Engine object.
+        layer_name (str, optional): The name of the layer. Defaults to "".
+        opened (bool, optional): Whether to expand the tree. Defaults to False.
+
+    Returns:
+        dict[str, Any]: The node representing the Earth Engine object information.
+    """
+
+    # Convert EE object props to dicts. It's easier to traverse the nested structure.
+    if isinstance(ee_object, ee.FeatureCollection):
+        ee_object = ee_object.map(lambda f: ee.Feature(None, f.toDictionary()))
+
+    layer_info = ee_object.getInfo()
+    if not layer_info:
+        return {}
+
+    # Strip geometries because they're slow to render as text.
+    if "geometry" in layer_info:
+        layer_info.pop("geometry")
+
+    # Sort the keys in layer_info and the nested properties.
+    if properties := layer_info.get("properties"):
+        layer_info["properties"] = dict(sorted(properties.items()))
+    ordering_list = ["type", "id", "version", "bands", "properties"]
+    layer_info = _order_items(layer_info, ordering_list)
+
+    ee_type = layer_info.get("type", ee_object.__class__.__name__)
+
+    band_info = ""
+    if bands := layer_info.get("bands"):
+        band_info = f" ({len(bands)} bands)"
+    if layer_name:
+        layer_name = f"{layer_name}: "
+
+    return _new_tree_node(
+        f"{layer_name}{ee_type}{band_info}",
+        _walk_tree(layer_info, opened),
+        expanded=opened,
+    )
+
+
 def get_info(
     ee_object: Union[ee.FeatureCollection, ee.Image, ee.Geometry, ee.Feature],
     layer_name: str = "",
@@ -137,94 +259,20 @@ def get_info(
             object information.
     """
 
-    def _order_items(item_dict, ordering_list):
-        """Orders dictionary items in a specified order.
-        Adapted from https://github.com/google/earthengine-jupyter.
-        """
-        list_of_tuples = [
-            (key, item_dict[key])
-            for key in [x for x in ordering_list if x in item_dict.keys()]
-        ]
+    tree_json = build_computed_object_tree(ee_object, layer_name, opened)
 
-        return dict(list_of_tuples)
-
-    def _process_info(info):
-        node_list = []
-        if isinstance(info, list):
-            for count, item in enumerate(info):
-                if isinstance(item, (list, dict)):
-                    if "id" in item:
-                        count = f"{count}: \"{item['id']}\""
-                    if "data_type" in item:
-                        count = f"{count}, {item['data_type']['precision']}"
-                    if "crs" in item:
-                        count = f"{count}, {item['crs']}"
-                    if "dimensions" in item:
-                        dimensions = item["dimensions"]
-                        count = f"{count}, {dimensions[0]}x{dimensions[1]} px"
-                    node_list.append(
-                        Node(f"{count}", nodes=_process_info(item), opened=opened)
-                    )
-                else:
-                    node_list.append(Node(f"{count}: {item}", icon="file"))
-        elif isinstance(info, dict):
-            for k, v in info.items():
-                if isinstance(v, (list, dict)):
-                    if k == "properties":
-                        k = f"properties: Object ({len(v)} properties)"
-                    elif k == "bands":
-                        k = f"bands: List ({len(v)} elements)"
-                    node_list.append(
-                        Node(f"{k}", nodes=_process_info(v), opened=opened)
-                    )
-                else:
-                    node_list.append(Node(f"{k}: {v}", icon="file"))
+    def _create_node(data):
+        """Create a widget for the computed object tree."""
+        node = Node(data.get("label", "Node"), opened=data.get("expanded", False))
+        if children := data.get("children"):
+            for child in children:
+                node.add_node(_create_node(child))
         else:
-            node_list.append(Node(f"{info}", icon="file"))
-        return node_list
+            node.icon = "file"
+            node.value = str(data)  # Store the entire data as a string
+        return node
 
-    if isinstance(ee_object, ee.FeatureCollection):
-        ee_object = ee_object.map(lambda f: ee.Feature(None, f.toDictionary()))
-    layer_info = ee_object.getInfo()
-    if not layer_info:
-        return None
-
-    props = layer_info.get("properties", {})
-    layer_info["properties"] = dict(sorted(props.items()))
-
-    ordering_list = []
-    if "type" in layer_info:
-        ordering_list.append("type")
-        ee_type = layer_info["type"]
-    else:
-        ee_type = ""
-
-    if "id" in layer_info:
-        ordering_list.append("id")
-        ee_id = layer_info["id"]
-    else:
-        ee_id = ""
-
-    ordering_list.append("version")
-    ordering_list.append("bands")
-    ordering_list.append("properties")
-
-    layer_info = _order_items(layer_info, ordering_list)
-    nodes = _process_info(layer_info)
-
-    if len(layer_name) > 0:
-        layer_name = f"{layer_name}: "
-
-    if "bands" in layer_info:
-        band_info = f' ({len(layer_info["bands"])} bands)'
-    else:
-        band_info = ""
-    root_node = Node(f"{layer_name}{ee_type} {band_info}", nodes=nodes, opened=opened)
-    # root_node.open_icon = "plus-square"
-    # root_node.open_icon_style = "success"
-    # root_node.close_icon = "minus-square"
-    # root_node.close_icon_style = "info"
-
+    root_node = _create_node(tree_json)
     if return_node:
         return root_node
     else:
