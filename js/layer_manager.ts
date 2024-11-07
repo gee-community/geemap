@@ -1,16 +1,20 @@
-import type { AnyModel, RenderProps } from "@anywidget/types";
-import { html, css, LitElement, PropertyValues, TemplateResult } from "lit";
+import type { RenderProps } from "@anywidget/types";
+import { html, css, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
-import { loadFonts, reverseMap, updateChildren } from "./utils";
+import { LitWidget } from "./lit_widget";
+import { loadFonts, updateChildren } from "./utils";
 
 export interface LayerManagerModel {
     children: any;
     visible: boolean;
 }
 
-export class LayerManager extends LitElement {
+export class LayerManager extends LitWidget<
+    LayerManagerModel,
+    LayerManager
+> {
     static get componentName() {
         return `layer-manager`;
     }
@@ -35,33 +39,17 @@ export class LayerManager extends LitElement {
         `,
     ];
 
-    private _model: AnyModel<LayerManagerModel> | undefined = undefined;
-    private static modelNameToViewName = new Map<
+    @property() visible: boolean = false;
+
+    modelNameToViewName(): Map<
         keyof LayerManagerModel,
         keyof LayerManager | null
-    >([
-        ["children", null],
-        ["visible", "visible"],
-    ]);
-    private static viewNameToModelName = reverseMap(
-        LayerManager.modelNameToViewName
-    );
-
-    set model(model: AnyModel<LayerManagerModel>) {
-        this._model = model;
-        for (const [modelKey, widgetKey] of LayerManager.modelNameToViewName) {
-            if (widgetKey) {
-                // Get initial values from the Python model.
-                (this as any)[widgetKey] = model.get(modelKey);
-                // Listen for updates to the model.
-                model.on(`change:${modelKey}`, () => {
-                    (this as any)[widgetKey] = model.get(modelKey);
-                });
-            }
-        }
+    > {
+        return new Map([
+            ["children", null],
+            ["visible", "visible"],
+        ]);
     }
-
-    @property() visible: boolean = false;
 
     render(): TemplateResult {
         return html`
@@ -80,19 +68,6 @@ export class LayerManager extends LitElement {
                 <slot></slot>
             </div>
         `;
-    }
-
-    updated(changedProperties: PropertyValues<LayerManager>): void {
-        // Update the model properties so they're reflected in Python.
-        for (const [viewProp, _] of changedProperties) {
-            const castViewProp = viewProp as keyof LayerManager;
-            if (LayerManager.viewNameToModelName.has(castViewProp)) {
-                const modelProp =
-                    LayerManager.viewNameToModelName.get(castViewProp);
-                this._model?.set(modelProp as any, this[castViewProp] as any);
-            }
-        }
-        this._model?.save_changes();
     }
 
     private onLayerVisibilityChanged(event: Event): void {

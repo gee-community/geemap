@@ -38,7 +38,9 @@ export async function updateChildren(
 export function reverseMap<K, V>(map: Map<K, V>): Map<V, K> {
     const reversedMap = new Map<V, K>();
     for (const [key, value] of map.entries()) {
-        reversedMap.set(value, key);
+        if (value != null) {
+            reversedMap.set(value, key);
+        }
     }
     return reversedMap;
 }
