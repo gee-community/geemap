@@ -137,13 +137,28 @@ def _order_items(item_dict: dict[str, Any], ordering_list: list[str]) -> dict[st
     # Keys consist of:
     # - keys in ordering_list first, in the correct order; and then
     # - keys not in ordering_list, sorted.
-    keys = [x for x in ordering_list if x in item_dict.keys()] + sorted(
-        [x for x in item_dict.keys() if x not in ordering_list]
-    )
-    return dict([(key, item_dict[key]) for key in keys])
+    ordered_pairs = [x for x in ordering_list if x in item_dict.keys()]
+    remaining = sorted([x for x in item_dict if x not in ordering_list])
+    return dict([(key, item_dict[key]) for key in ordered_pairs + remaining])
 
 
-def _walk_tree(
+def _format_dictionary_node_name(index: int, item: Dict[str, Any]) -> str:
+    node_name = f"{index}: "
+    extensions = []
+    if "id" in item:
+        extensions.append(f"\"{item['id']}\"")
+    if "data_type" in item:
+        extensions.append(str(item["data_type"]["precision"]))
+    if "crs" in item:
+        extensions.append(str(item["crs"]))
+    if "dimensions" in item:
+        dimensions = item["dimensions"]
+        extensions.append(f"{dimensions[0]}x{dimensions[1]} px")
+    node_name += ", ".join(extensions)
+    return node_name
+
+
+def _generate_tree(
     info: Union[list[Any], dict[str, Any]], opened: bool
 ) -> list[dict[str, Any]]:
     node_list = []
@@ -152,19 +167,8 @@ def _walk_tree(
             node_name = f"{index}: {item}"
             children = []
             if isinstance(item, dict):
-                node_name = f"{index}: "
-                extensions = []
-                if "id" in item:
-                    extensions.append(f"\"{item['id']}\"")
-                if "data_type" in item:
-                    extensions.append(str(item["data_type"]["precision"]))
-                if "crs" in item:
-                    extensions.append(str(item["crs"]))
-                if "dimensions" in item:
-                    dimensions = item["dimensions"]
-                    extensions.append(f"{dimensions[0]}x{dimensions[1]} px")
-                node_name += ", ".join(extensions)
-                children = _walk_tree(item, opened)
+                node_name = _format_dictionary_node_name(index, item)
+                children = _generate_tree(item, opened)
             node_list.append(_new_tree_node(node_name, children, expanded=opened))
     elif isinstance(info, dict):
         for k, v in info.items():
@@ -174,7 +178,7 @@ def _walk_tree(
                 elif k == "bands":
                     k = f"bands: List ({len(v)} elements)"
                 node_list.append(
-                    _new_tree_node(f"{k}", _walk_tree(v, opened), expanded=opened)
+                    _new_tree_node(f"{k}", _generate_tree(v, opened), expanded=opened)
                 )
             else:
                 node_list.append(_new_tree_node(f"{k}: {v}", expanded=opened))
@@ -231,7 +235,7 @@ def build_computed_object_tree(
 
     return _new_tree_node(
         f"{layer_name}{ee_type}{band_info}",
-        _walk_tree(layer_info, opened),
+        _generate_tree(layer_info, opened),
         expanded=opened,
     )
 
