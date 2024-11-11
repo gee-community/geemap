@@ -814,6 +814,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.coreutils.build_computed_object_tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      build_computed_object_tree()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.coreutils.check_cmap" class="md-nav__link">
     <span class="md-ellipsis">
       check_cmap()
@@ -5236,6 +5245,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.coreutils.build_computed_object_tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      build_computed_object_tree()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.coreutils.check_cmap" class="md-nav__link">
     <span class="md-ellipsis">
       check_cmap()
@@ -5444,6 +5462,129 @@
 
 
 
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="geemap.coreutils.build_computed_object_tree" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">build_computed_object_tree</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">opened</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+<a href="#geemap.coreutils.build_computed_object_tree" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Return a tree structure representing an EE object.</p>
+<p>The source code was adapted from https://github.com/google/earthengine-jupyter.
+Credits to Tyler Erickson.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>ee_object</code></td>
+        <td><code>Union[ee.FeatureCollection, ee.Image, ee.Geometry, ee.Feature]</code></td>
+        <td><p>The Earth Engine object.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>layer_name</code></td>
+        <td><code>str</code></td>
+        <td><p>The name of the layer. Defaults to "".</p></td>
+        <td><code>&#39;&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>opened</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether to expand the tree. Defaults to False.</p></td>
+        <td><code>False</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>dict[str, Any]</code></td>
+      <td><p>The node representing the Earth Engine object information.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/coreutils.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">build_computed_object_tree</span><span class="p">(</span>
+    <span class="n">ee_object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">],</span>
+    <span class="n">layer_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">opened</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a tree structure representing an EE object.</span>
+
+<span class="sd">    The source code was adapted from https://github.com/google/earthengine-jupyter.</span>
+<span class="sd">    Credits to Tyler Erickson.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ee_object (Union[ee.FeatureCollection, ee.Image, ee.Geometry, ee.Feature]):</span>
+<span class="sd">            The Earth Engine object.</span>
+<span class="sd">        layer_name (str, optional): The name of the layer. Defaults to &quot;&quot;.</span>
+<span class="sd">        opened (bool, optional): Whether to expand the tree. Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict[str, Any]: The node representing the Earth Engine object information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Convert EE object props to dicts. It&#39;s easier to traverse the nested structure.</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">):</span>
+        <span class="n">ee_object</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">toDictionary</span><span class="p">()))</span>
+
+    <span class="n">layer_info</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">layer_info</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="c1"># Strip geometries because they&#39;re slow to render as text.</span>
+    <span class="k">if</span> <span class="s2">&quot;geometry&quot;</span> <span class="ow">in</span> <span class="n">layer_info</span><span class="p">:</span>
+        <span class="n">layer_info</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Sort the keys in layer_info and the nested properties.</span>
+    <span class="k">if</span> <span class="n">properties</span> <span class="o">:=</span> <span class="n">layer_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">):</span>
+        <span class="n">layer_info</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+    <span class="n">ordering_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="s2">&quot;bands&quot;</span><span class="p">,</span> <span class="s2">&quot;properties&quot;</span><span class="p">]</span>
+    <span class="n">layer_info</span> <span class="o">=</span> <span class="n">_order_items</span><span class="p">(</span><span class="n">layer_info</span><span class="p">,</span> <span class="n">ordering_list</span><span class="p">)</span>
+
+    <span class="n">ee_type</span> <span class="o">=</span> <span class="n">layer_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="n">ee_object</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="n">band_info</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">bands</span> <span class="o">:=</span> <span class="n">layer_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bands&quot;</span><span class="p">):</span>
+        <span class="n">band_info</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span><span class="si">}</span><span class="s2"> bands)&quot;</span>
+    <span class="k">if</span> <span class="n">layer_name</span><span class="p">:</span>
+        <span class="n">layer_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2">: &quot;</span>
+
+    <span class="k">return</span> <span class="n">_new_tree_node</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}{</span><span class="n">ee_type</span><span class="si">}{</span><span class="n">band_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">_generate_tree</span><span class="p">(</span><span class="n">layer_info</span><span class="p">,</span> <span class="n">opened</span><span class="p">),</span>
+        <span class="n">expanded</span><span class="o">=</span><span class="n">opened</span><span class="p">,</span>
+    <span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
@@ -6584,94 +6725,20 @@ If False, returns the widget as ipytree.Tree. Defaults to False.</p></td>
 <span class="sd">            object information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_order_items</span><span class="p">(</span><span class="n">item_dict</span><span class="p">,</span> <span class="n">ordering_list</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Orders dictionary items in a specified order.</span>
-<span class="sd">        Adapted from https://github.com/google/earthengine-jupyter.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">list_of_tuples</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">item_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ordering_list</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">item_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
-        <span class="p">]</span>
+    <span class="n">tree_json</span> <span class="o">=</span> <span class="n">build_computed_object_tree</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">opened</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">list_of_tuples</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_process_info</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
-        <span class="n">node_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">count</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
-                    <span class="k">if</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
-                        <span class="n">count</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">: </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
-                    <span class="k">if</span> <span class="s2">&quot;data_type&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
-                        <span class="n">count</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;data_type&#39;</span><span class="p">][</span><span class="s1">&#39;precision&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="k">if</span> <span class="s2">&quot;crs&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
-                        <span class="n">count</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;crs&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="k">if</span> <span class="s2">&quot;dimensions&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
-                        <span class="n">dimensions</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;dimensions&quot;</span><span class="p">]</span>
-                        <span class="n">count</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> px&quot;</span>
-                    <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="n">Node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">_process_info</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="n">opened</span><span class="o">=</span><span class="n">opened</span><span class="p">)</span>
-                    <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
-                    <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;properties&quot;</span><span class="p">:</span>
-                        <span class="n">k</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;properties: Object (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s2"> properties)&quot;</span>
-                    <span class="k">elif</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;bands&quot;</span><span class="p">:</span>
-                        <span class="n">k</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;bands: List (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s2"> elements)&quot;</span>
-                    <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="n">Node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">_process_info</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">opened</span><span class="o">=</span><span class="n">opened</span><span class="p">)</span>
-                    <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">_create_node</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a widget for the computed object tree.&quot;&quot;&quot;</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;Node&quot;</span><span class="p">),</span> <span class="n">opened</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;expanded&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">children</span> <span class="o">:=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;children&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">_create_node</span><span class="p">(</span><span class="n">child</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">node_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">node_list</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;file&quot;</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Store the entire data as a string</span>
+        <span class="k">return</span> <span class="n">node</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">):</span>
-        <span class="n">ee_object</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">toDictionary</span><span class="p">()))</span>
-    <span class="n">layer_info</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">layer_info</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="n">props</span> <span class="o">=</span> <span class="n">layer_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">layer_info</span><span class="p">[</span><span class="s2">&quot;properties&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
-
-    <span class="n">ordering_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="s2">&quot;type&quot;</span> <span class="ow">in</span> <span class="n">layer_info</span><span class="p">:</span>
-        <span class="n">ordering_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
-        <span class="n">ee_type</span> <span class="o">=</span> <span class="n">layer_info</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ee_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">layer_info</span><span class="p">:</span>
-        <span class="n">ordering_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
-        <span class="n">ee_id</span> <span class="o">=</span> <span class="n">layer_info</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ee_id</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-
-    <span class="n">ordering_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">)</span>
-    <span class="n">ordering_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;bands&quot;</span><span class="p">)</span>
-    <span class="n">ordering_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;properties&quot;</span><span class="p">)</span>
-
-    <span class="n">layer_info</span> <span class="o">=</span> <span class="n">_order_items</span><span class="p">(</span><span class="n">layer_info</span><span class="p">,</span> <span class="n">ordering_list</span><span class="p">)</span>
-    <span class="n">nodes</span> <span class="o">=</span> <span class="n">_process_info</span><span class="p">(</span><span class="n">layer_info</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">layer_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2">: &quot;</span>
-
-    <span class="k">if</span> <span class="s2">&quot;bands&quot;</span> <span class="ow">in</span> <span class="n">layer_info</span><span class="p">:</span>
-        <span class="n">band_info</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">layer_info</span><span class="p">[</span><span class="s2">&quot;bands&quot;</span><span class="p">])</span><span class="si">}</span><span class="s1"> bands)&#39;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">band_info</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">root_node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}{</span><span class="n">ee_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">band_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span> <span class="n">opened</span><span class="o">=</span><span class="n">opened</span><span class="p">)</span>
-    <span class="c1"># root_node.open_icon = &quot;plus-square&quot;</span>
-    <span class="c1"># root_node.open_icon_style = &quot;success&quot;</span>
-    <span class="c1"># root_node.close_icon = &quot;minus-square&quot;</span>
-    <span class="c1"># root_node.close_icon_style = &quot;info&quot;</span>
-
+    <span class="n">root_node</span> <span class="o">=</span> <span class="n">_create_node</span><span class="p">(</span><span class="n">tree_json</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">return_node</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">root_node</span>
     <span class="k">else</span><span class="p">:</span>
