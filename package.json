@@ -3,6 +3,7 @@
 		"dev": "npm run build -- --sourcemap=inline --watch",
 		"build": "esbuild js/*.ts --format=esm --bundle --outdir=geemap/static",
 		"typecheck": "tsc --noEmit",
+		"pretest": "npm run build",
 		"test": "karma start karma.conf.cjs --single-run --watch=false",
 		"test:watch": "karma start karma.conf.cjs"
 	},

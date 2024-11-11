@@ -61,7 +61,7 @@ describe('<layer-manager-row>', () => {
         // Deletion button emits an event.
         (row.shadowRoot?.querySelector('.delete-button') as HTMLButtonElement).click();
         await row.updateComplete;
-        (row.shadowRoot?.querySelector('.confirm-deletion') as HTMLButtonElement).click();
+        (row.shadowRoot?.querySelector('.confirm-deletion-button') as HTMLButtonElement).click();
         expect(FakeAnyModel.prototype.send).toHaveBeenCalledOnceWith({
             type: "click",
             id: "delete"
