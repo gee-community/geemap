@@ -1,11 +1,12 @@
-import type { AnyModel, RenderProps } from "@anywidget/types";
-import { html, css, LitElement, TemplateResult, nothing } from "lit";
+import type { RenderProps } from "@anywidget/types";
+import { css, html, nothing, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
-import { classMap } from 'lit/directives/class-map.js';
+import { classMap } from "lit/directives/class-map.js";
 
-import { legacyStyles } from './ipywidgets_styles';
-import { materialStyles } from "./material_styles";
+import { legacyStyles } from "./ipywidgets_styles";
+import { materialStyles } from "./styles";
 import { loadFonts } from "./utils";
+import { LitWidget } from "./lit_widget";
 
 export interface LayerManagerRowModel {
     name: string;
@@ -14,7 +15,10 @@ export interface LayerManagerRowModel {
     is_loading: boolean;
 }
 
-export class LayerManagerRow extends LitElement {
+export class LayerManagerRow extends LitWidget<
+    LayerManagerRowModel,
+    LayerManagerRow
+> {
     static get componentName() {
         return `layer-manager-row`;
     }
@@ -31,6 +35,7 @@ export class LayerManagerRow extends LitElement {
             }
 
             .layer-name {
+                cursor: pointer;
                 flex-grow: 1;
                 max-width: 150px;
                 overflow: hidden;
@@ -62,13 +67,21 @@ export class LayerManagerRow extends LitElement {
             }
 
             @-webkit-keyframes spin {
-                0% { -webkit-transform: rotate(0deg); }
-                100% { -webkit-transform: rotate(360deg); }
+                0% {
+                    -webkit-transform: rotate(0deg);
+                }
+                100% {
+                    -webkit-transform: rotate(360deg);
+                }
             }
 
             @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
             }
 
             button.loading .spinner,
@@ -94,42 +107,23 @@ export class LayerManagerRow extends LitElement {
         `,
     ];
 
-    private _model: AnyModel<LayerManagerRowModel> | undefined = undefined;
-    private static modelNameToViewName = new Map<keyof LayerManagerRowModel, keyof LayerManagerRow | null>([
-        ["name", "name"],
-        ["visible", "visible"],
-        ["opacity", "opacity"],
-        ["is_loading", "isLoading"],
-    ]);
-
-    set model(model: AnyModel<LayerManagerRowModel>) {
-        this._model = model;
-        for (const [modelKey, widgetKey] of LayerManagerRow.modelNameToViewName) {
-            if (widgetKey) {
-                // Get initial values from the Python model.
-                (this as any)[widgetKey] = model.get(modelKey);
-                // Listen for updates to the model.
-                model.on(`change:${modelKey}`, () => {
-                    (this as any)[widgetKey] = model.get(modelKey);
-                });
-            }
-        }
+    modelNameToViewName(): Map<
+        keyof LayerManagerRowModel,
+        keyof LayerManagerRow | null
+    > {
+        return new Map([
+            ["name", "name"],
+            ["visible", "visible"],
+            ["opacity", "opacity"],
+            ["is_loading", "isLoading"],
+        ]);
     }
 
-    @property()
-    name: string = "";
-
-    @property()
-    visible: boolean = true;
-
-    @property()
-    opacity: number = 1;
-
-    @property()
-    isLoading: boolean = false;
-
-    @property()
-    isConfirmDialogVisible: boolean = false;
+    @property() name: string = "";
+    @property() visible: boolean = true;
+    @property() opacity: number = 1;
+    @property() isLoading: boolean = false;
+    @property() isConfirmDialogVisible: boolean = false;
 
     render(): TemplateResult {
         return html`
@@ -138,9 +132,14 @@ export class LayerManagerRow extends LitElement {
                     type="checkbox"
                     class="layer-visibility-checkbox"
                     .checked="${this.visible}"
-                    @change="${this.onLayerVisibilityChanged}"
+                    @click="${this.onLayerVisibilityChanged}"
                 />
-                <span class="legacy-text layer-name">${this.name}</span>
+                <span
+                    class="legacy-text layer-name"
+                    @click="${this.onLayerVisibilityChanged}"
+                >
+                    ${this.name}
+                </span>
                 <input
                     type="range"
                     class="legacy-slider layer-opacity-slider"
@@ -151,23 +150,24 @@ export class LayerManagerRow extends LitElement {
                     @input="${this.onLayerOpacityChanged}"
                 />
                 <button
-                    class="legacy-button settings-delete-button settings-button"
+                    class="legacy-button settings-delete-button"
                     @click="${this.onSettingsClicked}"
                 >
                     <span class="material-symbols-outlined">&#xe8b8;</span>
                 </button>
                 <button
                     class=${classMap({
-            'legacy-button': true,
-            'settings-delete-button': true,
-            'delete-button': true,
-            'loading': this.isLoading,
-            'done-loading': !this.isLoading
-        })}
+                        "legacy-button": true,
+                        "settings-delete-button": true,
+                        loading: this.isLoading,
+                        "done-loading": !this.isLoading,
+                    })}
                     @click="${this.onDeleteClicked}"
                 >
                     <div class="spinner"></div>
-                    <span class="close-icon material-symbols-outlined">&#xe5cd;</span>
+                    <span class="close-icon material-symbols-outlined"
+                        >&#xe5cd;</span
+                    >
                 </button>
             </div>
             ${this.renderConfirmDialog()}
@@ -181,33 +181,24 @@ export class LayerManagerRow extends LitElement {
         return html`
             <div class="row">
                 <span class="legacy-text remove-layer-text">Remove layer?</span>
-                    <button
-                        class="legacy-button primary confirm-deny-button confirm-deletion-button"
-                        @click="${this.confirmDeletion}"
-                    >
-                        Yes
-                    </button>
-                    <button
-                        class="legacy-button primary confirm-deny-button cancel-deletion-button"
-                        @click="${this.cancelDeletion}"
-                    >
-                        No
-                    </button>
+                <button
+                    class="legacy-button primary confirm-deny-button"
+                    @click="${this.confirmDeletion}"
+                >
+                    Yes
+                </button>
+                <button
+                    class="legacy-button primary confirm-deny-button"
+                    @click="${this.cancelDeletion}"
+                >
+                    No
+                </button>
             </div>
         `;
     }
 
-    updated(changedProperties: any) {
-        // Update the model properties so they're reflected in Python.
-        for (const [property, _] of changedProperties) {
-            this._model?.set(property, this[property as keyof LayerManagerRow]);
-        }
-        this._model?.save_changes();
-    }
-
-    private onLayerVisibilityChanged(event: Event) {
-        const target = event.target as HTMLInputElement;
-        this.visible = target.checked;
+    private onLayerVisibilityChanged(_event: Event) {
+        this.visible = !this.visible;
     }
 
     private onLayerOpacityChanged(event: Event) {
@@ -216,7 +207,7 @@ export class LayerManagerRow extends LitElement {
     }
 
     private onSettingsClicked(_: Event) {
-        this._model?.send({ "type": "click", "id": "settings" });
+        this.model?.send({ type: "click", id: "settings" });
     }
 
     private onDeleteClicked(_: Event) {
@@ -224,7 +215,7 @@ export class LayerManagerRow extends LitElement {
     }
 
     private confirmDeletion(_: Event) {
-        this._model?.send({ "type": "click", "id": "delete" });
+        this.model?.send({ type: "click", id: "delete" });
     }
 
     private cancelDeletion(_: Event) {
@@ -239,7 +230,9 @@ if (!customElements.get(LayerManagerRow.componentName)) {
 
 function render({ model, el }: RenderProps<LayerManagerRowModel>) {
     loadFonts();
-    const row = <LayerManagerRow>document.createElement(LayerManagerRow.componentName);
+    const row = <LayerManagerRow>(
+        document.createElement(LayerManagerRow.componentName)
+    );
     row.model = model;
     el.appendChild(row);
 }

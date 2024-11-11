@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 
 """Tests for `coreutils` module."""
+import json
 import os
 import sys
+from typing import Any, Dict
 import unittest
 from unittest import mock
 
+import ee
+
 from geemap import coreutils
+from tests import fake_ee
 
 
 class FakeSecretNotFoundError(Exception):
@@ -17,6 +22,16 @@ class FakeNotebookAccessError(Exception):
     """google.colab.userdata.NotebookAccessError fake."""
 
 
+def _read_json_file(path: str) -> dict[str, Any]:
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(script_dir, f"data/{path}")
+    with open(file_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+@mock.patch.object(ee, "Feature", fake_ee.Feature)
+@mock.patch.object(ee, "Image", fake_ee.Image)
+@mock.patch.object(ee, "ImageCollection", fake_ee.ImageCollection)
 class TestCoreUtils(unittest.TestCase):
     """Tests for core utilss."""
 
@@ -54,3 +69,21 @@ class TestCoreUtils(unittest.TestCase):
         mock_colab.userdata.get.side_effect = FakeNotebookAccessError()
 
         self.assertEqual(coreutils.get_env_var("key"), "environ-value")
+
+    def test_build_computed_object_tree_feature(self):
+        """Tests building a JSON computed object tree for a Feature."""
+        tree = coreutils.build_computed_object_tree(ee.Feature({}))
+        expected = _read_json_file("feature_tree.json")
+        self.assertEqual(tree, expected)
+
+    def test_build_computed_object_tree_image(self):
+        """Tests building a JSON computed object tree for an Image."""
+        tree = coreutils.build_computed_object_tree(ee.Image(0))
+        expected = _read_json_file("image_tree.json")
+        self.assertEqual(tree, expected)
+
+    def test_build_computed_object_tree_image_collection(self):
+        """Tests building a JSON computed object tree for an ImageCollection."""
+        tree = coreutils.build_computed_object_tree(ee.ImageCollection([ee.Image(0)]))
+        expected = _read_json_file("image_collection_tree.json")
+        self.assertEqual(tree, expected)
