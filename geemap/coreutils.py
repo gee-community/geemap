@@ -114,7 +114,7 @@ def ee_initialize(
     ee.Initialize(**kwargs)
 
 
-def _new_tree_node(
+def new_tree_node(
     label: str,
     children: Optional[list[dict[str, Any]]] = None,
     expanded: bool = False,
@@ -169,7 +169,7 @@ def _generate_tree(
             if isinstance(item, dict):
                 node_name = _format_dictionary_node_name(index, item)
                 children = _generate_tree(item, opened)
-            node_list.append(_new_tree_node(node_name, children, expanded=opened))
+            node_list.append(new_tree_node(node_name, children, expanded=opened))
     elif isinstance(info, dict):
         for k, v in info.items():
             if isinstance(v, (list, dict)):
@@ -178,12 +178,12 @@ def _generate_tree(
                 elif k == "bands":
                     k = f"bands: List ({len(v)} elements)"
                 node_list.append(
-                    _new_tree_node(f"{k}", _generate_tree(v, opened), expanded=opened)
+                    new_tree_node(f"{k}", _generate_tree(v, opened), expanded=opened)
                 )
             else:
-                node_list.append(_new_tree_node(f"{k}: {v}", expanded=opened))
+                node_list.append(new_tree_node(f"{k}: {v}", expanded=opened))
     else:
-        node_list.append(_new_tree_node(f"{info}", expanded=opened))
+        node_list.append(new_tree_node(f"{info}", expanded=opened))
     return node_list
 
 
@@ -233,7 +233,7 @@ def build_computed_object_tree(
     if layer_name:
         layer_name = f"{layer_name}: "
 
-    return _new_tree_node(
+    return new_tree_node(
         f"{layer_name}{ee_type}{band_info}",
         _generate_tree(layer_info, opened),
         expanded=opened,
