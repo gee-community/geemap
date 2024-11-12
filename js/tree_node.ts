@@ -42,7 +42,7 @@ export class TreeNode extends LitElement {
                 margin-left: -100%;
                 padding-left: 100%;
             }
-                
+
             .icon {
                 font-size: 13px;
                 width: 20px;

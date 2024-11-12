@@ -305,7 +305,7 @@ class TestInspector(unittest.TestCase):
         """Tests that the inspector's initial UI is set up properly."""
         self.assertEqual(self.map_fake.cursor_style, "crosshair")
         self.assertFalse(self.inspector.hide_close_button)
-        
+
         self.assertFalse(self.inspector.expand_points)
         self.assertTrue(self.inspector.expand_pixels)
         self.assertFalse(self.inspector.expand_objects)
