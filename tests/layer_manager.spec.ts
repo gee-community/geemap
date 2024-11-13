@@ -1,5 +1,6 @@
 import { AnyModel } from '@anywidget/types';
 import '../js/layer_manager';
+
 import { default as layerManagerRender, LayerManager, LayerManagerModel } from '../js/layer_manager';
 import { FakeAnyModel } from './fake_anywidget';
 
