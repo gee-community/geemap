@@ -1,10 +1,23 @@
-import { html, css, LitElement, PropertyValues } from "lit";
+import { html, css, nothing, LitElement, PropertyValues } from "lit";
 import { property, queryAll, queryAssignedElements } from "lit/decorators.js";
 import { legacyStyles } from "./ipywidgets_styles";
 import { classMap } from 'lit/directives/class-map.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 function convertToId(name: string | undefined): string {
     return (name || "").trim().replace(" ", "-").toLowerCase();
+}
+
+/** The various modes. */
+export enum TabMode {
+    ALWAYS_SHOW,
+    HIDE_ON_SECOND_CLICK,
+}
+
+/** The tab label, as a string or Material Icon. */
+export interface TabLabel {
+    name: string|undefined,
+    icon: string|undefined,
 }
 
 /**
@@ -24,40 +37,46 @@ export class TabPanel extends LitElement {
     static styles = [
         legacyStyles,
         css`
+            ::slotted(*) {
+                display: none;
+            }
+            
+            ::slotted(.show-tab) {
+                display: block;
+            }
+
             .container {
                 padding: 0;
                 width: 100%;
             }
 
-            button.tab {
-                border: 1px solid #ddd;
-                border-bottom: none;
-                border-top-left-radius: 15px;
-                border-top-right-radius: 15px;
-                display: inline-block;
-                min-width: 88px;
-                padding: 0 10px;
+            .tab-container {
+                align-items: center;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
             }
 
-            button.active {
-                background-color: var(--colab-primary-surface-color, --jp-layout-color2, white);
+            .tab-container button {
+                margin: 2px;
+                padding: 0 4px;
+                user-select: none;
             }
 
-            ::slotted(*) {
-                display: none;
-            }
-    
-            ::slotted(.show-tab) {
-                display: block;
+            .tab-container button:first-child {
+                margin-left: 0;
             }
         `,
     ];
 
     @property({ type: Array })
-    tabNames: string[] = [];
+    tabs: TabLabel[] = [];
 
     @property({ type: Number })
     index = 0;
+
+    @property({ type: Number })
+    mode: TabMode = TabMode.HIDE_ON_SECOND_CLICK;
 
     /**
      * The tab elements.
@@ -99,7 +118,7 @@ export class TabPanel extends LitElement {
             element.classList.remove("show-tab");
 
             // Also add accessibility attributes.
-            const id = convertToId(this.tabNames[i]);
+            const id = convertToId(this.tabs[i].name);
             element.setAttribute("id", `tabpanel-${id}-${i}`);
             element.setAttribute("role", "tabpanel");
             element.setAttribute("aria-labelledby", `tab-${id}-${i}`);
@@ -108,25 +127,42 @@ export class TabPanel extends LitElement {
     }
 
     private renderTabs() {
-        return this.tabNames.map((tabName: string, i: number) => {
-            const id = convertToId(this.tabNames[i]);
+        return this.tabs.map((tab: TabLabel, i: number) => {
+            const id = convertToId(this.tabs[i].name);
+            // Strictly validate the icon, since we are using unsafeHTML
+            // directive to render the HTML entity directly. 
+            if (tab.icon && !tab.icon.match(/^&#x[a-fA-F0-9]+;$/)) {
+                tab.icon = '';
+            }
             return html`<button
                             id="tab-${id}-${i}"
                             class="${classMap({
-                                "legacy-button": true,
-                                "tab": true,
-                                "active": i === this.index, 
-                            })}"
+                "legacy-button": true,
+                "active": i === this.index,
+            })}"
                             type="button"
                             role="tab"
                             aria-selected="${i === this.index ? true : false}"
                             aria-controls="tabpanel-${id}-${i}"
                             @click=${() => {
-                                this.index = i;
-                            }}>
-                            <span>${tabName}</span>
+                    this.onTabClick(i);
+                }}>
+                            ${tab.icon ? html`<span class="material-symbols-outlined">${unsafeHTML(tab.icon)}</span>` : nothing}
+                            <span>${tab.name}</span>
                         </button>`;
         });
+    }
+
+    private onTabClick(index: number) {
+        switch (this.mode) {
+            case TabMode.HIDE_ON_SECOND_CLICK:
+                // Hide the tab panel if clicked twice.
+                this.index = this.index === index ? -1 : index;
+                break;
+            case TabMode.ALWAYS_SHOW:
+            default:
+                this.index = index;
+        }
     }
 }
 

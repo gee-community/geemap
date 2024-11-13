@@ -4,6 +4,8 @@ import { property } from "lit/decorators.js";
 import { legacyStyles } from './ipywidgets_styles';
 import { loadFonts, updateChildren } from "./utils";
 
+import './tab_panel';
+
 export interface LayerManagerModel {
     children: any;
     visible: boolean;
@@ -70,6 +72,11 @@ export class LayerManager extends LitElement {
                     <span class="legacy-text all-layers-text">All layers on/off</span>
                 </div>
                 <slot></slot>
+                <tab-panel .tabs=${[{name: 'One'}, {icon: '&#xe8b8;', name: 'Two'}, {icon: '&#xe5cd;'}]}>
+                    <div>one</div>
+                    <div>two</div>
+                    <div>three</div>
+                </tab-panel>
             </div>
         `;
     }

@@ -55,4 +55,18 @@ export const legacyStyles = css`
         height: var(--jp-widgets-inline-height);
         line-height: var(--jp-widgets-inline-height);
     }
+
+    .legacy-button.active {
+        background-color: var(--jp-layout-color3);
+        color: var(--jp-ui-font-color1);
+    }
+
+    .legacy-button.primary {
+        background-color: var(--jp-brand-color1);
+        color: var(--jp-ui-inverse-font-color1);
+    }
+
+    .legacy-button.primary.active {
+        background-color: var(--jp-brand-color0);    }
+        color: var(--jp-ui-inverse-font-color0);
 `;

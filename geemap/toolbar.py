@@ -9,12 +9,16 @@
 # *******************************************************************************#
 
 import os
+import pathlib
 
 from dataclasses import dataclass
+
+import anywidget
 import ee
 import ipyevents
 import ipyleaflet
 import ipywidgets as widgets
+import traitlets
 
 from ipyfilechooser import FileChooser
 from IPython.core.display import display
@@ -25,10 +29,25 @@ from .timelapse import *
 
 from . import map_widgets
 
+@Theme.apply
+class ToolbarItem(anywidget.AnyWidget):
+    """A toolbar item widget for geemap."""
+
+    _esm = pathlib.Path(__file__).parent / "static" / "toolbar_item.js"
+    active = traitlets.Bool(False).tag(sync=True)
+    icon = traitlets.Unicode('').tag(sync=True)
+    is_loading = traitlets.Bool(False).tag(sync=True)
+
 
 @map_widgets.Theme.apply
-class Toolbar(widgets.VBox):
+class Toolbar(anywidget.AnyWidget):
     """A toolbar that can be added to the map."""
+
+
+    _esm = pathlib.Path(__file__).parent / "static" / "toolbar.js"
+    # Whether the toolbar is expanded.
+    expanded = traitlets.Bool(True).tag(sync=True)
+
 
     @dataclass
     class Item:
