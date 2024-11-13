@@ -1,6 +1,6 @@
 import type { RenderProps } from "@anywidget/types";
-import { css, html, TemplateResult } from "lit";
-import { property } from "lit/decorators.js";
+import { css, html, PropertyValues, TemplateResult } from "lit";
+import { property, query } from "lit/decorators.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
 import { materialStyles } from "./styles";
@@ -24,17 +24,18 @@ export class BasemapSelector extends LitWidget<
         legacyStyles,
         materialStyles,
         css`
-            .row {
+            .row-container {
                 align-items: center;
                 display: flex;
-                gap: 4px;
-                height: 30px;
+                gap: 2px;
+                height: 32px;
+                width: 200px;
             }
 
             .row-button {
                 font-size: 14px;
-                height: 26px;
-                width: 26px;
+                height: 28px;
+                width: 28px;
             }
         `,
     ];
@@ -51,11 +52,12 @@ export class BasemapSelector extends LitWidget<
 
     @property({ type: Array }) basemaps: string[] = [];
     @property({ type: String }) value: string = "";
+    @query('select') selectElement!: HTMLSelectElement;
 
     render(): TemplateResult {
         return html`
-            <div class="row">
-                <select @change=${this.onBaseMapChanged}>
+            <div class="row-container">
+                <select class="legacy-select" @change=${this.onChange}>
                     ${this.basemaps.map((basemap) => html`<option>${basemap}</option>`)}
                 </select>
                 <button
@@ -66,8 +68,16 @@ export class BasemapSelector extends LitWidget<
                 </button>
             </div>`;
     }
+    
+    override update(changedProperties: PropertyValues): void {
+        if (changedProperties.has("value") && this.selectElement) {
+            this.selectElement.value = this.value;
+        }
+        super.update(changedProperties);
+    }
 
-    private onBaseMapChanged(event: Event) {
+
+    private onChange(event: Event) {
         const target = event.target as HTMLInputElement;
         this.value = target.value;
     }

@@ -1022,10 +1022,10 @@ class LayerManager(anywidget.AnyWidget):
 
 
 @Theme.apply
-class Basemap(anywidget.AnyWidget):
+class BasemapSelector(anywidget.AnyWidget):
     """Widget for selecting a basemap."""
 
-    _esm = pathlib.Path(__file__).parent / "static" / "basemap.js"
+    _esm = pathlib.Path(__file__).parent / "static" / "basemap_selector.js"
 
     # The list of basemap names to make available for selection.
     basemaps = traitlets.List([]).tag(sync=True)
@@ -1069,9 +1069,9 @@ class Basemap(anywidget.AnyWidget):
         if self.on_close:
             self.on_close()
 
-    def _on_close_click(self, _) -> None:
-        """Handles the close button click event."""
-        self.cleanup()
+
+# Type alias for backwards compatibility.
+Basemap = BasemapSelector
 
 
 @Theme.apply
