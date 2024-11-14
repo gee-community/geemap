@@ -42,7 +42,7 @@ export class LayerManagerRow extends LitWidget<
                 text-overflow: ellipsis;
             }
 
-            .settings-delete-button {
+            .row-button {
                 font-size: 14px;
                 height: 26px;
                 width: 26px;
@@ -100,7 +100,7 @@ export class LayerManagerRow extends LitWidget<
                 flex-grow: 1;
             }
 
-            .confirm-deny-button {
+            .confirm-deletion-container button {
                 height: 26px;
                 width: 70px;
             }
@@ -150,7 +150,7 @@ export class LayerManagerRow extends LitWidget<
                     @input="${this.onLayerOpacityChanged}"
                 />
                 <button
-                    class="legacy-button settings-delete-button"
+                    class="legacy-button row-button settings-button"
                     @click="${this.onSettingsClicked}"
                 >
                     <span class="material-symbols-outlined">&#xe8b8;</span>
@@ -158,7 +158,8 @@ export class LayerManagerRow extends LitWidget<
                 <button
                     class=${classMap({
                         "legacy-button": true,
-                        "settings-delete-button": true,
+                        "row-button": true,
+                        "delete-button": true,
                         loading: this.isLoading,
                         "done-loading": !this.isLoading,
                     })}
@@ -179,16 +180,16 @@ export class LayerManagerRow extends LitWidget<
             return nothing;
         }
         return html`
-            <div class="row">
+            <div class="row confirm-deletion-container">
                 <span class="legacy-text remove-layer-text">Remove layer?</span>
                 <button
-                    class="legacy-button primary confirm-deny-button"
+                    class="legacy-button primary confirm-deletion-button"
                     @click="${this.confirmDeletion}"
                 >
                     Yes
                 </button>
                 <button
-                    class="legacy-button primary confirm-deny-button"
+                    class="legacy-button primary"
                     @click="${this.cancelDeletion}"
                 >
                     No

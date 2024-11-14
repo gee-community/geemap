@@ -2,14 +2,34 @@
 	"scripts": {
 		"dev": "npm run build -- --sourcemap=inline --watch",
 		"build": "esbuild js/*.ts --format=esm --bundle --outdir=geemap/static",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"pretest": "npm run build",
+		"test": "karma start karma.conf.cjs --single-run --watch=false",
+		"test:watch": "karma start karma.conf.cjs"
 	},
+	"type": "module",
 	"dependencies": {
-		"lit": "^3.2.0"
+		"lit": "^3.2.1"
 	},
 	"devDependencies": {
 		"@anywidget/types": "^0.1.9",
+		"@types/jasmine": "^5.1.4",
+		"@types/jasmine-expect": "^3.8.1",
 		"esbuild": "^0.23.0",
-		"typescript": "^5.5.3"
+		"jasmine": "^5.4.0",
+		"jasmine-core": "^5.4.0",
+		"jasmine-spec-reporter": "^7.0.0",
+		"karma": "^6.4.4",
+		"karma-chrome-launcher": "^3.2.0",
+		"karma-jasmine": "^5.1.0",
+		"karma-jasmine-html-reporter": "^2.1.0",
+		"karma-spec-reporter": "^0.0.36",
+		"karma-webpack": "^5.0.1",
+		"puppeteer": "^23.5.3",
+		"puppeteer-core": "^23.5.3",
+		"ts-loader": "^9.5.1",
+		"typescript": "^5.5.3",
+		"webpack": "^5.95.0",
+		"webpack-cli": "^5.1.4"
 	}
 }
