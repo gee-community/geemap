@@ -1287,13 +1287,13 @@ class Map(ipyleaflet.Map, MapInterface):
             ),
         ]
 
-    def _toolbar_extra_tools(self) -> Optional[List[toolbar.ToolbarItem]]:
+    def _toolbar_extra_tools(self) -> List[toolbar.ToolbarItem]:
         """Gets the extra tools for the toolbar.
 
         Returns:
-            Optional[List[toolbar.ToolbarItem]]: The extra tools for the toolbar.
+            List[toolbar.ToolbarItem]: The extra tools for the toolbar.
         """
-        return None
+        return []
 
     def _control_config(self) -> Dict[str, List[str]]:
         """Gets the control configuration.
