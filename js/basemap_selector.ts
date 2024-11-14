@@ -64,7 +64,7 @@ export class BasemapSelector extends LitWidget<
                     class="legacy-button row-button close-button"
                     @click="${this.onCloseClicked}"
                 >
-                    <span class="close-icon material-symbols-outlined">&#xe5cd;</span>
+                    <span class="close-icon material-symbols-outlined">close</span>
                 </button>
             </div>`;
     }

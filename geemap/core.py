@@ -916,25 +916,6 @@ class Map(ipyleaflet.Map, MapInterface):
         else:
             super().add(obj)
 
-    def _on_toggle_toolbar_layers(self, is_open: bool) -> None:
-        """Handles the toggle event for the toolbar layers.
-
-        Args:
-            is_open (bool): Whether the toolbar layers are open.
-        """
-        if is_open:
-            if self._layer_manager:
-                return
-
-            layer_manager = map_widgets.LayerManager(self)
-            layer_manager.header_hidden = True
-            layer_manager.close_button_hidden = True
-            layer_manager.refresh_layers()
-            self._toolbar.accessory_widget = layer_manager
-        else:
-            self._toolbar.accessory_widget = None
-            self.remove("layer_manager")
-
     def _add_layer_manager(self, position: str, **kwargs: Any) -> None:
         """Adds a layer manager to the map.
 
@@ -942,9 +923,6 @@ class Map(ipyleaflet.Map, MapInterface):
             position (str): The position to place the layer manager.
             **kwargs (Any): Additional keyword arguments.
         """
-        if self._layer_manager:
-            return
-
         layer_manager = map_widgets.LayerManager(self, **kwargs)
         layer_manager.on_close = lambda: self.remove("layer_manager")
         layer_manager.refresh_layers()
@@ -963,16 +941,18 @@ class Map(ipyleaflet.Map, MapInterface):
         if self._toolbar:
             return
 
+        layer_manager = map_widgets.LayerManager(self)
+        layer_manager.header_hidden = True
+        layer_manager.close_button_hidden = True
+        layer_manager.refresh_layers()
+
         toolbar_val = toolbar.Toolbar(
-            self, self._toolbar_main_tools(), self._toolbar_extra_tools(), **kwargs
-        )
-        toolbar_val.on_layers_toggled = self._on_toggle_toolbar_layers
+            self, self._toolbar_main_tools(), self._toolbar_extra_tools(), layer_manager
+        )        
         toolbar_control = ipyleaflet.WidgetControl(
             widget=toolbar_val, position=position
         )
         super().add(toolbar_control)
-        # Enable the layer manager by default.
-        toolbar_val.toggle_layers(True)
 
     def _add_inspector(self, position: str, **kwargs: Any) -> None:
         """Adds an inspector to the map.
@@ -1254,63 +1234,64 @@ class Map(ipyleaflet.Map, MapInterface):
         return control
 
     def _open_help_page(
-        self, host_map: "MapInterface", selected: bool, item: toolbar.Toolbar.Item
+        self, host_map: "MapInterface", selected: bool, item: toolbar.ToolbarItem
     ) -> None:
         """Opens the help page.
 
         Args:
             host_map (MapInterface): The host map.
             selected (bool): Whether the item is selected.
-            item (toolbar.Toolbar.Item): The toolbar item.
+            item (toolbar.ToolbarItem): The toolbar item.
         """
         del host_map, item  # Unused.
         if selected:
             coreutils.open_url("https://geemap.org")
 
-    def _toolbar_main_tools(self) -> List[toolbar.Toolbar.Item]:
+    def _toolbar_main_tools(self) -> List[toolbar.ToolbarItem]:
         """Gets the main tools for the toolbar.
 
         Returns:
-            List[toolbar.Toolbar.Item]: The main tools for the toolbar.
+            List[toolbar.ToolbarItem]: The main tools for the toolbar.
         """
 
         @toolbar._cleanup_toolbar_item
         def inspector_tool_callback(
-            map: Map, selected: bool, item: toolbar.Toolbar.Item
+            map: Map, selected: bool, item: toolbar.ToolbarItem
         ):
             del selected, item  # Unused.
             map.add("inspector")
             return map._inspector
 
         @toolbar._cleanup_toolbar_item
-        def basemap_tool_callback(map: Map, selected: bool, item: toolbar.Toolbar.Item):
+        def basemap_tool_callback(map: Map, selected: bool, item: toolbar.ToolbarItem):
             del selected, item  # Unused.
             map.add("basemap_selector")
             return map._basemap_selector
 
         return [
-            toolbar.Toolbar.Item(
+            toolbar.ToolbarItem(
                 icon="map",
                 tooltip="Basemap selector",
                 callback=basemap_tool_callback,
-                reset=False,
             ),
-            toolbar.Toolbar.Item(
+            toolbar.ToolbarItem(
                 icon="info",
                 tooltip="Inspector",
                 callback=inspector_tool_callback,
-                reset=False,
             ),
-            toolbar.Toolbar.Item(
-                icon="question", tooltip="Get help", callback=self._open_help_page
+            toolbar.ToolbarItem(
+                icon="question_mark",
+                tooltip="Get help",
+                callback=self._open_help_page,
+                reset=True,
             ),
         ]
 
-    def _toolbar_extra_tools(self) -> Optional[List[toolbar.Toolbar.Item]]:
+    def _toolbar_extra_tools(self) -> Optional[List[toolbar.ToolbarItem]]:
         """Gets the extra tools for the toolbar.
 
         Returns:
-            Optional[List[toolbar.Toolbar.Item]]: The extra tools for the toolbar.
+            Optional[List[toolbar.ToolbarItem]]: The extra tools for the toolbar.
         """
         return None
 

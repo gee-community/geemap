@@ -2,15 +2,16 @@ import type { AnyModel, RenderProps } from "@anywidget/types";
 import { html, css, LitElement } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from 'lit/directives/class-map.js';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 import { legacyStyles } from './ipywidgets_styles';
 import { loadFonts } from "./utils";
+import { materialStyles } from "./styles";
 
 export interface ToolbarItemModel {
     active: boolean;
     icon: string;
-    tooltip: string;
+    // Note: "tooltip" is already used by ipywidgets.
+    tooltip_: string;
 }
 
 export class ToolbarItem extends LitElement {
@@ -20,11 +21,14 @@ export class ToolbarItem extends LitElement {
 
     static styles = [
         legacyStyles,
+        materialStyles,
         css`
             button {
-                height: auto;
+                font-size: 16px !important;
+                height: 32px;
                 padding: 0px 0px 0px 4px;
-                width: auto;
+                width: 32px;
+                user-select: none;
             }
         `,
     ];
@@ -33,7 +37,7 @@ export class ToolbarItem extends LitElement {
     private static modelNameToViewName = new Map<keyof ToolbarItemModel, keyof ToolbarItem | null>([
         ["active", "active"],
         ["icon", "icon"],
-        ["tooltip", "tooltip"],
+        ["tooltip_", "tooltip_"],
     ]);
 
     set model(model: AnyModel<ToolbarItemModel>) {
@@ -57,14 +61,9 @@ export class ToolbarItem extends LitElement {
     icon: string = '';
 
     @property({ type: String })
-    tooltip: string = '';
+    tooltip_: string = '';
 
     render() {
-        // Strictly validate the icon, since we are using unsafeHTML
-        // directive to render the HTML entity directly. 
-        if (this.icon && !this.icon.match(/^&#x[a-fA-F0-9]+;$/)) {
-            this.icon = '';
-        }
         return html`
             <button
                 class=${classMap({
@@ -72,9 +71,9 @@ export class ToolbarItem extends LitElement {
             'primary': true,
             'active': this.active,
         })}
-                title="${this.tooltip}"
+                title="${this.tooltip_}"
                 @click="${this.onClick}">
-                <span class="material-symbols-outlined">${unsafeHTML(this.icon)}</span>
+                <span class="material-symbols-outlined">${this.icon}</span>
             </button>`;
     }
 

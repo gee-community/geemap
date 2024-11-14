@@ -10,7 +10,7 @@ from unittest.mock import patch, Mock
 import ipywidgets
 
 import geemap
-from geemap.toolbar import Toolbar, _cleanup_toolbar_item
+from geemap.toolbar import Toolbar, ToolbarItem, _cleanup_toolbar_item
 from tests import fake_map, utils
 
 
@@ -34,10 +34,10 @@ class TestToolbar(unittest.TestCase):
         self.callback_calls = 0
         self.last_called_with_selected = None
         self.last_called_item = None
-        self.item = Toolbar.Item(
+        self.item = ToolbarItem(
             icon="info", tooltip="dummy item", callback=self.dummy_callback
         )
-        self.no_reset_item = Toolbar.Item(
+        self.no_reset_item = ToolbarItem(
             icon="question",
             tooltip="no reset item",
             callback=self.dummy_callback,
@@ -145,22 +145,6 @@ class TestToolbar(unittest.TestCase):
 
         on_toggled_mock.assert_called_once()
 
-    def test_accessory_widget(self):
-        """Verifies the accessory widget replaces the tool grid."""
-        map_fake = fake_map.FakeMap()
-        toolbar = Toolbar(map_fake, [self.item, self.no_reset_item])
-        self._query_open_button(toolbar).value = True
-        self.assertIsNotNone(self._query_tool_grid(toolbar))
-
-        toolbar.accessory_widget = ipywidgets.ToggleButton(tooltip="test-button")
-
-        self.assertIsNone(self._query_tool_grid(toolbar))
-        self.assertIsNotNone(
-            utils.query_widget(
-                toolbar, ipywidgets.ToggleButton, lambda c: c.tooltip == "test-button"
-            )
-        )
-
     @dataclass
     class TestWidget:
         selected_count = 0
@@ -177,7 +161,7 @@ class TestToolbar(unittest.TestCase):
             widget.selected_count += 1
             return widget
 
-        item = Toolbar.Item(
+        item = ToolbarItem(
             icon="info", tooltip="dummy item", callback=callback, reset=False
         )
         map_fake = fake_map.FakeMap()

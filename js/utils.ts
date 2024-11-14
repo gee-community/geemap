@@ -24,9 +24,13 @@ export function loadFonts() {
 
 export async function updateChildren(
     container: HTMLElement,
-    model: AnyModel<any>
+    model: AnyModel<any>,
+    property = "children",
 ) {
-    const children = model.get("children");
+    let children = model.get(property);
+    if (!Array.isArray(children)) {
+        children = [children]
+    }
     const child_models = await unpackModels(children, model.widget_manager);
     const child_views = await Promise.all(
         child_models.map((model) => model.widget_manager.create_view(model))

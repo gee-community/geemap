@@ -6,8 +6,6 @@ import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
 import { loadFonts, updateChildren } from "./utils";
 
-import './tab_panel';
-
 export interface LayerManagerModel {
     children: any;
     visible: boolean;
@@ -68,11 +66,6 @@ export class LayerManager extends LitWidget<
                     >
                 </div>
                 <slot></slot>
-                <tab-panel .tabs=${[{name: 'One'}, {icon: '&#xe8b8;', name: 'Two'}, {icon: '&#xe5cd;'}]}>
-                    <div>one</div>
-                    <div>two</div>
-                    <div>three</div>
-                </tab-panel>
             </div>
         `;
     }

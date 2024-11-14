@@ -2,7 +2,7 @@ import { html, css, nothing, LitElement, PropertyValues } from "lit";
 import { property, queryAll, queryAssignedElements } from "lit/decorators.js";
 import { legacyStyles } from "./ipywidgets_styles";
 import { classMap } from 'lit/directives/class-map.js';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
+import { materialStyles } from "./styles";
 
 function convertToId(name: string | undefined): string {
     return (name || "").trim().replace(" ", "-").toLowerCase();
@@ -36,6 +36,7 @@ export class TabPanel extends LitElement {
 
     static styles = [
         legacyStyles,
+        materialStyles,
         css`
             ::slotted(*) {
                 display: none;
@@ -54,17 +55,23 @@ export class TabPanel extends LitElement {
                 align-items: center;
                 display: flex;
                 flex-direction: row;
-                justify-content: flex-start;
+                justify-content: flex-end;
             }
 
             .tab-container button {
-                margin: 2px;
-                padding: 0 4px;
+                border-radius: 5px;
+                font-size: 16px;
+                margin-right: 2px;
+                padding: 5px 19px;
                 user-select: none;
             }
 
             .tab-container button:first-child {
                 margin-left: 0;
+            }
+
+            .tab-container button:last-child {
+                margin-right: 0;
             }
         `,
     ];
@@ -129,11 +136,6 @@ export class TabPanel extends LitElement {
     private renderTabs() {
         return this.tabs.map((tab: TabLabel, i: number) => {
             const id = convertToId(this.tabs[i].name);
-            // Strictly validate the icon, since we are using unsafeHTML
-            // directive to render the HTML entity directly. 
-            if (tab.icon && !tab.icon.match(/^&#x[a-fA-F0-9]+;$/)) {
-                tab.icon = '';
-            }
             return html`<button
                             id="tab-${id}-${i}"
                             class="${classMap({
@@ -147,7 +149,7 @@ export class TabPanel extends LitElement {
                             @click=${() => {
                     this.onTabClick(i);
                 }}>
-                            ${tab.icon ? html`<span class="material-symbols-outlined">${unsafeHTML(tab.icon)}</span>` : nothing}
+                            ${tab.icon ? html`<span class="material-symbols-outlined">${tab.icon}</span>` : nothing}
                             <span>${tab.name}</span>
                         </button>`;
         });

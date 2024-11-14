@@ -153,7 +153,7 @@ export class LayerManagerRow extends LitWidget<
                     class="legacy-button row-button settings-button"
                     @click="${this.onSettingsClicked}"
                 >
-                    <span class="material-symbols-outlined">&#xe8b8;</span>
+                    <span class="material-symbols-outlined">settings</span>
                 </button>
                 <button
                     class=${classMap({
@@ -167,7 +167,7 @@ export class LayerManagerRow extends LitWidget<
                 >
                     <div class="spinner"></div>
                     <span class="close-icon material-symbols-outlined"
-                        >&#xe5cd;</span
+                        >close</span
                     >
                 </button>
             </div>

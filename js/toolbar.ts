@@ -1,13 +1,17 @@
 import type { AnyModel, RenderProps } from "@anywidget/types";
 import { html, css, LitElement } from "lit";
 import { property } from "lit/decorators.js";
-import { legacyStyles } from './ipywidgets_styles';
+import { legacyStyles } from "./ipywidgets_styles";
 import { loadFonts, updateChildren } from "./utils";
 
-import './tab_panel';
+import "./tab_panel";
+import { classMap } from "lit/directives/class-map.js";
+import { materialStyles } from "./styles";
 
 export interface ToolbarModel {
-    children: any;
+    accessory_widget: any;
+    main_tools: any;
+    extra_tools: any
     expanded: boolean;
 }
 
@@ -18,15 +22,40 @@ export class Toolbar extends LitElement {
 
     static styles = [
         legacyStyles,
+        materialStyles,
         css`
-            .container {
-                padding: 0 4px 2px 4px;
-            }`,
+            .hide {
+                display: none;
+            }
+
+            .expanded {
+                display: block; !important
+            }
+
+            .tools-container {
+                padding: 4px;
+            }
+
+            slot[name="extra-tools"] {
+                margin-top: 4px;
+            }
+
+            ::slotted([slot="main-tools"]),
+            ::slotted([slot="extra-tools"])  {
+                align-items: center;
+                display: inline-grid;
+                grid-template-columns: auto auto auto;
+                grid-gap: 4px;
+                justify-items: center;
+            }
+        `,
     ];
 
     private _model: AnyModel<ToolbarModel> | undefined = undefined;
     private static modelNameToViewName = new Map<keyof ToolbarModel, keyof Toolbar | null>([
-        ["children", null],
+        ["accessory_widget", null],
+        ["main_tools", null],
+        ["extra_tools", null],
         ["expanded", "expanded"],
     ]);
 
@@ -49,12 +78,20 @@ export class Toolbar extends LitElement {
 
     render() {
         return html`
-            <div class="container">
-                <tab-panel .tabs=${[{icon: '&#xe875;'}, {icon: '&#xe869;'}]}>
-                    <slot name="layer-manager"></slot>
-                    <slot name="toolbar"></slot>
-                </tab-panel>
-            </div>
+            <tab-panel .tabs=${[{icon: "layers"}, {icon: "build"}]}>
+                <div class="accessory-container">
+                    <slot name="accessory-widget"></slot>
+                </div>
+                <div class="tools-container">
+                    <slot name="main-tools"></slot>
+                    <slot 
+                        name="extra-tools"
+                        class="${classMap({
+                            hide: !this.expanded,
+                            expanded: this.expanded,
+                        })}"></slot>
+                </div>
+            </tab-panel>
         `;
     }
 
@@ -64,11 +101,6 @@ export class Toolbar extends LitElement {
             this._model?.set(property, this[property as keyof Toolbar]);
         }
         this._model?.save_changes();
-    }
-
-    private onLayerVisibilityChanged(event: Event) {
-        const target = event.target as HTMLInputElement;
-        this.visible = target.checked;
     }
 }
 
@@ -83,9 +115,31 @@ async function render({ model, el }: RenderProps<ToolbarModel>) {
     manager.model = model;
     el.appendChild(manager);
 
-    updateChildren(manager, model);
-    model.on("change:children", () => {
-        updateChildren(manager, model);
+    const accessoryWidgetEl = document.createElement("div");
+    accessoryWidgetEl.slot = "accessory-widget";
+    manager.appendChild(accessoryWidgetEl);
+
+    updateChildren(accessoryWidgetEl, model, "accessory_widget");
+    model.on("change:accessory_widget", () => {
+        updateChildren(accessoryWidgetEl, model, "accessory_widget");
+    });
+
+    const mainToolsEl = document.createElement("div");
+    mainToolsEl.slot = "main-tools";
+    manager.appendChild(mainToolsEl);
+
+    updateChildren(mainToolsEl, model, "main_tools");
+    model.on("change:main_tools", () => {
+        updateChildren(mainToolsEl, model, "main_tools");
+    });
+
+    const extraToolsEl = document.createElement("div");
+    extraToolsEl.slot = "extra-tools";
+    manager.appendChild(extraToolsEl);
+
+    updateChildren(extraToolsEl, model, "extra_tools");
+    model.on("change:extra_tools", () => {
+        updateChildren(extraToolsEl, model, "extra_tools");
     });
 }
 
