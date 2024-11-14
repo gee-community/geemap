@@ -90,7 +90,7 @@ class Toolbar(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "toolbar.js"
 
     # The accessory widget.
-    accessory_widget = map_widgets.TypedTuple(
+    accessory_widgets = map_widgets.TypedTuple(
         trait=traitlets.Instance(widgets.Widget),
         help="The accessory widget",
     ).tag(sync=True, **widgets.widget_serialization)
@@ -115,7 +115,7 @@ class Toolbar(anywidget.AnyWidget):
     _TOGGLE_TOOL_COLLAPSE_ICON = "remove"
     _TOGGLE_TOOL_COLLAPSE_TOOLTIP = "Collapse toolbar"
 
-    def __init__(self, host_map, main_tools, extra_tools, accessory_widget):
+    def __init__(self, host_map, main_tools, extra_tools, accessory_widgets):
         """Adds a toolbar with `main_tools` and `extra_tools` to the `host_map`."""
         super().__init__()
         if not main_tools:
@@ -131,7 +131,7 @@ class Toolbar(anywidget.AnyWidget):
         self.extra_tools = extra_tools
         for widget in self.main_tools + self.extra_tools:
             widget.callback_wrapper = lambda callback, value, tool: callback(self.host_map, value, tool)
-        self.accessory_widget = [accessory_widget]
+        self.accessory_widgets = [accessory_widgets]
 
     def reset(self):
         """Resets the toolbar so that no widget is selected."""

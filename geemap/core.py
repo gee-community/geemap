@@ -673,8 +673,14 @@ class Map(ipyleaflet.Map, MapInterface):
             Optional[map_widgets.LayerManager]: The layer manager widget if found, else None.
         """
         if toolbar_widget := self._toolbar:
-            if isinstance(toolbar_widget.accessory_widget, map_widgets.LayerManager):
-                return toolbar_widget.accessory_widget
+            return next(
+                (
+                    widget
+                    for widget in toolbar_widget.accessory_widgets
+                    if isinstance(widget, map_widgets.LayerManager)
+                ),
+                None,
+            )
         return self._find_widget_of_type(map_widgets.LayerManager)
 
     @property
@@ -948,7 +954,7 @@ class Map(ipyleaflet.Map, MapInterface):
 
         toolbar_val = toolbar.Toolbar(
             self, self._toolbar_main_tools(), self._toolbar_extra_tools(), layer_manager
-        )        
+        )
         toolbar_control = ipyleaflet.WidgetControl(
             widget=toolbar_val, position=position
         )

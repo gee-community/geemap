@@ -9,7 +9,7 @@ import { classMap } from "lit/directives/class-map.js";
 import { materialStyles } from "./styles";
 
 export interface ToolbarModel {
-    accessory_widget: any;
+    accessory_widgets: any;
     main_tools: any;
     extra_tools: any
     expanded: boolean;
@@ -53,7 +53,7 @@ export class Toolbar extends LitElement {
 
     private _model: AnyModel<ToolbarModel> | undefined = undefined;
     private static modelNameToViewName = new Map<keyof ToolbarModel, keyof Toolbar | null>([
-        ["accessory_widget", null],
+        ["accessory_widgets", null],
         ["main_tools", null],
         ["extra_tools", null],
         ["expanded", "expanded"],
@@ -119,9 +119,9 @@ async function render({ model, el }: RenderProps<ToolbarModel>) {
     accessoryWidgetEl.slot = "accessory-widget";
     manager.appendChild(accessoryWidgetEl);
 
-    updateChildren(accessoryWidgetEl, model, "accessory_widget");
-    model.on("change:accessory_widget", () => {
-        updateChildren(accessoryWidgetEl, model, "accessory_widget");
+    updateChildren(accessoryWidgetEl, model, "accessory_widgets");
+    model.on("change:accessory_widgets", () => {
+        updateChildren(accessoryWidgetEl, model, "accessory_widgets");
     });
 
     const mainToolsEl = document.createElement("div");
