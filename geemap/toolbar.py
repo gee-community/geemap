@@ -640,7 +640,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
                 dict_values = dict(zip(b_names, [dict_values_tmp[b] for b in b_names]))
                 generate_chart(dict_values, latlon)
             except Exception as e:
-                if hasattr(m, "_plot_widget"):
+                if hasattr(m, "_plot_widget") and m._plot_widget is not None:
                     m._plot_widget.clear_output()
                     with m._plot_widget:
                         print("No data for the clicked location.")
