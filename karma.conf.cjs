@@ -35,7 +35,7 @@ module.exports = config => {
         ],
       },
       resolve: {
-        extensions: ['.ts', '.js'], 
+        extensions: ['.ts', '.js'],
       },
       stats: {
           colors: true,

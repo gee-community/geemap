@@ -23,9 +23,10 @@ export const legacyStyles = css`
 
     .legacy-button:hover:enabled,
     .legacy-button:focus:enabled {
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, var(--md-shadow-key-penumbra-opacity)),
-                    0 3px 1px -2px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity)),
-                    0 1px 5px 0 rgba(0, 0, 0, var(--md-shadow-ambient-shadow-opacity));
+        box-shadow: 0 2px 2px 0
+                rgba(0, 0, 0, var(--md-shadow-key-penumbra-opacity)),
+            0 3px 1px -2px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity)),
+            0 1px 5px 0 rgba(0, 0, 0, var(--md-shadow-ambient-shadow-opacity));
     }
 
     .legacy-slider {
@@ -67,6 +68,31 @@ export const legacyStyles = css`
     }
 
     .legacy-button.primary.active {
-        background-color: var(--jp-brand-color0);    }
+        background-color: var(--jp-brand-color0);
         color: var(--jp-ui-inverse-font-color0);
+    }
+
+    .legacy-select {
+        padding-right: 20px;
+        border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+        border-radius: 0;
+        height: inherit;
+        flex: 1 1 var(--jp-widgets-inline-width-short);
+        min-width: 0;
+        box-sizing: border-box;
+        outline: none !important;
+        box-shadow: none;
+        background-color: var(--jp-widgets-input-background-color);
+        color: var(--jp-widgets-input-color);
+        font-size: var(--jp-widgets-font-size);
+        vertical-align: top;
+        padding-left: calc(var(--jp-widgets-input-padding)* 2);
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-repeat: no-repeat;
+        background-size: 20px;
+        background-position: right center;
+        background-image: var(--jp-widgets-dropdown-arrow);
+    }
 `;
