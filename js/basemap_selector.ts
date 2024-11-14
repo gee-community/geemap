@@ -27,15 +27,15 @@ export class BasemapSelector extends LitWidget<
             .row-container {
                 align-items: center;
                 display: flex;
-                gap: 2px;
                 height: 32px;
                 width: 200px;
             }
 
             .row-button {
                 font-size: 14px;
-                height: 28px;
-                width: 28px;
+                height: 26px;
+                margin: 4px;
+                width: 26px;
             }
         `,
     ];
