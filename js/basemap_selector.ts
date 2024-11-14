@@ -68,7 +68,7 @@ export class BasemapSelector extends LitWidget<
                 </button>
             </div>`;
     }
-    
+
     override update(changedProperties: PropertyValues): void {
         if (changedProperties.has("value") && this.selectElement) {
             this.selectElement.value = this.value;
