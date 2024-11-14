@@ -655,7 +655,9 @@ class TestBasemapSelector(unittest.TestCase):
         on_close_mock = Mock()
         self.basemap_widget.on_close = on_close_mock
         msg = {"type": "click", "id": "close"}
-        self.basemap_widget._handle_custom_msg(msg, [])  # pylint: disable=protected-access
+        self.basemap_widget._handle_custom_msg(
+            msg, []
+        )  # pylint: disable=protected-access
         on_close_mock.assert_called_once()
 
     def test_basemap_change(self):
