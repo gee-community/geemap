@@ -3,6 +3,7 @@ import { property, queryAll, queryAssignedElements } from "lit/decorators.js";
 import { legacyStyles } from "./ipywidgets_styles";
 import { classMap } from 'lit/directives/class-map.js';
 import { materialStyles } from "./styles";
+import { styleMap } from "lit/directives/style-map.js";
 
 function convertToId(name: string | undefined): string {
     return (name || "").trim().replace(" ", "-").toLowerCase();
@@ -14,10 +15,11 @@ export enum TabMode {
     HIDE_ON_SECOND_CLICK,
 }
 
-/** The tab label, as a string or Material Icon. */
-export interface TabLabel {
-    name: string|undefined,
-    icon: string|undefined,
+/** The tab configuration, as a string or Material Icon. */
+export interface Tab {
+    name: string | undefined,
+    icon: string | undefined,
+    width: number | undefined,
 }
 
 /**
@@ -61,9 +63,10 @@ export class TabPanel extends LitElement {
             .tab-container button {
                 border-radius: 5px;
                 font-size: 16px;
+                height: 28px;
                 margin-right: 2px;
-                padding: 5px 19px;
                 user-select: none;
+                width: 28px;
             }
 
             .tab-container button:first-child {
@@ -77,7 +80,7 @@ export class TabPanel extends LitElement {
     ];
 
     @property({ type: Array })
-    tabs: TabLabel[] = [];
+    tabs: Tab[] = [];
 
     @property({ type: Number })
     index = 0;
@@ -111,7 +114,7 @@ export class TabPanel extends LitElement {
 
     override update(changedProperties: PropertyValues) {
         super.update(changedProperties);
-        if (changedProperties.has("index")) {
+        if (changedProperties.has("index") && changedProperties.get("index") != null) {
             this.updateSlotChildren();
         }
     }
@@ -134,13 +137,16 @@ export class TabPanel extends LitElement {
     }
 
     private renderTabs() {
-        return this.tabs.map((tab: TabLabel, i: number) => {
+        return this.tabs.map((tab: Tab, i: number) => {
             const id = convertToId(this.tabs[i].name);
             return html`<button
                             id="tab-${id}-${i}"
                             class="${classMap({
                 "legacy-button": true,
                 "active": i === this.index,
+            })}"
+                            style="${styleMap({
+                width: tab.width ? `${tab.width}px` : null,
             })}"
                             type="button"
                             role="tab"
@@ -165,6 +171,9 @@ export class TabPanel extends LitElement {
             default:
                 this.index = index;
         }
+        this.dispatchEvent(new CustomEvent('tab-clicked', {
+            detail: index,
+        }));
     }
 }
 

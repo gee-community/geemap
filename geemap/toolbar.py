@@ -110,6 +110,9 @@ class Toolbar(anywidget.AnyWidget):
     # Whether the toolbar is expanded.
     expanded = traitlets.Bool(False).tag(sync=True)
 
+    # The currently selected tab.
+    tabIndex = traitlets.Int(0).tag(sync=True)
+
     _TOGGLE_TOOL_EXPAND_ICON = "add"
     _TOGGLE_TOOL_EXPAND_TOOLTIP = "Expand toolbar"
     _TOGGLE_TOOL_COLLAPSE_ICON = "remove"
@@ -526,7 +529,6 @@ def ee_plot_gui(m, position="topright", **kwargs):
         m (object): geemap.Map.
         position (str, optional): Position of the widget. Defaults to "topright".
     """
-
     close_btn = widgets.Button(
         icon="times",
         tooltip="Close the plot widget",
