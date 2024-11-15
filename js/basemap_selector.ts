@@ -61,7 +61,7 @@ export class BasemapSelector extends LitWidget<
                     ${this.basemaps.map((basemap) => html`<option>${basemap}</option>`)}
                 </select>
                 <button
-                    class="legacy-button row-button close-button"
+                    class="legacy-button primary row-button close-button"
                     @click="${this.onCloseClicked}"
                 >
                     <span class="close-icon material-symbols-outlined">close</span>
