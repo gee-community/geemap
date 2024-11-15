@@ -3,9 +3,9 @@ import { css, html, PropertyValues, TemplateResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
+import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
 import { loadFonts } from "./utils";
-import { LitWidget } from "./lit_widget";
 
 export interface BasemapSelectorModel {
     basemaps: string[];
@@ -64,7 +64,7 @@ export class BasemapSelector extends LitWidget<
                     class="legacy-button primary row-button close-button"
                     @click="${this.onCloseClicked}"
                 >
-                    <span class="close-icon material-symbols-outlined">&#xe5cd;</span>
+                    <span class="close-icon material-symbols-outlined">close</span>
                 </button>
             </div>`;
     }
@@ -75,7 +75,6 @@ export class BasemapSelector extends LitWidget<
         }
         super.update(changedProperties);
     }
-
 
     private onChange(event: Event) {
         const target = event.target as HTMLInputElement;
