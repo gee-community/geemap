@@ -58,8 +58,11 @@ export const legacyStyles = css`
     }
 
     .legacy-button.active {
-        background-color: var(--jp-layout-color3);
+        background-color: var(--colab-primary-surface-color, --jp-layout-color3);
         color: var(--jp-ui-font-color1);
+        box-shadow: 0 4px 5px 0 rgba(0, 0, 0, var(--md-shadow-key-penumbra-opacity)),
+                    0 1px 10px 0 rgba(0, 0, 0, var(--md-shadow-ambient-shadow-opacity)),
+                    0 2px 4px -1px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity));
     }
 
     .legacy-button.primary {
