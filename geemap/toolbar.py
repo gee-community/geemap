@@ -111,12 +111,12 @@ class Toolbar(anywidget.AnyWidget):
     expanded = traitlets.Bool(False).tag(sync=True)
 
     # The currently selected tab.
-    tabIndex = traitlets.Int(0).tag(sync=True)
+    tab_index = traitlets.Int(0).tag(sync=True)
 
-    _TOGGLE_TOOL_EXPAND_ICON = "add"
-    _TOGGLE_TOOL_EXPAND_TOOLTIP = "Expand toolbar"
-    _TOGGLE_TOOL_COLLAPSE_ICON = "remove"
-    _TOGGLE_TOOL_COLLAPSE_TOOLTIP = "Collapse toolbar"
+    _TOGGLE_EXPAND_ICON = "add"
+    _TOGGLE_EXPAND_TOOLTIP = "Expand toolbar"
+    _TOGGLE_COLLAPSE_ICON = "remove"
+    _TOGGLE_COLLAPSE_TOOLTIP = "Collapse toolbar"
 
     def __init__(self, host_map, main_tools, extra_tools, accessory_widgets):
         """Adds a toolbar with `main_tools` and `extra_tools` to the `host_map`."""
@@ -124,13 +124,13 @@ class Toolbar(anywidget.AnyWidget):
         if not main_tools:
             raise ValueError("A toolbar cannot be initialized without `main_tools`.")
         self.host_map = host_map
-        self.toggle_tool = ToolbarItem(
-            icon=self._TOGGLE_TOOL_EXPAND_ICON,
-            tooltip=self._TOGGLE_TOOL_EXPAND_TOOLTIP,
+        self.toggle_widget = ToolbarItem(
+            icon=self._TOGGLE_EXPAND_ICON,
+            tooltip=self._TOGGLE_EXPAND_TOOLTIP,
             callback=self._toggle_callback,
             reset=True,
         )
-        self.main_tools = main_tools + ([self.toggle_tool] if extra_tools else [])
+        self.main_tools = main_tools + ([self.toggle_widget] if extra_tools else [])
         self.extra_tools = extra_tools
         for widget in self.main_tools + self.extra_tools:
             widget.callback_wrapper = lambda callback, value, tool: callback(self.host_map, value, tool)
@@ -145,14 +145,14 @@ class Toolbar(anywidget.AnyWidget):
         del m, item  # unused
         if not selected:
             return
-        if self.toggle_tool.icon == self._TOGGLE_TOOL_EXPAND_ICON:
+        if self.toggle_widget.icon == self._TOGGLE_EXPAND_ICON:
             self.expanded = True
-            self.toggle_tool.tooltip = self._TOGGLE_TOOL_COLLAPSE_TOOLTIP
-            self.toggle_tool.icon = self._TOGGLE_TOOL_COLLAPSE_ICON
-        elif self.toggle_tool.icon == self._TOGGLE_TOOL_COLLAPSE_ICON:
+            self.toggle_widget.tooltip_ = self._TOGGLE_COLLAPSE_TOOLTIP
+            self.toggle_widget.icon = self._TOGGLE_COLLAPSE_ICON
+        elif self.toggle_widget.icon == self._TOGGLE_COLLAPSE_ICON:
             self.expanded = False
-            self.toggle_tool.tooltip = self._TOGGLE_TOOL_EXPAND_TOOLTIP
-            self.toggle_tool.icon = self._TOGGLE_TOOL_EXPAND_ICON
+            self.toggle_widget.tooltip_ = self._TOGGLE_EXPAND_TOOLTIP
+            self.toggle_widget.icon = self._TOGGLE_EXPAND_ICON
 
 
 def inspector_gui(m=None):

@@ -13,7 +13,7 @@ export interface ToolbarModel {
     main_tools: any;
     extra_tools: any
     expanded: boolean;
-    tabIndex: number;
+    tab_index: number;
 }
 
 export class Toolbar extends LitElement {
@@ -58,7 +58,7 @@ export class Toolbar extends LitElement {
         ["main_tools", null],
         ["extra_tools", null],
         ["expanded", "expanded"],
-        ["tabIndex", "tabIndex"],
+        ["tab_index", "tab_index"],
     ]);
 
     set model(model: AnyModel<ToolbarModel>) {
@@ -79,15 +79,15 @@ export class Toolbar extends LitElement {
     expanded: boolean = false;
 
     @property()
-    tabIndex: number = 0;
+    tab_index: number = 0;
 
     render() {
         return html`
             <tab-panel
-                .index="${this.tabIndex}"
+                .index="${this.tab_index}"
                 .tabs=${[{icon: "layers", width: 72}, {icon: "build"}]}
                 @tab-clicked=${(e: CustomEvent<number>) => {
-                    this.tabIndex = e.detail;
+                    this.tab_index = e.detail;
                 }}>
                 <div class="accessory-container">
                     <slot name="accessory-widget"></slot>
