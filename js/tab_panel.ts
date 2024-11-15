@@ -43,7 +43,7 @@ export class TabPanel extends LitElement {
             ::slotted(*) {
                 display: none;
             }
-            
+
             ::slotted(.show-tab) {
                 display: block;
             }
