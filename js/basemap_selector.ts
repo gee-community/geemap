@@ -16,7 +16,7 @@ export class BasemapSelector extends LitWidget<
     BasemapSelectorModel,
     BasemapSelector
 > {
-    static get componentName() {
+    static get componentName(): string {
         return `basemap-selector`;
     }
 
