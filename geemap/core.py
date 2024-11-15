@@ -697,7 +697,8 @@ class Map(ipyleaflet.Map, MapInterface):
         """Finds the basemap selector widget in the map controls.
 
         Returns:
-            Optional[map_widgets.BasemapSelector]: The basemap selector widget if found, else None.
+            Optional[map_widgets.BasemapSelector]: The basemap selector widget
+                if found, else None.
         """
         return self._find_widget_of_type(map_widgets.BasemapSelector)
 

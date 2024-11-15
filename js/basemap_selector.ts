@@ -3,9 +3,9 @@ import { css, html, PropertyValues, TemplateResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
+import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
 import { loadFonts } from "./utils";
-import { LitWidget } from "./lit_widget";
 
 export interface BasemapSelectorModel {
     basemaps: string[];
@@ -16,7 +16,7 @@ export class BasemapSelector extends LitWidget<
     BasemapSelectorModel,
     BasemapSelector
 > {
-    static get componentName() {
+    static get componentName(): string {
         return `basemap-selector`;
     }
 
@@ -75,7 +75,6 @@ export class BasemapSelector extends LitWidget<
         }
         super.update(changedProperties);
     }
-
 
     private onChange(event: Event) {
         const target = event.target as HTMLInputElement;
