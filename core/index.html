@@ -7336,13 +7336,14 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerEditor</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_basemap_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">map_widgets</span><span class="o">.</span><span class="n">Basemap</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_basemap_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">map_widgets</span><span class="o">.</span><span class="n">BasemapSelector</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Finds the basemap selector widget in the map controls.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[map_widgets.Basemap]: The basemap selector widget if found, else None.</span>
+<span class="sd">            Optional[map_widgets.BasemapSelector]: The basemap selector widget</span>
+<span class="sd">                if found, else None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">map_widgets</span><span class="o">.</span><span class="n">Basemap</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">map_widgets</span><span class="o">.</span><span class="n">BasemapSelector</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the map with given keyword arguments.</span>
@@ -7700,7 +7701,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="n">value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
             <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_preferred_basemap_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="p">)</span>
-        <span class="n">basemap</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">Basemap</span><span class="p">(</span><span class="n">basemap_names</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">basemap</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">BasemapSelector</span><span class="p">(</span><span class="n">basemap_names</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">basemap</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;basemap_selector&quot;</span><span class="p">)</span>
         <span class="n">basemap</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace_basemap</span>
         <span class="n">basemap_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">basemap</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
@@ -7722,7 +7723,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="s2">&quot;layer_manager&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">,</span>
             <span class="s2">&quot;layer_editor&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerEditor</span><span class="p">,</span>
             <span class="s2">&quot;draw_control&quot;</span><span class="p">:</span> <span class="n">MapDrawControl</span><span class="p">,</span>
-            <span class="s2">&quot;basemap_selector&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">Basemap</span><span class="p">,</span>
+            <span class="s2">&quot;basemap_selector&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">BasemapSelector</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">if</span> <span class="n">widget_type</span> <span class="o">:=</span> <span class="n">basic_controls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">control</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">widget_type</span><span class="p">,</span> <span class="n">return_control</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -9117,7 +9118,7 @@ GeoJSON. Defaults to False.</p></td>
         <span class="s2">&quot;layer_manager&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">,</span>
         <span class="s2">&quot;layer_editor&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerEditor</span><span class="p">,</span>
         <span class="s2">&quot;draw_control&quot;</span><span class="p">:</span> <span class="n">MapDrawControl</span><span class="p">,</span>
-        <span class="s2">&quot;basemap_selector&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">Basemap</span><span class="p">,</span>
+        <span class="s2">&quot;basemap_selector&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">BasemapSelector</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="k">if</span> <span class="n">widget_type</span> <span class="o">:=</span> <span class="n">basic_controls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">control</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">widget_type</span><span class="p">,</span> <span class="n">return_control</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>

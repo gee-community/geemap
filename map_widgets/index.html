@@ -1036,6 +1036,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.map_widgets.BasemapSelector" class="md-nav__link">
+    <span class="md-ellipsis">
+      BasemapSelector
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BasemapSelector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.BasemapSelector.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.BasemapSelector.cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      cleanup()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.map_widgets.Colorbar" class="md-nav__link">
     <span class="md-ellipsis">
       Colorbar
@@ -5338,6 +5371,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.map_widgets.BasemapSelector" class="md-nav__link">
+    <span class="md-ellipsis">
+      BasemapSelector
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="BasemapSelector">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.BasemapSelector.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.BasemapSelector.cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      cleanup()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.map_widgets.Colorbar" class="md-nav__link">
     <span class="md-ellipsis">
       Colorbar
@@ -5570,7 +5636,7 @@
 
 <h2 id="geemap.map_widgets.Basemap" class="doc doc-heading">
         <code>
-Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>)
+Basemap            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
         </code>
 
 
@@ -5584,8 +5650,16 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
-<span class="k">class</span> <span class="nc">Basemap</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">BasemapSelector</span><span class="p">(</span><span class="n">anywidget</span><span class="o">.</span><span class="n">AnyWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for selecting a basemap.&quot;&quot;&quot;</span>
+
+    <span class="n">_esm</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> <span class="o">/</span> <span class="s2">&quot;basemap_selector.js&quot;</span>
+
+    <span class="c1"># The list of basemap names to make available for selection.</span>
+    <span class="n">basemaps</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">List</span><span class="p">([])</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># The currently selected basemap value.</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a widget for selecting a basemap.</span>
@@ -5594,49 +5668,42 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
 <span class="sd">            basemaps (list): The list of basemap names to make available for selection.</span>
 <span class="sd">            value (str): The default value from basemaps to select.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basemaps</span> <span class="o">=</span> <span class="n">basemaps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_event_listeners</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-            <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">basemaps</span><span class="p">),</span>
-            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
-            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;200px&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_dropdown_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_setup_event_listeners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_msg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_message_event</span><span class="p">)</span>
 
-        <span class="n">close_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;times&quot;</span><span class="p">,</span>
-            <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Close the basemap widget&quot;</span><span class="p">,</span>
-            <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
-            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;32px&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="n">close_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_close_click</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_handle_message_event</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">buffers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">widget</span><span class="p">,</span> <span class="n">buffers</span>  <span class="c1"># Unused</span>
+        <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;click&quot;</span><span class="p">:</span>
+            <span class="n">msg_id</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;close&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span><span class="p">,</span> <span class="n">close_button</span><span class="p">])</span>
-
-    <span class="k">def</span> <span class="nf">_on_dropdown_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the dropdown value change event.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            change (dict): The change event dictionary.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="ow">and</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">:=</span> <span class="n">change</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Cleans up the widget by calling the on_close callback if set.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the close button click event.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 </code></pre></div>
         </details>
 
 
 
   <div class="doc doc-children">
+
+
 
 
 
@@ -5697,25 +5764,12 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
 <span class="sd">        basemaps (list): The list of basemap names to make available for selection.</span>
 <span class="sd">        value (str): The default value from basemaps to select.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-        <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">basemaps</span><span class="p">),</span>
-        <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;200px&quot;</span><span class="p">),</span>
-    <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_dropdown_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-
-    <span class="n">close_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-        <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;times&quot;</span><span class="p">,</span>
-        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Close the basemap widget&quot;</span><span class="p">,</span>
-        <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;32px&quot;</span><span class="p">),</span>
-    <span class="p">)</span>
-    <span class="n">close_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_close_click</span><span class="p">)</span>
-
-    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_dropdown</span><span class="p">,</span> <span class="n">close_button</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">basemaps</span> <span class="o">=</span> <span class="n">basemaps</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_setup_event_listeners</span><span class="p">()</span>
 </code></pre></div>
         </details>
     </div>
@@ -5733,6 +5787,192 @@ Basemap            (<span title="ipywidgets.widgets.widget_box.HBox">HBox</span>
 
 
 <a href="#geemap.map_widgets.Basemap.cleanup" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Cleans up the widget by calling the on_close callback if set.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cleans up the widget by calling the on_close callback if set.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="geemap.map_widgets.BasemapSelector" class="doc doc-heading">
+        <code>
+BasemapSelector            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
+        </code>
+
+
+
+<a href="#geemap.map_widgets.BasemapSelector" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Widget for selecting a basemap.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="k">class</span> <span class="nc">BasemapSelector</span><span class="p">(</span><span class="n">anywidget</span><span class="o">.</span><span class="n">AnyWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for selecting a basemap.&quot;&quot;&quot;</span>
+
+    <span class="n">_esm</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> <span class="o">/</span> <span class="s2">&quot;basemap_selector.js&quot;</span>
+
+    <span class="c1"># The list of basemap names to make available for selection.</span>
+    <span class="n">basemaps</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">List</span><span class="p">([])</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># The currently selected basemap value.</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a widget for selecting a basemap.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            basemaps (list): The list of basemap names to make available for selection.</span>
+<span class="sd">            value (str): The default value from basemaps to select.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basemaps</span> <span class="o">=</span> <span class="n">basemaps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_event_listeners</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_setup_event_listeners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_msg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_message_event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_handle_message_event</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">buffers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">widget</span><span class="p">,</span> <span class="n">buffers</span>  <span class="c1"># Unused</span>
+        <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;click&quot;</span><span class="p">:</span>
+            <span class="n">msg_id</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;close&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">:=</span> <span class="n">change</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cleans up the widget by calling the on_close callback if set.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.map_widgets.BasemapSelector.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+<a href="#geemap.map_widgets.BasemapSelector.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Creates a widget for selecting a basemap.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>basemaps</code></td>
+        <td><code>list</code></td>
+        <td><p>The list of basemap names to make available for selection.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>value</code></td>
+        <td><code>str</code></td>
+        <td><p>The default value from basemaps to select.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a widget for selecting a basemap.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        basemaps (list): The list of basemap names to make available for selection.</span>
+<span class="sd">        value (str): The default value from basemaps to select.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">basemaps</span> <span class="o">=</span> <span class="n">basemaps</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_setup_event_listeners</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.map_widgets.BasemapSelector.cleanup" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#geemap.map_widgets.BasemapSelector.cleanup" class="headerlink" title="Permanent link">&para;</a></h3>
 
     <div class="doc doc-contents ">
 
