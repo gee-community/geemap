@@ -638,51 +638,34 @@ class TestLayerManager(unittest.TestCase):
             self.assertTrue(child.visible)
 
 
-class TestBasemap(unittest.TestCase):
-    """Tests for the Basemap class in the `map_widgets` module."""
+class TestBasemapSelector(unittest.TestCase):
+    """Tests for the BasemapSelector class in the `map_widgets` module."""
 
     def setUp(self):
         self.basemaps = ["first", "default", "bounded"]
         self.default = "default"
-        self.basemap_widget = map_widgets.Basemap(self.basemaps, self.default)
+        self.basemap_widget = map_widgets.BasemapSelector(self.basemaps, self.default)
 
-    @property
-    def _close_button(self):
-        return utils.query_widget(
-            self.basemap_widget,
-            ipywidgets.Button,
-            lambda c: c.tooltip == "Close the basemap widget",
-        )
-
-    @property
-    def _dropdown(self):
-        return utils.query_widget(
-            self.basemap_widget, ipywidgets.Dropdown, lambda _: True
-        )
-
-    def test_basemap(self):
-        """Tests that the basemap's initial UI is set up properly."""
-        self.assertIsNotNone(self._close_button)
-        self.assertIsNotNone(self._dropdown)
-        self.assertEqual(self._dropdown.value, "default")
-        self.assertEqual(len(self._dropdown.options), 3)
+    def test_basemap_default(self):
+        """Tests that the default value is set."""
+        self.assertEqual(self.basemap_widget.value, "default")
 
     def test_basemap_close(self):
-        """Tests that triggering the closing button fires the close event."""
+        """Tests that triggering the closing button fires the close callback."""
         on_close_mock = Mock()
         self.basemap_widget.on_close = on_close_mock
-        self._close_button.click()
-
+        msg = {"type": "click", "id": "close"}
+        self.basemap_widget._handle_custom_msg(
+            msg, []
+        )  # pylint: disable=protected-access
         on_close_mock.assert_called_once()
 
-    def test_basemap_selection(self):
-        """Tests that a basemap selection fires the selected event."""
-        on_basemap_changed_mock = Mock()
-        self.basemap_widget.on_basemap_changed = on_basemap_changed_mock
-
-        self._dropdown.value = "first"
-
-        on_basemap_changed_mock.assert_called_once()
+    def test_basemap_change(self):
+        """Tests that value change fires the basemap_changed callback."""
+        on_change_mock = Mock()
+        self.basemap_widget.on_basemap_changed = on_change_mock
+        self.basemap_widget.value = "ROADMAP"
+        on_change_mock.assert_called_once_with("ROADMAP")
 
 
 class LayerEditorTestHarness:

@@ -1022,8 +1022,16 @@ class LayerManager(anywidget.AnyWidget):
 
 
 @Theme.apply
-class Basemap(ipywidgets.HBox):
+class BasemapSelector(anywidget.AnyWidget):
     """Widget for selecting a basemap."""
+
+    _esm = pathlib.Path(__file__).parent / "static" / "basemap_selector.js"
+
+    # The list of basemap names to make available for selection.
+    basemaps = traitlets.List([]).tag(sync=True)
+
+    # The currently selected basemap value.
+    value = traitlets.Unicode("").tag(sync=True)
 
     def __init__(self, basemaps: List[str], value: str):
         """Creates a widget for selecting a basemap.
@@ -1032,43 +1040,38 @@ class Basemap(ipywidgets.HBox):
             basemaps (list): The list of basemap names to make available for selection.
             value (str): The default value from basemaps to select.
         """
+        super().__init__()
         self.on_close = None
         self.on_basemap_changed = None
+        self.basemaps = basemaps
+        self.value = value
+        self._setup_event_listeners()
 
-        self._dropdown = ipywidgets.Dropdown(
-            options=list(basemaps),
-            value=value,
-            layout=ipywidgets.Layout(width="200px"),
-        )
-        self._dropdown.observe(self._on_dropdown_click, "value")
+    def _setup_event_listeners(self) -> None:
+        self.on_msg(self._handle_message_event)
 
-        close_button = ipywidgets.Button(
-            icon="times",
-            tooltip="Close the basemap widget",
-            button_style="primary",
-            layout=ipywidgets.Layout(width="32px"),
-        )
-        close_button.on_click(self._on_close_click)
+    def _handle_message_event(
+        self, widget: ipywidgets.Widget, content: Dict[str, Any], buffers: List[Any]
+    ) -> None:
+        del widget, buffers  # Unused
+        if content.get("type") == "click":
+            msg_id = content.get("id", "")
+            if msg_id == "close":
+                self.cleanup()
 
-        super().__init__([self._dropdown, close_button])
-
-    def _on_dropdown_click(self, change: dict) -> None:
-        """Handles the dropdown value change event.
-
-        Args:
-            change (dict): The change event dictionary.
-        """
-        if self.on_basemap_changed and change["new"]:
-            self.on_basemap_changed(self._dropdown.value)
+    @traitlets.observe("value")
+    def _observe_value(self, change: Dict[str, Any]) -> None:
+        if (value := change.get("new")) is not None and self.on_basemap_changed:
+            self.on_basemap_changed(value)
 
     def cleanup(self) -> None:
         """Cleans up the widget by calling the on_close callback if set."""
         if self.on_close:
             self.on_close()
 
-    def _on_close_click(self, _) -> None:
-        """Handles the close button click event."""
-        self.cleanup()
+
+# Type alias for backwards compatibility.
+Basemap = BasemapSelector
 
 
 @Theme.apply

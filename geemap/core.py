@@ -687,13 +687,14 @@ class Map(ipyleaflet.Map, MapInterface):
         return self._find_widget_of_type(map_widgets.LayerEditor)
 
     @property
-    def _basemap_selector(self) -> Optional[map_widgets.Basemap]:
+    def _basemap_selector(self) -> Optional[map_widgets.BasemapSelector]:
         """Finds the basemap selector widget in the map controls.
 
         Returns:
-            Optional[map_widgets.Basemap]: The basemap selector widget if found, else None.
+            Optional[map_widgets.BasemapSelector]: The basemap selector widget
+                if found, else None.
         """
-        return self._find_widget_of_type(map_widgets.Basemap)
+        return self._find_widget_of_type(map_widgets.BasemapSelector)
 
     def __init__(self, **kwargs: Any) -> None:
         """Initialize the map with given keyword arguments.
@@ -1051,7 +1052,7 @@ class Map(ipyleaflet.Map, MapInterface):
         value = kwargs.pop(
             "value", self._get_preferred_basemap_name(self.layers[0].name)
         )
-        basemap = map_widgets.Basemap(basemap_names, value, **kwargs)
+        basemap = map_widgets.BasemapSelector(basemap_names, value, **kwargs)
         basemap.on_close = lambda: self.remove("basemap_selector")
         basemap.on_basemap_changed = self._replace_basemap
         basemap_control = ipyleaflet.WidgetControl(widget=basemap, position=position)
@@ -1073,7 +1074,7 @@ class Map(ipyleaflet.Map, MapInterface):
             "layer_manager": map_widgets.LayerManager,
             "layer_editor": map_widgets.LayerEditor,
             "draw_control": MapDrawControl,
-            "basemap_selector": map_widgets.Basemap,
+            "basemap_selector": map_widgets.BasemapSelector,
         }
         if widget_type := basic_controls.get(widget, None):
             if control := self._find_widget_of_type(widget_type, return_control=True):

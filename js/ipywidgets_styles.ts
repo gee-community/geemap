@@ -56,4 +56,29 @@ export const legacyStyles = css`
         height: var(--jp-widgets-inline-height);
         line-height: var(--jp-widgets-inline-height);
     }
+
+    .legacy-select {
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        background-color: var(--jp-widgets-input-background-color);
+        background-image: var(--jp-widgets-dropdown-arrow);
+        background-position: right center;
+        background-repeat: no-repeat;
+        background-size: 20px;
+        border-radius: 0;
+        border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+        box-shadow: none;
+        box-sizing: border-box;
+        color: var(--jp-widgets-input-color);
+        flex: 1 1 var(--jp-widgets-inline-width-short);
+        font-size: var(--jp-widgets-font-size);
+        height: inherit;
+        min-width: 0;
+        outline: none !important;
+        padding-left: calc(var(--jp-widgets-input-padding)* 2);
+        padding-right: 20px;
+        vertical-align: top;
+}
+    }
 `;
