@@ -1,11 +1,12 @@
-import type { AnyModel, RenderProps } from "@anywidget/types";
-import { html, css, LitElement } from "lit";
+import type { RenderProps } from "@anywidget/types";
+import { html, css } from "lit";
 import { property } from "lit/decorators.js";
 import { classMap } from 'lit/directives/class-map.js';
 
 import { legacyStyles } from './ipywidgets_styles';
-import { loadFonts } from "./utils";
+import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
+import { loadFonts } from "./utils";
 
 export interface ToolbarItemModel {
     active: boolean;
@@ -14,7 +15,7 @@ export interface ToolbarItemModel {
     tooltip_text: string;
 }
 
-export class ToolbarItem extends LitElement {
+export class ToolbarItem extends LitWidget<ToolbarItemModel, ToolbarItem> {
     static get componentName() {
         return `tool-button`;
     }
@@ -33,25 +34,12 @@ export class ToolbarItem extends LitElement {
         `,
     ];
 
-    private _model: AnyModel<ToolbarItemModel> | undefined = undefined;
-    private static modelNameToViewName = new Map<keyof ToolbarItemModel, keyof ToolbarItem | null>([
-        ["active", "active"],
-        ["icon", "icon"],
-        ["tooltip_text", "tooltip_text"],
-    ]);
-
-    set model(model: AnyModel<ToolbarItemModel>) {
-        this._model = model;
-        for (const [modelKey, widgetKey] of ToolbarItem.modelNameToViewName) {
-            if (widgetKey) {
-                // Get initial values from the Python model.
-                (this as any)[widgetKey] = model.get(modelKey);
-                // Listen for updates to the model.
-                model.on(`change:${modelKey}`, () => {
-                    (this as any)[widgetKey] = model.get(modelKey);
-                });
-            }
-        }
+    modelNameToViewName(): Map<keyof ToolbarItemModel, keyof ToolbarItem> {
+        return new Map([
+            ["active", "active"],
+            ["icon", "icon"],
+            ["tooltip_text", "tooltip_text"],
+        ]);
     }
 
     @property({ type: Boolean })
@@ -77,15 +65,7 @@ export class ToolbarItem extends LitElement {
             </button>`;
     }
 
-    updated(changedProperties: any) {
-        // Update the model properties so they're reflected in Python.
-        for (const [property, _] of changedProperties) {
-            this._model?.set(property, this[property as keyof ToolbarItem]);
-        }
-        this._model?.save_changes();
-    }
-
-    private onClick(event: Event) {
+    private onClick(_: Event) {
         this.active = !this.active;
     }
 }
