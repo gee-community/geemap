@@ -1,6 +1,7 @@
 import type { RenderProps } from "@anywidget/types";
 import { css, html, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
@@ -24,11 +25,11 @@ export class Container extends LitWidget<ContainerModel, Container> {
             .header {
                 display: flex;
                 gap: 4px;
-                margin: 4px;
+                padding: 4px;
             }
 
             .widget-container {
-                margin: 4px;
+                padding: 4px;
             }
 
             .hidden {
@@ -65,10 +66,12 @@ export class Container extends LitWidget<ContainerModel, Container> {
         return html`
             <div class="header">
                 <button
-                    class="legacy-button primary header-button ${this
-                .hideCloseButton
-                ? "hidden"
-                : ""}"
+                    class=${classMap({
+                        "legacy-button": true,
+                        primary: true,
+                        "header-button": true,
+                        hidden: this.hideCloseButton,
+                    })}
                     @click="${this.onCloseButtonClicked}"
                 >
                     <span class="material-symbols-outlined">&#xe5cd;</span>
@@ -80,14 +83,21 @@ export class Container extends LitWidget<ContainerModel, Container> {
                     ${this.renderCollapseButtonIcon()}
                 </button>
                 <span
-                    class="legacy-text header-text ${this.title
-                ? ""
-                : "hidden"}"
+                    class=${classMap({
+                        "legacy-text": true,
+                        "header-text": true,
+                        hidden: !this.title,
+                    })}
                 >
                     ${this.title}
                 </span>
             </div>
-            <div class="widget-container ${this.collapsed ? "hidden" : ""}">
+            <div
+                class=${classMap({
+                    "widget-container": true,
+                    hidden: this.collapsed,
+                })}
+            >
                 <slot></slot>
             </div>
         `;

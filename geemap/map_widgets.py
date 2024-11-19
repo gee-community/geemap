@@ -592,7 +592,7 @@ class Inspector(anywidget.AnyWidget):
         Args:
             **kwargs (Any): The interaction event arguments.
         """
-        latlon = kwargs.get("coordinates")
+        latlon = kwargs.get("coordinates", [])
         if kwargs.get("type") == "click":
             self._on_map_click(latlon)
 
@@ -602,7 +602,10 @@ class Inspector(anywidget.AnyWidget):
         Args:
             latlon (List[float]): The latitude and longitude of the click event.
         """
-        self._clear_inspector_output()
+        if not latlon or len(latlon) < 2:
+            return
+
+        self._clear_inspector_output()        
         self._host_map.default_style = {"cursor": "wait"}
 
         self.point_info = self._point_info(latlon)

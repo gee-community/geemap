@@ -57,7 +57,7 @@ export class TreeNode extends LitElement {
     ];
 
     @property() node: Node = {};
-    @property({ reflect: true }) expanded: boolean = false;
+    @property({ type: Boolean, reflect: true }) expanded: boolean = false;
 
     updated(changedProperties: PropertyValues<TreeNode>): void {
         super.updated(changedProperties);
@@ -86,7 +86,7 @@ export class TreeNode extends LitElement {
     }
 
     private hasChildren(): boolean {
-        return (this.node.children?.length ?? 0) > 0;
+        return !!this.node.children?.length;
     }
 
     private renderChildren(): TemplateResult | typeof nothing {

@@ -41,7 +41,7 @@ export class Inspector extends LitWidget<InspectorModel, Inspector> {
             .object-browser {
                 max-height: 300px;
                 min-width: 290px;
-                overflow: scroll;
+                overflow: auto;
             }
 
             input[type='checkbox'] {
@@ -50,10 +50,10 @@ export class Inspector extends LitWidget<InspectorModel, Inspector> {
         `,
     ];
 
-    @property() hideCloseButton: boolean = false;
-    @property() expandPoints: boolean = false;
-    @property() expandPixels: boolean = true;
-    @property() expandObjects: boolean = false;
+    @property({ type: Boolean }) hideCloseButton: boolean = false;
+    @property({ type: Boolean }) expandPoints: boolean = false;
+    @property({ type: Boolean }) expandPixels: boolean = true;
+    @property({ type: Boolean }) expandObjects: boolean = false;
     @property() pointInfo: Node = {};
     @property() pixelInfo: Node = {};
     @property() objectInfo: Node = {};
@@ -113,7 +113,7 @@ export class Inspector extends LitWidget<InspectorModel, Inspector> {
     }
 
     private renderNode(node: Node): TemplateResult | typeof nothing {
-        if ((node.children?.length ?? 0) > 0) {
+        if (node.children?.length) {
             return html`<tree-node .node="${node}"></tree-node> `;
         }
         return nothing;
