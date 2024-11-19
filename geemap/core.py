@@ -954,7 +954,10 @@ class Map(ipyleaflet.Map, MapInterface):
         layer_manager.refresh_layers()
 
         toolbar_val = toolbar.Toolbar(
-            self, self._toolbar_main_tools(), self._toolbar_extra_tools(), [layer_manager]
+            self,
+            self._toolbar_main_tools(),
+            self._toolbar_extra_tools(),
+            [layer_manager],
         )
         toolbar_control = ipyleaflet.WidgetControl(
             widget=toolbar_val, position=position
