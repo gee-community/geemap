@@ -30,7 +30,7 @@ class TestToolbar(unittest.TestCase):
             callback=self.dummy_callback,
             reset=True,
         )
-        self.accessory_widget = ipywidgets.Text()
+        self.accessory_widgets = [ipywidgets.Text()]
         return super().setUp()
 
     def tearDown(self) -> None:
@@ -45,32 +45,32 @@ class TestToolbar(unittest.TestCase):
 
     def test_no_tools_throws(self):
         map = geemap.Map(ee_initialize=False)
-        self.assertRaises(ValueError, Toolbar, map, [], [], self.accessory_widget)
+        self.assertRaises(ValueError, Toolbar, map, [], [], self.accessory_widgets)
 
     def test_only_main_tools_exist_if_no_extra_tools(self):
         map = geemap.Map(ee_initialize=False)
-        toolbar = Toolbar(map, [self.item], [], self.accessory_widget)
+        toolbar = Toolbar(map, [self.item], [], self.accessory_widgets)
         self.assertNotIn(toolbar.toggle_widget, toolbar.main_tools)
 
     def test_all_tools_and_toggle_exist_if_extra_tools(self):
         map = geemap.Map(ee_initialize=False)
-        toolbar = Toolbar(map, [self.item], [self.reset_item], self.accessory_widget)
+        toolbar = Toolbar(map, [self.item], [self.reset_item], self.accessory_widgets)
         self.assertIsNotNone(toolbar.toggle_widget)
 
     def test_toggle_expands_and_collapses(self):
         map = geemap.Map(ee_initialize=False)
-        toolbar = Toolbar(map, [self.item], [self.reset_item], self.accessory_widget)
+        toolbar = Toolbar(map, [self.item], [self.reset_item], self.accessory_widgets)
         self.assertIsNotNone(toolbar.toggle_widget)
         toggle = toolbar.toggle_widget
         self.assertEqual(toggle.icon, "add")
-        self.assertEqual(toggle.tooltip_, "Expand toolbar")
+        self.assertEqual(toggle.tooltip_text, "Expand toolbar")
         self.assertFalse(toolbar.expanded)
 
         # Expand
         toggle.active = True
         self.assertTrue(toolbar.expanded)
         self.assertEqual(toggle.icon, "remove")
-        self.assertEqual(toggle.tooltip_, "Collapse toolbar")
+        self.assertEqual(toggle.tooltip_text, "Collapse toolbar")
         # After expanding, button is unselected.
         self.assertFalse(toggle.active)
 
@@ -78,13 +78,13 @@ class TestToolbar(unittest.TestCase):
         toggle.active = True
         self.assertFalse(toolbar.expanded)
         self.assertEqual(toggle.icon, "add")
-        self.assertEqual(toggle.tooltip_, "Expand toolbar")
+        self.assertEqual(toggle.tooltip_text, "Expand toolbar")
         # After collapsing, button is unselected.
         self.assertFalse(toggle.active)
 
     def test_triggers_callbacks(self):
         map = geemap.Map(ee_initialize=False)
-        toolbar = Toolbar(map, [self.item, self.reset_item], [], self.accessory_widget)
+        toolbar = Toolbar(map, [self.item, self.reset_item], [], self.accessory_widgets)
         self.assertIsNone(self.last_called_with_selected)
         self.assertIsNone(self.last_called_item)
 
@@ -122,7 +122,7 @@ class TestToolbar(unittest.TestCase):
             icon="info", tooltip="dummy item", callback=callback, reset=False
         )
         map_fake = fake_map.FakeMap()
-        toolbar = Toolbar(map_fake, [item], [], self.accessory_widget)
+        toolbar = Toolbar(map_fake, [item], [], self.accessory_widgets)
         toolbar.main_tools[0].active = True
         self.assertEqual(1, widget.selected_count)
         self.assertEqual(0, widget.cleanup_count)

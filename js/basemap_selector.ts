@@ -52,7 +52,7 @@ export class BasemapSelector extends LitWidget<
 
     @property({ type: Array }) basemaps: string[] = [];
     @property({ type: String }) value: string = "";
-    @query('select') selectElement!: HTMLSelectElement;
+    @query('select') selectElement!: HTMLSelectElement|null;
 
     render(): TemplateResult {
         return html`

@@ -11,7 +11,7 @@ export interface ToolbarItemModel {
     active: boolean;
     icon: string;
     // Note: "tooltip" is already used by ipywidgets.
-    tooltip_: string;
+    tooltip_text: string;
 }
 
 export class ToolbarItem extends LitElement {
@@ -37,7 +37,7 @@ export class ToolbarItem extends LitElement {
     private static modelNameToViewName = new Map<keyof ToolbarItemModel, keyof ToolbarItem | null>([
         ["active", "active"],
         ["icon", "icon"],
-        ["tooltip_", "tooltip_"],
+        ["tooltip_text", "tooltip_text"],
     ]);
 
     set model(model: AnyModel<ToolbarItemModel>) {
@@ -61,7 +61,7 @@ export class ToolbarItem extends LitElement {
     icon: string = '';
 
     @property({ type: String })
-    tooltip_: string = '';
+    tooltip_text: string = '';
 
     render() {
         return html`
@@ -71,7 +71,7 @@ export class ToolbarItem extends LitElement {
             'primary': true,
             'active': this.active,
         })}
-                title="${this.tooltip_}"
+                title="${this.tooltip_text}"
                 @click="${this.onClick}">
                 <span class="material-symbols-outlined">${this.icon}</span>
             </button>`;

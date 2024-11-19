@@ -1,12 +1,15 @@
-import type { AnyModel, RenderProps } from "@anywidget/types";
-import { html, css, LitElement } from "lit";
+import type { RenderProps } from "@anywidget/types";
+import { html, css } from "lit";
 import { property } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
+
 import { legacyStyles } from "./ipywidgets_styles";
+import { LitWidget } from "./lit_widget";
+import { materialStyles } from "./styles";
 import { loadFonts, updateChildren } from "./utils";
 
 import "./tab_panel";
-import { classMap } from "lit/directives/class-map.js";
-import { materialStyles } from "./styles";
+
 
 export interface ToolbarModel {
     accessory_widgets: any;
@@ -16,7 +19,10 @@ export interface ToolbarModel {
     tab_index: number;
 }
 
-export class Toolbar extends LitElement {
+export class Toolbar extends LitWidget<
+    ToolbarModel,
+    Toolbar
+> {
     static get componentName() {
         return `toolbar-panel`;
     }
@@ -52,27 +58,14 @@ export class Toolbar extends LitElement {
         `,
     ];
 
-    private _model: AnyModel<ToolbarModel> | undefined = undefined;
-    private static modelNameToViewName = new Map<keyof ToolbarModel, keyof Toolbar | null>([
-        ["accessory_widgets", null],
-        ["main_tools", null],
-        ["extra_tools", null],
-        ["expanded", "expanded"],
-        ["tab_index", "tab_index"],
-    ]);
-
-    set model(model: AnyModel<ToolbarModel>) {
-        this._model = model;
-        for (const [modelKey, widgetKey] of Toolbar.modelNameToViewName) {
-            if (widgetKey) {
-                // Get initial values from the Python model.
-                (this as any)[widgetKey] = model.get(modelKey);
-                // Listen for updates to the model.
-                model.on(`change:${modelKey}`, () => {
-                    (this as any)[widgetKey] = model.get(modelKey);
-                });
-            }
-        }
+    modelNameToViewName(): Map<keyof ToolbarModel, keyof Toolbar | null> {
+        return new Map([
+            ["accessory_widgets", null],
+            ["main_tools", null],
+            ["extra_tools", null],
+            ["expanded", "expanded"],
+            ["tab_index", "tab_index"],
+        ]);
     }
 
     @property()
@@ -85,10 +78,10 @@ export class Toolbar extends LitElement {
         return html`
             <tab-panel
                 .index="${this.tab_index}"
-                .tabs=${[{icon: "layers", width: 72}, {icon: "build"}]}
+                .tabs=${[{ icon: "layers", width: 72 }, { icon: "build" }]}
                 @tab-clicked=${(e: CustomEvent<number>) => {
-                    this.tab_index = e.detail;
-                }}>
+                this.tab_index = e.detail;
+            }}>
                 <div class="accessory-container">
                     <slot name="accessory-widget"></slot>
                 </div>
@@ -97,20 +90,12 @@ export class Toolbar extends LitElement {
                     <slot
                         name="extra-tools"
                         class="${classMap({
-                            hide: !this.expanded,
-                            expanded: this.expanded,
-                        })}"></slot>
+                hide: !this.expanded,
+                expanded: this.expanded,
+            })}"></slot>
                 </div>
             </tab-panel>
         `;
-    }
-
-    updated(changedProperties: any) {
-        // Update the model properties so they're reflected in Python.
-        for (const [property, _] of changedProperties) {
-            this._model?.set(property, this[property as keyof Toolbar]);
-        }
-        this._model?.save_changes();
     }
 }
 

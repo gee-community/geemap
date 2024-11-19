@@ -37,7 +37,8 @@ class ToolbarItem(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "toolbar_item.js"
     active = traitlets.Bool(False).tag(sync=True)
     icon = traitlets.Unicode("").tag(sync=True)
-    tooltip_ = traitlets.Unicode("").tag(sync=True)
+    # Unfortunately, "tooltip" is a property already defined on ipywidgets.
+    tooltip_text = traitlets.Unicode("").tag(sync=True)
 
     def __init__(
         self,
@@ -51,7 +52,7 @@ class ToolbarItem(anywidget.AnyWidget):
         """A togglable, toolbar item.
 
         Args:
-            icon (str): The icon hexcode to use, from https://fonts.google.com/icons.
+            icon (str): The icon name to use, from https://fonts.google.com/icons.
             tooltip: The tooltip text to show a user on hover.
             callback: A callback function to execute when the item icon is clicked.
                 Its signature should be `callback(map, selected, item)`, where
@@ -64,7 +65,7 @@ class ToolbarItem(anywidget.AnyWidget):
         """
         super().__init__()
         self.icon = icon
-        self.tooltip_ = tooltip
+        self.tooltip_text = tooltip
         self.callback = callback
         self.callback_wrapper = lambda *args: None
         self.control = control
@@ -118,7 +119,13 @@ class Toolbar(anywidget.AnyWidget):
     _TOGGLE_COLLAPSE_ICON = "remove"
     _TOGGLE_COLLAPSE_TOOLTIP = "Collapse toolbar"
 
-    def __init__(self, host_map, main_tools, extra_tools, accessory_widgets):
+    def __init__(
+        self,
+        host_map: "geemap.Map",
+        main_tools: List[ToolbarItem],
+        extra_tools: List[ToolbarItem],
+        accessory_widgets: List[widgets.DOMWidget],
+    ):
         """Adds a toolbar with `main_tools` and `extra_tools` to the `host_map`."""
         super().__init__()
         if not main_tools:
@@ -136,7 +143,7 @@ class Toolbar(anywidget.AnyWidget):
             widget.callback_wrapper = lambda callback, value, tool: callback(
                 self.host_map, value, tool
             )
-        self.accessory_widgets = [accessory_widgets]
+        self.accessory_widgets = accessory_widgets
 
     def reset(self):
         """Resets the toolbar so that no widget is selected."""
@@ -149,11 +156,11 @@ class Toolbar(anywidget.AnyWidget):
             return
         if self.toggle_widget.icon == self._TOGGLE_EXPAND_ICON:
             self.expanded = True
-            self.toggle_widget.tooltip_ = self._TOGGLE_COLLAPSE_TOOLTIP
+            self.toggle_widget.tooltip_text = self._TOGGLE_COLLAPSE_TOOLTIP
             self.toggle_widget.icon = self._TOGGLE_COLLAPSE_ICON
         elif self.toggle_widget.icon == self._TOGGLE_COLLAPSE_ICON:
             self.expanded = False
-            self.toggle_widget.tooltip_ = self._TOGGLE_EXPAND_TOOLTIP
+            self.toggle_widget.tooltip_text = self._TOGGLE_EXPAND_TOOLTIP
             self.toggle_widget.icon = self._TOGGLE_EXPAND_ICON
 
 

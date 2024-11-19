@@ -1,7 +1,7 @@
 import { html, css, nothing, LitElement, PropertyValues } from "lit";
 import { property, queryAll, queryAssignedElements } from "lit/decorators.js";
 import { legacyStyles } from "./ipywidgets_styles";
-import { classMap } from 'lit/directives/class-map.js';
+import { classMap } from "lit/directives/class-map.js";
 import { materialStyles } from "./styles";
 import { styleMap } from "lit/directives/style-map.js";
 
@@ -100,7 +100,6 @@ export class TabPanel extends LitElement {
      */
     @queryAssignedElements() tabContentElements!: HTMLElement[];
 
-
     render() {
         return html`
             <div class="container">
@@ -171,7 +170,7 @@ export class TabPanel extends LitElement {
             default:
                 this.index = index;
         }
-        this.dispatchEvent(new CustomEvent('tab-clicked', {
+        this.dispatchEvent(new CustomEvent("tab-clicked", {
             detail: index,
         }));
     }
