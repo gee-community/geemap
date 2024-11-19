@@ -94,7 +94,7 @@ export class Toolbar extends LitElement {
                 </div>
                 <div class="tools-container">
                     <slot name="main-tools"></slot>
-                    <slot 
+                    <slot
                         name="extra-tools"
                         class="${classMap({
                             hide: !this.expanded,

@@ -94,14 +94,13 @@ class TestToolbar(unittest.TestCase):
         self.assertEqual(self.callback_calls, 1)
         self.assertTrue(toolbar.main_tools[0].active)
         self.assertEqual(self.item, self.last_called_item)
-        
+
         # Select second tool, which resets.
         toolbar.main_tools[1].active = True
         self.assertFalse(self.last_called_with_selected)  # was reset by callback
         self.assertEqual(self.callback_calls, 3)
         self.assertFalse(toolbar.main_tools[1].active)
         self.assertEqual(self.reset_item, self.last_called_item)
-
 
     @dataclass
     class TestWidget:
