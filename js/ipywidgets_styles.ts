@@ -97,6 +97,5 @@ export const legacyStyles = css`
         padding-left: calc(var(--jp-widgets-input-padding)* 2);
         padding-right: 20px;
         vertical-align: top;
-}
     }
 `;
