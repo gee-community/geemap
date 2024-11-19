@@ -605,7 +605,7 @@ class Inspector(anywidget.AnyWidget):
         if not latlon or len(latlon) < 2:
             return
 
-        self._clear_inspector_output()        
+        self._clear_inspector_output()
         self._host_map.default_style = {"cursor": "wait"}
 
         self.point_info = self._point_info(latlon)
