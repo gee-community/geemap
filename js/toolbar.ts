@@ -78,7 +78,7 @@ export class Toolbar extends LitWidget<
         return html`
             <tab-panel
                 .index="${this.tab_index}"
-                .tabs=${[{ icon: "layers", width: 72 }, { icon: "build" }]}
+                .tabs=${[{ icon: "layers", width: 74 }, { icon: "build" }]}
                 @tab-clicked=${(e: CustomEvent<number>) => {
                 this.tab_index = e.detail;
             }}>
