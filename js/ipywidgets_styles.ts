@@ -98,4 +98,16 @@ export const legacyStyles = css`
         padding-right: 20px;
         vertical-align: top;
     }
+
+    .legacy-input {
+        box-sizing: border-box;
+        background-color: var(--jp-widgets-input-background-color);
+        border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+        color: var(--jp-widgets-input-color);
+        flex-grow: 1;
+        flex-shrink: 1;
+        font-size: var(--jp-widgets-font-size);
+        min-width: 0;
+        outline: none !important;
+    }
 `;
