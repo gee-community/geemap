@@ -62,19 +62,18 @@ export class TabPanel extends LitElement {
 
             .tab-container button {
                 border-radius: 5px;
-                font-size: 16px;
                 height: 28px;
-                margin-right: 2px;
+                margin: 2px;
                 user-select: none;
+            }
+
+            .tab-container button.icon {
+                font-size: 16px;
                 width: 28px;
             }
 
-            .tab-container button:first-child {
-                margin-left: 0;
-            }
-
-            .tab-container button:last-child {
-                margin-right: 0;
+            .tab-container button.name {
+                padding: 0 8px;
             }
         `,
     ];
@@ -143,6 +142,8 @@ export class TabPanel extends LitElement {
                             class="${classMap({
                 "legacy-button": true,
                 "active": i === this.index,
+                "icon": !!tab.icon,
+                "name": !!tab.name,
             })}"
                             style="${styleMap({
                 width: tab.width ? `${tab.width}px` : null,
