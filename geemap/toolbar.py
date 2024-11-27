@@ -4451,7 +4451,7 @@ def _cog_stac_inspector_callback(map, selected, item):
 
 main_tools = [
     ToolbarItem(
-        icon="info",
+        icon="point_scan",
         tooltip="Inspector",
         callback=_inspector_tool_callback,
     ),

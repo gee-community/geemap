@@ -2825,7 +2825,7 @@ class Map(core.Map):
         toolbar_button = widgets.ToggleButton(
             value=True,
             tooltip="Toolbar",
-            icon="info",
+            icon="point_scan",
             layout=widgets.Layout(
                 width="28px", height="28px", padding="0px 0px 0px 4px"
             ),
@@ -3769,7 +3769,7 @@ class Map(core.Map):
         color_column=None,
         marker_colors=None,
         icon_colors=["white"],
-        icon_names=["info"],
+        icon_names=["point_scan"],
         spin=False,
         add_legend=True,
         **kwargs,
