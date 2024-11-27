@@ -843,7 +843,17 @@ class SearchBar(anywidget.AnyWidget):
         old = json.loads(change.get("old"))
         new = json.loads(change.get("new"))
         if new["search"] and new["search"] != old["search"]:
-            self._search_name_address(new["search"])
+            if new["search"]:
+                self._search_name_address(new["search"])
+            else:
+                self.name_address_model = json.dumps(
+                    {
+                        "search": "",
+                        "results": [],
+                        "selected": "",
+                        "additional_html": "",
+                    }
+                )
         elif new["selected"] and new["selected"] != old["selected"]:
             self._set_selected_name_address(new["selected"])
 
@@ -851,8 +861,19 @@ class SearchBar(anywidget.AnyWidget):
     def _observe_lat_lon_model(self, change: Dict[str, Any]) -> None:
         old = json.loads(change.get("old"))
         new = json.loads(change.get("new"))
-        if new["search"] and new["search"] != old["search"]:
-            self._search_lat_lon(new["search"])
+        if new["search"] != old["search"]:
+            if new["search"]:
+                self._search_lat_lon(new["search"])
+            else:
+                self.lat_lon_model = json.dumps(
+                    {
+                        "search": "",
+                        "results": [],
+                        "selected": "",
+                        "additional_html": "",
+                    }
+                )
+            
         if new["selected"] and new["selected"] != old["selected"]:
             pass
 
@@ -860,8 +881,18 @@ class SearchBar(anywidget.AnyWidget):
     def _observe_dataset_model(self, change: Dict[str, Any]) -> None:
         old = json.loads(change.get("old"))
         new = json.loads(change.get("new"))
-        if new["search"] and new["search"] != old["search"]:
-            self._search_dataset(new["search"])
+        if new["search"] != old["search"]:
+            if new["search"]:
+                self._search_dataset(new["search"])
+            else:
+                self.dataset_model = json.dumps(
+                    {
+                        "search": "",
+                        "results": [],
+                        "selected": "",
+                        "additional_html": "",
+                    }
+                )
         elif new["selected"] and new["selected"] != old["selected"]:
             self._select_dataset(new["selected"])
 

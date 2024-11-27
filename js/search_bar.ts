@@ -194,7 +194,7 @@ export class SearchBar extends LitWidget<
         const name_address_model = JSON.parse(this.name_address_model) as SearchTab;
         const searchInput = html`<input
             class="legacy-input search name-address-search"
-            type="text"
+            type="search"
             placeholder="Search by place name or address, e.g., Paris"
             @input="${(e: Event) => {
                 const input = (e.target as HTMLInputElement);
@@ -237,7 +237,7 @@ export class SearchBar extends LitWidget<
         const lat_lon_model = JSON.parse(this.lat_lon_model) as SearchTab;
         const searchInput = html`<input
             class="legacy-input search lat-lon"
-            type="text"
+            type="search"
             placeholder="Search by lat-lon coordinates, e.g., 40,-100"
             @input="${(e: Event) => {
                 const input = (e.target as HTMLInputElement);
@@ -281,7 +281,7 @@ export class SearchBar extends LitWidget<
         const dataset_model = JSON.parse(this.dataset_model) as SearchTab;
         const searchInput = html`<input
             class="legacy-input search dataset-search"
-            type="text"
+            type="search"
             placeholder="Search GEE data catalog by keywords, e.g., elevation"
             @input="${(e: Event) => {
                 const input = (e.target as HTMLInputElement);
