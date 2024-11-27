@@ -164,7 +164,7 @@ export class SearchBar extends LitWidget<
                 { name: "lat-lon", width: 110 },
                 { name: "data", width: 110 }
             ]}
-                    @tab-clicked=${(e: CustomEvent<number>) => {
+                    @tab-changed=${(e: CustomEvent<number>) => {
                         this.tab_index = e.detail;
                     }}
                     .mode="${TabMode.ALWAYS_SHOW}"
