@@ -171,7 +171,7 @@ export class TabPanel extends LitElement {
             default:
                 this.index = index;
         }
-        this.dispatchEvent(new CustomEvent("tab-clicked", {
+        this.dispatchEvent(new CustomEvent("tab-changed", {
             detail: index,
         }));
     }
