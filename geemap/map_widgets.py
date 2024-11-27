@@ -565,7 +565,10 @@ class Inspector(ipywidgets.VBox):
         )
 
         self.toolbar_button = ipywidgets.ToggleButton(
-            value=opened, tooltip="Inspector", icon="point_scan", layout=left_padded_square
+            value=opened,
+            tooltip="Inspector",
+            icon="point_scan",
+            layout=left_padded_square,
         )
         self.toolbar_button.observe(self._on_toolbar_btn_click, "value")
 
