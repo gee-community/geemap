@@ -1,14 +1,15 @@
 import type { RenderProps } from "@anywidget/types";
 import { html, css } from "lit";
-import { property } from "lit/decorators.js";
+import { property, queryAll } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
-import { loadFonts, updateChildren } from "./utils";
+import { loadFonts } from "./utils";
 
 import { TabMode } from "./tab_panel";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 export interface SearchTab {
     search: string,
@@ -21,9 +22,9 @@ export interface SearchTab {
 export interface SearchBarModel {
     expanded: boolean;
     tab_index: number;
-    name_address_model: SearchTab,
-    lat_lon_model: SearchTab,
-    dataset_model: SearchTab,
+    name_address_model: string,
+    lat_lon_model: string,
+    dataset_model: string,
 }
 
 export class SearchBar extends LitWidget<
@@ -58,6 +59,41 @@ export class SearchBar extends LitWidget<
             .expanded {
                 display: block; !important
             }
+
+            input.search {
+                margin: 2px;
+                width: calc(100% - 4px);
+            }
+
+            ul.results {
+                list-style-type: none;
+                margin: 0;
+                margin-bottom: 4px;
+                max-width: 340px;
+                padding: 0;
+            }
+
+            label.result {
+                align-items: center;
+                display: flex;
+            }
+
+            .import-button {
+                margin: 0 2px 2px 2px;
+                padding: 0 8px;
+            }
+
+            .dataset-select {
+                margin-bottom: 2px;
+                margin-right: 2px;
+                max-width: 285px;
+            }
+
+            .additional-html-container {
+                max-height: 300px;
+                max-width: 340px;
+                overflow: auto;
+            }
         `,
     ];
 
@@ -78,53 +114,64 @@ export class SearchBar extends LitWidget<
     tab_index: number = 0;
 
     @property()
-    name_address_model: SearchTab = {
+    name_address_model: string = JSON.stringify({
         search: "",
         results: [],
         selected: "",
         additional_html: "",
-    };
+    });
 
     @property()
-    lat_lon_model: SearchTab = {
+    lat_lon_model: string = JSON.stringify({
         search: "",
         results: [],
         selected: "",
         additional_html: "",
-    };
+    });
 
     @property()
-    dataset_model: SearchTab = {
+    dataset_model: string = JSON.stringify({
         search: "",
         results: [],
         selected: "",
         additional_html: "",
-    };
+    });
+
+    @queryAll('.name-address-results input')
+    nameAddressResults!: HTMLInputElement[];
+
+
+    @queryAll('.lat-lon-results input')
+    latLonResults!: HTMLInputElement[];
 
     render() {
         return html`
             <div class="row">
                 <button
                     class=${classMap({
-                'expand-button': true,
-                'legacy-button': true,
-                'active': this.expanded,
-            })}
+            'expand-button': true,
+            'legacy-button': true,
+            'active': this.expanded,
+        })}
                     title="Search location/data"
                     @click="${this.onExpandClick}">
                     <span class="material-symbols-outlined">search</span>
                 </button>
                 <tab-panel
                     .index="${this.tab_index}"
-                    .tabs=${[{ name: "name/address" }, { name: "lat-lon" }, { name: "data" }]}
+                    .tabs=${[
+                { name: "name/address", width: 110 },
+                { name: "lat-lon", width: 110 },
+                { name: "data", width: 110 }
+            ]}
+                    @tab-clicked=${(e: CustomEvent<number>) => {
+                        this.tab_index = e.detail;
+                    }}
                     .mode="${TabMode.ALWAYS_SHOW}"
                     class="${classMap({
                 hide: !this.expanded,
                 expanded: this.expanded,
-            })}"
-                    @tab-clicked=${(e: CustomEvent<number>) => {
-                    this.tab_index = e.detail;
-                }}>
+            })}">
                     <div class="name-address-container">
                         ${this.renderNameAddressSearch()}
                     </div>
@@ -144,114 +191,139 @@ export class SearchBar extends LitWidget<
     }
 
     private renderNameAddressSearch() {
+        const name_address_model = JSON.parse(this.name_address_model) as SearchTab;
         const searchInput = html`<input
             class="legacy-input search name-address-search"
             type="text"
-            placeholder="Search by place name or address"
-            @change="${(e: Event) => {
+            placeholder="Search by place name or address, e.g., Paris"
+            @input="${(e: Event) => {
                 const input = (e.target as HTMLInputElement);
-                this.name_address_model.search = input.value || "";
-                // Force a rerender.
-                this.name_address_model = Object.assign({}, this.name_address_model);
+                const name_address_model = JSON.parse(this.name_address_model) as SearchTab;
+                name_address_model.search = input.value || "";
+                this.name_address_model = JSON.stringify(name_address_model);
             }}" />`;
         const renderedInputs = [searchInput];
-        if (this.name_address_model.results.length) {
+        if (name_address_model.results.length) {
             const results = html`
-                ${this.name_address_model.results.map((result) => html`
-                    <label>
-                        <input
-                        type="radio"
-                        name="name-address-result"
-                        value="${result}"
-                        @change="${(e: Event) => {
-                            const input = (e.target as HTMLInputElement);
-                            this.name_address_model.selected = input.value || "";
-                            // Force a rerender.
-                            this.name_address_model = Object.assign({}, this.name_address_model);
-                        }}" />
-                        ${result}
-                    </label>
-                `)}
+                ${name_address_model.results.map((result, i) => html`
+                    <li>
+                        <label class="result">
+                            <input
+                            type="radio"
+                            name="name-address-result"
+                            value="${result}"
+                            .checked="${i === 0}"
+                            @input="${(e: Event) => {
+                    const input = (e.target as HTMLInputElement);
+                    const name_address_model = JSON.parse(this.name_address_model) as SearchTab;
+                    name_address_model.selected = input.value || "";
+                    this.name_address_model = JSON.stringify(name_address_model);
+                }}" />
+                            <span>${result}</span>
+                        </label>
+                    </li>`)}
             `;
-            renderedInputs.push(results);
+            renderedInputs.push(html`<ul class="results name-address-results">
+                ${results}
+            </ul>`);
         }
-        renderedInputs.push(html`${this.name_address_model.additional_html}`);
+        renderedInputs.push(html`<div class="additional-html-container">
+            ${unsafeHTML(name_address_model.additional_html)}
+        </div>`);
         return renderedInputs;
     }
 
     private renderLatLonSearch() {
+        const lat_lon_model = JSON.parse(this.lat_lon_model) as SearchTab;
         const searchInput = html`<input
             class="legacy-input search lat-lon"
             type="text"
-            placeholder="Search by lat-lon coordinates"
-            @change="${(e: Event) => {
+            placeholder="Search by lat-lon coordinates, e.g., 40,-100"
+            @input="${(e: Event) => {
                 const input = (e.target as HTMLInputElement);
-                this.lat_lon_model.search = input.value || "";
-                // Force a rerender.
-                this.lat_lon_model = Object.assign({}, this.lat_lon_model);
+                const lat_lon_model = JSON.parse(this.lat_lon_model) as SearchTab;
+                lat_lon_model.search = input.value || "";
+                this.lat_lon_model = JSON.stringify(lat_lon_model);
             }}" />`;
         const renderedInputs = [searchInput];
-        if (this.lat_lon_model.results.length) {
+        if (lat_lon_model.results.length) {
             const results = html`
-                ${this.lat_lon_model.results.map((result) => html`
-                    <label>
-                        <input
-                        type="radio"
-                        name="lat-lon-result"
-                        value="${result}"
-                        @change="${(e: Event) => {
-                            const input = (e.target as HTMLInputElement);
-                            this.lat_lon_model.selected = input.value || "";
-                            // Force a rerender.
-                            this.lat_lon_model = Object.assign({}, this.lat_lon_model);
-                        }}" />
-                        ${result}
-                    </label>
+                ${lat_lon_model.results.map((result, i) => html`
+                    <li>
+                        <label class="result">
+                            <input
+                            type="radio"
+                            name="lat-lon-result"
+                            .checked="${i === 0}"
+                            value="${result}"
+                            @input="${(e: Event) => {
+                    const input = (e.target as HTMLInputElement);
+                    const lat_lon_model = JSON.parse(this.lat_lon_model) as SearchTab;
+                    lat_lon_model.selected = input.value || "";
+                    this.lat_lon_model = JSON.stringify(lat_lon_model);
+                }}" />
+                            <span>${result}</span>
+                        </label>
+                    </li>
                 `)}
             `;
-            renderedInputs.push(results);
+            renderedInputs.push(html`<ul class="results lat-lon-results">
+                ${results}
+            </ul>`);
         }
-        renderedInputs.push(html`${this.lat_lon_model.additional_html}`);
+        renderedInputs.push(html`<div class="additional-html-container">
+            ${unsafeHTML(lat_lon_model.additional_html)}
+        </div>`);
         return renderedInputs;
     }
 
     private renderDatasetSearch() {
+        const dataset_model = JSON.parse(this.dataset_model) as SearchTab;
         const searchInput = html`<input
             class="legacy-input search dataset-search"
             type="text"
-            placeholder="Search Earth Engine data catalog"
-            @change="${(e: Event) => {
+            placeholder="Search GEE data catalog by keywords, e.g., elevation"
+            @input="${(e: Event) => {
                 const input = (e.target as HTMLInputElement);
-                this.dataset_model.search = input.value || "";
+                const dataset_model = JSON.parse(this.dataset_model) as SearchTab;
+                dataset_model.search = input.value || "";
                 // Force a rerender.
-                this.dataset_model = Object.assign({}, this.dataset_model);
+                this.dataset_model = JSON.stringify(dataset_model);
             }}" />`;
         const renderedInputs = [searchInput];
-        if (this.dataset_model.results.length) {
-            const importButton = html`<button
-                class="legacy-button primary"
-                title="Click to import the selected asset"
-                @click="${() => {
-                    this.model?.send({ type: "click", id: "import" });
-                }}">
-            </button>`;
-            const results = html`
-                ${this.dataset_model.results.map((result) => html`
-                    <select
-                        @change="${(e: Event) => {
-                            const input = (e.target as HTMLInputElement);
-                            this.dataset_model.selected = input.value || "";
-                            // Force a rerender.
-                            this.dataset_model = Object.assign({}, this.dataset_model);
-                        }}">
-                        <option>
-                        ${result}
-                    </select>
+        const importButton = html`<button
+            class="legacy-button primary import-button"
+            title="Click to import the selected asset"
+            @click="${() => {
+                this.model?.send({ type: "click", id: "import" });
+            }}">
+            Import
+        </button>`;
+        const results = html`
+            <select
+                class="legacy-select dataset-select"
+                @input="${(e: Event) => {
+                const input = (e.target as HTMLInputElement);
+                const dataset_model = JSON.parse(this.dataset_model) as SearchTab;
+                dataset_model.selected = input.value || "";
+                // Force a rerender.
+                this.dataset_model = JSON.stringify(dataset_model);
+            }}">
+                ${dataset_model.results.map((result) => html`
+                <option>
+                    ${result}
+                </option>
                 `)}
-            `;
-            renderedInputs.push(importButton, results);
-        }
-        renderedInputs.push(html`${this.dataset_model.additional_html}`);
+            </select>
+        `;
+        renderedInputs.push(
+            html`<div class="row">
+                ${importButton}
+                ${results}
+            </div>`,
+            html`<div class="additional-html-container">
+                ${unsafeHTML(dataset_model.additional_html)}
+            </div>`);
         return renderedInputs;
     }
 }
@@ -263,36 +335,11 @@ if (!customElements.get(SearchBar.componentName)) {
 
 async function render({ model, el }: RenderProps<SearchBarModel>) {
     loadFonts();
-    const manager = <SearchBar>document.createElement(SearchBar.componentName);
-    manager.model = model;
-    el.appendChild(manager);
-
-    const accessoryWidgetEl = document.createElement("div");
-    accessoryWidgetEl.slot = "accessory-widget";
-    manager.appendChild(accessoryWidgetEl);
-
-    updateChildren(accessoryWidgetEl, model, "accessory_widgets");
-    model.on("change:accessory_widgets", () => {
-        updateChildren(accessoryWidgetEl, model, "accessory_widgets");
-    });
-
-    const mainToolsEl = document.createElement("div");
-    mainToolsEl.slot = "main-tools";
-    manager.appendChild(mainToolsEl);
-
-    updateChildren(mainToolsEl, model, "main_tools");
-    model.on("change:main_tools", () => {
-        updateChildren(mainToolsEl, model, "main_tools");
-    });
-
-    const extraToolsEl = document.createElement("div");
-    extraToolsEl.slot = "extra-tools";
-    manager.appendChild(extraToolsEl);
-
-    updateChildren(extraToolsEl, model, "extra_tools");
-    model.on("change:extra_tools", () => {
-        updateChildren(extraToolsEl, model, "extra_tools");
-    });
+    const row = <SearchBar>(
+        document.createElement(SearchBar.componentName)
+    );
+    row.model = model;
+    el.appendChild(row);
 }
 
 export default { render };

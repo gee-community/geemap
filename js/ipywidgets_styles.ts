@@ -101,7 +101,7 @@ export const legacyStyles = css`
 
     .legacy-input {
         box-sizing: border-box;
-        background-color: var(--jp-widgets-input-background-color);
+        background-color: var(--colab-primary-surface-color, --jp-widgets-input-background-color);
         border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
         color: var(--jp-widgets-input-color);
         flex-grow: 1;
@@ -109,5 +109,8 @@ export const legacyStyles = css`
         font-size: var(--jp-widgets-font-size);
         min-width: 0;
         outline: none !important;
+        padding: var(--jp-widgets-input-padding) calc(var(--jp-widgets-input-padding)* 2);
+        height: var(--jp-widgets-inline-height);
+        line-height: var(--jp-widgets-inline-height);
     }
 `;

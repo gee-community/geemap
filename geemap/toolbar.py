@@ -771,29 +771,41 @@ class SearchBar(anywidget.AnyWidget):
     # The currently selected tab.
     tab_index = traitlets.Int(0).tag(sync=True)
 
-    # The data for the name/address search.
-    name_address_model = traitlets.Dict({
-        "search": "",
-        "results": [],
-        "selected": "",
-        "additional_html": "",
-    }).tag(sync=True)
+    # The stringified JSON for the name/address search.
+    name_address_model = traitlets.Unicode(
+        json.dumps(
+            {
+                "search": "",
+                "results": [],
+                "selected": "",
+                "additional_html": "",
+            }
+        )
+    ).tag(sync=True)
 
-    # The data for the lat/lon search.
-    lat_lon_model = traitlets.Dict({
-        "search": "",
-        "results": [],
-        "selected": "",
-        "additional_html": "",
-    }).tag(sync=True)
+    # The stringified JSON for the lat/lon search.
+    lat_lon_model = traitlets.Unicode(
+        json.dumps(
+            {
+                "search": "",
+                "results": [],
+                "selected": "",
+                "additional_html": "",
+            }
+        )
+    ).tag(sync=True)
 
-    # The data for the dataset search.
-    dataset_model = traitlets.Dict({
-        "search": "",
-        "results": [],
-        "selected": "",
-        "additional_html": "",
-    }).tag(sync=True)
+    # The stringified JSON for the dataset search.
+    dataset_model = traitlets.Unicode(
+        json.dumps(
+            {
+                "search": "",
+                "results": [],
+                "selected": "",
+                "additional_html": "",
+            }
+        )
+    ).tag(sync=True)
 
     def __init__(self, host_map, **kwargs):
         super().__init__()
@@ -806,107 +818,171 @@ class SearchBar(anywidget.AnyWidget):
         self.on_msg(self.handle_message_event)
 
     def handle_message_event(
-            self, widget: widgets.Widget, content: Dict[str, Any], buffers: List[Any]
-        ) -> None:
-            del widget, buffers  # Unused
-            if content.get("type") == "click":
-                msg_id = content.get("id", "")
-                if msg_id == "import":
-                    self.import_btn_clicked()
+        self, widget: widgets.Widget, content: Dict[str, Any], buffers: List[Any]
+    ) -> None:
+        del widget, buffers  # Unused
+        if content.get("type") == "click":
+            msg_id = content.get("id", "")
+            if msg_id == "import":
+                self.import_button_clicked()
+
+    @traitlets.observe("tab_index")
+    def _observe_tab_index(self, change: Dict[str, Any]):
+        tab_index = change.get("new")
+        selected_name_address = json.loads(self.name_address_model).get(
+            "selected", None
+        )
+        lat_lon_search = json.loads(self.lat_lon_model).get("search", None)
+        if tab_index == 0 and selected_name_address:
+            self._set_selected_name_address(selected_name_address)
+        elif tab_index == 1 and lat_lon_search:
+            self._search_lat_lon(lat_lon_search)
 
     @traitlets.observe("name_address_model")
     def _observe_name_address_model(self, change: Dict[str, Any]) -> None:
-        old = change.get("old")
-        new = change.get("new")
-        if new and new["search"] and new["search"] != old["search"]:
-            geoloc_results = geocode(new["search"])
-            self.host_map.search_locations = geoloc_results
-            if geoloc_results is not None and len(geoloc_results) > 0:
-                top_loc = geoloc_results[0]
-                latlon = (top_loc.lat, top_loc.lng)
-                self.host_map.search_loc_geom = ee.Geometry.Point(top_loc.lng, top_loc.lat)
-                if self.host_map.search_loc_marker is None:
-                    marker = ipyleaflet.Marker(
-                        location=latlon,
-                        draggable=False,
-                        name="Search location",
-                    )
-                    self.host_map.search_loc_marker = marker
-                    self.host_map.add(marker)
-                    self.host_map.center = latlon
-                else:
-                    marker = self.host_map.search_loc_marker
-                    marker.location = latlon
-                    self.host_map.center = latlon
-                self.name_address_model["results"] = [x.address for x in geoloc_results]
-            else:
-                self.name_address_model["results"] = []
-                self.name_address_model.addition_html = "No results could be found."
-        elif new and new["selected"] and new["selected"] != old["selected"]:
-            locations = self.host_map.search_locations
-            location = None
-            for l in locations:
-                if l.address == new["selected"]:
-                    location = l
-            latlon = (location.lat, location.lng)
-            self.host_map.search_loc_geom = ee.Geometry.Point(location.lng, location.lat)
-            marker = self.host_map.search_loc_marker
-            marker.location = latlon
-            self.host_map.center = latlon
+        old = json.loads(change.get("old"))
+        new = json.loads(change.get("new"))
+        if new["search"] and new["search"] != old["search"]:
+            self._search_name_address(new["search"])
+        elif new["selected"] and new["selected"] != old["selected"]:
+            self._set_selected_name_address(new["selected"])
 
     @traitlets.observe("lat_lon_model")
     def _observe_lat_lon_model(self, change: Dict[str, Any]) -> None:
-        old = change.get("old")
-        new = change.get("new")
-        if new and new["search"] and new["search"] != old["search"]:
-            g = geocode(new["search"], reverse=True)
-            if g is None and latlon_from_text(new["search"]):
-                latlon = latlon_from_text(new["search"])
-                self.host_map.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
-                if self.host_map.search_loc_marker is None:
-                    marker = ipyleaflet.Marker(
-                        location=latlon,
-                        draggable=False,
-                        name="Search location",
-                    )
-                    self.host_map.search_loc_marker = marker
-                    self.host_map.add(marker)
-                    self.host_map.center = latlon
-                else:
-                    marker = self.host_map.search_loc_marker
-                    marker.location = latlon
-                    self.host_map.center = latlon
-        if new and new["selected"] and new["selected"] != old["selected"]:
+        old = json.loads(change.get("old"))
+        new = json.loads(change.get("new"))
+        if new["search"] and new["search"] != old["search"]:
+            self._search_lat_lon(new["search"])
+        if new["selected"] and new["selected"] != old["selected"]:
             pass
 
     @traitlets.observe("dataset_model")
     def _observe_dataset_model(self, change: Dict[str, Any]) -> None:
-        old = change.get("old")
-        new = change.get("new")
-        if new and new["search"] and new["search"] != old["search"]:
-            self.dataset_model["additional_html"] = "Searching..."
-            self.host_map.default_style = {"cursor": "wait"}
-            ee_assets = search_ee_data(new["search"], source="all")
-            self.host_map.search_datasets = ee_assets
-            asset_titles = [x["title"] for x in ee_assets]
-            self.dataset_model["results"] = asset_titles
-            self.dataset_model["additional_html"] = ""
-            if len(ee_assets) > 0:
-                self.dataset_model["additional_html"] = ee_data_html(ee_assets[0])
+        old = json.loads(change.get("old"))
+        new = json.loads(change.get("new"))
+        if new["search"] and new["search"] != old["search"]:
+            self._search_dataset(new["search"])
+        elif new["selected"] and new["selected"] != old["selected"]:
+            self._select_dataset(new["selected"])
+
+    def _search_name_address(self, address):
+        name_address_model = json.loads(self.name_address_model)
+        geoloc_results = geocode(address)
+        self.host_map.search_locations = geoloc_results
+        if geoloc_results is not None and len(geoloc_results) > 0:
+            top_loc = geoloc_results[0]
+            latlon = (top_loc.lat, top_loc.lng)
+            self.host_map.search_loc_geom = ee.Geometry.Point(top_loc.lng, top_loc.lat)
+            if self.host_map.search_loc_marker is None:
+                marker = ipyleaflet.Marker(
+                    location=latlon,
+                    draggable=False,
+                    name="Search location",
+                )
+                self.host_map.search_loc_marker = marker
+                self.host_map.add(marker)
+                self.host_map.center = latlon
             else:
-                self.dataset_model["additional_html"] = "No results found."
-            self.host_map.default_style = {"cursor": "default"}
-        elif new and new["selected"] and new["selected"] != old["selected"]:
-            self.dataset_model.additional_html = "Loading ..."
-            datasets = self.host_map.search_datasets
-            dataset = None
-            for d in datasets:
-                if dataset["title"] == new["selected"]:
-                    dataset = d
-            if not dataset:
-                return
-            dataset_html = ee_data_html(dataset)
-            self.dataset_model.additional_html = dataset_html
+                marker = self.host_map.search_loc_marker
+                marker.location = latlon
+                self.host_map.center = latlon
+            name_address_model["results"] = [x.address for x in geoloc_results]
+            name_address_model["selected"] = name_address_model["results"][0]
+            self.name_address_model = json.dumps(name_address_model)
+        else:
+            name_address_model["results"] = []
+            name_address_model["selected"] = ""
+            name_address_model["additional_html"] = "No results could be found."
+            self.name_address_model = json.dumps(name_address_model)
+
+    def _set_selected_name_address(self, address):
+        locations = self.host_map.search_locations
+        location = None
+        for l in locations:
+            if l.address == address:
+                location = l
+        if not location:
+            return
+        latlon = (location.lat, location.lng)
+        self.host_map.search_loc_geom = ee.Geometry.Point(location.lng, location.lat)
+        marker = self.host_map.search_loc_marker
+        marker.location = latlon
+        self.host_map.center = latlon
+
+    def _search_lat_lon(self, lat_lon):
+        lat_lon_model = json.loads(self.lat_lon_model)
+        if latlon := latlon_from_text(lat_lon):
+            geoloc_results = geocode(lat_lon, reverse=True)
+            if geoloc_results is not None and len(geoloc_results) > 0:
+                top_loc = geoloc_results[0]
+                latlon = (top_loc.lat, top_loc.lng)
+                lat_lon_model["results"] = [x.address for x in geoloc_results]
+                lat_lon_model["selected"] = lat_lon_model["results"][0]
+                lat_lon_model["additional_html"] = ""
+                self.lat_lon_model = json.dumps(lat_lon_model)
+            else:
+                lat_lon_model["results"] = []
+                lat_lon_model["selected"] = ""
+                lat_lon_model["additional_html"] = "No results could be found."
+                self.lat_lon_model = json.dumps(lat_lon_model)
+            self.host_map.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
+            if self.host_map.search_loc_marker is None:
+                marker = ipyleaflet.Marker(
+                    location=latlon,
+                    draggable=False,
+                    name="Search location",
+                )
+                self.host_map.search_loc_marker = marker
+                self.host_map.add(marker)
+                self.host_map.center = latlon
+            else:
+                marker = self.host_map.search_loc_marker
+                marker.location = latlon
+                self.host_map.center = latlon
+        else:
+            lat_lon_model["results"] = []
+            lat_lon_model["selected"] = ""
+            no_results = (
+                """<em style="color: red">"""
+                "The lat-lon coordinates should be numbers only and"
+                "<br>"
+                "separated by comma or space, such as 40.2, -100.3"
+                "</em>"
+            )
+            lat_lon_model["additional_html"] = no_results
+            self.lat_lon_model = json.dumps(lat_lon_model)
+
+    def _search_dataset(self, dataset_search):
+        dataset_model = json.loads(self.dataset_model)
+        dataset_model["additional_html"] = "Searching..."
+        self.dataset_model = json.dumps(dataset_model)
+        self.host_map.default_style = {"cursor": "wait"}
+        ee_assets = search_ee_data(dataset_search, source="all")
+        self.host_map.search_datasets = ee_assets
+        asset_titles = [x["title"] for x in ee_assets]
+        dataset_model["results"] = asset_titles
+        dataset_model["selected"] = asset_titles[0] if asset_titles else ""
+        dataset_model["additional_html"] = ""
+        if len(ee_assets) > 0:
+            dataset_model["additional_html"] = ee_data_html(ee_assets[0])
+        else:
+            dataset_model["additional_html"] = "No results found."
+        self.dataset_model = json.dumps(dataset_model)
+        self.host_map.default_style = {"cursor": "default"}
+
+    def _select_dataset(self, dataset_title):
+        dataset_model = json.loads(self.dataset_model)
+        dataset_model["additional_html"] = "Loading ..."
+        datasets = self.host_map.search_datasets
+        dataset = None
+        for d in datasets:
+            if d["title"] == dataset_title:
+                dataset = d
+        if not dataset:
+            return
+        dataset_html = ee_data_html(dataset)
+        dataset_model["additional_html"] = dataset_html
+        self.dataset_model = json.dumps(dataset_model)
 
     def get_ee_example(self, asset_id):
         try:
@@ -915,9 +991,7 @@ class SearchBar(anywidget.AnyWidget):
             pkg_dir = os.path.dirname(
                 pkg_resources.resource_filename("geemap", "geemap.py")
             )
-            with open(
-                os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8"
-            ) as f:
+            with open(os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8") as f:
                 functions = json.load(f)
             details = [
                 dataset["code"]
@@ -939,13 +1013,15 @@ class SearchBar(anywidget.AnyWidget):
         except Exception as e:
             pass
         return
-    
-    def import_btn_clicked(self):
-        if self.dataset_model["selected"]:
+
+    def import_button_clicked(self):
+        dataset_model = json.loads(self.dataset_model)
+        print(dataset_model)
+        if dataset_model["selected"]:
             datasets = self.host_map.search_datasets
             dataset = None
             for d in datasets:
-                if dataset["title"] == self.dataset_model["selected"]:
+                if d["title"] == dataset_model["selected"]:
                     dataset = d
             if not dataset:
                 return
@@ -981,8 +1057,15 @@ class SearchBar(anywidget.AnyWidget):
                 pyperclip.copy(str(contents))
             except Exception as e:
                 pass
+            dataset_model["additional_html"] = (
+                "<pre>"
+                "# The code has been copied to the clipboard.\n"
+                "# Press Ctrl+V in a new cell to paste it.\n"
+                f"{contents}"
+                "</pre"
+            )
+            self.dataset_model = json.dumps(dataset_model)
 
-            self.dataset_model["additional_html"] = contents
 
 # Type alias for backwards compatibility.
 SearchDataGUI = SearchBar
