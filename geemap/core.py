@@ -1285,7 +1285,7 @@ class Map(ipyleaflet.Map, MapInterface):
                 callback=basemap_tool_callback,
             ),
             toolbar.ToolbarItem(
-                icon="info",
+                icon="point_scan",
                 tooltip="Inspector",
                 callback=inspector_tool_callback,
             ),
