@@ -1,5 +1,5 @@
 import type { RenderProps } from "@anywidget/types";
-import { html, css } from "lit";
+import { html, css, PropertyValueMap } from "lit";
 import { property, query, queryAll } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -30,14 +30,14 @@ export interface SearchBarModel {
 const DEBOUNCE_TIMEOUT = 500;
 
 const debounce = (callback: Function) => {
-    let timeoutId: number|undefined = undefined;
+    let timeoutId: number | undefined = undefined;
     return (...args: any[]) => {
-      window.clearTimeout(timeoutId);
-      timeoutId = window.setTimeout(() => {
-        callback(...args);
-      }, DEBOUNCE_TIMEOUT);
+        window.clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => {
+            callback(...args);
+        }, DEBOUNCE_TIMEOUT);
     };
-  }
+}
 
 export class SearchBar extends LitWidget<
     SearchBarModel,
@@ -153,16 +153,16 @@ export class SearchBar extends LitWidget<
         additional_html: "",
     });
 
-    @query('.name-address-search')
+    @query(".name-address-search")
     nameAddressSearch!: HTMLInputElement;
 
-    @queryAll('.name-address-results input')
+    @queryAll(".name-address-results input")
     nameAddressResults!: HTMLInputElement[];
 
     @query(".lat-lon-search")
     latLonSearch!: HTMLInputElement;
 
-    @queryAll('.lat-lon-results input')
+    @queryAll(".lat-lon-results input")
     latLonResults!: HTMLInputElement[];
 
     @query(".dataset-search")
@@ -173,9 +173,9 @@ export class SearchBar extends LitWidget<
             <div class="row">
                 <button
                     class=${classMap({
-            'expand-button': true,
-            'legacy-button': true,
-            'active': this.expanded,
+            "expand-button": true,
+            "legacy-button": true,
+            "active": this.expanded,
         })}
                     title="Search location/data"
                     @click="${this.onExpandClick}">
@@ -221,10 +221,10 @@ export class SearchBar extends LitWidget<
             type="search"
             placeholder="Search by place name or address, e.g., Paris"
             @input="${debounce((e: Event) => {
-                const name_address_model = JSON.parse(this.name_address_model) as SearchTab;
-                name_address_model.search = this.nameAddressSearch.value || "";
-                this.name_address_model = JSON.stringify(name_address_model);
-            })}" />`;
+            const name_address_model = JSON.parse(this.name_address_model) as SearchTab;
+            name_address_model.search = this.nameAddressSearch.value || "";
+            this.name_address_model = JSON.stringify(name_address_model);
+        })}" />`;
         const renderedInputs = [searchInput];
         if (name_address_model.results.length) {
             const results = html`
@@ -280,10 +280,10 @@ export class SearchBar extends LitWidget<
             type="search"
             placeholder="Search by lat-lon coordinates, e.g., 40,-100"
             @input="${debounce(() => {
-                const lat_lon_model = JSON.parse(this.lat_lon_model) as SearchTab;
-                lat_lon_model.search = this.latLonSearch?.value || "";
-                this.lat_lon_model = JSON.stringify(lat_lon_model);
-            })}" />`;
+            const lat_lon_model = JSON.parse(this.lat_lon_model) as SearchTab;
+            lat_lon_model.search = this.latLonSearch?.value || "";
+            this.lat_lon_model = JSON.stringify(lat_lon_model);
+        })}" />`;
         const renderedInputs = [searchInput];
         if (lat_lon_model.results.length) {
             const results = html`
@@ -340,11 +340,11 @@ export class SearchBar extends LitWidget<
             type="search"
             placeholder="Search GEE data catalog by keywords, e.g., elevation"
             @input="${debounce(() => {
-                const dataset_model = JSON.parse(this.dataset_model) as SearchTab;
-                dataset_model.search = this.datasetSearch?.value || "";
-                // Force a rerender.
-                this.dataset_model = JSON.stringify(dataset_model);
-            })}" />`;
+            const dataset_model = JSON.parse(this.dataset_model) as SearchTab;
+            dataset_model.search = this.datasetSearch?.value || "";
+            // Force a rerender.
+            this.dataset_model = JSON.stringify(dataset_model);
+        })}" />`;
         const renderedInputs = [searchInput];
         const importButton = html`<button
             class="legacy-button primary import-button"
