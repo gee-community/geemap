@@ -880,7 +880,7 @@ class SearchBar(anywidget.AnyWidget):
                 marker = self.host_map.search_loc_marker
                 self.host_map.search_loc_marker = None
                 self.host_map.remove(marker)
-            
+
         if new["selected"] and new["selected"] != old["selected"]:
             pass
 
