@@ -9,7 +9,6 @@ from IPython.display import HTML, display
 
 import anywidget
 import ee
-import ipytree
 import ipywidgets
 import traitlets
 
@@ -515,8 +514,20 @@ class Legend(ipywidgets.VBox):
 
 
 @Theme.apply
-class Inspector(ipywidgets.VBox):
+class Inspector(anywidget.AnyWidget):
     """Inspector widget for Earth Engine data."""
+
+    _esm = pathlib.Path(__file__).parent / "static" / "inspector.js"
+
+    hide_close_button = traitlets.Bool(False).tag(sync=True)
+
+    expand_points = traitlets.Bool(False).tag(sync=True)
+    expand_pixels = traitlets.Bool(True).tag(sync=True)
+    expand_objects = traitlets.Bool(False).tag(sync=True)
+
+    point_info = traitlets.Dict({}).tag(sync=True)
+    pixel_info = traitlets.Dict({}).tag(sync=True)
+    object_info = traitlets.Dict({}).tag(sync=True)
 
     def __init__(
         self,
@@ -542,6 +553,7 @@ class Inspector(ipywidgets.VBox):
             show_close_button (bool, optional): Whether to show the close
                 button. Defaults to True.
         """
+        super().__init__()
 
         self._host_map = host_map
         if not host_map:
@@ -551,73 +563,13 @@ class Inspector(ipywidgets.VBox):
         self._visible = visible
         self._decimals = decimals
         self._opened = opened
+        self.hide_close_button = not show_close_button
 
         self.on_close = None
 
-        self._expand_point_tree = False
-        self._expand_pixels_tree = True
-        self._expand_objects_tree = False
-
         host_map.default_style = {"cursor": "crosshair"}
-
-        left_padded_square = ipywidgets.Layout(
-            width="28px", height="28px", padding="0px 0px 0px 4px"
-        )
-
-        self.toolbar_button = ipywidgets.ToggleButton(
-            value=opened,
-            tooltip="Inspector",
-            icon="info",
-            layout=left_padded_square,
-        )
-        self.toolbar_button.observe(self._on_toolbar_btn_click, "value")
-
-        close_button = ipywidgets.ToggleButton(
-            value=False,
-            tooltip="Close the tool",
-            icon="times",
-            button_style="primary",
-            layout=left_padded_square,
-        )
-        close_button.observe(self._on_close_btn_click, "value")
-
-        point_checkbox = self._create_checkbox("Point", self._expand_point_tree)
-        pixels_checkbox = self._create_checkbox("Pixels", self._expand_pixels_tree)
-        objects_checkbox = self._create_checkbox("Objects", self._expand_objects_tree)
-        point_checkbox.observe(self._on_point_checkbox_changed, "value")
-        pixels_checkbox.observe(self._on_pixels_checkbox_changed, "value")
-        objects_checkbox.observe(self._on_objects_checkbox_changed, "value")
-        self.inspector_checks = ipywidgets.HBox(
-            children=[
-                ipywidgets.Label(
-                    "Expand", layout=ipywidgets.Layout(padding="0px 8px 0px 4px")
-                ),
-                point_checkbox,
-                pixels_checkbox,
-                objects_checkbox,
-            ]
-        )
-
-        if show_close_button:
-            self.toolbar_header = ipywidgets.HBox(
-                children=[close_button, self.toolbar_button]
-            )
-        else:
-            self.toolbar_header = ipywidgets.HBox(children=[self.toolbar_button])
-        self.tree_output = ipywidgets.VBox(
-            children=[],
-            layout=ipywidgets.Layout(
-                max_width="600px", max_height="300px", overflow="auto", display="block"
-            ),
-        )
-        self._clear_inspector_output()
-
         host_map.on_interaction(self._on_map_interaction)
-        self.toolbar_button.value = opened
-
-        super().__init__(
-            children=[self.toolbar_header, self.inspector_checks, self.tree_output]
-        )
+        self.on_msg(self._handle_message_event)
 
     def cleanup(self):
         """Removes the widget from the map and performs cleanup."""
@@ -627,20 +579,12 @@ class Inspector(ipywidgets.VBox):
         if self.on_close is not None:
             self.on_close()
 
-    def _create_checkbox(self, title: str, checked: bool) -> ipywidgets.Checkbox:
-        """Creates a checkbox widget.
-
-        Args:
-            title (str): The title of the checkbox.
-            checked (bool): Whether the checkbox is checked.
-
-        Returns:
-            ipywidgets.Checkbox: The created checkbox widget.
-        """
-        layout = ipywidgets.Layout(width="auto", padding="0px 6px 0px 0px")
-        return ipywidgets.Checkbox(
-            description=title, indent=False, value=checked, layout=layout
-        )
+    def _handle_message_event(
+        self, widget: ipywidgets.Widget, content: Dict[str, Any], buffers: List[Any]
+    ) -> None:
+        del widget, buffers  # Unused
+        if content.get("type") == "click" and content.get("id") == "close":
+            self._on_close_btn_click()
 
     def _on_map_interaction(self, **kwargs: Any) -> None:
         """Handles map interaction events.
@@ -648,7 +592,7 @@ class Inspector(ipywidgets.VBox):
         Args:
             **kwargs (Any): The interaction event arguments.
         """
-        latlon = kwargs.get("coordinates")
+        latlon = kwargs.get("coordinates", [])
         if kwargs.get("type") == "click":
             self._on_map_click(latlon)
 
@@ -658,77 +602,27 @@ class Inspector(ipywidgets.VBox):
         Args:
             latlon (List[float]): The latitude and longitude of the click event.
         """
-        if self.toolbar_button.value:
-            self._host_map.default_style = {"cursor": "wait"}
-            self._clear_inspector_output()
+        if not latlon or len(latlon) < 2:
+            return
 
-            nodes = [self._point_info(latlon)]
-            pixels_node = self._pixels_info(latlon)
-            if pixels_node.nodes:
-                nodes.append(pixels_node)
-            objects_node = self._objects_info(latlon)
-            if objects_node.nodes:
-                nodes.append(objects_node)
+        self._clear_inspector_output()
+        self._host_map.default_style = {"cursor": "wait"}
 
-            self.tree_output.children = [ipytree.Tree(nodes=nodes)]
-            self._host_map.default_style = {"cursor": "crosshair"}
+        self.point_info = self._point_info(latlon)
+        self.pixel_info = self._pixel_info(latlon)
+        self.object_info = self._object_info(latlon)
+
+        self._host_map.default_style = {"cursor": "crosshair"}
 
     def _clear_inspector_output(self) -> None:
         """Clears the inspector output."""
-        self.tree_output.children = []
-        self.children = []
-        self.children = [self.toolbar_header, self.inspector_checks, self.tree_output]
+        self.point_info = {}
+        self.pixel_info = {}
+        self.object_info = {}
 
-    def _on_point_checkbox_changed(self, change: Dict[str, Any]) -> None:
-        """Handles changes to the point checkbox.
-
-        Args:
-            change (Dict[str, Any]): The change event arguments.
-        """
-        self._expand_point_tree = change["new"]
-
-    def _on_pixels_checkbox_changed(self, change: Dict[str, Any]) -> None:
-        """Handles changes to the pixels checkbox.
-
-        Args:
-            change (Dict[str, Any]): The change event arguments.
-        """
-        self._expand_pixels_tree = change["new"]
-
-    def _on_objects_checkbox_changed(self, change: Dict[str, Any]) -> None:
-        """Handles changes to the objects checkbox.
-
-        Args:
-            change (Dict[str, Any]): The change event arguments.
-        """
-        self._expand_objects_tree = change["new"]
-
-    def _on_toolbar_btn_click(self, change: Dict[str, Any]) -> None:
-        """Handles toolbar button click events.
-
-        Args:
-            change (Dict[str, Any]): The change event arguments.
-        """
-        if change["new"]:
-            self._host_map.default_style = {"cursor": "crosshair"}
-            self.children = [
-                self.toolbar_header,
-                self.inspector_checks,
-                self.tree_output,
-            ]
-            self._clear_inspector_output()
-        else:
-            self.children = [self.toolbar_button]
-            self._host_map.default_style = {"cursor": "default"}
-
-    def _on_close_btn_click(self, change: Dict[str, Any]) -> None:
-        """Handles close button click events.
-
-        Args:
-            change (Dict[str, Any]): The change event arguments.
-        """
-        if change["new"]:
-            self.cleanup()
+    def _on_close_btn_click(self) -> None:
+        """Handles close button click events."""
+        self.cleanup()
 
     def _get_visible_map_layers(self) -> Dict[str, Any]:
         """Gets the visible map layers.
@@ -746,51 +640,31 @@ class Inspector(ipywidgets.VBox):
             layers = self._host_map.ee_layers
         return {k: v for k, v in layers.items() if v["ee_layer"].visible}
 
-    def _root_node(
-        self, title: str, nodes: List[ipytree.Node], **kwargs: Any
-    ) -> ipytree.Node:
-        """Creates a root node for the tree.
-
-        Args:
-            title (str): The title of the root node.
-            nodes (List[ipytree.Node]): The child nodes of the root node.
-            **kwargs (Any): Additional keyword arguments.
-
-        Returns:
-            ipytree.Node: The created root node.
-        """
-        return ipytree.Node(
-            title,
-            icon="archive",
-            nodes=nodes,
-            open_icon="plus-square",
-            open_icon_style="success",
-            close_icon="minus-square",
-            close_icon_style="info",
-            **kwargs,
-        )
-
-    def _point_info(self, latlon: List[float]) -> ipytree.Node:
+    def _point_info(self, latlon: List[float]) -> Dict[str, Any]:
         """Gets information about a point.
 
         Args:
             latlon (List[float]): The latitude and longitude of the point.
 
         Returns:
-            ipytree.Node: The node containing the point information.
+            Dict[str, Any]: The node containing the point information.
         """
         scale = self._host_map.get_scale()
         label = (
             f"Point ({latlon[1]:.{self._decimals}f}, "
             + f"{latlon[0]:.{self._decimals}f}) at {int(scale)}m/px"
         )
-        nodes = [
-            ipytree.Node(f"Longitude: {latlon[1]}"),
-            ipytree.Node(f"Latitude: {latlon[0]}"),
-            ipytree.Node(f"Zoom Level: {self._host_map.zoom}"),
-            ipytree.Node(f"Scale (approx. m/px): {scale}"),
-        ]
-        return self._root_node(label, nodes, opened=self._expand_point_tree)
+        return coreutils.new_tree_node(
+            label,
+            [
+                coreutils.new_tree_node(f"Longitude: {latlon[1]}"),
+                coreutils.new_tree_node(f"Latitude: {latlon[0]}"),
+                coreutils.new_tree_node(f"Zoom Level: {self._host_map.zoom}"),
+                coreutils.new_tree_node(f"Scale (approx. m/px): {scale}"),
+            ],
+            top_level=True,
+            expanded=self.expand_points,
+        )
 
     def _query_point(
         self, latlon: List[float], ee_object: ee.ComputedObject
@@ -812,20 +686,21 @@ class Inspector(ipywidgets.VBox):
             return ee_object.reduceRegion(ee.Reducer.first(), point, scale).getInfo()
         return None
 
-    def _pixels_info(self, latlon: List[float]) -> ipytree.Node:
+    def _pixel_info(self, latlon: List[float]) -> Dict[str, Any]:
         """Gets information about pixels at a point.
 
         Args:
             latlon (List[float]): The latitude and longitude of the point.
 
         Returns:
-            ipytree.Node: The node containing the pixels information.
+            Dict[str, Any]: The node containing the pixels information.
         """
+
+        root = coreutils.new_tree_node("Pixels", expanded=True, top_level=True)
         if not self._visible:
-            return self._root_node("Pixels", [])
+            return root
 
         layers = self._get_visible_map_layers()
-        nodes = []
         for layer_name, layer in layers.items():
             ee_object = layer["ee_object"]
             pixel = self._query_point(latlon, ee_object)
@@ -834,14 +709,18 @@ class Inspector(ipywidgets.VBox):
             pluralized_band = "band" if len(pixel) == 1 else "bands"
             ee_obj_type = ee_object.__class__.__name__
             label = f"{layer_name}: {ee_obj_type} ({len(pixel)} {pluralized_band})"
-            layer_node = ipytree.Node(label, opened=self._expand_pixels_tree)
+            layer_node = coreutils.new_tree_node(label, expanded=self.expand_pixels)
             for key, value in sorted(pixel.items()):
                 if isinstance(value, float):
                     value = round(value, self._decimals)
-                layer_node.add_node(ipytree.Node(f"{key}: {value}", icon="file"))
-            nodes.append(layer_node)
+                layer_node["children"].append(
+                    coreutils.new_tree_node(
+                        f"{key}: {value}", expanded=self.expand_pixels
+                    )
+                )
+            root["children"].append(layer_node)
 
-        return self._root_node("Pixels", nodes)
+        return root
 
     def _get_bbox(self, latlon: List[float]) -> ee.Geometry.BBox:
         """Gets a bounding box around a point.
@@ -856,7 +735,7 @@ class Inspector(ipywidgets.VBox):
         delta = 0.005
         return ee.Geometry.BBox(lon - delta, lat - delta, lon + delta, lat + delta)
 
-    def _objects_info(self, latlon: List[float]) -> ipytree.Node:
+    def _object_info(self, latlon: List[float]) -> Dict[str, Any]:
         """Gets information about objects at a point.
 
         Args:
@@ -865,12 +744,12 @@ class Inspector(ipywidgets.VBox):
         Returns:
             ipytree.Node: The node containing the objects information.
         """
+        root = coreutils.new_tree_node("Objects", top_level=True, expanded=True)
         if not self._visible:
-            return self._root_node("Objects", [])
+            return root
 
         layers = self._get_visible_map_layers()
         point = ee.Geometry.Point(latlon[::-1])
-        nodes = []
         for layer_name, layer in layers.items():
             ee_object = layer["ee_object"]
             if isinstance(ee_object, ee.FeatureCollection):
@@ -880,13 +759,13 @@ class Inspector(ipywidgets.VBox):
                     geom.type().compareTo(ee.String("Point")), point, bbox
                 )
                 ee_object = ee_object.filterBounds(is_point).first()
-                tree_node = coreutils.get_info(
-                    ee_object, layer_name, self._expand_objects_tree, True
+                tree_node = coreutils.build_computed_object_tree(
+                    ee_object, layer_name, self.expand_objects
                 )
                 if tree_node:
-                    nodes.append(tree_node)
+                    root["children"].append(tree_node)
 
-        return self._root_node("Objects", nodes)
+        return root
 
 
 @Theme.apply

@@ -4,12 +4,11 @@
 import unittest
 from unittest.mock import patch, MagicMock, Mock, ANY
 
-import ipytree
 import ipywidgets
 import ee
 from matplotlib import pyplot
 
-from geemap import map_widgets
+from geemap import coreutils, map_widgets
 from tests import fake_ee, fake_map, utils
 from geemap.legends import builtin_legends
 
@@ -297,40 +296,6 @@ class TestInspector(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def _query_checkbox(self, description):
-        return utils.query_widget(
-            self.inspector, ipywidgets.Checkbox, lambda c: c.description == description
-        )
-
-    def _query_node(self, root, name):
-        return utils.query_widget(root, ipytree.Node, lambda c: c.name == name)
-
-    @property
-    def _point_checkbox(self):
-        return self._query_checkbox("Point")
-
-    @property
-    def _pixels_checkbox(self):
-        return self._query_checkbox("Pixels")
-
-    @property
-    def _objects_checkbox(self):
-        return self._query_checkbox("Objects")
-
-    @property
-    def _inspector_toggle(self):
-        return utils.query_widget(
-            self.inspector, ipywidgets.ToggleButton, lambda c: c.tooltip == "Inspector"
-        )
-
-    @property
-    def _close_toggle(self):
-        return utils.query_widget(
-            self.inspector,
-            ipywidgets.ToggleButton,
-            lambda c: c.tooltip == "Close the tool",
-        )
-
     def test_inspector_no_map(self):
         """Tests that a valid map must be passed in."""
         with self.assertRaisesRegex(ValueError, "valid map"):
@@ -339,59 +304,43 @@ class TestInspector(unittest.TestCase):
     def test_inspector(self):
         """Tests that the inspector's initial UI is set up properly."""
         self.assertEqual(self.map_fake.cursor_style, "crosshair")
-        self.assertFalse(self._point_checkbox.value)
-        self.assertTrue(self._pixels_checkbox.value)
-        self.assertFalse(self._objects_checkbox.value)
-        self.assertTrue(self._inspector_toggle.value)
-        self.assertIsNotNone(self._close_toggle)
+        self.assertFalse(self.inspector.hide_close_button)
 
-    def test_inspector_toggle(self):
-        """Tests that toggling the inspector button hides/shows the inspector."""
-        self._point_checkbox.value = True
-        self._pixels_checkbox.value = False
-        self._objects_checkbox.value = True
+        self.assertFalse(self.inspector.expand_points)
+        self.assertTrue(self.inspector.expand_pixels)
+        self.assertFalse(self.inspector.expand_objects)
 
-        self._inspector_toggle.value = False
-
-        self.assertEqual(self.map_fake.cursor_style, "default")
-        self.assertIsNotNone(self._inspector_toggle)
-        self.assertIsNone(self._point_checkbox)
-        self.assertIsNone(self._pixels_checkbox)
-        self.assertIsNone(self._objects_checkbox)
-        self.assertIsNone(self._close_toggle)
-
-        self._inspector_toggle.value = True
-
-        self.assertEqual(self.map_fake.cursor_style, "crosshair")
-        self.assertIsNotNone(self._inspector_toggle)
-        self.assertTrue(self._point_checkbox.value)
-        self.assertFalse(self._pixels_checkbox.value)
-        self.assertTrue(self._objects_checkbox.value)
-        self.assertIsNotNone(self._close_toggle.value)
-
-    def test_inspector_close(self):
-        """Tests that toggling the close button fires the close event."""
-        on_close_mock = Mock()
-        self.inspector.on_close = on_close_mock
-        self._close_toggle.value = True
-
-        on_close_mock.assert_called_once()
-        self.assertEqual(self.map_fake.cursor_style, "default")
-        self.assertSetEqual(self.map_fake.interaction_handlers, set())
+        self.assertEqual(self.inspector.point_info, {})
+        self.assertEqual(self.inspector.pixel_info, {})
+        self.assertEqual(self.inspector.object_info, {})
 
     def test_map_empty_click(self):
         """Tests that clicking the map triggers inspection."""
         self.map_fake.click((1, 2), "click")
 
         self.assertEqual(self.map_fake.cursor_style, "crosshair")
-        point_root = self._query_node(self.inspector, "Point (2.00, 1.00) at 1024m/px")
-        self.assertIsNotNone(point_root)
-        self.assertIsNotNone(self._query_node(point_root, "Longitude: 2"))
-        self.assertIsNotNone(self._query_node(point_root, "Latitude: 1"))
-        self.assertIsNotNone(self._query_node(point_root, "Zoom Level: 7"))
-        self.assertIsNotNone(self._query_node(point_root, "Scale (approx. m/px): 1024"))
-        self.assertIsNone(self._query_node(self.inspector, "Pixels"))
-        self.assertIsNone(self._query_node(self.inspector, "Objects"))
+
+        expected_point_info = coreutils.new_tree_node(
+            "Point (2.00, 1.00) at 1024m/px",
+            [
+                coreutils.new_tree_node("Longitude: 2"),
+                coreutils.new_tree_node("Latitude: 1"),
+                coreutils.new_tree_node("Zoom Level: 7"),
+                coreutils.new_tree_node("Scale (approx. m/px): 1024"),
+            ],
+            top_level=True,
+        )
+        self.assertEqual(self.inspector.point_info, expected_point_info)
+
+        expected_pixel_info = coreutils.new_tree_node(
+            "Pixels", top_level=True, expanded=True
+        )
+        self.assertEqual(self.inspector.pixel_info, expected_pixel_info)
+
+        expected_object_info = coreutils.new_tree_node(
+            "Objects", top_level=True, expanded=True
+        )
+        self.assertEqual(self.inspector.object_info, expected_object_info)
 
     def test_map_click(self):
         """Tests that clicking the map triggers inspection."""
@@ -414,32 +363,62 @@ class TestInspector(unittest.TestCase):
         }
         self.map_fake.click((1, 2), "click")
 
-        self.assertEqual(self.map_fake.cursor_style, "crosshair")
-        self.assertIsNotNone(
-            self._query_node(self.inspector, "Point (2.00, 1.00) at 1024m/px")
+        expected_point_info = coreutils.new_tree_node(
+            "Point (2.00, 1.00) at 1024m/px",
+            [
+                coreutils.new_tree_node("Longitude: 2"),
+                coreutils.new_tree_node("Latitude: 1"),
+                coreutils.new_tree_node("Zoom Level: 7"),
+                coreutils.new_tree_node("Scale (approx. m/px): 1024"),
+            ],
+            top_level=True,
         )
+        self.assertEqual(self.inspector.point_info, expected_point_info)
 
-        pixels_root = self._query_node(self.inspector, "Pixels")
-        self.assertIsNotNone(pixels_root)
-        layer_1_root = self._query_node(pixels_root, "test-map-1: Image (2 bands)")
-        self.assertIsNotNone(layer_1_root)
-        self.assertIsNotNone(self._query_node(layer_1_root, "B1: 42"))
-        self.assertIsNotNone(self._query_node(layer_1_root, "B2: 3.14"))
-        self.assertIsNone(self._query_node(pixels_root, "test-map-2: Image (2 bands)"))
+        expected_pixel_info = coreutils.new_tree_node(
+            "Pixels",
+            [
+                coreutils.new_tree_node(
+                    "test-map-1: Image (2 bands)",
+                    [
+                        coreutils.new_tree_node("B1: 42", expanded=True),
+                        coreutils.new_tree_node("B2: 3.14", expanded=True),
+                    ],
+                    expanded=True,
+                ),
+            ],
+            top_level=True,
+            expanded=True,
+        )
+        self.assertEqual(self.inspector.pixel_info, expected_pixel_info)
 
-        objects_root = self._query_node(self.inspector, "Objects")
-        self.assertIsNotNone(objects_root)
-        layer_3_root = self._query_node(objects_root, "test-map-3: Feature")
-        self.assertIsNotNone(layer_3_root)
-        self.assertIsNotNone(self._query_node(layer_3_root, "type: Feature"))
-        self.assertIsNotNone(self._query_node(layer_3_root, "id: 00000000000000000001"))
-        self.assertIsNotNone(self._query_node(layer_3_root, "fullname: some-full-name"))
-        self.assertIsNotNone(self._query_node(layer_3_root, "linearid: 110469267091"))
-        self.assertIsNotNone(self._query_node(layer_3_root, "mtfcc: S1400"))
-        self.assertIsNotNone(self._query_node(layer_3_root, "rttyp: some-rttyp"))
+        expected_object_info = coreutils.new_tree_node(
+            "Objects",
+            [
+                coreutils.new_tree_node(
+                    "test-map-3: Feature",
+                    [
+                        coreutils.new_tree_node("type: Feature"),
+                        coreutils.new_tree_node("id: 00000000000000000001"),
+                        coreutils.new_tree_node(
+                            "properties: Object (4 properties)",
+                            [
+                                coreutils.new_tree_node("fullname: some-full-name"),
+                                coreutils.new_tree_node("linearid: 110469267091"),
+                                coreutils.new_tree_node("mtfcc: S1400"),
+                                coreutils.new_tree_node("rttyp: some-rttyp"),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+            top_level=True,
+            expanded=True,
+        )
+        self.assertEqual(self.inspector.object_info, expected_object_info)
 
     def test_map_click_twice(self):
-        """Tests that clicking the map a second time removes the original output."""
+        """Tests that clicking the map a second time resets the point info."""
         self.map_fake.ee_layers = {
             "test-map-1": {
                 "ee_object": ee.Image(1),
@@ -451,12 +430,36 @@ class TestInspector(unittest.TestCase):
         self.map_fake.click((1, 2), "click")
         self.map_fake.click((4, 1), "click")
 
-        self.assertIsNotNone(
-            self._query_node(self.inspector, "Point (1.00, 4.00) at 32m/px")
+        expected_point_info = coreutils.new_tree_node(
+            "Point (1.00, 4.00) at 32m/px",
+            [
+                coreutils.new_tree_node("Longitude: 1"),
+                coreutils.new_tree_node("Latitude: 4"),
+                coreutils.new_tree_node("Zoom Level: 7"),
+                coreutils.new_tree_node("Scale (approx. m/px): 32"),
+            ],
+            top_level=True,
         )
-        self.assertIsNone(
-            self._query_node(self.inspector, "Point (2.00, 1.00) at 1024m/px")
+        self.assertEqual(self.inspector.point_info, expected_point_info)
+
+    def test_map_click_expanded(self):
+        """Tests that nodes are expanded when the expand boolean is true."""
+        self.inspector.expand_points = True
+
+        self.map_fake.click((4, 1), "click")
+
+        expected_point_info = coreutils.new_tree_node(
+            "Point (1.00, 4.00) at 1024m/px",
+            [
+                coreutils.new_tree_node("Longitude: 1"),
+                coreutils.new_tree_node("Latitude: 4"),
+                coreutils.new_tree_node("Zoom Level: 7"),
+                coreutils.new_tree_node("Scale (approx. m/px): 1024"),
+            ],
+            top_level=True,
+            expanded=True,
         )
+        self.assertEqual(self.inspector.point_info, expected_point_info)
 
 
 def _create_fake_map() -> fake_map.FakeMap:
