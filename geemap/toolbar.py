@@ -842,7 +842,7 @@ class SearchBar(anywidget.AnyWidget):
     def _observe_name_address_model(self, change: Dict[str, Any]) -> None:
         old = json.loads(change.get("old"))
         new = json.loads(change.get("new"))
-        if new["search"] and new["search"] != old["search"]:
+        if new["search"] != old["search"]:
             if new["search"]:
                 self._search_name_address(new["search"])
             else:
@@ -854,6 +854,10 @@ class SearchBar(anywidget.AnyWidget):
                         "additional_html": "",
                     }
                 )
+                marker = self.host_map.search_loc_marker
+                self.host_map.search_loc_marker = None
+                self.host_map.remove(marker)
+
         elif new["selected"] and new["selected"] != old["selected"]:
             self._set_selected_name_address(new["selected"])
 
@@ -873,6 +877,9 @@ class SearchBar(anywidget.AnyWidget):
                         "additional_html": "",
                     }
                 )
+                marker = self.host_map.search_loc_marker
+                self.host_map.search_loc_marker = None
+                self.host_map.remove(marker)
             
         if new["selected"] and new["selected"] != old["selected"]:
             pass
@@ -901,24 +908,7 @@ class SearchBar(anywidget.AnyWidget):
         geoloc_results = geocode(address)
         self.host_map.search_locations = geoloc_results
         if geoloc_results is not None and len(geoloc_results) > 0:
-            top_loc = geoloc_results[0]
-            latlon = (top_loc.lat, top_loc.lng)
-            self.host_map.search_loc_geom = ee.Geometry.Point(top_loc.lng, top_loc.lat)
-            if self.host_map.search_loc_marker is None:
-                marker = ipyleaflet.Marker(
-                    location=latlon,
-                    draggable=False,
-                    name="Search location",
-                )
-                self.host_map.search_loc_marker = marker
-                self.host_map.add(marker)
-                self.host_map.center = latlon
-            else:
-                marker = self.host_map.search_loc_marker
-                marker.location = latlon
-                self.host_map.center = latlon
             name_address_model["results"] = [x.address for x in geoloc_results]
-            name_address_model["selected"] = name_address_model["results"][0]
             self.name_address_model = json.dumps(name_address_model)
         else:
             name_address_model["results"] = []
@@ -936,9 +926,19 @@ class SearchBar(anywidget.AnyWidget):
             return
         latlon = (location.lat, location.lng)
         self.host_map.search_loc_geom = ee.Geometry.Point(location.lng, location.lat)
-        marker = self.host_map.search_loc_marker
-        marker.location = latlon
-        self.host_map.center = latlon
+        if self.host_map.search_loc_marker is None:
+            marker = ipyleaflet.Marker(
+                location=latlon,
+                draggable=False,
+                name="Search location",
+            )
+            self.host_map.search_loc_marker = marker
+            self.host_map.add(marker)
+            self.host_map.center = latlon
+        else:
+            marker = self.host_map.search_loc_marker
+            marker.location = latlon
+            self.host_map.center = latlon
 
     def _search_lat_lon(self, lat_lon):
         lat_lon_model = json.loads(self.lat_lon_model)
