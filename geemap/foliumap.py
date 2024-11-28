@@ -1511,7 +1511,7 @@ class Map(folium.Map):
         color_column: Optional[str] = None,
         marker_colors: Optional[List] = None,
         icon_colors: Optional[List] = ["white"],
-        icon_names: Optional[List] = ["point_scan"],
+        icon_names: Optional[List] = ["info"],
         angle: Optional[int] = 0,
         prefix: Optional[str] = "fa",
         add_legend: Optional[bool] = True,
