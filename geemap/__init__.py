@@ -56,7 +56,7 @@ else:
 
 if _use_eerepr():
     import eerepr
-    
+
     eerepr.initialize()
 
 from .report import Report
