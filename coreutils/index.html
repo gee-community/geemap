@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.46">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.47">
     
     
       
@@ -934,6 +934,15 @@
   <a href="#geemap.coreutils.in_colab_shell" class="md-nav__link">
     <span class="md-ellipsis">
       in_colab_shell()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#geemap.coreutils.new_tree_node" class="md-nav__link">
+    <span class="md-ellipsis">
+      new_tree_node()
     </span>
   </a>
   
@@ -5413,6 +5422,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.coreutils.new_tree_node" class="md-nav__link">
+    <span class="md-ellipsis">
+      new_tree_node()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.coreutils.open_url" class="md-nav__link">
     <span class="md-ellipsis">
       open_url()
@@ -5617,7 +5635,7 @@ Credits to Tyler Erickson.</p>
     <span class="k">if</span> <span class="n">layer_name</span><span class="p">:</span>
         <span class="n">layer_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2">: &quot;</span>
 
-    <span class="k">return</span> <span class="n">_new_tree_node</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">new_tree_node</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}{</span><span class="n">ee_type</span><span class="si">}{</span><span class="n">band_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">_generate_tree</span><span class="p">(</span><span class="n">layer_info</span><span class="p">,</span> <span class="n">opened</span><span class="p">),</span>
         <span class="n">expanded</span><span class="o">=</span><span class="n">opened</span><span class="p">,</span>
@@ -6976,6 +6994,43 @@ If False, returns the widget as ipytree.Tree. Defaults to False.</p></td>
 <span class="sd">        bool: True if running in Google Colab, False otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="geemap.coreutils.new_tree_node" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">new_tree_node</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">children</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">expanded</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">top_level</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+
+
+<a href="#geemap.coreutils.new_tree_node" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Returns node JSON for an interactive representation of an EE ComputedObject.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/coreutils.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">new_tree_node</span><span class="p">(</span>
+    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">children</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">expanded</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">top_level</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns node JSON for an interactive representation of an EE ComputedObject.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+        <span class="s2">&quot;children&quot;</span><span class="p">:</span> <span class="n">children</span> <span class="ow">or</span> <span class="p">[],</span>
+        <span class="s2">&quot;expanded&quot;</span><span class="p">:</span> <span class="n">expanded</span><span class="p">,</span>
+        <span class="s2">&quot;topLevel&quot;</span><span class="p">:</span> <span class="n">top_level</span><span class="p">,</span>
+    <span class="p">}</span>
 </code></pre></div>
         </details>
     </div>
