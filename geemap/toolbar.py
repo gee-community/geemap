@@ -9,229 +9,160 @@
 # *******************************************************************************#
 
 import os
+import pathlib
 
 from dataclasses import dataclass
+
+import anywidget
 import ee
 import ipyevents
 import ipyleaflet
 import ipywidgets as widgets
+import traitlets
 
 from ipyfilechooser import FileChooser
 from IPython.core.display import display
 from typing import Any, Callable, Optional
 
 from .common import *
+from .conversion import js_snippet_to_py
 from .timelapse import *
 
 from . import map_widgets
 
 
 @map_widgets.Theme.apply
-class Toolbar(widgets.VBox):
-    """A toolbar that can be added to the map."""
+class ToolbarItem(anywidget.AnyWidget):
+    """A toolbar item widget for geemap."""
 
-    @dataclass
-    class Item:
-        """A representation of an item in the toolbar.
+    _esm = pathlib.Path(__file__).parent / "static" / "toolbar_item.js"
+    active = traitlets.Bool(False).tag(sync=True)
+    icon = traitlets.Unicode("").tag(sync=True)
+    # Unfortunately, "tooltip" is a property already defined on ipywidgets.
+    tooltip_text = traitlets.Unicode("").tag(sync=True)
 
-        Attributes:
-            icon: The icon to use for the item, from https://fontawesome.com/icons.
+    def __init__(
+        self,
+        icon: str,
+        tooltip: str,
+        callback: Callable[[Any, bool, Any], None],
+        control: Optional[widgets.Widget] = None,
+        reset=False,
+        active=False,
+    ):
+        """A togglable, toolbar item.
+
+        Args:
+            icon (str): The icon name to use, from https://fonts.google.com/icons.
             tooltip: The tooltip text to show a user on hover.
             callback: A callback function to execute when the item icon is clicked.
                 Its signature should be `callback(map, selected, item)`, where
                 `map` is the host map, `selected` is a boolean indicating if the
                 user selected or unselected the tool, and `item` is this object.
-            reset: Whether to reset the selection after the callback has finished.
             control: The control widget associated with this item. Used to
                 cleanup state when toggled off.
-            toggle_button: The toggle button controlling the item.
+            reset: Whether to reset the selection after the callback has finished.
+            active: Whether the tool is currently active.
         """
+        super().__init__()
+        self.icon = icon
+        self.tooltip_text = tooltip
+        self.callback = callback
+        self.callback_wrapper = lambda *args: None
+        self.control = control
+        self.reset = reset
+        self.active = active
 
-        icon: str
-        tooltip: str
-        callback: Callable[[Any, bool, Any], None]
-        reset: bool = True
-        control: Optional[widgets.Widget] = None
-        toggle_button: Optional[widgets.ToggleButton] = None
+    def toggle_off(self):
+        if self.active:
+            self.active = False
 
-        def toggle_off(self):
-            if self.toggle_button:
-                self.toggle_button.value = False
+    @traitlets.observe("active")
+    def _observe_value(self, change: Dict[str, Any]) -> None:
+        if (value := change.get("new")) is not None:
+            self.callback_wrapper(self.callback, value, self)
+        if self.active and self.reset:
+            self.active = False
 
-    ICON_WIDTH = "32px"
-    ICON_HEIGHT = "32px"
-    NUM_COLS = 3
 
-    _TOGGLE_TOOL_EXPAND_ICON = "plus"
-    _TOGGLE_TOOL_EXPAND_TOOLTIP = "Expand toolbar"
-    _TOGGLE_TOOL_COLLAPSE_ICON = "minus"
-    _TOGGLE_TOOL_COLLAPSE_TOOLTIP = "Collapse toolbar"
+@map_widgets.Theme.apply
+class Toolbar(anywidget.AnyWidget):
+    """A toolbar that can be added to the map."""
 
-    def __init__(self, host_map, main_tools, extra_tools=None):
+    _esm = pathlib.Path(__file__).parent / "static" / "toolbar.js"
+
+    # The accessory widget.
+    accessory_widgets = map_widgets.TypedTuple(
+        trait=traitlets.Instance(widgets.Widget),
+        help="The accessory widget",
+    ).tag(sync=True, **widgets.widget_serialization)
+
+    # The list of main tools.
+    main_tools = map_widgets.TypedTuple(
+        trait=traitlets.Instance(widgets.Widget),
+        help="List of main tools",
+    ).tag(sync=True, **widgets.widget_serialization)
+
+    # The list of extra tools.
+    extra_tools = map_widgets.TypedTuple(
+        trait=traitlets.Instance(widgets.Widget),
+        help="List of extra tools",
+    ).tag(sync=True, **widgets.widget_serialization)
+
+    # Whether the toolbar is expanded.
+    expanded = traitlets.Bool(False).tag(sync=True)
+
+    # The currently selected tab.
+    tab_index = traitlets.Int(0).tag(sync=True)
+
+    _TOGGLE_EXPAND_ICON = "add"
+    _TOGGLE_EXPAND_TOOLTIP = "Expand toolbar"
+    _TOGGLE_COLLAPSE_ICON = "remove"
+    _TOGGLE_COLLAPSE_TOOLTIP = "Collapse toolbar"
+
+    def __init__(
+        self,
+        host_map: "geemap.Map",
+        main_tools: List[ToolbarItem],
+        extra_tools: List[ToolbarItem],
+        accessory_widgets: List[widgets.DOMWidget],
+    ):
         """Adds a toolbar with `main_tools` and `extra_tools` to the `host_map`."""
+        super().__init__()
         if not main_tools:
             raise ValueError("A toolbar cannot be initialized without `main_tools`.")
         self.host_map = host_map
-        self.toggle_tool = Toolbar.Item(
-            icon=self._TOGGLE_TOOL_EXPAND_ICON,
-            tooltip=self._TOGGLE_TOOL_EXPAND_TOOLTIP,
+        self.toggle_widget = ToolbarItem(
+            icon=self._TOGGLE_EXPAND_ICON,
+            tooltip=self._TOGGLE_EXPAND_TOOLTIP,
             callback=self._toggle_callback,
+            reset=True,
         )
-        self.on_layers_toggled = None
-        self._accessory_widget = None
-
-        if extra_tools:
-            all_tools = main_tools + [self.toggle_tool] + extra_tools
-        else:
-            all_tools = main_tools
-        icons = [tool.icon for tool in all_tools]
-        tooltips = [tool.tooltip for tool in all_tools]
-        callbacks = [tool.callback for tool in all_tools]
-        resets = [tool.reset for tool in all_tools]
-        self.num_collapsed_tools = len(main_tools) + (1 if extra_tools else 0)
-        # -(-a//b) is the same as math.ceil(a/b)
-        self.num_rows_expanded = -(-len(all_tools) // self.NUM_COLS)
-        self.num_rows_collapsed = -(-self.num_collapsed_tools // self.NUM_COLS)
-
-        self.all_widgets = [
-            widgets.ToggleButton(
-                layout=widgets.Layout(
-                    width="auto", height="auto", padding="0px 0px 0px 4px"
-                ),
-                button_style="primary",
-                icon=icons[i],
-                tooltip=tooltips[i],
+        self.main_tools = main_tools + ([self.toggle_widget] if extra_tools else [])
+        self.extra_tools = extra_tools
+        for widget in self.main_tools + self.extra_tools:
+            widget.callback_wrapper = lambda callback, value, tool: callback(
+                self.host_map, value, tool
             )
-            for i in range(len(all_tools))
-        ]
-        self.toggle_widget = self.all_widgets[len(main_tools)] if extra_tools else None
-
-        # We start with a collapsed grid of just the main tools and the toggle one.
-        self.grid = widgets.GridBox(
-            children=self.all_widgets[: self.num_collapsed_tools],
-            layout=widgets.Layout(
-                width="109px",
-                grid_template_columns=(self.ICON_WIDTH + " ") * self.NUM_COLS,
-                grid_template_rows=(self.ICON_HEIGHT + " ") * self.num_rows_collapsed,
-                grid_gap="1px 1px",
-                padding="5px",
-            ),
-        )
-
-        def curry_callback(callback, should_reset_after, widget, item):
-            def returned_callback(change):
-                if change["type"] != "change":
-                    return
-                callback(self.host_map, change["new"], item)
-                if should_reset_after:
-                    widget.value = False
-
-            return returned_callback
-
-        for id, widget in enumerate(self.all_widgets):
-            all_tools[id].toggle_button = widget
-            widget.observe(
-                curry_callback(callbacks[id], resets[id], widget, all_tools[id]),
-                "value",
-            )
-
-        self.toolbar_button = widgets.ToggleButton(
-            value=False,
-            tooltip="Toolbar",
-            icon="wrench",
-            layout=widgets.Layout(
-                width="28px", height="28px", padding="0px 0px 0px 4px"
-            ),
-        )
-
-        self.layers_button = widgets.ToggleButton(
-            value=False,
-            tooltip="Layers",
-            icon="server",
-            layout=widgets.Layout(height="28px", width="72px"),
-        )
-
-        self.toolbar_header = widgets.HBox(
-            layout=widgets.Layout(
-                display="flex", justify_content="flex-end", align_items="center"
-            )
-        )
-        self.toolbar_header.children = [self.layers_button, self.toolbar_button]
-        self.toolbar_footer = widgets.VBox()
-        self.toolbar_footer.children = [self.grid]
-
-        self.toolbar_button.observe(self._toolbar_btn_click, "value")
-        self.layers_button.observe(self._layers_btn_click, "value")
-
-        super().__init__(children=[self.toolbar_header])
+        self.accessory_widgets = accessory_widgets
 
     def reset(self):
         """Resets the toolbar so that no widget is selected."""
-        for widget in self.all_widgets:
+        for widget in self.main_tools + self.extra_tools:
             widget.value = False
-
-    def toggle_layers(self, enabled):
-        self.layers_button.value = enabled
-        self.on_layers_toggled(enabled)
-        if enabled:
-            self.toolbar_button.value = False
-
-    def _reset_others(self, current):
-        for other in self.all_widgets:
-            if other is not current:
-                other.value = False
 
     def _toggle_callback(self, m, selected, item):
         del m, item  # unused
         if not selected:
             return
-        if self.toggle_widget.icon == self._TOGGLE_TOOL_EXPAND_ICON:
-            self.grid.layout.grid_template_rows = (
-                self.ICON_HEIGHT + " "
-            ) * self.num_rows_expanded
-            self.grid.children = self.all_widgets
-            self.toggle_widget.tooltip = self._TOGGLE_TOOL_COLLAPSE_TOOLTIP
-            self.toggle_widget.icon = self._TOGGLE_TOOL_COLLAPSE_ICON
-        elif self.toggle_widget.icon == self._TOGGLE_TOOL_COLLAPSE_ICON:
-            self.grid.layout.grid_template_rows = (
-                self.ICON_HEIGHT + " "
-            ) * self.num_rows_collapsed
-            self.grid.children = self.all_widgets[: self.num_collapsed_tools]
-            self.toggle_widget.tooltip = self._TOGGLE_TOOL_EXPAND_TOOLTIP
-            self.toggle_widget.icon = self._TOGGLE_TOOL_EXPAND_ICON
-
-    def _toolbar_btn_click(self, change):
-        if change["new"]:
-            self.layers_button.value = False
-            self.children = [self.toolbar_header, self.toolbar_footer]
-        else:
-            if not self.layers_button.value:
-                self.children = [self.toolbar_header]
-
-    def _layers_btn_click(self, change):
-        # Allow callbacks to set accessory_widget to prevent flicker on click.
-        if self.on_layers_toggled:
-            self.on_layers_toggled(change["new"])
-        if change["new"]:
-            self.toolbar_button.value = False
-            self.children = [self.toolbar_header, self.toolbar_footer]
-        else:
-            if not self.toolbar_button.value:
-                self.children = [self.toolbar_header]
-
-    @property
-    def accessory_widget(self):
-        """A widget that temporarily replaces the tool grid."""
-        return self._accessory_widget
-
-    @accessory_widget.setter
-    def accessory_widget(self, value):
-        """Sets the widget that temporarily replaces the tool grid."""
-        self._accessory_widget = value
-        if self._accessory_widget:
-            self.toolbar_footer.children = [self._accessory_widget]
-        else:
-            self.toolbar_footer.children = [self.grid]
+        if self.toggle_widget.icon == self._TOGGLE_EXPAND_ICON:
+            self.expanded = True
+            self.toggle_widget.tooltip_text = self._TOGGLE_COLLAPSE_TOOLTIP
+            self.toggle_widget.icon = self._TOGGLE_COLLAPSE_ICON
+        elif self.toggle_widget.icon == self._TOGGLE_COLLAPSE_ICON:
+            self.expanded = False
+            self.toggle_widget.tooltip_text = self._TOGGLE_EXPAND_TOOLTIP
+            self.toggle_widget.icon = self._TOGGLE_EXPAND_ICON
 
 
 def inspector_gui(m=None):
@@ -608,7 +539,6 @@ def ee_plot_gui(m, position="topright", **kwargs):
         m (object): geemap.Map.
         position (str, optional): Position of the widget. Defaults to "topright".
     """
-
     close_btn = widgets.Button(
         icon="times",
         tooltip="Close the plot widget",
@@ -722,7 +652,7 @@ def ee_plot_gui(m, position="topright", **kwargs):
                 dict_values = dict(zip(b_names, [dict_values_tmp[b] for b in b_names]))
                 generate_chart(dict_values, latlon)
             except Exception as e:
-                if hasattr(m, "_plot_widget"):
+                if hasattr(m, "_plot_widget") and m._plot_widget is not None:
                     m._plot_widget.clear_output()
                     with m._plot_widget:
                         print("No data for the clicked location.")
@@ -832,316 +762,344 @@ def ee_plot_gui(m, position="topright", **kwargs):
 
 
 @map_widgets.Theme.apply
-class SearchDataGUI(widgets.HBox):
-    def __init__(self, m, **kwargs):
-        # Adds search button and search box
+class SearchBar(anywidget.AnyWidget):
+    _esm = pathlib.Path(__file__).parent / "static" / "search_bar.js"
 
-        from .conversion import js_snippet_to_py
+    # Whether the toolbar is expanded.
+    expanded = traitlets.Bool(False).tag(sync=True)
 
-        m.search_locations = None
-        m.search_loc_marker = None
-        m.search_loc_geom = None
-        m.search_datasets = None
+    # The currently selected tab.
+    tab_index = traitlets.Int(0).tag(sync=True)
 
-        search_button = widgets.ToggleButton(
-            value=False,
-            tooltip="Search location/data",
-            icon="globe",
-            layout=widgets.Layout(
-                width="28px", height="28px", padding="0px 0px 0px 4px"
-            ),
-        )
-
-        search_type = widgets.ToggleButtons(
-            options=["name/address", "lat-lon", "data"],
-            tooltips=[
-                "Search by place name or address",
-                "Search by lat-lon coordinates",
-                "Search Earth Engine data catalog",
-            ],
-        )
-        search_type.style.button_width = "110px"
-
-        search_box = widgets.Text(
-            placeholder="Search by place name or address",
-            tooltip="Search location",
-            layout=widgets.Layout(width="340px"),
-        )
-
-        search_output = widgets.Output(
-            layout={
-                "max_width": "340px",
-                "max_height": "350px",
-                "overflow": "scroll",
+    # The stringified JSON for the name/address search.
+    name_address_model = traitlets.Unicode(
+        json.dumps(
+            {
+                "search": "",
+                "results": [],
+                "selected": "",
+                "additional_html": "",
             }
         )
+    ).tag(sync=True)
 
-        search_results = widgets.RadioButtons()
-
-        assets_dropdown = widgets.Dropdown(
-            options=[],
-            layout=widgets.Layout(min_width="279px", max_width="279px"),
+    # The stringified JSON for the lat/lon search.
+    lat_lon_model = traitlets.Unicode(
+        json.dumps(
+            {
+                "search": "",
+                "results": [],
+                "selected": "",
+                "additional_html": "",
+            }
         )
+    ).tag(sync=True)
 
-        import_btn = widgets.Button(
-            description="import",
-            button_style="primary",
-            tooltip="Click to import the selected asset",
-            layout=widgets.Layout(min_width="57px", max_width="57px"),
+    # The stringified JSON for the dataset search.
+    dataset_model = traitlets.Unicode(
+        json.dumps(
+            {
+                "search": "",
+                "results": [],
+                "selected": "",
+                "additional_html": "",
+            }
         )
+    ).tag(sync=True)
 
-        def get_ee_example(asset_id):
+    def __init__(self, host_map, **kwargs):
+        super().__init__()
+        self.host_map = host_map
+        self.host_map.search_locations = None
+        self.host_map.search_loc_marker = None
+        self.host_map.search_loc_geom = None
+        self.host_map.search_datasets = None
+
+        self.on_msg(self.handle_message_event)
+
+    def handle_message_event(
+        self, widget: widgets.Widget, content: Dict[str, Any], buffers: List[Any]
+    ) -> None:
+        del widget, buffers  # Unused
+        if content.get("type") == "click":
+            msg_id = content.get("id", "")
+            if msg_id == "import":
+                self.import_button_clicked()
+
+    @traitlets.observe("tab_index")
+    def _observe_tab_index(self, change: Dict[str, Any]):
+        tab_index = change.get("new")
+        selected_name_address = json.loads(self.name_address_model).get(
+            "selected", None
+        )
+        lat_lon_search = json.loads(self.lat_lon_model).get("search", None)
+        if tab_index == 0 and selected_name_address:
+            self._set_selected_name_address(selected_name_address)
+        elif tab_index == 1 and lat_lon_search:
+            self._search_lat_lon(lat_lon_search)
+
+    @traitlets.observe("name_address_model")
+    def _observe_name_address_model(self, change: Dict[str, Any]) -> None:
+        old = json.loads(change.get("old"))
+        new = json.loads(change.get("new"))
+        if new["search"] != old["search"]:
+            if new["search"]:
+                self._search_name_address(new["search"])
+            else:
+                self.name_address_model = json.dumps(
+                    {
+                        "search": "",
+                        "results": [],
+                        "selected": "",
+                        "additional_html": "",
+                    }
+                )
+                marker = self.host_map.search_loc_marker
+                self.host_map.search_loc_marker = None
+                self.host_map.remove(marker)
+
+        elif new["selected"] and new["selected"] != old["selected"]:
+            self._set_selected_name_address(new["selected"])
+
+    @traitlets.observe("lat_lon_model")
+    def _observe_lat_lon_model(self, change: Dict[str, Any]) -> None:
+        old = json.loads(change.get("old"))
+        new = json.loads(change.get("new"))
+        if new["search"] != old["search"]:
+            if new["search"]:
+                self._search_lat_lon(new["search"])
+            else:
+                self.lat_lon_model = json.dumps(
+                    {
+                        "search": "",
+                        "results": [],
+                        "selected": "",
+                        "additional_html": "",
+                    }
+                )
+                marker = self.host_map.search_loc_marker
+                self.host_map.search_loc_marker = None
+                self.host_map.remove(marker)
+
+        if new["selected"] and new["selected"] != old["selected"]:
+            pass
+
+    @traitlets.observe("dataset_model")
+    def _observe_dataset_model(self, change: Dict[str, Any]) -> None:
+        old = json.loads(change.get("old"))
+        new = json.loads(change.get("new"))
+        if new["search"] != old["search"]:
+            if new["search"]:
+                self._search_dataset(new["search"])
+            else:
+                self.dataset_model = json.dumps(
+                    {
+                        "search": "",
+                        "results": [],
+                        "selected": "",
+                        "additional_html": "",
+                    }
+                )
+        elif new["selected"] and new["selected"] != old["selected"]:
+            self._select_dataset(new["selected"])
+
+    def _search_name_address(self, address):
+        name_address_model = json.loads(self.name_address_model)
+        geoloc_results = geocode(address)
+        self.host_map.search_locations = geoloc_results
+        if geoloc_results is not None and len(geoloc_results) > 0:
+            name_address_model["results"] = [x.address for x in geoloc_results]
+            self.name_address_model = json.dumps(name_address_model)
+        else:
+            name_address_model["results"] = []
+            name_address_model["selected"] = ""
+            name_address_model["additional_html"] = "No results could be found."
+            self.name_address_model = json.dumps(name_address_model)
+
+    def _set_selected_name_address(self, address):
+        locations = self.host_map.search_locations
+        location = None
+        for l in locations:
+            if l.address == address:
+                location = l
+        if not location:
+            return
+        latlon = (location.lat, location.lng)
+        self.host_map.search_loc_geom = ee.Geometry.Point(location.lng, location.lat)
+        if self.host_map.search_loc_marker is None:
+            marker = ipyleaflet.Marker(
+                location=latlon,
+                draggable=False,
+                name="Search location",
+            )
+            self.host_map.search_loc_marker = marker
+            self.host_map.add(marker)
+            self.host_map.center = latlon
+        else:
+            marker = self.host_map.search_loc_marker
+            marker.location = latlon
+            self.host_map.center = latlon
+
+    def _search_lat_lon(self, lat_lon):
+        lat_lon_model = json.loads(self.lat_lon_model)
+        if latlon := latlon_from_text(lat_lon):
+            geoloc_results = geocode(lat_lon, reverse=True)
+            if geoloc_results is not None and len(geoloc_results) > 0:
+                top_loc = geoloc_results[0]
+                latlon = (top_loc.lat, top_loc.lng)
+                lat_lon_model["results"] = [x.address for x in geoloc_results]
+                lat_lon_model["selected"] = lat_lon_model["results"][0]
+                lat_lon_model["additional_html"] = ""
+                self.lat_lon_model = json.dumps(lat_lon_model)
+            else:
+                lat_lon_model["results"] = []
+                lat_lon_model["selected"] = ""
+                lat_lon_model["additional_html"] = "No results could be found."
+                self.lat_lon_model = json.dumps(lat_lon_model)
+            self.host_map.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
+            if self.host_map.search_loc_marker is None:
+                marker = ipyleaflet.Marker(
+                    location=latlon,
+                    draggable=False,
+                    name="Search location",
+                )
+                self.host_map.search_loc_marker = marker
+                self.host_map.add(marker)
+                self.host_map.center = latlon
+            else:
+                marker = self.host_map.search_loc_marker
+                marker.location = latlon
+                self.host_map.center = latlon
+        else:
+            lat_lon_model["results"] = []
+            lat_lon_model["selected"] = ""
+            no_results = (
+                """<em style="color: red">"""
+                "The lat-lon coordinates should be numbers only and"
+                "<br>"
+                "separated by comma or space, such as 40.2, -100.3"
+                "</em>"
+            )
+            lat_lon_model["additional_html"] = no_results
+            self.lat_lon_model = json.dumps(lat_lon_model)
+
+    def _search_dataset(self, dataset_search):
+        dataset_model = json.loads(self.dataset_model)
+        dataset_model["additional_html"] = "Searching..."
+        self.dataset_model = json.dumps(dataset_model)
+        self.host_map.default_style = {"cursor": "wait"}
+        ee_assets = search_ee_data(dataset_search, source="all")
+        self.host_map.search_datasets = ee_assets
+        asset_titles = [x["title"] for x in ee_assets]
+        dataset_model["results"] = asset_titles
+        dataset_model["selected"] = asset_titles[0] if asset_titles else ""
+        dataset_model["additional_html"] = ""
+        if len(ee_assets) > 0:
+            dataset_model["additional_html"] = ee_data_html(ee_assets[0])
+        else:
+            dataset_model["additional_html"] = "No results found."
+        self.dataset_model = json.dumps(dataset_model)
+        self.host_map.default_style = {"cursor": "default"}
+
+    def _select_dataset(self, dataset_title):
+        dataset_model = json.loads(self.dataset_model)
+        dataset_model["additional_html"] = "Loading ..."
+        datasets = self.host_map.search_datasets
+        dataset = None
+        for d in datasets:
+            if d["title"] == dataset_title:
+                dataset = d
+        if not dataset:
+            return
+        dataset_html = ee_data_html(dataset)
+        dataset_model["additional_html"] = dataset_html
+        self.dataset_model = json.dumps(dataset_model)
+
+    def get_ee_example(self, asset_id):
+        try:
+            import pkg_resources
+
+            pkg_dir = os.path.dirname(
+                pkg_resources.resource_filename("geemap", "geemap.py")
+            )
+            with open(os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8") as f:
+                functions = json.load(f)
+            details = [
+                dataset["code"]
+                for x in functions["examples"]
+                for dataset in x["contents"]
+                if x["name"] == "Datasets"
+                if dataset["name"] == asset_id.replace("/", "_")
+            ]
+
+            return js_snippet_to_py(
+                details[0],
+                add_new_cell=False,
+                import_ee=False,
+                import_geemap=False,
+                show_map=False,
+                Map=self.host_map._var_name,
+            )
+
+        except Exception as e:
+            pass
+        return
+
+    def import_button_clicked(self):
+        dataset_model = json.loads(self.dataset_model)
+        print(dataset_model)
+        if dataset_model["selected"]:
+            datasets = self.host_map.search_datasets
+            dataset = None
+            for d in datasets:
+                if d["title"] == dataset_model["selected"]:
+                    dataset = d
+            if not dataset:
+                return
+            id_ = dataset["id"]
+            code = self.get_ee_example(id_)
+
+            if not code:
+                dataset_uid = "dataset_" + random_string(string_length=3)
+                translate = {
+                    "image_collection": "ImageCollection",
+                    "image": "Image",
+                    "table": "FeatureCollection",
+                    "table_collection": "FeatureCollection",
+                }
+                datatype = translate[dataset["type"]]
+                id_ = dataset["id"]
+                line1 = "{} = ee.{}('{}')".format(dataset_uid, datatype, id_)
+                action = {
+                    "image_collection": f"\n{self.host_map._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
+                    "image": f"\n{self.host_map._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
+                    "table": f"\n{self.host_map._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
+                    "table_collection": f"\n{self.host_map._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
+                }
+                line2 = action[dataset["type"]]
+                code = [line1, line2]
+
+            contents = "".join(code).strip()
+            # create_code_cell(contents)
+
             try:
-                import pkg_resources
+                import pyperclip
 
-                pkg_dir = os.path.dirname(
-                    pkg_resources.resource_filename("geemap", "geemap.py")
-                )
-                with open(
-                    os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8"
-                ) as f:
-                    functions = json.load(f)
-                details = [
-                    dataset["code"]
-                    for x in functions["examples"]
-                    for dataset in x["contents"]
-                    if x["name"] == "Datasets"
-                    if dataset["name"] == asset_id.replace("/", "_")
-                ]
-
-                return js_snippet_to_py(
-                    details[0],
-                    add_new_cell=False,
-                    import_ee=False,
-                    import_geemap=False,
-                    show_map=False,
-                    Map=m._var_name,
-                )
-
+                pyperclip.copy(str(contents))
             except Exception as e:
                 pass
-            return
+            dataset_model["additional_html"] = (
+                "<pre>"
+                "# The code has been copied to the clipboard.\n"
+                "# Press Ctrl+V in a new cell to paste it.\n"
+                f"{contents}"
+                "</pre"
+            )
+            self.dataset_model = json.dumps(dataset_model)
 
-        def import_btn_clicked(b):
-            if assets_dropdown.value is not None:
-                datasets = m.search_datasets
-                dataset = datasets[assets_dropdown.index]
-                id_ = dataset["id"]
-                code = get_ee_example(id_)
 
-                if not code:
-                    dataset_uid = "dataset_" + random_string(string_length=3)
-                    translate = {
-                        "image_collection": "ImageCollection",
-                        "image": "Image",
-                        "table": "FeatureCollection",
-                        "table_collection": "FeatureCollection",
-                    }
-                    datatype = translate[dataset["type"]]
-                    id_ = dataset["id"]
-                    line1 = "{} = ee.{}('{}')".format(dataset_uid, datatype, id_)
-                    action = {
-                        "image_collection": f"\n{m._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
-                        "image": f"\n{m._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
-                        "table": f"\n{m._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
-                        "table_collection": f"\n{m._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
-                    }
-                    line2 = action[dataset["type"]]
-                    code = [line1, line2]
-
-                contents = "".join(code).strip()
-                # create_code_cell(contents)
-
-                try:
-                    import pyperclip
-
-                    pyperclip.copy(str(contents))
-                except Exception as e:
-                    pass
-
-                with search_output:
-                    search_output.clear_output()
-                    print(
-                        "# The code has been copied to the clipboard. \n# Press Ctrl+V in a new cell to paste it.\n"
-                    )
-                    print(contents)
-
-        import_btn.on_click(import_btn_clicked)
-
-        html_widget = widgets.HTML()
-
-        def dropdown_change(change):
-            dropdown_index = assets_dropdown.index
-            if dropdown_index is not None and dropdown_index >= 0:
-                search_output.clear_output()
-                search_output.append_stdout("Loading ...")
-                datasets = m.search_datasets
-                dataset = datasets[dropdown_index]
-                dataset_html = ee_data_html(dataset)
-                html_widget.value = dataset_html
-                search_output.clear_output()
-                with search_output:
-                    display(html_widget)
-                # search_output.append_display_data(html_widget)
-
-        assets_dropdown.observe(dropdown_change, names="value")
-
-        assets_combo = widgets.HBox()
-        assets_combo.children = [import_btn, assets_dropdown]
-
-        def search_result_change(change):
-            result_index = search_results.index
-            locations = m.search_locations
-            location = locations[result_index]
-            latlon = (location.lat, location.lng)
-            m.search_loc_geom = ee.Geometry.Point(location.lng, location.lat)
-            marker = m.search_loc_marker
-            marker.location = latlon
-            m.center = latlon
-
-        search_results.observe(search_result_change, names="value")
-
-        def search_btn_click(change):
-            if change["new"]:
-                self.children = [search_button, search_result_widget]
-                search_type.value = "name/address"
-            else:
-                self.children = [search_button]
-                search_result_widget.children = [search_type, search_box]
-
-        search_button.observe(search_btn_click, "value")
-
-        def search_type_changed(change):
-            search_box.value = ""
-            search_output.clear_output()
-            if change["new"] == "data":
-                search_box.placeholder = (
-                    "Search GEE data catalog by keywords, e.g., elevation"
-                )
-                search_result_widget.children = [
-                    search_type,
-                    search_box,
-                    assets_combo,
-                    search_output,
-                ]
-            elif change["new"] == "lat-lon":
-                search_box.placeholder = "Search by lat-lon, e.g., 40, -100"
-                assets_dropdown.options = []
-                search_result_widget.children = [
-                    search_type,
-                    search_box,
-                    search_output,
-                ]
-            elif change["new"] == "name/address":
-                search_box.placeholder = "Search by place name or address, e.g., Paris"
-                assets_dropdown.options = []
-                search_result_widget.children = [
-                    search_type,
-                    search_box,
-                    search_output,
-                ]
-
-        search_type.observe(search_type_changed, names="value")
-
-        def search_box_callback(text):
-            if text.value != "":
-                if search_type.value == "name/address":
-                    g = geocode(text.value)
-                elif search_type.value == "lat-lon":
-                    g = geocode(text.value, reverse=True)
-                    if g is None and latlon_from_text(text.value):
-                        search_output.clear_output()
-                        latlon = latlon_from_text(text.value)
-                        m.search_loc_geom = ee.Geometry.Point(latlon[1], latlon[0])
-                        if m.search_loc_marker is None:
-                            marker = ipyleaflet.Marker(
-                                location=latlon,
-                                draggable=False,
-                                name="Search location",
-                            )
-                            m.search_loc_marker = marker
-                            m.add(marker)
-                            m.center = latlon
-                        else:
-                            marker = m.search_loc_marker
-                            marker.location = latlon
-                            m.center = latlon
-                        with search_output:
-                            print(f"No address found for {latlon}")
-                        return
-                elif search_type.value == "data":
-                    search_output.clear_output()
-                    with search_output:
-                        print("Searching ...")
-                    m.default_style = {"cursor": "wait"}
-                    ee_assets = search_ee_data(text.value, source="all")
-                    m.search_datasets = ee_assets
-                    asset_titles = [x["title"] for x in ee_assets]
-                    assets_dropdown.options = asset_titles
-                    search_output.clear_output()
-                    if len(ee_assets) > 0:
-                        assets_dropdown.index = 0
-                        html_widget.value = ee_data_html(ee_assets[0])
-                    else:
-                        html_widget.value = "No results found."
-                    with search_output:
-                        display(html_widget)
-                    m.default_style = {"cursor": "default"}
-
-                    return
-
-                m.search_locations = g
-                if g is not None and len(g) > 0:
-                    top_loc = g[0]
-                    latlon = (top_loc.lat, top_loc.lng)
-                    m.search_loc_geom = ee.Geometry.Point(top_loc.lng, top_loc.lat)
-                    if m.search_loc_marker is None:
-                        marker = ipyleaflet.Marker(
-                            location=latlon,
-                            draggable=False,
-                            name="Search location",
-                        )
-                        m.search_loc_marker = marker
-                        m.add(marker)
-                        m.center = latlon
-                    else:
-                        marker = m.search_loc_marker
-                        marker.location = latlon
-                        m.center = latlon
-                    search_results.options = [x.address for x in g]
-                    search_result_widget.children = [
-                        search_type,
-                        search_box,
-                        search_output,
-                    ]
-                    with search_output:
-                        search_output.clear_output()
-                        display(search_results)
-                else:
-                    with search_output:
-                        search_output.clear_output()
-                        print("No results could be found.")
-
-        search_box.on_submit(search_box_callback)
-
-        search_result_widget = widgets.VBox([search_type, search_box])
-
-        super().__init__(children=[search_button], **kwargs)
-
-        search_event = ipyevents.Event(
-            source=self, watched_events=["mouseenter", "mouseleave"]
-        )
-
-        def handle_search_event(event):
-            if event["type"] == "mouseenter":
-                self.children = [search_button, search_result_widget]
-                # search_type.value = "name/address"
-            elif event["type"] == "mouseleave":
-                if not search_button.value:
-                    self.children = [search_button]
-                    search_result_widget.children = [search_type, search_box]
-
-        search_event.on_dom_event(handle_search_event)
+# Type alias for backwards compatibility.
+SearchDataGUI = SearchBar
 
 
 # ******************************************************************************#
@@ -4492,101 +4450,90 @@ def _cog_stac_inspector_callback(map, selected, item):
 
 
 main_tools = [
-    Toolbar.Item(
-        icon="info",
+    ToolbarItem(
+        icon="point_scan",
         tooltip="Inspector",
         callback=_inspector_tool_callback,
-        reset=False,
     ),
-    Toolbar.Item(
-        icon="bar-chart",
+    ToolbarItem(
+        icon="bar_chart",
         tooltip="Plotting",
         callback=_plotting_tool_callback,
-        reset=False,
     ),
-    Toolbar.Item(
-        icon="globe",
+    ToolbarItem(
+        icon="history",
         tooltip="Create timelapse",
         callback=_timelapse_tool_callback,
-        reset=False,
     ),
-    Toolbar.Item(
+    ToolbarItem(
         icon="map",
         tooltip="Change basemap",
         callback=_basemap_tool_callback,
-        reset=False,
     ),
-    Toolbar.Item(
-        icon="retweet",
+    ToolbarItem(
+        icon="code",
         tooltip="Convert Earth Engine JavaScript to Python",
         callback=_convert_js_tool_callback,
-        reset=False,
     ),
 ]
 
 extra_tools = [
-    Toolbar.Item(
-        icon="eraser",
+    ToolbarItem(
+        icon="ink_eraser",
         tooltip="Remove all drawn features",
         callback=lambda m, selected, _: m.remove_drawn_features() if selected else None,
+        reset=True,
     ),
-    Toolbar.Item(
-        icon="folder-open",
+    ToolbarItem(
+        icon="upload",
         tooltip="Open local vector/raster data",
         callback=_open_data_tool_callback,
-        reset=False,
     ),
-    Toolbar.Item(
-        icon="gears",
+    ToolbarItem(
+        icon="manufacturing",
         tooltip="WhiteboxTools for local geoprocessing",
         callback=_whitebox_tool_callback,
-        reset=False,
     ),
-    Toolbar.Item(
-        icon="google",
+    ToolbarItem(
+        icon="dns",
         tooltip="GEE Toolbox for cloud computing",
         callback=_gee_toolbox_tool_callback,
-        reset=False,
     ),
-    Toolbar.Item(
-        icon="fast-forward",
+    ToolbarItem(
+        icon="fast_forward",
         tooltip="Activate timeslider",
         callback=_time_slider_tool_callback,
-        reset=False,
     ),
-    Toolbar.Item(
-        icon="hand-o-up",
+    ToolbarItem(
+        icon="pan_tool_alt",
         tooltip="Collect training samples",
         callback=_collect_samples_tool_callback,
-        reset=False,
     ),
-    Toolbar.Item(
-        icon="line-chart",
+    ToolbarItem(
+        icon="show_chart",
         tooltip="Creating and plotting transects",
         callback=_plot_transect_tool_callback,
-        reset=False,
     ),
-    Toolbar.Item(
-        icon="random",
+    ToolbarItem(
+        icon="multiline_chart",
         tooltip="Sankey plots",
         callback=_sankee_tool_callback,
-        reset=False,
     ),
-    Toolbar.Item(
-        icon="adjust",
+    ToolbarItem(
+        icon="travel_explore",
         tooltip="Planet imagery",
         callback=_split_basemaps_tool_callback,
     ),
-    Toolbar.Item(
-        icon="info-circle",
+    ToolbarItem(
+        icon="target",
         tooltip="Get COG/STAC pixel value",
         callback=_cog_stac_inspector_callback,
-        reset=False,
     ),
-    Toolbar.Item(
-        icon="question",
+    ToolbarItem(
+        icon="question_mark",
         tooltip="Get help",
         callback=_open_help_page_callback,
+        reset=True,
     ),
 ]
 
