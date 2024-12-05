@@ -24,3 +24,30 @@ export const materialStyles = css`
         word-wrap: normal;
     }
 `;
+
+export const flexStyles = css`
+    .vertical-flex {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .horizontal-flex {
+        align-items: center;
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    input:not([type="radio"]):not([type="checkbox"]) {
+        width: 100%;
+    }
+
+    select {
+        width: 100%;
+    }
+
+    .horizontal-flex .legacy-text {
+        flex-shrink: 0;
+    }
+`;

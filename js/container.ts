@@ -1,7 +1,6 @@
 import type { RenderProps } from "@anywidget/types";
-import { css, html, TemplateResult } from "lit";
+import { css, html, HTMLTemplateResult, nothing, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
-import { classMap } from "lit/directives/class-map.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
@@ -25,11 +24,11 @@ export class Container extends LitWidget<ContainerModel, Container> {
             .header {
                 display: flex;
                 gap: 4px;
-                padding: 4px;
+                margin: 4px;
             }
 
             .widget-container {
-                padding: 4px;
+                margin: 4px;
             }
 
             .hidden {
@@ -50,9 +49,9 @@ export class Container extends LitWidget<ContainerModel, Container> {
         `,
     ];
 
-    @property() title: string = "";
-    @property() collapsed: boolean = false;
-    @property() hideCloseButton: boolean = false;
+    @property({ type: String }) title: string = "";
+    @property({ type: Boolean }) collapsed: boolean = false;
+    @property({ type: Boolean }) hideCloseButton: boolean = false;
 
     modelNameToViewName(): Map<keyof ContainerModel, keyof Container | null> {
         return new Map([
@@ -65,42 +64,40 @@ export class Container extends LitWidget<ContainerModel, Container> {
     render() {
         return html`
             <div class="header">
-                <button
-                    class=${classMap({
-                        "legacy-button": true,
-                        primary: true,
-                        "header-button": true,
-                        hidden: this.hideCloseButton,
-                    })}
-                    @click="${this.onCloseButtonClicked}"
-                >
-                    <span class="material-symbols-outlined">&#xe5cd;</span>
-                </button>
+                ${this.renderCloseButton()}
                 <button
                     class="legacy-button header-button"
                     @click="${this.onCollapseToggled}"
                 >
                     ${this.renderCollapseButtonIcon()}
                 </button>
-                <span
-                    class=${classMap({
-                        "legacy-text": true,
-                        "header-text": true,
-                        hidden: !this.title,
-                    })}
-                >
-                    ${this.title}
-                </span>
+                ${this.renderTitle()}
             </div>
-            <div
-                class=${classMap({
-                    "widget-container": true,
-                    hidden: this.collapsed,
-                })}
-            >
+            <div class="widget-container ${this.collapsed ? "hidden" : ""}">
                 <slot></slot>
             </div>
         `;
+    }
+
+    private renderCloseButton(): HTMLTemplateResult | typeof nothing {
+        if (this.hideCloseButton) {
+            return nothing;
+        }
+        return html`
+            <button
+                class="legacy-button primary header-button"
+                @click="${this.onCloseButtonClicked}"
+            >
+                <span class="material-symbols-outlined">&#xe5cd;</span>
+            </button>
+        `;
+    }
+
+    private renderTitle(): HTMLTemplateResult | typeof nothing {
+        if (this.title) {
+            return html`<span class="legacy-text header-text>${this.title}</span>`;
+        }
+        return nothing;
     }
 
     private onCloseButtonClicked(): void {

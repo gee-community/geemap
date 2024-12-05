@@ -2,6 +2,7 @@
 
 import type { AnyModel } from "@anywidget/types";
 import { IWidgetManager, WidgetModel } from "@jupyter-widgets/base";
+import { html, TemplateResult } from "lit";
 
 async function unpackModels(
     modelIds: Array<string>,
@@ -49,4 +50,29 @@ export function reverseMap<K, V>(map: Map<K, V>): Map<V, K> {
         }
     }
     return reversedMap;
+}
+
+export interface SelectOption {
+    label: string;
+    value: string;
+}
+
+export function renderSelect(
+    options: Array<SelectOption> | Array<string>,
+    value: string,
+    callback: (event: Event) => void
+): TemplateResult {
+    const newOptions = options.map((option) => {
+        const isObject = typeof option === "object";
+        const optValue = `${isObject ? option.value : option}`;
+        const optLabel = `${isObject ? option.label : option}`;
+        return html`
+            <option value="${optValue}" ?selected="${value === optValue}">
+                ${optLabel}
+            </option>
+        `;
+    });
+    return html`
+        <select class="legacy-select" @change="${callback}">${newOptions}</select>
+    `;
 }

@@ -55,6 +55,71 @@ export const legacyStyles = css`
         font-size: var(--jp-widgets-font-size);
         height: var(--jp-widgets-inline-height);
         line-height: var(--jp-widgets-inline-height);
+        vertical-align: middle;
+    }
+
+    .legacy-select {
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        background-color: var(--jp-widgets-input-background-color);
+        background-image: var(--jp-widgets-dropdown-arrow);
+        background-position: right center;
+        background-repeat: no-repeat;
+        background-size: 20px;
+        border-radius: 0;
+        border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+        box-shadow: none;
+        box-sizing: border-box;
+        color: var(--jp-widgets-input-color);
+        flex: 1 1 var(--jp-widgets-inline-width-short);
+        font-size: var(--jp-widgets-font-size);
+        height: 28px;
+        line-height: 28px;
+        min-width: 0;
+        outline: none !important;
+        padding-left: calc(var(--jp-widgets-input-padding)* 2);
+        padding-right: 20px;
+        vertical-align: top;
+    }
+
+    .legacy-text-input {
+        background: var(--jp-widgets-input-background-color);
+        border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+        box-sizing: border-box;
+        color: var(--jp-widgets-input-color);
+        flex-grow: 1;
+        flex-shrink: 1;
+        font-size: var(--jp-widgets-font-size);
+        height: var(--jp-widgets-inline-height);
+        line-height: var(--jp-widgets-inline-height);
+        min-width: 0;
+        outline: none !important;
+        padding: var(--jp-widgets-input-padding) calc(var(--jp-widgets-input-padding) * 2);
+    }
+
+    .legacy-text-input:disabled {
+        opacity: var(--jp-widgets-disabled-opacity);
+    }
+
+    .legacy-color {
+        align-self: stretch;
+        background: var(--jp-widgets-input-background-color);
+        border-left: none;
+        border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+        box-sizing: border-box;
+        color: var(--jp-widgets-input-color);
+        flex-grow: 0;
+        flex-shrink: 0;
+        height: var(--jp-widgets-inline-height);
+        outline: none !important;
+        padding: 0 2px;
+        width: var(--jp-widgets-inline-height);
+    }
+
+    .legacy-radio {
+        margin: 0;
+        vertical-align: middle;
     }
 
     .legacy-button.active {
