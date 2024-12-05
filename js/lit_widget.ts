@@ -13,6 +13,8 @@ export abstract class LitWidget<
         keyof SubclassType | null
     >;
 
+    onCustomMessage?(msg: any): void {}
+
     viewNameToModelName(): Map<keyof SubclassType | null, keyof ModelType> {
         return reverseMap(this.modelNameToViewName());
     }
@@ -31,6 +33,9 @@ export abstract class LitWidget<
                 });
             }
         }
+        model.on("msg:custom", (msg: any) => {
+            this.onCustomMessage?.(msg);
+        });
     }
 
     get model(): any {
