@@ -20,8 +20,6 @@ import urllib.request
 from collections import deque
 from pathlib import Path
 
-import pkg_resources
-
 from .common import *
 
 
@@ -913,20 +911,19 @@ def get_js_examples(out_dir=None):
     Returns:
         str: The folder containing the JavaScript examples.
     """
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
-    example_dir = os.path.join(pkg_dir, "data")
-    js_dir = os.path.join(example_dir, "javascripts")
+    pkg_dir = Path(__file__).parent
+    example_dir = pkg_dir / "data"
+    js_dir = example_dir / "javascripts"
 
-    files = list(Path(js_dir).rglob("*.js"))
+    files = list(js_dir.rglob("*.js"))
     if out_dir is None:
         out_dir = js_dir
     else:
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
+        if not out_dir.exists():
+            out_dir.mkdir(parent=True)
 
         for file in files:
-            basename = os.path.basename(file)
-            out_path = os.path.join(out_dir, basename)
+            out_path = out_dor / file.name
             shutil.copyfile(file, out_path)
 
     return out_dir
@@ -942,20 +939,17 @@ def get_nb_template(download_latest=False, out_file=None):
     Returns:
         str: The file path of the template.
     """
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
-    example_dir = os.path.join(pkg_dir, "data")
-    template_dir = os.path.join(example_dir, "template")
-    template_file = os.path.join(template_dir, "template.py")
+    pkg_dir = Path(__file__).parent
+    example_dir = pkg_dir / "data"
+    template_dir = example_dir / "template"
+    template_file = template_dir / "template.py"
 
     if out_file is None:
         out_file = template_file
         return out_file
 
-    if not out_file.endswith(".py"):
-        out_file = out_file + ".py"
-
-    if not os.path.exists(os.path.dirname(out_file)):
-        os.makedirs(os.path.dirname(out_file))
+    out_file = out_file.with_suffix(".py")
+    outfile.parent.mkdir(parents=True, exist_ok=True)
 
     if download_latest:
         template_url = "https://raw.githubusercontent.com/gee-community/geemap/master/examples/template/template.py"
