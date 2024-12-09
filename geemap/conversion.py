@@ -919,8 +919,7 @@ def get_js_examples(out_dir=None):
     if out_dir is None:
         out_dir = js_dir
     else:
-        if not out_dir.exists():
-            out_dir.mkdir(parent=True)
+        out_dir.mkdir(parent=True, exist_ok=True)
 
         for file in files:
             out_path = out_dor / file.name
