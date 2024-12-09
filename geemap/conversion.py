@@ -922,7 +922,7 @@ def get_js_examples(out_dir=None):
         out_dir.mkdir(parent=True, exist_ok=True)
 
         for file in files:
-            out_path = out_dor / file.name
+            out_path = out_dir / file.name
             shutil.copyfile(file, out_path)
 
     return out_dir
