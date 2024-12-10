@@ -50,15 +50,3 @@ export function reverseMap<K, V>(map: Map<K, V>): Map<V, K> {
     }
     return reversedMap;
 }
-
-const DEBOUNCE_TIMEOUT = 500;
-
-export function debounce(callback: Function): Function {
-    let timeoutId: number | undefined = undefined;
-    return (...args: any[]) => {
-        window.clearTimeout(timeoutId);
-        timeoutId = window.setTimeout(() => {
-            callback(...args);
-        }, DEBOUNCE_TIMEOUT);
-    };
-}

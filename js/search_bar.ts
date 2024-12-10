@@ -6,7 +6,7 @@ import { classMap } from "lit/directives/class-map.js";
 import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
-import { debounce, loadFonts } from "./utils";
+import { loadFonts } from "./utils";
 
 import { TabMode } from "./tab_panel";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -207,11 +207,14 @@ export class SearchBar extends LitWidget<
             class="legacy-input search name-address-search"
             type="search"
             placeholder="Search by place name or address, e.g., Paris"
-            @input="${debounce((_: Event) => {
-            const nameAddressModel = JSON.parse(this.nameAddressModel) as SearchTab;
-            nameAddressModel.search = this.nameAddressSearch.value || "";
-            this.nameAddressModel = JSON.stringify(nameAddressModel);
-        })}" />`;
+            @keydown="${(e: KeyboardEvent) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    const nameAddressModel = JSON.parse(this.nameAddressModel) as SearchTab;
+                    nameAddressModel.search = this.nameAddressSearch.value || "";
+                    this.nameAddressModel = JSON.stringify(nameAddressModel);
+                }
+            }}" />`;
         const renderedInputs = [searchInput];
         if (nameAddressModel.results.length) {
             const results = html`
@@ -266,11 +269,14 @@ export class SearchBar extends LitWidget<
             class="legacy-input search lat-lon-search"
             type="search"
             placeholder="Search by lat-lon coordinates, e.g., 40,-100"
-            @input="${debounce(() => {
-            const latLonModel = JSON.parse(this.latLonModel) as SearchTab;
-            latLonModel.search = this.latLonSearch?.value || "";
-            this.latLonModel = JSON.stringify(latLonModel);
-        })}" />`;
+            @keydown="${(e: KeyboardEvent) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    const latLonModel = JSON.parse(this.latLonModel) as SearchTab;
+                    latLonModel.search = this.latLonSearch?.value || "";
+                    this.latLonModel = JSON.stringify(latLonModel);
+                }
+            }}" />`;
         const renderedInputs = [searchInput];
         if (latLonModel.results.length) {
             const results = html`
@@ -326,12 +332,15 @@ export class SearchBar extends LitWidget<
             class="legacy-input search dataset-search"
             type="search"
             placeholder="Search GEE data catalog by keywords, e.g., elevation"
-            @input="${debounce(() => {
-            const datasetModel = JSON.parse(this.datasetModel) as SearchTab;
-            datasetModel.search = this.datasetSearch?.value || "";
-            // Force a rerender.
-            this.datasetModel = JSON.stringify(datasetModel);
-        })}" />`;
+            @keydown="${(e: KeyboardEvent) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    const datasetModel = JSON.parse(this.datasetModel) as SearchTab;
+                    datasetModel.search = this.datasetSearch?.value || "";
+                    // Force a rerender.
+                    this.datasetModel = JSON.stringify(datasetModel);
+                }
+            }}" />`;
         const renderedInputs = [searchInput];
         const importButton = html`<button
             class="legacy-button primary import-button"
