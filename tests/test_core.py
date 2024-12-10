@@ -150,44 +150,17 @@ class TestMap(unittest.TestCase):
 
         self.assertEqual(len(self.core_map.controls), 1)
         toolbar_control = self.core_map.controls[0].widget
+
         # Layer manager is selected and open by default.
-        layer_button = utils.query_widget(
-            toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Layers"
-        )
-        self.assertTrue(layer_button.value)
-        self.assertIsNotNone(
-            utils.query_widget(toolbar_control, map_widgets.LayerManager)
-        )
+        self.assertEqual(toolbar_control.tab_index, 0)
+        layer_button = toolbar_control.accessory_widgets[0]
+        self.assertIsInstance(layer_button, map_widgets.LayerManager)
 
-        toolbar_button = utils.query_widget(
-            toolbar_control, ipywidgets.ToggleButton, lambda c: c.tooltip == "Toolbar"
-        )
-        toolbar_button.value = True  # Open the grid of tools.
-        self.assertFalse(layer_button.value)
-
-        tool_grid = utils.query_widget(toolbar_control, ipywidgets.GridBox).children
-
-        self.assertEqual(len(tool_grid), 3)
-        self.assertEqual(tool_grid[0].tooltip, "Basemap selector")
-        self.assertEqual(tool_grid[1].tooltip, "Inspector")
-        self.assertEqual(tool_grid[2].tooltip, "Get help")
-
-        # Closing the toolbar button shows both buttons in the header.
-        toolbar_button.value = False
-        self.assertIsNotNone(
-            utils.query_widget(
-                toolbar_control,
-                ipywidgets.ToggleButton,
-                lambda c: c.tooltip == "Toolbar",
-            )
-        )
-        self.assertIsNotNone(
-            utils.query_widget(
-                toolbar_control,
-                ipywidgets.ToggleButton,
-                lambda c: c.tooltip == "Layers",
-            )
-        )
+        toolbar_control.tab_index = 1
+        self.assertEqual(len(toolbar_control.main_tools), 3)
+        self.assertEqual(toolbar_control.main_tools[0].tooltip_text, "Basemap selector")
+        self.assertEqual(toolbar_control.main_tools[1].tooltip_text, "Inspector")
+        self.assertEqual(toolbar_control.main_tools[2].tooltip_text, "Get help")
 
     def test_add_draw_control(self):
         """Tests adding and getting the draw widget."""
