@@ -349,7 +349,7 @@ class Map(core.Map):
         obj = backward_compatibilities.get(obj, obj)
 
         if obj == "data_ctrl":
-            data_widget = toolbar.SearchDataGUI(self)
+            data_widget = toolbar.SearchBar(self)
             data_control = ipyleaflet.WidgetControl(
                 widget=data_widget, position=position
             )

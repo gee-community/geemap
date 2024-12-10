@@ -24,9 +24,13 @@ export function loadFonts() {
 
 export async function updateChildren(
     container: HTMLElement,
-    model: AnyModel<any>
+    model: AnyModel<any>,
+    property = "children",
 ) {
-    const children = model.get("children");
+    let children = model.get(property);
+    if (!Array.isArray(children)) {
+        children = [children]
+    }
     const child_models = await unpackModels(children, model.widget_manager);
     const child_views = await Promise.all(
         child_models.map((model) => model.widget_manager.create_view(model))
@@ -45,4 +49,16 @@ export function reverseMap<K, V>(map: Map<K, V>): Map<V, K> {
         }
     }
     return reversedMap;
+}
+
+const DEBOUNCE_TIMEOUT = 500;
+
+export function debounce(callback: Function): Function {
+    let timeoutId: number | undefined = undefined;
+    return (...args: any[]) => {
+        window.clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => {
+            callback(...args);
+        }, DEBOUNCE_TIMEOUT);
+    };
 }
