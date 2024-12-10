@@ -1,12 +1,12 @@
 import type { RenderProps } from "@anywidget/types";
-import { html, css, PropertyValueMap } from "lit";
+import { html, css } from "lit";
 import { property, query, queryAll } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
-import { loadFonts } from "./utils";
+import { debounce, loadFonts } from "./utils";
 
 import { TabMode } from "./tab_panel";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -18,25 +18,12 @@ export interface SearchTab {
     additional_html: string,
 }
 
-
 export interface SearchBarModel {
     expanded: boolean;
     tab_index: number;
     name_address_model: string,
     lat_lon_model: string,
     dataset_model: string,
-}
-
-const DEBOUNCE_TIMEOUT = 500;
-
-const debounce = (callback: Function) => {
-    let timeoutId: number | undefined = undefined;
-    return (...args: any[]) => {
-        window.clearTimeout(timeoutId);
-        timeoutId = window.setTimeout(() => {
-            callback(...args);
-        }, DEBOUNCE_TIMEOUT);
-    };
 }
 
 export class SearchBar extends LitWidget<
@@ -117,9 +104,9 @@ export class SearchBar extends LitWidget<
         return new Map([
             ["expanded", "expanded"],
             ["tab_index", "tab_index"],
-            ["name_address_model", "name_address_model"],
-            ["lat_lon_model", "lat_lon_model"],
-            ["dataset_model", "dataset_model"],
+            ["name_address_model", "nameAddressModel"],
+            ["lat_lon_model", "latLonModel"],
+            ["dataset_model", "datasetModel"],
         ]);
     }
 
@@ -130,7 +117,7 @@ export class SearchBar extends LitWidget<
     tab_index: number = 0;
 
     @property()
-    name_address_model: string = JSON.stringify({
+    nameAddressModel: string = JSON.stringify({
         search: "",
         results: [],
         selected: "",
@@ -138,7 +125,7 @@ export class SearchBar extends LitWidget<
     });
 
     @property()
-    lat_lon_model: string = JSON.stringify({
+    latLonModel: string = JSON.stringify({
         search: "",
         results: [],
         selected: "",
@@ -146,7 +133,7 @@ export class SearchBar extends LitWidget<
     });
 
     @property()
-    dataset_model: string = JSON.stringify({
+    datasetModel: string = JSON.stringify({
         search: "",
         results: [],
         selected: "",
@@ -215,32 +202,32 @@ export class SearchBar extends LitWidget<
     }
 
     private renderNameAddressSearch() {
-        const name_address_model = JSON.parse(this.name_address_model) as SearchTab;
+        const nameAddressModel = JSON.parse(this.nameAddressModel) as SearchTab;
         const searchInput = html`<input
             class="legacy-input search name-address-search"
             type="search"
             placeholder="Search by place name or address, e.g., Paris"
-            @input="${debounce((e: Event) => {
-            const name_address_model = JSON.parse(this.name_address_model) as SearchTab;
-            name_address_model.search = this.nameAddressSearch.value || "";
-            this.name_address_model = JSON.stringify(name_address_model);
+            @input="${debounce((_: Event) => {
+            const nameAddressModel = JSON.parse(this.nameAddressModel) as SearchTab;
+            nameAddressModel.search = this.nameAddressSearch.value || "";
+            this.nameAddressModel = JSON.stringify(nameAddressModel);
         })}" />`;
         const renderedInputs = [searchInput];
-        if (name_address_model.results.length) {
+        if (nameAddressModel.results.length) {
             const results = html`
-                ${name_address_model.results.map((result, i) => html`
+                ${nameAddressModel.results.map((result) => html`
                     <li>
                         <label class="result">
                             <input
                             type="radio"
                             name="name-address-result"
                             value="${result}"
-                            .checked="${name_address_model.selected === result}"
+                            .checked="${nameAddressModel.selected === result}"
                             @input="${(e: Event) => {
                     const input = (e.target as HTMLInputElement);
-                    const name_address_model = JSON.parse(this.name_address_model) as SearchTab;
-                    name_address_model.selected = input.value || "";
-                    this.name_address_model = JSON.stringify(name_address_model);
+                    const nameAddressModel = JSON.parse(this.nameAddressModel) as SearchTab;
+                    nameAddressModel.selected = input.value || "";
+                    this.nameAddressModel = JSON.stringify(nameAddressModel);
                 }}" />
                             <span>${result}</span>
                         </label>
@@ -251,15 +238,15 @@ export class SearchBar extends LitWidget<
             </ul>`);
         }
         renderedInputs.push(html`<div class="additional-html-container">
-            ${unsafeHTML(name_address_model.additional_html)}
+            ${unsafeHTML(nameAddressModel.additional_html)}
         </div>`);
-        if (name_address_model.search ||
-            name_address_model.results.length ||
-            name_address_model.selected) {
+        if (nameAddressModel.search ||
+            nameAddressModel.results.length ||
+            nameAddressModel.selected) {
             renderedInputs.push(html`<button
                     class="legacy-button primary reset-button"
                     @click="${() => {
-                    this.name_address_model = JSON.stringify({
+                    this.nameAddressModel = JSON.stringify({
                         search: "",
                         results: [],
                         selected: "",
@@ -274,20 +261,20 @@ export class SearchBar extends LitWidget<
     }
 
     private renderLatLonSearch() {
-        const lat_lon_model = JSON.parse(this.lat_lon_model) as SearchTab;
+        const latLonModel = JSON.parse(this.latLonModel) as SearchTab;
         const searchInput = html`<input
             class="legacy-input search lat-lon-search"
             type="search"
             placeholder="Search by lat-lon coordinates, e.g., 40,-100"
             @input="${debounce(() => {
-            const lat_lon_model = JSON.parse(this.lat_lon_model) as SearchTab;
-            lat_lon_model.search = this.latLonSearch?.value || "";
-            this.lat_lon_model = JSON.stringify(lat_lon_model);
+            const latLonModel = JSON.parse(this.latLonModel) as SearchTab;
+            latLonModel.search = this.latLonSearch?.value || "";
+            this.latLonModel = JSON.stringify(latLonModel);
         })}" />`;
         const renderedInputs = [searchInput];
-        if (lat_lon_model.results.length) {
+        if (latLonModel.results.length) {
             const results = html`
-                ${lat_lon_model.results.map((result, i) => html`
+                ${latLonModel.results.map((result, i) => html`
                     <li>
                         <label class="result">
                             <input
@@ -297,9 +284,9 @@ export class SearchBar extends LitWidget<
                             value="${result}"
                             @input="${(e: Event) => {
                     const input = (e.target as HTMLInputElement);
-                    const lat_lon_model = JSON.parse(this.lat_lon_model) as SearchTab;
-                    lat_lon_model.selected = input.value || "";
-                    this.lat_lon_model = JSON.stringify(lat_lon_model);
+                    const latLonModel = JSON.parse(this.latLonModel) as SearchTab;
+                    latLonModel.selected = input.value || "";
+                    this.latLonModel = JSON.stringify(latLonModel);
                 }}" />
                             <span>${result}</span>
                         </label>
@@ -311,15 +298,15 @@ export class SearchBar extends LitWidget<
             </ul>`);
         }
         renderedInputs.push(html`<div class="additional-html-container">
-            ${unsafeHTML(lat_lon_model.additional_html)}
+            ${unsafeHTML(latLonModel.additional_html)}
         </div>`);
-        if (lat_lon_model.search ||
-            lat_lon_model.results.length ||
-            lat_lon_model.selected) {
+        if (latLonModel.search ||
+            latLonModel.results.length ||
+            latLonModel.selected) {
             renderedInputs.push(html`<button
                     class="legacy-button primary reset-button"
                     @click="${() => {
-                    this.lat_lon_model = JSON.stringify({
+                    this.latLonModel = JSON.stringify({
                         search: "",
                         results: [],
                         selected: "",
@@ -334,16 +321,16 @@ export class SearchBar extends LitWidget<
     }
 
     private renderDatasetSearch() {
-        const dataset_model = JSON.parse(this.dataset_model) as SearchTab;
+        const datasetModel = JSON.parse(this.datasetModel) as SearchTab;
         const searchInput = html`<input
             class="legacy-input search dataset-search"
             type="search"
             placeholder="Search GEE data catalog by keywords, e.g., elevation"
             @input="${debounce(() => {
-            const dataset_model = JSON.parse(this.dataset_model) as SearchTab;
-            dataset_model.search = this.datasetSearch?.value || "";
+            const datasetModel = JSON.parse(this.datasetModel) as SearchTab;
+            datasetModel.search = this.datasetSearch?.value || "";
             // Force a rerender.
-            this.dataset_model = JSON.stringify(dataset_model);
+            this.datasetModel = JSON.stringify(datasetModel);
         })}" />`;
         const renderedInputs = [searchInput];
         const importButton = html`<button
@@ -359,12 +346,12 @@ export class SearchBar extends LitWidget<
                 class="legacy-select dataset-select"
                 @input="${(e: Event) => {
                 const input = (e.target as HTMLInputElement);
-                const dataset_model = JSON.parse(this.dataset_model) as SearchTab;
-                dataset_model.selected = input.value || "";
+                const datasetModel = JSON.parse(this.datasetModel) as SearchTab;
+                datasetModel.selected = input.value || "";
                 // Force a rerender.
-                this.dataset_model = JSON.stringify(dataset_model);
+                this.datasetModel = JSON.stringify(datasetModel);
             }}">
-                ${dataset_model.results.map((result) => html`
+                ${datasetModel.results.map((result) => html`
                 <option>
                     ${result}
                 </option>
@@ -377,7 +364,7 @@ export class SearchBar extends LitWidget<
                 ${results}
             </div>`,
             html`<div class="additional-html-container">
-                ${unsafeHTML(dataset_model.additional_html)}
+                ${unsafeHTML(datasetModel.additional_html)}
             </div>`);
         return renderedInputs;
     }
