@@ -1,4 +1,11 @@
-import { css, html, HTMLTemplateResult, LitElement, nothing, TemplateResult } from "lit";
+import {
+    css,
+    html,
+    HTMLTemplateResult,
+    LitElement,
+    nothing,
+    TemplateResult,
+} from "lit";
 import { property } from "lit/decorators.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
@@ -7,7 +14,7 @@ import { flexStyles } from "./styles";
 
 enum LegendType {
     Linear = "linear",
-    Step = "step"
+    Step = "step",
 }
 
 export class LegendCustomization extends LitElement {
@@ -22,7 +29,7 @@ export class LegendCustomization extends LitElement {
             .hidden {
                 display: none;
             }
-            
+
             .legend-checkbox {
                 vertical-align: middle;
             }
@@ -79,9 +86,9 @@ export class LegendCustomization extends LitElement {
         if (this.showLegend) {
             return html`
                 <div class="horizontal-flex">
-                    ${this.legendTypes.map((model) => {
-                        return this.renderLegendTypeRadio(model);
-                    })}
+                    ${this.legendTypes.map((model) =>
+                        this.renderLegendTypeRadio(model)
+                    )}
                 </div>
                 ${this.renderLegendTitleAndLabels()}
             `;
@@ -138,5 +145,8 @@ export class LegendCustomization extends LitElement {
 
 // Without this check, there's a component registry issue when developing locally.
 if (!customElements.get(LegendCustomization.componentName)) {
-    customElements.define(LegendCustomization.componentName, LegendCustomization);
+    customElements.define(
+        LegendCustomization.componentName,
+        LegendCustomization
+    );
 }
