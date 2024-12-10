@@ -38,7 +38,7 @@ class ToolbarItem(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "toolbar_item.js"
     active = traitlets.Bool(False).tag(sync=True)
     icon = traitlets.Unicode("").tag(sync=True)
-    # Unfortunately, "tooltip" is a property already defined on ipywidgets.
+    # Note: "tooltip" is already defined on ipywidgets.Widget.
     tooltip_text = traitlets.Unicode("").tag(sync=True)
 
     def __init__(
@@ -4515,12 +4515,12 @@ extra_tools = [
         callback=_plot_transect_tool_callback,
     ),
     ToolbarItem(
-        icon="multiline_chart",
+        icon="shuffle",
         tooltip="Sankey plots",
         callback=_sankee_tool_callback,
     ),
     ToolbarItem(
-        icon="travel_explore",
+        icon="image",
         tooltip="Planet imagery",
         callback=_split_basemaps_tool_callback,
     ),
