@@ -4486,12 +4486,12 @@ extra_tools = [
         callback=_plot_transect_tool_callback,
     ),
     ToolbarItem(
-        icon="multiline_chart",
+        icon="shuffle",
         tooltip="Sankey plots",
         callback=_sankee_tool_callback,
     ),
     ToolbarItem(
-        icon="travel_explore",
+        icon="image",
         tooltip="Planet imagery",
         callback=_split_basemaps_tool_callback,
     ),
