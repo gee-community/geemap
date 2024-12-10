@@ -37,7 +37,7 @@ class ToolbarItem(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "toolbar_item.js"
     active = traitlets.Bool(False).tag(sync=True)
     icon = traitlets.Unicode("").tag(sync=True)
-    # Unfortunately, "tooltip" is a property already defined on ipywidgets.
+    # Note: "tooltip" is already defined on ipywidgets.Widget.
     tooltip_text = traitlets.Unicode("").tag(sync=True)
 
     def __init__(
