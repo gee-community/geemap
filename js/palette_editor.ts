@@ -50,7 +50,7 @@ export class PaletteEditor extends LitElement {
                         this.colormap,
                         this.onColormapChanged
                     )}
-                    <span class="legacy-text">Number of classes:</span>
+                    <span class="legacy-text">Classes:</span>
                     ${renderSelect(
                         this.classesOptions,
                         this.classes,

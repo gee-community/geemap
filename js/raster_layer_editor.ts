@@ -1,5 +1,12 @@
-import { css, html, nothing, LitElement, PropertyValues, TemplateResult } from "lit";
-import { property, query } from "lit/decorators.js";
+import {
+    css,
+    html,
+    nothing,
+    LitElement,
+    PropertyValues,
+    TemplateResult,
+} from "lit";
+import { property, query, queryAll } from "lit/decorators.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
 import { LegendCustomization } from "./legend_customization";
@@ -12,12 +19,12 @@ import "./palette_editor";
 
 enum ColorModel {
     RGB = "rgb",
-    Gray = "gray"
+    Gray = "gray",
 }
 
 enum ColorRamp {
     Palette = "palette",
-    Gamma = "gamma"
+    Gamma = "gamma",
 }
 
 export class RasterLayerEditor extends LitElement {
@@ -59,20 +66,22 @@ export class RasterLayerEditor extends LitElement {
     @property({ type: Array }) bandNames: Array<string> = [];
     @property({ type: Array }) selectedBands: Array<string> = [];
     @property({ type: String }) stretch: string = this.stretchOptions[0].value;
-    @property({ type: Number }) minValue: number | undefined = 0.0;  // undefined is loading state.
-    @property({ type: Number }) maxValue: number | undefined = 1.0;  // undefined is loading state.
+    @property({ type: Number }) minValue: number | undefined = 0.0; // undefined is loading state.
+    @property({ type: Number }) maxValue: number | undefined = 1.0; // undefined is loading state.
     @property({ type: Boolean }) minAndMaxValuesLocked: boolean = false;
     @property({ type: Number }) opacity: number = 1.0;
     @property({ type: String }) colorRamp: string = ColorRamp.Gamma;
     @property({ type: Number }) gamma: number = 1.0;
     @property({ type: Array }) colormaps: Array<string> = [];
 
-    @query('palette-editor') paletteEditor?: PaletteEditor;
-    @query('legend-customization') legendCustomization?: LegendCustomization;
+    @query("palette-editor") paletteEditor?: PaletteEditor;
+    @query("legend-customization") legendCustomization?: LegendCustomization;
+    @queryAll("#band-selection select") bandSelects!: NodeListOf<HTMLInputElement>;
 
     connectedCallback() {
-        super.connectedCallback()
-        this.colorModel = this.bandNames.length > 1 ? ColorModel.RGB : ColorModel.Gray;
+        super.connectedCallback();
+        this.colorModel =
+            this.bandNames.length > 1 ? ColorModel.RGB : ColorModel.Gray;
     }
 
     getVisualizationOptions(): any {
@@ -98,18 +107,22 @@ export class RasterLayerEditor extends LitElement {
         return html`
             <div class="vertical-flex">
                 <div class="horizontal-flex">
-                    ${this.colorModels.map((model) => {
-                        return this.renderColorModelRadio(model);
-                    })}
+                    ${this.colorModels.map((model) =>
+                        this.renderColorModelRadio(model)
+                    )}
                 </div>
                 <div id="band-selection" class="horizontal-flex">
-                    ${this.selectedBands.map((band) => {
-                        return this.renderBandSelection(band);
-                    })}
+                    ${this.selectedBands.map((band) =>
+                        this.renderBandSelection(band)
+                    )}
                 </div>
                 <div class="horizontal-flex">
                     <span class="legacy-text">Stretch:</span>
-                    ${renderSelect(this.stretchOptions, this.stretch, this.onStretchChanged)}
+                    ${renderSelect(
+                        this.stretchOptions,
+                        this.stretch,
+                        this.onStretchChanged
+                    )}
                     <button
                         class="legacy-button"
                         @click="${this.onRefreshButtonClicked}"
@@ -151,7 +164,6 @@ export class RasterLayerEditor extends LitElement {
                         step="0.01"
                         .value=${this.opacity}
                         @input=${this.onOpacityChanged}
-                        @change=${this.onOpacityChanged}
                     />
                     <span class="legacy-text">${this.opacity.toFixed(2)}</span>
                 </div>
@@ -167,9 +179,9 @@ export class RasterLayerEditor extends LitElement {
         if (this.colorModel === ColorModel.Gray) {
             return html`
                 <div class="horizontal-flex">
-                    ${this.colorRamps.map((model) => {
-                        return this.renderColorRampRadio(model);
-                    })}
+                    ${this.colorRamps.map((model) =>
+                        this.renderColorRampRadio(model)
+                    )}
                 </div>
             `;
         }
@@ -177,7 +189,10 @@ export class RasterLayerEditor extends LitElement {
     }
 
     private renderPaletteEditor(): TemplateResult | typeof nothing {
-        if (this.colorRamp === ColorRamp.Palette && this.colorModel === ColorModel.Gray) {
+        if (
+            this.colorRamp === ColorRamp.Palette &&
+            this.colorModel === ColorModel.Gray
+        ) {
             return html`
                 <palette-editor .colormaps="${this.colormaps}">
                     <slot></slot>
@@ -188,14 +203,20 @@ export class RasterLayerEditor extends LitElement {
     }
 
     private renderLegendCustomization(): TemplateResult | typeof nothing {
-        if (this.colorRamp === ColorRamp.Palette && this.colorModel === ColorModel.Gray) {
+        if (
+            this.colorRamp === ColorRamp.Palette &&
+            this.colorModel === ColorModel.Gray
+        ) {
             return html`<legend-customization></legend-customization>`;
         }
         return nothing;
     }
 
     private renderGammaSlider(): TemplateResult | typeof nothing {
-        if (this.colorRamp === ColorRamp.Gamma || this.colorModel === ColorModel.RGB) {
+        if (
+            this.colorRamp === ColorRamp.Gamma ||
+            this.colorModel === ColorModel.RGB
+        ) {
             return html`
                 <div class="horizontal-flex">
                     <span class="legacy-text">Gamma:</span>
@@ -209,7 +230,6 @@ export class RasterLayerEditor extends LitElement {
                         step="0.01"
                         .value=${this.gamma}
                         @input=${this.onGammaChanged}
-                        @change=${this.onGammaChanged}
                     />
                     <span class="legacy-text">${this.gamma.toFixed(2)}</span>
                 </div>
@@ -313,29 +333,26 @@ export class RasterLayerEditor extends LitElement {
 
         if (changedProperties.has("colorModel")) {
             if (this.colorModel === ColorModel.Gray) {
-                this.selectedBands = Array.from([this.bandNames[0]]);
+                this.selectedBands = [this.bandNames[0]];
             } else if (this.colorModel == ColorModel.RGB) {
-                this.selectedBands = Array.from([
+                this.selectedBands = [
                     this.bandNames[0],
                     this.bandNames[0],
                     this.bandNames[0],
-                ]);
+                ];
             }
         }
 
-        if (changedProperties.has("selectedBands") ||
-            changedProperties.has("stretch")) {
+        if (
+            changedProperties.has("selectedBands") ||
+            changedProperties.has("stretch")
+        ) {
             this.calculateBandStats();
         }
     }
 
     private getSelectedBands(): Array<string> {
-        const container = this.renderRoot?.querySelector(
-            `#band-selection`
-        ) as HTMLDivElement;
-        return Array.from(container.querySelectorAll("select")).map(
-            (input) => (input as unknown as HTMLInputElement).value
-        );
+        return Array.from(this.bandSelects).map(input => input.value);
     }
 }
 

@@ -106,7 +106,6 @@ export class VectorLayerEditor extends LitElement {
                         step="0.01"
                         .value=${this.opacity}
                         @input=${this.onOpacityChanged}
-                        @change=${this.onOpacityChanged}
                     />
                     <span class="legacy-text">${this.opacity.toFixed(2)}</span>
                 </div>
@@ -154,7 +153,6 @@ export class VectorLayerEditor extends LitElement {
                         step="0.01"
                         .value=${this.fillOpacity}
                         @input=${this.onFillOpacityChanged}
-                        @change=${this.onFillOpacityChanged}
                     />
                     <span class="legacy-text">${this.fillOpacity.toFixed(2)}</span>
                 </div>
