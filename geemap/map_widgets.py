@@ -1,5 +1,6 @@
 """Various ipywidgets that can be added to a map."""
 
+import enum
 import functools
 import pathlib
 import re
@@ -960,6 +961,11 @@ Basemap = BasemapSelector
 @Theme.apply
 class LayerEditor(anywidget.AnyWidget):
     """Widget for displaying and editing layer visualization properties."""
+    
+    class LayerType(enum.Enum):
+        """Layer types."""
+        RASTER = "raster"
+        VECTOR = "vector"
 
     _esm = pathlib.Path(__file__).parent / "static" / "layer_editor.js"
 
@@ -1004,7 +1010,7 @@ class LayerEditor(anywidget.AnyWidget):
             if isinstance(self._ee_object, ee.FeatureCollection):
                 self.layer_type = "vector"
             elif isinstance(self._ee_object, ee.Image):
-                self.layer_type = "raster"
+                self.layer_type = LayerEditor.LayerType.RASTER.value
                 self.band_names = self._ee_object.bandNames().getInfo()
 
         self.on_msg(self._handle_message_event)
@@ -1026,12 +1032,12 @@ class LayerEditor(anywidget.AnyWidget):
             if msg_id == "close":
                 self._on_close_click()
             elif msg_id == "apply":
-                if self.layer_type == "raster":
+                if self.layer_type == LayerEditor.LayerType.RASTER.value:
                     self._on_apply_click_raster(msg_details)
                 else:
                     self._on_apply_click_vector(msg_details)
             elif msg_id == "import":
-                if self.layer_type == "raster":
+                if self.layer_type == LayerEditor.LayerType.RASTER.value:
                     self._on_import_click_raster(msg_details)
                 else:
                     self._on_import_click_vector(msg_details)
@@ -1123,8 +1129,6 @@ class LayerEditor(anywidget.AnyWidget):
 
     def _calculate_fields(self) -> Dict[str, Any]:
         available_fields = ee.Feature(self._ee_object.first()).propertyNames().getInfo()
-        # print('Available fields:')
-        # print(available_fields)
         if available_fields:
             field = available_fields[0]
             values = self._calculate_field_values({"field": field})["field-values"]
@@ -1134,7 +1138,6 @@ class LayerEditor(anywidget.AnyWidget):
     def _calculate_field_values(self, message: Dict[str, Any]) -> Dict[str, Any]:
         field = message.get("field")
         options = self._ee_object.aggregate_array(field).getInfo()
-        # print(options)
         if options:
             options = list(set(options))
             options.sort()
@@ -1149,6 +1152,7 @@ class LayerEditor(anywidget.AnyWidget):
         return ["Custom"] + colormap_options
 
     def _hex_with_opacity(self, base_color: str, opacity: float) -> str:
+        """Adds opacity to a hex string (e.g. #000000 to #000000FF)."""
         return base_color[1:] + str(hex(int(opacity * 255)))[2:].zfill(2)
 
     def _on_import_click_vector(self, state: Dict[str, Any]) -> None:
@@ -1158,13 +1162,15 @@ class LayerEditor(anywidget.AnyWidget):
         print(f"style = {str(vis_options)}")
 
     def _get_vis_params(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        color = self._hex_with_opacity(state.pop("color"), state.pop("opacity"))
-        fill_opacity = state.pop("fillOpacity")
+        color = self._hex_with_opacity(
+            state.get("color", ""), state.get("opacity", 1.0)
+        )
+        fill_opacity = state.get("fillOpacity", 0.66)
         fill_color = self._hex_with_opacity(state.pop("fillColor"), fill_opacity)
-        line_width = state.pop("lineWidth")
-        line_type = state.pop("lineType")
-        point_size = state.pop("pointSize", None)
-        point_shape = state.pop("pointShape", None)
+        line_width = state.get("lineWidth")
+        line_type = state.get("lineType")
+        point_size = state.get("pointSize", None)
+        point_shape = state.get("pointShape", None)
         vis_options = {
             "color": color,
             "fillColor": fill_color,
