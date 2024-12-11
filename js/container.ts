@@ -24,11 +24,11 @@ export class Container extends LitWidget<ContainerModel, Container> {
             .header {
                 display: flex;
                 gap: 4px;
-                margin: 4px;
+                padding: 4px;
             }
 
             .widget-container {
-                margin: 4px;
+                padding: 4px;
             }
 
             .hidden {
