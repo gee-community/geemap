@@ -1,8 +1,9 @@
-import { html, LitElement, nothing, TemplateResult } from "lit";
+import { css, html, LitElement, nothing, TemplateResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import { ColorPicker } from "./color_picker";
 import { legacyStyles } from "./ipywidgets_styles";
+import { LegendCustomization } from "./legend_customization";
 import { PaletteEditor } from "./palette_editor";
 import { flexStyles } from "./styles";
 import { renderSelect } from "./utils";
@@ -14,7 +15,15 @@ export class VectorLayerEditor extends LitElement {
         return `vector-layer-editor`;
     }
 
-    static styles = [flexStyles, legacyStyles];
+    static styles = [
+        flexStyles,
+        legacyStyles,
+        css`
+            .style-by-attribute-checkbox {
+                vertical-align: middle;
+            }
+        `,
+    ];
 
     static pointShapes: Array<string> = [
         "circle",
@@ -56,6 +65,7 @@ export class VectorLayerEditor extends LitElement {
     @property({ type: String }) selectedFieldValue: string = "";
 
     @query("palette-editor") paletteEditor?: PaletteEditor;
+    @query("legend-customization") legendCustomization?: LegendCustomization;
     @query("#color-picker") colorPicker!: ColorPicker;
     @query("#fill-color-picker") fillColorPicker!: ColorPicker;
 
@@ -73,8 +83,11 @@ export class VectorLayerEditor extends LitElement {
             shouldStyleByAttribute: this.shouldStyleByAttribute,
         } as any;
         if (this.shouldStyleByAttribute) {
-            visParams.palette = this.paletteEditor?.palette ?? "";
+            visParams.palette = this.paletteEditor?.paletteTokens ?? [];
             visParams.field = this.selectedField;
+        }
+        if (this.legendCustomization) {
+            visParams.legend = this.legendCustomization.getLegendData();
         }
         return visParams;
     }
@@ -159,6 +172,7 @@ export class VectorLayerEditor extends LitElement {
                 <div class="horizontal-flex">
                     <span>
                         <input
+                            class="style-by-attribute-checkbox"
                             type="checkbox"
                             .checked="${this.shouldStyleByAttribute}"
                             @change="${this.onShouldStyleByAttributeChanged}"
@@ -169,6 +183,7 @@ export class VectorLayerEditor extends LitElement {
                     </span>
                 </div>
                 ${this.renderStyleByAttributeSettings()}
+                ${this.renderLegendCustomization()}
             </div>
         `;
     }
@@ -188,6 +203,13 @@ export class VectorLayerEditor extends LitElement {
                 <slot></slot>
             </palette-editor>
         `;
+    }
+
+    private renderLegendCustomization(): TemplateResult | typeof nothing {
+        if (this.shouldStyleByAttribute) {
+            return html`<legend-customization></legend-customization>`;
+        }
+        return nothing;
     }
 
     private onNewLayerNameChanged(event: Event): void {
