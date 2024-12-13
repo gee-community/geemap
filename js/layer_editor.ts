@@ -58,7 +58,10 @@ export class LayerEditor extends LitWidget<LayerEditorModel, LayerEditor> {
     @query("raster-layer-editor") rasterEditor?: RasterLayerEditor;
     @query("vector-layer-editor") vectorEditor?: VectorLayerEditor;
 
-    modelNameToViewName(): Map<keyof LayerEditorModel, keyof LayerEditor | null> {
+    modelNameToViewName(): Map<
+        keyof LayerEditorModel,
+        keyof LayerEditor | null
+    > {
         return new Map([
             ["layer_name", "layerName"],
             ["layer_type", "layerType"],
@@ -203,10 +206,23 @@ export class LayerEditor extends LitWidget<LayerEditorModel, LayerEditor> {
         });
     }
 
+    private getLegendClassLabels(palette: string): Array<string> {
+        if (palette === "") {
+            return [];
+        }
+        const length = palette.split(",").length;
+        return Array.from({ length }, (_, i) => `Class ${i + 1}`);
+    }
+
     private handlePaletteResponse(response: any): void {
-        const paletteEditor = (this.rasterEditor || this.vectorEditor)?.paletteEditor;
+        const paletteEditor = (this.rasterEditor || this.vectorEditor)
+            ?.paletteEditor;
+        const legendCustomization = (this.rasterEditor || this.vectorEditor)?.legendCustomization;
         if (paletteEditor && response.palette) {
             paletteEditor.palette = response.palette;
+        }
+        if (legendCustomization) {
+            legendCustomization.labels = this.getLegendClassLabels(response.palette);
         }
     }
 
@@ -220,8 +236,10 @@ export class LayerEditor extends LitWidget<LayerEditorModel, LayerEditor> {
             const values = response["field-values"];
             this.vectorEditor.fields = fields;
             this.vectorEditor.fieldValues = values;
-            this.vectorEditor.selectedField = fields.length > 0 ? fields[0] : "";
-            this.vectorEditor.selectedFieldValue = values.length > 0 ? values[0] : "";
+            this.vectorEditor.selectedField =
+                fields.length > 0 ? fields[0] : "";
+            this.vectorEditor.selectedFieldValue =
+                values.length > 0 ? values[0] : "";
         }
     }
 
@@ -241,7 +259,8 @@ export class LayerEditor extends LitWidget<LayerEditorModel, LayerEditor> {
         if (this.vectorEditor) {
             const values = response["field-values"];
             this.vectorEditor.fieldValues = values;
-            this.vectorEditor.selectedFieldValue = values.length > 0 ? values[0] : "";
+            this.vectorEditor.selectedFieldValue =
+                values.length > 0 ? values[0] : "";
         }
     }
 }

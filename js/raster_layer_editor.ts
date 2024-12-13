@@ -93,12 +93,15 @@ export class RasterLayerEditor extends LitElement {
         } as any;
         if (this.colorModel === ColorModel.Gray) {
             if (this.colorRamp === ColorRamp.Palette) {
-                visOptions.palette = this.paletteEditor?.paletteTokens() ?? [];
+                visOptions.palette = this.paletteEditor?.paletteTokens ?? [];
             } else if (this.colorRamp === ColorRamp.Gamma) {
                 visOptions.gamma = this.gamma;
             }
         } else if (this.colorModel === ColorModel.RGB) {
             visOptions.gamma = this.gamma;
+        }
+        if (this.legendCustomization) {
+            visOptions.legend = this.legendCustomization.getLegendData();
         }
         return visOptions;
     }

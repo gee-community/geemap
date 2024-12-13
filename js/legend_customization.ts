@@ -44,7 +44,7 @@ export class LegendCustomization extends LitElement {
     @property({ type: Boolean }) showLegend: boolean = false;
     @property({ type: String }) legendType: string = "linear";
     @property({ type: String }) title: string = "Legend";
-    @property({ type: String }) labels: string = "";
+    @property({ type: String }) labels: Array<string> = [];
 
     render() {
         return html`
@@ -63,6 +63,18 @@ export class LegendCustomization extends LitElement {
                 ${this.renderLegendContents()}
             </div>
         `;
+    }
+
+    getLegendData(): void | undefined {
+        if (this.showLegend) {
+            const data: any = {type: this.legendType};
+            if (this.legendType === LegendType.Step) {
+                data.title = this.title;
+                data.labels = this.labels;
+            }
+            return data;
+        }
+        return undefined;
     }
 
     private renderLegendTypeRadio(option: SelectOption): TemplateResult {
@@ -117,7 +129,7 @@ export class LegendCustomization extends LitElement {
                         class="legacy-text-input"
                         id="labels"
                         name="labels"
-                        .value="${this.labels}"
+                        .value="${this.labels.join(", ")}"
                         @change="${this.onLabelsChanged}"
                     />
                 </div>

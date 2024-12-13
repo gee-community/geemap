@@ -1,4 +1,4 @@
-import { css, html, LitElement } from "lit";
+import { css, html, LitElement, PropertyValues } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import { ColorPicker } from "./color_picker";
@@ -39,6 +39,8 @@ export class PaletteEditor extends LitElement {
     @property({ type: String }) palette: string = "";
 
     @query('color-picker') colorPicker!: ColorPicker;
+
+    paletteTokens: Array<string> = [];
 
     render() {
         return html`
@@ -96,6 +98,17 @@ export class PaletteEditor extends LitElement {
         `;
     }
 
+    updated(changedProperties: PropertyValues<PaletteEditor>): void {
+        super.updated(changedProperties);
+        if (changedProperties.has("palette")) {
+            if (this.palette === "") {
+                this.paletteTokens = [];
+            } else {
+                this.paletteTokens = this.palette.split(",").map(color => color.trim());
+            }
+        }
+    }
+
     private sendOnPaletteChangedEvent(): void {
         this.dispatchEvent(
             new CustomEvent("calculate-palette", {
@@ -128,18 +141,11 @@ export class PaletteEditor extends LitElement {
         this.sendOnPaletteChangedEvent();
     }
 
-    paletteTokens(): Array<string> {
-        if (this.palette === "") {
-            return [];
-        }
-        return this.palette.split(",").map(color => color.trim());
-    }
-
     private onAddButtonClicked(_event: Event): void {
         this.colormap = "Custom";
         this.classes = "any";
 
-        const tokens = this.paletteTokens();
+        const tokens = [...this.paletteTokens];
         tokens.push(this.colorPicker.value);
         this.palette = tokens.join(", ");
 
@@ -150,7 +156,7 @@ export class PaletteEditor extends LitElement {
         this.colormap = "Custom";
         this.classes = "any";
 
-        const tokens = this.paletteTokens();
+        const tokens = [...this.paletteTokens];
         tokens.pop();
         this.palette = tokens.join(", ");
 

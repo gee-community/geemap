@@ -961,9 +961,10 @@ Basemap = BasemapSelector
 @Theme.apply
 class LayerEditor(anywidget.AnyWidget):
     """Widget for displaying and editing layer visualization properties."""
-    
+
     class LayerType(enum.Enum):
         """Layer types."""
+
         RASTER = "raster"
         VECTOR = "vector"
 
@@ -1008,7 +1009,7 @@ class LayerEditor(anywidget.AnyWidget):
             self.colormaps = self._get_colormaps()
 
             if isinstance(self._ee_object, ee.FeatureCollection):
-                self.layer_type = "vector"
+                self.layer_type = LayerEditor.LayerType.VECTOR.value
             elif isinstance(self._ee_object, ee.Image):
                 self.layer_type = LayerEditor.LayerType.RASTER.value
                 self.band_names = self._ee_object.bandNames().getInfo()
@@ -1054,7 +1055,9 @@ class LayerEditor(anywidget.AnyWidget):
             if response:
                 self.send({"type": msg_type, "id": msg_id, "response": response})
 
-    def _calculate_band_stats(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _calculate_band_stats(
+        self, message: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
         (s, w), (n, e) = self._host_map.bounds
         map_bbox = ee.Geometry.BBox(west=w, south=s, east=e, north=n)
 
@@ -1197,10 +1200,10 @@ class LayerEditor(anywidget.AnyWidget):
             colors = ee.List(
                 [
                     self._hex_with_opacity(color.strip(), fill_opacity)
-                    for color in state.pop("palette").split(",")
+                    for color in state.get("palette", [])
                 ]
             )
-            field = state.pop("field")
+            field = state.get("field")
             arr = self._ee_object.aggregate_array(field).distinct().sort()
             fc = self._ee_object.map(
                 lambda f: f.set({"styleIndex": arr.indexOf(f.get(field))})
@@ -1221,9 +1224,9 @@ class LayerEditor(anywidget.AnyWidget):
             new_layer_object = fc.style(**{"styleProperty": "style"})
 
         new_layer_name = state.pop("layerName")
-        self._host_map.add_layer(
-            new_layer_object, {}, new_layer_name
-        )
+        self._host_map.add_layer(new_layer_object, {}, new_layer_name)
+        if legend := state.get("legend"):
+            self._apply_legend(legend, state.get("palette"), 0.0, 1.0)
 
     def _on_import_click_raster(self, vis_params: Dict[str, Any]) -> None:
         """Handles the import button click event for raster layers."""
@@ -1234,7 +1237,43 @@ class LayerEditor(anywidget.AnyWidget):
     def _on_apply_click_raster(self, vis_params: Dict[str, Any]) -> None:
         """Handles the apply button click event from a raster layer."""
         opacity = vis_params.pop("opacity", 1.0)
+        legend = vis_params.pop("legend", {})
         self._host_map.add_layer(
             self._ee_object, vis_params, self.layer_name, True, opacity
         )
         self._ee_layer.visible = False
+        if legend:
+            self._apply_legend(
+                legend,
+                vis_params.get("palette"),
+                vis_params.get("min"),
+                vis_params.get("max"),
+            )
+
+    def _apply_legend(
+        self,
+        legend: Dict[str, Any],
+        palette: Optional[str],
+        min_value: Optional[float],
+        max_value: Optional[float],
+    ) -> None:
+        if legend.get("type") == "linear":
+            if hasattr(self._host_map, "_add_colorbar"):
+                # pylint: disable-next=protected-access
+                self._host_map._add_colorbar(
+                    vis_params={
+                        "palette": palette,
+                        "min": min_value,
+                        "max": max_value,
+                    },
+                    layer_name=self.layer_name,
+                )
+        elif legend.get("type") == "step":
+            if hasattr(self._host_map, "_add_legend"):
+                # pylint: disable-next=protected-access
+                self._host_map._add_legend(
+                    title=legend.get("title", ""),
+                    layer_name=self.layer_name,
+                    keys=legend.get("labels", []),
+                    colors=palette,
+                )
