@@ -48,6 +48,7 @@ def ee_export_image(
     unmask_value=None,
     timeout=300,
     proxies=None,
+    verbose=True,
 ):
     """Exports an ee.Image as a GeoTIFF.
 
@@ -67,6 +68,7 @@ def ee_export_image(
             If the exported image contains zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
         timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
         proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
+        verbose (bool, optional): Whether to print out descriptive text. Defaults to True.
     """
 
     if not isinstance(ee_object, ee.Image):
@@ -91,7 +93,8 @@ def ee_export_image(
         return
 
     try:
-        print("Generating URL ...")
+        if verbose:
+            print("Generating URL ...")
         params = {"name": name, "filePerBand": file_per_band}
 
         params["scale"] = scale
@@ -114,7 +117,9 @@ def ee_export_image(
             print("An error occurred while downloading.")
             print(e)
             return
-        print(f"Downloading data from {url}\nPlease wait ...")
+
+        if verbose:
+            print(f"Downloading data from {url}\nPlease wait ...")
         # Need to initialize r to something because of how we currently handle errors
         # We should aim to refactor the code such that only one try block is needed
         r = None
@@ -140,10 +145,11 @@ def ee_export_image(
                 z.extractall(os.path.dirname(filename))
             os.remove(filename_zip)
 
-        if file_per_band:
-            print(f"Data downloaded to {os.path.dirname(filename)}")
-        else:
-            print(f"Data downloaded to {filename}")
+        if verbose:
+            if file_per_band:
+                print(f"Data downloaded to {os.path.dirname(filename)}")
+            else:
+                print(f"Data downloaded to {filename}")
     except Exception as e:
         print(e)
 
@@ -162,6 +168,7 @@ def ee_export_image_collection(
     filenames=None,
     timeout=300,
     proxies=None,
+    verbose=True,
 ):
     """Exports an ImageCollection as GeoTIFFs.
 
@@ -181,6 +188,7 @@ def ee_export_image_collection(
         filenames (list | int, optional): A list of filenames to use for the exported images. Defaults to None.
         timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
         proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
+        verbose (bool, optional): Whether to print out descriptive text. Defaults to True.
     """
 
     if not isinstance(ee_object, ee.ImageCollection):
@@ -192,7 +200,8 @@ def ee_export_image_collection(
 
     try:
         count = int(ee_object.size().getInfo())
-        print(f"Total number of images: {count}\n")
+        if verbose:
+            print(f"Total number of images: {count}\n")
 
         if filenames is None:
             filenames = ee_object.aggregate_array("system:index").getInfo()
@@ -209,7 +218,8 @@ def ee_export_image_collection(
         for i in range(0, count):
             image = ee.Image(ee_object.toList(count).get(i))
             filename = os.path.join(out_dir, filenames[i])
-            print(f"Exporting {i + 1}/{count}: {filename}")
+            if verbose:
+                print(f"Exporting {i + 1}/{count}: {filename}")
             ee_export_image(
                 image,
                 filename=filename,
