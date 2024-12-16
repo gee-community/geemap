@@ -5054,7 +5054,7 @@ def linked_maps(
 
     for i in range(rows):
         for j in range(cols):
-            index = i * rows + j
+            index = i * (rows - 1) + j
             m = Map(
                 height=height,
                 lite_mode=True,
