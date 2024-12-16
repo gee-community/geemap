@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.48">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
@@ -22016,7 +22016,7 @@ https://developers.google.com/earth-engine/tutorials/community/introduction-to-d
 
 
 <h2 id="geemap.common.ee_export_image" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ee_export_image</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_per_band</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ZIPPED_GEO_TIFF&#39;</span><span class="p">,</span> <span class="n">unzip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unmask_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ee_export_image</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_per_band</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ZIPPED_GEO_TIFF&#39;</span><span class="p">,</span> <span class="n">unzip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unmask_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 
 <a href="#geemap.common.ee_export_image" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -22116,6 +22116,12 @@ If the exported image contains zero values, you should set the unmask value to a
         <td><p>A dictionary of proxy servers to use. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>verbose</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether to print out descriptive text. Defaults to True.</p></td>
+        <td><code>True</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
@@ -22134,6 +22140,7 @@ If the exported image contains zero values, you should set the unmask value to a
     <span class="n">unmask_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
     <span class="n">proxies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports an ee.Image as a GeoTIFF.</span>
 
@@ -22153,6 +22160,7 @@ If the exported image contains zero values, you should set the unmask value to a
 <span class="sd">            If the exported image contains zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.</span>
 <span class="sd">        timeout (int, optional): The timeout in seconds for the request. Defaults to 300.</span>
 <span class="sd">        proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.</span>
+<span class="sd">        verbose (bool, optional): Whether to print out descriptive text. Defaults to True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
@@ -22177,7 +22185,8 @@ If the exported image contains zero values, you should set the unmask value to a
         <span class="k">return</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating URL ...&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating URL ...&quot;</span><span class="p">)</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;filePerBand&quot;</span><span class="p">:</span> <span class="n">file_per_band</span><span class="p">}</span>
 
         <span class="n">params</span><span class="p">[</span><span class="s2">&quot;scale&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale</span>
@@ -22200,7 +22209,9 @@ If the exported image contains zero values, you should set the unmask value to a
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;An error occurred while downloading.&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading data from </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="se">\n</span><span class="s2">Please wait ...&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading data from </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="se">\n</span><span class="s2">Please wait ...&quot;</span><span class="p">)</span>
         <span class="c1"># Need to initialize r to something because of how we currently handle errors</span>
         <span class="c1"># We should aim to refactor the code such that only one try block is needed</span>
         <span class="n">r</span> <span class="o">=</span> <span class="kc">None</span>
@@ -22226,10 +22237,11 @@ If the exported image contains zero values, you should set the unmask value to a
                 <span class="n">z</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
             <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filename_zip</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">file_per_band</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data downloaded to </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data downloaded to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file_per_band</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data downloaded to </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data downloaded to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 </code></pre></div>
@@ -22245,7 +22257,7 @@ If the exported image contains zero values, you should set the unmask value to a
 
 
 <h2 id="geemap.common.ee_export_image_collection" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">ee_export_image_collection</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_per_band</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ZIPPED_GEO_TIFF&#39;</span><span class="p">,</span> <span class="n">unmask_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filenames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">ee_export_image_collection</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">crs_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_per_band</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;ZIPPED_GEO_TIFF&#39;</span><span class="p">,</span> <span class="n">unmask_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filenames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 
 <a href="#geemap.common.ee_export_image_collection" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -22345,6 +22357,12 @@ If the exported image contains zero values, you should set the unmask value to a
         <td><p>A dictionary of proxy servers to use. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>verbose</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether to print out descriptive text. Defaults to True.</p></td>
+        <td><code>True</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
@@ -22363,6 +22381,7 @@ If the exported image contains zero values, you should set the unmask value to a
     <span class="n">filenames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
     <span class="n">proxies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports an ImageCollection as GeoTIFFs.</span>
 
@@ -22382,6 +22401,7 @@ If the exported image contains zero values, you should set the unmask value to a
 <span class="sd">        filenames (list | int, optional): A list of filenames to use for the exported images. Defaults to None.</span>
 <span class="sd">        timeout (int, optional): The timeout in seconds for the request. Defaults to 300.</span>
 <span class="sd">        proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.</span>
+<span class="sd">        verbose (bool, optional): Whether to print out descriptive text. Defaults to True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">):</span>
@@ -22393,7 +22413,8 @@ If the exported image contains zero values, you should set the unmask value to a
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ee_object</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total number of images: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total number of images: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">filenames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filenames</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">aggregate_array</span><span class="p">(</span><span class="s2">&quot;system:index&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
@@ -22410,7 +22431,8 @@ If the exported image contains zero values, you should set the unmask value to a
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
             <span class="n">image</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">ee_object</span><span class="o">.</span><span class="n">toList</span><span class="p">(</span><span class="n">count</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">filenames</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exporting </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exporting </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">ee_export_image</span><span class="p">(</span>
                 <span class="n">image</span><span class="p">,</span>
                 <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
@@ -51954,7 +51976,7 @@ If not provided, the CRS is inferred from the Dataset's attributes ('crs' attrib
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.83f73b43.min.js"></script>
+      <script src="../assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
         <script src="../js/timeago.min.js"></script>
       
