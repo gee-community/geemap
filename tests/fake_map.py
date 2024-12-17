@@ -49,7 +49,7 @@ class FakeMap:
 
     def get_scale(self):
         return self.scale
-    
+
     @property
     def bounds(self):
         return ((1, 2), (3, 4))
@@ -180,7 +180,7 @@ class FakeEeTileLayer:
 
     def observe(self, func, names):
         pass
-    
+
     def calculate_vis_minmax(
         self,
         *,
