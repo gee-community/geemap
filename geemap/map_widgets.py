@@ -413,7 +413,7 @@ class Legend(anywidget.AnyWidget):
             )
         return True
 
-    def _normalize_color_to_hex(self, color: str | tuple) -> str:
+    def _normalize_color_to_hex(self, color: Union[str, tuple]) -> str:
         """Converts a list of RGB colors to hex."""
         if isinstance(color, tuple):
             try:
