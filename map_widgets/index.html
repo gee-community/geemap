@@ -1136,6 +1136,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#geemap.map_widgets.LayerEditor.LayerType" class="md-nav__link">
+    <span class="md-ellipsis">
+      LayerType
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geemap.map_widgets.LayerEditor.__init__" class="md-nav__link">
     <span class="md-ellipsis">
       __init__()
@@ -5492,6 +5501,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#geemap.map_widgets.LayerEditor.LayerType" class="md-nav__link">
+    <span class="md-ellipsis">
+      LayerType
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geemap.map_widgets.LayerEditor.__init__" class="md-nav__link">
     <span class="md-ellipsis">
       __init__()
@@ -6963,7 +6981,7 @@ button. Defaults to True.</p></td>
 
 <h2 id="geemap.map_widgets.LayerEditor" class="doc doc-heading">
         <code>
-LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</span>)
+LayerEditor            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
         </code>
 
 
@@ -6977,8 +6995,28 @@ LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</s
         <details class="quote">
           <summary>Source code in <code>geemap/map_widgets.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
-<span class="k">class</span> <span class="nc">LayerEditor</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">LayerEditor</span><span class="p">(</span><span class="n">anywidget</span><span class="o">.</span><span class="n">AnyWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for displaying and editing layer visualization properties.&quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">LayerType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Layer types.&quot;&quot;&quot;</span>
+
+        <span class="n">RASTER</span> <span class="o">=</span> <span class="s2">&quot;raster&quot;</span>
+        <span class="n">VECTOR</span> <span class="o">=</span> <span class="s2">&quot;vector&quot;</span>
+
+    <span class="n">_esm</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> <span class="o">/</span> <span class="s2">&quot;layer_editor.js&quot;</span>
+
+    <span class="n">layer_name</span><span class="p">:</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">layer_type</span><span class="p">:</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">band_names</span><span class="p">:</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">List</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">List</span><span class="p">([])</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">colormaps</span><span class="p">:</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">List</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">List</span><span class="p">([])</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Child widgets in the container. Using a tuple here to force reassignment to update</span>
+    <span class="c1"># the list. When a proper notifying-list trait exists, use that instead.</span>
+    <span class="n">children</span> <span class="o">=</span> <span class="n">TypedTuple</span><span class="p">(</span>
+        <span class="n">trait</span><span class="o">=</span><span class="n">traitlets</span><span class="o">.</span><span class="n">Instance</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;List of widget children&quot;</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">widget_serialization</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;geemap.Map&quot;</span><span class="p">,</span> <span class="n">layer_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes a layer editor widget.</span>
@@ -6987,6 +7025,7 @@ LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</s
 <span class="sd">            host_map (geemap.Map): The geemap.Map object.</span>
 <span class="sd">            layer_dict (Optional[Dict[str, Any]]): The layer object to edit.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -6996,90 +7035,284 @@ LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</s
                 <span class="sa">f</span><span class="s2">&quot;Must pass a valid map when creating a </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> widget.&quot;</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_toggle_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
-            <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Layer editor&quot;</span><span class="p">,</span>
-            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;gear&quot;</span><span class="p">,</span>
-            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
-                <span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0 0 3px&quot;</span>
-            <span class="p">),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_toggle_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_toggle_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_close_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-            <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Close the vis params dialog&quot;</span><span class="p">,</span>
-            <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;times&quot;</span><span class="p">,</span>
-            <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
-            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_close_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_close_click</span><span class="p">)</span>
-
-        <span class="n">layout</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;95px&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_import_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Import&quot;</span><span class="p">,</span>
-            <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
-            <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Import vis params to notebook&quot;</span><span class="p">,</span>
-            <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Apply&quot;</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Apply vis params to the layer&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_import_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_import_click</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_apply_click</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_label</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
-            <span class="n">value</span><span class="o">=</span><span class="s2">&quot;Layer name&quot;</span><span class="p">,</span>
-            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">max_width</span><span class="o">=</span><span class="s2">&quot;250px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;1px 8px 0 4px&quot;</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_embedded_widget</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Vis params are uneditable&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">layer_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span> <span class="o">=</span> <span class="n">layer_dict</span><span class="p">[</span><span class="s2">&quot;ee_object&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="p">,</span> <span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_ee_layer</span> <span class="o">=</span> <span class="n">layer_dict</span><span class="p">[</span><span class="s2">&quot;ee_layer&quot;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_layer</span><span class="o">.</span><span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layer_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_layer</span><span class="o">.</span><span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">colormaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_colormaps</span><span class="p">()</span>
+
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_embedded_widget</span> <span class="o">=</span> <span class="n">_VectorLayerEditor</span><span class="p">(</span>
-                    <span class="n">host_map</span><span class="o">=</span><span class="n">host_map</span><span class="p">,</span> <span class="n">layer_dict</span><span class="o">=</span><span class="n">layer_dict</span>
-                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">layer_type</span> <span class="o">=</span> <span class="n">LayerEditor</span><span class="o">.</span><span class="n">LayerType</span><span class="o">.</span><span class="n">VECTOR</span><span class="o">.</span><span class="n">value</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_embedded_widget</span> <span class="o">=</span> <span class="n">_RasterLayerEditor</span><span class="p">(</span>
-                    <span class="n">host_map</span><span class="o">=</span><span class="n">host_map</span><span class="p">,</span> <span class="n">layer_dict</span><span class="o">=</span><span class="n">layer_dict</span>
-                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">layer_type</span> <span class="o">=</span> <span class="n">LayerEditor</span><span class="o">.</span><span class="n">LayerType</span><span class="o">.</span><span class="n">RASTER</span><span class="o">.</span><span class="n">value</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">band_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_on_toggle_click</span><span class="p">({</span><span class="s2">&quot;new&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_msg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_message_event</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_on_toggle_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the toggle button click event.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            change (Dict[str, Any]): The change event arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_close_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toggle_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">]),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_embedded_widget</span><span class="p">,</span>
-                <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_import_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_button</span><span class="p">]),</span>
-            <span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_close_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toggle_button</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">]),</span>
-            <span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">_on_import_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the import button click event.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_embedded_widget</span><span class="o">.</span><span class="n">on_import_click</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_on_apply_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the apply button click event.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_embedded_widget</span><span class="o">.</span><span class="n">on_apply_click</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_on_close_click</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the close button click event.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_handle_message_event</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">buffers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">widget</span><span class="p">,</span> <span class="n">buffers</span>  <span class="c1"># Unused</span>
+
+        <span class="n">msg_details</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;detail&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">msg_type</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+        <span class="n">msg_id</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="s2">&quot;click&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;close&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_on_close_click</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;apply&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_type</span> <span class="o">==</span> <span class="n">LayerEditor</span><span class="o">.</span><span class="n">LayerType</span><span class="o">.</span><span class="n">RASTER</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_on_apply_click_raster</span><span class="p">(</span><span class="n">msg_details</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_on_apply_click_vector</span><span class="p">(</span><span class="n">msg_details</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;import&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_type</span> <span class="o">==</span> <span class="n">LayerEditor</span><span class="o">.</span><span class="n">LayerType</span><span class="o">.</span><span class="n">RASTER</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_on_import_click_raster</span><span class="p">(</span><span class="n">msg_details</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_on_import_click_vector</span><span class="p">(</span><span class="n">msg_details</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">msg_type</span> <span class="o">==</span> <span class="s2">&quot;calculate&quot;</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;band-stats&quot;</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_band_stats</span><span class="p">(</span><span class="n">msg_details</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;palette&quot;</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_palette</span><span class="p">(</span><span class="n">msg_details</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;fields&quot;</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_fields</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;field-values&quot;</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_field_values</span><span class="p">(</span><span class="n">msg_details</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">response</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">({</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">msg_type</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">msg_id</span><span class="p">,</span> <span class="s2">&quot;response&quot;</span><span class="p">:</span> <span class="n">response</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">_calculate_band_stats</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">w</span><span class="p">),</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">bounds</span>
+        <span class="n">map_bbox</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="n">west</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">south</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">east</span><span class="o">=</span><span class="n">e</span><span class="p">,</span> <span class="n">north</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="n">vis_bands</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bands&quot;</span><span class="p">,</span> <span class="p">[]))</span>
+        <span class="n">stretch</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stretch&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">stretch</span> <span class="o">==</span> <span class="s2">&quot;custom&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">stretch_params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">stretch_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="n">stretch</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">stretch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;percent&quot;</span><span class="p">):</span>
+            <span class="n">stretch_params</span><span class="p">[</span><span class="s2">&quot;percent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stretch_value</span> <span class="o">/</span> <span class="mf">100.0</span>
+        <span class="k">elif</span> <span class="n">stretch</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;sigma&quot;</span><span class="p">):</span>
+            <span class="n">stretch_params</span><span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stretch_value</span>
+
+        <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_layer</span><span class="o">.</span><span class="n">calculate_vis_minmax</span><span class="p">(</span>
+            <span class="n">bounds</span><span class="o">=</span><span class="n">map_bbox</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">vis_bands</span><span class="p">,</span> <span class="o">**</span><span class="n">stretch_params</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;stretch&quot;</span><span class="p">:</span> <span class="n">stretch</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="n">min_val</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="n">max_val</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_render_colorbar</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">band_min</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">band_max</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">return</span>
+
+        <span class="kn">import</span> <span class="nn">matplotlib</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+        <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+        <span class="kn">import</span> <span class="nn">numpy</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">))</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">LinearSegmentedColormap</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span>
+            <span class="s2">&quot;custom&quot;</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">256</span>
+        <span class="p">)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">band_min</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">band_max</span><span class="p">)</span>
+        <span class="n">ticks</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">band_min</span><span class="p">,</span> <span class="n">band_max</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">matplotlib</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">ColorbarBase</span><span class="p">(</span>
+            <span class="n">ax</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="n">ticks</span>
+        <span class="p">)</span>
+
+        <span class="n">colorbar_output</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;60px&quot;</span><span class="p">,</span> <span class="n">max_width</span><span class="o">=</span><span class="s2">&quot;300px&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="n">colorbar_output</span><span class="p">:</span>
+            <span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">colorbar_output</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_calculate_palette</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="kn">import</span> <span class="nn">matplotlib</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+        <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+
+        <span class="n">colormap</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;colormap&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;classes&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">palette</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;palette&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">band_min</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bandMin&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">band_max</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bandMax&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">colormap</span> <span class="o">==</span> <span class="s2">&quot;Custom&quot;</span><span class="p">:</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">color</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">palette</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_colorbar</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="n">band_min</span><span class="p">,</span> <span class="n">band_max</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;palette&quot;</span><span class="p">:</span> <span class="n">palette</span><span class="p">}</span>
+
+        <span class="n">classes</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">classes</span> <span class="o">==</span> <span class="s2">&quot;any&quot;</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">colormap</span><span class="p">,</span> <span class="n">classes</span><span class="p">)</span>
+        <span class="n">cmap_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">(</span><span class="n">cmap</span><span class="p">(</span><span class="n">i</span><span class="p">))[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cmap</span><span class="o">.</span><span class="n">N</span><span class="p">)]</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">to_hex_colors</span><span class="p">(</span><span class="n">cmap_colors</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_colorbar</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="n">band_min</span><span class="p">,</span> <span class="n">band_max</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;palette&quot;</span><span class="p">:</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">colors</span><span class="p">)}</span>
+
+    <span class="k">def</span> <span class="nf">_calculate_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">available_fields</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">first</span><span class="p">())</span><span class="o">.</span><span class="n">propertyNames</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">available_fields</span><span class="p">:</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">available_fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_field_values</span><span class="p">({</span><span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">field</span><span class="p">})[</span><span class="s2">&quot;field-values&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">available_fields</span><span class="p">,</span> <span class="s2">&quot;field-values&quot;</span><span class="p">:</span> <span class="n">values</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;field-values&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+    <span class="k">def</span> <span class="nf">_calculate_field_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;field&quot;</span><span class="p">)</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">aggregate_array</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">options</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">options</span><span class="p">))</span>
+            <span class="n">options</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;field-values&quot;</span><span class="p">:</span> <span class="n">options</span> <span class="ow">or</span> <span class="p">[]}</span>
+
+    <span class="k">def</span> <span class="nf">_get_colormaps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the list of available colormaps.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+
+        <span class="n">colormap_options</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">colormaps</span><span class="p">()</span>
+        <span class="n">colormap_options</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;Custom&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">colormap_options</span>
+
+    <span class="k">def</span> <span class="nf">_hex_with_opacity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">opacity</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds opacity to a hex string (e.g. #000000 to #000000FF).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">base_color</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">opacity</span> <span class="o">*</span> <span class="mi">255</span><span class="p">)))[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_import_click_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the import button click event for vector layers.&quot;&quot;&quot;</span>
+        <span class="n">vis_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_vis_params</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="n">coreutils</span><span class="o">.</span><span class="n">create_code_cell</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;style = </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">vis_options</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;style = </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">vis_options</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_vis_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hex_with_opacity</span><span class="p">(</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;opacity&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">fill_opacity</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fillOpacity&quot;</span><span class="p">,</span> <span class="mf">0.66</span><span class="p">)</span>
+        <span class="n">fill_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hex_with_opacity</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fillColor&quot;</span><span class="p">),</span> <span class="n">fill_opacity</span><span class="p">)</span>
+        <span class="n">line_width</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lineWidth&quot;</span><span class="p">)</span>
+        <span class="n">line_type</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lineType&quot;</span><span class="p">)</span>
+        <span class="n">point_size</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pointSize&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">point_shape</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pointShape&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">vis_options</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">,</span>
+            <span class="s2">&quot;fillColor&quot;</span><span class="p">:</span> <span class="n">fill_color</span><span class="p">,</span>
+            <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="n">line_width</span><span class="p">,</span>
+            <span class="s2">&quot;lineType&quot;</span><span class="p">:</span> <span class="n">line_type</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">geometry_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Point&quot;</span><span class="p">,</span> <span class="s2">&quot;MultiPoint&quot;</span><span class="p">]:</span>
+            <span class="n">vis_options</span><span class="p">[</span><span class="s2">&quot;pointSize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">point_size</span>
+            <span class="n">vis_options</span><span class="p">[</span><span class="s2">&quot;pointShape&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">point_shape</span>
+        <span class="k">return</span> <span class="n">vis_options</span>
+
+    <span class="k">def</span> <span class="nf">_on_apply_click_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the apply button click event from a vector layer.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_layer</span><span class="p">)</span>
+
+        <span class="n">new_layer_object</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">style_by_attribute</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;shouldStyleByAttribute&quot;</span><span class="p">)</span>
+        <span class="n">vis_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_vis_params</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">style_by_attribute</span><span class="p">:</span>
+            <span class="n">new_layer_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="o">**</span><span class="n">vis_options</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fill_opacity</span> <span class="o">=</span> <span class="n">vis_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fillOpacity&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_hex_with_opacity</span><span class="p">(</span><span class="n">color</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">fill_opacity</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;palette&quot;</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;field&quot;</span><span class="p">)</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">aggregate_array</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="n">fc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">set</span><span class="p">({</span><span class="s2">&quot;styleIndex&quot;</span><span class="p">:</span> <span class="n">arr</span><span class="o">.</span><span class="n">indexOf</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">))})</span>
+            <span class="p">)</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">colors</span><span class="o">.</span><span class="n">size</span><span class="p">())</span><span class="o">.</span><span class="n">ceil</span><span class="p">()</span>
+            <span class="n">fc</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="o">**</span><span class="n">vis_options</span><span class="p">,</span>
+                            <span class="s2">&quot;fillColor&quot;</span><span class="p">:</span> <span class="n">colors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                                <span class="n">ee</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;styleIndex&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">step</span><span class="p">)</span><span class="o">.</span><span class="n">floor</span><span class="p">()</span>
+                            <span class="p">),</span>
+                        <span class="p">},</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">new_layer_object</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;styleProperty&quot;</span><span class="p">:</span> <span class="s2">&quot;style&quot;</span><span class="p">})</span>
+
+        <span class="n">new_layer_name</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;layerName&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">new_layer_object</span><span class="p">,</span> <span class="p">{},</span> <span class="n">new_layer_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">legend</span> <span class="o">:=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;legend&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_legend</span><span class="p">(</span><span class="n">legend</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;palette&quot;</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_import_click_raster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the import button click event for raster layers.&quot;&quot;&quot;</span>
+        <span class="n">vis_params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;opacity&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">coreutils</span><span class="o">.</span><span class="n">create_code_cell</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;vis_params = </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;vis_params = </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_apply_click_raster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the apply button click event from a raster layer.&quot;&quot;&quot;</span>
+        <span class="n">opacity</span> <span class="o">=</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;opacity&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">legend</span> <span class="o">=</span> <span class="n">vis_params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;legend&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">opacity</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ee_layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">legend</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_legend</span><span class="p">(</span>
+                <span class="n">legend</span><span class="p">,</span>
+                <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;palette&quot;</span><span class="p">),</span>
+                <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">),</span>
+                <span class="n">vis_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_apply_legend</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">legend</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">palette</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">min_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+        <span class="n">max_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">legend</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;linear&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="p">,</span> <span class="s2">&quot;_add_colorbar&quot;</span><span class="p">):</span>
+                <span class="c1"># pylint: disable-next=protected-access</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">_add_colorbar</span><span class="p">(</span>
+                    <span class="n">vis_params</span><span class="o">=</span><span class="p">{</span>
+                        <span class="s2">&quot;palette&quot;</span><span class="p">:</span> <span class="n">palette</span><span class="p">,</span>
+                        <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="n">min_value</span><span class="p">,</span>
+                        <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="n">max_value</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="n">layer_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_name</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">legend</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;step&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="p">,</span> <span class="s2">&quot;_add_legend&quot;</span><span class="p">):</span>
+                <span class="c1"># pylint: disable-next=protected-access</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">_add_legend</span><span class="p">(</span>
+                    <span class="n">title</span><span class="o">=</span><span class="n">legend</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                    <span class="n">layer_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_name</span><span class="p">,</span>
+                    <span class="n">keys</span><span class="o">=</span><span class="n">legend</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+                    <span class="n">colors</span><span class="o">=</span><span class="n">palette</span><span class="p">,</span>
+                <span class="p">)</span>
 </code></pre></div>
         </details>
 
@@ -7090,6 +7323,62 @@ LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</s
 
 
 
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="geemap.map_widgets.LayerEditor.LayerType" class="doc doc-heading">
+        <code>
+LayerType            (<span title="enum.Enum">Enum</span>)
+        </code>
+
+
+
+<a href="#geemap.map_widgets.LayerEditor.LayerType" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Layer types.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LayerType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Layer types.&quot;&quot;&quot;</span>
+
+    <span class="n">RASTER</span> <span class="o">=</span> <span class="s2">&quot;raster&quot;</span>
+    <span class="n">VECTOR</span> <span class="o">=</span> <span class="s2">&quot;vector&quot;</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
 
 
 
@@ -7146,6 +7435,7 @@ LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</s
 <span class="sd">        host_map (geemap.Map): The geemap.Map object.</span>
 <span class="sd">        layer_dict (Optional[Dict[str, Any]]): The layer object to edit.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -7155,60 +7445,22 @@ LayerEditor            (<span title="ipywidgets.widgets.widget_box.VBox">VBox</s
             <span class="sa">f</span><span class="s2">&quot;Must pass a valid map when creating a </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> widget.&quot;</span>
         <span class="p">)</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">_toggle_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span>
-        <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Layer editor&quot;</span><span class="p">,</span>
-        <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;gear&quot;</span><span class="p">,</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
-            <span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0 0 3px&quot;</span>
-        <span class="p">),</span>
-    <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_toggle_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_toggle_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">_close_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Close the vis params dialog&quot;</span><span class="p">,</span>
-        <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;times&quot;</span><span class="p">,</span>
-        <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="p">),</span>
-    <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_close_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_close_click</span><span class="p">)</span>
-
-    <span class="n">layout</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;95px&quot;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_import_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Import&quot;</span><span class="p">,</span>
-        <span class="n">button_style</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">,</span>
-        <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Import vis params to notebook&quot;</span><span class="p">,</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_apply_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Apply&quot;</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Apply vis params to the layer&quot;</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">layout</span>
-    <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_import_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_import_click</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_apply_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_apply_click</span><span class="p">)</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">_label</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span>
-        <span class="n">value</span><span class="o">=</span><span class="s2">&quot;Layer name&quot;</span><span class="p">,</span>
-        <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">max_width</span><span class="o">=</span><span class="s2">&quot;250px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;1px 8px 0 4px&quot;</span><span class="p">),</span>
-    <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_embedded_widget</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Label</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;Vis params are uneditable&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">layer_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span> <span class="o">=</span> <span class="n">layer_dict</span><span class="p">[</span><span class="s2">&quot;ee_object&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="p">,</span> <span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_ee_layer</span> <span class="o">=</span> <span class="n">layer_dict</span><span class="p">[</span><span class="s2">&quot;ee_layer&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_layer</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_embedded_widget</span> <span class="o">=</span> <span class="n">_VectorLayerEditor</span><span class="p">(</span>
-                <span class="n">host_map</span><span class="o">=</span><span class="n">host_map</span><span class="p">,</span> <span class="n">layer_dict</span><span class="o">=</span><span class="n">layer_dict</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_embedded_widget</span> <span class="o">=</span> <span class="n">_RasterLayerEditor</span><span class="p">(</span>
-                <span class="n">host_map</span><span class="o">=</span><span class="n">host_map</span><span class="p">,</span> <span class="n">layer_dict</span><span class="o">=</span><span class="n">layer_dict</span>
-            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_layer</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colormaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_colormaps</span><span class="p">()</span>
 
-    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[])</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_on_toggle_click</span><span class="p">({</span><span class="s2">&quot;new&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layer_type</span> <span class="o">=</span> <span class="n">LayerEditor</span><span class="o">.</span><span class="n">LayerType</span><span class="o">.</span><span class="n">VECTOR</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layer_type</span> <span class="o">=</span> <span class="n">LayerEditor</span><span class="o">.</span><span class="n">LayerType</span><span class="o">.</span><span class="n">RASTER</span><span class="o">.</span><span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">band_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">on_msg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_message_event</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
