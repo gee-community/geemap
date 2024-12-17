@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 """Tests for `map_widgets` module."""
+from typing import List
 import unittest
 from unittest.mock import patch, MagicMock, Mock, ANY
 
@@ -11,6 +12,15 @@ from matplotlib import pyplot
 from geemap import coreutils, map_widgets
 from tests import fake_ee, fake_map, utils
 from geemap.legends import builtin_legends
+
+
+def _get_colormaps() -> List[str]:
+    """Gets the list of available colormaps."""
+    from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
+
+    colormap_options = pyplot.colormaps()
+    colormap_options.sort()
+    return ["Custom"] + colormap_options
 
 
 class TestColorbar(unittest.TestCase):
@@ -671,54 +681,6 @@ class TestBasemapSelector(unittest.TestCase):
         on_change_mock.assert_called_once_with("ROADMAP")
 
 
-class LayerEditorTestHarness:
-    """A wrapper around LayerEditor to expose widgets for testing."""
-
-    def __init__(self, layer_editor: map_widgets.LayerEditor):
-        self._layer_editor = layer_editor
-
-    def _query_checkbox(self, description):
-        return utils.query_widget(
-            self._layer_editor,
-            ipywidgets.Checkbox,
-            lambda c: c.description == description,
-        )
-
-    @property
-    def legend_checkbox(self):
-        return self._query_checkbox("Legend")
-
-    @property
-    def linear_colormap_checkbox(self):
-        return self._query_checkbox("Linear colormap")
-
-    @property
-    def step_colormap_checkbox(self):
-        return self._query_checkbox("Step colormap")
-
-    @property
-    def classes_dropdown(self):
-        return utils.query_widget(
-            self._layer_editor,
-            ipywidgets.Dropdown,
-            lambda c: c.description == "Classes:",
-        )
-
-    @property
-    def colormap_dropdown(self):
-        return utils.query_widget(
-            self._layer_editor,
-            ipywidgets.Dropdown,
-            lambda c: c.description == "Colormap:",
-        )
-
-    @property
-    def apply_button(self):
-        return utils.query_widget(
-            self._layer_editor, ipywidgets.Button, lambda c: c.description == "Apply"
-        )
-
-
 @patch.object(ee, "Feature", fake_ee.Feature)
 @patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
 @patch.object(ee, "Geometry", fake_ee.Geometry)
@@ -749,80 +711,138 @@ class TestLayerEditor(unittest.TestCase):
         widget = map_widgets.LayerEditor(
             self._fake_map, self._fake_layer_dict(ee.Feature())
         )
-        self.assertIsNotNone(
-            utils.query_widget(widget, map_widgets._VectorLayerEditor, lambda _: True)
-        )
+        self.assertEqual(widget.layer_name, "fake-ee-layer-name")
+        self.assertEqual(widget.layer_type, "vector")
+        self.assertEqual(widget.band_names, [])
+        self.assertEqual(widget.colormaps, _get_colormaps())
 
     def test_layer_editor_geometry(self):
         """Tests that an ee.Geometry can be passed in."""
         widget = map_widgets.LayerEditor(
             self._fake_map, self._fake_layer_dict(ee.Geometry())
         )
-        self.assertIsNotNone(
-            utils.query_widget(widget, map_widgets._VectorLayerEditor, lambda _: True)
-        )
+        self.assertEqual(widget.layer_name, "fake-ee-layer-name")
+        self.assertEqual(widget.layer_type, "vector")
+        self.assertEqual(widget.band_names, [])
+        self.assertEqual(widget.colormaps, _get_colormaps())
 
     def test_layer_editor_feature_collection(self):
         """Tests that an ee.FeatureCollection can be passed in."""
         widget = map_widgets.LayerEditor(
             self._fake_map, self._fake_layer_dict(ee.FeatureCollection())
         )
-        self.assertIsNotNone(
-            utils.query_widget(widget, map_widgets._VectorLayerEditor, lambda _: True)
-        )
+        self.assertEqual(widget.layer_name, "fake-ee-layer-name")
+        self.assertEqual(widget.layer_type, "vector")
+        self.assertEqual(widget.band_names, [])
+        self.assertEqual(widget.colormaps, _get_colormaps())
 
     def test_layer_editor_image(self):
         """Tests that an ee.Image can be passed in."""
         widget = map_widgets.LayerEditor(
             self._fake_map, self._fake_layer_dict(ee.Image())
         )
-        self.assertIsNotNone(
-            utils.query_widget(widget, map_widgets._RasterLayerEditor, lambda _: True)
+        self.assertEqual(widget.layer_name, "fake-ee-layer-name")
+        self.assertEqual(widget.layer_type, "raster")
+        self.assertEqual(widget.band_names, ["B1", "B2"])
+        self.assertEqual(widget.colormaps, _get_colormaps())
+
+    def test_layer_editor_handle_calculate_band_stats(self):
+        """Tests that calculate band stats works."""
+        send_mock = MagicMock()
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.Image())
         )
+        widget.send = send_mock
+        event = {
+            "id": "band-stats",
+            "type": "calculate",
+            "detail": {"bands": ["B1"], "stretch": "sigma-1"},
+        }
+        widget._handle_message_event(None, event, None)
 
-    def test_layer_editor_colorbar(self):
-        """Tests that linear legends checkbox changes the UI."""
-        fake_dict = self._fake_layer_dict(ee.Image())
-        self._fake_map.ee_layers["fake-ee-layer-name"] = fake_dict
-        widget = map_widgets.LayerEditor(self._fake_map, fake_dict)
-        harness = LayerEditorTestHarness(widget)
+        response = {
+            "type": "calculate",
+            "id": "band-stats",
+            "response": {"stretch": "sigma-1", "min": 21, "max": 42},
+        }
+        widget.send.assert_called_once_with(response)
 
-        legend_checkbox = harness.legend_checkbox
-        self.assertIsNotNone(legend_checkbox)
-        self.assertIsNone(harness.linear_colormap_checkbox)
-        self.assertIsNone(harness.step_colormap_checkbox)
+    def test_layer_editor_handle_calculate_palette(self):
+        """Tests that calculate palette works."""
+        send_mock = MagicMock()
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.Image())
+        )
+        widget.send = send_mock
+        event = {
+            "detail": {
+                "bandMax": 0.742053968164132,
+                "bandMin": 0.14069852859491755,
+                "classes": "3",
+                "colormap": "Blues",
+                "palette": "",
+            },
+            "id": "palette",
+            "type": "calculate",
+        }
+        widget._handle_message_event(None, event, None)
 
-        legend_checkbox.value = True
-        self.assertTrue(harness.linear_colormap_checkbox.value)
-        self.assertFalse(harness.step_colormap_checkbox.value)
+        response = {
+            "type": "calculate",
+            "id": "palette",
+            "response": {"palette": "#f7fbff, #6baed6, #08306b"},
+        }
+        widget.send.assert_called_once_with(response)
 
-        harness.classes_dropdown.value = "3"
-        harness.colormap_dropdown.value = "Blues"
-        harness.apply_button.click()
+    def test_layer_editor_handle_calculate_field(self):
+        """Tests that calculate fields works."""
+        send_mock = MagicMock()
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.FeatureCollection())
+        )
+        widget.send = send_mock
+        event = {"detail": {}, "id": "fields", "type": "calculate"}
+        widget._handle_message_event(None, event, None)
 
-        self.assertIsNotNone(self._fake_map.ee_layers["fake-ee-layer-name"]["colorbar"])
-        self.assertNotIn("legend", self._fake_map.ee_layers["fake-ee-layer-name"])
+        response = {
+            "type": "calculate",
+            "id": "fields",
+            "response": {
+                "fields": ["prop-1", "prop-2"],
+                "field-values": ["aggregation-one", "aggregation-two"],
+            },
+        }
+        widget.send.assert_called_once_with(response)
 
-    def test_layer_editor_legend(self):
-        """Tests that linear legends checkbox changes the UI."""
-        fake_dict = self._fake_layer_dict(ee.Image())
-        self._fake_map.ee_layers["fake-ee-layer-name"] = fake_dict
-        widget = map_widgets.LayerEditor(self._fake_map, fake_dict)
-        harness = LayerEditorTestHarness(widget)
+    def test_layer_editor_handle_calculate_field_values(self):
+        """Tests that calculate field values works."""
+        send_mock = MagicMock()
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.FeatureCollection())
+        )
+        widget.send = send_mock
+        event = {
+            "detail": {"field": "prop-1"},
+            "id": "field-values",
+            "type": "calculate",
+        }
+        widget._handle_message_event(None, event, None)
 
-        legend_checkbox = harness.legend_checkbox
-        self.assertIsNotNone(legend_checkbox)
-        self.assertIsNone(harness.linear_colormap_checkbox)
-        self.assertIsNone(harness.step_colormap_checkbox)
+        response = {
+            "type": "calculate",
+            "id": "field-values",
+            "response": {"field-values": ["aggregation-one", "aggregation-two"]},
+        }
+        widget.send.assert_called_once_with(response)
 
-        legend_checkbox.value = True
-        harness.step_colormap_checkbox.value = True
-        self.assertFalse(harness.linear_colormap_checkbox.value)
-        self.assertTrue(harness.step_colormap_checkbox.value)
+    def test_layer_editor_handle_close_click(self):
+        """Tests that close click events are handled."""
+        on_close_mock = MagicMock()
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.FeatureCollection())
+        )
+        widget.on_close = on_close_mock
+        event = {"id": "close", "type": "click"}
+        widget._handle_message_event(None, event, None)
 
-        harness.classes_dropdown.value = "3"
-        harness.colormap_dropdown.value = "Blues"
-        harness.apply_button.click()
-
-        self.assertNotIn("colorbar", self._fake_map.ee_layers["fake-ee-layer-name"])
-        self.assertIsNotNone(self._fake_map.ee_layers["fake-ee-layer-name"]["legend"])
+        on_close_mock.assert_called_once_with()
