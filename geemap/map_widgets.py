@@ -421,7 +421,7 @@ class Legend(anywidget.AnyWidget):
             except:
                 raise ValueError(f"Unable to convert rgb value to hex: {color}")
         elif re.search(r"^(?:[0-9a-fA-F]{3}){1,2}(?:[0-9a-fA-F]{1,2})?$", color):
-            # Add a # for hexademical strings of length 3 or 6, with optional
+            # Add a # for hexadecimal strings of length 3 or 6, with optional
             # fourth alpha.
             return f"#{color}"
         return color
