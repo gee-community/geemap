@@ -309,7 +309,6 @@ class Legend(anywidget.AnyWidget):
         Raises:
             TypeError: If the keys are not a list.
             TypeError: If the colors are not list.
-            TypeError: If the colors are not a list of tuples.
             ValueError: If the legend template does not exist.
             ValueError: If a rgb value cannot to be converted to hex.
             ValueError: If the keys and colors are not the same length.
@@ -349,6 +348,8 @@ class Legend(anywidget.AnyWidget):
                 self.legend_colors = [self._normalize_color_to_hex(color) for color in colors]
             else:
                 self.legend_colors = self.DEFAULT_COLORS
+            if len(self.legend_keys) != len(self.legend_colors):
+                raise ValueError("The legend keys and colors must be the same length.")
 
         allowed_builtin_legends = builtin_legends.keys()
         if builtin_legend is not None:
@@ -412,12 +413,13 @@ class Legend(anywidget.AnyWidget):
         """Converts a list of RGB colors to hex."""
         if isinstance(color, tuple):
             try:
-                return coreutils.rgb_to_hex(color)
+                return f"#{coreutils.rgb_to_hex(color)}"
             except:
                 raise ValueError(f"Unable to convert rgb value to hex: {color}")
-        elif re.search(r"^(?:[0-9a-fA-F]{3}){1,2}$", color):
-            # Add a # for hexademical strings of length 3 or 6.
-            return f"#{color}" if not color.startswith("#") else color
+        elif re.search(r"^(?:[0-9a-fA-F]{3}){1,2}(?:[0-9a-fA-F]{1,2})?$", color):
+            # Add a # for hexademical strings of length 3 or 6, with optional
+            # fourth alpha.
+            return f"#{color}"
         return color
 
 

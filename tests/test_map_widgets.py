@@ -230,9 +230,86 @@ class TestColorbar(unittest.TestCase):
 class TestLegend(unittest.TestCase):
     """Tests for the Legend class in the `map_widgets` module."""
 
+    TEST_KEYS = ["developed", "forest", "open water"]
     TEST_COLORS_HEX = ["#ff0000", "#00ff00", "#0000ff"]
     TEST_COLORS_RGB = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]
-    TEST_KEYS = ["developed", "forest", "open water"]
+
+    def test_legend_initializes(self):
+        legend = map_widgets.Legend(
+            title="My Legend",
+            keys=self.TEST_KEYS,
+            colors=self.TEST_COLORS_HEX,
+            position="bottomleft",
+            add_header=True,
+            widget_args={"show_close_button": True}
+        )
+        self.assertEqual(legend.title, "My Legend")
+        self.assertEqual(legend.position, "bottomleft")
+        self.assertTrue(legend.add_header)
+        self.assertTrue(legend.show_close_button)
+
+    
+    def test_legend_with_keys_and_colors(self):
+        # Normal hex colors.
+        legend = map_widgets.Legend(keys=self.TEST_KEYS, colors=self.TEST_COLORS_HEX)
+        self.assertListEqual(legend.legend_keys, self.TEST_KEYS)
+        self.assertListEqual(legend.legend_colors, self.TEST_COLORS_HEX)
+
+        # Adds # when there are none.
+        legend = map_widgets.Legend(
+            keys=self.TEST_KEYS, colors=["ff0000", "00ff00", "0000ff"]
+        )
+        self.assertListEqual(legend.legend_colors, self.TEST_COLORS_HEX)
+
+        # Three characters.
+        legend = map_widgets.Legend(keys=self.TEST_KEYS, colors=["f00", "0f0", "00f"])
+        self.assertListEqual(legend.legend_colors, ["#f00", "#0f0", "#00f"])
+
+        # With alpha.
+        legend = map_widgets.Legend(
+            keys=self.TEST_KEYS, colors=["#ff0000ff", "#00ff00ff", "#0000ffff"]
+        )
+        self.assertListEqual(
+            legend.legend_colors, ["#ff0000ff", "#00ff00ff", "#0000ffff"]
+        )
+
+        # CSS colors.
+        legend = map_widgets.Legend(
+            keys=self.TEST_KEYS, colors=["red", "green", "blue"]
+        )
+        self.assertListEqual(legend.legend_colors, ["red", "green", "blue"])
+
+        # RGB tuples.
+        legend = map_widgets.Legend(keys=self.TEST_KEYS, colors=self.TEST_COLORS_RGB)
+        self.assertListEqual(legend.legend_colors, self.TEST_COLORS_HEX)
+
+        # Mix of hex and tuples.
+        legend = map_widgets.Legend(
+            keys=self.TEST_KEYS * 2, colors=self.TEST_COLORS_HEX + self.TEST_COLORS_RGB
+        )
+        self.assertListEqual(legend.legend_keys, self.TEST_KEYS * 2)
+        self.assertListEqual(legend.legend_colors, self.TEST_COLORS_HEX * 2)
+
+    def test_legend_with_dictionary(self):
+        legend = map_widgets.Legend(
+            legend_dict=dict(zip(self.TEST_KEYS, self.TEST_COLORS_HEX))
+        )
+        self.assertListEqual(legend.legend_keys, self.TEST_KEYS)
+        self.assertListEqual(legend.legend_colors, self.TEST_COLORS_HEX)
+
+        legend = map_widgets.Legend(
+            legend_dict=dict(zip(self.TEST_KEYS, self.TEST_COLORS_RGB))
+        )
+        self.assertListEqual(legend.legend_keys, self.TEST_KEYS)
+        self.assertListEqual(legend.legend_colors, self.TEST_COLORS_HEX)
+
+    def test_legend_with_builtin_legends(self):
+        legend = map_widgets.Legend(builtin_legend="NLCD")
+        self.assertListEqual(legend.legend_keys, list(builtin_legends["NLCD"].keys()))
+        self.assertListEqual(
+            legend.legend_colors,
+            list(f"#{color}" for color in builtin_legends["NLCD"].values()),
+        )
 
     def test_legend_unable_to_convert_rgb_to_hex(self):
         with self.assertRaisesRegex(ValueError, "Unable to convert rgb value to hex."):
@@ -268,13 +345,7 @@ class TestLegend(unittest.TestCase):
 
     def test_legend_colors_not_a_list(self):
         with self.assertRaisesRegex(TypeError, "The legend colors must be a list."):
-            map_widgets.Legend(colors="invalid_colors")
-
-    def test_legend_colors_not_a_list_of_tuples(self):
-        with self.assertRaisesRegex(
-            TypeError, ("The legend colors must be a list of " + "tuples.")
-        ):
-            map_widgets.Legend(colors=["invalid_tuple"])
+            map_widgets.Legend(keys=["test_key"], colors="invalid_colors")
 
 
 @patch.object(ee, "Algorithms", fake_ee.Algorithms)
