@@ -343,7 +343,7 @@ class Legend(anywidget.AnyWidget):
                     raise TypeError("The legend keys must be a list.")
                 self.legend_keys = keys
             else:
-                self.legend_keys = Legend.DEFAULT_KEYS
+                self.legend_keys = self.DEFAULT_KEYS
 
             if colors is not None:
                 if not isinstance(colors, list):
@@ -369,7 +369,7 @@ class Legend(anywidget.AnyWidget):
                     for color in legend_dict.values()
                 ]
 
-        self._check_if_allowed(position, "position", Legend.ALLOWED_POSITIONS)
+        self._check_if_allowed(position, "position", self.ALLOWED_POSITIONS)
 
         self.add_header = add_header
         if "show_close_button" in widget_args:

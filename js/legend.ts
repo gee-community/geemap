@@ -1,6 +1,6 @@
 import type { RenderProps } from "@anywidget/types";
 
-import { css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 
@@ -8,7 +8,7 @@ import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
 
-import './container';
+import "./container";
 
 function zip<T>(a: T[], b: T[]) {
     const maxLength = Math.min(a.length, b.length);
@@ -37,10 +37,10 @@ export class Legend extends LitWidget<LegendModel, Legend> {
         materialStyles,
         css`
             .legend {
-                padding: 4px;
                 max-height: 200px;
                 max-width: 300px;
                 overflow: auto;
+                padding: 4px;
             }
 
             widget-container .legend {
@@ -48,49 +48,38 @@ export class Legend extends LitWidget<LegendModel, Legend> {
             }
 
             .legend .legend-title {
-                text-align: left;
+                font-size: 90%;
+                font-weight: bold;
                 margin-bottom: 2px;
                 margin-left: 2px;
-                font-weight: bold;
-                font-size: 90%;
+                margin-top: 0;
+                text-align: left;
             }
 
-            .legend .legend-scale ul {
-                margin: 0;
-                margin-bottom: 5px;
-                padding: 0;
+            .legend ul {
                 float: left;
                 list-style: none;
+                margin-bottom: 5px;
+                margin: 0;
+                padding: 0;
             }
 
-            .legend .legend-scale ul li {
+            .legend li {
                 font-size: 80%;
-                list-style: none;
-                margin-left: 1px;
                 line-height: 18px;
                 margin-bottom: 2px;
+                margin-left: 1px;
             }
 
-            .legend ul.legend-labels li span {
+            .legend .legend-labels li span {
+                border: 1px solid #999;
                 display: block;
                 float: left;
                 height: 16px;
-                width: 30px;
-                margin-right: 5px;
                 margin-left: 2px;
-                border: 1px solid #999;
-            }
-
-            .legend .legend-source {
-                font-size: 70%;
-                color: #999;
-                clear: both;
-            }
-
-            .legend a {
-                color: #777;
-
-            }`,
+                margin-right: 5px;
+                width: 30px;
+            }`
     ];
 
     @property({ type: String }) title = "";
@@ -115,7 +104,7 @@ export class Legend extends LitWidget<LegendModel, Legend> {
                 .hideCloseButton="${!this.showCloseButton}"
                 .title="${this.title}"
                 @close-clicked="${this.onCloseButtonClicked}">
-                ${this.renderLegend('')}
+                ${this.renderLegend("")}
             </widget-container>` : this.renderLegend(this.title);
     }
 
@@ -131,14 +120,12 @@ export class Legend extends LitWidget<LegendModel, Legend> {
                     </span>${key}
                 </li>`
             );
-        return html`<div class='legend'>
-                        <div class='legend-title'>${title}</div>
-                        <div class='legend-scale'>
-                            <ul class='legend-labels'>
-                                ${legend}
-                            </ul>
-                        </div>
-                    </div>`
+        return html`<div class="legend">
+                        ${title ? html`<h4 class="legend-title">${title}</h4>` : nothing}
+                        <ul class="legend-labels">
+                            ${legend}
+                        </ul>
+                    </div>`;
     }
 }
 
