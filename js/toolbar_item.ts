@@ -46,10 +46,10 @@ export class ToolbarItem extends LitWidget<ToolbarItemModel, ToolbarItem> {
     active: boolean = false;
 
     @property({ type: String })
-    icon: string = "";
+    icon: string = '';
 
     @property({ type: String })
-    tooltip_text: string = "";
+    tooltip_text: string = '';
 
     render() {
         return html`
