@@ -23,7 +23,6 @@ export interface LegendModel {
     title: string;
     legend_keys: string[];
     legend_colors: string[];
-    position: string;
     add_header: boolean;
     show_close_button: boolean;
 }
@@ -97,7 +96,6 @@ export class Legend extends LitWidget<LegendModel, Legend> {
     @property({ type: String }) title = "";
     @property({ type: Array }) legendKeys: string[] = [];
     @property({ type: Array }) legendColors: string[] = [];
-    @property({ type: String }) position = "";
     @property({ type: Boolean }) addHeader: boolean = true;
     @property({ type: Boolean }) showCloseButton: boolean = true;
 
@@ -106,7 +104,6 @@ export class Legend extends LitWidget<LegendModel, Legend> {
             ["title", "title"],
             ["legend_keys", "legendKeys"],
             ["legend_colors", "legendColors"],
-            ["position", "position"],
             ["add_header", "addHeader"],
             ["show_close_button", "showCloseButton"],
         ]);
