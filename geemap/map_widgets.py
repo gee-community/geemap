@@ -331,13 +331,12 @@ class Legend(anywidget.AnyWidget):
             if not isinstance(legend_dict, dict):
                 raise TypeError("The legend dict must be a dictionary.")
             self.legend_keys = list(legend_dict.keys())
-            self.legend_colors = [
-                self._normalize_color_to_hex(color) for color in legend_dict.values()
-            ]
+            self.legend_colors = list(
+                map(self._normalize_color_to_hex, legend_dict.values())
+            )
         elif keys or colors:
             if "labels" in kwargs:
-                self.legend_keys = kwargs["labels"]
-                kwargs.pop("labels")
+                self.legend_keys = kwargs.pop("labels")
             if keys is not None:
                 if not isinstance(keys, list):
                     raise TypeError("The legend keys must be a list.")
@@ -348,9 +347,7 @@ class Legend(anywidget.AnyWidget):
             if colors is not None:
                 if not isinstance(colors, list):
                     raise TypeError("The legend colors must be a list.")
-                self.legend_colors = [
-                    self._normalize_color_to_hex(color) for color in colors
-                ]
+                self.legend_colors = list(map(self._normalize_color_to_hex, colors))
             else:
                 self.legend_colors = self.DEFAULT_COLORS
             if len(self.legend_keys) != len(self.legend_colors):
@@ -364,10 +361,9 @@ class Legend(anywidget.AnyWidget):
             if builtin_legend_allowed:
                 legend_dict = builtin_legends[builtin_legend]
                 self.legend_keys = list(legend_dict.keys())
-                self.legend_colors = [
-                    self._normalize_color_to_hex(color)
-                    for color in legend_dict.values()
-                ]
+                self.legend_colors = list(
+                    map(self._normalize_color_to_hex, legend_dict.values())
+                )
 
         self._check_if_allowed(position, "position", self.ALLOWED_POSITIONS)
 
