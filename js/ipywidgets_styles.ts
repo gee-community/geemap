@@ -75,6 +75,24 @@ export const legacyStyles = css`
         color: var(--jp-ui-inverse-font-color0);
     }
 
+    .legacy-button.active {
+        background-color: var(--colab-primary-surface-color, --jp-layout-color3);
+        color: var(--jp-ui-font-color1);
+        box-shadow: 0 4px 5px 0 rgba(0, 0, 0, var(--md-shadow-key-penumbra-opacity)),
+                    0 1px 10px 0 rgba(0, 0, 0, var(--md-shadow-ambient-shadow-opacity)),
+                    0 2px 4px -1px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity));
+    }
+
+    .legacy-button.primary {
+        background-color: var(--jp-brand-color1);
+        color: var(--jp-ui-inverse-font-color1);
+    }
+
+    .legacy-button.primary.active {
+        background-color: var(--jp-brand-color0);
+        color: var(--jp-ui-inverse-font-color0);
+    }
+
     .legacy-select {
         -moz-appearance: none;
         -webkit-appearance: none;
@@ -97,5 +115,20 @@ export const legacyStyles = css`
         padding-left: calc(var(--jp-widgets-input-padding)* 2);
         padding-right: 20px;
         vertical-align: top;
+    }
+
+    .legacy-input {
+        box-sizing: border-box;
+        background-color: var(--colab-primary-surface-color, --jp-widgets-input-background-color);
+        border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+        color: var(--jp-widgets-input-color);
+        flex-grow: 1;
+        flex-shrink: 1;
+        font-size: var(--jp-widgets-font-size);
+        min-width: 0;
+        outline: none !important;
+        padding: var(--jp-widgets-input-padding) calc(var(--jp-widgets-input-padding)* 2);
+        height: var(--jp-widgets-inline-height);
+        line-height: var(--jp-widgets-inline-height);
     }
 `;

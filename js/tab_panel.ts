@@ -1,9 +1,10 @@
 import { html, css, nothing, LitElement, PropertyValues } from "lit";
 import { property, queryAll, queryAssignedElements } from "lit/decorators.js";
-import { legacyStyles } from "./ipywidgets_styles";
 import { classMap } from "lit/directives/class-map.js";
-import { materialStyles } from "./styles";
 import { styleMap } from "lit/directives/style-map.js";
+
+import { legacyStyles } from "./ipywidgets_styles";
+import { materialStyles } from "./styles";
 
 function convertToId(name: string | undefined): string {
     return (name || "").trim().replace(" ", "-").toLowerCase();
