@@ -251,14 +251,13 @@ class TestLegend(unittest.TestCase):
             colors=self.TEST_COLORS_HEX,
             position="bottomleft",
             add_header=True,
-            widget_args={"show_close_button": True}
+            widget_args={"show_close_button": True},
         )
         self.assertEqual(legend.title, "My Legend")
         self.assertEqual(legend.position, "bottomleft")
         self.assertTrue(legend.add_header)
         self.assertTrue(legend.show_close_button)
 
-    
     def test_legend_with_keys_and_colors(self):
         # Normal hex colors.
         legend = map_widgets.Legend(keys=self.TEST_KEYS, colors=self.TEST_COLORS_HEX)
