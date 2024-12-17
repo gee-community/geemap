@@ -2,6 +2,7 @@
 
 import functools
 import pathlib
+import re
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import IPython
@@ -257,14 +258,23 @@ class Colorbar(ipywidgets.Output):
 
 
 @Theme.apply
-class Legend(ipywidgets.VBox):
+class Legend(anywidget.AnyWidget):
     """A legend widget that can be added to the map."""
 
     ALLOWED_POSITIONS = ["topleft", "topright", "bottomleft", "bottomright"]
     DEFAULT_COLORS = ["#8DD3C7", "#FFFFB3", "#BEBADA", "#FB8072", "#80B1D3"]
     DEFAULT_KEYS = ["One", "Two", "Three", "Four", "etc"]
-    DEFAULT_MAX_HEIGHT = "400px"
-    DEFAULT_MAX_WIDTH = "300px"
+
+    _esm = pathlib.Path(__file__).parent / "static" / "legend.js"
+
+    title = traitlets.Unicode("Legend").tag(sync=True)
+    legend_keys = traitlets.List([]).tag(sync=True)
+    legend_colors = traitlets.List([]).tag(sync=True)
+    add_header = traitlets.Bool(True).tag(sync=True)
+    show_close_button = traitlets.Bool(False).tag(sync=True)
+
+    position = "bottomright"
+    host_map = None
 
     def __init__(
         self,
@@ -293,8 +303,8 @@ class Legend(ipywidgets.VBox):
                 to the map. Defaults to None.
             add_header (bool, optional): Whether the legend can be closed or
                 not. Defaults to True.
-            widget_args (dict, optional): Additional arguments passed to the
-                widget_template() function. Defaults to {}.
+            widget_args (dict, optional): Additional arguments. Only
+                "show_close_button" is supported.
 
         Raises:
             TypeError: If the keys are not a list.
@@ -307,108 +317,75 @@ class Legend(ipywidgets.VBox):
             ValueError: If the position is not allowed.
 
         """
-        import os  # pylint: disable=import-outside-toplevel
-        import pkg_resources  # pylint: disable=import-outside-toplevel
+        super().__init__()
+
         from .legends import builtin_legends  # pylint: disable=import-outside-toplevel
+
+        self.title = title
+        self.position = position
 
         if not widget_args:
             widget_args = {}
 
-        pkg_dir = os.path.dirname(
-            pkg_resources.resource_filename("geemap", "geemap.py")
-        )
-        legend_template = os.path.join(pkg_dir, "data/template/legend.html")
-
-        if not os.path.exists(legend_template):
-            raise ValueError("The legend template does not exist.")
-
         if legend_dict is not None:
             if not isinstance(legend_dict, dict):
                 raise TypeError("The legend dict must be a dictionary.")
+            self.legend_keys = list(legend_dict.keys())
+            self.legend_colors = [self._normalize_color_to_hex(color) for color in legend_dict.values()]
+        elif keys or colors:
+            if "labels" in kwargs:
+                self.legend_keys = kwargs["labels"]
+                kwargs.pop("labels")
+            if keys is not None:
+                if not isinstance(keys, list):
+                    raise TypeError("The legend keys must be a list.")
+                self.legend_keys = keys
             else:
-                keys = list(legend_dict.keys())
-                colors = list(legend_dict.values())
-                if all(isinstance(item, tuple) for item in colors):
-                    colors = Legend.__convert_rgb_colors_to_hex(colors)
+                self.legend_keys = Legend.DEFAULT_KEYS
 
-        if "labels" in kwargs:
-            keys = kwargs["labels"]
-            kwargs.pop("labels")
-
-        if keys is not None:
-            if not isinstance(keys, list):
-                raise TypeError("The legend keys must be a list.")
-        else:
-            keys = Legend.DEFAULT_KEYS
-
-        if colors is not None:
-            if not isinstance(colors, list):
-                raise TypeError("The legend colors must be a list.")
-            elif all(isinstance(item, tuple) for item in colors):
-                colors = Legend.__convert_rgb_colors_to_hex(colors)
-            elif all((item.startswith("#") and len(item) == 7) for item in colors):
-                pass
-            elif all((len(item) == 6) for item in colors):
-                pass
+            if colors is not None:
+                if not isinstance(colors, list):
+                    raise TypeError("The legend colors must be a list.")
+                self.legend_colors = [self._normalize_color_to_hex(color) for color in colors]
             else:
-                raise TypeError("The legend colors must be a list of tuples.")
-        else:
-            colors = Legend.DEFAULT_COLORS
-
-        if len(keys) != len(colors):
-            raise ValueError("The legend keys and colors must be the same length.")
+                self.legend_colors = self.DEFAULT_COLORS
 
         allowed_builtin_legends = builtin_legends.keys()
         if builtin_legend is not None:
-            builtin_legend_allowed = Legend.__check_if_allowed(
+            builtin_legend_allowed = self._check_if_allowed(
                 builtin_legend, "builtin legend", allowed_builtin_legends
             )
             if builtin_legend_allowed:
                 legend_dict = builtin_legends[builtin_legend]
-                keys = list(legend_dict.keys())
-                colors = list(legend_dict.values())
-            if all(isinstance(item, tuple) for item in colors):
-                colors = Legend.__convert_rgb_colors_to_hex(colors)
+                self.legend_keys = list(legend_dict.keys())
+                self.legend_colors = [self._normalize_color_to_hex(color) for color in legend_dict.values()]
 
-        Legend.__check_if_allowed(position, "position", Legend.ALLOWED_POSITIONS)
-        header = []
-        footer = []
-        content = Legend.__create_legend_items(keys, colors)
+        self._check_if_allowed(position, "position", Legend.ALLOWED_POSITIONS)
 
-        with open(legend_template) as f:
-            lines = f.readlines()
-            lines[3] = lines[3].replace("Legend", title)
-            header = lines[:6]
-            footer = lines[11:]
-
-        legend_html = header + content + footer
-        legend_text = "".join(legend_html)
-        legend_output = ipywidgets.Output(layout=Legend.__create_layout(**kwargs))
-        legend_widget = ipywidgets.HTML(value=legend_text)
-
-        if add_header:
-            if "show_close_button" not in widget_args:
-                widget_args["show_close_button"] = False
-            if "widget_icon" not in widget_args:
-                widget_args["widget_icon"] = "bars"
-
-            legend_output_widget = coreutils.widget_template(
-                legend_output,
-                position=position,
-                display_widget=legend_widget,
-                **widget_args,
-            )
+        self.add_header = add_header
+        if "show_close_button" in widget_args:
+            self.show_close_button = widget_args["show_close_button"]
         else:
-            legend_output_widget = legend_widget
+            self.show_close_button = False
 
-        super().__init__(children=[legend_output_widget])
+        # Setup event listener.
+        self.on_msg(self._handle_message_event)
 
-        legend_output.clear_output()
-        with legend_output:
-            display(legend_widget)
+    def _handle_message_event(
+        self, widget: ipywidgets.Widget, content: Dict[str, Any], buffers: List[Any]
+    ) -> None:
+        del widget, buffers  # Unused
+        if content.get("type") == "click":
+            msg_id = content.get("id", "")
+            if msg_id == "close":
+                self.cleanup()
 
-    def __check_if_allowed(
-        value: str, value_name: str, allowed_list: List[str]
+    def cleanup(self):
+        if self.host_map:
+            self.host_map.remove(self)
+
+    def _check_if_allowed(
+        self, value: str, value_name: str, allowed_list: List[str]
     ) -> bool:
         """Checks if a value is allowed.
 
@@ -431,86 +408,17 @@ class Legend(ipywidgets.VBox):
             )
         return True
 
-    def __convert_rgb_colors_to_hex(colors: List[tuple]) -> List[str]:
-        """Converts a list of RGB colors to hex.
-
-        Args:
-            colors (List[tuple]): A list of RGB color tuples.
-
-        Returns:
-            List[str]: A list of hex color strings.
-
-        Raises:
-            ValueError: If unable to convert an RGB value to hex.
-        """
-        try:
-            return [coreutils.rgb_to_hex(x) for x in colors]
-        except:
-            raise ValueError("Unable to convert rgb value to hex.")
-
-    def __create_legend_items(keys: List[str], colors: List[str]) -> List[str]:
-        """Creates HTML legend items.
-
-        Args:
-            keys (List[str]): A list of legend keys.
-            colors (List[str]): A list of legend colors.
-
-        Returns:
-            List[str]: A list of HTML strings for the legend items.
-        """
-        legend_items = []
-        for index, key in enumerate(keys):
-            color = colors[index]
-            if not color.startswith("#"):
-                color = "#" + color
-            item = "<li><span style='background:{};'></span>{}</li>\n".format(
-                color, key
-            )
-            legend_items.append(item)
-        return legend_items
-
-    def __create_layout(**kwargs: Any) -> Dict[str, Optional[str]]:
-        """Creates the layout for the legend.
-
-        Args:
-            **kwargs (Any): Additional keyword arguments for layout properties.
-
-        Returns:
-            Dict[str, Optional[str]]: A dictionary of layout properties.
-        """
-        height = Legend.__create_layout_property("height", None, **kwargs)
-
-        min_height = Legend.__create_layout_property("min_height", None, **kwargs)
-
-        if height is None:
-            max_height = Legend.DEFAULT_MAX_HEIGHT
-        else:
-            max_height = Legend.__create_layout_property("max_height", None, **kwargs)
-
-        width = Legend.__create_layout_property("width", None, **kwargs)
-
-        if "min_width" not in kwargs:
-            min_width = None
-
-        if width is None:
-            max_width = Legend.DEFAULT_MAX_WIDTH
-        else:
-            max_width = Legend.__create_layout_property(
-                "max_width", Legend.DEFAULT_MAX_WIDTH, **kwargs
-            )
-
-        return {
-            "height": height,
-            "max_height": max_height,
-            "max_width": max_width,
-            "min_height": min_height,
-            "min_width": min_width,
-            "overflow": "scroll",
-            "width": width,
-        }
-
-    def __create_layout_property(name, default_value, **kwargs):
-        return default_value if name not in kwargs else kwargs[name]
+    def _normalize_color_to_hex(self, color: str|tuple) -> str:
+        """Converts a list of RGB colors to hex."""
+        if isinstance(color, tuple):
+            try:
+                return coreutils.rgb_to_hex(color)
+            except:
+                raise ValueError(f"Unable to convert rgb value to hex: {color}")
+        elif re.search(r"^(?:[0-9a-fA-F]{3}){1,2}$", color):
+            # Add a # for hexademical strings of length 3 or 6.
+            return f"#{color}" if not color.startswith("#") else color
+        return color
 
 
 @Theme.apply

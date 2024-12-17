@@ -1175,6 +1175,7 @@ class Map(ipyleaflet.Map, MapInterface):
             widget_args,
             **kwargs,
         )
+        legend.host_map = self
         control = ipyleaflet.WidgetControl(widget=legend, position=position)
         if layer := self.ee_layers.get(layer_name, None):
             if old_legend := layer.pop("legend", None):
