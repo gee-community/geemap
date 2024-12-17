@@ -330,7 +330,9 @@ class Legend(anywidget.AnyWidget):
             if not isinstance(legend_dict, dict):
                 raise TypeError("The legend dict must be a dictionary.")
             self.legend_keys = list(legend_dict.keys())
-            self.legend_colors = [self._normalize_color_to_hex(color) for color in legend_dict.values()]
+            self.legend_colors = [
+                self._normalize_color_to_hex(color) for color in legend_dict.values()
+            ]
         elif keys or colors:
             if "labels" in kwargs:
                 self.legend_keys = kwargs["labels"]
@@ -340,12 +342,14 @@ class Legend(anywidget.AnyWidget):
                     raise TypeError("The legend keys must be a list.")
                 self.legend_keys = keys
             else:
-                self.legend_keys = Legend.DEFAULT_KEYS
+                self.legend_keys = self.DEFAULT_KEYS
 
             if colors is not None:
                 if not isinstance(colors, list):
                     raise TypeError("The legend colors must be a list.")
-                self.legend_colors = [self._normalize_color_to_hex(color) for color in colors]
+                self.legend_colors = [
+                    self._normalize_color_to_hex(color) for color in colors
+                ]
             else:
                 self.legend_colors = self.DEFAULT_COLORS
             if len(self.legend_keys) != len(self.legend_colors):
@@ -359,9 +363,12 @@ class Legend(anywidget.AnyWidget):
             if builtin_legend_allowed:
                 legend_dict = builtin_legends[builtin_legend]
                 self.legend_keys = list(legend_dict.keys())
-                self.legend_colors = [self._normalize_color_to_hex(color) for color in legend_dict.values()]
+                self.legend_colors = [
+                    self._normalize_color_to_hex(color)
+                    for color in legend_dict.values()
+                ]
 
-        self._check_if_allowed(position, "position", Legend.ALLOWED_POSITIONS)
+        self._check_if_allowed(position, "position", self.ALLOWED_POSITIONS)
 
         self.add_header = add_header
         if "show_close_button" in widget_args:
@@ -409,7 +416,7 @@ class Legend(anywidget.AnyWidget):
             )
         return True
 
-    def _normalize_color_to_hex(self, color: str|tuple) -> str:
+    def _normalize_color_to_hex(self, color: str | tuple) -> str:
         """Converts a list of RGB colors to hex."""
         if isinstance(color, tuple):
             try:
