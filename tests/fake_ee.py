@@ -163,7 +163,7 @@ class FeatureCollection:
 
     def geometry(self, *_, **__):
         return Geometry.Polygon()
-    
+
     def aggregate_array(self, *_, **__):
         return List(["aggregation-one", "aggregation-two"])
 
@@ -204,7 +204,7 @@ class Feature:
         featuresEqual = self.feature == getattr(other, "feature")
         propertiesEqual = self.properties == getattr(other, "properties")
         return featuresEqual and propertiesEqual
-    
+
     def propertyNames(self, *_, **__):
         return List(["prop-1", "prop-2"])
 

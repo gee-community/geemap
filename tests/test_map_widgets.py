@@ -834,7 +834,7 @@ class TestLayerEditor(unittest.TestCase):
             "response": {"field-values": ["aggregation-one", "aggregation-two"]},
         }
         widget.send.assert_called_once_with(response)
-        
+
     def test_layer_editor_handle_close_click(self):
         """Tests that close click events are handled."""
         on_close_mock = MagicMock()
@@ -842,8 +842,7 @@ class TestLayerEditor(unittest.TestCase):
             self._fake_map, self._fake_layer_dict(ee.FeatureCollection())
         )
         widget.on_close = on_close_mock
-        event = {'id': 'close', 'type': 'click'}
+        event = {"id": "close", "type": "click"}
         widget._handle_message_event(None, event, None)
 
         on_close_mock.assert_called_once_with()
-        
