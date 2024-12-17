@@ -1,6 +1,7 @@
 """Fake map used for testing."""
 
 import unittest
+from typing import List, Optional, Tuple, Union
 
 import ee
 import ipywidgets
@@ -48,6 +49,10 @@ class FakeMap:
 
     def get_scale(self):
         return self.scale
+
+    @property
+    def bounds(self):
+        return ((1, 2), (3, 4))
 
     def find_layer_index(self, name):
         layers = self.layers
@@ -175,6 +180,16 @@ class FakeEeTileLayer:
 
     def observe(self, func, names):
         pass
+
+    def calculate_vis_minmax(
+        self,
+        *,
+        bounds: Union[ee.Geometry, ee.Feature, ee.FeatureCollection],
+        bands: Optional[List[str]] = None,
+        percent: Optional[float] = None,
+        sigma: Optional[float] = None,
+    ) -> Tuple[float, float]:
+        return (21, 42)
 
 
 class FakeTileLayer(ipywidgets.Widget):
