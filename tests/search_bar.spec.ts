@@ -56,7 +56,7 @@ describe("<search-bar>", () => {
     });
 
     it("renders and updates the name address search", async () => {
-        searchBar.name_address_model = JSON.stringify({
+        searchBar.nameAddressModel = JSON.stringify({
             search: "my city",
             results: ["my city 1", "my city 2"],
             selected: "my city 1",
@@ -73,18 +73,19 @@ describe("<search-bar>", () => {
 
         jasmine.clock().install();
         searchBar.nameAddressSearch.value = "my new search";
-        searchBar.nameAddressSearch.dispatchEvent(new Event("input"));
+        searchBar.nameAddressSearch.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'Enter' }));
         jasmine.clock().tick(500);
-        expect(JSON.parse(searchBar.name_address_model).search).toBe("my new search");
+        await searchBar.updateComplete;
+        expect(JSON.parse(searchBar.nameAddressModel).search).toBe("my new search");
         jasmine.clock().uninstall();
 
         searchBar.nameAddressResults[1].checked = true;
         searchBar.nameAddressResults[1].dispatchEvent(new Event("input"));
-        expect(JSON.parse(searchBar.name_address_model).selected).toBe("my city 2");
+        expect(JSON.parse(searchBar.nameAddressModel).selected).toBe("my city 2");
     });
 
     it("renders and updates the lat-lon search", async () => {
-        searchBar.lat_lon_model = JSON.stringify({
+        searchBar.latLonModel = JSON.stringify({
             search: "40, -100",
             results: ["my cool city"],
             selected: "my cool city",
@@ -101,14 +102,15 @@ describe("<search-bar>", () => {
 
         jasmine.clock().install();
         searchBar.latLonSearch.value = "my new search";
-        searchBar.latLonSearch.dispatchEvent(new Event("input"));
+        searchBar.latLonSearch.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'Enter' }));
         jasmine.clock().tick(500);
-        expect(JSON.parse(searchBar.lat_lon_model).search).toBe("my new search");
+        await searchBar.updateComplete;
+        expect(JSON.parse(searchBar.latLonModel).search).toBe("my new search");
         jasmine.clock().uninstall();
     });
 
     it("renders and updates the dataset search", async () => {
-        searchBar.dataset_model = JSON.stringify({
+        searchBar.datasetModel = JSON.stringify({
             search: "elevation",
             results: ["dataset 1", "dataset 2"],
             selected: "dataset 1",
@@ -120,9 +122,10 @@ describe("<search-bar>", () => {
 
         jasmine.clock().install();
         searchBar.datasetSearch.value = "my new search";
-        searchBar.datasetSearch.dispatchEvent(new Event("input"));
+        searchBar.datasetSearch.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'Enter' }));
         jasmine.clock().tick(500);
-        expect(JSON.parse(searchBar.dataset_model).search).toBe("my new search");
+        await searchBar.updateComplete;
+        expect(JSON.parse(searchBar.datasetModel).search).toBe("my new search");
         jasmine.clock().uninstall();
     });
 });
