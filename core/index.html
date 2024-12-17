@@ -7343,8 +7343,14 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 <span class="sd">            Optional[map_widgets.LayerManager]: The layer manager widget if found, else None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">toolbar_widget</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">toolbar_widget</span><span class="o">.</span><span class="n">accessory_widget</span><span class="p">,</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">accessory_widget</span>
+            <span class="k">return</span> <span class="nb">next</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="n">widget</span>
+                    <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">accessory_widgets</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">)</span>
+                <span class="p">),</span>
+                <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -7587,25 +7593,6 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_on_toggle_toolbar_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_open</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles the toggle event for the toolbar layers.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            is_open (bool): Whether the toolbar layers are open.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">is_open</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_manager</span><span class="p">:</span>
-                <span class="k">return</span>
-
-            <span class="n">layer_manager</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="n">layer_manager</span><span class="o">.</span><span class="n">header_hidden</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">layer_manager</span><span class="o">.</span><span class="n">close_button_hidden</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">layer_manager</span><span class="o">.</span><span class="n">refresh_layers</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar</span><span class="o">.</span><span class="n">accessory_widget</span> <span class="o">=</span> <span class="n">layer_manager</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar</span><span class="o">.</span><span class="n">accessory_widget</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;layer_manager&quot;</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">_add_layer_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a layer manager to the map.</span>
 
@@ -7613,9 +7600,6 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 <span class="sd">            position (str): The position to place the layer manager.</span>
 <span class="sd">            **kwargs (Any): Additional keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_manager</span><span class="p">:</span>
-            <span class="k">return</span>
-
         <span class="n">layer_manager</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">layer_manager</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;layer_manager&quot;</span><span class="p">)</span>
         <span class="n">layer_manager</span><span class="o">.</span><span class="n">refresh_layers</span><span class="p">()</span>
@@ -7634,16 +7618,21 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar</span><span class="p">:</span>
             <span class="k">return</span>
 
+        <span class="n">layer_manager</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">layer_manager</span><span class="o">.</span><span class="n">header_hidden</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">layer_manager</span><span class="o">.</span><span class="n">close_button_hidden</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">layer_manager</span><span class="o">.</span><span class="n">refresh_layers</span><span class="p">()</span>
+
         <span class="n">toolbar_val</span> <span class="o">=</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_main_tools</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_extra_tools</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_main_tools</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_extra_tools</span><span class="p">(),</span>
+            <span class="p">[</span><span class="n">layer_manager</span><span class="p">],</span>
         <span class="p">)</span>
-        <span class="n">toolbar_val</span><span class="o">.</span><span class="n">on_layers_toggled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_toggle_toolbar_layers</span>
         <span class="n">toolbar_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
             <span class="n">widget</span><span class="o">=</span><span class="n">toolbar_val</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span>
         <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">toolbar_control</span><span class="p">)</span>
-        <span class="c1"># Enable the layer manager by default.</span>
-        <span class="n">toolbar_val</span><span class="o">.</span><span class="n">toggle_layers</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_inspector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds an inspector to the map.</span>
@@ -7925,65 +7914,66 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="k">return</span> <span class="n">control</span>
 
     <span class="k">def</span> <span class="nf">_open_help_page</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;MapInterface&quot;</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;MapInterface&quot;</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">ToolbarItem</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Opens the help page.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            host_map (MapInterface): The host map.</span>
 <span class="sd">            selected (bool): Whether the item is selected.</span>
-<span class="sd">            item (toolbar.Toolbar.Item): The toolbar item.</span>
+<span class="sd">            item (toolbar.ToolbarItem): The toolbar item.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">item</span>  <span class="c1"># Unused.</span>
         <span class="k">if</span> <span class="n">selected</span><span class="p">:</span>
             <span class="n">coreutils</span><span class="o">.</span><span class="n">open_url</span><span class="p">(</span><span class="s2">&quot;https://geemap.org&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_toolbar_main_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_toolbar_main_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">toolbar</span><span class="o">.</span><span class="n">ToolbarItem</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the main tools for the toolbar.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[toolbar.Toolbar.Item]: The main tools for the toolbar.</span>
+<span class="sd">            List[toolbar.ToolbarItem]: The main tools for the toolbar.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nd">@toolbar</span><span class="o">.</span><span class="n">_cleanup_toolbar_item</span>
         <span class="k">def</span> <span class="nf">inspector_tool_callback</span><span class="p">(</span>
-            <span class="nb">map</span><span class="p">:</span> <span class="n">Map</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span>
+            <span class="nb">map</span><span class="p">:</span> <span class="n">Map</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">ToolbarItem</span>
         <span class="p">):</span>
             <span class="k">del</span> <span class="n">selected</span><span class="p">,</span> <span class="n">item</span>  <span class="c1"># Unused.</span>
             <span class="nb">map</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;inspector&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">map</span><span class="o">.</span><span class="n">_inspector</span>
 
         <span class="nd">@toolbar</span><span class="o">.</span><span class="n">_cleanup_toolbar_item</span>
-        <span class="k">def</span> <span class="nf">basemap_tool_callback</span><span class="p">(</span><span class="nb">map</span><span class="p">:</span> <span class="n">Map</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">basemap_tool_callback</span><span class="p">(</span><span class="nb">map</span><span class="p">:</span> <span class="n">Map</span><span class="p">,</span> <span class="n">selected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">ToolbarItem</span><span class="p">):</span>
             <span class="k">del</span> <span class="n">selected</span><span class="p">,</span> <span class="n">item</span>  <span class="c1"># Unused.</span>
             <span class="nb">map</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;basemap_selector&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">map</span><span class="o">.</span><span class="n">_basemap_selector</span>
 
         <span class="k">return</span> <span class="p">[</span>
-            <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">(</span>
+            <span class="n">toolbar</span><span class="o">.</span><span class="n">ToolbarItem</span><span class="p">(</span>
                 <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;map&quot;</span><span class="p">,</span>
                 <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Basemap selector&quot;</span><span class="p">,</span>
                 <span class="n">callback</span><span class="o">=</span><span class="n">basemap_tool_callback</span><span class="p">,</span>
-                <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="p">),</span>
-            <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">(</span>
-                <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span>
+            <span class="n">toolbar</span><span class="o">.</span><span class="n">ToolbarItem</span><span class="p">(</span>
+                <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;point_scan&quot;</span><span class="p">,</span>
                 <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Inspector&quot;</span><span class="p">,</span>
                 <span class="n">callback</span><span class="o">=</span><span class="n">inspector_tool_callback</span><span class="p">,</span>
-                <span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="p">),</span>
-            <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">(</span>
-                <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;question&quot;</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Get help&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_open_help_page</span>
+            <span class="n">toolbar</span><span class="o">.</span><span class="n">ToolbarItem</span><span class="p">(</span>
+                <span class="n">icon</span><span class="o">=</span><span class="s2">&quot;question_mark&quot;</span><span class="p">,</span>
+                <span class="n">tooltip</span><span class="o">=</span><span class="s2">&quot;Get help&quot;</span><span class="p">,</span>
+                <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_open_help_page</span><span class="p">,</span>
+                <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">),</span>
         <span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_toolbar_extra_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="o">.</span><span class="n">Item</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">_toolbar_extra_tools</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">toolbar</span><span class="o">.</span><span class="n">ToolbarItem</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the extra tools for the toolbar.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[List[toolbar.Toolbar.Item]]: The extra tools for the toolbar.</span>
+<span class="sd">            List[toolbar.ToolbarItem]: The extra tools for the toolbar.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">_control_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the control configuration.</span>
