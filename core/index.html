@@ -7845,6 +7845,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="n">widget_args</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="n">legend</span><span class="o">.</span><span class="n">host_map</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="n">control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">legend</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">layer</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">old_legend</span> <span class="o">:=</span> <span class="n">layer</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;legend&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
