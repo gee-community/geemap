@@ -824,10 +824,11 @@ class BasemapSelector(anywidget.AnyWidget):
     _esm = pathlib.Path(__file__).parent / "static" / "basemap_selector.js"
 
     # The list of basemap names to make available for selection.
-    basemaps = traitlets.List([]).tag(sync=True)
+    basemaps = traitlets.Dict({}).tag(sync=True)
 
     # The currently selected basemap value.
-    value = traitlets.Unicode("").tag(sync=True)
+    provider = traitlets.Unicode("").tag(sync=True)
+    resource = traitlets.Unicode("").tag(sync=True)
 
     def __init__(self, basemaps: List[str], value: str):
         """Creates a widget for selecting a basemap.
@@ -839,9 +840,26 @@ class BasemapSelector(anywidget.AnyWidget):
         super().__init__()
         self.on_close = None
         self.on_basemap_changed = None
-        self.basemaps = basemaps
-        self.value = value
+        self.basemaps = self._get_basemap_dictionary(basemaps)
+        provider, resource = self._parse_basemap_name(value)
+        self.provider = provider
+        self.resource = resource
         self._setup_event_listeners()
+        
+    def _parse_basemap_name(self, name: str) -> Tuple[str, str]:
+        components = name.split(".")
+        resource = ".".join(components[1:]) if len(components) > 1 else ""
+        return components[0], resource
+        
+    def _get_basemap_dictionary(self, basemaps: List[str]) -> Dict[str, List[str]]:
+        basemaps_dict: Dict[str, List[str]] = {}
+        for basemap in basemaps:
+            provider, resource = self._parse_basemap_name(basemap)
+            if provider not in basemaps_dict:
+                basemaps_dict[provider] = []
+            if resource:
+                basemaps_dict[provider].append(resource)
+        return basemaps_dict
 
     def _setup_event_listeners(self) -> None:
         self.on_msg(self._handle_message_event)
@@ -854,11 +872,15 @@ class BasemapSelector(anywidget.AnyWidget):
             msg_id = content.get("id", "")
             if msg_id == "close":
                 self.cleanup()
+            if msg_id == "apply":
+                self.apply_basemap()
 
-    @traitlets.observe("value")
-    def _observe_value(self, change: Dict[str, Any]) -> None:
-        if (value := change.get("new")) is not None and self.on_basemap_changed:
-            self.on_basemap_changed(value)
+    def apply_basemap(self) -> None:
+        basemap_name = self.provider
+        if self.resource:
+            basemap_name = basemap_name + f".{self.resource}"
+        if self.on_basemap_changed:
+            self.on_basemap_changed(basemap_name)
 
     def cleanup(self) -> None:
         """Cleans up the widget by calling the on_close callback if set."""
