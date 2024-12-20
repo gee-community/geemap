@@ -1,15 +1,18 @@
 import type { RenderProps } from "@anywidget/types";
-import { css, html, PropertyValues, TemplateResult } from "lit";
-import { property, query } from "lit/decorators.js";
+import { css, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { property } from "lit/decorators.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
-import { materialStyles } from "./styles";
-import { loadFonts } from "./utils";
+import { flexStyles, materialStyles } from "./styles";
+import { loadFonts, renderSelect } from "./utils";
+
+import "./container";
 
 export interface BasemapSelectorModel {
-    basemaps: string[];
-    value: string;
+    basemaps: { [id: string]: string[] };
+    provider: string;
+    resource: string;
 }
 
 export class BasemapSelector extends LitWidget<
@@ -21,21 +24,20 @@ export class BasemapSelector extends LitWidget<
     }
 
     static styles = [
+        flexStyles,
         legacyStyles,
         materialStyles,
         css`
-            .row-container {
-                align-items: center;
-                display: flex;
-                height: 32px;
-                width: 200px;
+            .horizontal-flex {
+                gap: 4px;
             }
 
-            .row-button {
-                font-size: 14px;
-                height: 26px;
-                margin: 4px;
-                width: 26px;
+            .legacy-text {
+                min-width: 70px;
+            }
+
+            .legacy-button {
+                padding: 0 12px;
             }
         `,
     ];
@@ -46,42 +48,86 @@ export class BasemapSelector extends LitWidget<
     > {
         return new Map([
             ["basemaps", "basemaps"],
-            ["value", "value"],
+            ["provider", "provider"],
+            ["resource", "resource"],
         ]);
     }
 
-    @property({ type: Array }) basemaps: string[] = [];
-    @property({ type: String }) value: string = "";
-    @query('select') selectElement!: HTMLSelectElement|null;
+    @property({ type: Object }) basemaps: { [id: string]: string[] } = {};
+    @property({ type: String }) provider: string = "";
+    @property({ type: String }) resource: string = "";
 
     render(): TemplateResult {
         return html`
-            <div class="row-container">
-                <select class="legacy-select" @change=${this.onChange}>
-                    ${this.basemaps.map((basemap) => html`<option>${basemap}</option>`)}
-                </select>
-                <button
-                    class="legacy-button primary row-button close-button"
-                    @click="${this.onCloseClicked}"
-                >
-                    <span class="close-icon material-symbols-outlined">close</span>
-                </button>
-            </div>`;
+            <widget-container @close-clicked="${this.onCloseClicked}">
+                <div class="vertical-flex">
+                    <div class="horizontal-flex">
+                        <span class="legacy-text">Provider</span>
+                        ${renderSelect(
+                            Object.keys(this.basemaps),
+                            this.provider,
+                            this.onProviderChanged
+                        )}
+                    </div>
+                    ${this.getAvailableResources().length > 0
+                        ? html`
+                              <div class="horizontal-flex">
+                                  <span class="legacy-text">Resource</span>
+                                  ${renderSelect(
+                                      this.getAvailableResources(),
+                                      this.resource,
+                                      this.onResourceChanged
+                                  )}
+                              </div>
+                          `
+                        : nothing}
+                    <div class="horizontal-flex ">
+                        <button
+                            class="legacy-button"
+                            @click="${this.onCloseClicked}"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            class="legacy-button primary"
+                            @click="${this.onApplyClicked}"
+                        >
+                            Add basemap
+                        </button>
+                    </div>
+                </div>
+            </widget-container>
+        `;
     }
 
     override update(changedProperties: PropertyValues): void {
-        if (changedProperties.has("value") && this.selectElement) {
-            this.selectElement.value = this.value;
+        if (changedProperties.has("provider")) {
+            const resources = this.getAvailableResources();
+            this.resource = resources.length > 0 ? resources[0] : "";
         }
         super.update(changedProperties);
     }
 
-    private onChange(event: Event) {
-        const target = event.target as HTMLInputElement;
-        this.value = target.value;
+    private getAvailableResources(): string[] {
+        if (this.provider in this.basemaps) {
+            return this.basemaps[this.provider];
+        }
+        return [];
     }
 
-    private onCloseClicked(_: Event) {
+    private onProviderChanged(event: Event): void {
+        this.provider = (event.target as HTMLInputElement).value;
+    }
+
+    private onResourceChanged(event: Event): void {
+        this.resource = (event.target as HTMLInputElement).value;
+    }
+
+    private onApplyClicked(_: Event): void {
+        this.model?.send({ type: "click", id: "apply" });
+    }
+
+    private onCloseClicked(_: Event): void {
         this.model?.send({ type: "click", id: "close" });
     }
 }

@@ -725,30 +725,50 @@ class TestBasemapSelector(unittest.TestCase):
     """Tests for the BasemapSelector class in the `map_widgets` module."""
 
     def setUp(self):
-        self.basemaps = ["first", "default", "bounded"]
-        self.default = "default"
-        self.basemap_widget = map_widgets.BasemapSelector(self.basemaps, self.default)
+        self.basemap_list = [
+            "DEFAULT",
+            "provider.resource-1",
+            "provider.resource-2",
+            "another-provider",
+        ]
 
     def test_basemap_default(self):
-        """Tests that the default value is set."""
-        self.assertEqual(self.basemap_widget.value, "default")
+        """Tests that the default values are set."""
+        widget = map_widgets.BasemapSelector(self.basemap_list, "provider.resource-1")
+        self.assertEqual(
+            widget.basemaps,
+            {
+                "DEFAULT": [],
+                "provider": ["resource-1", "resource-2"],
+                "another-provider": [],
+            },
+        )
+        self.assertEqual(widget.provider, "provider")
+        self.assertEqual(widget.resource, "resource-1")
+
+    def test_basemap_default_no_resource(self):
+        """Tests that the default values are set for no resource."""
+        widget = map_widgets.BasemapSelector(self.basemap_list, "DEFAULT")
+        self.assertEqual(widget.provider, "DEFAULT")
+        self.assertEqual(widget.resource, "")
 
     def test_basemap_close(self):
         """Tests that triggering the closing button fires the close callback."""
+        widget = map_widgets.BasemapSelector(self.basemap_list, "DEFAULT")
         on_close_mock = Mock()
-        self.basemap_widget.on_close = on_close_mock
+        widget.on_close = on_close_mock
         msg = {"type": "click", "id": "close"}
-        self.basemap_widget._handle_custom_msg(
-            msg, []
-        )  # pylint: disable=protected-access
+        widget._handle_custom_msg(msg, [])  # pylint: disable=protected-access
         on_close_mock.assert_called_once()
 
     def test_basemap_change(self):
         """Tests that value change fires the basemap_changed callback."""
-        on_change_mock = Mock()
-        self.basemap_widget.on_basemap_changed = on_change_mock
-        self.basemap_widget.value = "ROADMAP"
-        on_change_mock.assert_called_once_with("ROADMAP")
+        widget = map_widgets.BasemapSelector(self.basemap_list, "provider.resource-2")
+        on_apply_mock = Mock()
+        widget.on_basemap_changed = on_apply_mock
+        msg = {"type": "click", "id": "apply"}
+        widget._handle_custom_msg(msg, [])  # pylint: disable=protected-access
+        on_apply_mock.assert_called_once_with("provider.resource-2")
 
 
 @patch.object(ee, "Feature", fake_ee.Feature)
