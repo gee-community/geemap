@@ -7735,6 +7735,7 @@ def extract_values_to_points(
         "MAXIMUM": ee.Reducer.max(),
         "MEDIAN": ee.Reducer.median(),
         "MINIMUM": ee.Reducer.min(),
+        "MODE": ee.Reducer.mode(),
         "STD": ee.Reducer.stdDev(),
         "MIN_MAX": ee.Reducer.minMax(),
         "SUM": ee.Reducer.sum(),
