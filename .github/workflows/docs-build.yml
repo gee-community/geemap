@@ -34,6 +34,7 @@ jobs:
 
             - name: Install optional dependencies
               run: |
+                  uv clean cache
                   uv pip install --find-links https://girder.github.io/large_image_wheels GDAL pyproj
                   uv pip install -r pyproject.toml --extra all
             - name: Test import
