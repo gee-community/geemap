@@ -95,7 +95,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
 
     private renderTitle(): HTMLTemplateResult | typeof nothing {
         if (this.title) {
-            return html`<span class="legacy-text header-text>${this.title}</span>`;
+            return html`<span class="legacy-text header-text">${this.title}</span>`;
         }
         return nothing;
     }
