@@ -13,7 +13,7 @@ export abstract class LitWidget<
         keyof SubclassType | null
     >;
 
-    onCustomMessage?(msg: any): void {}
+    onCustomMessage?(_msg: any): void {}
 
     viewNameToModelName(): Map<keyof SubclassType | null, keyof ModelType> {
         return reverseMap(this.modelNameToViewName());
