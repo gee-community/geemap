@@ -30,11 +30,11 @@ describe("<basemap-selector>", () => {
             new FakeAnyModel<BasemapSelectorModel>({
                 basemaps: {
                     DEFAULT: [],
-                    provider: ["resource-1", "resource-2"],
+                    "a-provider": ["resource-1", "resource-2"],
                     "another-provider": [],
                 },
-                provider: "provider",
-                resource: "resource-1",
+                provider: "DEFAULT",
+                resource: "",
             })
         );
     });
@@ -53,44 +53,59 @@ describe("<basemap-selector>", () => {
         ).toContain("DEFAULT");
     });
 
-    // it("renders the basemap options.", () => {
-    //     const options = selector.shadowRoot?.querySelectorAll("option")!;
-    //     expect(options.length).toBe(3);
-    //     expect(options[0].textContent).toContain("select");
-    //     expect(options[1].textContent).toContain("default");
-    //     expect(options[2].textContent).toContain("bounded");
-    // });
+    it("selects the default provider appropriately.", () => {
+        const selects = selector.shadowRoot?.querySelectorAll("select")!;
+        const providerSelect = selects[0];
+        expect(providerSelect.value).toBe("DEFAULT");
+        expect(selects.length).toBe(1); // Resource select shouldn't be visible.
+    });
 
-    // it("setting the value on model changes the value on select.", async () => {
-    //     selector.value = "select";
-    //     await selector.updateComplete;
-    //     expect(selector.selectElement.value).toBe("select");
-    // });
+    it("setting the provider and resource on model updates the view.", async () => {
+        selector.provider = "a-provider";
+        await selector.updateComplete;
 
-    // it("sets value on model when option changes.", async () => {
-    //     const setSpy = spyOn(FakeAnyModel.prototype, "set");
-    //     const saveSpy = spyOn(FakeAnyModel.prototype, "save_changes");
+        const selects = selector.shadowRoot?.querySelectorAll("select")!;
+        expect(selects.length).toBe(2);
+        const providerSelect = selects[0];
+        const resourceSelect = selects[1];
 
-    //     selector.selectElement.value = "select";
-    //     selector.selectElement.dispatchEvent(new Event("change"));
+        expect(providerSelect.value).toBe("a-provider");
+        expect(resourceSelect.value).toBe("resource-1");
+        expect(selector.resource).toBe("resource-1");
 
-    //     await selector.updateComplete;
-    //     expect(setSpy).toHaveBeenCalledOnceWith("value", "select");
-    //     expect(saveSpy).toHaveBeenCalledTimes(1);
-    // });
+        selector.resource = "resource-2";
+        await selector.updateComplete;
 
-    // it("emits close event when clicked.", async () => {
-    //     const sendSpy = spyOn(FakeAnyModel.prototype, "send");
-    //     // Close button emits an event.
-    //     (
-    //         selector.shadowRoot?.querySelector(
-    //             ".close-button"
-    //         ) as HTMLButtonElement
-    //     ).click();
-    //     await selector.updateComplete;
-    //     expect(sendSpy).toHaveBeenCalledOnceWith({
-    //         type: "click",
-    //         id: "close",
-    //     });
-    // });
+        expect(providerSelect.value).toBe("a-provider");
+        expect(selector.provider).toBe("a-provider");
+        expect(resourceSelect.value).toBe("resource-2");
+    });
+
+    it("sets value on model when option changes.", async () => {
+        const setSpy = spyOn(FakeAnyModel.prototype, "set");
+        const saveSpy = spyOn(FakeAnyModel.prototype, "save_changes");
+
+        let selects = selector.shadowRoot?.querySelectorAll("select")!;
+        const providerSelect = selects[0];
+
+        providerSelect.value = "a-provider";
+        providerSelect.dispatchEvent(new Event("change"));
+        await selector.updateComplete;
+
+        expect(setSpy).toHaveBeenCalledWith("provider", "a-provider");
+        expect(setSpy).toHaveBeenCalledWith("resource", "resource-1");
+        expect(setSpy).toHaveBeenCalledTimes(2);
+        expect(saveSpy).toHaveBeenCalledTimes(1);
+
+        selects = selector.shadowRoot?.querySelectorAll("select")!;
+        const resourceSelect = selects[1];
+
+        resourceSelect.value = "resource-2";
+        resourceSelect.dispatchEvent(new Event("change"));
+        await selector.updateComplete;
+
+        expect(setSpy).toHaveBeenCalledWith("resource", "resource-2");
+        expect(setSpy).toHaveBeenCalledTimes(3);
+        expect(saveSpy).toHaveBeenCalledTimes(2);
+    });
 });
