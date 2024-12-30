@@ -151,7 +151,8 @@ export class LegendCustomization extends LitElement {
     }
 
     private onLabelsChanged(event: Event): void {
-        this.labels = (event.target as HTMLInputElement).value;
+        const labels = (event.target as HTMLInputElement).value;
+        this.labels = labels.split(",").map(token => token.trim());
     }
 }
 
