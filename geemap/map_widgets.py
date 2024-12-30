@@ -845,12 +845,12 @@ class BasemapSelector(anywidget.AnyWidget):
         self.provider = provider
         self.resource = resource
         self._setup_event_listeners()
-        
+
     def _parse_basemap_name(self, name: str) -> Tuple[str, str]:
         components = name.split(".")
         resource = ".".join(components[1:]) if len(components) > 1 else ""
         return components[0], resource
-        
+
     def _get_basemap_dictionary(self, basemaps: List[str]) -> Dict[str, List[str]]:
         basemaps_dict: Dict[str, List[str]] = {}
         for basemap in basemaps:
