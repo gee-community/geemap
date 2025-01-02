@@ -59,7 +59,11 @@ export class BasemapSelector extends LitWidget<
 
     render(): TemplateResult {
         return html`
-            <widget-container @close-clicked="${this.onCloseClicked}">
+            <widget-container
+                icon="map"
+                title="Basemap Selector"
+                @close-clicked="${this.onCloseClicked}"
+            >
                 <div class="vertical-flex">
                     <div class="horizontal-flex">
                         <span class="legacy-text">Provider</span>
