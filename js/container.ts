@@ -7,6 +7,7 @@ import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
 
 export interface ContainerModel {
+    icon: string;
     title: string;
     collapsed: boolean;
     hide_close_button: boolean;
@@ -27,6 +28,14 @@ export class Container extends LitWidget<ContainerModel, Container> {
                 padding: 4px;
             }
 
+            .icon {
+                align-items: center;
+                display: flex;
+                font-size: 20px;
+                height: 28px;
+                justify-content: center;
+            }
+
             .widget-container {
                 padding: 4px;
             }
@@ -43,18 +52,20 @@ export class Container extends LitWidget<ContainerModel, Container> {
 
             .header-text {
                 align-content: center;
-                padding-left: 4px;
-                padding-right: 4px;
+                flex-grow: 1;
+                padding-right: 12px;
             }
         `,
     ];
 
+    @property({ type: String }) icon: string = "";
     @property({ type: String }) title: string = "";
     @property({ type: Boolean }) collapsed: boolean = false;
     @property({ type: Boolean }) hideCloseButton: boolean = false;
 
     modelNameToViewName(): Map<keyof ContainerModel, keyof Container | null> {
         return new Map([
+            ["icon", "icon"],
             ["collapsed", "collapsed"],
             ["title", "title"],
             ["hide_close_button", "hideCloseButton"],
@@ -64,14 +75,15 @@ export class Container extends LitWidget<ContainerModel, Container> {
     render() {
         return html`
             <div class="header">
-                ${this.renderCloseButton()}
+                <span class="icon material-symbols-outlined">${this.icon}</span>
+                ${this.renderTitle()}
                 <button
                     class="legacy-button header-button"
                     @click="${this.onCollapseToggled}"
                 >
                     ${this.renderCollapseButtonIcon()}
                 </button>
-                ${this.renderTitle()}
+                ${this.renderCloseButton()}
             </div>
             <div class="widget-container ${this.collapsed ? "hidden" : ""}">
                 <slot></slot>
@@ -93,11 +105,8 @@ export class Container extends LitWidget<ContainerModel, Container> {
         `;
     }
 
-    private renderTitle(): HTMLTemplateResult | typeof nothing {
-        if (this.title) {
-            return html`<span class="legacy-text header-text">${this.title}</span>`;
-        }
-        return nothing;
+    private renderTitle(): HTMLTemplateResult {
+        return html`<span class="legacy-text header-text">${this.title}</span>`;
     }
 
     private onCloseButtonClicked(): void {

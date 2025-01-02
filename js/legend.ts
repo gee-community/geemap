@@ -101,8 +101,8 @@ export class Legend extends LitWidget<LegendModel, Legend> {
     render() {
         return this.addHeader ? html`
             <widget-container
-                .hideCloseButton="${!this.showCloseButton}"
                 .title="${this.title}"
+                .hideCloseButton="${!this.showCloseButton}"
                 @close-clicked="${this.onCloseButtonClicked}">
                 ${this.renderLegend("")}
             </widget-container>` : this.renderLegend(this.title);
