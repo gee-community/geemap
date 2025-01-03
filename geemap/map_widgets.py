@@ -855,10 +855,9 @@ class BasemapSelector(anywidget.AnyWidget):
         basemaps_dict: Dict[str, List[str]] = {}
         for basemap in basemaps:
             provider, resource = self._parse_basemap_name(basemap)
-            if provider not in basemaps_dict:
-                basemaps_dict[provider] = []
+            provider_map = basemaps_dict.setdefault(provider, [])
             if resource:
-                basemaps_dict[provider].append(resource)
+                provider_map.append(resource)
         return basemaps_dict
 
     def _setup_event_listeners(self) -> None:
