@@ -5695,10 +5695,11 @@ Basemap            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
     <span class="n">_esm</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> <span class="o">/</span> <span class="s2">&quot;basemap_selector.js&quot;</span>
 
     <span class="c1"># The list of basemap names to make available for selection.</span>
-    <span class="n">basemaps</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">List</span><span class="p">([])</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">basemaps</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Dict</span><span class="p">({})</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># The currently selected basemap value.</span>
-    <span class="n">value</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">provider</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">resource</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a widget for selecting a basemap.</span>
@@ -5710,9 +5711,25 @@ Basemap            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">basemaps</span> <span class="o">=</span> <span class="n">basemaps</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basemaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_basemap_dictionary</span><span class="p">(</span><span class="n">basemaps</span><span class="p">)</span>
+        <span class="n">provider</span><span class="p">,</span> <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_basemap_name</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">provider</span> <span class="o">=</span> <span class="n">provider</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resource</span> <span class="o">=</span> <span class="n">resource</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup_event_listeners</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_parse_basemap_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">components</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">components</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">resource</span>
+
+    <span class="k">def</span> <span class="nf">_get_basemap_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="n">basemaps_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">basemap</span> <span class="ow">in</span> <span class="n">basemaps</span><span class="p">:</span>
+            <span class="n">provider</span><span class="p">,</span> <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_basemap_name</span><span class="p">(</span><span class="n">basemap</span><span class="p">)</span>
+            <span class="n">provider_map</span> <span class="o">=</span> <span class="n">basemaps_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">provider</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">if</span> <span class="n">resource</span><span class="p">:</span>
+                <span class="n">provider_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">basemaps_dict</span>
 
     <span class="k">def</span> <span class="nf">_setup_event_listeners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_msg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_message_event</span><span class="p">)</span>
@@ -5725,11 +5742,15 @@ Basemap            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
             <span class="n">msg_id</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;close&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;apply&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">apply_basemap</span><span class="p">()</span>
 
-    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_observe_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">:=</span> <span class="n">change</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">apply_basemap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">basemap_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">provider</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="p">:</span>
+            <span class="n">basemap_name</span> <span class="o">=</span> <span class="n">basemap_name</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">(</span><span class="n">basemap_name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Cleans up the widget by calling the on_close callback if set.&quot;&quot;&quot;</span>
@@ -5741,6 +5762,7 @@ Basemap            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -5806,14 +5828,17 @@ Basemap            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">basemaps</span> <span class="o">=</span> <span class="n">basemaps</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">basemaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_basemap_dictionary</span><span class="p">(</span><span class="n">basemaps</span><span class="p">)</span>
+    <span class="n">provider</span><span class="p">,</span> <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_basemap_name</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">provider</span> <span class="o">=</span> <span class="n">provider</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">resource</span> <span class="o">=</span> <span class="n">resource</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_setup_event_listeners</span><span class="p">()</span>
 </code></pre></div>
         </details>
     </div>
 
   </div>
+
 
 
 
@@ -5881,10 +5906,11 @@ BasemapSelector            (<span title="anywidget.widget.AnyWidget">AnyWidget</
     <span class="n">_esm</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> <span class="o">/</span> <span class="s2">&quot;basemap_selector.js&quot;</span>
 
     <span class="c1"># The list of basemap names to make available for selection.</span>
-    <span class="n">basemaps</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">List</span><span class="p">([])</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">basemaps</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Dict</span><span class="p">({})</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># The currently selected basemap value.</span>
-    <span class="n">value</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">provider</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">resource</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a widget for selecting a basemap.</span>
@@ -5896,9 +5922,25 @@ BasemapSelector            (<span title="anywidget.widget.AnyWidget">AnyWidget</
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">basemaps</span> <span class="o">=</span> <span class="n">basemaps</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">basemaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_basemap_dictionary</span><span class="p">(</span><span class="n">basemaps</span><span class="p">)</span>
+        <span class="n">provider</span><span class="p">,</span> <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_basemap_name</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">provider</span> <span class="o">=</span> <span class="n">provider</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resource</span> <span class="o">=</span> <span class="n">resource</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup_event_listeners</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_parse_basemap_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">components</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">components</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">components</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">resource</span>
+
+    <span class="k">def</span> <span class="nf">_get_basemap_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="n">basemaps_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">basemap</span> <span class="ow">in</span> <span class="n">basemaps</span><span class="p">:</span>
+            <span class="n">provider</span><span class="p">,</span> <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_basemap_name</span><span class="p">(</span><span class="n">basemap</span><span class="p">)</span>
+            <span class="n">provider_map</span> <span class="o">=</span> <span class="n">basemaps_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">provider</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">if</span> <span class="n">resource</span><span class="p">:</span>
+                <span class="n">provider_map</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">basemaps_dict</span>
 
     <span class="k">def</span> <span class="nf">_setup_event_listeners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_msg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle_message_event</span><span class="p">)</span>
@@ -5911,11 +5953,15 @@ BasemapSelector            (<span title="anywidget.widget.AnyWidget">AnyWidget</
             <span class="n">msg_id</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;close&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;apply&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">apply_basemap</span><span class="p">()</span>
 
-    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_observe_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">:=</span> <span class="n">change</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">apply_basemap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">basemap_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">provider</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="p">:</span>
+            <span class="n">basemap_name</span> <span class="o">=</span> <span class="n">basemap_name</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">resource</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span><span class="p">(</span><span class="n">basemap_name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Cleans up the widget by calling the on_close callback if set.&quot;&quot;&quot;</span>
@@ -5927,6 +5973,7 @@ BasemapSelector            (<span title="anywidget.widget.AnyWidget">AnyWidget</
 
 
   <div class="doc doc-children">
+
 
 
 
@@ -5992,14 +6039,17 @@ BasemapSelector            (<span title="anywidget.widget.AnyWidget">AnyWidget</
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">basemaps</span> <span class="o">=</span> <span class="n">basemaps</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">basemaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_basemap_dictionary</span><span class="p">(</span><span class="n">basemaps</span><span class="p">)</span>
+    <span class="n">provider</span><span class="p">,</span> <span class="n">resource</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_basemap_name</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">provider</span> <span class="o">=</span> <span class="n">provider</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">resource</span> <span class="o">=</span> <span class="n">resource</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_setup_event_listeners</span><span class="p">()</span>
 </code></pre></div>
         </details>
     </div>
 
   </div>
+
 
 
 
