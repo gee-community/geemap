@@ -23,6 +23,10 @@ export class Container extends LitWidget<ContainerModel, Container> {
         legacyStyles,
         materialStyles,
         css`
+            div {
+                background-color: var(--colab-primary-surface-color, --jp-layout-color1, white);
+            }
+
             .header {
                 display: flex;
                 gap: 4px;
