@@ -9,6 +9,7 @@ import { materialStyles } from "./styles";
 import { loadFonts, updateChildren } from "./utils";
 
 import "./tab_panel";
+import { Alignment } from "./tab_panel";
 
 
 export interface ToolbarModel {
@@ -79,6 +80,7 @@ export class Toolbar extends LitWidget<
             <tab-panel
                 .index="${this.tab_index}"
                 .tabs=${[{ icon: "layers", width: 74 }, { icon: "build" }]}
+                .alignment="${Alignment.RIGHT}"
                 @tab-changed=${(e: CustomEvent<number>) => {
                 this.tab_index = e.detail;
             }}>

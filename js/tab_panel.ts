@@ -16,6 +16,13 @@ export enum TabMode {
     HIDE_ON_SECOND_CLICK,
 }
 
+/** The tab alignment. */
+export enum Alignment {
+    CENTER = 'center',
+    LEFT = 'left',
+    RIGHT = 'right',
+}
+
 /** The tab configuration, as a string or Material Icon. */
 export interface Tab {
     name: string | undefined,
@@ -58,6 +65,17 @@ export class TabPanel extends LitElement {
                 align-items: center;
                 display: flex;
                 flex-direction: row;
+            }
+
+            .tab-container.center {
+                justify-content: center;
+            }
+
+            .tab-container.left {
+                justify-content: flex-start;
+            }
+
+            .tab-container.right {
                 justify-content: flex-end;
             }
 
@@ -88,6 +106,9 @@ export class TabPanel extends LitElement {
     @property({ type: Number })
     mode: TabMode = TabMode.HIDE_ON_SECOND_CLICK;
 
+    @property({ type: String })
+    alignment: Alignment = Alignment.LEFT;
+
     /**
      * The tab elements.
      */
@@ -103,7 +124,14 @@ export class TabPanel extends LitElement {
     render() {
         return html`
             <div class="container">
-                <div role="tablist" class="tab-container">
+                <div
+                    role="tablist"
+                    class="${classMap({
+            "tab-container": true,
+            "center": this.alignment === Alignment.CENTER,
+            "left": this.alignment === Alignment.LEFT,
+            "right": this.alignment === Alignment.RIGHT,
+        })}">
                     ${this.renderTabs()}
                 </div>
                 <slot @slotchange=${this.updateSlotChildren}></slot>

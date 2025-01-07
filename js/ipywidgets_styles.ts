@@ -14,6 +14,7 @@ export const legacyStyles = css`
         justify-content: center;
         line-height: var(--jp-widgets-inline-height);
         padding: 0;
+        user-select: none;
     }
 
     .legacy-button.primary {

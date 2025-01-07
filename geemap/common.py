@@ -3791,7 +3791,6 @@ def geocode(location, max_rows=10, reverse=False):
         location (str): Place name or address
         max_rows (int, optional): Maximum number of records to return. Defaults to 10.
         reverse (bool, optional): Search place based on coordinates. Defaults to False.
-
     Returns:
         list: Returns a list of locations.
     """
@@ -3824,9 +3823,6 @@ def geocode(location, max_rows=10, reverse=False):
             elif " " in location:
                 latlon = [float(x) for x in location.split(" ")]
             else:
-                print(
-                    "The lat-lon coordinates should be numbers only and separated by comma or space, such as 40.2, -100.3"
-                )
                 return
             g = geocoder.arcgis(latlon, method="reverse")
             locations = []

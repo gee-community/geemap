@@ -5,6 +5,7 @@ import { property } from "lit/decorators.js";
 import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
+import { classMap } from "lit/directives/class-map.js";
 
 export interface ContainerModel {
     icon: string;
@@ -53,7 +54,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
             .header-text {
                 align-content: center;
                 flex-grow: 1;
-                padding-right: 12px;
+                padding: 0 6px 0 12px;
             }
         `,
     ];
@@ -62,6 +63,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
     @property({ type: String }) title: string = "";
     @property({ type: Boolean }) collapsed: boolean = false;
     @property({ type: Boolean }) hideCloseButton: boolean = false;
+    @property({ type: Boolean }) compactMode: boolean = false;
 
     modelNameToViewName(): Map<keyof ContainerModel, keyof Container | null> {
         return new Map([
@@ -74,21 +76,26 @@ export class Container extends LitWidget<ContainerModel, Container> {
 
     render() {
         return html`
-            <div class="header">
-                <span class="icon material-symbols-outlined">${this.icon}</span>
-                ${this.renderTitle()}
-                <button
-                    class="legacy-button header-button"
-                    @click="${this.onCollapseToggled}"
-                >
-                    ${this.renderCollapseButtonIcon()}
-                </button>
-                ${this.renderCloseButton()}
-            </div>
+            ${this.compactMode ? this.renderCompactHeader() : html`
+                <div class="header">
+                    ${this.renderIcon()}
+                    ${this.title ? this.renderTitle() : nothing}
+                    ${this.renderCollapseButton()}
+                    ${this.renderCloseButton()}
+                </div>
+            `}
             <div class="widget-container ${this.collapsed ? "hidden" : ""}">
                 <slot></slot>
             </div>
         `;
+    }
+
+    private renderCompactHeader(): TemplateResult {
+        return html`<div class="header">
+            ${this.renderCollapseButton()}
+            ${(this.title && !this.collapsed) ? this.renderTitle() : nothing}
+            ${this.renderCloseButton()}
+        </div>`;
     }
 
     private renderCloseButton(): HTMLTemplateResult | typeof nothing {
@@ -118,13 +125,34 @@ export class Container extends LitWidget<ContainerModel, Container> {
         this.dispatchEvent(new CustomEvent("collapse-clicked", {}));
     }
 
-    private renderCollapseButtonIcon(): TemplateResult {
-        if (this.collapsed) {
-            return html`<span class="material-symbols-outlined"
+    private renderIcon(): TemplateResult {
+        return html`<span class="icon material-symbols-outlined">
+                        ${this.icon}
+                    </span>`
+    }
+
+    private renderCollapseButton(): TemplateResult {
+        let icon: TemplateResult;
+        if (this.compactMode) {
+            icon = this.renderIcon();
+        } else if (this.collapsed) {
+            icon = html`<span class="material-symbols-outlined"
                 >&#xf830;</span
             >`;
+        } else {
+            icon = html`<span class="material-symbols-outlined">&#xf507;</span>`;
         }
-        return html`<span class="material-symbols-outlined">&#xf507;</span>`;
+        return html`<button
+            class="${classMap({
+            'legacy-button': true,
+            'header-button': true,
+            'active': !this.collapsed,
+        })}"
+            class="legacy-button header-button"
+            @click="${this.onCollapseToggled}"
+        >
+            ${icon}
+        </button>`
     }
 }
 

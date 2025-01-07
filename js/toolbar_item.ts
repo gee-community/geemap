@@ -10,6 +10,7 @@ import { loadFonts } from "./utils";
 
 export interface ToolbarItemModel {
     active: boolean;
+    primary: boolean;
     icon: string;
     // Note: "tooltip" is already used by ipywidgets.
     tooltip_text: string;
@@ -29,7 +30,6 @@ export class ToolbarItem extends LitWidget<ToolbarItemModel, ToolbarItem> {
                 height: 32px;
                 padding: 0px 0px 0px 4px;
                 width: 32px;
-                user-select: none;
             }
         `,
     ];
@@ -37,6 +37,7 @@ export class ToolbarItem extends LitWidget<ToolbarItemModel, ToolbarItem> {
     modelNameToViewName(): Map<keyof ToolbarItemModel, keyof ToolbarItem> {
         return new Map([
             ["active", "active"],
+            ["primary", "primary"],
             ["icon", "icon"],
             ["tooltip_text", "tooltip_text"],
         ]);
@@ -44,6 +45,9 @@ export class ToolbarItem extends LitWidget<ToolbarItemModel, ToolbarItem> {
 
     @property({ type: Boolean })
     active: boolean = false;
+
+    @property({ type: Boolean })
+    primary: boolean = true;
 
     @property({ type: String })
     icon: string = '';
@@ -56,7 +60,7 @@ export class ToolbarItem extends LitWidget<ToolbarItemModel, ToolbarItem> {
             <button
                 class=${classMap({
             'legacy-button': true,
-            'primary': true,
+            'primary': this.primary,
             'active': this.active,
         })}
                 title="${this.tooltip_text}"
