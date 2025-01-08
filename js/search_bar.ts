@@ -161,7 +161,7 @@ export class SearchBar extends LitWidget<
     private renderLocationSearch() {
         const locationModel = JSON.parse(this.locationModel) as SearchTab;
         const helpText = html`<p>
-            Find your point of interest (by place name, 
+            Find your point of interest (by place name,
             address, or coordinates, e.g. 40,-100)
         </p>`;
         const searchInput = html`<input
