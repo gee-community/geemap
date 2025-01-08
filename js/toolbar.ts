@@ -79,7 +79,7 @@ export class Toolbar extends LitWidget<
     render() {
         return html`
             <widget-container
-                .collapsted="${false}"
+                .collapsed="${false}"
                 .hideCloseButton=${true}
                 .noHeader="${true}">
                 <tab-panel
