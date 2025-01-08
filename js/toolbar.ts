@@ -6,11 +6,10 @@ import { classMap } from "lit/directives/class-map.js";
 import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
+import { Alignment } from "./tab_panel";
 import { loadFonts, updateChildren } from "./utils";
 
 import "./tab_panel";
-import { Alignment } from "./tab_panel";
-
 
 export interface ToolbarModel {
     accessory_widgets: any;
