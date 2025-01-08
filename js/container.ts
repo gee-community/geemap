@@ -1,11 +1,11 @@
 import type { RenderProps } from "@anywidget/types";
 import { css, html, HTMLTemplateResult, nothing, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
-import { classMap } from "lit/directives/class-map.js";
 
 export interface ContainerModel {
     icon: string;
