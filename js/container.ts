@@ -68,6 +68,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
     @property({ type: Boolean }) collapsed: boolean = false;
     @property({ type: Boolean }) hideCloseButton: boolean = false;
     @property({ type: Boolean }) compactMode: boolean = false;
+    @property({ type: Boolean }) noHeader: boolean = false;
 
     modelNameToViewName(): Map<keyof ContainerModel, keyof Container | null> {
         return new Map([
@@ -80,18 +81,21 @@ export class Container extends LitWidget<ContainerModel, Container> {
 
     render() {
         return html`
-            ${this.compactMode ? this.renderCompactHeader() : html`
-                <div class="header">
-                    ${this.renderIcon()}
-                    ${this.title ? this.renderTitle() : nothing}
-                    ${this.renderCollapseButton()}
-                    ${this.renderCloseButton()}
-                </div>
-            `}
+            ${this.noHeader ? nothing : this.renderHeader()}
             <div class="widget-container ${this.collapsed ? "hidden" : ""}">
                 <slot></slot>
             </div>
         `;
+    }
+
+    private renderHeader(): TemplateResult {
+        return this.compactMode ? this.renderCompactHeader() : html`
+            <div class="header">
+                ${this.renderIcon()}
+                ${this.title ? this.renderTitle() : nothing}
+                ${this.renderCollapseButton()}
+                ${this.renderCloseButton()}
+            </div>`;
     }
 
     private renderCompactHeader(): TemplateResult {
