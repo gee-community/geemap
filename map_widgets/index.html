@@ -1216,6 +1216,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.map_widgets.SearchBar" class="md-nav__link">
+    <span class="md-ellipsis">
+      SearchBar
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SearchBar">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.SearchBar.cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      cleanup()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.map_widgets.Theme" class="md-nav__link">
     <span class="md-ellipsis">
       Theme
@@ -5581,6 +5605,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.map_widgets.SearchBar" class="md-nav__link">
+    <span class="md-ellipsis">
+      SearchBar
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SearchBar">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#geemap.map_widgets.SearchBar.cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      cleanup()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.map_widgets.Theme" class="md-nav__link">
     <span class="md-ellipsis">
       Theme
@@ -8176,6 +8224,384 @@ Legend            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
     </div>
 
   </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="geemap.map_widgets.SearchBar" class="doc doc-heading">
+        <code>
+SearchBar            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
+        </code>
+
+
+
+<a href="#geemap.map_widgets.SearchBar" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="k">class</span> <span class="nc">SearchBar</span><span class="p">(</span><span class="n">anywidget</span><span class="o">.</span><span class="n">AnyWidget</span><span class="p">):</span>
+    <span class="n">_esm</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> <span class="o">/</span> <span class="s2">&quot;search_bar.js&quot;</span>
+
+    <span class="c1"># Whether the search bar is collapsed.</span>
+    <span class="n">collapsed</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Bool</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># The currently selected tab.</span>
+    <span class="n">tab_index</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># The stringified JSON for the location search.</span>
+    <span class="n">location_model</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">&quot;selected&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;additional_html&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># The stringified JSON for the dataset search.</span>
+    <span class="n">dataset_model</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Unicode</span><span class="p">(</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">&quot;selected&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;additional_html&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span> <span class="o">=</span> <span class="n">host_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_locations</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_loc_marker</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_loc_geom</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_datasets</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_msg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_message_event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">handle_message_event</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">buffers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">widget</span><span class="p">,</span> <span class="n">buffers</span>  <span class="c1"># Unused</span>
+        <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;click&quot;</span><span class="p">:</span>
+            <span class="n">msg_id</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;import&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">import_button_clicked</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">msg_id</span> <span class="o">==</span> <span class="s2">&quot;close&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes the widget from the map and performs cleanup.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
+
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;location_model&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_location_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">old</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">change</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;old&quot;</span><span class="p">))</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">change</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">old</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">common</span><span class="o">.</span><span class="n">latlon_from_text</span><span class="p">(</span><span class="n">new</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_search_lat_lon</span><span class="p">(</span><span class="n">new</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_search_location</span><span class="p">(</span><span class="n">new</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">location_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s2">&quot;selected&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;additional_html&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+                <span class="n">marker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_loc_marker</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_loc_marker</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">old</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_selected_location</span><span class="p">(</span><span class="n">new</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">])</span>
+
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;dataset_model&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_observe_dataset_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">old</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">change</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;old&quot;</span><span class="p">))</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">change</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">old</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_search_dataset</span><span class="p">(</span><span class="n">new</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dataset_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                        <span class="s2">&quot;selected&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;additional_html&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">old</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_select_dataset</span><span class="p">(</span><span class="n">new</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_search_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+        <span class="n">location_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location_model</span><span class="p">)</span>
+        <span class="n">geoloc_results</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geocode</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_locations</span> <span class="o">=</span> <span class="n">geoloc_results</span>
+        <span class="k">if</span> <span class="n">geoloc_results</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">geoloc_results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">address</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">geoloc_results</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">location_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">location_model</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;No results could be found.&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">location_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">location_model</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_selected_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+        <span class="n">locations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_locations</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">locations</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">address</span> <span class="o">==</span> <span class="n">address</span><span class="p">:</span>
+                <span class="n">location</span> <span class="o">=</span> <span class="n">l</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">location</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">latlon</span> <span class="o">=</span> <span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="n">location</span><span class="o">.</span><span class="n">lng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_loc_geom</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">lng</span><span class="p">,</span> <span class="n">location</span><span class="o">.</span><span class="n">lat</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_loc_marker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span>
+                <span class="n">location</span><span class="o">=</span><span class="n">latlon</span><span class="p">,</span>
+                <span class="n">draggable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Search location&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_loc_marker</span> <span class="o">=</span> <span class="n">marker</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">latlon</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_loc_marker</span>
+            <span class="n">marker</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">latlon</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">latlon</span>
+
+    <span class="k">def</span> <span class="nf">_search_lat_lon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat_lon</span><span class="p">):</span>
+        <span class="n">location_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location_model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">latlon</span> <span class="o">:=</span> <span class="n">common</span><span class="o">.</span><span class="n">latlon_from_text</span><span class="p">(</span><span class="n">lat_lon</span><span class="p">):</span>
+            <span class="n">geoloc_results</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">geocode</span><span class="p">(</span><span class="n">lat_lon</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">geoloc_results</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">geoloc_results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">top_loc</span> <span class="o">=</span> <span class="n">geoloc_results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">latlon</span> <span class="o">=</span> <span class="p">(</span><span class="n">top_loc</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="n">top_loc</span><span class="o">.</span><span class="n">lng</span><span class="p">)</span>
+                <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">address</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">geoloc_results</span><span class="p">]</span>
+                <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">location_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">location_model</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;No results could be found.&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">location_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">location_model</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_loc_geom</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">latlon</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">latlon</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_loc_marker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">marker</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span>
+                    <span class="n">location</span><span class="o">=</span><span class="n">latlon</span><span class="p">,</span>
+                    <span class="n">draggable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Search location&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_loc_marker</span> <span class="o">=</span> <span class="n">marker</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">latlon</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">marker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_loc_marker</span>
+                <span class="n">marker</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">latlon</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">latlon</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">no_results</span> <span class="o">=</span> <span class="p">(</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;&lt;em style=&quot;color: red&quot;&gt;&quot;&quot;&quot;</span>
+                <span class="s2">&quot;The lat-lon coordinates should be numbers only and&quot;</span>
+                <span class="s2">&quot;&lt;br&gt;&quot;</span>
+                <span class="s2">&quot;separated by comma or space, such as 40.2, -100.3&quot;</span>
+                <span class="s2">&quot;&lt;/em&gt;&quot;</span>
+            <span class="p">)</span>
+            <span class="n">location_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">no_results</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">location_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">location_model</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_search_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_search</span><span class="p">):</span>
+        <span class="n">dataset_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_model</span><span class="p">)</span>
+        <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Searching...&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dataset_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;wait&quot;</span><span class="p">}</span>
+        <span class="n">ee_assets</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">search_ee_data</span><span class="p">(</span><span class="n">dataset_search</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_datasets</span> <span class="o">=</span> <span class="n">ee_assets</span>
+        <span class="n">asset_titles</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ee_assets</span><span class="p">]</span>
+        <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asset_titles</span>
+        <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">asset_titles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">asset_titles</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ee_assets</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">ee_data_html</span><span class="p">(</span><span class="n">ee_assets</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;No results found.&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dataset_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_select_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_title</span><span class="p">):</span>
+        <span class="n">dataset_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_model</span><span class="p">)</span>
+        <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Loading ...&quot;</span>
+        <span class="n">datasets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_datasets</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dataset_title</span><span class="p">:</span>
+                <span class="n">dataset</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">dataset_html</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">ee_data_html</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataset_html</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dataset_model</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_ee_example</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">pkg_resources</span>
+
+            <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span>
+                <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;geemap&quot;</span><span class="p">,</span> <span class="s2">&quot;geemap.py&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pkg_dir</span><span class="p">,</span> <span class="s2">&quot;data/gee_f.json&quot;</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">functions</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">details</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">functions</span><span class="p">[</span><span class="s2">&quot;examples&quot;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;contents&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Datasets&quot;</span>
+                <span class="k">if</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">asset_id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">conversion</span><span class="o">.</span><span class="n">js_snippet_to_py</span><span class="p">(</span>
+                <span class="n">details</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">add_new_cell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">import_ee</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">show_map</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">Map</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">_var_name</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">import_button_clicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dataset_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_model</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">dataset_model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]:</span>
+            <span class="n">datasets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">search_datasets</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;selected&quot;</span><span class="p">]:</span>
+                    <span class="n">dataset</span> <span class="o">=</span> <span class="n">d</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="n">id_</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+            <span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ee_example</span><span class="p">(</span><span class="n">id_</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">code</span><span class="p">:</span>
+                <span class="n">dataset_uid</span> <span class="o">=</span> <span class="s2">&quot;dataset_&quot;</span> <span class="o">+</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">random_string</span><span class="p">(</span><span class="n">string_length</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+                <span class="n">translate</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;image_collection&quot;</span><span class="p">:</span> <span class="s2">&quot;ImageCollection&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="s2">&quot;FeatureCollection&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;table_collection&quot;</span><span class="p">:</span> <span class="s2">&quot;FeatureCollection&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="n">datatype</span> <span class="o">=</span> <span class="n">translate</span><span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]]</span>
+                <span class="n">id_</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+                <span class="n">line1</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> = ee.</span><span class="si">{}</span><span class="s2">(&#39;</span><span class="si">{}</span><span class="s2">&#39;)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset_uid</span><span class="p">,</span> <span class="n">datatype</span><span class="p">,</span> <span class="n">id_</span><span class="p">)</span>
+                <span class="n">action</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;image_collection&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">_var_name</span><span class="si">}</span><span class="s2">.addLayer(</span><span class="si">{</span><span class="n">dataset_uid</span><span class="si">}</span><span class="s2">, </span><span class="se">{{}}</span><span class="s2">, &#39;</span><span class="si">{</span><span class="n">id_</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">_var_name</span><span class="si">}</span><span class="s2">.addLayer(</span><span class="si">{</span><span class="n">dataset_uid</span><span class="si">}</span><span class="s2">, </span><span class="se">{{}}</span><span class="s2">, &#39;</span><span class="si">{</span><span class="n">id_</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">_var_name</span><span class="si">}</span><span class="s2">.addLayer(</span><span class="si">{</span><span class="n">dataset_uid</span><span class="si">}</span><span class="s2">, </span><span class="se">{{}}</span><span class="s2">, &#39;</span><span class="si">{</span><span class="n">id_</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;table_collection&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">_var_name</span><span class="si">}</span><span class="s2">.addLayer(</span><span class="si">{</span><span class="n">dataset_uid</span><span class="si">}</span><span class="s2">, </span><span class="se">{{}}</span><span class="s2">, &#39;</span><span class="si">{</span><span class="n">id_</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="n">line2</span> <span class="o">=</span> <span class="n">action</span><span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]]</span>
+                <span class="n">code</span> <span class="o">=</span> <span class="p">[</span><span class="n">line1</span><span class="p">,</span> <span class="n">line2</span><span class="p">]</span>
+
+            <span class="n">contents</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="c1"># create_code_cell(contents)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">pyperclip</span>
+
+                <span class="n">pyperclip</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">contents</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;&lt;pre&gt;&quot;</span>
+                <span class="s2">&quot;# The code has been copied to the clipboard.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;# Press Ctrl+V in a new cell to paste it.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">contents</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;&lt;/pre&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataset_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dataset_model</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="geemap.map_widgets.SearchBar.cleanup" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#geemap.map_widgets.SearchBar.cleanup" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Removes the widget from the map and performs cleanup.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>geemap/map_widgets.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes the widget from the map and performs cleanup.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
 
 
 

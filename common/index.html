@@ -29933,7 +29933,6 @@ the geometry doesn't matter.  From Fiona 1.4.8</p>
 <span class="sd">        location (str): Place name or address</span>
 <span class="sd">        max_rows (int, optional): Maximum number of records to return. Defaults to 10.</span>
 <span class="sd">        reverse (bool, optional): Search place based on coordinates. Defaults to False.</span>
-
 <span class="sd">    Returns:</span>
 <span class="sd">        list: Returns a list of locations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -29966,9 +29965,6 @@ the geometry doesn't matter.  From Fiona 1.4.8</p>
             <span class="k">elif</span> <span class="s2">&quot; &quot;</span> <span class="ow">in</span> <span class="n">location</span><span class="p">:</span>
                 <span class="n">latlon</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">location</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span>
-                    <span class="s2">&quot;The lat-lon coordinates should be numbers only and separated by comma or space, such as 40.2, -100.3&quot;</span>
-                <span class="p">)</span>
                 <span class="k">return</span>
             <span class="n">g</span> <span class="o">=</span> <span class="n">geocoder</span><span class="o">.</span><span class="n">arcgis</span><span class="p">(</span><span class="n">latlon</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;reverse&quot;</span><span class="p">)</span>
             <span class="n">locations</span> <span class="o">=</span> <span class="p">[]</span>

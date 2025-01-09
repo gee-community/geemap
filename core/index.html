@@ -7327,6 +7327,15 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">map_widgets</span><span class="o">.</span><span class="n">Inspector</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_search_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">map_widgets</span><span class="o">.</span><span class="n">SearchBar</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finds the search bar widget in the map controls.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[map_widgets.SearchBar]: The search bar widget if found, else None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">map_widgets</span><span class="o">.</span><span class="n">SearchBar</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MapDrawControl</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Finds the draw control widget in the map controls.</span>
 
@@ -7578,6 +7587,8 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
                 <span class="k">return</span>
             <span class="n">new_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">basic_control</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">basic_control</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="o">**</span><span class="n">new_kwargs</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;search_control&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_search_control</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;toolbar&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_toolbar</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;inspector&quot;</span><span class="p">:</span>
@@ -7650,6 +7661,20 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="n">widget</span><span class="o">=</span><span class="n">inspector</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span>
         <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">inspector_control</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_search_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a search bar to the map.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            position (str): The position to place the inspector.</span>
+<span class="sd">            **kwargs (Any): Additional keyword arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_bar</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">widget</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">SearchBar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;search_control&quot;</span><span class="p">)</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_layer_editor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a layer editor to the map.</span>
@@ -7724,6 +7749,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 <span class="sd">            widget (Any): The widget to remove.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">basic_controls</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Control</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;search_control&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">SearchBar</span><span class="p">,</span>
             <span class="s2">&quot;zoom_control&quot;</span><span class="p">:</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">ZoomControl</span><span class="p">,</span>
             <span class="s2">&quot;fullscreen_control&quot;</span><span class="p">:</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">FullScreenControl</span><span class="p">,</span>
             <span class="s2">&quot;scale_control&quot;</span><span class="p">:</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">ScaleControl</span><span class="p">,</span>
@@ -7983,7 +8009,12 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 <span class="sd">            Dict[str, List[str]]: The control configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;topleft&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;zoom_control&quot;</span><span class="p">,</span> <span class="s2">&quot;fullscreen_control&quot;</span><span class="p">,</span> <span class="s2">&quot;draw_control&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;topleft&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;search_control&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;zoom_control&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;fullscreen_control&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;draw_control&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
             <span class="s2">&quot;bottomleft&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;scale_control&quot;</span><span class="p">,</span> <span class="s2">&quot;measure_control&quot;</span><span class="p">],</span>
             <span class="s2">&quot;topright&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;toolbar&quot;</span><span class="p">],</span>
             <span class="s2">&quot;bottomright&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;attribution_control&quot;</span><span class="p">],</span>
@@ -8340,6 +8371,8 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="k">return</span>
         <span class="n">new_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">basic_control</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">basic_control</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="o">**</span><span class="n">new_kwargs</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;search_control&quot;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_search_control</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;toolbar&quot;</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_toolbar</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;inspector&quot;</span><span class="p">:</span>
@@ -9121,6 +9154,7 @@ GeoJSON. Defaults to False.</p></td>
 <span class="sd">        widget (Any): The widget to remove.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">basic_controls</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Control</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;search_control&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">SearchBar</span><span class="p">,</span>
         <span class="s2">&quot;zoom_control&quot;</span><span class="p">:</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">ZoomControl</span><span class="p">,</span>
         <span class="s2">&quot;fullscreen_control&quot;</span><span class="p">:</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">FullScreenControl</span><span class="p">,</span>
         <span class="s2">&quot;scale_control&quot;</span><span class="p">:</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">ScaleControl</span><span class="p">,</span>

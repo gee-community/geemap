@@ -7776,7 +7776,7 @@ Map            (<a class="autorefs autorefs-internal" title="geemap.core.Map" hr
 <span class="sd">            sandbox_path (str, optional): The path to a sandbox folder for voila web app. Defaults to None.</span>
 <span class="sd">            lite_mode (bool, optional): Whether to enable lite mode, which only displays</span>
 <span class="sd">                zoom control on the map. Defaults to False.</span>
-<span class="sd">            data_ctrl (bool, optional): Whether to add the data control to the map. Defaults to True.</span>
+<span class="sd">            data_ctrl (bool, optional): Deprecated: use search_ctrl instead.</span>
 <span class="sd">            zoom_ctrl (bool, optional): Whether to add the zoom control to the map. Defaults to True.</span>
 <span class="sd">            fullscreen_ctrl (bool, optional): Whether to add the fullscreen control to the map. Defaults to True.</span>
 <span class="sd">            search_ctrl (bool, optional): Whether to add the search control to the map. Defaults to True.</span>
@@ -7848,7 +7848,7 @@ Map            (<a class="autorefs autorefs-internal" title="geemap.core.Map" hr
         <span class="n">topright</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">bottomright</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;data_ctrl&quot;</span><span class="p">,</span> <span class="s2">&quot;zoom_ctrl&quot;</span><span class="p">,</span> <span class="s2">&quot;fullscreen_ctrl&quot;</span><span class="p">,</span> <span class="s2">&quot;draw_ctrl&quot;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;search_ctrl&quot;</span><span class="p">,</span> <span class="s2">&quot;zoom_ctrl&quot;</span><span class="p">,</span> <span class="s2">&quot;fullscreen_ctrl&quot;</span><span class="p">,</span> <span class="s2">&quot;draw_ctrl&quot;</span><span class="p">]:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
                 <span class="n">topleft</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
 
@@ -7992,18 +7992,11 @@ Map            (<a class="autorefs autorefs-internal" title="geemap.core.Map" hr
             <span class="s2">&quot;scale_ctrl&quot;</span><span class="p">:</span> <span class="s2">&quot;scale_control&quot;</span><span class="p">,</span>
             <span class="s2">&quot;toolbar_ctrl&quot;</span><span class="p">:</span> <span class="s2">&quot;toolbar&quot;</span><span class="p">,</span>
             <span class="s2">&quot;draw_ctrl&quot;</span><span class="p">:</span> <span class="s2">&quot;draw_control&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;data_ctrl&quot;</span><span class="p">:</span> <span class="s2">&quot;search_control&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;search_ctrl&quot;</span><span class="p">:</span> <span class="s2">&quot;search_control&quot;</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">backward_compatibilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;data_ctrl&quot;</span><span class="p">:</span>
-            <span class="n">data_widget</span> <span class="o">=</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">SearchBar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="n">data_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-                <span class="n">widget</span><span class="o">=</span><span class="n">data_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">data_control</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;search_ctrl&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_search_control</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;measure_ctrl&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;measure_ctrl&quot;</span><span class="p">:</span>
             <span class="n">measure</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">MeasureControl</span><span class="p">(</span>
                 <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span>
                 <span class="n">active_color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span>
@@ -13170,7 +13163,7 @@ zoom control on the map. Defaults to False.</p></td>
       <tr>
         <td><code>data_ctrl</code></td>
         <td><code>bool</code></td>
-        <td><p>Whether to add the data control to the map. Defaults to True.</p></td>
+        <td></td>
         <td><em>required</em></td>
       </tr>
       <tr>
@@ -13253,7 +13246,7 @@ zoom control on the map. Defaults to False.</p></td>
 <span class="sd">        sandbox_path (str, optional): The path to a sandbox folder for voila web app. Defaults to None.</span>
 <span class="sd">        lite_mode (bool, optional): Whether to enable lite mode, which only displays</span>
 <span class="sd">            zoom control on the map. Defaults to False.</span>
-<span class="sd">        data_ctrl (bool, optional): Whether to add the data control to the map. Defaults to True.</span>
+<span class="sd">        data_ctrl (bool, optional): Deprecated: use search_ctrl instead.</span>
 <span class="sd">        zoom_ctrl (bool, optional): Whether to add the zoom control to the map. Defaults to True.</span>
 <span class="sd">        fullscreen_ctrl (bool, optional): Whether to add the fullscreen control to the map. Defaults to True.</span>
 <span class="sd">        search_ctrl (bool, optional): Whether to add the search control to the map. Defaults to True.</span>
@@ -13393,18 +13386,11 @@ zoom control on the map. Defaults to False.</p></td>
         <span class="s2">&quot;scale_ctrl&quot;</span><span class="p">:</span> <span class="s2">&quot;scale_control&quot;</span><span class="p">,</span>
         <span class="s2">&quot;toolbar_ctrl&quot;</span><span class="p">:</span> <span class="s2">&quot;toolbar&quot;</span><span class="p">,</span>
         <span class="s2">&quot;draw_ctrl&quot;</span><span class="p">:</span> <span class="s2">&quot;draw_control&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;data_ctrl&quot;</span><span class="p">:</span> <span class="s2">&quot;search_control&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;search_ctrl&quot;</span><span class="p">:</span> <span class="s2">&quot;search_control&quot;</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">obj</span> <span class="o">=</span> <span class="n">backward_compatibilities</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;data_ctrl&quot;</span><span class="p">:</span>
-        <span class="n">data_widget</span> <span class="o">=</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">SearchBar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">data_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-            <span class="n">widget</span><span class="o">=</span><span class="n">data_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">data_control</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;search_ctrl&quot;</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_search_control</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;measure_ctrl&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">obj</span> <span class="o">==</span> <span class="s2">&quot;measure_ctrl&quot;</span><span class="p">:</span>
         <span class="n">measure</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">MeasureControl</span><span class="p">(</span>
             <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span>
             <span class="n">active_color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span>
