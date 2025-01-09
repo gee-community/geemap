@@ -129,7 +129,7 @@ class Map(core.Map):
             sandbox_path (str, optional): The path to a sandbox folder for voila web app. Defaults to None.
             lite_mode (bool, optional): Whether to enable lite mode, which only displays
                 zoom control on the map. Defaults to False.
-            data_ctrl (bool, optional): Whether to add the data control to the map. Defaults to True.
+            data_ctrl (bool, optional): Deprecated: use search_ctrl instead.
             zoom_ctrl (bool, optional): Whether to add the zoom control to the map. Defaults to True.
             fullscreen_ctrl (bool, optional): Whether to add the fullscreen control to the map. Defaults to True.
             search_ctrl (bool, optional): Whether to add the search control to the map. Defaults to True.
@@ -201,7 +201,7 @@ class Map(core.Map):
         topright = []
         bottomright = []
 
-        for control in ["data_ctrl", "zoom_ctrl", "fullscreen_ctrl", "draw_ctrl"]:
+        for control in ["search_ctrl", "zoom_ctrl", "fullscreen_ctrl", "draw_ctrl"]:
             if self.kwargs.get(control, True):
                 topleft.append(control)
 
@@ -345,18 +345,11 @@ class Map(core.Map):
             "scale_ctrl": "scale_control",
             "toolbar_ctrl": "toolbar",
             "draw_ctrl": "draw_control",
+            "data_ctrl": "search_control",
+            "search_ctrl": "search_control",
         }
         obj = backward_compatibilities.get(obj, obj)
-
-        if obj == "data_ctrl":
-            data_widget = toolbar.SearchBar(self)
-            data_control = ipyleaflet.WidgetControl(
-                widget=data_widget, position=position
-            )
-            self.add(data_control)
-        elif obj == "search_ctrl":
-            self.add_search_control(position=position)
-        elif obj == "measure_ctrl":
+        if obj == "measure_ctrl":
             measure = ipyleaflet.MeasureControl(
                 position=position,
                 active_color="orange",

@@ -657,6 +657,15 @@ class Map(ipyleaflet.Map, MapInterface):
         return self._find_widget_of_type(map_widgets.Inspector)
 
     @property
+    def _search_bar(self) -> Optional[map_widgets.SearchBar]:
+        """Finds the search bar widget in the map controls.
+
+        Returns:
+            Optional[map_widgets.SearchBar]: The search bar widget if found, else None.
+        """
+        return self._find_widget_of_type(map_widgets.SearchBar)
+
+    @property
     def _draw_control(self) -> MapDrawControl:
         """Finds the draw control widget in the map controls.
 
@@ -908,6 +917,8 @@ class Map(ipyleaflet.Map, MapInterface):
                 return
             new_kwargs = {**basic_control[1], **kwargs}
             super().add(basic_control[0](position=position, **new_kwargs))
+        elif obj == "search_control":
+            self._add_search_control(position, **kwargs)
         elif obj == "toolbar":
             self._add_toolbar(position, **kwargs)
         elif obj == "inspector":
@@ -980,6 +991,20 @@ class Map(ipyleaflet.Map, MapInterface):
             widget=inspector, position=position
         )
         super().add(inspector_control)
+
+    def _add_search_control(self, position: str, **kwargs: Any) -> None:
+        """Adds a search bar to the map.
+
+        Args:
+            position (str): The position to place the inspector.
+            **kwargs (Any): Additional keyword arguments.
+        """
+        if self._search_bar:
+            return
+        widget = map_widgets.SearchBar(self, **kwargs)
+        widget.on_close = lambda: self.remove("search_control")
+        control = ipyleaflet.WidgetControl(widget=widget, position=position)
+        super().add(control)
 
     def _add_layer_editor(self, position: str, **kwargs: Any) -> None:
         """Adds a layer editor to the map.
@@ -1054,6 +1079,7 @@ class Map(ipyleaflet.Map, MapInterface):
             widget (Any): The widget to remove.
         """
         basic_controls: Dict[str, ipyleaflet.Control] = {
+            "search_control": map_widgets.SearchBar,
             "zoom_control": ipyleaflet.ZoomControl,
             "fullscreen_control": ipyleaflet.FullScreenControl,
             "scale_control": ipyleaflet.ScaleControl,
@@ -1313,7 +1339,12 @@ class Map(ipyleaflet.Map, MapInterface):
             Dict[str, List[str]]: The control configuration.
         """
         return {
-            "topleft": ["zoom_control", "fullscreen_control", "draw_control"],
+            "topleft": [
+                "search_control",
+                "zoom_control",
+                "fullscreen_control",
+                "draw_control",
+            ],
             "bottomleft": ["scale_control", "measure_control"],
             "topright": ["toolbar"],
             "bottomright": ["attribution_control"],

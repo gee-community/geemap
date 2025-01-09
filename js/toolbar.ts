@@ -6,8 +6,10 @@ import { classMap } from "lit/directives/class-map.js";
 import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
+import { Alignment } from "./tab_panel";
 import { loadFonts, updateChildren } from "./utils";
 
+import "./container";
 import "./tab_panel";
 
 
@@ -76,25 +78,31 @@ export class Toolbar extends LitWidget<
 
     render() {
         return html`
-            <tab-panel
-                .index="${this.tab_index}"
-                .tabs=${[{ icon: "layers", width: 74 }, { icon: "build" }]}
-                @tab-changed=${(e: CustomEvent<number>) => {
-                this.tab_index = e.detail;
-            }}>
-                <div class="accessory-container">
-                    <slot name="accessory-widget"></slot>
-                </div>
-                <div class="tools-container">
-                    <slot name="main-tools"></slot>
-                    <slot
-                        name="extra-tools"
-                        class="${classMap({
-                hide: !this.expanded,
-                expanded: this.expanded,
-            })}"></slot>
-                </div>
-            </tab-panel>
+            <widget-container
+                .collapsed="${false}"
+                .hideCloseButton=${true}
+                .noHeader="${true}">
+                <tab-panel
+                    .index="${this.tab_index}"
+                    .tabs=${[{ icon: "layers", width: 74 }, { icon: "build" }]}
+                    .alignment="${Alignment.RIGHT}"
+                    @tab-changed=${(e: CustomEvent<number>) => {
+                    this.tab_index = e.detail;
+                }}>
+                    <div class="accessory-container">
+                        <slot name="accessory-widget"></slot>
+                    </div>
+                    <div class="tools-container">
+                        <slot name="main-tools"></slot>
+                        <slot
+                            name="extra-tools"
+                            class="${classMap({
+                    hide: !this.expanded,
+                    expanded: this.expanded,
+                })}"></slot>
+                    </div>
+                </tab-panel>
+            </widget-container>
         `;
     }
 }

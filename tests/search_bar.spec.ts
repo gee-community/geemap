@@ -7,7 +7,7 @@ import "../js/search_bar";
 describe("<search-bar>", () => {
     let searchBar: SearchBar;
 
-    async function makesearchBar(model: AnyModel<SearchBarModel>) {
+    async function makeSearchBar(model: AnyModel<SearchBarModel>) {
         const container = document.createElement("div");
         searchBarRender.render({
             model, el: container, experimental: {
@@ -21,16 +21,10 @@ describe("<search-bar>", () => {
     }
 
     beforeEach(async () => {
-        searchBar = await makesearchBar(new FakeAnyModel<SearchBarModel>({
-            expanded: false,
+        searchBar = await makeSearchBar(new FakeAnyModel<SearchBarModel>({
+            collapsed: true,
             tab_index: 0,
-            name_address_model: JSON.stringify({
-                search: "",
-                results: [],
-                selected: "",
-                additional_html: "",
-            }),
-            lat_lon_model: JSON.stringify({
+            location_model: JSON.stringify({
                 search: "",
                 results: [],
                 selected: "",
@@ -56,56 +50,56 @@ describe("<search-bar>", () => {
     });
 
     it("renders and updates the name address search", async () => {
-        searchBar.nameAddressModel = JSON.stringify({
+        searchBar.locationModel = JSON.stringify({
             search: "my city",
             results: ["my city 1", "my city 2"],
             selected: "my city 1",
             additional_html: `<p class="name-address-extra">An extra message </p>`,
         })
         await searchBar.updateComplete;
-        expect(searchBar.nameAddressSearch).toBeDefined();
-        expect(searchBar.nameAddressResults).toBeDefined();
-        expect(searchBar.nameAddressResults[0].checked).toBeTrue();
-        const results = Array.from(searchBar.nameAddressResults).map((el) => el.value);
+        expect(searchBar.locationSearch).toBeDefined();
+        expect(searchBar.locationResults).toBeDefined();
+        expect(searchBar.locationResults[0].checked).toBeTrue();
+        const results = Array.from(searchBar.locationResults).map((el) => el.value);
         expect(results).toEqual(["my city 1", "my city 2"]);
         expect(searchBar.shadowRoot!.querySelector(".name-address-extra")).toBeDefined();
         expect(searchBar.shadowRoot!.querySelector(".name-address-container .reset-button")).toBeDefined();
 
         jasmine.clock().install();
-        searchBar.nameAddressSearch.value = "my new search";
-        searchBar.nameAddressSearch.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'Enter' }));
+        searchBar.locationSearch.value = "my new search";
+        searchBar.locationSearch.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'Enter' }));
         jasmine.clock().tick(500);
         await searchBar.updateComplete;
-        expect(JSON.parse(searchBar.nameAddressModel).search).toBe("my new search");
+        expect(JSON.parse(searchBar.locationModel).search).toBe("my new search");
         jasmine.clock().uninstall();
 
-        searchBar.nameAddressResults[1].checked = true;
-        searchBar.nameAddressResults[1].dispatchEvent(new Event("input"));
-        expect(JSON.parse(searchBar.nameAddressModel).selected).toBe("my city 2");
+        searchBar.locationResults[1].checked = true;
+        searchBar.locationResults[1].dispatchEvent(new Event("input"));
+        expect(JSON.parse(searchBar.locationModel).selected).toBe("my city 2");
     });
 
     it("renders and updates the lat-lon search", async () => {
-        searchBar.latLonModel = JSON.stringify({
+        searchBar.locationModel = JSON.stringify({
             search: "40, -100",
             results: ["my cool city"],
             selected: "my cool city",
             additional_html: `<p class="lat-lon-extra">An extra message </p>`,
         })
         await searchBar.updateComplete;
-        expect(searchBar.latLonSearch).toBeDefined();
-        expect(searchBar.latLonResults).toBeDefined();
-        expect(searchBar.latLonResults[0].checked).toBeTrue();
-        const results = Array.from(searchBar.latLonResults).map((el) => el.value);
+        expect(searchBar.locationSearch).toBeDefined();
+        expect(searchBar.locationResults).toBeDefined();
+        expect(searchBar.locationResults[0].checked).toBeTrue();
+        const results = Array.from(searchBar.locationResults).map((el) => el.value);
         expect(results).toEqual(["my cool city"]);
         expect(searchBar.shadowRoot!.querySelector(".lat-lon-extra")).toBeDefined();
         expect(searchBar.shadowRoot!.querySelector(".lat-lon-container .reset-button")).toBeDefined();
 
         jasmine.clock().install();
-        searchBar.latLonSearch.value = "my new search";
-        searchBar.latLonSearch.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'Enter' }));
+        searchBar.locationSearch.value = "my new search";
+        searchBar.locationSearch.dispatchEvent(new KeyboardEvent('keydown', { 'key': 'Enter' }));
         jasmine.clock().tick(500);
         await searchBar.updateComplete;
-        expect(JSON.parse(searchBar.latLonModel).search).toBe("my new search");
+        expect(JSON.parse(searchBar.locationModel).search).toBe("my new search");
         jasmine.clock().uninstall();
     });
 
