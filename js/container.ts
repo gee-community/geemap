@@ -23,6 +23,12 @@ export class Container extends LitWidget<ContainerModel, Container> {
         legacyStyles,
         materialStyles,
         css`
+            .container {
+                background: var(--jp-layout-color1);
+                border-radius: 4.5px;
+                box-shadow: 4px 5px 8px 0px #9e9e9e;
+            }
+
             div {
                 background-color: var(--colab-primary-surface-color, --jp-layout-color1, white);
             }
@@ -31,6 +37,10 @@ export class Container extends LitWidget<ContainerModel, Container> {
                 display: flex;
                 gap: 4px;
                 padding: 4px;
+            }
+
+            .reversed {
+                flex-direction: row-reverse;
             }
 
             .icon {
@@ -69,6 +79,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
     @property({ type: Boolean }) hideCloseButton: boolean = false;
     @property({ type: Boolean }) compactMode: boolean = false;
     @property({ type: Boolean }) noHeader: boolean = false;
+    @property({ type: Boolean }) reverseHeader: boolean = false;
 
     modelNameToViewName(): Map<keyof ContainerModel, keyof Container | null> {
         return new Map([
@@ -81,16 +92,18 @@ export class Container extends LitWidget<ContainerModel, Container> {
 
     render() {
         return html`
-            ${this.noHeader ? nothing : this.renderHeader()}
-            <div class="widget-container ${this.collapsed ? "hidden" : ""}">
-                <slot></slot>
+            <div class="container">
+                ${this.noHeader ? nothing : this.renderHeader()}
+                <div class="widget-container ${this.collapsed ? "hidden" : ""}">
+                    <slot></slot>
+                </div>
             </div>
         `;
     }
 
     private renderHeader(): TemplateResult {
         return this.compactMode ? this.renderCompactHeader() : html`
-            <div class="header">
+            <div class="header ${this.reverseHeader ? "reversed" : ""}">
                 ${this.renderIcon()}
                 ${this.title ? this.renderTitle() : nothing}
                 ${this.renderCollapseButton()}
@@ -99,7 +112,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
     }
 
     private renderCompactHeader(): TemplateResult {
-        return html`<div class="header">
+        return html`<div class="header ${this.reverseHeader ? "reversed" : ""}">
             ${this.renderCollapseButton()}
             ${(this.title && !this.collapsed) ? this.renderTitle() : nothing}
             ${this.renderCloseButton()}

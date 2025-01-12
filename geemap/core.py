@@ -681,15 +681,6 @@ class Map(ipyleaflet.Map, MapInterface):
         Returns:
             Optional[map_widgets.LayerManager]: The layer manager widget if found, else None.
         """
-        if toolbar_widget := self._toolbar:
-            return next(
-                (
-                    widget
-                    for widget in toolbar_widget.accessory_widgets
-                    if isinstance(widget, map_widgets.LayerManager)
-                ),
-                None,
-            )
         return self._find_widget_of_type(map_widgets.LayerManager)
 
     @property
@@ -735,6 +726,19 @@ class Map(ipyleaflet.Map, MapInterface):
 
         kwargs = self._apply_kwarg_defaults(kwargs)
         super().__init__(**kwargs)
+
+        # Add a container to layout the layer manager and toolbar side-by-side.
+        self.top_right_layout_box = ipywidgets.GridBox(
+            layout=ipywidgets.Layout(
+                grid_template_columns="auto auto",  # Two columns
+                grid_gap="0px 10px",                # 0px row gap, 10px column gap
+            ),
+        )
+        self.top_right_layout_box.layout.overflow = "visible"
+        self.top_right_control = ipyleaflet.WidgetControl(
+            widget=self.top_right_layout_box, position="topright", transparent_bg=True
+        )
+        super().add(self.top_right_control)
 
         for position, widgets in self._control_config().items():
             for widget in widgets:
@@ -883,6 +887,10 @@ class Map(ipyleaflet.Map, MapInterface):
                     return widget if return_control else widget.widget
             elif isinstance(widget, widget_type):
                 return widget
+        if self.top_right_layout_box:
+            for child in self.top_right_layout_box.children:
+                if isinstance(child, widget_type):
+                    return child
         return None
 
     def add(self, obj: Any, position: str = "", **kwargs: Any) -> None:
@@ -941,13 +949,19 @@ class Map(ipyleaflet.Map, MapInterface):
             position (str): The position to place the layer manager.
             **kwargs (Any): Additional keyword arguments.
         """
+        if self._layer_manager:
+            return
+
         layer_manager = map_widgets.LayerManager(self, **kwargs)
         layer_manager.on_close = lambda: self.remove("layer_manager")
         layer_manager.refresh_layers()
-        layer_manager_control = ipyleaflet.WidgetControl(
-            widget=layer_manager, position=position
-        )
-        super().add(layer_manager_control)
+        if position == "topright" and self.top_right_layout_box:
+            current_children = self.top_right_layout_box.children
+            self.top_right_layout_box.children = (layer_manager,) + current_children
+        else:
+            super().add(
+                ipyleaflet.WidgetControl(widget=layer_manager, position=position)
+            )
 
     def _add_toolbar(self, position: str, **kwargs: Any) -> None:
         """Adds a toolbar to the map.
@@ -959,21 +973,16 @@ class Map(ipyleaflet.Map, MapInterface):
         if self._toolbar:
             return
 
-        layer_manager = map_widgets.LayerManager(self)
-        layer_manager.header_hidden = True
-        layer_manager.close_button_hidden = True
-        layer_manager.refresh_layers()
-
         toolbar_val = toolbar.Toolbar(
             self,
             self._toolbar_main_tools(),
             self._toolbar_extra_tools(),
-            [layer_manager],
         )
-        toolbar_control = ipyleaflet.WidgetControl(
-            widget=toolbar_val, position=position
-        )
-        super().add(toolbar_control)
+        if position == "topright" and self.top_right_layout_box:
+            current_children = self.top_right_layout_box.children
+            self.top_right_layout_box.children = current_children + (toolbar_val,)
+        else:
+            super().add(ipyleaflet.WidgetControl(widget=toolbar_val, position=position))
 
     def _add_inspector(self, position: str, **kwargs: Any) -> None:
         """Adds an inspector to the map.
@@ -988,7 +997,7 @@ class Map(ipyleaflet.Map, MapInterface):
         inspector = map_widgets.Inspector(self, **kwargs)
         inspector.on_close = lambda: self.remove("inspector")
         inspector_control = ipyleaflet.WidgetControl(
-            widget=inspector, position=position
+            widget=inspector, position=position, transparent_bg=True
         )
         super().add(inspector_control)
 
@@ -1003,7 +1012,9 @@ class Map(ipyleaflet.Map, MapInterface):
             return
         widget = map_widgets.SearchBar(self, **kwargs)
         widget.on_close = lambda: self.remove("search_control")
-        control = ipyleaflet.WidgetControl(widget=widget, position=position)
+        control = ipyleaflet.WidgetControl(
+            widget=widget, position=position, transparent_bg=True
+        )
         super().add(control)
 
     def _add_layer_editor(self, position: str, **kwargs: Any) -> None:
@@ -1018,7 +1029,9 @@ class Map(ipyleaflet.Map, MapInterface):
 
         widget = map_widgets.LayerEditor(self, **kwargs)
         widget.on_close = lambda: self.remove("layer_editor")
-        control = ipyleaflet.WidgetControl(widget=widget, position=position)
+        control = ipyleaflet.WidgetControl(
+            widget=widget, position=position, transparent_bg=True
+        )
         super().add(control)
 
     def _add_draw_control(self, position: str = "topleft", **kwargs: Any) -> None:
@@ -1069,7 +1082,9 @@ class Map(ipyleaflet.Map, MapInterface):
         basemap = map_widgets.BasemapSelector(basemap_names, value, **kwargs)
         basemap.on_close = lambda: self.remove("basemap_selector")
         basemap.on_basemap_changed = self._replace_basemap
-        basemap_control = ipyleaflet.WidgetControl(widget=basemap, position=position)
+        basemap_control = ipyleaflet.WidgetControl(
+            widget=basemap, position=position, transparent_bg=True
+        )
         super().add(basemap_control)
 
     def remove(self, widget: Any) -> None:
@@ -1202,7 +1217,9 @@ class Map(ipyleaflet.Map, MapInterface):
             **kwargs,
         )
         legend.host_map = self
-        control = ipyleaflet.WidgetControl(widget=legend, position=position)
+        control = ipyleaflet.WidgetControl(
+            widget=legend, position=position, transparent_bg=True
+        )
         if layer := self.ee_layers.get(layer_name, None):
             if old_legend := layer.pop("legend", None):
                 self.remove(old_legend)
@@ -1346,7 +1363,7 @@ class Map(ipyleaflet.Map, MapInterface):
                 "draw_control",
             ],
             "bottomleft": ["scale_control", "measure_control"],
-            "topright": ["toolbar"],
+            "topright": ["toolbar", "layer_manager"],
             "bottomright": ["attribution_control"],
         }
 

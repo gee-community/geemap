@@ -31,7 +31,6 @@ export class LayerManagerRow extends LitWidget<
                 align-items: center;
                 display: flex;
                 gap: 4px;
-                height: 30px;
             }
 
             .layer-name {
@@ -43,9 +42,9 @@ export class LayerManagerRow extends LitWidget<
             }
 
             .row-button {
-                font-size: 14px;
-                height: 26px;
-                width: 26px;
+                font-size: 16px;
+                height: 28px;
+                width: 28px;
             }
 
             .layer-opacity-slider {
@@ -100,8 +99,12 @@ export class LayerManagerRow extends LitWidget<
                 flex-grow: 1;
             }
 
+            .confirm-deletion-container {
+                margin-top: 4px;
+            }
+
             .confirm-deletion-container button {
-                height: 26px;
+                height: 28px;
                 width: 70px;
             }
         `,

@@ -6,25 +6,18 @@ import { classMap } from "lit/directives/class-map.js";
 import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
 import { materialStyles } from "./styles";
-import { Alignment } from "./tab_panel";
 import { loadFonts, updateChildren } from "./utils";
 
 import "./container";
 import "./tab_panel";
 
-
 export interface ToolbarModel {
-    accessory_widgets: any;
     main_tools: any;
-    extra_tools: any
+    extra_tools: any;
     expanded: boolean;
-    tab_index: number;
 }
 
-export class Toolbar extends LitWidget<
-    ToolbarModel,
-    Toolbar
-> {
+export class Toolbar extends LitWidget<ToolbarModel, Toolbar> {
     static get componentName() {
         return `toolbar-panel`;
     }
@@ -39,10 +32,6 @@ export class Toolbar extends LitWidget<
 
             .expanded {
                 display: block; !important
-            }
-
-            .tools-container {
-                padding: 4px;
             }
 
             slot[name="extra-tools"] {
@@ -62,46 +51,35 @@ export class Toolbar extends LitWidget<
 
     modelNameToViewName(): Map<keyof ToolbarModel, keyof Toolbar | null> {
         return new Map([
-            ["accessory_widgets", null],
             ["main_tools", null],
             ["extra_tools", null],
             ["expanded", "expanded"],
-            ["tab_index", "tab_index"],
         ]);
     }
 
     @property()
     expanded: boolean = false;
 
-    @property()
-    tab_index: number = 0;
-
     render() {
         return html`
             <widget-container
-                .collapsed="${false}"
+                icon="build"
+                title=""
+                .collapsed="${true}"
                 .hideCloseButton=${true}
-                .noHeader="${true}">
-                <tab-panel
-                    .index="${this.tab_index}"
-                    .tabs=${[{ icon: "layers", width: 74 }, { icon: "build" }]}
-                    .alignment="${Alignment.RIGHT}"
-                    @tab-changed=${(e: CustomEvent<number>) => {
-                    this.tab_index = e.detail;
-                }}>
-                    <div class="accessory-container">
-                        <slot name="accessory-widget"></slot>
-                    </div>
-                    <div class="tools-container">
-                        <slot name="main-tools"></slot>
-                        <slot
-                            name="extra-tools"
-                            class="${classMap({
-                    hide: !this.expanded,
-                    expanded: this.expanded,
-                })}"></slot>
-                    </div>
-                </tab-panel>
+                .compactMode="${true}"
+                .reverseHeader="${true}"
+            >
+                <div class="tools-container">
+                    <slot name="main-tools"></slot>
+                    <slot
+                        name="extra-tools"
+                        class="${classMap({
+                            hide: !this.expanded,
+                            expanded: this.expanded,
+                        })}"
+                    ></slot>
+                </div>
             </widget-container>
         `;
     }
@@ -117,15 +95,6 @@ async function render({ model, el }: RenderProps<ToolbarModel>) {
     const manager = <Toolbar>document.createElement(Toolbar.componentName);
     manager.model = model;
     el.appendChild(manager);
-
-    const accessoryWidgetEl = document.createElement("div");
-    accessoryWidgetEl.slot = "accessory-widget";
-    manager.appendChild(accessoryWidgetEl);
-
-    updateChildren(accessoryWidgetEl, model, "accessory_widgets");
-    model.on("change:accessory_widgets", () => {
-        updateChildren(accessoryWidgetEl, model, "accessory_widgets");
-    });
 
     const mainToolsEl = document.createElement("div");
     mainToolsEl.slot = "main-tools";
