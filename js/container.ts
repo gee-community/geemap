@@ -49,6 +49,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
                 font-size: 20px;
                 height: 28px;
                 justify-content: center;
+                padding: 0 4px;
             }
 
             .widget-container {
@@ -68,7 +69,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
             .header-text {
                 align-content: center;
                 flex-grow: 1;
-                padding: 0 6px 0 12px;
+                padding: 0 12px 0 0;
             }
         `,
     ];
