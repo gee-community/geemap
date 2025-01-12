@@ -30,7 +30,6 @@ class TestToolbar(unittest.TestCase):
             callback=self.dummy_callback,
             reset=True,
         )
-        self.accessory_widgets = [ipywidgets.Text()]
         return super().setUp()
 
     def tearDown(self) -> None:
@@ -45,21 +44,21 @@ class TestToolbar(unittest.TestCase):
 
     def test_no_tools_throws(self):
         map = geemap.Map(ee_initialize=False)
-        self.assertRaises(ValueError, Toolbar, map, [], [], self.accessory_widgets)
+        self.assertRaises(ValueError, Toolbar, map, [], [])
 
     def test_only_main_tools_exist_if_no_extra_tools(self):
         map = geemap.Map(ee_initialize=False)
-        toolbar = Toolbar(map, [self.item], [], self.accessory_widgets)
+        toolbar = Toolbar(map, [self.item], [])
         self.assertNotIn(toolbar.toggle_widget, toolbar.main_tools)
 
     def test_all_tools_and_toggle_exist_if_extra_tools(self):
         map = geemap.Map(ee_initialize=False)
-        toolbar = Toolbar(map, [self.item], [self.reset_item], self.accessory_widgets)
+        toolbar = Toolbar(map, [self.item], [self.reset_item])
         self.assertIsNotNone(toolbar.toggle_widget)
 
     def test_toggle_expands_and_collapses(self):
         map = geemap.Map(ee_initialize=False)
-        toolbar = Toolbar(map, [self.item], [self.reset_item], self.accessory_widgets)
+        toolbar = Toolbar(map, [self.item], [self.reset_item])
         self.assertIsNotNone(toolbar.toggle_widget)
         toggle = toolbar.toggle_widget
         self.assertEqual(toggle.icon, "add")
@@ -84,7 +83,7 @@ class TestToolbar(unittest.TestCase):
 
     def test_triggers_callbacks(self):
         map = geemap.Map(ee_initialize=False)
-        toolbar = Toolbar(map, [self.item, self.reset_item], [], self.accessory_widgets)
+        toolbar = Toolbar(map, [self.item, self.reset_item], [])
         self.assertIsNone(self.last_called_with_selected)
         self.assertIsNone(self.last_called_item)
 
@@ -122,7 +121,7 @@ class TestToolbar(unittest.TestCase):
             icon="info", tooltip="dummy item", callback=callback, reset=False
         )
         map_fake = fake_map.FakeMap()
-        toolbar = Toolbar(map_fake, [item], [], self.accessory_widgets)
+        toolbar = Toolbar(map_fake, [item], [])
         toolbar.main_tools[0].active = True
         self.assertEqual(1, widget.selected_count)
         self.assertEqual(0, widget.cleanup_count)
