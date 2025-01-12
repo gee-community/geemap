@@ -1,5 +1,5 @@
 import type { RenderProps } from "@anywidget/types";
-import { css, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { css, html, PropertyValues, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 
 import { legacyStyles } from "./ipywidgets_styles";
@@ -73,18 +73,14 @@ export class BasemapSelector extends LitWidget<
                             this.onProviderChanged
                         )}
                     </div>
-                    ${this.getAvailableResources().length > 0
-                        ? html`
-                              <div class="horizontal-flex">
-                                  <span class="legacy-text">Resource</span>
-                                  ${renderSelect(
-                                      this.getAvailableResources(),
-                                      this.resource,
-                                      this.onResourceChanged
-                                  )}
-                              </div>
-                          `
-                        : nothing}
+                    <div class="horizontal-flex">
+                        <span class="legacy-text">Resource</span>
+                        ${renderSelect(
+                            this.getAvailableResources(),
+                            this.resource,
+                            this.onResourceChanged
+                        )}
+                    </div>
                     <div class="horizontal-flex ">
                         <button
                             class="legacy-button"
