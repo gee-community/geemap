@@ -1106,7 +1106,19 @@ class Map(ipyleaflet.Map, MapInterface):
             "draw_control": MapDrawControl,
             "basemap_selector": map_widgets.BasemapSelector,
         }
-        if widget_type := basic_controls.get(widget, None):
+        widget_type = basic_controls.get(widget, None)
+
+        # First, try removing the widget from any layout boxes.
+        child_to_remove = None
+        for child in self.top_right_layout_box.children:
+            if child == widget or isinstance(child, type(widget_type)):
+                child_to_remove = child
+        if child_to_remove:
+            self.top_right_layout_box.children = [
+                x for x in self.top_right_layout_box.children if x != child_to_remove
+            ]
+
+        if widget_type:
             if control := self._find_widget_of_type(widget_type, return_control=True):
                 self.remove(control)
                 control.close()
