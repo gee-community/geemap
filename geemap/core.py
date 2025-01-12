@@ -731,7 +731,7 @@ class Map(ipyleaflet.Map, MapInterface):
         self.top_right_layout_box = ipywidgets.GridBox(
             layout=ipywidgets.Layout(
                 grid_template_columns="auto auto",  # Two columns
-                grid_gap="0px 10px",                # 0px row gap, 10px column gap
+                grid_gap="0px 10px",  # 0px row gap, 10px column gap
             ),
         )
         self.top_right_layout_box.layout.overflow = "visible"
