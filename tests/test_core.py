@@ -44,11 +44,13 @@ class TestMap(unittest.TestCase):
         controls = self.core_map.controls
         self.assertEqual(len(controls), 7)
         self.assertIsInstance(controls[0], ipyleaflet.WidgetControl)
-        self.assertIsInstance(controls[1], ipyleaflet.ZoomControl)
-        self.assertIsInstance(controls[2], ipyleaflet.FullScreenControl)
-        self.assertIsInstance(controls[3], core.MapDrawControl)
-        self.assertIsInstance(controls[4], ipyleaflet.ScaleControl)
-        self.assertIsInstance(controls[5].widget, toolbar.Toolbar)
+        self.assertIsInstance(controls[0].widget.children[0], map_widgets.LayerManager)
+        self.assertIsInstance(controls[0].widget.children[1], toolbar.Toolbar)
+        self.assertIsInstance(controls[1].widget, map_widgets.SearchBar)
+        self.assertIsInstance(controls[2], ipyleaflet.ZoomControl)
+        self.assertIsInstance(controls[3], ipyleaflet.FullScreenControl)
+        self.assertIsInstance(controls[4], core.MapDrawControl)
+        self.assertIsInstance(controls[5], ipyleaflet.ScaleControl)
         self.assertIsInstance(controls[6], ipyleaflet.AttributionControl)
 
     def test_set_center(self):
@@ -113,8 +115,9 @@ class TestMap(unittest.TestCase):
 
         self.core_map.add("scale_control", position="topleft", metric=False)
 
-        self.assertEqual(len(self.core_map.controls), 1)
-        control = self.core_map.controls[0]
+        # Scale control and top right layout box.
+        self.assertEqual(len(self.core_map.controls), 2)
+        control = self.core_map.controls[1]
         self.assertIsInstance(control, ipyleaflet.ScaleControl)
         self.assertEqual(control.position, "topleft")
         self.assertEqual(control.metric, False)
@@ -125,8 +128,9 @@ class TestMap(unittest.TestCase):
 
         self.core_map.add(ipyleaflet.ScaleControl(position="topleft", metric=False))
 
-        self.assertEqual(len(self.core_map.controls), 1)
-        control = self.core_map.controls[0]
+        # Scale control and top right layout box.
+        self.assertEqual(len(self.core_map.controls), 2)
+        control = self.core_map.controls[1]
         self.assertIsInstance(control, ipyleaflet.ScaleControl)
         self.assertEqual(control.position, "topleft")
         self.assertEqual(control.metric, False)
@@ -134,14 +138,14 @@ class TestMap(unittest.TestCase):
     def test_add_duplicate_basic_widget(self):
         """Tests adding a duplicate widget to the map."""
         self.assertEqual(len(self.core_map.controls), 7)
-        self.assertIsInstance(self.core_map.controls[0], ipyleaflet.WidgetControl)
-        self.assertEqual(self.core_map.controls[0].position, "topleft")
+        self.assertIsInstance(self.core_map.controls[1], ipyleaflet.WidgetControl)
+        self.assertEqual(self.core_map.controls[1].position, "topleft")
 
         self.core_map.add("zoom_control", position="bottomright")
 
         self.assertEqual(len(self.core_map.controls), 7)
-        self.assertIsInstance(self.core_map.controls[0], ipyleaflet.WidgetControl)
-        self.assertEqual(self.core_map.controls[0].position, "topleft")
+        self.assertIsInstance(self.core_map.controls[1], ipyleaflet.WidgetControl)
+        self.assertEqual(self.core_map.controls[1].position, "topleft")
 
     def test_add_toolbar(self):
         """Tests adding the toolbar widget."""
@@ -149,15 +153,10 @@ class TestMap(unittest.TestCase):
 
         self.core_map.add("toolbar", position="bottomright")
 
-        self.assertEqual(len(self.core_map.controls), 1)
-        toolbar_control = self.core_map.controls[0].widget
+        # Toolbar and top right layout box.
+        self.assertEqual(len(self.core_map.controls), 2)
+        toolbar_control = self.core_map.controls[1].widget
 
-        # Layer manager is selected and open by default.
-        self.assertEqual(toolbar_control.tab_index, 0)
-        layer_button = toolbar_control.accessory_widgets[0]
-        self.assertIsInstance(layer_button, map_widgets.LayerManager)
-
-        toolbar_control.tab_index = 1
         self.assertEqual(len(toolbar_control.main_tools), 3)
         self.assertEqual(toolbar_control.main_tools[0].tooltip_text, "Basemap selector")
         self.assertEqual(toolbar_control.main_tools[1].tooltip_text, "Inspector")
@@ -169,7 +168,8 @@ class TestMap(unittest.TestCase):
         self._clear_default_widgets()
         self.core_map.add("draw_control", position="topleft")
 
-        self.assertEqual(len(self.core_map.controls), 1)
+        # Draw control and top right layout box.
+        self.assertEqual(len(self.core_map.controls), 2)
         self.assertIsInstance(self.core_map.get_draw_control(), core.MapDrawControl)
 
     def test_add_basemap_selector(self):
@@ -178,7 +178,8 @@ class TestMap(unittest.TestCase):
 
         self.core_map.add("basemap_selector")
 
-        self.assertEqual(len(self.core_map.controls), 1)
+        # Basemap selector and top right layout box.
+        self.assertEqual(len(self.core_map.controls), 2)
 
 
 @patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
