@@ -84,6 +84,11 @@ export const legacyStyles = css`
         vertical-align: top;
     }
 
+    .legacy-select[disabled] {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
     .legacy-text-input {
         background: var(--jp-widgets-input-background-color);
         border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
