@@ -26,11 +26,11 @@ export function loadFonts() {
 export async function updateChildren(
     container: HTMLElement,
     model: AnyModel<any>,
-    property = "children",
+    property = "children"
 ) {
     let children = model.get(property);
     if (!Array.isArray(children)) {
-        children = [children]
+        children = [children];
     }
     const child_models = await unpackModels(children, model.widget_manager);
     const child_views = await Promise.all(
@@ -62,7 +62,8 @@ export function renderSelect(
     value: string,
     callback: (event: Event) => void
 ): TemplateResult {
-    const newOptions = options.map((option) => {
+    const emptyOptions = options.length === 0;
+    const newOptions = (emptyOptions ? ["---"] : options).map((option) => {
         const isObject = typeof option === "object";
         const optValue = `${isObject ? option.value : option}`;
         const optLabel = `${isObject ? option.label : option}`;
@@ -73,6 +74,12 @@ export function renderSelect(
         `;
     });
     return html`
-        <select class="legacy-select" @change="${callback}">${newOptions}</select>
+        <select
+            class="legacy-select"
+            @change="${callback}"
+            ?disabled=${emptyOptions}
+        >
+            ${newOptions}
+        </select>
     `;
 }

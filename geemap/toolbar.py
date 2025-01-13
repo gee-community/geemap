@@ -92,12 +92,6 @@ class Toolbar(anywidget.AnyWidget):
 
     _esm = pathlib.Path(__file__).parent / "static" / "toolbar.js"
 
-    # The accessory widget.
-    accessory_widgets = map_widgets.TypedTuple(
-        trait=traitlets.Instance(widgets.Widget),
-        help="The accessory widget",
-    ).tag(sync=True, **widgets.widget_serialization)
-
     # The list of main tools.
     main_tools = map_widgets.TypedTuple(
         trait=traitlets.Instance(widgets.Widget),
@@ -113,9 +107,6 @@ class Toolbar(anywidget.AnyWidget):
     # Whether the toolbar is expanded.
     expanded = traitlets.Bool(False).tag(sync=True)
 
-    # The currently selected tab.
-    tab_index = traitlets.Int(0).tag(sync=True)
-
     _TOGGLE_EXPAND_ICON = "add"
     _TOGGLE_EXPAND_TOOLTIP = "Expand toolbar"
     _TOGGLE_COLLAPSE_ICON = "remove"
@@ -126,7 +117,6 @@ class Toolbar(anywidget.AnyWidget):
         host_map: "geemap.Map",
         main_tools: List[ToolbarItem],
         extra_tools: List[ToolbarItem],
-        accessory_widgets: List[widgets.DOMWidget],
     ):
         """Adds a toolbar with `main_tools` and `extra_tools` to the `host_map`."""
         super().__init__()
@@ -145,7 +135,6 @@ class Toolbar(anywidget.AnyWidget):
             widget.callback_wrapper = lambda callback, value, tool: callback(
                 self.host_map, value, tool
             )
-        self.accessory_widgets = accessory_widgets
 
     def reset(self):
         """Resets the toolbar so that no widget is selected."""

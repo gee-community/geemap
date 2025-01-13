@@ -136,7 +136,6 @@ export class SearchBar extends LitWidget<
                 icon="search"
                 title="Search"
                 .collapsed="${this.collapsed}"
-                .mode="${TabMode.ALWAYS_SHOW}"
                 .hideCloseButton="${true}"
                 .compactMode="${true}">
                 <tab-panel

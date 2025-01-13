@@ -56,8 +56,13 @@ describe("<basemap-selector>", () => {
     it("selects the default provider appropriately.", () => {
         const selects = selector.shadowRoot?.querySelectorAll("select")!;
         const providerSelect = selects[0];
+        const resourceSelect = selects[1];
+
+        expect(selects.length).toBe(2); // Resource select should display "---".
         expect(providerSelect.value).toBe("DEFAULT");
-        expect(selects.length).toBe(1); // Resource select shouldn't be visible.
+        expect(selector.provider).toBe("DEFAULT");
+        expect(resourceSelect.value).toBe("---");
+        expect(selector.resource).toBe("");
     });
 
     it("setting the provider and resource on model updates the view.", async () => {

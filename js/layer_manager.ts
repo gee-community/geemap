@@ -6,15 +6,14 @@ import { legacyStyles } from "./ipywidgets_styles";
 import { LitWidget } from "./lit_widget";
 import { loadFonts, updateChildren } from "./utils";
 
+import "./container";
+
 export interface LayerManagerModel {
     children: any;
     visible: boolean;
 }
 
-export class LayerManager extends LitWidget<
-    LayerManagerModel,
-    LayerManager
-> {
+export class LayerManager extends LitWidget<LayerManagerModel, LayerManager> {
     static get componentName() {
         return `layer-manager`;
     }
@@ -22,24 +21,28 @@ export class LayerManager extends LitWidget<
     static styles = [
         legacyStyles,
         css`
-            .container {
-                padding: 0 4px 2px 4px;
-            }
-
             .row {
                 align-items: center;
                 display: flex;
                 gap: 4px;
-                height: 30px;
+                height: 28px;
             }
 
             .visibility-checkbox {
                 margin: 2px;
             }
+
+            .layer-manager-rows {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
         `,
     ];
 
     @property() visible: boolean = false;
+    @property() tabIndex: number = 0;
+    @property() collapsed: boolean = true;
 
     modelNameToViewName(): Map<
         keyof LayerManagerModel,
@@ -53,20 +56,31 @@ export class LayerManager extends LitWidget<
 
     render(): TemplateResult {
         return html`
-            <div class="container">
-                <div class="row">
-                    <input
-                        type="checkbox"
-                        class="visibility-checkbox"
-                        .checked="${this.visible}"
-                        @change="${this.onLayerVisibilityChanged}"
-                    />
-                    <span class="legacy-text all-layers-text"
-                        >All layers on/off</span
-                    >
+            <widget-container
+                icon="layers"
+                title=""
+                .collapsed="${this.collapsed}"
+                .hideCloseButton="${true}"
+                .compactMode="${true}"
+                .reverseHeader="${true}"
+            >
+                <div class="container">
+                    <div class="layer-manager-rows">
+                        <div class="row">
+                            <input
+                                type="checkbox"
+                                class="visibility-checkbox"
+                                .checked="${this.visible}"
+                                @change="${this.onLayerVisibilityChanged}"
+                            />
+                            <span class="legacy-text all-layers-text"
+                                >All layers on/off</span
+                            >
+                        </div>
+                        <slot></slot>
+                    </div>
                 </div>
-                <slot></slot>
-            </div>
+            </widget-container>
         `;
     }
 

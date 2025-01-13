@@ -211,6 +211,7 @@ class Map(core.Map):
 
         for control in ["toolbar_ctrl"]:
             if self.kwargs.get(control, True):
+                topright.append("layer_manager")
                 topright.append(control)
 
         for control in ["attribution_control"]:

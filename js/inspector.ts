@@ -73,7 +73,7 @@ export class Inspector extends LitWidget<InspectorModel, Inspector> {
     render() {
         return html`
             <widget-container
-                icon="search"
+                icon="point_scan"
                 title="Inspector"
                 .hideCloseButton="${this.hideCloseButton}"
                 @close-clicked="${this.onCloseButtonClicked}"
