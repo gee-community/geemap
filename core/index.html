@@ -7351,15 +7351,6 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 <span class="sd">        Returns:</span>
 <span class="sd">            Optional[map_widgets.LayerManager]: The layer manager widget if found, else None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">toolbar_widget</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">next</span><span class="p">(</span>
-                <span class="p">(</span>
-                    <span class="n">widget</span>
-                    <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">accessory_widgets</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">)</span>
-                <span class="p">),</span>
-                <span class="kc">None</span><span class="p">,</span>
-            <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -7405,6 +7396,19 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
         <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_kwarg_defaults</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Add a container to layout the layer manager and toolbar side-by-side.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">GridBox</span><span class="p">(</span>
+            <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+                <span class="n">grid_template_columns</span><span class="o">=</span><span class="s2">&quot;auto auto&quot;</span><span class="p">,</span>  <span class="c1"># Two columns</span>
+                <span class="n">grid_gap</span><span class="o">=</span><span class="s2">&quot;0px 10px&quot;</span><span class="p">,</span>  <span class="c1"># 0px row gap, 10px column gap</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">overflow</span> <span class="o">=</span> <span class="s2">&quot;visible&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_right_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
+            <span class="n">widget</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span><span class="p">,</span> <span class="n">transparent_bg</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_right_control</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">widgets</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_config</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">widgets</span><span class="p">:</span>
@@ -7553,6 +7557,10 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
                     <span class="k">return</span> <span class="n">widget</span> <span class="k">if</span> <span class="n">return_control</span> <span class="k">else</span> <span class="n">widget</span><span class="o">.</span><span class="n">widget</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">widget_type</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">widget</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">widget_type</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">child</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -7611,13 +7619,19 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 <span class="sd">            position (str): The position to place the layer manager.</span>
 <span class="sd">            **kwargs (Any): Additional keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_manager</span><span class="p">:</span>
+            <span class="k">return</span>
+
         <span class="n">layer_manager</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">layer_manager</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;layer_manager&quot;</span><span class="p">)</span>
         <span class="n">layer_manager</span><span class="o">.</span><span class="n">refresh_layers</span><span class="p">()</span>
-        <span class="n">layer_manager_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-            <span class="n">widget</span><span class="o">=</span><span class="n">layer_manager</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span>
-        <span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layer_manager_control</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">position</span> <span class="o">==</span> <span class="s2">&quot;topright&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="p">:</span>
+            <span class="n">current_children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">children</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">(</span><span class="n">layer_manager</span><span class="p">,)</span> <span class="o">+</span> <span class="n">current_children</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+                <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">layer_manager</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_toolbar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a toolbar to the map.</span>
@@ -7629,21 +7643,16 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">layer_manager</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">layer_manager</span><span class="o">.</span><span class="n">header_hidden</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">layer_manager</span><span class="o">.</span><span class="n">close_button_hidden</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">layer_manager</span><span class="o">.</span><span class="n">refresh_layers</span><span class="p">()</span>
-
         <span class="n">toolbar_val</span> <span class="o">=</span> <span class="n">toolbar</span><span class="o">.</span><span class="n">Toolbar</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_main_tools</span><span class="p">(),</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_toolbar_extra_tools</span><span class="p">(),</span>
-            <span class="p">[</span><span class="n">layer_manager</span><span class="p">],</span>
         <span class="p">)</span>
-        <span class="n">toolbar_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-            <span class="n">widget</span><span class="o">=</span><span class="n">toolbar_val</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span>
-        <span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">toolbar_control</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">position</span> <span class="o">==</span> <span class="s2">&quot;topright&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="p">:</span>
+            <span class="n">current_children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">children</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">current_children</span> <span class="o">+</span> <span class="p">(</span><span class="n">toolbar_val</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">toolbar_val</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_add_inspector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds an inspector to the map.</span>
@@ -7658,7 +7667,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="n">inspector</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">Inspector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">inspector</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;inspector&quot;</span><span class="p">)</span>
         <span class="n">inspector_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-            <span class="n">widget</span><span class="o">=</span><span class="n">inspector</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span>
+            <span class="n">widget</span><span class="o">=</span><span class="n">inspector</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">transparent_bg</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">inspector_control</span><span class="p">)</span>
 
@@ -7673,7 +7682,9 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="k">return</span>
         <span class="n">widget</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">SearchBar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">widget</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;search_control&quot;</span><span class="p">)</span>
-        <span class="n">control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
+            <span class="n">widget</span><span class="o">=</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">transparent_bg</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_layer_editor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -7688,7 +7699,9 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
         <span class="n">widget</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerEditor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">widget</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;layer_editor&quot;</span><span class="p">)</span>
-        <span class="n">control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
+            <span class="n">widget</span><span class="o">=</span><span class="n">widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">transparent_bg</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;topleft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -7739,7 +7752,9 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <span class="n">basemap</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">BasemapSelector</span><span class="p">(</span><span class="n">basemap_names</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">basemap</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;basemap_selector&quot;</span><span class="p">)</span>
         <span class="n">basemap</span><span class="o">.</span><span class="n">on_basemap_changed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace_basemap</span>
-        <span class="n">basemap_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">basemap</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
+        <span class="n">basemap_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
+            <span class="n">widget</span><span class="o">=</span><span class="n">basemap</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">transparent_bg</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">basemap_control</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -7761,7 +7776,19 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="s2">&quot;draw_control&quot;</span><span class="p">:</span> <span class="n">MapDrawControl</span><span class="p">,</span>
             <span class="s2">&quot;basemap_selector&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">BasemapSelector</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="k">if</span> <span class="n">widget_type</span> <span class="o">:=</span> <span class="n">basic_controls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">widget_type</span> <span class="o">=</span> <span class="n">basic_controls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># First, try removing the widget from any layout boxes.</span>
+        <span class="n">child_to_remove</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">child</span> <span class="o">==</span> <span class="n">widget</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">widget_type</span><span class="p">)):</span>
+                <span class="n">child_to_remove</span> <span class="o">=</span> <span class="n">child</span>
+        <span class="k">if</span> <span class="n">child_to_remove</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">children</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">child_to_remove</span>
+            <span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">widget_type</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">control</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">widget_type</span><span class="p">,</span> <span class="n">return_control</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
                 <span class="n">control</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -7872,7 +7899,9 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">legend</span><span class="o">.</span><span class="n">host_map</span> <span class="o">=</span> <span class="bp">self</span>
-        <span class="n">control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">legend</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
+            <span class="n">widget</span><span class="o">=</span><span class="n">legend</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">transparent_bg</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">layer</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">old_legend</span> <span class="o">:=</span> <span class="n">layer</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;legend&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">old_legend</span><span class="p">)</span>
@@ -8016,7 +8045,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
                 <span class="s2">&quot;draw_control&quot;</span><span class="p">,</span>
             <span class="p">],</span>
             <span class="s2">&quot;bottomleft&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;scale_control&quot;</span><span class="p">,</span> <span class="s2">&quot;measure_control&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;topright&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;toolbar&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;topright&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;toolbar&quot;</span><span class="p">,</span> <span class="s2">&quot;layer_manager&quot;</span><span class="p">],</span>
             <span class="s2">&quot;bottomright&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;attribution_control&quot;</span><span class="p">],</span>
         <span class="p">}</span>
 
@@ -8273,6 +8302,19 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
     <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_kwarg_defaults</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># Add a container to layout the layer manager and toolbar side-by-side.</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">GridBox</span><span class="p">(</span>
+        <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+            <span class="n">grid_template_columns</span><span class="o">=</span><span class="s2">&quot;auto auto&quot;</span><span class="p">,</span>  <span class="c1"># Two columns</span>
+            <span class="n">grid_gap</span><span class="o">=</span><span class="s2">&quot;0px 10px&quot;</span><span class="p">,</span>  <span class="c1"># 0px row gap, 10px column gap</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">overflow</span> <span class="o">=</span> <span class="s2">&quot;visible&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">top_right_control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
+        <span class="n">widget</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;topright&quot;</span><span class="p">,</span> <span class="n">transparent_bg</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_right_control</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">widgets</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_control_config</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="n">widgets</span><span class="p">:</span>
@@ -9166,7 +9208,19 @@ GeoJSON. Defaults to False.</p></td>
         <span class="s2">&quot;draw_control&quot;</span><span class="p">:</span> <span class="n">MapDrawControl</span><span class="p">,</span>
         <span class="s2">&quot;basemap_selector&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">BasemapSelector</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="k">if</span> <span class="n">widget_type</span> <span class="o">:=</span> <span class="n">basic_controls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="n">widget_type</span> <span class="o">=</span> <span class="n">basic_controls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># First, try removing the widget from any layout boxes.</span>
+    <span class="n">child_to_remove</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">child</span> <span class="o">==</span> <span class="n">widget</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">widget_type</span><span class="p">)):</span>
+            <span class="n">child_to_remove</span> <span class="o">=</span> <span class="n">child</span>
+    <span class="k">if</span> <span class="n">child_to_remove</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_right_layout_box</span><span class="o">.</span><span class="n">children</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">child_to_remove</span>
+        <span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">widget_type</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">control</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span><span class="n">widget_type</span><span class="p">,</span> <span class="n">return_control</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
             <span class="n">control</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>

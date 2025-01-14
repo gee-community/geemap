@@ -5524,12 +5524,6 @@ Toolbar            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
 
     <span class="n">_esm</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> <span class="o">/</span> <span class="s2">&quot;toolbar.js&quot;</span>
 
-    <span class="c1"># The accessory widget.</span>
-    <span class="n">accessory_widgets</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">TypedTuple</span><span class="p">(</span>
-        <span class="n">trait</span><span class="o">=</span><span class="n">traitlets</span><span class="o">.</span><span class="n">Instance</span><span class="p">(</span><span class="n">widgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">),</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The accessory widget&quot;</span><span class="p">,</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">widgets</span><span class="o">.</span><span class="n">widget_serialization</span><span class="p">)</span>
-
     <span class="c1"># The list of main tools.</span>
     <span class="n">main_tools</span> <span class="o">=</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">TypedTuple</span><span class="p">(</span>
         <span class="n">trait</span><span class="o">=</span><span class="n">traitlets</span><span class="o">.</span><span class="n">Instance</span><span class="p">(</span><span class="n">widgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">),</span>
@@ -5545,9 +5539,6 @@ Toolbar            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
     <span class="c1"># Whether the toolbar is expanded.</span>
     <span class="n">expanded</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="c1"># The currently selected tab.</span>
-    <span class="n">tab_index</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tag</span><span class="p">(</span><span class="n">sync</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
     <span class="n">_TOGGLE_EXPAND_ICON</span> <span class="o">=</span> <span class="s2">&quot;add&quot;</span>
     <span class="n">_TOGGLE_EXPAND_TOOLTIP</span> <span class="o">=</span> <span class="s2">&quot;Expand toolbar&quot;</span>
     <span class="n">_TOGGLE_COLLAPSE_ICON</span> <span class="o">=</span> <span class="s2">&quot;remove&quot;</span>
@@ -5558,7 +5549,6 @@ Toolbar            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
         <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;geemap.Map&quot;</span><span class="p">,</span>
         <span class="n">main_tools</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ToolbarItem</span><span class="p">],</span>
         <span class="n">extra_tools</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ToolbarItem</span><span class="p">],</span>
-        <span class="n">accessory_widgets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">widgets</span><span class="o">.</span><span class="n">DOMWidget</span><span class="p">],</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a toolbar with `main_tools` and `extra_tools` to the `host_map`.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -5577,7 +5567,6 @@ Toolbar            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
             <span class="n">widget</span><span class="o">.</span><span class="n">callback_wrapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">callback</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tool</span><span class="p">:</span> <span class="n">callback</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tool</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">accessory_widgets</span> <span class="o">=</span> <span class="n">accessory_widgets</span>
 
     <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets the toolbar so that no widget is selected.&quot;&quot;&quot;</span>
@@ -5614,14 +5603,12 @@ Toolbar            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
 
 
 
-
-
   <div class="doc doc-object doc-method">
 
 
 
 <h3 id="geemap.toolbar.Toolbar.__init__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">main_tools</span><span class="p">,</span> <span class="n">extra_tools</span><span class="p">,</span> <span class="n">accessory_widgets</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">,</span> <span class="n">main_tools</span><span class="p">,</span> <span class="n">extra_tools</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
@@ -5640,7 +5627,6 @@ Toolbar            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
     <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;geemap.Map&quot;</span><span class="p">,</span>
     <span class="n">main_tools</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ToolbarItem</span><span class="p">],</span>
     <span class="n">extra_tools</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ToolbarItem</span><span class="p">],</span>
-    <span class="n">accessory_widgets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">widgets</span><span class="o">.</span><span class="n">DOMWidget</span><span class="p">],</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a toolbar with `main_tools` and `extra_tools` to the `host_map`.&quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -5659,7 +5645,6 @@ Toolbar            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
         <span class="n">widget</span><span class="o">.</span><span class="n">callback_wrapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">callback</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tool</span><span class="p">:</span> <span class="n">callback</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tool</span>
         <span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">accessory_widgets</span> <span class="o">=</span> <span class="n">accessory_widgets</span>
 </code></pre></div>
         </details>
     </div>
