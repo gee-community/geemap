@@ -8540,20 +8540,24 @@ SearchBar            (<span title="anywidget.widget.AnyWidget">AnyWidget</span>)
 
             <span class="n">contents</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="c1"># create_code_cell(contents)</span>
-
+            <span class="n">copy_success</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">pyperclip</span>
 
                 <span class="n">pyperclip</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">contents</span><span class="p">))</span>
+                <span class="n">copy_success</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">pass</span>
-            <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;&lt;pre&gt;&quot;</span>
-                <span class="s2">&quot;# The code has been copied to the clipboard.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;# Press Ctrl+V in a new cell to paste it.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">contents</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;&lt;/pre&quot;</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">copy_success</span><span class="p">:</span>
+                <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot;&lt;pre&gt;&quot;</span>
+                    <span class="s2">&quot;# The code has been copied to the clipboard.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;# Press Ctrl+V in a new cell to paste it.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">contents</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;&lt;/pre&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dataset_model</span><span class="p">[</span><span class="s2">&quot;additional_html&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;pre&gt;</span><span class="si">{</span><span class="n">contents</span><span class="si">}</span><span class="s2">&lt;/pre&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dataset_model</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dataset_model</span><span class="p">)</span>
 </code></pre></div>
         </details>
