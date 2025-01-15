@@ -43,12 +43,12 @@ export class SearchBar extends LitWidget<
             }
 
             .input-container {
-                max-width: 340px;
+                max-width: 460px;
                 padding: 5px;
             }
 
             .input-container > p {
-                margin: 5px 3px;
+                margin: 8px 3px;
                 max-width: 230px;
             }
 
@@ -61,7 +61,7 @@ export class SearchBar extends LitWidget<
                 list-style-type: none;
                 margin: 0;
                 margin-bottom: 4px;
-                padding: 0;
+                padding: 8px 0;
             }
 
             label.result {
@@ -72,6 +72,7 @@ export class SearchBar extends LitWidget<
             .import-button, .reset-button {
                 margin: 0 2px 2px 2px;
                 padding: 0 8px;
+                white-space: nowrap;
             }
 
             .dataset-select {
@@ -82,6 +83,7 @@ export class SearchBar extends LitWidget<
             .additional-html-container {
                 max-height: 300px;
                 overflow: auto;
+                padding: 8px 0;
             }
 
             .additional-html-container pre {
@@ -200,9 +202,11 @@ export class SearchBar extends LitWidget<
                 ${results}
             </ul>`);
         }
-        renderedInputs.push(html`<div class="additional-html-container">
-            ${unsafeHTML(locationModel.additional_html)}
-        </div>`);
+        if (locationModel.additional_html) {
+            renderedInputs.push(html`<div class="additional-html-container">
+                ${unsafeHTML(locationModel.additional_html)}
+            </div>`);
+        }
         if (locationModel.search ||
             locationModel.results.length ||
             locationModel.selected) {
@@ -248,7 +252,7 @@ export class SearchBar extends LitWidget<
             @click="${() => {
                 this.model?.send({ type: "click", id: "import" });
             }}">
-            Import
+            Reveal Code
         </button>`;
         const results = html`
             <select
@@ -271,10 +275,12 @@ export class SearchBar extends LitWidget<
             html`<div class="row">
                 ${importButton}
                 ${results}
-            </div>`,
-            html`<div class="additional-html-container">
-                ${unsafeHTML(datasetModel.additional_html)}
             </div>`);
+        if (datasetModel.additional_html) {
+            renderedInputs.push(html`<div class="additional-html-container">
+                ${unsafeHTML(datasetModel.additional_html)}
+            </div>`)
+        }
         return renderedInputs;
     }
 }

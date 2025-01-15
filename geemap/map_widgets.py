@@ -1501,18 +1501,22 @@ class SearchBar(anywidget.AnyWidget):
 
             contents = "".join(code).strip()
             # create_code_cell(contents)
-
+            copy_success = False
             try:
                 import pyperclip
 
                 pyperclip.copy(str(contents))
+                copy_success = True
             except Exception as e:
                 pass
-            dataset_model["additional_html"] = (
-                "<pre>"
-                "# The code has been copied to the clipboard.\n"
-                "# Press Ctrl+V in a new cell to paste it.\n"
-                f"{contents}"
-                "</pre"
-            )
+            if copy_success:
+                dataset_model["additional_html"] = (
+                    "<pre>"
+                    "# The code has been copied to the clipboard.\n"
+                    "# Press Ctrl+V in a new cell to paste it.\n"
+                    f"{contents}"
+                    "</pre"
+                )
+            else:
+                dataset_model["additional_html"] = f"<pre>{contents}</pre"
             self.dataset_model = json.dumps(dataset_model)

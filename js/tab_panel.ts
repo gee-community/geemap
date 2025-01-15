@@ -82,7 +82,7 @@ export class TabPanel extends LitElement {
             .tab-container button {
                 border-radius: 5px;
                 height: 28px;
-                margin: 2px;
+                margin: 2px 0 2px 8px;
                 user-select: none;
             }
 
