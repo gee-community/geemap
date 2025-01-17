@@ -44,7 +44,6 @@ export class SearchBar extends LitWidget<
 
             .input-container {
                 max-width: 460px;
-                padding: 5px;
             }
 
             .input-container > p {
