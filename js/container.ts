@@ -53,7 +53,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
             }
 
             .widget-container {
-                padding: 4px;
+                padding: 8px 12px 12px 12px;
             }
 
             .hidden {
@@ -70,6 +70,10 @@ export class Container extends LitWidget<ContainerModel, Container> {
                 align-content: center;
                 flex-grow: 1;
                 padding: 0 12px 0 0;
+            }
+
+            .left-padding {
+                padding-left: 8px;
             }
         `,
     ];
@@ -135,7 +139,15 @@ export class Container extends LitWidget<ContainerModel, Container> {
     }
 
     private renderTitle(): HTMLTemplateResult {
-        return html`<span class="legacy-text header-text">${this.title}</span>`;
+        return html`<span
+            class="${classMap({
+                "legacy-text": true,
+                "header-text": true,
+                "left-padding":
+                    this.compactMode && this.title && !this.reverseHeader,
+            })}"
+            >${this.title}</span
+        >`;
     }
 
     private onCloseButtonClicked(): void {
