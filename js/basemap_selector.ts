@@ -29,7 +29,7 @@ export class BasemapSelector extends LitWidget<
         materialStyles,
         css`
             .horizontal-flex {
-                gap: 4px;
+                gap: 8px;
             }
 
             .legacy-text {
@@ -61,7 +61,7 @@ export class BasemapSelector extends LitWidget<
         return html`
             <widget-container
                 icon="map"
-                title="Basemap Selector"
+                title="Basemap"
                 @close-clicked="${this.onCloseClicked}"
             >
                 <div class="vertical-flex">
