@@ -86,7 +86,6 @@ class ToolbarItem(anywidget.AnyWidget):
             self.active = False
 
 
-@map_widgets.Theme.apply
 class Toolbar(anywidget.AnyWidget):
     """A toolbar that can be added to the map."""
 

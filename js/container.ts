@@ -66,6 +66,13 @@ export class Container extends LitWidget<ContainerModel, Container> {
                 width: 28px;
             }
 
+            .compact-header-button {
+                background: transparent;
+                font-size: 16px;
+                height: 28px;
+                width: 28px;
+            }
+
             .header-text {
                 align-content: center;
                 flex-grow: 1;
@@ -179,7 +186,8 @@ export class Container extends LitWidget<ContainerModel, Container> {
         return html`<button
             class="${classMap({
             'legacy-button': true,
-            'header-button': true,
+            'header-button': !this.compactMode,
+            'compact-header-button': this.compactMode,
             'active': !this.collapsed,
         })}"
             class="legacy-button header-button"
