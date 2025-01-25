@@ -781,7 +781,6 @@ class LayerManagerRow(anywidget.AnyWidget):
         self.host_map.remove_layer(self.layer)
 
 
-@Theme.apply
 class LayerManager(anywidget.AnyWidget):
     """A layer manager widget for geemap."""
 
