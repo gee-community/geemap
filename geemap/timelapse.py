@@ -412,11 +412,12 @@ def add_text_to_gif(
     # import io
     import warnings
 
-    import pkg_resources
+    import importlib.resources
     from PIL import Image, ImageDraw, ImageFont, ImageSequence
 
     warnings.simplefilter("ignore")
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     default_font = os.path.join(pkg_dir, "data/fonts/arial.ttf")
 
     in_gif = os.path.abspath(in_gif)

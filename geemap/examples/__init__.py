@@ -1,8 +1,8 @@
 import box
 import os
-import pkg_resources
+import importlib.resources
 
-_pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+_pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
 _datasets_path = os.path.join(_pkg_dir, "examples/datasets.txt")
 _baseurl = (
     "https://raw.githubusercontent.com/gee-community/geemap/master/examples/data/"

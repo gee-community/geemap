@@ -84,6 +84,8 @@ class Map(pdk.Deck):
 
         Args:
             layer (pydeck.Layer): A pydeck Layer object.
+            layer_name (str, optional): Sets the layer 'id' for the pydeck Layer object.
+            **kwargs (Any): Additional keyword arguments for the pydeck Layer object.
         """
 
         try:
@@ -94,23 +96,20 @@ class Map(pdk.Deck):
                         "resourceUri": "https://cdn.jsdelivr.net/gh/giswqs/pydeck_myTileLayer@master/dist/bundle.js",
                     }
                 ]
-                layer = pdk.Layer("MyTileLayer", layer, id=layer_name)
+                layer = pdk.Layer("MyTileLayer", layer, id=layer_name, **kwargs)
 
             self.layers.append(layer)
         except Exception as e:
             raise Exception(e)
 
-    def add_ee_layer(
-        self, ee_object, vis_params={}, name=None, shown=True, opacity=1.0, **kwargs
-    ):
+    def add_ee_layer(self, ee_object, vis_params={}, name=None, **kwargs):
         """Adds a given EE object to the map as a layer.
 
         Args:
             ee_object (Collection|Feature|Image|MapId): The object to add to the map.
             vis_params (dict, optional): The visualization parameters. Defaults to {}.
             name (str, optional): The name of the layer. Defaults to 'Layer N'.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
+            **kwargs (Any): Additional keyword arguments for the pydeck Layer object.
         """
         import ee
         from box import Box
