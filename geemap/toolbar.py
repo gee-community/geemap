@@ -1574,9 +1574,9 @@ def collect_samples(m):
 
 def get_tools_dict():
     import pandas as pd
-    import pkg_resources
+    import importlib.resources
 
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     toolbox_csv = os.path.join(pkg_dir, "data/template/toolbox.csv")
 
     df = pd.read_csv(toolbox_csv).set_index("index")

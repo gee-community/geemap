@@ -1437,10 +1437,10 @@ class SearchBar(anywidget.AnyWidget):
 
     def get_ee_example(self, asset_id):
         try:
-            import pkg_resources
+            import importlib.resources
 
-            pkg_dir = os.path.dirname(
-                pkg_resources.resource_filename("geemap", "geemap.py")
+            pkg_dir = str(
+                importlib.resources.files("geemap").joinpath("geemap.py").parent
             )
             with open(os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8") as f:
                 functions = json.load(f)

@@ -20,6 +20,7 @@ import tarfile
 import urllib.request
 import warnings
 import zipfile
+import importlib.resources
 
 import ee
 import ipywidgets as widgets
@@ -3454,12 +3455,11 @@ def create_colorbar(
     import decimal
 
     # import io
-    import pkg_resources
     from colour import Color
     from PIL import Image, ImageDraw, ImageFont
 
     warnings.simplefilter("ignore")
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
 
     if out_file is None:
         filename = "colorbar_" + random_string() + ".png"
@@ -4120,11 +4120,9 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
         timeout (int, optional): Timeout in seconds. Defaults to 300.
         proxies (dict, optional): Proxy settings. Defaults to None.
     """
-    import pkg_resources
-
     from bs4 import BeautifulSoup
 
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
     csv_file = os.path.join(template_dir, "ee_api_docs.csv")
@@ -4240,9 +4238,7 @@ def read_api_csv():
     """
     import copy
 
-    import pkg_resources
-
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
     csv_file = os.path.join(template_dir, "ee_api_docs.csv")
@@ -5129,9 +5125,8 @@ def vis_to_qml(ee_class_table, out_qml):
         ee_class_table (str): An Earth Engine class table with triple quotes.
         out_qml (str): File path to the output QGIS Layer Style (.qml).
     """
-    import pkg_resources
 
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
     qml_template = os.path.join(template_dir, "NLCD.qml")
@@ -5178,9 +5173,7 @@ def create_nlcd_qml(out_qml):
     Args:
         out_qml (str): File path to the output qml.
     """
-    import pkg_resources
-
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
     qml_template = os.path.join(template_dir, "NLCD.qml")
@@ -10012,9 +10005,7 @@ def get_census_dict(reset=False):
     Returns:
         dict: A dictionary of Census data.
     """
-    import pkg_resources
-
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     census_data = os.path.join(pkg_dir, "data/census_data.json")
 
     if reset:
@@ -13729,10 +13720,9 @@ def create_legend(
         str: The HTML code of the legend.
     """
 
-    import pkg_resources
     from .legends import builtin_legends
 
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     legend_template = os.path.join(pkg_dir, "data/template/legend_style.html")
 
     if draggable:

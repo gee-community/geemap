@@ -12,7 +12,7 @@ import urllib.request
 from pathlib import Path
 
 import ipywidgets as widgets
-import pkg_resources
+import importlib.resources
 from box import Box
 from IPython.display import display
 
@@ -25,7 +25,7 @@ def get_data_csv() -> str:
     Returns:
         str: File path to the CSV file.
     """
-    pkg_dir = os.path.dirname(pkg_resources.resource_filename("geemap", "geemap.py"))
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     template_dir = os.path.join(pkg_dir, "data/template")
     data_csv = os.path.join(template_dir, "ee_data_catalog.csv")
     return data_csv
