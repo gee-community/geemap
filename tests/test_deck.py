@@ -41,7 +41,7 @@ class TestMap(unittest.TestCase):
             }
             m.add_ee_layer(self.ee_object, vis_params={}, opacity=0.5)
 
-        self.assertEquals(len(m.layers), 1)
+        self.assertEqual(len(m.layers), 1)
         layer = m.layers[0]
 
         self.assertIsInstance(layer, pdk.Layer)
