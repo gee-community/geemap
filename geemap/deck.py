@@ -102,9 +102,7 @@ class Map(pdk.Deck):
         except Exception as e:
             raise Exception(e)
 
-    def add_ee_layer(
-        self, ee_object, vis_params={}, name=None, **kwargs
-    ):
+    def add_ee_layer(self, ee_object, vis_params={}, name=None, **kwargs):
         """Adds a given EE object to the map as a layer.
 
         Args:
