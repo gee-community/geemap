@@ -1,5 +1,4 @@
-"""The maplibregl module provides the Map class for creating interactive maps using the maplibre.ipywidget module.
-"""
+"""The maplibregl module provides the Map class for creating interactive maps using the maplibre.ipywidget module."""
 
 import os
 import requests

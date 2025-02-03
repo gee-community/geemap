@@ -1,5 +1,4 @@
-"""This script can do a batch update of notebook examples.
-"""
+"""This script can do a batch update of notebook examples."""
 
 import glob
 import os

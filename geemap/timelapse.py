@@ -1,5 +1,4 @@
-"""Module for creating timelapse from Earth Engine data.
-"""
+"""Module for creating timelapse from Earth Engine data."""
 
 # *******************************************************************************#
 # This module contains extra features of the geemap package.                     #
