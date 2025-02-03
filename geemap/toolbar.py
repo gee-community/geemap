@@ -1,5 +1,4 @@
-"""Module for dealing with interactive GUIs.
-"""
+"""Module for dealing with interactive GUIs."""
 
 # *******************************************************************************#
 # This module contains core features and extra features of the geemap package.   #

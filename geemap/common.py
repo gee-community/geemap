@@ -1,5 +1,4 @@
-"""This module contains some common functions for both folium and ipyleaflet to interact with the Earth Engine Python API.
-"""
+"""This module contains some common functions for both folium and ipyleaflet to interact with the Earth Engine Python API."""
 
 # *******************************************************************************#
 # This module contains core features and extra features of the geemap package.   #

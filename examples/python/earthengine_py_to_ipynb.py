@@ -1,5 +1,4 @@
-"""The example shows you how to convert all Earth Engine Python scripts in a GitHub repo to Jupyter notebooks.
-"""
+"""The example shows you how to convert all Earth Engine Python scripts in a GitHub repo to Jupyter notebooks."""
 
 import os
 from geemap.conversion import *
