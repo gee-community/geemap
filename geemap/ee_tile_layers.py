@@ -101,7 +101,7 @@ def _ee_object_to_image(
 
 
 def _validate_palette(
-    palette: Union[str, List[str], Tuple[str, ...], box.Box]
+    palette: Union[str, List[str], Tuple[str, ...], box.Box],
 ) -> List[str]:
     """Validates and returns the palette.
 

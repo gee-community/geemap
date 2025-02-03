@@ -1,5 +1,4 @@
-"""Module of sample legends for some commonly used geospatial datasets.
-"""
+"""Module of sample legends for some commonly used geospatial datasets."""
 
 # *******************************************************************************#
 # This module contains extra features of the geemap package.                     #

@@ -1,5 +1,4 @@
-"""Module for commonly used colormaps and palettes for visualizing Earth Engine data.
-"""
+"""Module for commonly used colormaps and palettes for visualizing Earth Engine data."""
 
 # *******************************************************************************#
 # This module contains extra features of the geemap package.                     #

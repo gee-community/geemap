@@ -1,5 +1,4 @@
-"""Module for creating charts from Earth Engine data.
-"""
+"""Module for creating charts from Earth Engine data."""
 
 # *******************************************************************************#
 # This module contains core features of the geemap package.                      #
