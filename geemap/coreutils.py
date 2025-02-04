@@ -833,6 +833,11 @@ def geojson_to_ee(
                 longitude = coordinates[0]
                 latitude = coordinates[1]
                 geom = ee.Geometry.Point(longitude, latitude)
+            elif geo_json["geometry"]["type"] == "MultiPoint":  # Checks whether it is a multipoint
+                coordinates = geo_json["geometry"]["coordinates"]
+                longitude = coordinates[0]
+                latitude = coordinates[1]
+                geom = ee.Geometry.MultiPoint(longitude, latitude)
             else:
                 geom = ee.Geometry(geo_json["geometry"], "", geodesic)
             return geom
