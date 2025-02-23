@@ -15,7 +15,7 @@
 		"@anywidget/types": "^0.1.9",
 		"@types/jasmine": "^5.1.4",
 		"@types/jasmine-expect": "^3.8.1",
-		"esbuild": "^0.23.0",
+		"esbuild": "^0.25.0",
 		"jasmine": "^5.4.0",
 		"jasmine-core": "^5.4.0",
 		"jasmine-spec-reporter": "^7.0.0",
