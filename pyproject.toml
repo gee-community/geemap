@@ -25,7 +25,7 @@ dependencies = [
     "bqplot",
     "colour",
     "earthengine-api>=1.0.0",
-    "eerepr>=0.0.4",
+    "eerepr>=0.1.0",
     "folium>=0.17.0",
     "geocoder",
     "ipyevents",
