@@ -321,21 +321,20 @@ class Map(folium.Map):
         bounds = gdf.total_bounds
         self.zoom_to_bounds(bounds)
 
-    def center_object(self, ee_object, zoom=None):
+    def center_object(self, ee_object, zoom=None, max_error=0.001):
         """Centers the map view on a given object.
 
         Args:
             ee_object (Element|Geometry): An Earth Engine object to center on a geometry, image or feature.
             zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.
+            max_error (float, optional): The maximum error for the geometry. Defaults to 0.001.
         """
-
-        maxError = 0.001
         if isinstance(ee_object, ee.Geometry):
-            geometry = ee_object.transform(maxError=maxError)
+            geometry = ee_object.transform(maxError=max_error)
         else:
             try:
-                geometry = ee_object.geometry(maxError=maxError).transform(
-                    maxError=maxError
+                geometry = ee_object.geometry(maxError=max_error).transform(
+                    maxError=max_error
                 )
             except Exception:
                 raise Exception(
@@ -346,7 +345,9 @@ class Map(folium.Map):
             if not isinstance(zoom, int):
                 raise Exception("Zoom must be an integer.")
             else:
-                centroid = geometry.centroid(maxError=maxError).getInfo()["coordinates"]
+                centroid = geometry.centroid(maxError=max_error).getInfo()[
+                    "coordinates"
+                ]
                 lat = centroid[1]
                 lon = centroid[0]
                 self.set_center(lon, lat, zoom)
@@ -355,7 +356,9 @@ class Map(folium.Map):
                     arc_zoom_to_extent(lon, lat, lon, lat)
 
         else:
-            coordinates = geometry.bounds(maxError).getInfo()["coordinates"][0]
+            coordinates = geometry.bounds(maxError=max_error).getInfo()["coordinates"][
+                0
+            ]
             x = [c[0] for c in coordinates]
             y = [c[1] for c in coordinates]
             xmin = min(x)
