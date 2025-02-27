@@ -8347,7 +8347,10 @@ Map            (<a class="autorefs autorefs-internal" title="geemap.core.Map" hr
     <span class="n">setCenter</span> <span class="o">=</span> <span class="n">set_center</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ee</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">],</span> <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ee_object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ee</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">],</span>
+        <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Centers the map view on a given object.</span>
 
@@ -8355,8 +8358,9 @@ Map            (<a class="autorefs autorefs-internal" title="geemap.core.Map" hr
 <span class="sd">            ee_object (Union[ee.Element, ee.Geometry]): An Earth Engine object to</span>
 <span class="sd">                center on a geometry, image or feature.</span>
 <span class="sd">            zoom (Optional[int], optional): The zoom level, from 1 to 24. Defaults to None.</span>
+<span class="sd">            max_error (float, optional): The maximum error for the geometry. Defaults to 0.001.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">center_object</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">center_object</span><span class="p">(</span><span class="n">ee_object</span><span class="o">=</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="n">zoom</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">is_arcpy</span><span class="p">():</span>
             <span class="n">bds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
             <span class="n">arc_zoom_to_extent</span><span class="p">(</span><span class="n">bds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
@@ -21986,7 +21990,7 @@ be on by default. Defaults to True.</p></td>
 
 
 <h3 id="geemap.geemap.Map.centerObject" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">centerObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">centerObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span></code>
 
 
 <a href="#geemap.geemap.Map.centerObject" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -22019,12 +22023,21 @@ center on a geometry, image or feature.</p></td>
         <td><p>The zoom level, from 1 to 24. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>max_error</code></td>
+        <td><code>float</code></td>
+        <td><p>The maximum error for the geometry. Defaults to 0.001.</p></td>
+        <td><code>0.001</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/geemap.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ee</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">],</span> <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">ee_object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ee</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">],</span>
+    <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Centers the map view on a given object.</span>
 
@@ -22032,8 +22045,9 @@ center on a geometry, image or feature.</p></td>
 <span class="sd">        ee_object (Union[ee.Element, ee.Geometry]): An Earth Engine object to</span>
 <span class="sd">            center on a geometry, image or feature.</span>
 <span class="sd">        zoom (Optional[int], optional): The zoom level, from 1 to 24. Defaults to None.</span>
+<span class="sd">        max_error (float, optional): The maximum error for the geometry. Defaults to 0.001.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">center_object</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">center_object</span><span class="p">(</span><span class="n">ee_object</span><span class="o">=</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="n">zoom</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">is_arcpy</span><span class="p">():</span>
         <span class="n">bds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
         <span class="n">arc_zoom_to_extent</span><span class="p">(</span><span class="n">bds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
@@ -22050,7 +22064,7 @@ center on a geometry, image or feature.</p></td>
 
 
 <h3 id="geemap.geemap.Map.center_object" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span></code>
 
 
 <a href="#geemap.geemap.Map.center_object" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -22083,12 +22097,21 @@ center on a geometry, image or feature.</p></td>
         <td><p>The zoom level, from 1 to 24. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>max_error</code></td>
+        <td><code>float</code></td>
+        <td><p>The maximum error for the geometry. Defaults to 0.001.</p></td>
+        <td><code>0.001</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/geemap.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ee</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">],</span> <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">ee_object</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ee</span><span class="o">.</span><span class="n">Element</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">],</span>
+    <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Centers the map view on a given object.</span>
 
@@ -22096,8 +22119,9 @@ center on a geometry, image or feature.</p></td>
 <span class="sd">        ee_object (Union[ee.Element, ee.Geometry]): An Earth Engine object to</span>
 <span class="sd">            center on a geometry, image or feature.</span>
 <span class="sd">        zoom (Optional[int], optional): The zoom level, from 1 to 24. Defaults to None.</span>
+<span class="sd">        max_error (float, optional): The maximum error for the geometry. Defaults to 0.001.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">center_object</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">center_object</span><span class="p">(</span><span class="n">ee_object</span><span class="o">=</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="n">zoom</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">is_arcpy</span><span class="p">():</span>
         <span class="n">bds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span>
         <span class="n">arc_zoom_to_extent</span><span class="p">(</span><span class="n">bds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>

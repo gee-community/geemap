@@ -7368,21 +7368,20 @@ Map            (<span title="folium.folium.Map">Map</span>)
         <span class="n">bounds</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">total_bounds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zoom_to_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Centers the map view on a given object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ee_object (Element|Geometry): An Earth Engine object to center on a geometry, image or feature.</span>
 <span class="sd">            zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.</span>
+<span class="sd">            max_error (float, optional): The maximum error for the geometry. Defaults to 0.001.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">maxError</span> <span class="o">=</span> <span class="mf">0.001</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">):</span>
-            <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">maxError</span><span class="p">)</span>
+            <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">maxError</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
-                    <span class="n">maxError</span><span class="o">=</span><span class="n">maxError</span>
+                <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+                    <span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span>
                 <span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
@@ -7393,7 +7392,9 @@ Map            (<span title="folium.folium.Map">Map</span>)
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">zoom</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Zoom must be an integer.&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">centroid</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">maxError</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>
+                <span class="n">centroid</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span>
+                    <span class="s2">&quot;coordinates&quot;</span>
+                <span class="p">]</span>
                 <span class="n">lat</span> <span class="o">=</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">lon</span> <span class="o">=</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
@@ -7402,7 +7403,9 @@ Map            (<span title="folium.folium.Map">Map</span>)
                     <span class="n">arc_zoom_to_extent</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span>
+                <span class="mi">0</span>
+            <span class="p">]</span>
             <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
             <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
             <span class="n">xmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -15656,7 +15659,7 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
 
 
 <h3 id="geemap.foliumap.Map.centerObject" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">centerObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">centerObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span></code>
 
 
 <a href="#geemap.foliumap.Map.centerObject" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -15688,25 +15691,30 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
         <td><p>The zoom level, from 1 to 24. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>max_error</code></td>
+        <td><code>float</code></td>
+        <td><p>The maximum error for the geometry. Defaults to 0.001.</p></td>
+        <td><code>0.001</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/foliumap.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Centers the map view on a given object.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ee_object (Element|Geometry): An Earth Engine object to center on a geometry, image or feature.</span>
 <span class="sd">        zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.</span>
+<span class="sd">        max_error (float, optional): The maximum error for the geometry. Defaults to 0.001.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">maxError</span> <span class="o">=</span> <span class="mf">0.001</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">):</span>
-        <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">maxError</span><span class="p">)</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">maxError</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
-                <span class="n">maxError</span><span class="o">=</span><span class="n">maxError</span>
+            <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+                <span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
@@ -15717,7 +15725,9 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">zoom</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Zoom must be an integer.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">centroid</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">maxError</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>
+            <span class="n">centroid</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span>
+                <span class="s2">&quot;coordinates&quot;</span>
+            <span class="p">]</span>
             <span class="n">lat</span> <span class="o">=</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">lon</span> <span class="o">=</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
@@ -15726,7 +15736,9 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
                 <span class="n">arc_zoom_to_extent</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span>
+            <span class="mi">0</span>
+        <span class="p">]</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
         <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
         <span class="n">xmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -15751,7 +15763,7 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
 
 
 <h3 id="geemap.foliumap.Map.center_object" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span></code>
 
 
 <a href="#geemap.foliumap.Map.center_object" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -15783,25 +15795,30 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
         <td><p>The zoom level, from 1 to 24. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>max_error</code></td>
+        <td><code>float</code></td>
+        <td><p>The maximum error for the geometry. Defaults to 0.001.</p></td>
+        <td><code>0.001</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/foliumap.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Centers the map view on a given object.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ee_object (Element|Geometry): An Earth Engine object to center on a geometry, image or feature.</span>
 <span class="sd">        zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.</span>
+<span class="sd">        max_error (float, optional): The maximum error for the geometry. Defaults to 0.001.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">maxError</span> <span class="o">=</span> <span class="mf">0.001</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">):</span>
-        <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">maxError</span><span class="p">)</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">maxError</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
-                <span class="n">maxError</span><span class="o">=</span><span class="n">maxError</span>
+            <span class="n">geometry</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+                <span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
@@ -15812,7 +15829,9 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">zoom</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Zoom must be an integer.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">centroid</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">maxError</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>
+            <span class="n">centroid</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span>
+                <span class="s2">&quot;coordinates&quot;</span>
+            <span class="p">]</span>
             <span class="n">lat</span> <span class="o">=</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">lon</span> <span class="o">=</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">zoom</span><span class="p">)</span>
@@ -15821,7 +15840,9 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = &#39;proxy/{port}&#39;
                 <span class="n">arc_zoom_to_extent</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span>
+            <span class="mi">0</span>
+        <span class="p">]</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
         <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
         <span class="n">xmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>

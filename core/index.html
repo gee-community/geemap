@@ -7742,20 +7742,25 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span>
+        <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Centers the map view on a given object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ee_object (ee.ComputedObject): The Earth Engine object to center on.</span>
 <span class="sd">            zoom (Optional[int]): Zoom level to set. Defaults to None.</span>
+<span class="sd">            max_error (float): The maximum error for the geometry. Defaults to 0.001.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">max_error</span> <span class="o">=</span> <span class="mf">0.001</span>
         <span class="n">geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_geometry</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
             <span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">zoom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span>
+                <span class="mi">0</span>
+            <span class="p">]</span>
             <span class="n">x_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
             <span class="n">y_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fit_bounds</span><span class="p">([[</span><span class="nb">min</span><span class="p">(</span><span class="n">y_vals</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">x_vals</span><span class="p">)],</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">y_vals</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_vals</span><span class="p">)]])</span>
@@ -8886,7 +8891,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
 
 <h3 id="geemap.core.Map.centerObject" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">centerObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">centerObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span></code>
 
 
 <a href="#geemap.core.Map.centerObject" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -8918,25 +8923,36 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <td><p>Zoom level to set. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>max_error</code></td>
+        <td><code>float</code></td>
+        <td><p>The maximum error for the geometry. Defaults to 0.001.</p></td>
+        <td><code>0.001</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/core.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span>
+    <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Centers the map view on a given object.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ee_object (ee.ComputedObject): The Earth Engine object to center on.</span>
 <span class="sd">        zoom (Optional[int]): Zoom level to set. Defaults to None.</span>
+<span class="sd">        max_error (float): The maximum error for the geometry. Defaults to 0.001.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">max_error</span> <span class="o">=</span> <span class="mf">0.001</span>
     <span class="n">geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_geometry</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
         <span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">zoom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span>
+            <span class="mi">0</span>
+        <span class="p">]</span>
         <span class="n">x_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
         <span class="n">y_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_bounds</span><span class="p">([[</span><span class="nb">min</span><span class="p">(</span><span class="n">y_vals</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">x_vals</span><span class="p">)],</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">y_vals</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_vals</span><span class="p">)]])</span>
@@ -8958,7 +8974,7 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
 
 
 <h3 id="geemap.core.Map.center_object" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span></code>
 
 
 <a href="#geemap.core.Map.center_object" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -8990,25 +9006,36 @@ Map            (<span title="ipyleaflet.leaflet.Map">Map</span>, <a class="autor
         <td><p>Zoom level to set. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>max_error</code></td>
+        <td><code>float</code></td>
+        <td><p>The maximum error for the geometry. Defaults to 0.001.</p></td>
+        <td><code>0.001</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/core.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span>
+    <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Centers the map view on a given object.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ee_object (ee.ComputedObject): The Earth Engine object to center on.</span>
 <span class="sd">        zoom (Optional[int]): Zoom level to set. Defaults to None.</span>
+<span class="sd">        max_error (float): The maximum error for the geometry. Defaults to 0.001.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">max_error</span> <span class="o">=</span> <span class="mf">0.001</span>
     <span class="n">geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_geometry</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
         <span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">zoom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span>
+            <span class="mi">0</span>
+        <span class="p">]</span>
         <span class="n">x_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
         <span class="n">y_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_bounds</span><span class="p">([[</span><span class="nb">min</span><span class="p">(</span><span class="n">y_vals</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">x_vals</span><span class="p">)],</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">y_vals</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_vals</span><span class="p">)]])</span>
@@ -9918,15 +9945,19 @@ MapInterface        </code>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span>
+        <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Centers the map view on a given object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ee_object (ee.ComputedObject): The Earth Engine object to center on.</span>
 <span class="sd">            zoom (Optional[int]): Zoom level to set. Defaults to None.</span>
+<span class="sd">            max_error (float): The maximum error for the geometry. Defaults to 0.001.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">del</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span>  <span class="c1"># Unused.</span>
+        <span class="k">del</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="p">,</span> <span class="n">max_error</span>  <span class="c1"># Unused.</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -10312,7 +10343,7 @@ EELayerMetadata            (<span title="dict">dict</span>)
 
 
 <h3 id="geemap.core.MapInterface.center_object" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">center_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_error</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span></code>
 
 
 <a href="#geemap.core.MapInterface.center_object" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -10344,20 +10375,30 @@ EELayerMetadata            (<span title="dict">dict</span>)
         <td><p>Zoom level to set. Defaults to None.</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>max_error</code></td>
+        <td><code>float</code></td>
+        <td><p>The maximum error for the geometry. Defaults to 0.001.</p></td>
+        <td><code>0.001</code></td>
+      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>geemap/core.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">center_object</span><span class="p">(</span>
-    <span class="bp">self</span><span class="p">,</span> <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span> <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span>
+    <span class="n">zoom</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Centers the map view on a given object.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ee_object (ee.ComputedObject): The Earth Engine object to center on.</span>
 <span class="sd">        zoom (Optional[int]): Zoom level to set. Defaults to None.</span>
+<span class="sd">        max_error (float): The maximum error for the geometry. Defaults to 0.001.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">del</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span>  <span class="c1"># Unused.</span>
+    <span class="k">del</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="p">,</span> <span class="n">max_error</span>  <span class="c1"># Unused.</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </code></pre></div>
         </details>
