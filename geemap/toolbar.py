@@ -20,7 +20,7 @@ import ipywidgets as widgets
 import traitlets
 
 from ipyfilechooser import FileChooser
-from IPython.core.display import display
+from IPython.display import display
 from typing import Any, Callable, Optional
 
 from .common import *
