@@ -170,7 +170,7 @@ export class LayerManagerRow extends LitWidget<
                 >
                     <div class="spinner"></div>
                     <span class="close-icon material-symbols-outlined"
-                        >close</span
+                        >delete</span
                     >
                 </button>
             </div>
@@ -186,16 +186,16 @@ export class LayerManagerRow extends LitWidget<
             <div class="row confirm-deletion-container">
                 <span class="legacy-text remove-layer-text">Remove layer?</span>
                 <button
+                    class="legacy-button"
+                    @click="${this.cancelDeletion}"
+                >
+                    No
+                </button>
+                <button
                     class="legacy-button primary confirm-deletion-button"
                     @click="${this.confirmDeletion}"
                 >
                     Yes
-                </button>
-                <button
-                    class="legacy-button primary"
-                    @click="${this.cancelDeletion}"
-                >
-                    No
                 </button>
             </div>
         `;

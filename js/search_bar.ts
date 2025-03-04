@@ -40,11 +40,11 @@ export class SearchBar extends LitWidget<
         css`
             .row {
                 display: flex;
+                gap: 6px;
             }
 
             .input-container {
-                max-width: 460px;
-                padding: 5px;
+                max-width: 320px;
             }
 
             .input-container > p {
@@ -53,7 +53,7 @@ export class SearchBar extends LitWidget<
             }
 
             input.search {
-                margin: 2px;
+                margin: 2px 2px 8px 2px;
                 width: calc(100% - 4px);
             }
 
@@ -67,6 +67,7 @@ export class SearchBar extends LitWidget<
             label.result {
                 align-items: center;
                 display: flex;
+                margin-bottom: 4px;
             }
 
             .import-button, .reset-button {
