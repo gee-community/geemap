@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.9">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.8608ea7d.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -920,7 +920,7 @@
         <li class="md-nav__item">
   <a href="#geemap.examples" class="md-nav__link">
     <span class="md-ellipsis">
-      geemap.examples
+      examples
     </span>
   </a>
   
@@ -929,7 +929,7 @@
         <li class="md-nav__item">
   <a href="#geemap.examples.get_ee_path" class="md-nav__link">
     <span class="md-ellipsis">
-      get_ee_path()
+      get_ee_path
     </span>
   </a>
   
@@ -938,7 +938,7 @@
         <li class="md-nav__item">
   <a href="#geemap.examples.get_links" class="md-nav__link">
     <span class="md-ellipsis">
-      get_links()
+      get_links
     </span>
   </a>
   
@@ -947,7 +947,7 @@
         <li class="md-nav__item">
   <a href="#geemap.examples.get_names" class="md-nav__link">
     <span class="md-ellipsis">
-      get_names()
+      get_names
     </span>
   </a>
   
@@ -956,7 +956,7 @@
         <li class="md-nav__item">
   <a href="#geemap.examples.get_path" class="md-nav__link">
     <span class="md-ellipsis">
-      get_path()
+      get_path
     </span>
   </a>
   
@@ -5361,7 +5361,7 @@
         <li class="md-nav__item">
   <a href="#geemap.examples" class="md-nav__link">
     <span class="md-ellipsis">
-      geemap.examples
+      examples
     </span>
   </a>
   
@@ -5370,7 +5370,7 @@
         <li class="md-nav__item">
   <a href="#geemap.examples.get_ee_path" class="md-nav__link">
     <span class="md-ellipsis">
-      get_ee_path()
+      get_ee_path
     </span>
   </a>
   
@@ -5379,7 +5379,7 @@
         <li class="md-nav__item">
   <a href="#geemap.examples.get_links" class="md-nav__link">
     <span class="md-ellipsis">
-      get_links()
+      get_links
     </span>
   </a>
   
@@ -5388,7 +5388,7 @@
         <li class="md-nav__item">
   <a href="#geemap.examples.get_names" class="md-nav__link">
     <span class="md-ellipsis">
-      get_names()
+      get_names
     </span>
   </a>
   
@@ -5397,7 +5397,7 @@
         <li class="md-nav__item">
   <a href="#geemap.examples.get_path" class="md-nav__link">
     <span class="md-ellipsis">
-      get_path()
+      get_path
     </span>
   </a>
   
@@ -5428,10 +5428,17 @@
 <h1 id="examples-module">examples module<a class="headerlink" href="#examples-module" title="Permanent link">&para;</a></h1>
 
 
-  <div class="doc doc-object doc-module">
+<div class="doc doc-object doc-module">
+
+
 
 <a id="geemap.examples"></a>
     <div class="doc doc-contents first">
+
+
+
+
+
 
 
 
@@ -5446,58 +5453,87 @@
 
 
 
-  <div class="doc doc-object doc-function">
-
+<div class="doc doc-object doc-function">
 
 
 <h2 id="geemap.examples.get_ee_path" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_ee_path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
-
+            <code class="highlight language-python"><span class="n">get_ee_path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
 
 <a href="#geemap.examples.get_ee_path" class="headerlink" title="Permanent link">&para;</a></h2>
 
+
     <div class="doc doc-contents ">
 
-      <p>Get the Earth Engine asset ID of an example dataset.</p>
+        <p>Get the Earth Engine asset ID of an example dataset.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>name</code></td>
-        <td><code>str</code></td>
-        <td><p>The name of the dataset, such as contents, countries, us_cities, us_states,
-china, CONUS_HU8, chn_admin_level0, chn_admin_level1, chn_admin_level2, chn_admin_line</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>str</code></td>
-      <td><p>The Earth Engine asset ID of the dataset.</p></td>
-    </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>geemap/examples/__init__.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ee_path</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The name of the dataset, such as contents, countries, us_cities, us_states,
+china, CONUS_HU8, chn_admin_level0, chn_admin_level1, chn_admin_level2, chn_admin_line</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>str</code></td>            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The Earth Engine asset ID of the dataset.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>geemap/examples/__init__.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ee_path</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the Earth Engine asset ID of an example dataset.</span>
 
 <span class="sd">    Args:</span>
@@ -5508,46 +5544,58 @@ china, CONUS_HU8, chn_admin_level0, chn_admin_level1, chn_admin_level2, chn_admi
 <span class="sd">        str: The Earth Engine asset ID of the dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;users/giswqs/public/&#39;</span><span class="si">}{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
-</code></pre></div>
-        </details>
+</code></pre></div></td></tr></table></div>
+            </details>
     </div>
 
-  </div>
+</div>
 
-
-
-  <div class="doc doc-object doc-function">
-
+<div class="doc doc-object doc-function">
 
 
 <h2 id="geemap.examples.get_links" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_links</span><span class="p">()</span></code>
-
+            <code class="highlight language-python"><span class="n">get_links</span><span class="p">()</span></code>
 
 <a href="#geemap.examples.get_links" class="headerlink" title="Permanent link">&para;</a></h2>
 
+
     <div class="doc doc-contents ">
 
-      <p>Get a list of HTTP URLs to the example datasets.</p>
+        <p>Get a list of HTTP URLs to the example datasets.</p>
 
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>list</code></td>
-      <td><p>A list of HTTP URLs to the example datasets.</p></td>
-    </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>geemap/examples/__init__.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_links</span><span class="p">():</span>
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>list</code></td>            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of HTTP URLs to the example datasets.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>geemap/examples/__init__.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_links</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a list of HTTP URLs to the example datasets.</span>
 
 <span class="sd">    Returns:</span>
@@ -5555,46 +5603,58 @@ china, CONUS_HU8, chn_admin_level0, chn_admin_level1, chn_admin_level2, chn_admi
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-</code></pre></div>
-        </details>
+</code></pre></div></td></tr></table></div>
+            </details>
     </div>
 
-  </div>
+</div>
 
-
-
-  <div class="doc doc-object doc-function">
-
+<div class="doc doc-object doc-function">
 
 
 <h2 id="geemap.examples.get_names" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_names</span><span class="p">()</span></code>
-
+            <code class="highlight language-python"><span class="n">get_names</span><span class="p">()</span></code>
 
 <a href="#geemap.examples.get_names" class="headerlink" title="Permanent link">&para;</a></h2>
 
+
     <div class="doc doc-contents ">
 
-      <p>Get a list of names of the example datasets.</p>
+        <p>Get a list of names of the example datasets.</p>
 
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>list</code></td>
-      <td><p>A list of names of the example datasets.</p></td>
-    </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>geemap/examples/__init__.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_names</span><span class="p">():</span>
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>list</code></td>            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of names of the example datasets.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>geemap/examples/__init__.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_names</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a list of names of the example datasets.</span>
 
 <span class="sd">    Returns:</span>
@@ -5602,80 +5662,122 @@ china, CONUS_HU8, chn_admin_level0, chn_admin_level1, chn_admin_level2, chn_admi
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-</code></pre></div>
-        </details>
+</code></pre></div></td></tr></table></div>
+            </details>
     </div>
 
-  </div>
+</div>
 
-
-
-  <div class="doc doc-object doc-function">
-
+<div class="doc doc-object doc-function">
 
 
 <h2 id="geemap.examples.get_path" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
-
+            <code class="highlight language-python"><span class="n">get_path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></code>
 
 <a href="#geemap.examples.get_path" class="headerlink" title="Permanent link">&para;</a></h2>
 
+
     <div class="doc doc-contents ">
 
-      <p>Get the HTTP URL to an example dataset.</p>
+        <p>Get the HTTP URL to an example dataset.</p>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>name</code></td>
-        <td><code>str</code></td>
-        <td><p>The name of the dataset.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Exceptions:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>ValueError</code></td>
-        <td><p>If the dataset name is not found.</p></td>
-      </tr>
-  </tbody>
-</table>
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>str</code></td>
-      <td><p>The HTTP URL to the dataset.</p></td>
-    </tr>
-  </tbody>
-</table>
-        <details class="quote">
-          <summary>Source code in <code>geemap/examples/__init__.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_path</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The name of the dataset.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the dataset name is not found.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>str</code></td>            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The HTTP URL to the dataset.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>geemap/examples/__init__.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_path</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the HTTP URL to an example dataset.</span>
 
 <span class="sd">    Args:</span>
@@ -5693,14 +5795,11 @@ china, CONUS_HU8, chn_admin_level0, chn_admin_level1, chn_admin_level2, chn_admi
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> not found in example datasets. It must be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
-</code></pre></div>
-        </details>
+</code></pre></div></td></tr></table></div>
+            </details>
     </div>
 
-  </div>
-
-
-
+</div>
 
 
 
@@ -5708,7 +5807,7 @@ china, CONUS_HU8, chn_admin_level0, chn_admin_level1, chn_admin_level2, chn_admi
 
     </div>
 
-  </div>
+</div>
 
 
 
@@ -5731,7 +5830,7 @@ china, CONUS_HU8, chn_admin_level0, chn_admin_level1, chn_admin_level2, chn_admi
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2022-04-25T02:09:56+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2022-04-25</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="April 25, 2022 02:09:56"><span class="timeago" datetime="2022-04-25T02:09:56+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="April 25, 2022 02:09:56">2022-04-25</span>
   </span>
 
     
@@ -5741,7 +5840,7 @@ china, CONUS_HU8, chn_admin_level0, chn_admin_level1, chn_admin_level2, chn_admi
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2022-04-25T02:09:56+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2022-04-25</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="April 25, 2022 02:09:56"><span class="timeago" datetime="2022-04-25T02:09:56+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="April 25, 2022 02:09:56">2022-04-25</span>
   </span>
 
     
@@ -5862,7 +5961,7 @@ china, CONUS_HU8, chn_admin_level0, chn_admin_level1, chn_admin_level2, chn_admi
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
       
         <script src="../js/timeago.min.js"></script>
       
