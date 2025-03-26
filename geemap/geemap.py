@@ -1287,7 +1287,7 @@ class Map(core.Map):
         Returns:
             list | dict: A list in the format [west, south, east, north] in degrees.
         """
-        return super().get_bounds(as_geo_json=asGeoJSON)
+        return super().get_bounds(as_geojson=asGeoJSON)
 
     def add_cog_layer(
         self,
