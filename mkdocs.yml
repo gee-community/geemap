@@ -155,6 +155,7 @@ nav:
           - workshops/IPPN_2024.ipynb
           - workshops/HGAC_2024.ipynb
           - workshops/AGU_2024.ipynb
+          - workshops/GEE_Workshop_2025.ipynb
     - Notebooks:
           - notebooks/00_ee_auth_colab.ipynb
           - notebooks/00_geemap_colab.ipynb
