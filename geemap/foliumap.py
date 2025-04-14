@@ -10,24 +10,21 @@ import os
 import ee
 import folium
 from box import Box
-from folium import plugins
-
-
 from branca.element import Figure, JavascriptLink, MacroElement
+from folium import plugins
 from folium.elements import JSCSSMixin
 from folium.map import Layer
 from jinja2 import Template
 
+from . import examples
 from .basemaps import xyz_to_folium
 from .common import *
 from .conversion import *
 from .ee_tile_layers import *
 from .legends import builtin_legends
 from .osm import *
-from .timelapse import *
 from .plot import *
-from . import examples
-
+from .timelapse import *
 
 if not in_colab_shell():
     from .plot import *
@@ -37,7 +34,7 @@ basemaps = Box(xyz_to_folium(), frozen_box=True)
 
 
 class Map(folium.Map):
-    """The Map class inherits from folium.Map. By default, the Map will add Google Maps as the basemap. Set add_google_map = False to use OpenStreetMap as the basemap.
+    """The Map class inherits from folium.Map. By default, the Map will use OpenStreetMap as the basemap.
 
     Returns:
         object: folium map object.
@@ -118,6 +115,11 @@ class Map(folium.Map):
             width = kwargs.pop("width")
         else:
             width = "100%"
+
+        if "tiles" not in kwargs:
+            kwargs["tiles"] = None
+            if "basemap" not in kwargs:
+                kwargs["basemap"] = "OpenStreetMap"
 
         super().__init__(**kwargs)
         self.baseclass = "folium"
@@ -803,7 +805,7 @@ class Map(folium.Map):
             style=style,
         )
         if draggable:
-            from branca.element import Template, MacroElement
+            from branca.element import MacroElement, Template
 
             content = (
                 '"""\n{% macro html(this, kwargs) %}\n'
@@ -1030,8 +1032,9 @@ class Map(folium.Map):
             FileNotFoundError: The provided GeoJSON file could not be found.
         """
         import json
-        import requests
         import random
+
+        import requests
 
         try:
             if isinstance(in_geojson, str):
@@ -1891,8 +1894,8 @@ class Map(folium.Map):
             formatting (ReportFormatting, optional): Set the basic styling for your report.
             token (str, optional): The token to use to datapane to publish the map. See https://docs.datapane.com/tut-getting-started. Defaults to None.
         """
-        import webbrowser
         import warnings
+        import webbrowser
 
         if os.environ.get("USE_MKDOCS") is not None:
             return
@@ -2211,6 +2214,7 @@ class Map(folium.Map):
 
         """
         import warnings
+
         import pandas as pd
         from folium.features import DivIcon
 
@@ -2677,9 +2681,10 @@ class Map(folium.Map):
             position (str, optional): The position of the widget. Defaults to "bottomright".
         """
 
-        from matplotlib import figure
         import base64
         from io import BytesIO
+
+        from matplotlib import figure
 
         allowed_positions = ["topleft", "topright", "bottomleft", "bottomright"]
 
