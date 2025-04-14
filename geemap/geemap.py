@@ -42,8 +42,7 @@ basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 class Map(core.Map):
     """The Map class inherits the core Map class. The arguments you can pass to the Map initialization
         can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html.
-        By default, the Map will add Google Maps as the basemap. Set add_google_map = False
-        to use OpenStreetMap as the basemap.
+        By default, the Map will use OpenStreetMap as the basemap.
 
     Returns:
         object: ipyleaflet map object.
