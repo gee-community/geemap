@@ -35,7 +35,7 @@ export class LayerManager extends LitWidget<LayerManagerModel, LayerManager> {
             .layer-manager-rows {
                 display: flex;
                 flex-direction: column;
-                gap: 4px;
+                gap: 8px;
             }
         `,
     ];
