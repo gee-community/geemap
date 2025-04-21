@@ -14597,36 +14597,10 @@ def tms_to_geotiff(
 
         SESSION = requests.Session()
 
-    xyz_tiles = {
-        "OpenStreetMap": {
-            "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            "attribution": "OpenStreetMap",
-            "name": "OpenStreetMap",
-        },
-        "ROADMAP": {
-            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
-            "attribution": "Esri",
-            "name": "Esri.WorldStreetMap",
-        },
-        "SATELLITE": {
-            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-            "attribution": "Esri",
-            "name": "Esri.WorldImagery",
-        },
-        "TERRAIN": {
-            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-            "attribution": "Esri",
-            "name": "Esri.WorldTopoMap",
-        },
-        "HYBRID": {
-            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-            "attribution": "Esri",
-            "name": "Esri.WorldImagery",
-        },
-    }
+    from .basemaps import XYZ_TILES
 
-    if isinstance(source, str) and source.upper() in xyz_tiles:
-        source = xyz_tiles[source.upper()]["url"]
+    if isinstance(source, str) and source.upper() in XYZ_TILES:
+        source = XYZ_TILES[source.upper()]["url"]
     elif isinstance(source, str) and source.startswith("http"):
         pass
     else:

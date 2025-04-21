@@ -42,8 +42,7 @@ basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 class Map(core.Map):
     """The Map class inherits the core Map class. The arguments you can pass to the Map initialization
         can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html.
-        By default, the Map will add Google Maps as the basemap. Set add_google_map = False
-        to use OpenStreetMap as the basemap.
+        By default, the Map will use OpenStreetMap as the basemap.
 
     Returns:
         object: ipyleaflet map object.
@@ -474,7 +473,10 @@ class Map(core.Map):
     setCenter = set_center
 
     def center_object(
-        self, ee_object: Union[ee.Element, ee.Geometry], zoom: Optional[int] = None
+        self,
+        ee_object: Union[ee.Element, ee.Geometry],
+        zoom: Optional[int] = None,
+        max_error: float = 0.001,
     ) -> None:
         """Centers the map view on a given object.
 
@@ -482,8 +484,9 @@ class Map(core.Map):
             ee_object (Union[ee.Element, ee.Geometry]): An Earth Engine object to
                 center on a geometry, image or feature.
             zoom (Optional[int], optional): The zoom level, from 1 to 24. Defaults to None.
+            max_error (float, optional): The maximum error for the geometry. Defaults to 0.001.
         """
-        super().center_object(ee_object, zoom)
+        super().center_object(ee_object=ee_object, zoom=zoom, max_error=max_error)
         if is_arcpy():
             bds = self.bounds
             arc_zoom_to_extent(bds[0][1], bds[0][0], bds[1][1], bds[1][0])
@@ -1283,7 +1286,7 @@ class Map(core.Map):
         Returns:
             list | dict: A list in the format [west, south, east, north] in degrees.
         """
-        return super().get_bounds(as_geo_json=asGeoJSON)
+        return super().get_bounds(as_geojson=asGeoJSON)
 
     def add_cog_layer(
         self,

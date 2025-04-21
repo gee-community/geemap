@@ -456,15 +456,19 @@ class MapInterface:
         raise NotImplementedError()
 
     def center_object(
-        self, ee_object: ee.ComputedObject, zoom: Optional[int] = None
+        self,
+        ee_object: ee.ComputedObject,
+        zoom: Optional[int] = None,
+        max_error: float = 0.001,
     ) -> None:
         """Centers the map view on a given object.
 
         Args:
             ee_object (ee.ComputedObject): The Earth Engine object to center on.
             zoom (Optional[int]): Zoom level to set. Defaults to None.
+            max_error (float): The maximum error for the geometry. Defaults to 0.001.
         """
-        del ee_object, zoom  # Unused.
+        del ee_object, zoom, max_error  # Unused.
         raise NotImplementedError()
 
     def get_scale(self) -> float:
@@ -846,20 +850,25 @@ class Map(ipyleaflet.Map, MapInterface):
             ) from exc
 
     def center_object(
-        self, ee_object: ee.ComputedObject, zoom: Optional[int] = None
+        self,
+        ee_object: ee.ComputedObject,
+        zoom: Optional[int] = None,
+        max_error: float = 0.001,
     ) -> None:
         """Centers the map view on a given object.
 
         Args:
             ee_object (ee.ComputedObject): The Earth Engine object to center on.
             zoom (Optional[int]): Zoom level to set. Defaults to None.
+            max_error (float): The maximum error for the geometry. Defaults to 0.001.
         """
-        max_error = 0.001
         geometry = self._get_geometry(ee_object, max_error).transform(
             maxError=max_error
         )
         if zoom is None:
-            coordinates = geometry.bounds(max_error).getInfo()["coordinates"][0]
+            coordinates = geometry.bounds(maxError=max_error).getInfo()["coordinates"][
+                0
+            ]
             x_vals = [c[0] for c in coordinates]
             y_vals = [c[1] for c in coordinates]
             self.fit_bounds([[min(y_vals), min(x_vals)], [max(y_vals), max(x_vals)]])
