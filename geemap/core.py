@@ -1084,25 +1084,27 @@ class Map(ipyleaflet.Map, MapInterface):
         if self._basemap_selector:
             return
 
-        basemap_names = kwargs.pop(
-            "basemaps", list(self._available_basemaps.keys()))
+        basemap_names = kwargs.pop("basemaps", list(self._available_basemaps.keys()))
 
         default_value_for_selector = None
         if self.layers:
-            first_layer_name = getattr(self.layers[0], 'name', '')
+            first_layer_name = getattr(self.layers[0], "name", "")
             if first_layer_name:
                 default_value_for_selector = self._get_preferred_basemap_name(
-                    first_layer_name)
+                    first_layer_name
+                )
             elif self._available_basemaps:
                 default_value_for_selector = self._get_preferred_basemap_name(
-                    next(iter(self._available_basemaps.keys())))
+                    next(iter(self._available_basemaps.keys()))
+                )
             else:
                 default_value_for_selector = "DEFAULT"
 
         elif self._available_basemaps:
             first_available_key = next(iter(self._available_basemaps.keys()))
             default_value_for_selector = self._get_preferred_basemap_name(
-                first_available_key)
+                first_available_key
+            )
         else:
             default_value_for_selector = "DEFAULT"
 
