@@ -34,21 +34,18 @@ reach out!
    [Releases](https://github.com/gee-community/geemap/releases) page.
 
 2. Checkout the appropriate release branch. The branch name should use the
-   following format: `vMAJOR.MINOR`. The `PATCH` number is excluded from the
-   branch name.
+   following format: `vMAJOR.MINOR.PATCH-release`.
 
-    - For `PATCH` version upgrades, checkout the existing release branch.
-    - For major/minor version upgrades, create a new branch from `master`.
+3. If necessary, install `bump-my-version` with `pip install bump-my-version`.
+   Update the version number with
+   `bump-my-version replace <major,minor,patch>rc1`. Until we set up
+   [support for prerelease versions](https://github.com/callowayproject/bump-my-version?tab=readme-ov-file#add-support-for-pre-release-versions),
+   you'll have to manually enter the major, minor, and patch numbers. The
+   version commit will be made to the release candidate branch directly.
+   Verify the version number is as-expected to avoid problems further along.
 
-3. Bump the version number using `bump-my-version` (e.g.
-   `bump-my-version bump <minor,major,patch>`). The version commit will be made
-   to the release candidate branch directly. Verify the version number is
-   as-expected to avoid problems further along.
-
-4. Create a tag for this release (`git tag <tag-name>`). Tags for release
-   candidates should use the following format: `vMAJOR.MINOR.PATCH-rc.RC_NUM`
-   (e.g. `v0.32.0-rc.1`). `RC_NUM` starts at 1 and increments for each release
-   candidate. Push the tag to GitHub with `git push origin <tag-name>`.
+5. Push the tag created by `bump-my-version` to GitHub with
+   `git push origin <tag-name>`.
 
 #### **Monday to Wednesday:** Test the release candidate
 
