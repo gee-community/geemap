@@ -49,7 +49,6 @@ export class SearchBar extends LitWidget<
 
             .input-container > p {
                 margin: 8px 3px;
-                max-width: 230px;
             }
 
             input.search {

@@ -97,6 +97,7 @@ export class LayerManagerRow extends LitWidget<
 
             .remove-layer-text {
                 flex-grow: 1;
+                padding-left: 22px;
             }
 
             .confirm-deletion-container {
