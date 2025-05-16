@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.2afb09e1.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -5663,24 +5663,20 @@ reach out!</p>
 </li>
 <li>
 <p>Checkout the appropriate release branch. The branch name should use the
-   following format: <code>vMAJOR.MINOR</code>. The <code>PATCH</code> number is excluded from the
-   branch name.</p>
-<ul>
-<li>For <code>PATCH</code> version upgrades, checkout the existing release branch.</li>
-<li>For major/minor version upgrades, create a new branch from <code>master</code>.</li>
-</ul>
+   following format: <code>vMAJOR.MINOR.PATCH-release</code>.</p>
 </li>
 <li>
-<p>Bump the version number using <code>bump-my-version</code> (e.g.
-   <code>bump-my-version bump &lt;minor,major,patch&gt;</code>). The version commit will be made
-   to the release candidate branch directly. Verify the version number is
-   as-expected to avoid problems further along.</p>
+<p>If necessary, install <code>bump-my-version</code> with <code>pip install bump-my-version</code>.
+   Update the version number with
+   <code>bump-my-version replace &lt;major,minor,patch&gt;rc1</code>. Until we set up
+   <a href="https://github.com/callowayproject/bump-my-version?tab=readme-ov-file#add-support-for-pre-release-versions">support for prerelease versions</a>,
+   you'll have to manually enter the major, minor, and patch numbers. The
+   version commit will be made to the release candidate branch directly.
+   Verify the version number is as-expected to avoid problems further along.</p>
 </li>
 <li>
-<p>Create a tag for this release (<code>git tag &lt;tag-name&gt;</code>). Tags for release
-   candidates should use the following format: <code>vMAJOR.MINOR.PATCH-rc.RC_NUM</code>
-   (e.g. <code>v0.32.0-rc.1</code>). <code>RC_NUM</code> starts at 1 and increments for each release
-   candidate. Push the tag to GitHub with <code>git push origin &lt;tag-name&gt;</code>.</p>
+<p>Push the tag created by <code>bump-my-version</code> to GitHub with
+   <code>git push origin &lt;tag-name&gt;</code>.</p>
 </li>
 </ol>
 <h4 id="monday-to-wednesday-test-the-release-candidate"><strong>Monday to Wednesday:</strong> Test the release candidate<a class="headerlink" href="#monday-to-wednesday-test-the-release-candidate" title="Permanent link">&para;</a></h4>
@@ -5774,7 +5770,7 @@ reach out!</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="February 29, 2024 18:47:20"><span class="timeago" datetime="2024-02-29T18:47:20+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="February 29, 2024 18:47:20">2024-02-29</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="May 16, 2025 16:15:43"><span class="timeago" datetime="2025-05-16T16:15:43+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="May 16, 2025 16:15:43">2025-05-16</span>
   </span>
 
     
@@ -5904,10 +5900,10 @@ reach out!</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
         <script src="../js/timeago.min.js"></script>
       
