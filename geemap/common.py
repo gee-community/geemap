@@ -9002,13 +9002,8 @@ def vector_to_geojson(
         filename = os.path.abspath(filename)
     else:
         filename = download_file(github_raw_url(filename))
-    ext = os.path.splitext(filename)[1].lower()
-    if ext == ".kml":
-        df = gpd.read_file(
-            filename, bbox=bbox, mask=mask, rows=rows, driver="KML", **kwargs
-        )
-    else:
-        df = gpd.read_file(filename, bbox=bbox, mask=mask, rows=rows, **kwargs)
+
+    df = gpd.read_file(filename, bbox=bbox, mask=mask, rows=rows, **kwargs)
     gdf = df.to_crs(epsg=epsg)
 
     if out_geojson is not None:
