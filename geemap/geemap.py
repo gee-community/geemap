@@ -4132,7 +4132,8 @@ class Map(core.Map):
             filename = os.path.abspath(filename)
         ext = os.path.splitext(filename)[1].lower()
         if ext == ".kml":
-            gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
+            import fiona
+            fiona.drvsupport.supported_drivers["KML"] = "rw"
             gdf = gpd.read_file(filename, driver="KML", **kwargs)
         else:
             gdf = gpd.read_file(filename, **kwargs)
