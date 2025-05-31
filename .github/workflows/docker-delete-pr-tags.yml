@@ -1,0 +1,44 @@
+name: Delete All GHCR PR Tags
+
+on:
+    push:
+        branches:
+            - master
+    workflow_dispatch:
+
+jobs:
+    delete-pr-tags:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Delete all GHCR image tags starting with "pr-"
+              env:
+                  GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+                  REPO: ${{ github.event.repository.name }}
+                  OWNER: ${{ github.repository_owner }}
+              run: |
+                  echo "Fetching GHCR container versions for ghcr.io/${OWNER}/${REPO}..."
+
+                  response=$(curl -s -H "Authorization: Bearer ${GHCR_TOKEN}" \
+                    "https://api.github.com/orgs/${OWNER}/packages/container/${REPO}/versions")
+
+                  # Check that the response is a JSON array
+                  if ! echo "$response" | jq -e 'type == "array"' > /dev/null; then
+                    echo "❌ Unexpected response from GitHub API:"
+                    echo "$response"
+                    exit 1
+                  fi
+
+                  echo "$response" | jq -c '.[]' | while read -r version; do
+                    version_id=$(echo "$version" | jq -r '.id')
+                    tag_names=$(echo "$version" | jq -r '.metadata.container.tags[]?')
+
+                    for tag in $tag_names; do
+                      if [[ "$tag" == pr-* ]]; then
+                        echo "🗑️ Deleting tag: $tag (version ID: $version_id)"
+                        curl -s -X DELETE -H "Authorization: Bearer ${GHCR_TOKEN}" \
+                          "https://api.github.com/orgs/${OWNER}/packages/container/${REPO}/versions/${version_id}"
+                        break  # One deletion per version is sufficient
+                      fi
+                    done
+                  done
