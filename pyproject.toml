@@ -28,7 +28,6 @@ classifiers = [
 dependencies = [
     "anywidget",
     "bqplot",
-    "colour",
     "earthengine-api>=1.0.0",
     "eerepr>=0.1.0",
     "folium>=0.17.0",

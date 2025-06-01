@@ -3454,7 +3454,7 @@ def create_colorbar(
     import decimal
 
     # import io
-    from colour import Color
+    from matplotlib import colors
     from PIL import Image, ImageDraw, ImageFont
 
     warnings.simplefilter("ignore")
@@ -3483,7 +3483,7 @@ def create_colorbar(
 
     n_colors = len(palette)
     decimal_places = 2
-    rgb_colors = [Color(check_color(c)).rgb for c in palette]
+    rgb_colors = [colors.to_rgb(c) for c in palette]
     keys = [
         round(c, decimal_places)
         for c in list(float_range(0, 1.0001, 1.0 / (n_colors - 1)))
