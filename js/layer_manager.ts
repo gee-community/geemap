@@ -18,7 +18,7 @@ export class LayerManager extends LitWidget<LayerManagerModel, LayerManager> {
         return `layer-manager`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         css`
             .row {
@@ -54,7 +54,7 @@ export class LayerManager extends LitWidget<LayerManagerModel, LayerManager> {
         ]);
     }
 
-    render(): TemplateResult {
+    override render(): TemplateResult {
         return html`
             <widget-container
                 icon="layers"

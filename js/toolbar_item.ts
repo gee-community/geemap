@@ -21,7 +21,7 @@ export class ToolbarItem extends LitWidget<ToolbarItemModel, ToolbarItem> {
         return `tool-button`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         materialStyles,
         css`
@@ -55,7 +55,7 @@ export class ToolbarItem extends LitWidget<ToolbarItemModel, ToolbarItem> {
     @property({ type: String })
     tooltip_text: string = '';
 
-    render() {
+    override render() {
         return html`
             <button
                 class=${classMap({

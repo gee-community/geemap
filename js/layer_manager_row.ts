@@ -23,7 +23,7 @@ export class LayerManagerRow extends LitWidget<
         return `layer-manager-row`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         materialStyles,
         css`
@@ -128,7 +128,7 @@ export class LayerManagerRow extends LitWidget<
     @property() isLoading: boolean = false;
     @property() isConfirmDialogVisible: boolean = false;
 
-    render(): TemplateResult {
+    override render(): TemplateResult {
         return html`
             <div class="row">
                 <input

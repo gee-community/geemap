@@ -22,7 +22,7 @@ export class LegendCustomization extends LitElement {
         return `legend-customization`;
     }
 
-    static styles = [
+    static override styles = [
         flexStyles,
         legacyStyles,
         css`
@@ -43,10 +43,10 @@ export class LegendCustomization extends LitElement {
 
     @property({ type: Boolean }) showLegend: boolean = false;
     @property({ type: String }) legendType: string = "linear";
-    @property({ type: String }) title: string = "Legend";
+    @property({ type: String }) override title: string = "Legend";
     @property({ type: String }) labels: Array<string> = [];
 
-    render() {
+    override render() {
         return html`
             <div class="vertical-flex">
                 <div class="horizontal-flex">

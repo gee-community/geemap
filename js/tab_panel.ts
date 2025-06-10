@@ -44,7 +44,7 @@ export class TabPanel extends LitElement {
         return `tab-panel`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         materialStyles,
         css`
@@ -121,7 +121,7 @@ export class TabPanel extends LitElement {
      */
     @queryAssignedElements() tabContentElements!: HTMLElement[];
 
-    render() {
+    override render() {
         return html`
             <div class="container">
                 <div
