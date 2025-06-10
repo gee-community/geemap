@@ -41,7 +41,7 @@ export class LayerManager extends LitWidget<LayerManagerModel, LayerManager> {
     ];
 
     @property() visible: boolean = false;
-    @property() tabIndex: number = 0;
+    @property() override tabIndex: number = 0;
     @property() collapsed: boolean = true;
 
     modelNameToViewName(): Map<
