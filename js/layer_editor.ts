@@ -29,7 +29,7 @@ export class LayerEditor extends LitWidget<LayerEditorModel, LayerEditor> {
         return `layer-editor`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         css`
             .confirm-button {
@@ -71,7 +71,7 @@ export class LayerEditor extends LitWidget<LayerEditorModel, LayerEditor> {
         ]);
     }
 
-    onCustomMessage(msg: any): void {
+    override onCustomMessage(msg: any): void {
         const msgId = msg.id;
         const response = msg.response;
 
@@ -86,7 +86,7 @@ export class LayerEditor extends LitWidget<LayerEditorModel, LayerEditor> {
         }
     }
 
-    render(): TemplateResult {
+    override render(): TemplateResult {
         return html`
             <widget-container
                 .title="${this.layerName}"

@@ -34,7 +34,7 @@ export class SearchBar extends LitWidget<
         return `search-bar`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         materialStyles,
         css`
@@ -132,7 +132,7 @@ export class SearchBar extends LitWidget<
     @query(".dataset-search")
     datasetSearch!: HTMLInputElement;
 
-    render() {
+    override render() {
         return html`
             <widget-container
                 icon="search"

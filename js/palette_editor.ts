@@ -13,7 +13,7 @@ export class PaletteEditor extends LitElement {
         return `palette-editor`;
     }
 
-    static styles = [
+    static override styles = [
         flexStyles,
         legacyStyles,
         materialStyles,
@@ -42,7 +42,7 @@ export class PaletteEditor extends LitElement {
 
     paletteTokens: Array<string> = [];
 
-    render() {
+    override render() {
         return html`
             <div class="vertical-flex">
                 <div class="horizontal-flex">
@@ -98,7 +98,7 @@ export class PaletteEditor extends LitElement {
         `;
     }
 
-    updated(changedProperties: PropertyValues<PaletteEditor>): void {
+    override updated(changedProperties: PropertyValues<PaletteEditor>): void {
         super.updated(changedProperties);
         if (changedProperties.has("palette")) {
             if (this.palette === "") {

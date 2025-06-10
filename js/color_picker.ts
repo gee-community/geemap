@@ -8,7 +8,7 @@ export class ColorPicker extends LitElement {
         return `color-picker`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         css`
             .color-swatch {
@@ -34,7 +34,7 @@ export class ColorPicker extends LitElement {
 
     @property({ type: String }) value: string = "#000000";
 
-    render() {
+    override render() {
         return html`
             <div class="widget-inline-hbox">
                 <input
