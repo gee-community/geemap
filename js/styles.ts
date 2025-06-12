@@ -29,7 +29,7 @@ export const flexStyles = css`
     .vertical-flex {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 8px;
     }
 
     .horizontal-flex {
