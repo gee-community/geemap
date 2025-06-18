@@ -22,7 +22,7 @@ export class Toolbar extends LitWidget<ToolbarModel, Toolbar> {
         return `toolbar-panel`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         materialStyles,
         css`
@@ -60,7 +60,7 @@ export class Toolbar extends LitWidget<ToolbarModel, Toolbar> {
     @property()
     expanded: boolean = false;
 
-    render() {
+    override render() {
         return html`
             <widget-container
                 icon="build"

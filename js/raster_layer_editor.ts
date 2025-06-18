@@ -32,7 +32,7 @@ export class RasterLayerEditor extends LitElement {
         return `raster-layer-editor`;
     }
 
-    static styles = [
+    static override styles = [
         flexStyles,
         legacyStyles,
         materialStyles,
@@ -78,7 +78,7 @@ export class RasterLayerEditor extends LitElement {
     @query("legend-customization") legendCustomization?: LegendCustomization;
     @queryAll("#band-selection select") bandSelects!: NodeListOf<HTMLInputElement>;
 
-    connectedCallback() {
+    override connectedCallback() {
         super.connectedCallback();
         this.colorModel =
             this.bandNames.length > 1 ? ColorModel.RGB : ColorModel.Gray;
@@ -106,7 +106,7 @@ export class RasterLayerEditor extends LitElement {
         return visOptions;
     }
 
-    render(): TemplateResult {
+    override render(): TemplateResult {
         return html`
             <div class="vertical-flex">
                 <div class="horizontal-flex">
@@ -331,7 +331,7 @@ export class RasterLayerEditor extends LitElement {
         this.colorModel = (event.target as HTMLInputElement).value;
     }
 
-    updated(changedProperties: PropertyValues<RasterLayerEditor>): void {
+    override updated(changedProperties: PropertyValues<RasterLayerEditor>): void {
         super.updated(changedProperties);
 
         if (changedProperties.has("colorModel")) {

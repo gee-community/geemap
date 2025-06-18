@@ -32,7 +32,7 @@ export class Legend extends LitWidget<LegendModel, Legend> {
         return `legend-widget`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         materialStyles,
         css`
@@ -82,7 +82,7 @@ export class Legend extends LitWidget<LegendModel, Legend> {
             }`
     ];
 
-    @property({ type: String }) title = "";
+    @property({ type: String }) override title = "";
     @property({ type: Array }) legendKeys: string[] = [];
     @property({ type: Array }) legendColors: string[] = [];
     @property({ type: Boolean }) addHeader: boolean = true;
@@ -98,7 +98,7 @@ export class Legend extends LitWidget<LegendModel, Legend> {
         ]);
     }
 
-    render() {
+    override render() {
         return this.addHeader ? html`
             <widget-container
                 .title="${this.title}"

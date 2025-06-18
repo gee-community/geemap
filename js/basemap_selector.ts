@@ -23,7 +23,7 @@ export class BasemapSelector extends LitWidget<
         return `basemap-selector`;
     }
 
-    static styles = [
+    static override styles = [
         flexStyles,
         legacyStyles,
         materialStyles,
@@ -57,7 +57,7 @@ export class BasemapSelector extends LitWidget<
     @property({ type: String }) provider: string = "";
     @property({ type: String }) resource: string = "";
 
-    render(): TemplateResult {
+    override render(): TemplateResult {
         return html`
             <widget-container
                 icon="map"

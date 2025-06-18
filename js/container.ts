@@ -19,7 +19,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
         return `widget-container`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         materialStyles,
         css`
@@ -75,7 +75,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
     ];
 
     @property({ type: String }) icon: string = "";
-    @property({ type: String }) title: string = "";
+    @property({ type: String }) override title: string = "";
     @property({ type: Boolean }) collapsed: boolean = false;
     @property({ type: Boolean }) hideCloseButton: boolean = false;
     @property({ type: Boolean }) compactMode: boolean = false;
@@ -91,7 +91,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
         ]);
     }
 
-    render() {
+    override render() {
         return html`
             <div class="container">
                 ${this.noHeader ? nothing : this.renderHeader()}

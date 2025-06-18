@@ -44,7 +44,7 @@ export abstract class LitWidget<
         return this._model;
     }
 
-    updated(changedProperties: PropertyValues<SubclassType>): void {
+    override updated(changedProperties: PropertyValues<SubclassType>): void {
         // Update the model properties so they're reflected in Python.
         const viewToModelMap = this.viewNameToModelName();
         for (const [viewProp, _] of changedProperties) {
