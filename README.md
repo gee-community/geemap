@@ -86,3 +86,18 @@ Below is a partial list of features available for the geemap package. Please che
 -   Add local raster datasets (e.g., GeoTIFF) to the map.
 -   Perform image classification and accuracy assessment.
 -   Extract pixel values interactively and export as shapefile and csv.
+
+## Contributing to Geemap
+
+We welcome contributions from the community! To get started:
+
+1. **Fork** the repository to your GitHub account.
+2. **Clone** your fork to your local machine.
+3. Create a new **branch** for your contribution.
+4. **Commit** your changes with clear and descriptive messages.
+5. **Push** your changes to your fork.
+6. Submit a **pull request** to the main repository.
+
+For detailed instructions, please refer to the [CONTRIBUTING.md](https://github.com/gee-community/geemap/blob/master/CONTRIBUTING.md) file.
+
+Thank you for your interest in contributing to Geemap! Your efforts help improve the project for everyone.
