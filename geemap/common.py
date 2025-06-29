@@ -7768,7 +7768,7 @@ def extract_timeseries_to_point(
     start_date,
     end_date,
     band_names,
-    scale,
+    scale=None,
     crs=None,
     crsTransform=None,
     out_df=None
@@ -7838,7 +7838,7 @@ def extract_timeseries_to_point(
 
     except Exception as e:
         raise RuntimeError(f"Error extracting data: {e}.")
-        
+
 
 def image_reclassify(img, in_list, out_list):
     """Reclassify an image.
