@@ -7762,8 +7762,8 @@ def extract_values_to_points(
 
 
 def extract_timeseries_to_point(
-    lat, 
-    lon, 
+    lat,
+    lon,
     image_collection,
     start_date,
     end_date,
@@ -7771,7 +7771,7 @@ def extract_timeseries_to_point(
     scale=None,
     crs=None,
     crsTransform=None,
-    out_df=None
+    out_df=None,
 ):
     """
     Extracts pixel time series from an ee.ImageCollection at a point.
@@ -7794,20 +7794,19 @@ def extract_timeseries_to_point(
 
     import pandas as pd
     from datetime import datetime
-    
+
     if not isinstance(image_collection, ee.ImageCollection):
         raise ValueError("image_collection must be an instance of ee.ImageCollection.")
 
     property_names = image_collection.first().propertyNames().getInfo()
-    if 'system:time_start' not in property_names:
+    if "system:time_start" not in property_names:
         raise ValueError("The image collection lacks the 'system:time_start' property.")
 
     point = ee.Geometry.Point([lon, lat])
 
     try:
         image_collection = (
-            image_collection
-            .filterBounds(point)
+            image_collection.filterBounds(point)
             .filterDate(start_date, end_date)
             .select(band_names)
         )
@@ -7816,10 +7815,7 @@ def extract_timeseries_to_point(
 
     try:
         result = image_collection.getRegion(
-            geometry=point,
-            scale=scale, 
-            crs=crs,
-            crsTransform=crsTransform
+            geometry=point, scale=scale, crs=crs, crsTransform=crsTransform
         ).getInfo()
 
         result_df = pd.DataFrame(result[1:], columns=result[0])
@@ -7829,7 +7825,9 @@ def extract_timeseries_to_point(
                 "Extraction returned an empty DataFrame. Check your point, date range, or selected bands."
             )
 
-        result_df['time'] = result_df['time'].apply(lambda t: datetime.utcfromtimestamp(t / 1000))
+        result_df["time"] = result_df["time"].apply(
+            lambda t: datetime.utcfromtimestamp(t / 1000)
+        )
 
         if out_df:
             result_df.to_csv(out_df, index=False)
