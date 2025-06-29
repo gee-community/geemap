@@ -312,6 +312,7 @@ nav:
           - notebooks/149_gemini.ipynb
           - notebooks/150_maplibre.ipynb
           - notebooks/151_dataset_explorer.ipynb
+          - notebooks/152_extract_timeseries_to_point.ipynb
     #   - miscellaneous:
     #         - notebooks/cartoee_colab.ipynb
     #         - notebooks/cartoee_colorbar.ipynb
