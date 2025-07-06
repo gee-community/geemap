@@ -185,7 +185,7 @@ def convert_for_loop(line):
     params = line[(start_index + 1) : end_index]
 
     if " in " in params and params.count(";") == 0:
-        new_line = prefix + "{}:".format(params) + suffix
+        new_line = prefix + f"{params}:" + suffix
         return new_line
 
     items = params.split("=")
@@ -208,11 +208,7 @@ def convert_for_loop(line):
 
     prefix = line[:(start_index)]
     suffix = line[(end_index + 1) :]
-    new_line = (
-        prefix
-        + "{} in range({}, {}, {}):".format(param_name, start, end, step)
-        + suffix
-    )
+    new_line = prefix + f"{param_name} in range({start}, {end}, {step}):" + suffix
 
     return new_line
 
@@ -1080,7 +1076,7 @@ def py_to_ipynb(
 
     try:
         # command = 'ipynb-py-convert ' + out_py_file + ' ' + out_file
-        command = 'ipynb-py-convert "{}" "{}"'.format(out_py_file, out_file)
+        command = f'ipynb-py-convert "{out_py_file}" "{out_file}"'
         print(os.popen(command).read().rstrip())
         # os.popen(command)
     except Exception as e:
@@ -1152,7 +1148,7 @@ def execute_notebook(in_file):
         in_file (str): Input Jupyter notebook.
     """
     # command = 'jupyter nbconvert --to notebook --execute ' + in_file + ' --inplace'
-    command = 'jupyter nbconvert --to notebook --execute "{}" --inplace'.format(in_file)
+    command = f'jupyter nbconvert --to notebook --execute "{in_file}" --inplace'
     print(os.popen(command).read().rstrip())
     # os.popen(command)
 

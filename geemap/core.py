@@ -3,7 +3,8 @@
 import enum
 import logging
 import math
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, TypedDict, Type
+from typing import Any, Callable, Dict, List, Optional, Tuple, TypedDict, Type
+from collections.abc import Sequence
 
 import ee
 import ipyleaflet
@@ -31,7 +32,7 @@ class DrawActions(enum.Enum):
     REMOVED_LAST = "removed-last"
 
 
-class AbstractDrawControl(object):
+class AbstractDrawControl:
     """Abstract class for the draw control."""
 
     host_map = None
@@ -64,7 +65,7 @@ class AbstractDrawControl(object):
         self._bind_to_draw_control()
 
     @property
-    def features(self) -> List[ee.Feature]:
+    def features(self) -> list[ee.Feature]:
         """List of features created from geometries and properties.
 
         Returns:
@@ -336,9 +337,9 @@ class MapDrawControl(ipyleaflet.DrawControl, AbstractDrawControl):
             host_map (geemap.Map): The geemap.Map object that the control will be added to.
             **kwargs (Any): Additional keyword arguments for the DrawControl.
         """
-        super(MapDrawControl, self).__init__(host_map=host_map, **kwargs)
+        super().__init__(host_map=host_map, **kwargs)
 
-    def _get_synced_geojson_from_draw_control(self) -> List[Dict[str, Any]]:
+    def _get_synced_geojson_from_draw_control(self) -> list[dict[str, Any]]:
         """Returns an up-to-date list of GeoJSON from the draw control.
 
         Returns:
@@ -350,7 +351,7 @@ class MapDrawControl(ipyleaflet.DrawControl, AbstractDrawControl):
         """Set up draw control event handling like create, edit, and delete."""
 
         # Handles draw events
-        def handle_draw(_, action: str, geo_json: Dict[str, Any]) -> None:
+        def handle_draw(_, action: str, geo_json: dict[str, Any]) -> None:
             """Handles draw events.
 
             Args:
@@ -408,16 +409,16 @@ class MapInterface:
 
         ee_object: ee.ComputedObject
         ee_layer: Any
-        vis_params: Dict[str, Any]
+        vis_params: dict[str, Any]
 
     # All layers (including basemaps, GeoJSON layers, etc.).
-    layers: List[Any]
+    layers: list[Any]
 
     # Layers backed by Earth Engine objects and keyed by layer name.
-    ee_layers: Dict[str, EELayerMetadata]
+    ee_layers: dict[str, EELayerMetadata]
 
     # The GeoJSON layers on the map.
-    geojson_layers: List[Any]
+    geojson_layers: list[Any]
 
     def get_zoom(self) -> int:
         """Returns the current zoom level of the map.
@@ -479,7 +480,7 @@ class MapInterface:
         """
         raise NotImplementedError()
 
-    def get_bounds(self) -> Tuple[float, float, float, float]:
+    def get_bounds(self) -> tuple[float, float, float, float]:
         """Returns the bounds of the current map view.
 
         Returns:
@@ -548,7 +549,7 @@ class MapInterface:
     def add_layer(
         self,
         ee_object: ee.ComputedObject,
-        vis_params: Optional[Dict[str, Any]] = None,
+        vis_params: Optional[dict[str, Any]] = None,
         name: Optional[str] = None,
         shown: bool = True,
         opacity: float = 1.0,
@@ -587,7 +588,7 @@ class Map(ipyleaflet.Map, MapInterface):
         ipyleaflet: ipyleaflet map object.
     """
 
-    _KWARG_DEFAULTS: Dict[str, Any] = {
+    _KWARG_DEFAULTS: dict[str, Any] = {
         "center": [0, 0],
         "zoom": 2,
         "zoom_control": False,
@@ -596,7 +597,7 @@ class Map(ipyleaflet.Map, MapInterface):
         "scroll_wheel_zoom": True,
     }
 
-    _BASEMAP_ALIASES: Dict[str, List[str]] = {
+    _BASEMAP_ALIASES: dict[str, list[str]] = {
         "DEFAULT": ["Google.Roadmap", "OpenStreetMap.Mapnik"],
         "ROADMAP": ["Google.Roadmap", "Esri.WorldStreetMap"],
         "SATELLITE": ["Google.Satellite", "Esri.WorldImagery"],
@@ -725,8 +726,8 @@ class Map(ipyleaflet.Map, MapInterface):
             self.width: str = kwargs.pop("width", "100%")
         self.height: str = kwargs.pop("height", "600px")
 
-        self.ee_layers: Dict[str, Dict[str, Any]] = {}
-        self.geojson_layers: List[Any] = []
+        self.ee_layers: dict[str, dict[str, Any]] = {}
+        self.geojson_layers: list[Any] = []
 
         kwargs = self._apply_kwarg_defaults(kwargs)
         super().__init__(**kwargs)
@@ -879,7 +880,7 @@ class Map(ipyleaflet.Map, MapInterface):
             self.set_center(centroid[0], centroid[1], zoom)
 
     def _find_widget_of_type(
-        self, widget_type: Type[ipywidgets.Widget], return_control: bool = False
+        self, widget_type: type[ipywidgets.Widget], return_control: bool = False
     ) -> Optional[ipywidgets.Widget]:
         """Finds a widget in the controls with the passed in type.
 
@@ -921,7 +922,7 @@ class Map(ipyleaflet.Map, MapInterface):
         #   - can only be added to the map once,
         #   - have a constructor that takes a position arg, and
         #   - don't need to be stored as instance vars.
-        basic_controls: Dict[str, Tuple[ipyleaflet.Control, Dict[str, Any]]] = {
+        basic_controls: dict[str, tuple[ipyleaflet.Control, dict[str, Any]]] = {
             "zoom_control": (ipyleaflet.ZoomControl, {}),
             "fullscreen_control": (ipyleaflet.FullScreenControl, {}),
             "scale_control": (ipyleaflet.ScaleControl, {"metric": True}),
@@ -1123,7 +1124,7 @@ class Map(ipyleaflet.Map, MapInterface):
         Args:
             widget (Any): The widget to remove.
         """
-        basic_controls: Dict[str, ipyleaflet.Control] = {
+        basic_controls: dict[str, ipyleaflet.Control] = {
             "search_control": map_widgets.SearchBar,
             "zoom_control": ipyleaflet.ZoomControl,
             "fullscreen_control": ipyleaflet.FullScreenControl,
@@ -1174,7 +1175,7 @@ class Map(ipyleaflet.Map, MapInterface):
     def add_layer(
         self,
         ee_object: ee.ComputedObject,
-        vis_params: Optional[Dict[str, Any]] = None,
+        vis_params: Optional[dict[str, Any]] = None,
         name: Optional[str] = None,
         shown: bool = True,
         opacity: float = 1.0,
@@ -1217,14 +1218,14 @@ class Map(ipyleaflet.Map, MapInterface):
     def _add_legend(
         self,
         title: str = "Legend",
-        legend_dict: Optional[Dict[str, str]] = None,
-        keys: Optional[List[Any]] = None,
-        colors: Optional[List[Any]] = None,
+        legend_dict: Optional[dict[str, str]] = None,
+        keys: Optional[list[Any]] = None,
+        colors: Optional[list[Any]] = None,
         position: str = "bottomright",
         builtin_legend: Optional[str] = None,
         layer_name: Optional[str] = None,
         add_header: bool = True,
-        widget_args: Optional[Dict[Any, Any]] = None,
+        widget_args: Optional[dict[Any, Any]] = None,
         **kwargs: Any,
     ) -> ipyleaflet.WidgetControl:
         """Adds a customized legend to the map.
@@ -1272,7 +1273,7 @@ class Map(ipyleaflet.Map, MapInterface):
 
     def _add_colorbar(
         self,
-        vis_params: Optional[Dict[str, Any]] = None,
+        vis_params: Optional[dict[str, Any]] = None,
         cmap: str = "gray",
         discrete: bool = False,
         label: Optional[str] = None,
@@ -1343,7 +1344,7 @@ class Map(ipyleaflet.Map, MapInterface):
         if selected:
             coreutils.open_url("https://geemap.org")
 
-    def _toolbar_main_tools(self) -> List[toolbar.ToolbarItem]:
+    def _toolbar_main_tools(self) -> list[toolbar.ToolbarItem]:
         """Gets the main tools for the toolbar.
 
         Returns:
@@ -1383,7 +1384,7 @@ class Map(ipyleaflet.Map, MapInterface):
             ),
         ]
 
-    def _toolbar_extra_tools(self) -> List[toolbar.ToolbarItem]:
+    def _toolbar_extra_tools(self) -> list[toolbar.ToolbarItem]:
         """Gets the extra tools for the toolbar.
 
         Returns:
@@ -1391,7 +1392,7 @@ class Map(ipyleaflet.Map, MapInterface):
         """
         return []
 
-    def _control_config(self) -> Dict[str, List[str]]:
+    def _control_config(self) -> dict[str, list[str]]:
         """Gets the control configuration.
 
         Returns:
@@ -1409,7 +1410,7 @@ class Map(ipyleaflet.Map, MapInterface):
             "bottomright": ["attribution_control"],
         }
 
-    def _apply_kwarg_defaults(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    def _apply_kwarg_defaults(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         """Applies default values to keyword arguments.
 
         Args:
@@ -1450,7 +1451,7 @@ class Map(ipyleaflet.Map, MapInterface):
         else:
             self.substitute_layer(self.layers[0], new_layer)
 
-    def _get_available_basemaps(self) -> Dict[str, Any]:
+    def _get_available_basemaps(self) -> dict[str, Any]:
         """Gets the available basemaps.
 
         Returns:

@@ -68,7 +68,7 @@ class Map(core.Map):
         return self.get_draw_control()
 
     @property
-    def draw_features(self) -> List[Any]:
+    def draw_features(self) -> list[Any]:
         """Gets the drawn features.
 
         Returns:
@@ -186,7 +186,7 @@ class Map(core.Map):
             self.roi_reducer = ee.Reducer.mean()
         self.roi_reducer_scale = None
 
-    def _control_config(self) -> Dict[str, List[str]]:
+    def _control_config(self) -> dict[str, list[str]]:
         """Configures the map controls based on the provided arguments.
 
         Returns:
@@ -225,7 +225,7 @@ class Map(core.Map):
         }
 
     @property
-    def ee_layer_names(self) -> List[str]:
+    def ee_layer_names(self) -> list[str]:
         """Gets the names of the EE layers.
 
         Returns:
@@ -238,7 +238,7 @@ class Map(core.Map):
         return list(self.ee_layers.keys())
 
     @property
-    def ee_layer_dict(self) -> Dict[str, Any]:
+    def ee_layer_dict(self) -> dict[str, Any]:
         """Gets the dictionary of EE layers.
 
         Returns:
@@ -250,7 +250,7 @@ class Map(core.Map):
         return self.ee_layers
 
     @property
-    def ee_raster_layer_names(self) -> List[str]:
+    def ee_raster_layer_names(self) -> list[str]:
         """Gets the names of the EE raster layers.
 
         Returns:
@@ -263,7 +263,7 @@ class Map(core.Map):
         return list(self.ee_raster_layers.keys())
 
     @property
-    def ee_vector_layer_names(self) -> List[str]:
+    def ee_vector_layer_names(self) -> list[str]:
         """Gets the names of the EE vector layers.
 
         Returns:
@@ -276,7 +276,7 @@ class Map(core.Map):
         return list(self.ee_vector_layers.keys())
 
     @property
-    def ee_raster_layers(self) -> Dict[str, Any]:
+    def ee_raster_layers(self) -> dict[str, Any]:
         """Gets the dictionary of EE raster layers.
 
         Returns:
@@ -285,7 +285,7 @@ class Map(core.Map):
         return dict(filter(self._raster_filter, self.ee_layers.items()))
 
     @property
-    def ee_vector_layers(self) -> Dict[str, Any]:
+    def ee_vector_layers(self) -> dict[str, Any]:
         """Gets the dictionary of EE vector layers.
 
         Returns:
@@ -293,7 +293,7 @@ class Map(core.Map):
         """
         return dict(filter(self._vector_filter, self.ee_layers.items()))
 
-    def _raster_filter(self, pair: Tuple[str, Dict[str, Any]]) -> bool:
+    def _raster_filter(self, pair: Tuple[str, dict[str, Any]]) -> bool:
         """Filters the raster layers.
 
         Args:
@@ -304,7 +304,7 @@ class Map(core.Map):
         """
         return isinstance(pair[1]["ee_object"], (ee.Image, ee.ImageCollection))
 
-    def _vector_filter(self, pair: Tuple[str, Dict[str, Any]]) -> bool:
+    def _vector_filter(self, pair: Tuple[str, dict[str, Any]]) -> bool:
         """Filters the vector layers.
 
         Args:
@@ -363,7 +363,7 @@ class Map(core.Map):
             super().add(obj, position=position, **kwargs)
 
     def add_controls(
-        self, controls: Union[List[Any], Any], position: str = "topleft"
+        self, controls: Union[list[Any], Any], position: str = "topleft"
     ) -> None:
         """Adds a list of controls to the map.
 
@@ -402,7 +402,7 @@ class Map(core.Map):
         ee_object: Union[
             ee.FeatureCollection, ee.Feature, ee.Image, ee.ImageCollection
         ],
-        vis_params: Optional[Dict[str, Any]] = None,
+        vis_params: Optional[dict[str, Any]] = None,
         name: Optional[str] = None,
         shown: bool = True,
         opacity: float = 1.0,
@@ -494,7 +494,7 @@ class Map(core.Map):
     centerObject = center_object
 
     def zoom_to_bounds(
-        self, bounds: Union[List[float], Tuple[float, float, float, float]]
+        self, bounds: Union[list[float], Tuple[float, float, float, float]]
     ) -> None:
         """Zooms to a bounding box in the form of [minx, miny, maxx, maxy].
 
@@ -581,7 +581,7 @@ class Map(core.Map):
                 )
             )
 
-    def get_layer_names(self) -> List[str]:
+    def get_layer_names(self) -> list[str]:
         """Gets layer names as a list.
 
         Returns:
@@ -755,8 +755,8 @@ class Map(core.Map):
 
     def plot(
         self,
-        x: Union[List[float], Any],
-        y: Union[List[float], Any],
+        x: Union[list[float], Any],
+        y: Union[list[float], Any],
         plot_type: Optional[str] = None,
         overlay: bool = False,
         position: str = "bottomright",
@@ -850,14 +850,14 @@ class Map(core.Map):
     def add_legend(
         self,
         title: str = "Legend",
-        legend_dict: Optional[Dict[str, str]] = None,
-        keys: Optional[List[str]] = None,
-        colors: Optional[List[str]] = None,
+        legend_dict: Optional[dict[str, str]] = None,
+        keys: Optional[list[str]] = None,
+        colors: Optional[list[str]] = None,
         position: str = "bottomright",
         builtin_legend: Optional[str] = None,
         layer_name: Optional[str] = None,
         add_header: bool = True,
-        widget_args: Dict[str, Any] = {},
+        widget_args: dict[str, Any] = {},
         **kwargs: Any,
     ) -> None:
         """Adds a customized basemap to the map.
@@ -903,7 +903,7 @@ class Map(core.Map):
 
     def add_colorbar(
         self,
-        vis_params: Optional[Dict[str, Any]] = None,
+        vis_params: Optional[dict[str, Any]] = None,
         cmap: str = "gray",
         discrete: bool = False,
         label: Optional[str] = None,
@@ -991,7 +991,7 @@ class Map(core.Map):
                 if legend in self.controls:
                     self.remove_control(legend)
 
-    def create_vis_widget(self, layer_dict: Dict[str, Any]) -> None:
+    def create_vis_widget(self, layer_dict: dict[str, Any]) -> None:
         """Creates a GUI for changing layer visualization parameters interactively.
 
         Args:
@@ -1002,7 +1002,7 @@ class Map(core.Map):
 
     def add_inspector(
         self,
-        names: Optional[Union[str, List[str]]] = None,
+        names: Optional[Union[str, list[str]]] = None,
         visible: bool = True,
         decimals: int = 2,
         position: str = "topright",
@@ -2173,7 +2173,7 @@ class Map(core.Map):
 
                 data = b64encode(f.getvalue())
                 data = data.decode("ascii")
-                url = "data:image/{};base64,".format(ext) + data
+                url = f"data:image/{ext};base64," + data
             img = ipyleaflet.ImageOverlay(url=url, bounds=bounds, name=name)
             self.add(img)
         except Exception as e:
@@ -4869,7 +4869,7 @@ class Map(core.Map):
         crs: str = "EPSG:3857",
         scale: Optional[int] = None,
         region: Optional[ee.Geometry] = None,
-        vis_params: Optional[Dict] = None,
+        vis_params: Optional[dict] = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -4969,7 +4969,7 @@ class ImageOverlay(ipyleaflet.ImageOverlay):
 
                 data = b64encode(f.getvalue())
                 data = data.decode("ascii")
-                url = "data:image/{};base64,".format(ext) + data
+                url = f"data:image/{ext};base64," + data
                 kwargs["url"] = url
         except Exception as e:
             raise Exception(e)

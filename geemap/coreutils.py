@@ -42,7 +42,7 @@ def get_env_var(key: str) -> Optional[str]:
 def ee_initialize(
     token_name: str = "EARTHENGINE_TOKEN",
     auth_mode: Optional[str] = None,
-    auth_args: Optional[Dict[str, Any]] = None,
+    auth_args: Optional[dict[str, Any]] = None,
     user_agent_prefix: str = "geemap",
     project: Optional[str] = None,
     **kwargs: Any,
@@ -119,7 +119,7 @@ def new_tree_node(
     children: Optional[list[dict[str, Any]]] = None,
     expanded: bool = False,
     top_level: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Returns node JSON for an interactive representation of an EE ComputedObject."""
     return {
         "label": label,
@@ -139,10 +139,10 @@ def _order_items(item_dict: dict[str, Any], ordering_list: list[str]) -> dict[st
     # - keys not in ordering_list, sorted.
     ordered_pairs = [x for x in ordering_list if x in item_dict.keys()]
     remaining = sorted([x for x in item_dict if x not in ordering_list])
-    return dict([(key, item_dict[key]) for key in ordered_pairs + remaining])
+    return {key: item_dict[key] for key in ordered_pairs + remaining}
 
 
-def _format_dictionary_node_name(index: int, item: Dict[str, Any]) -> str:
+def _format_dictionary_node_name(index: int, item: dict[str, Any]) -> str:
     node_name = f"{index}: "
     extensions = []
     if "id" in item:
@@ -306,8 +306,8 @@ def create_code_cell(code: str = "", where: str = "below") -> None:
     display(
         Javascript(
             """
-        var code = IPython.notebook.insert_cell_{0}('code');
-        code.set_text(atob("{1}"));
+        var code = IPython.notebook.insert_cell_{}('code');
+        code.set_text(atob("{}"));
     """.format(
                 where, encoded_code
             )
@@ -368,7 +368,7 @@ def in_colab_shell() -> bool:
     return "google.colab" in sys.modules
 
 
-def check_color(in_color: Union[str, Tuple, List]) -> str:
+def check_color(in_color: Union[str, tuple, list]) -> str:
     """Checks the input color and returns the corresponding hex color code.
 
     Args:
@@ -415,7 +415,7 @@ def check_color(in_color: Union[str, Tuple, List]) -> str:
         return out_color
 
 
-def check_cmap(cmap: Union[str, List[str]]) -> List[str]:
+def check_cmap(cmap: Union[str, list[str]]) -> list[str]:
     """Check the colormap and return a list of colors.
 
     Args:
@@ -447,7 +447,7 @@ def check_cmap(cmap: Union[str, List[str]]) -> List[str]:
         raise Exception(f"{cmap} is not a valid colormap.")
 
 
-def to_hex_colors(colors: List[Union[str, Tuple[int, int, int]]]) -> List[str]:
+def to_hex_colors(colors: list[Union[str, tuple[int, int, int]]]) -> list[str]:
     """Convert a GEE color palette into hexadecimal color codes. Can handle mixed formats.
 
     Args:
@@ -460,7 +460,7 @@ def to_hex_colors(colors: List[Union[str, Tuple[int, int, int]]]) -> List[str]:
     return [check_color(c) for c in colors]
 
 
-def rgb_to_hex(rgb: Tuple[int, int, int] = (255, 255, 255)) -> str:
+def rgb_to_hex(rgb: tuple[int, int, int] = (255, 255, 255)) -> str:
     """Converts RGB to hex color. In RGB color, R stands for Red, G stands for
         Green, and B stands for Blue, and it ranges from the decimal value of 0 – 255.
 
@@ -474,7 +474,7 @@ def rgb_to_hex(rgb: Tuple[int, int, int] = (255, 255, 255)) -> str:
     return "%02x%02x%02x" % rgb
 
 
-def hex_to_rgb(value: str = "FFFFFF") -> Tuple[int, int, int]:
+def hex_to_rgb(value: str = "FFFFFF") -> tuple[int, int, int]:
     """Converts hex color to RGB color.
 
     Args:
@@ -511,8 +511,8 @@ def widget_template(
     show_close_button: bool = True,
     widget_icon: str = "gear",
     close_button_icon: str = "times",
-    widget_args: Optional[Dict[str, Any]] = None,
-    close_button_args: Optional[Dict[str, Any]] = None,
+    widget_args: Optional[dict[str, Any]] = None,
+    close_button_args: Optional[dict[str, Any]] = None,
     display_widget: Optional[widgets.Widget] = None,
     m: Optional["ipyleaflet.Map"] = None,
     position: str = "topright",
@@ -656,9 +656,7 @@ def open_url(url: str) -> None:
         url (str): The URL to open.
     """
     if in_colab_shell():
-        display(
-            Javascript('window.open("{url}", "_blank", "noopener")'.format(url=url))
-        )
+        display(Javascript(f'window.open("{url}", "_blank", "noopener")'))
     else:
         import webbrowser
 
@@ -776,7 +774,7 @@ def download_file(
 
 
 def geojson_to_ee(
-    geo_json: Union[Dict[str, Any], str],
+    geo_json: Union[dict[str, Any], str],
     geodesic: bool = False,
     encoding: str = "utf-8",
 ) -> Union[ee.Geometry, ee.FeatureCollection]:
@@ -805,7 +803,7 @@ def geojson_to_ee(
                 geo_json = github_raw_url(geo_json)
                 out_geojson = temp_file_path(extension=".geojson")
                 download_file(geo_json, out_geojson)
-                with open(out_geojson, "r", encoding=encoding) as f:
+                with open(out_geojson, encoding=encoding) as f:
                     geo_json = json.loads(f.read())
                 os.remove(out_geojson)
 
