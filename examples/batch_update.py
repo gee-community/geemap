@@ -27,7 +27,7 @@ workshops = glob.glob(in_dir + "/workshops/*.md")
 files = notebooks + workshops
 
 for file in files:
-    with open(file, "r") as f:
+    with open(file) as f:
         lines = f.readlines()
 
     has_colab = False
@@ -113,7 +113,7 @@ for file in files:
 files = [file.replace(".md", ".ipynb") for file in files]
 
 for file in files:
-    with open(file, "r") as f:
+    with open(file) as f:
         lines = f.readlines()
 
     out_lines = []

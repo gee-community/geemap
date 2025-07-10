@@ -379,9 +379,7 @@ class TestAbstractDrawControl(unittest.TestCase):
             Args:
                 host_map (geemap.Map): The geemap.Map object
             """
-            super(TestAbstractDrawControl.TestDrawControl, self).__init__(
-                host_map=host_map, **kwargs
-            )
+            super().__init__(host_map=host_map, **kwargs)
             self.geo_jsons = []
 
         def _get_synced_geojson_from_draw_control(self):

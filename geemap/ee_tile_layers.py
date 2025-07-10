@@ -20,7 +20,7 @@ def _get_tile_url_format(
     ee_object: Union[
         ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, ee.ImageCollection
     ],
-    vis_params: Optional[Dict[str, Any]],
+    vis_params: Optional[dict[str, Any]],
 ) -> str:
     """Gets the tile URL format for an EE object.
 
@@ -37,7 +37,7 @@ def _get_tile_url_format(
     return map_id_dict["tile_fetcher"].url_format
 
 
-def _validate_vis_params(vis_params: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+def _validate_vis_params(vis_params: Optional[dict[str, Any]]) -> dict[str, Any]:
     """Validates and returns the visualization parameters.
 
     Args:
@@ -64,7 +64,7 @@ def _ee_object_to_image(
     ee_object: Union[
         ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, ee.ImageCollection
     ],
-    vis_params: Dict[str, Any],
+    vis_params: dict[str, Any],
 ) -> ee.Image:
     """Converts an EE object to an EE image.
 
@@ -101,8 +101,8 @@ def _ee_object_to_image(
 
 
 def _validate_palette(
-    palette: Union[str, List[str], Tuple[str, ...], box.Box],
-) -> List[str]:
+    palette: Union[str, list[str], tuple[str, ...], box.Box],
+) -> list[str]:
     """Validates and returns the palette.
 
     Args:
@@ -132,7 +132,7 @@ class EEFoliumTileLayer(folium.raster_layers.TileLayer):
         ee_object: Union[
             ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, ee.ImageCollection
         ],
-        vis_params: Optional[Dict[str, Any]] = None,
+        vis_params: Optional[dict[str, Any]] = None,
         name: str = "Layer untitled",
         shown: bool = True,
         opacity: float = 1.0,
@@ -183,7 +183,7 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         ee_object: Union[
             ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, ee.ImageCollection
         ],
-        vis_params: Optional[Dict[str, Any]] = None,
+        vis_params: Optional[dict[str, Any]] = None,
         name: str = "Layer untitled",
         shown: bool = True,
         opacity: float = 1.0,
@@ -216,13 +216,13 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             **kwargs,
         )
 
-    @lru_cache()
+    @lru_cache
     def _calculate_vis_stats(
         self,
         *,
         bounds: Union[ee.Geometry, ee.Feature, ee.FeatureCollection],
-        bands: Tuple[str, ...],
-    ) -> Tuple[float, float, float, float]:
+        bands: tuple[str, ...],
+    ) -> tuple[float, float, float, float]:
         """Calculate stats used for visualization parameters.
 
         Stats are calculated consistently with the Code Editor visualization parameters,
@@ -256,10 +256,10 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             .getInfo()
         )
 
-        mins, maxs, stds, means = [
+        mins, maxs, stds, means = (
             {v for k, v in stats.items() if k.endswith(stat) and v is not None}
             for stat in ("_min", "_max", "_stdDev", "_mean")
-        ]
+        )
         if any(len(vals) == 0 for vals in (mins, maxs, stds, means)):
             raise ValueError("No unmasked pixels were sampled.")
 
@@ -274,10 +274,10 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         self,
         *,
         bounds: Union[ee.Geometry, ee.Feature, ee.FeatureCollection],
-        bands: Optional[List[str]] = None,
+        bands: Optional[list[str]] = None,
         percent: Optional[float] = None,
         sigma: Optional[float] = None,
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Calculate the min and max clip values for visualization.
 
         Args:
