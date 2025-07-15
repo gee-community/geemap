@@ -7765,13 +7765,13 @@ def extract_timeseries_to_point(
     lat,
     lon,
     image_collection,
-    start_date,
-    end_date,
-    band_names,
+    start_date=None,
+    end_date=None,
+    band_names=None,
     scale=None,
     crs=None,
     crsTransform=None,
-    out_df=None,
+    out_csv=None,
 ):
     """
     Extracts pixel time series from an ee.ImageCollection at a point.
@@ -7780,18 +7780,17 @@ def extract_timeseries_to_point(
         lat (float): Latitude of the point.
         lon (float): Longitude of the point.
         image_collection (ee.ImageCollection): Image collection to sample.
-        start_date (str): Start date (e.g., '2020-01-01').
-        end_date (str): End date (e.g., '2020-12-31').
-        band_names (list): List of bands to extract.
-        scale (float): Sampling scale in meters.
+        start_date (str, optional): Start date (e.g., '2020-01-01').
+        end_date (str, optional): End date (e.g., '2020-12-31').
+        band_names (list, optional): List of bands to extract.
+        scale (float, optional): Sampling scale in meters.
         crs (str, optional): Projection CRS. Defaults to image CRS.
         crsTransform (list, optional): CRS transform matrix (3x2 row-major). Overrides scale.
-        out_df (str, optional): File path to save CSV. If None, returns a DataFrame.
+        out_csv (str, optional): File path to save CSV. If None, returns a DataFrame.
 
     Returns:
         pd.DataFrame or None: Time series data if not exporting to CSV.
     """
-
     import pandas as pd
     from datetime import datetime
 
@@ -7805,11 +7804,11 @@ def extract_timeseries_to_point(
     point = ee.Geometry.Point([lon, lat])
 
     try:
-        image_collection = (
-            image_collection.filterBounds(point)
-            .filterDate(start_date, end_date)
-            .select(band_names)
-        )
+        if start_date and end_date:
+            image_collection = image_collection.filterDate(start_date, end_date)
+        if band_names:
+            image_collection = image_collection.select(band_names)
+        image_collection = image_collection.filterBounds(point)
     except Exception as e:
         raise RuntimeError(f"Error filtering image collection: {e}")
 
@@ -7829,8 +7828,8 @@ def extract_timeseries_to_point(
             lambda t: datetime.utcfromtimestamp(t / 1000)
         )
 
-        if out_df:
-            result_df.to_csv(out_df, index=False)
+        if out_csv:
+            result_df.to_csv(out_csv, index=False)
         else:
             return result_df
 
