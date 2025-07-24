@@ -1085,9 +1085,30 @@ class Map(ipyleaflet.Map, MapInterface):
             return
 
         basemap_names = kwargs.pop("basemaps", list(self._available_basemaps.keys()))
-        value = kwargs.pop(
-            "value", self._get_preferred_basemap_name(self.layers[0].name)
-        )
+
+        default_value_for_selector = None
+        if self.layers:
+            first_layer_name = getattr(self.layers[0], "name", "")
+            if first_layer_name:
+                default_value_for_selector = self._get_preferred_basemap_name(
+                    first_layer_name
+                )
+            elif self._available_basemaps:
+                default_value_for_selector = self._get_preferred_basemap_name(
+                    next(iter(self._available_basemaps.keys()))
+                )
+            else:
+                default_value_for_selector = "DEFAULT"
+
+        elif self._available_basemaps:
+            first_available_key = next(iter(self._available_basemaps.keys()))
+            default_value_for_selector = self._get_preferred_basemap_name(
+                first_available_key
+            )
+        else:
+            default_value_for_selector = "DEFAULT"
+
+        value = kwargs.pop("value", default_value_for_selector)
         basemap = map_widgets.BasemapSelector(basemap_names, value, **kwargs)
         basemap.on_close = lambda: self.remove("basemap_selector")
         basemap.on_basemap_changed = self._replace_basemap
@@ -1419,8 +1440,11 @@ class Map(ipyleaflet.Map, MapInterface):
             max_zoom=basemap.get("max_zoom", 24),
             attribution=basemap.get("attribution", None),
         )
-        # substitute_layer is broken when the map has a single layer.
-        if len(self.layers) == 1:
+        if not self.layers:
+            self.add_layer(new_layer)
+        elif len(self.layers) == 1:
+            # TODO check if this quirk/bug is still present:
+            # substitute_layer is broken when the map has a single layer.
             self.clear_layers()
             self.add_layer(new_layer)
         else:

@@ -15,7 +15,7 @@ export class VectorLayerEditor extends LitElement {
         return `vector-layer-editor`;
     }
 
-    static styles = [
+    static override styles = [
         flexStyles,
         legacyStyles,
         css`
@@ -92,7 +92,7 @@ export class VectorLayerEditor extends LitElement {
         return visParams;
     }
 
-    render() {
+    override render() {
         return html`
             <div class="vertical-flex">
                 <div class="horizontal-flex">

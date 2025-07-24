@@ -24,7 +24,7 @@ export class Inspector extends LitWidget<InspectorModel, Inspector> {
         return `inspector-widget`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         css`
             .checkbox-container {
@@ -40,8 +40,8 @@ export class Inspector extends LitWidget<InspectorModel, Inspector> {
 
             .object-browser {
                 max-height: 300px;
-                min-width: 290px;
                 overflow: auto;
+                width: 290px;
             }
 
             input[type='checkbox'] {
@@ -70,7 +70,7 @@ export class Inspector extends LitWidget<InspectorModel, Inspector> {
         ]);
     }
 
-    render() {
+    override render() {
         return html`
             <widget-container
                 icon="point_scan"

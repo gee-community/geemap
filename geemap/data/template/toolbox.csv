@@ -1,4 +1,4 @@
-﻿index,name,category,label,description,link,definition,parameters
+index,name,category,label,description,link,definition,parameters
 DecisionTree,DecisionTree,Image Classification,Decision Tree,Creates a classifier that applies the given decision tree.,https://developers.google.com/earth-engine/apidocs/ee-classifier-decisiontree,ee.Classifier.decisionTree,
 DecisionTreeEnsemble,DecisionTreeEnsemble,Image Classification,Decision Tree Ensemble,Creates a classifier that applies the given decision trees.,https://developers.google.com/earth-engine/apidocs/ee-classifier-decisiontreeensemble,ee.Classifier.decisionTreeEnsemble,
 RandomForest,RandomForest,Image Classification,Random Forest,Creates an empty Random Forest classifier.,https://developers.google.com/earth-engine/apidocs/ee-classifier-smilerandomforest,ee.Classifier.smileRandomForest,

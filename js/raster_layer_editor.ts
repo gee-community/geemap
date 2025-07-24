@@ -32,7 +32,7 @@ export class RasterLayerEditor extends LitElement {
         return `raster-layer-editor`;
     }
 
-    static styles = [
+    static override styles = [
         flexStyles,
         legacyStyles,
         materialStyles,
@@ -78,7 +78,10 @@ export class RasterLayerEditor extends LitElement {
     @query("legend-customization") legendCustomization?: LegendCustomization;
     @queryAll("#band-selection select") bandSelects!: NodeListOf<HTMLInputElement>;
 
-    connectedCallback() {
+    @query("#min") private minInput!: HTMLInputElement;
+    @query("#max") private maxInput!: HTMLInputElement;
+
+    override connectedCallback() {
         super.connectedCallback();
         this.colorModel =
             this.bandNames.length > 1 ? ColorModel.RGB : ColorModel.Gray;
@@ -106,7 +109,7 @@ export class RasterLayerEditor extends LitElement {
         return visOptions;
     }
 
-    render(): TemplateResult {
+    override render(): TemplateResult {
         return html`
             <div class="vertical-flex">
                 <div class="horizontal-flex">
@@ -141,6 +144,7 @@ export class RasterLayerEditor extends LitElement {
                         id="min"
                         name="min"
                         .value="${this.minValue ?? "Loading..."}"
+                        @keydown="${this.onInputKeyDown}"
                         @change="${this.onMinTextChanged}"
                         ?disabled="${this.minAndMaxValuesLocked}"
                     />
@@ -151,6 +155,7 @@ export class RasterLayerEditor extends LitElement {
                         id="max"
                         name="max"
                         .value="${this.maxValue ?? "Loading..."}"
+                        @keydown="${this.onInputKeyDown}"
                         @change="${this.onMaxTextChanged}"
                         ?disabled="${this.minAndMaxValuesLocked}"
                     />
@@ -296,12 +301,16 @@ export class RasterLayerEditor extends LitElement {
         this.gamma = (event.target as HTMLInputElement).valueAsNumber;
     }
 
-    private onMinTextChanged(event: Event): void {
-        this.minValue = (event.target as HTMLInputElement).valueAsNumber;
+    private onInputKeyDown(event: KeyboardEvent): void {
+        event.stopPropagation();  // Prevent the event from bubbling up to the document.
     }
 
-    private onMaxTextChanged(event: Event): void {
-        this.maxValue = (event.target as HTMLInputElement).valueAsNumber;
+    private onMinTextChanged(_event: Event): void {
+        this.minValue = +this.minInput.value;  // Convert input string to number.
+    }
+
+    private onMaxTextChanged(_event: Event): void {
+        this.maxValue = +this.maxInput.value;  // Convert input string to number.
     }
 
     private calculateBandStats(): void {
@@ -331,7 +340,7 @@ export class RasterLayerEditor extends LitElement {
         this.colorModel = (event.target as HTMLInputElement).value;
     }
 
-    updated(changedProperties: PropertyValues<RasterLayerEditor>): void {
+    override updated(changedProperties: PropertyValues<RasterLayerEditor>): void {
         super.updated(changedProperties);
 
         if (changedProperties.has("colorModel")) {

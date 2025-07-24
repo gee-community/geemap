@@ -19,7 +19,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
         return `widget-container`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         materialStyles,
         css`
@@ -53,7 +53,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
             }
 
             .widget-container {
-                padding: 4px;
+                padding: 8px 12px 12px 12px;
             }
 
             .hidden {
@@ -66,16 +66,27 @@ export class Container extends LitWidget<ContainerModel, Container> {
                 width: 28px;
             }
 
+            .compact-header-button {
+                background: transparent;
+                font-size: 16px;
+                height: 28px;
+                width: 28px;
+            }
+
             .header-text {
                 align-content: center;
                 flex-grow: 1;
                 padding: 0 12px 0 0;
             }
+
+            .left-padding {
+                padding-left: 8px;
+            }
         `,
     ];
 
     @property({ type: String }) icon: string = "";
-    @property({ type: String }) title: string = "";
+    @property({ type: String }) override title: string = "";
     @property({ type: Boolean }) collapsed: boolean = false;
     @property({ type: Boolean }) hideCloseButton: boolean = false;
     @property({ type: Boolean }) compactMode: boolean = false;
@@ -91,7 +102,7 @@ export class Container extends LitWidget<ContainerModel, Container> {
         ]);
     }
 
-    render() {
+    override render() {
         return html`
             <div class="container">
                 ${this.noHeader ? nothing : this.renderHeader()}
@@ -135,7 +146,15 @@ export class Container extends LitWidget<ContainerModel, Container> {
     }
 
     private renderTitle(): HTMLTemplateResult {
-        return html`<span class="legacy-text header-text">${this.title}</span>`;
+        return html`<span
+            class="${classMap({
+                "legacy-text": true,
+                "header-text": true,
+                "left-padding":
+                    this.compactMode && this.title && !this.reverseHeader,
+            })}"
+            >${this.title}</span
+        >`;
     }
 
     private onCloseButtonClicked(): void {
@@ -167,7 +186,8 @@ export class Container extends LitWidget<ContainerModel, Container> {
         return html`<button
             class="${classMap({
             'legacy-button': true,
-            'header-button': true,
+            'header-button': !this.compactMode,
+            'compact-header-button': this.compactMode,
             'active': !this.collapsed,
         })}"
             class="legacy-button header-button"

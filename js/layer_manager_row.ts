@@ -23,7 +23,7 @@ export class LayerManagerRow extends LitWidget<
         return `layer-manager-row`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         materialStyles,
         css`
@@ -97,6 +97,7 @@ export class LayerManagerRow extends LitWidget<
 
             .remove-layer-text {
                 flex-grow: 1;
+                padding-left: 22px;
             }
 
             .confirm-deletion-container {
@@ -128,7 +129,7 @@ export class LayerManagerRow extends LitWidget<
     @property() isLoading: boolean = false;
     @property() isConfirmDialogVisible: boolean = false;
 
-    render(): TemplateResult {
+    override render(): TemplateResult {
         return html`
             <div class="row">
                 <input
@@ -170,7 +171,7 @@ export class LayerManagerRow extends LitWidget<
                 >
                     <div class="spinner"></div>
                     <span class="close-icon material-symbols-outlined"
-                        >close</span
+                        >delete</span
                     >
                 </button>
             </div>
@@ -186,16 +187,16 @@ export class LayerManagerRow extends LitWidget<
             <div class="row confirm-deletion-container">
                 <span class="legacy-text remove-layer-text">Remove layer?</span>
                 <button
+                    class="legacy-button"
+                    @click="${this.cancelDeletion}"
+                >
+                    No
+                </button>
+                <button
                     class="legacy-button primary confirm-deletion-button"
                     @click="${this.confirmDeletion}"
                 >
                     Yes
-                </button>
-                <button
-                    class="legacy-button primary"
-                    @click="${this.cancelDeletion}"
-                >
-                    No
                 </button>
             </div>
         `;

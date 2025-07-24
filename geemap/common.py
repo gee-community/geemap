@@ -3454,7 +3454,7 @@ def create_colorbar(
     import decimal
 
     # import io
-    from colour import Color
+    from matplotlib import colors
     from PIL import Image, ImageDraw, ImageFont
 
     warnings.simplefilter("ignore")
@@ -3483,7 +3483,7 @@ def create_colorbar(
 
     n_colors = len(palette)
     decimal_places = 2
-    rgb_colors = [Color(check_color(c)).rgb for c in palette]
+    rgb_colors = [colors.to_rgb(c) for c in palette]
     keys = [
         round(c, decimal_places)
         for c in list(float_range(0, 1.0001, 1.0 / (n_colors - 1)))
@@ -7761,6 +7761,82 @@ def extract_values_to_points(
         return result
 
 
+def extract_timeseries_to_point(
+    lat,
+    lon,
+    image_collection,
+    start_date=None,
+    end_date=None,
+    band_names=None,
+    scale=None,
+    crs=None,
+    crsTransform=None,
+    out_csv=None,
+):
+    """
+    Extracts pixel time series from an ee.ImageCollection at a point.
+
+    Args:
+        lat (float): Latitude of the point.
+        lon (float): Longitude of the point.
+        image_collection (ee.ImageCollection): Image collection to sample.
+        start_date (str, optional): Start date (e.g., '2020-01-01').
+        end_date (str, optional): End date (e.g., '2020-12-31').
+        band_names (list, optional): List of bands to extract.
+        scale (float, optional): Sampling scale in meters.
+        crs (str, optional): Projection CRS. Defaults to image CRS.
+        crsTransform (list, optional): CRS transform matrix (3x2 row-major). Overrides scale.
+        out_csv (str, optional): File path to save CSV. If None, returns a DataFrame.
+
+    Returns:
+        pd.DataFrame or None: Time series data if not exporting to CSV.
+    """
+    import pandas as pd
+    from datetime import datetime
+
+    if not isinstance(image_collection, ee.ImageCollection):
+        raise ValueError("image_collection must be an instance of ee.ImageCollection.")
+
+    property_names = image_collection.first().propertyNames().getInfo()
+    if "system:time_start" not in property_names:
+        raise ValueError("The image collection lacks the 'system:time_start' property.")
+
+    point = ee.Geometry.Point([lon, lat])
+
+    try:
+        if start_date and end_date:
+            image_collection = image_collection.filterDate(start_date, end_date)
+        if band_names:
+            image_collection = image_collection.select(band_names)
+        image_collection = image_collection.filterBounds(point)
+    except Exception as e:
+        raise RuntimeError(f"Error filtering image collection: {e}")
+
+    try:
+        result = image_collection.getRegion(
+            geometry=point, scale=scale, crs=crs, crsTransform=crsTransform
+        ).getInfo()
+
+        result_df = pd.DataFrame(result[1:], columns=result[0])
+
+        if result_df.empty:
+            raise ValueError(
+                "Extraction returned an empty DataFrame. Check your point, date range, or selected bands."
+            )
+
+        result_df["time"] = result_df["time"].apply(
+            lambda t: datetime.utcfromtimestamp(t / 1000)
+        )
+
+        if out_csv:
+            result_df.to_csv(out_csv, index=False)
+        else:
+            return result_df
+
+    except Exception as e:
+        raise RuntimeError(f"Error extracting data: {e}.")
+
+
 def image_reclassify(img, in_list, out_list):
     """Reclassify an image.
 
@@ -8623,9 +8699,6 @@ def kml_to_shp(in_kml, out_shp, **kwargs):
     import geopandas as gpd
     import fiona
 
-    # import fiona
-    # print(fiona.supported_drivers)
-    fiona.drvsupport.supported_drivers["KML"] = "rw"
     df = gpd.read_file(in_kml, driver="KML", **kwargs)
     df.to_file(out_shp, **kwargs)
 
@@ -8661,10 +8734,7 @@ def kml_to_geojson(in_kml, out_geojson=None, **kwargs):
     check_package(name="geopandas", URL="https://geopandas.org")
 
     import geopandas as gpd
-    import fiona
 
-    # print(fiona.supported_drivers)
-    fiona.drvsupport.supported_drivers["KML"] = "rw"
     gdf = gpd.read_file(in_kml, driver="KML", **kwargs)
 
     if out_geojson is not None:
@@ -9003,20 +9073,13 @@ def vector_to_geojson(
     warnings.filterwarnings("ignore")
     check_package(name="geopandas", URL="https://geopandas.org")
     import geopandas as gpd
-    import fiona
 
     if not filename.startswith("http"):
         filename = os.path.abspath(filename)
     else:
         filename = download_file(github_raw_url(filename))
-    ext = os.path.splitext(filename)[1].lower()
-    if ext == ".kml":
-        fiona.drvsupport.supported_drivers["KML"] = "rw"
-        df = gpd.read_file(
-            filename, bbox=bbox, mask=mask, rows=rows, driver="KML", **kwargs
-        )
-    else:
-        df = gpd.read_file(filename, bbox=bbox, mask=mask, rows=rows, **kwargs)
+
+    df = gpd.read_file(filename, bbox=bbox, mask=mask, rows=rows, **kwargs)
     gdf = df.to_crs(epsg=epsg)
 
     if out_geojson is not None:

@@ -4130,12 +4130,7 @@ class Map(core.Map):
 
         if not filename.startswith("http"):
             filename = os.path.abspath(filename)
-        ext = os.path.splitext(filename)[1].lower()
-        if ext == ".kml":
-            gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
-            gdf = gpd.read_file(filename, driver="KML", **kwargs)
-        else:
-            gdf = gpd.read_file(filename, **kwargs)
+        gdf = gpd.read_file(filename, **kwargs)
         df = gdf.to_crs(epsg="4326")
         col_names = df.columns.values.tolist()
         if popup is not None:

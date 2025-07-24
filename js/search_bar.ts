@@ -34,26 +34,25 @@ export class SearchBar extends LitWidget<
         return `search-bar`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         materialStyles,
         css`
             .row {
                 display: flex;
+                gap: 6px;
             }
 
             .input-container {
-                max-width: 460px;
-                padding: 5px;
+                max-width: 320px;
             }
 
             .input-container > p {
                 margin: 8px 3px;
-                max-width: 230px;
             }
 
             input.search {
-                margin: 2px;
+                margin: 2px 2px 8px 2px;
                 width: calc(100% - 4px);
             }
 
@@ -67,6 +66,7 @@ export class SearchBar extends LitWidget<
             label.result {
                 align-items: center;
                 display: flex;
+                margin-bottom: 4px;
             }
 
             .import-button, .reset-button {
@@ -132,7 +132,7 @@ export class SearchBar extends LitWidget<
     @query(".dataset-search")
     datasetSearch!: HTMLInputElement;
 
-    render() {
+    override render() {
         return html`
             <widget-container
                 icon="search"

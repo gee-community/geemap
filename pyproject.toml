@@ -28,8 +28,7 @@ classifiers = [
 dependencies = [
     "anywidget",
     "bqplot",
-    "colour",
-    "earthengine-api>=1.0.0",
+    "earthengine-api>=1.5.12",
     "eerepr>=0.1.0",
     "folium>=0.17.0",
     "geocoder",

@@ -22,7 +22,7 @@ export class TreeNode extends LitElement {
         return `tree-node`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         materialStyles,
         css`
@@ -59,7 +59,7 @@ export class TreeNode extends LitElement {
     @property() node: Node = {};
     @property({ type: Boolean, reflect: true }) expanded: boolean = false;
 
-    updated(changedProperties: PropertyValues<TreeNode>): void {
+    override updated(changedProperties: PropertyValues<TreeNode>): void {
         super.updated(changedProperties);
         if (changedProperties.has("node") && this.node) {
             if ("expanded" in this.node) {
@@ -68,7 +68,7 @@ export class TreeNode extends LitElement {
         }
     }
 
-    render(): TemplateResult {
+    override render(): TemplateResult {
         return html`
             <div
                 class="node ${this.expanded ? "expanded" : ""}"

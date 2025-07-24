@@ -320,11 +320,7 @@ class Map(pdk.Deck):
                 if filename.endswith(".zip"):
                     filename = "zip://" + filename
 
-            if filename.endswith(".kml"):
-                gpd.io.file.fiona.drvsupport.supported_drivers["KML"] = "rw"
-                gdf = gpd.read_file(filename, driver="KML")
-            else:
-                gdf = gpd.read_file(filename)
+            gdf = gpd.read_file(filename)
 
             self.add_gdf(gdf, layer_name, random_color_column, **kwargs)
 

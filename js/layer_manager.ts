@@ -18,7 +18,7 @@ export class LayerManager extends LitWidget<LayerManagerModel, LayerManager> {
         return `layer-manager`;
     }
 
-    static styles = [
+    static override styles = [
         legacyStyles,
         css`
             .row {
@@ -35,13 +35,13 @@ export class LayerManager extends LitWidget<LayerManagerModel, LayerManager> {
             .layer-manager-rows {
                 display: flex;
                 flex-direction: column;
-                gap: 4px;
+                gap: 10px;
             }
         `,
     ];
 
     @property() visible: boolean = false;
-    @property() tabIndex: number = 0;
+    @property() override tabIndex: number = 0;
     @property() collapsed: boolean = true;
 
     modelNameToViewName(): Map<
@@ -54,7 +54,7 @@ export class LayerManager extends LitWidget<LayerManagerModel, LayerManager> {
         ]);
     }
 
-    render(): TemplateResult {
+    override render(): TemplateResult {
         return html`
             <widget-container
                 icon="layers"
@@ -73,8 +73,11 @@ export class LayerManager extends LitWidget<LayerManagerModel, LayerManager> {
                                 .checked="${this.visible}"
                                 @change="${this.onLayerVisibilityChanged}"
                             />
-                            <span class="legacy-text all-layers-text"
-                                >All layers on/off</span
+                            <span
+                                class="legacy-text all-layers-text"
+                                @click="${this.onLayerVisibilityChanged}"
+                            >
+                                All layers on/off</span
                             >
                         </div>
                         <slot></slot>
@@ -84,9 +87,8 @@ export class LayerManager extends LitWidget<LayerManagerModel, LayerManager> {
         `;
     }
 
-    private onLayerVisibilityChanged(event: Event): void {
-        const target = event.target as HTMLInputElement;
-        this.visible = target.checked;
+    private onLayerVisibilityChanged(_event: Event): void {
+        this.visible = !this.visible;
     }
 }
 

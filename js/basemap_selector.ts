@@ -23,13 +23,13 @@ export class BasemapSelector extends LitWidget<
         return `basemap-selector`;
     }
 
-    static styles = [
+    static override styles = [
         flexStyles,
         legacyStyles,
         materialStyles,
         css`
             .horizontal-flex {
-                gap: 4px;
+                gap: 8px;
             }
 
             .legacy-text {
@@ -57,11 +57,11 @@ export class BasemapSelector extends LitWidget<
     @property({ type: String }) provider: string = "";
     @property({ type: String }) resource: string = "";
 
-    render(): TemplateResult {
+    override render(): TemplateResult {
         return html`
             <widget-container
                 icon="map"
-                title="Basemap Selector"
+                title="Basemap"
                 @close-clicked="${this.onCloseClicked}"
             >
                 <div class="vertical-flex">
